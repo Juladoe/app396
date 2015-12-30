@@ -122,7 +122,7 @@ public class VoteControllerView extends LinearLayout {
         tv_vote_style2_bt2_desc = (TextView) view.findViewById(R.id.tv_vote_style2_bt2_desc);
 
 
-        tv_cancel.setOnClickListener(new View.OnClickListener(){
+        tv_cancel.setOnClickListener(new OnClickListener(){
 
             @Override
             public void onClick(View view) {
@@ -131,32 +131,34 @@ public class VoteControllerView extends LinearLayout {
         });
 
         if(DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PAD){
-            tv_enter.setOnClickListener(new View.OnClickListener(){
+            if(null!=tv_enter) {
+                tv_enter.setOnClickListener(new OnClickListener() {
 
-                @Override
-                public void onClick(View view) {
-                    if(padSelectPostion==PADDEAFULTSELECTPOSTION){
-                        ToastUtil.showStringToast(activity,"您还没有做出选择");
-                        return;
-                    }
-                    switch (msgInfo.voteType) {
-                        case VoteType1:
-                        case VoteType2:
-                            sendMessage(msgInfo.voteKey, msgInfo.voteType, padSelectPostion+1);
-                            break;
-                        case VoteType3:
-                        case VoteType4:
-                        case VoteType5:
-                            if (padSelectPostion == 0) {
-                                sendMessage(msgInfo.voteKey, msgInfo.voteType, 1);
-                            } else {
-                                sendMessage(msgInfo.voteKey, msgInfo.voteType, 3);
-                            }
-                            break;
+                    @Override
+                    public void onClick(View view) {
+                        if (padSelectPostion == PADDEAFULTSELECTPOSTION) {
+                            ToastUtil.showStringToast(activity, "您还没有做出选择");
+                            return;
+                        }
+                        switch (msgInfo.voteType) {
+                            case VoteType1:
+                            case VoteType2:
+                                sendMessage(msgInfo.voteKey, msgInfo.voteType, padSelectPostion + 1);
+                                break;
+                            case VoteType3:
+                            case VoteType4:
+                            case VoteType5:
+                                if (padSelectPostion == 0) {
+                                    sendMessage(msgInfo.voteKey, msgInfo.voteType, 1);
+                                } else {
+                                    sendMessage(msgInfo.voteKey, msgInfo.voteType, 3);
+                                }
+                                break;
 
+                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         style1Bts.add(tv_vote_style1_bt1);
@@ -176,7 +178,7 @@ public class VoteControllerView extends LinearLayout {
         for (int i = 0; i < style1Bts.size(); i++) {
             final int postion = i;
             final TextView tv = style1Bts.get(postion);
-            tv.setOnClickListener(new View.OnClickListener() {
+            tv.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE) {
@@ -204,7 +206,7 @@ public class VoteControllerView extends LinearLayout {
         for (int i = 0; i < style2Bts.size(); i++) {
             final int postion = i;
             final TextView tv =style2Bts.get(postion);
-            tv.setOnClickListener(new View.OnClickListener() {
+            tv.setOnClickListener(new OnClickListener() {
 
                 @Override
                 public void onClick(View view) {
@@ -239,7 +241,7 @@ public class VoteControllerView extends LinearLayout {
         li_vote_style1 = (LinearLayout) view.findViewById(R.id.li_vote_style1);
         li_vote_style2 = (LinearLayout) view.findViewById(R.id.li_vote_style2);
         li_vote_all= (LinearLayout) view.findViewById(R.id.li_vote_all);
-        li_vote_all.setOnClickListener(new View.OnClickListener(){
+        li_vote_all.setOnClickListener(new OnClickListener(){
 
             @Override
             public void onClick(View v) {
@@ -264,6 +266,7 @@ public class VoteControllerView extends LinearLayout {
         }
 
         if(DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PAD){
+            if(null!=tv_enter)
             tv_enter.setVisibility(View.INVISIBLE);
         }
 
@@ -275,7 +278,7 @@ public class VoteControllerView extends LinearLayout {
             voteState=VoteState.VoteStateSendMesssageScuess;
             handler.sendEmptyMessageDelayed(TaskType.MESSAGE_VOTE_HIDE, HIDE_DELAY_TIME);
             view_top.setVisibility(View.VISIBLE);
-            view_top.setOnClickListener(new View.OnClickListener() {
+            view_top.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (voteState==VoteState.VoteStateSendMesssageScuess) {
@@ -332,133 +335,138 @@ public class VoteControllerView extends LinearLayout {
 
     }
     public void voteReq(VoteMsgInfo msgInfo) {
-        this.msgInfo = msgInfo;
-        if (msgInfo.action) {
-            // 发起问答
-            voteState =VoteState.VoteStateNoraml;
-            view_top.setOnClickListener(null);
-            handler.removeMessages(TaskType.MESSAGE_VOTE_HIDE);
-            padSelectPostion=PADDEAFULTSELECTPOSTION;
-            if(DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PAD){
-                tv_enter.setVisibility(View.VISIBLE);
+        try {
+            this.msgInfo = msgInfo;
+            if (msgInfo.action) {
+                // 发起问答
+                voteState = VoteState.VoteStateNoraml;
+                view_top.setOnClickListener(null);
+                handler.removeMessages(TaskType.MESSAGE_VOTE_HIDE);
+                padSelectPostion = PADDEAFULTSELECTPOSTION;
+                if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PAD) {
+                    if(null!=tv_enter)
+                    tv_enter.setVisibility(View.VISIBLE);
+                }
+
+                switch (msgInfo.voteType) {
+                    case VoteType1: {
+                        li_vote_style1.setVisibility(View.VISIBLE);
+                        li_vote_style2.setVisibility(View.GONE);
+                        for (TextView tv : style1Bts) {
+                            if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE) {
+                                tv.setBackgroundResource(R.drawable.vote_bt_unselect);
+                                tv.setTextColor(activity.getResources().getColor(R.color.black));
+                            } else {
+                                tv.setBackgroundResource(R.drawable.vote_pad_bt_unselect);
+                            }
+
+                            tv.setEnabled(true);
+                        }
+                        tv_vote_style1_bt1.setText("A");
+                        tv_vote_style1_bt2.setText("B");
+                        tv_vote_style1_bt3.setText("C");
+                        tv_vote_style1_bt4.setText("D");
+
+                        for (TextView tv : style1Descs) {
+                            tv.setVisibility(View.GONE);
+                        }
+
+                        break;
+                    }
+                    case VoteType2: {
+                        li_vote_style1.setVisibility(View.VISIBLE);
+                        li_vote_style2.setVisibility(View.GONE);
+                        for (TextView tv : style1Bts) {
+                            if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE) {
+                                tv.setBackgroundResource(R.drawable.vote_bt_unselect);
+                                tv.setTextColor(activity.getResources().getColor(R.color.black));
+                            } else {
+                                tv.setBackgroundResource(R.drawable.vote_pad_bt_unselect);
+                            }
+                            tv.setEnabled(true);
+                        }
+                        tv_vote_style1_bt1.setText("1");
+                        tv_vote_style1_bt2.setText("2");
+                        tv_vote_style1_bt3.setText("3");
+                        tv_vote_style1_bt4.setText("4");
+
+                        for (TextView tv : style1Descs) {
+                            tv.setVisibility(View.GONE);
+                        }
+                        break;
+                    }
+                    case VoteType3: {
+                        li_vote_style1.setVisibility(View.GONE);
+                        li_vote_style2.setVisibility(View.VISIBLE);
+                        for (TextView tv : style2Bts) {
+                            if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE) {
+                                tv.setBackgroundResource(R.drawable.vote_bt_unselect);
+                                tv.setTextColor(activity.getResources().getColor(R.color.black));
+                            } else {
+                                tv.setBackgroundResource(R.drawable.vote_pad_bt_unselect);
+                            }
+                            tv.setEnabled(true);
+                        }
+                        tv_vote_style2_bt1.setText("对");
+                        tv_vote_style2_bt2.setText("错");
+
+                        for (TextView tv : style2Descs) {
+                            tv.setVisibility(View.GONE);
+                        }
+                        break;
+                    }
+                    case VoteType4: {
+                        li_vote_style1.setVisibility(View.GONE);
+                        li_vote_style2.setVisibility(View.VISIBLE);
+                        for (TextView tv : style2Bts) {
+                            if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE) {
+                                tv.setBackgroundResource(R.drawable.vote_bt_unselect);
+                                tv.setTextColor(activity.getResources().getColor(R.color.black));
+                            } else {
+                                tv.setBackgroundResource(R.drawable.vote_pad_bt_unselect);
+                            }
+                            tv.setEnabled(true);
+                        }
+                        tv_vote_style2_bt1.setText("YES");
+                        tv_vote_style2_bt2.setText("NO");
+                        for (TextView tv : style2Descs) {
+                            tv.setVisibility(View.GONE);
+                        }
+                        break;
+                    }
+                    case VoteType5: {
+                        li_vote_style1.setVisibility(View.GONE);
+                        li_vote_style2.setVisibility(View.VISIBLE);
+                        for (TextView tv : style2Bts) {
+                            if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE) {
+                                tv.setBackgroundResource(R.drawable.vote_bt_unselect);
+                                tv.setTextColor(activity.getResources().getColor(R.color.black));
+                            } else {
+                                tv.setBackgroundResource(R.drawable.vote_pad_bt_unselect);
+                            }
+                            tv.setEnabled(true);
+                        }
+                        tv_vote_style2_bt1.setText("听明白了");
+                        tv_vote_style2_bt2.setText("没听明白");
+                        for (TextView tv : style2Descs) {
+                            tv.setVisibility(View.GONE);
+                        }
+                        break;
+                    }
+                }
+                tv_desc.setVisibility(View.VISIBLE);
+                tv_count_num_hint.setVisibility(View.GONE);
+                if (this.getVisibility() != View.VISIBLE) {
+                    this.setVisibility(View.VISIBLE);
+                    this.startAnimation(face_enter);
+                    view_top.setVisibility(View.INVISIBLE);
+                }
+            } else {
+                //取消问答
+                hideView();
             }
-
-            switch (msgInfo.voteType) {
-                case VoteType1: {
-                    li_vote_style1.setVisibility(View.VISIBLE);
-                    li_vote_style2.setVisibility(View.GONE);
-                    for (TextView tv : style1Bts) {
-                        if(DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE){
-                            tv.setBackgroundResource(R.drawable.vote_bt_unselect);
-                            tv.setTextColor(activity.getResources().getColor(R.color.black));
-                        }else{
-                            tv.setBackgroundResource(R.drawable.vote_pad_bt_unselect);
-                        }
-
-                        tv.setEnabled(true);
-                    }
-                    tv_vote_style1_bt1.setText("A");
-                    tv_vote_style1_bt2.setText("B");
-                    tv_vote_style1_bt3.setText("C");
-                    tv_vote_style1_bt4.setText("D");
-
-                    for(TextView tv:style1Descs){
-                        tv.setVisibility(View.GONE);
-                    }
-
-                    break;
-                }
-                case VoteType2: {
-                    li_vote_style1.setVisibility(View.VISIBLE);
-                    li_vote_style2.setVisibility(View.GONE);
-                    for (TextView tv : style1Bts) {
-                        if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE) {
-                            tv.setBackgroundResource(R.drawable.vote_bt_unselect);
-                            tv.setTextColor(activity.getResources().getColor(R.color.black));
-                        } else {
-                            tv.setBackgroundResource(R.drawable.vote_pad_bt_unselect);
-                        }
-                        tv.setEnabled(true);
-                    }
-                    tv_vote_style1_bt1.setText("1");
-                    tv_vote_style1_bt2.setText("2");
-                    tv_vote_style1_bt3.setText("3");
-                    tv_vote_style1_bt4.setText("4");
-
-                    for(TextView tv:style1Descs){
-                        tv.setVisibility(View.GONE);
-                    }
-                    break;
-                }
-                case VoteType3: {
-                    li_vote_style1.setVisibility(View.GONE);
-                    li_vote_style2.setVisibility(View.VISIBLE);
-                    for (TextView tv : style2Bts) {
-                        if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE) {
-                            tv.setBackgroundResource(R.drawable.vote_bt_unselect);
-                            tv.setTextColor(activity.getResources().getColor(R.color.black));
-                        } else {
-                            tv.setBackgroundResource(R.drawable.vote_pad_bt_unselect);
-                        }
-                        tv.setEnabled(true);
-                    }
-                    tv_vote_style2_bt1.setText("对");
-                    tv_vote_style2_bt2.setText("错");
-
-                    for(TextView tv:style2Descs){
-                        tv.setVisibility(View.GONE);
-                    }
-                    break;
-                }
-                case VoteType4: {
-                    li_vote_style1.setVisibility(View.GONE);
-                    li_vote_style2.setVisibility(View.VISIBLE);
-                    for (TextView tv : style2Bts) {
-                        if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE) {
-                            tv.setBackgroundResource(R.drawable.vote_bt_unselect);
-                            tv.setTextColor(activity.getResources().getColor(R.color.black));
-                        } else {
-                            tv.setBackgroundResource(R.drawable.vote_pad_bt_unselect);
-                        }
-                        tv.setEnabled(true);
-                    }
-                    tv_vote_style2_bt1.setText("YES");
-                    tv_vote_style2_bt2.setText("NO");
-                    for(TextView tv:style2Descs){
-                        tv.setVisibility(View.GONE);
-                    }
-                    break;
-                }
-                case VoteType5: {
-                    li_vote_style1.setVisibility(View.GONE);
-                    li_vote_style2.setVisibility(View.VISIBLE);
-                    for (TextView tv : style2Bts) {
-                        if (DEVICE_TYPE == DeviceUtil.DEVICE_TYPE_PHONE) {
-                            tv.setBackgroundResource(R.drawable.vote_bt_unselect);
-                            tv.setTextColor(activity.getResources().getColor(R.color.black));
-                        } else {
-                            tv.setBackgroundResource(R.drawable.vote_pad_bt_unselect);
-                        }
-                        tv.setEnabled(true);
-                    }
-                    tv_vote_style2_bt1.setText("听明白了");
-                    tv_vote_style2_bt2.setText("没听明白");
-                    for(TextView tv:style2Descs){
-                        tv.setVisibility(View.GONE);
-                    }
-                    break;
-                }
-            }
-            tv_desc.setVisibility(View.VISIBLE);
-            tv_count_num_hint.setVisibility(View.GONE);
-            if (this.getVisibility() != View.VISIBLE) {
-                this.setVisibility(View.VISIBLE);
-                this.startAnimation(face_enter);
-                view_top.setVisibility(View.INVISIBLE);
-            }
-        } else {
-            //取消问答
-            hideView();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

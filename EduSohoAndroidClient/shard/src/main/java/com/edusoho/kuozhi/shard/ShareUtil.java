@@ -1,30 +1,16 @@
 package com.edusoho.kuozhi.shard;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ListView;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserFactory;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
-
+import java.util.List;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
-
 import static com.mob.tools.utils.R.getBitmapRes;
 
 
@@ -43,16 +29,31 @@ public class ShareUtil {
     private Context mContext;
     private ShardDialog mAlertDialog;
     private ShareHandler mShareHandler;
-    private static ShareUtil shareUtil;
+    private ShareSDKUtil mShareSDKUtil;
+    private List<ListData> mCustomList;
+    private ArrayList<ListData> mList;
 
     private ShareUtil(Context context) {
         //添加应用信息
-        new ShareSDKUtil().initSDK(context);
+        mShareSDKUtil = new ShareSDKUtil();
+        mShareSDKUtil.initSDK(context);
         mContext = context;
+        initPlatformList();
     }
 
     public static ShareUtil getShareUtil(Context context) {
         return new ShareUtil(context);
+    }
+
+    public void setCustomList(List<ListData> dataList) {
+        this.mCustomList = dataList;
+        if (mCustomList != null) {
+            mList.addAll(mCustomList);
+        }
+    }
+
+    public List<ListData> getDataList() {
+        return mList;
     }
 
     public ShareUtil initShareParams(
@@ -86,13 +87,11 @@ public class ShareUtil {
         return false;
     }
 
-    public Platform getPlatForm(String name) {
-        return ShareSDK.getPlatform(name);
-    }
+    private void initPlatformList()
+    {
+        Platform[] platforms = mShareSDKUtil.getPlatformList();
+        mList = new ArrayList<ListData>();
 
-    public void initDialog() {
-        Platform[] platforms = ShareSDK.getPlatformList();
-        ArrayList<ListData> list = new ArrayList<ListData>();
         for (Platform platform : platforms) {
             String name = platform.getName();
             if (filterPlat(name)) {
@@ -101,29 +100,30 @@ public class ShareUtil {
             String resName = "logo_" + name;
             int resId = getBitmapRes(mContext, resName);
             ListData data = new ListData(mContext.getResources().getDrawable(resId), name, mContext);
-            list.add(data);
+            mList.add(data);
         }
 
-        Collections.sort(list, new Comparator<ListData>() {
+        Collections.sort(mList, new Comparator<ListData>() {
             @Override
             public int compare(ListData lhs, ListData rhs) {
                 return rhs.type.compareToIgnoreCase(lhs.type);
             }
         });
+    }
 
+    public void initDialog() {
         mAlertDialog = new ShardDialog(mContext);
-        mAlertDialog.setShardDatas(list);
+        mAlertDialog.setShardDatas(mList);
         mAlertDialog.setShardItemClick(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ListData data = (ListData) parent.getItemAtPosition(position);
-                if (data.type.startsWith("Wechat")) {
-                    if (mShareHandler != null) {
-                        mShareHandler.handler(data.type);
-                        mAlertDialog.dismiss();
-                    }
+
+                if (mShareHandler != null && mShareHandler.handler(data.type)) {
+                    mAlertDialog.dismiss();
                     return;
                 }
+
                 mOneKeyShare.setPlatform(data.type);
                 mOneKeyShare.setSilent(false);
                 mOneKeyShare.show(mContext);

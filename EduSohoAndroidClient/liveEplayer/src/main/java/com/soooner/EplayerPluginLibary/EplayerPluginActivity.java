@@ -8,6 +8,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -629,7 +630,11 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                     initLiveRoomInfo();
                     break;
                 }
-
+                case  TaskType.MESSAGE_PLAYBACK_SEGMENT_IEEMPTY:{
+                    ToastUtil.showToast(context, R.string.playback_info_isempty);
+                    finish();
+                    break;
+                }
 
                 case TaskType.MESSAGE_LOGIN_ERROR: {
                     hideLoading();
@@ -888,6 +893,9 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        System.gc();
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -909,10 +917,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
         voteControllerView= (VoteControllerView) findViewById(R.id.voteControllerView);
         voteControllerView.init(this,DeviceUtil.DEVICE_TYPE_PHONE);
 
-        Log.d(TAG, "classloader:" + this.getBaseContext().getClass().getClassLoader());
-        Log.d(TAG, "classloader:" + this.getBaseContext());
-        Log.d(TAG, "classloader:" + this.getBaseContext().getClass());
-        EplayerSetting.setContext( this.getBaseContext());
+        EplayerSetting.setContext( this.getApplicationContext());
 
         fl_all= (RelativeLayout) findViewById(R.id.fl_all);
         chatView= (MyChatView) findViewById(R.id.mychatview);
@@ -946,8 +951,10 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
             @Override
             public void onLoadingFailed() {
                 try {
-                    EplayerPluginActivity.this.requestStop();
+
                     createAlertDialog("提示","您的网络太糟糕，无法加载图片，请重试或者切换到稳定网络！");
+                    EplayerPluginActivity.this.requestStop();
+
 
 
                 } catch (Exception e) {
@@ -1121,7 +1128,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
             playerData =  new    EPlayerData();
         }
 
-        /*
+         /*
             @fix by suju
          */
         if(playerData.playModel== EPlayerPlayModelType.EPlayerPlayModelTypePlayback){
@@ -1168,6 +1175,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                         }
                         playbackEngin.resetPlaybackPPtId(drawPadInfo.pptId,page);
                     }
+                    System.gc();
                 }
 
                 @Override
@@ -1189,6 +1197,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                         }
                         playbackEngin.resetPlaybackPPtId(drawPadInfo.pptId,page);
                     }
+                    System.gc();
                 }
 
                 @Override
@@ -1203,6 +1212,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                     fl_myvideoview.changeHintText("播放暂停");
 
                     fl_myvideoview.showStateView(true);
+                    System.gc();
                 }
 
                 @Override
@@ -1214,6 +1224,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                     playbackEngin.resumePlayback();
                     playerControllerView.changePlayerState(PlayerControllerView.PlayerState.PLAYERSTATE_PAUSE);
                     fl_myvideoview.changeHintText("");
+                    System.gc();
 
                 }
 
@@ -1229,6 +1240,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                     EplayerPluginActivity.this.playerStartPlay= false;
                     fl_myvideoview.stopPlayback();
                     playbackEngin.pausePlayback();
+                    System.gc();
                 }
 
                 @Override
@@ -1456,9 +1468,13 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
             EPlaybackSessionInfo.releaseALL();
 
+            EplayerSetting.clearDbInstance();
+
             ttu.clearAllTask();
         }catch (Exception e){
             e.printStackTrace();
+        }finally {
+            System.gc();
         }
 
     }
@@ -1506,6 +1522,9 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                 }
             } catch (Exception e) {
                 handler.sendEmptyMessage(TaskType.MESSAGE_PLAY_MUSIC_ERROR);
+            }finally {
+
+                System.gc();
             }
 
         }
@@ -1615,7 +1634,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
     public void showAlertDialog() {
         TextView  text=new TextView(this);
-        android.view.ViewGroup.LayoutParams lp =text.getLayoutParams();
+        ViewGroup.LayoutParams lp =text.getLayoutParams();
         text.setTextSize(18);
 
         text.setGravity(Gravity.CENTER);
@@ -1676,21 +1695,35 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
 
             try {
 
-                EplayerPluginActivity.this.loading = new PlaybackLoading();
-                EplayerPluginActivity.this.loading.liveClassroomId = this.liveClassroomId;
-                EplayerPluginActivity.this.loading.pid = this.pid;
-                EplayerPluginActivity.this.loading.startLoading();
+                ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOGIN);
+                PlaybackLoading loading = new PlaybackLoading();
+                loading.liveClassroomId = this.liveClassroomId;
+                loading.pid = this.pid;
+
+                loading.startLoading();
+
+
+                EplayerPluginActivity.this.loading = loading;
+
+
 
             }catch (Exception e){
                 e.printStackTrace();
             }
+           LogUtil.d("FileDownLoadUtil loadSuccess PlaybackLoadingThread");
 
+            if(CheckUtil.isEmpty(EPlaybackSessionInfo.sharedSessionInfo().segmentArrays)){
+                Message message = Message.obtain();
+                message.what = TaskType.MESSAGE_PLAYBACK_SEGMENT_IEEMPTY;
+                handler.sendMessage(message);
+                return;
+            }
 
             handler.sendEmptyMessage(TaskType.MESSAGE_HIDELOADING);
             handler.sendEmptyMessage(TaskType.MESSAGE_INIT_PADVIEW);
+            System.gc();
 
 
-            ttu.clearTask(TimeTaskUtils.TimeTaskType.TIMETASK_LOGIN);
         }
     }
 
@@ -1757,6 +1790,8 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+            }finally {
+                System.gc();
             }
 
         }

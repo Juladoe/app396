@@ -2,16 +2,12 @@ package com.edusoho.kuozhi.v3.cache.request;
 
 
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
-import com.edusoho.kuozhi.v3.cache.request.model.ResourceResponse;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebView;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
-import java.util.WeakHashMap;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.regex.Pattern;
 

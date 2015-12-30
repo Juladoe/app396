@@ -147,6 +147,60 @@ public class V2CustomContent implements Serializable {
          * 用于提问类型
          */
         private String contentType;
+        private int lessonId;
+        private int homeworkResultId;
+        private int questionId;
+        private boolean isLessonFinished;
+        private int learnStartTime;
+        private int learnFinishTime;
+
+        public int getLearnStartTime() {
+            return learnStartTime;
+        }
+
+        public void setLearnStartTime(int learnStartTime) {
+            this.learnStartTime = learnStartTime;
+        }
+
+        public int getLearnFinishTime() {
+            return learnFinishTime;
+        }
+
+        public void setLearnFinishTime(int learnFinishTime) {
+            this.learnFinishTime = learnFinishTime;
+        }
+
+        public boolean getIsLessonFinished() {
+            return isLessonFinished;
+        }
+
+        public void setIsLessonFinished(boolean isLessonFinished) {
+            this.isLessonFinished = isLessonFinished;
+        }
+
+        public int getHomeworkResultId() {
+            return homeworkResultId;
+        }
+
+        public void setHomeworkResultId(int homeworkResultId) {
+            this.homeworkResultId = homeworkResultId;
+        }
+
+        public int getQuestionId() {
+            return questionId;
+        }
+
+        public void setQuestionId(int questionId) {
+            this.questionId = questionId;
+        }
+
+        public int getLessonId() {
+            return lessonId;
+        }
+
+        public void setLessonId(int lessonId) {
+            this.lessonId = lessonId;
+        }
 
         public String getImage() {
             return image;

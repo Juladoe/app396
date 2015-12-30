@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="#d8d8d8"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <GridView
-        android:layout_marginTop="@dimen/normal_padding"
-        android:layout_marginBottom="@dimen/normal_padding"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:id="@+id/shard_gridview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnWidth="@dimen/shard_item_width"
-        android:numColumns="4"
+        android:numColumns="auto_fit"
         android:listSelector="@android:color/transparent"
-        android:verticalSpacing="@dimen/normal_padding"
-        android:horizontalSpacing="@dimen/normal_padding"
+        android:verticalSpacing="3dp"
+        android:horizontalSpacing="3dp"
         android:stretchMode="columnWidth">
 
     </GridView>

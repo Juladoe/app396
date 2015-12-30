@@ -403,7 +403,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (lessonItem == null) {
             finish();
             return;
-//            throw new RuntimeException("local lesson error");
         }
 
         mLessonItem = lessonItem;

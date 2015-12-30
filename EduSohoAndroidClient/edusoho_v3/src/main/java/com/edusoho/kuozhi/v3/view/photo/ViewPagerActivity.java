@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.view.photo;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,33 +9,38 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import photoview.PhotoView;
+import photoview.PhotoViewAttacher;
 
 public class ViewPagerActivity extends ActionBarBaseActivity {
 
     private ViewPager mViewPager;
+    private TextView mViewPaperLabel;
+    private int mIndex;
+    private int mTotalCount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        getWindow().setWindowAnimations(R.style.WindowZoomAnimation);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.photo_layout);
         initView();
     }
 
     private void initView() {
+        mViewPaperLabel = (TextView) findViewById(R.id.images_label);
         mViewPager = (HackyViewPager) findViewById(R.id.images_pager);
         Intent dataIntent = getIntent();
-        int index = dataIntent.getIntExtra("index", 0);
+        mIndex = dataIntent.getIntExtra("index", 0);
         String[] images;
         if (dataIntent.hasExtra("imageList")) {
             ArrayList<String> list = dataIntent.getStringArrayListExtra("imageList");
@@ -43,11 +49,13 @@ public class ViewPagerActivity extends ActionBarBaseActivity {
             images = (String[]) dataIntent.getSerializableExtra("images");
         }
 
+        mTotalCount = images.length;
         if (images != null && images.length > 0) {
             SamplePagerAdapter adapter = new SamplePagerAdapter(images);
             mViewPager.setAdapter(adapter);
             mViewPager.setOnPageChangeListener(adapter);
-            mViewPager.setCurrentItem(index);
+            mViewPager.setCurrentItem(mIndex);
+            updateViewPaperLabel();
         }
     }
 
@@ -88,10 +96,16 @@ public class ViewPagerActivity extends ActionBarBaseActivity {
                 ImageLoader.getInstance().displayImage(mImages[position], photoView, EdusohoApp.app.mOptions);
             }
             container.addView(photoView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-
-            container.setOnClickListener(new View.OnClickListener() {
+            photoView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
                 @Override
-                public void onClick(View v) {
+                public void onPhotoTap(View view, float x, float y) {
+                    finish();
+                }
+            });
+
+            photoView.setOnViewTapListener(new PhotoViewAttacher.OnViewTapListener() {
+                @Override
+                public void onViewTap(View view, float x, float y) {
                     finish();
                 }
             });
@@ -114,14 +128,17 @@ public class ViewPagerActivity extends ActionBarBaseActivity {
 
         @Override
         public void onPageSelected(int position) {
-
+            mIndex = position;
+            updateViewPaperLabel();
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
 
         }
+    }
 
-
+    protected void updateViewPaperLabel() {
+        mViewPaperLabel.setText(String.format("%d/%d", mIndex + 1, mTotalCount));
     }
 }

@@ -41,7 +41,12 @@ create table if not exists news_course(
     bodyType varchar(50),
     lessonType varchar(15),
     userId integer,
-    createdTime integer
+    createdTime integer,
+    lessonId integer,
+    homeworkResultId integer,
+    questionId integer,
+    learnStartTime integer,
+    learnFinishTime integer
 );
 
 create table if not exists sp_msg(

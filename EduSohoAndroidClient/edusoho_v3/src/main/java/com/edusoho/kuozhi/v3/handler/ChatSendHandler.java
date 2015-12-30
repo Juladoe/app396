@@ -95,23 +95,24 @@ public class ChatSendHandler {
 
         Chat chat = updateChatData(toId, content, customContent.getCreatedTime());
         WrapperXGPushTextMessage message = updateNewsList(customContent, chat);
-        redirectMessageToUser(chat, message);
+        redirectMessageToUser(customContent, chat, message);
     }
 
-    private V2CustomContent getV2CustomContent(CustomContent customContent, Chat chat) {
+    private V2CustomContent getV2CustomContent(CustomContent customContent, BaseMsgEntity entity) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
         fromEntity.setType(customContent.getTypeBusiness());
         fromEntity.setId(app.loginUser.id);
         fromEntity.setImage(app.loginUser.mediumAvatar);
+
         v2CustomContent.setFrom(fromEntity);
         V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
-        toEntity.setId(chat.toId);
+        toEntity.setId(customContent.getFromId());
         toEntity.setType(PushUtil.ChatUserType.USER);
         v2CustomContent.setTo(toEntity);
         V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
         bodyEntity.setType(PushUtil.ChatMsgType.MULTI);
-        bodyEntity.setContent(chat.content);
+        bodyEntity.setContent(entity.content);
         v2CustomContent.setBody(bodyEntity);
         v2CustomContent.setV(2);
         v2CustomContent.setCreatedTime(customContent.getCreatedTime());
@@ -123,7 +124,7 @@ public class ChatSendHandler {
         WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
         message.setTitle(customContent.getNickname());
         message.setContent(chat.content);
-        message.setCustomContentJson(new Gson().toJson(getV2CustomContent(customContent, chat)));
+        message.setCustomContentJson(new Gson().toJson(customContent));
         message.isForeground = true;
 
         Bundle bundle = new Bundle();
@@ -135,19 +136,24 @@ public class ChatSendHandler {
         return message;
     }
 
-    protected void redirectMessageToUser(final BaseMsgEntity entity, WrapperXGPushTextMessage message) {
-
+    protected RequestUrl getRequestUrl(CustomContent customContent, BaseMsgEntity entity, WrapperXGPushTextMessage message) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("content", entity.content);
-        params.put("custom", message.getCustomContentJson());
+        params.put("custom", new Gson().toJson(getV2CustomContent(customContent, entity)));
 
+        return requestUrl;
+    }
+
+    protected void redirectMessageToUser(CustomContent customContent, final BaseMsgEntity entity, WrapperXGPushTextMessage message) {
+
+        RequestUrl requestUrl = getRequestUrl(customContent, entity, message);
         final Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, message);
-
         final LoadDialog loadDialog = LoadDialog.create(mActivity);
         loadDialog.show();
+
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

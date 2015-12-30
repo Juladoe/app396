@@ -9,8 +9,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.webkit.WebResourceResponse;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import com.edusoho.kuozhi.R;
@@ -18,28 +18,25 @@ import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.htmlapp.AppMeta;
-import com.edusoho.kuozhi.v3.model.htmlapp.UpdateAppMeta;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaWebView;
-import org.apache.cordova.CordovaWebViewClient;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.AbstractJsBridgeAdapterWebView;
 import com.google.gson.reflect.TypeToken;
 import cn.trinea.android.common.util.FileUtils;
 
@@ -53,7 +50,7 @@ public class ESWebView extends RelativeLayout {
     public static final int LOAD_AUTO = 0003;
 
     private int mLoadType;
-    protected ESCordovaWebView mWebView;
+    protected AbstractJsBridgeAdapterWebView mWebView;
     protected ProgressBar pbLoading;
     protected Context mContext;
     protected BaseActivity mActivity;
@@ -95,23 +92,13 @@ public class ESWebView extends RelativeLayout {
         return mWebView.getSettings().getUserAgentString();
     }
 
-    private ESCordovaWebView createWebView() {
+    private AbstractJsBridgeAdapterWebView createWebView() {
         return ESCordovaWebViewFactory.getFactory().getWebView(mActivity);
     }
 
     private void setupWebView() {
-
-        String userAgent = mWebView.getSettings().getUserAgentString();
-
-        WebSettings webSettings = mWebView.getSettings();
-        webSettings.setAllowFileAccess(true);
-        webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
-        webSettings.setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
-
-        CordovaContext cordovaContext = mWebView.getCordovaContext();
-        mWebView.setScrollBarStyle(SCROLLBARS_OUTSIDE_OVERLAY);
-        mWebView.setWebViewClient(new ESWebViewClient(cordovaContext, mWebView));
-        mWebView.setWebChromeClient(new ESPrivateWebChromeClient(cordovaContext));
+        mWebView.setWebViewClient(new ESWebViewClient());
+        mWebView.setWebChromeClient(new ESWebChromeClient(mWebView));
     }
 
     private void initWebView() {
@@ -148,7 +135,7 @@ public class ESWebView extends RelativeLayout {
     }
 
     private AppMeta getLocalApp(String appCode) {
-        File schoolStorage = AppUtil.getSchoolStorage(mActivity.app.domain);
+        File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, mActivity.app.domain);
         File appDir = new File(schoolStorage, appCode);
 
         if (appDir.exists()) {
@@ -225,7 +212,7 @@ public class ESWebView extends RelativeLayout {
     }
 
     private boolean checkResourceIsExists() {
-        File appZipStorage = AppUtil.getAppZipStorage();
+        File appZipStorage = AppUtil.getAppZipStorage(mContext);
 
         File[] files = appZipStorage.listFiles(new FilenameFilter() {
             @Override
@@ -250,7 +237,7 @@ public class ESWebView extends RelativeLayout {
             return true;
         }
 
-        File schoolStorage = AppUtil.getSchoolStorage(mActivity.app.domain);
+        File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, mActivity.app.domain);
         File schoolAppFile = new File(schoolStorage, mAppCode);
         InputStream zinInputStream = null;
 
@@ -285,14 +272,6 @@ public class ESWebView extends RelativeLayout {
         mWebView.handleDestroy();
     }
 
-    private class ESPrivateWebChromeClient extends ESWebChromeClient {
-
-        public ESPrivateWebChromeClient(CordovaInterface cordova) {
-            super(cordova);
-        }
-
-    };
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_DOWN
@@ -304,19 +283,7 @@ public class ESWebView extends RelativeLayout {
         return false;
     }
 
-    private class ESWebViewClient extends CordovaWebViewClient {
-
-        public ESWebViewClient(CordovaInterface cordova) {
-            super(cordova);
-        }
-
-        public ESWebViewClient(CordovaInterface cordova, CordovaWebView view) {
-            super(cordova, view);
-        }
-
-        @Override
-        public void onPageStarted(WebView view, String url, Bitmap favicon) {
-        }
+    private class ESWebViewClient extends WebViewClient {
 
         @Override
         public void onPageFinished(WebView view, String url) {
@@ -340,6 +307,7 @@ public class ESWebView extends RelativeLayout {
             if (mAppCode == null) {
                 return super.shouldInterceptRequest(view, url);
             }
+
             WebResourceResponse resourceResponse = mRequestManager.blockGet(
                     new Request(url), new RequestCallback<WebResourceResponse>() {
                         @Override
@@ -363,7 +331,7 @@ public class ESWebView extends RelativeLayout {
         }
     }
 
-    public ESCordovaWebView getWebView() {
+    public AbstractJsBridgeAdapterWebView getWebView() {
         return mWebView;
     }
 }

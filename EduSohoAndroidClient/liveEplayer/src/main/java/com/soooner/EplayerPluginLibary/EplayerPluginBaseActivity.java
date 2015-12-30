@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-
 import com.soooner.EplayerPluginLibary.util.LogUtil;
 import com.soooner.EplayerPluginLibary.util.StringUtils;
 import com.soooner.EplayerPluginLibary.util.TimeTaskUtils;
@@ -14,9 +13,11 @@ import com.soooner.EplayerPluginLibary.util.ToastUtil;
 import com.soooner.EplayerPluginLibary.widget.MyVideoView;
 import com.soooner.EplayerSetting;
 import com.soooner.playback.PlaybackEngin;
+import com.soooner.source.common.util.StorageUtil;
 import com.soooner.source.entity.EPlayerData;
 import com.soooner.source.entity.EPlayerLoginType;
 import com.soooner.source.entity.SessionData.EplayerSessionInfo;
+import com.soooner.ws.event.LiveRoomEvent.JoinRoomEvent;
 import com.soooner.ws.event.LiveRoomEvent.NextSegmentEvent;
 
 /**

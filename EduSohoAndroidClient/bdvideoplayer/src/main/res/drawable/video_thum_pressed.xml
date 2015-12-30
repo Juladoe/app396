@@ -2,15 +2,14 @@
 <shape
     android:shape="oval" xmlns:android="http://schemas.android.com/apk/res/android" >
     <!-- shape的颜色，支持渐变 -->
+    <stroke android:width="6dp" android:color="#33ffffff"/>
     <size
-        android:height="12dp"
-        android:width="12dp" />
+        android:height="16dp"
+        android:width="16dp" />
 
     <gradient
-        android:angle="270"
-        android:centerColor="@color/video_thum_gradient_pressed"
-        android:centerY="0.45"
-        android:endColor="@color/video_thum_gradient_pressed"
-        android:startColor="@color/video_thum_gradient_pressed" />
+        android:centerColor="@color/white"
+        android:endColor="@color/white"
+        android:startColor="@color/white" />
 
 </shape>

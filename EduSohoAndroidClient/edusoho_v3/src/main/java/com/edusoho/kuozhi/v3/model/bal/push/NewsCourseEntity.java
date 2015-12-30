@@ -16,6 +16,15 @@ public class NewsCourseEntity {
     private String lessonType;
     private int userId;
     private int createdTime;
+    private int lessonId;
+    private int homworkResultId;
+    private int questionId;
+    private boolean isLessonfinished;
+    private int learnStartTime;
+    private int learnFinishTime;
+
+    private String image;
+    private String teacher;
 
     public NewsCourseEntity() {
 
@@ -33,6 +42,12 @@ public class NewsCourseEntity {
         this.lessonType = v2CustomContent.getBody().getLessonType();
         this.userId = EdusohoApp.app.loginUser.id;
         this.createdTime = v2CustomContent.getCreatedTime();
+        this.lessonId = v2CustomContent.getBody().getLessonId();
+        this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
+        this.questionId = v2CustomContent.getBody().getQuestionId();
+        this.isLessonfinished = v2CustomContent.getBody().getIsLessonFinished();
+        this.learnStartTime = v2CustomContent.getBody().getLearnStartTime();
+        this.learnFinishTime = v2CustomContent.getBody().getLearnFinishTime();
     }
 
     public NewsCourseEntity(OffLineMsgEntity offlineMsgModel) {
@@ -47,6 +62,12 @@ public class NewsCourseEntity {
         this.lessonType = v2CustomContent.getBody().getLessonType();
         this.userId = EdusohoApp.app.loginUser.id;
         this.createdTime = v2CustomContent.getCreatedTime();
+        this.lessonId = v2CustomContent.getBody().getLessonId();
+        this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
+        this.questionId = v2CustomContent.getBody().getQuestionId();
+        this.isLessonfinished = v2CustomContent.getBody().getIsLessonFinished();
+        this.learnStartTime = v2CustomContent.getBody().getLearnStartTime();
+        this.learnFinishTime = v2CustomContent.getBody().getLearnFinishTime();
     }
 
     public int getId() {
@@ -127,5 +148,69 @@ public class NewsCourseEntity {
 
     public void setCreatedTime(int createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
+    }
+
+    public int getLessonId() {
+        return lessonId;
+    }
+
+    public void setLessonId(int lessonId) {
+        this.lessonId = lessonId;
+    }
+
+    public int getHomworkResultId() {
+        return homworkResultId;
+    }
+
+    public void setHomworkResultId(int homworkResultId) {
+        this.homworkResultId = homworkResultId;
+    }
+
+    public int getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(int questionId) {
+        this.questionId = questionId;
+    }
+
+    public boolean getIsLessonfinished() {
+        return isLessonfinished;
+    }
+
+    public void setIsLessonfinished(boolean isLessonfinished) {
+        this.isLessonfinished = isLessonfinished;
+    }
+
+    public int getLearnStartTime() {
+        return learnStartTime;
+    }
+
+    public void setLearnStartTime(int learnStartTime) {
+        this.learnStartTime = learnStartTime;
+    }
+
+    public int getLearnFinishTime() {
+        return learnFinishTime;
+    }
+
+    public void setLearnFinishTime(int learnFinishTime) {
+        this.learnFinishTime = learnFinishTime;
     }
 }

@@ -8,76 +8,53 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import org.apache.cordova.CordovaChromeClient;
-import org.apache.cordova.CordovaInterface;
-import org.apache.cordova.CordovaPlugin;
-import org.apache.cordova.CordovaWebView;
-
+import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.AbstractJsBridgeAdapterWebView;
+import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.BridgeWebChromeClient;
+import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
 import java.io.File;
 
 /**
  * Created by howzhi on 15/8/10.
  */
-public class ESWebChromeClient extends CordovaChromeClient {
+public class ESWebChromeClient extends BridgeWebChromeClient {
 
-    private Activity mActivity;
+    public static final int FILECHOOSER_RESULTCODE = 0x10;
 
-    public ESWebChromeClient(CordovaInterface cordova) {
-        super(cordova);
-        init();
+    public ESWebChromeClient(AbstractJsBridgeAdapterWebView webView) {
+        super(webView);
     }
 
-    public ESWebChromeClient(CordovaInterface ctx, CordovaWebView app) {
-        super(ctx, app);
-        init();
-    }
-
-    private void init() {
-        mActivity = cordova.getActivity();
-    }
-
-    @Override
-    public void onReceivedTitle(WebView view, String title) {
-        mActivity.setTitle(title);
-    }
-
-    @Override
-    public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-        return super.onShowFileChooser(webView, filePathCallback, fileChooserParams);
-    }
-
-    @Override
     public void openFileChooser(ValueCallback<Uri> uploadMsg) {
         this.openFileChooser(uploadMsg, "*/*");
     }
 
-    @Override
     public void openFileChooser( ValueCallback<Uri> uploadMsg, String acceptType ) {
         this.openFileChooser(uploadMsg, acceptType, null);
     }
 
-    @Override
     public void openFileChooser(final ValueCallback<Uri> uploadMsg, String acceptType, String capture)
     {
         Intent i = new Intent(Intent.ACTION_GET_CONTENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.setType(acceptType);
-        cordova.startActivityForResult(
-                new CordovaPlugin() {
+
+        mWebview.getActitiy().startActivityForResult(i, 0);
+
+        mWebview.getBridgePluginContext().startActivityForResult(
+                new BridgePluginContext.Callback() {
                     @Override
-                    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-                        Uri result = intent == null || resultCode != Activity.RESULT_OK ? null : intent.getData();
+                    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+                        Uri result = data == null || resultCode != Activity.RESULT_OK ? null : data.getData();
                         uploadMsg.onReceiveValue(compressImage(mActivity.getApplicationContext(), result));
                     }
                 },
                 Intent.createChooser(i, "File Browser"),
-                FILECHOOSER_RESULTCODE);
+                0
+        );
     }
 
     public static Uri compressImage(Context context, Uri uri) {

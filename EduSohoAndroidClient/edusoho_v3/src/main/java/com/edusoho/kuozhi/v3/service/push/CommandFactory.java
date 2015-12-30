@@ -80,6 +80,18 @@ public class CommandFactory {
             case PushUtil.CourseType.LIVE_NOTIFY:
                 pushCommand = new PushLiveLessonStartNotify(pusher);
                 break;
+            case PushUtil.CourseType.HOMEWORK_REVIEWED:
+                pushCommand = new PushHomeworkReviewedCommand(pusher);
+                break;
+            case PushUtil.CourseType.QUESTION_ANSWERED:
+                pushCommand = new PushQuestionAnsweredCommand(pusher);
+                break;
+            case PushUtil.CourseType.LESSON_FINISH:
+                pushCommand = new PushLessonFinishedCommand(pusher);
+                break;
+            case PushUtil.CourseType.LESSON_START:
+                pushCommand = new PushLessonStartCommand(pusher);
+                break;
         }
         return pushCommand;
     }

@@ -1084,7 +1084,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 }
             }
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            e.printStackTrace();
+            Log.e(TAG, e.toString());
         }
     }
 

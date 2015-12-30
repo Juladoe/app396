@@ -365,5 +365,24 @@
         package="com.edusoho.kuozhi.homework.ExerciseParseActivity"
         version="1.0" />
 
+    <plugin
+        name="CourseStudyProcessFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.CourseStudyProcessFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseStudyDiscussFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.CourseStudyDiscussFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseStudyPageActivity"
+        package="com.edusoho.kuozhi.v3.ui.CourseStudyPageActivity"
+        version="1.0" />
+
+    <plugin
+        name="HomeworkSummaryActivity"
+        package="com.edusoho.kuozhi.homework.HomeworkSummaryActivity"
+        version="1.0" />
 
 </plugins>

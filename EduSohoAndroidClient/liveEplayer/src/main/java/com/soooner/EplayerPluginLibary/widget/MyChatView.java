@@ -204,7 +204,7 @@ public class MyChatView extends LinearLayout {
 
 
         img_zhan.setAlpha(1);
-        img_zhan.setOnClickListener(new View.OnClickListener() {
+        img_zhan.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(activity.isChatForbid()){
@@ -263,7 +263,7 @@ public class MyChatView extends LinearLayout {
 
             }
         });
-        img_face.setOnClickListener(new View.OnClickListener(){
+        img_face.setOnClickListener(new OnClickListener(){
 
             @Override
             public void onClick(View view) {
@@ -299,7 +299,7 @@ public class MyChatView extends LinearLayout {
         linearLayoutList.add(li_face_tab2);
         li_face_tab1.setOnClickListener(liListener);
         li_face_tab2.setOnClickListener(liListener);
-        li_face_tab3.setOnClickListener(new View.OnClickListener(){
+        li_face_tab3.setOnClickListener(new OnClickListener(){
 
             @Override
             public void onClick(View view) {
@@ -333,7 +333,7 @@ public class MyChatView extends LinearLayout {
     }
 
 
-    View.OnClickListener liListener=new OnClickListener(){
+    OnClickListener liListener=new OnClickListener(){
         @Override
         public void onClick(View view) {
             initSelectTabBg(view.getId());
@@ -687,14 +687,14 @@ public class MyChatView extends LinearLayout {
         li_speak_li1_tv= (TextView) view.findViewById(R.id.li_speak_li1_tv);
         li_speak_li2_tv= (TextView) view.findViewById(R.id.li_speak_li2_tv);
 
-        li_speak_li1.setOnClickListener(new View.OnClickListener(){
+        li_speak_li1.setOnClickListener(new OnClickListener(){
 
             @Override
             public void onClick(View view) {
                 initSpeakEditText(SpeakState.STATE_QUESTION,true);
             }
         });
-        li_speak_li2.setOnClickListener(new View.OnClickListener() {
+        li_speak_li2.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -705,30 +705,30 @@ public class MyChatView extends LinearLayout {
 
         Resources res=context.getResources();
         int pad_li_bottom_speak_height=(int)res.getDimension(R.dimen.pad_li_bottom_speak_height);
-        LinearLayout.LayoutParams li_bottom_speakLayoutParams= (LinearLayout.LayoutParams) li_bottom_speak.getLayoutParams();
+        LayoutParams li_bottom_speakLayoutParams= (LayoutParams) li_bottom_speak.getLayoutParams();
         li_bottom_speakLayoutParams.height=(int)(pad_li_bottom_speak_height*BASE_SCREEN_HEIGHT_SCALE);
 
         int pad_li_speak_li_width=(int)res.getDimension(R.dimen.pad_li_speak_li_width);
-        LinearLayout.LayoutParams li_speak_li1LayoutParams= (LinearLayout.LayoutParams) li_speak_li1.getLayoutParams();
+        LayoutParams li_speak_li1LayoutParams= (LayoutParams) li_speak_li1.getLayoutParams();
         li_speak_li1LayoutParams.width=(int)(pad_li_speak_li_width*BASE_SCREEN_WIDTH_SCALE);
-        LinearLayout.LayoutParams li_speak_li2LayoutParams= (LinearLayout.LayoutParams) li_speak_li2.getLayoutParams();
+        LayoutParams li_speak_li2LayoutParams= (LayoutParams) li_speak_li2.getLayoutParams();
         li_speak_li2LayoutParams.width=(int)(pad_li_speak_li_width*BASE_SCREEN_WIDTH_SCALE);
 
 
         int pad_li_speak_li_img_width= (int) res.getDimension(R.dimen.pad_li_speak_li_img_width);
         int pad_li_speak_li_img_height=(int) res.getDimension(R.dimen.pad_li_speak_li_img_height);
-        LinearLayout.LayoutParams li_speak_li1_imgLayoutParams = (LinearLayout.LayoutParams) li_speak_li1_img.getLayoutParams();
+        LayoutParams li_speak_li1_imgLayoutParams = (LayoutParams) li_speak_li1_img.getLayoutParams();
         li_speak_li1_imgLayoutParams.width=(int)(pad_li_speak_li_img_width*BASE_SCREEN_WIDTH_SCALE);
         li_speak_li1_imgLayoutParams.height=(int)(pad_li_speak_li_img_height*BASE_SCREEN_WIDTH_SCALE);
 
-        LinearLayout.LayoutParams li_speak_li2_imgLayoutParams = (LinearLayout.LayoutParams) li_speak_li2_img.getLayoutParams();
+        LayoutParams li_speak_li2_imgLayoutParams = (LayoutParams) li_speak_li2_img.getLayoutParams();
         li_speak_li2_imgLayoutParams.width=(int)(pad_li_speak_li_img_width*BASE_SCREEN_WIDTH_SCALE);
         li_speak_li2_imgLayoutParams.height=(int)(pad_li_speak_li_img_height*BASE_SCREEN_WIDTH_SCALE);
 
         int bt_bottom_speak_height= (int) res.getDimension(R.dimen.pad_et_bottom_speak_height);
 
 
-        LinearLayout.LayoutParams et_bottom_speakLayoutParams= (LinearLayout.LayoutParams) et_bottom_speak.getLayoutParams();
+        LayoutParams et_bottom_speakLayoutParams= (LayoutParams) et_bottom_speak.getLayoutParams();
         et_bottom_speakLayoutParams.height=(int)(bt_bottom_speak_height*BASE_SCREEN_HEIGHT_SCALE);
 
 

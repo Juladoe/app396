@@ -20,4 +20,4 @@ def countDirFileCount(dirFile):
 				print "read "+ dirFile
 				countFileCoutn(childDir)
 
-countDirFileCount("edusoho_v2/src")
+countDirFileCount("edusoho_v3/src")

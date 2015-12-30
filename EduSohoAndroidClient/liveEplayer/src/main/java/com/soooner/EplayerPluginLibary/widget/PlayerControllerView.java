@@ -72,10 +72,11 @@ public class PlayerControllerView extends LinearLayout {
                     }
 
 
-                    if (PlayerControllerView.this.progress !=  playBackTime.progress) {
-                        PlayerControllerView.this.progress =  playBackTime.progress;
-                        seekbar.setProgress((int) progress);
-                    }
+                    PlayerControllerView.this.progress = playBackTime.progress;
+                    seekbar.setProgress((int) progress);
+                    String hms = EPlaybackSessionInfo.sharedSessionInfo().getShowTimeWithProgress(progress);
+                    changeProgressTime(hms);
+
 
                     if (PlayerControllerView.this.playbackBeginTime !=  playBackTime.playbackBeginTime) {
                         PlayerControllerView.this.playbackBeginTime =  playBackTime.playbackBeginTime;
@@ -85,16 +86,16 @@ public class PlayerControllerView extends LinearLayout {
                     }
 
                     PlayerControllerView.this.playbackEndTime =  playBackTime.playbackEndTime;
-                   // String endTime = DateUtil.getHms(playbackEndTime);
+                    String endTime = DateUtil.getHmsFromMilliSecond(playbackEndTime-playbackBeginTime);
 
-                    String endTime = DateUtil.getHmsFromMilliSecond(totalTime);
+                   // String endTime = DateUtil.getHmsFromMilliSecond(totalTime);
                     tv_bar_end.setText(endTime);
 
                     PlayerControllerView.this.playbackTime =  playBackTime.playbackTime;
                     //String hms = DateUtil.getHms(playbackTime);
 
-                    String hms = DateUtil.getHmsFromMilliSecond(progress);
-                    changeProgressTime(hms);
+//                    String hms = DateUtil.getHmsFromMilliSecond(progress);
+//                    changeProgressTime(hms);
                     break;
                 }
             }
@@ -216,8 +217,8 @@ public class PlayerControllerView extends LinearLayout {
             public void onProgressChanged(SeekBar seekBar, int i, boolean fromUser) {
 
                 if(fromUser) {
-                   //String time = EPlaybackSessionInfo.sharedSessionInfo().loadTimeWithProgress(i);
-                    String time = DateUtil.getHmsFromMilliSecond(i);
+                     String time = EPlaybackSessionInfo.sharedSessionInfo().getShowTimeWithProgress(i);
+                   // String time = DateUtil.getHmsFromMilliSecond(i);
                     changeProgressTime(time);
                 }
             }
@@ -245,7 +246,7 @@ public class PlayerControllerView extends LinearLayout {
         改变进度条当前时间
        */
     public void changeProgressTime( String hms){
-        LogUtil.d("changeProgressTime", "seekbar.getWidth():"+seekbar.getWidth());
+        LogUtil.d("changeProgressTime", "seekbar.getWidth():"+seekbar.getWidth()+"hms:"+hms);
         if(!StringUtils.isValid(hms)){
             return;
         }
