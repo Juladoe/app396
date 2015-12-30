@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -46,7 +47,7 @@ import java.util.Map;
  */
 public class CourseStudyFragment extends BaseFragment {
     private RecyclerView studyProcessRecyclerView;
-    private ImageButton mFloatButton;
+    private TextView mFloatButton;
 
     private StudyProcessRecyclerAdapter mAdapter;
 
@@ -80,7 +81,7 @@ public class CourseStudyFragment extends BaseFragment {
         studyProcessRecyclerView = (RecyclerView) view.findViewById(R.id.study_process_list);
         studyProcessRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         studyProcessRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mFloatButton = (ImageButton) view.findViewById(R.id.float_button);
+        mFloatButton = (TextView) view.findViewById(R.id.float_button);
         mFloatButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
