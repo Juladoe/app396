@@ -121,6 +121,11 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:name=".v3.ui.ThreadDiscussActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
+        <activity
             android:name=".v3.ui.ChatActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />

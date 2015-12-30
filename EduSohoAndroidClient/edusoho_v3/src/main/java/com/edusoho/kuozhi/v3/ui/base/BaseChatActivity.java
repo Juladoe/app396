@@ -19,7 +19,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -93,8 +92,8 @@ public class BaseChatActivity extends ActionBarBaseActivity {
 
     private static final int IMAGE_SIZE = 1024 * 500;
 
-    private static final int SEND_IMAGE = 1;
-    private static final int SEND_CAMERA = 2;
+    public static final int SEND_IMAGE = 1;
+    public static final int SEND_CAMERA = 2;
 
     protected int mSendTime;
     protected int mStart = 0;
@@ -103,6 +102,9 @@ public class BaseChatActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat);
+        initView();
+        initData();
     }
 
     @Override
@@ -141,7 +143,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
         ivRecordImage = (ImageView) findViewById(R.id.iv_voice_volume);
         mViewSpeakContainer = findViewById(R.id.recording_container);
         mViewSpeakContainer.bringToFront();
-        initData();
+        mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
     }
 
     /**
@@ -364,7 +366,7 @@ public class BaseChatActivity extends ActionBarBaseActivity {
             @Override
             public void onErrorResponse(VolleyError error) {
                 callback.success(null);
-                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
+                CommonUtil.longToast(mActivity, getString(R.string.network_does_not_work));
                 Log.d(TAG, "get upload info from upyun failed");
             }
         });

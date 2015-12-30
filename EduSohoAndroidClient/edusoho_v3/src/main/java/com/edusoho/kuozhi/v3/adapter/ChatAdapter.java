@@ -27,7 +27,6 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
-import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -673,6 +672,8 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                 mPrevImageViewBg = mChatSpeakResId;
                 startVoiceAnim(holder, mChatSpeakAnimResId);
                 mCurrentAudioPath = mAudioFile.getPath();
+            } else {
+                CommonUtil.shortToast(mContext, mContext.getString(R.string.cache_audio_does_not_exist));
             }
         }
     }

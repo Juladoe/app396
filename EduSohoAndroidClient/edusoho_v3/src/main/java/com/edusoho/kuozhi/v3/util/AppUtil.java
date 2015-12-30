@@ -23,7 +23,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.animation.AccelerateInterpolator;
 
 import com.android.volley.Response;
@@ -585,6 +584,7 @@ public class AppUtil {
         return cacheDir;
     }
 
+
     public static File getAppZipStorage(Context context) {
         File storage = context.getDir("html5plugin", Context.MODE_PRIVATE);
         File srcDir = new File(storage, "appZip");
@@ -766,6 +766,40 @@ public class AppUtil {
         } catch (Exception ex) {
             Log.e("convertMills2Date", ex.getMessage());
             return "";
+        }
+    }
+
+    public static String convertTimeZone2Time(String timeZone) {
+        String time = "";
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String tDate = timeZone.split("[+]")[0].replace('T', ' ');
+            time = convertMills2Date(sdf.parse(tDate).getTime());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            return time;
+        }
+    }
+
+    public static String converMillisecond2TimeZone(long millisecond) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ");
+        String time = sdf.format(millisecond);
+        time = time.replace(' ', 'T').substring(0, time.length() - 2)
+                + ":00";
+        return time;
+    }
+
+    public static long convertTimeZone2Millisecond(String timeZone) {
+        long time = 0;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String tDate = timeZone.split("[+]")[0].replace('T', ' ');
+            time = sdf.parse(tDate).getTime() / 1000;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            return time;
         }
     }
 

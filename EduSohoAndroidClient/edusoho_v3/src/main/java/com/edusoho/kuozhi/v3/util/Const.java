@@ -167,9 +167,12 @@ public class Const {
     public static final String COURSE_SERIALIZE = "serialize";
 
     /**
-     * 根据登录UserToken获取问答/讨论列表
+     * Thread
      */
-    public static final String QUESTION = "Course/getCourseThreads";
+    public static final String GET_THREAD = "Course/getThread";
+    public static final String GET_THREAD_POST = "Course/getThreadPost";
+    public static final String POST_THREAD = "Course/postThread";
+    public static final String CREATE_THREAD = "/api/thread/create";
 
     /**
      * 获取用户所学课程下的所有问题或者讨论

@@ -1,11 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-
-import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +13,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.StudyProcessRecyclerAdapter;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
@@ -24,6 +21,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -39,13 +37,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 
 /**
  * Created by JesseHuang on 15/12/14.
  */
-public class CourseStudyFragment extends BaseFragment {
+public class CourseStudyFragment extends BaseFragment implements View.OnClickListener {
     private RecyclerView studyProcessRecyclerView;
     private TextView mFloatButton;
 
@@ -82,12 +79,7 @@ public class CourseStudyFragment extends BaseFragment {
         studyProcessRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         studyProcessRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mFloatButton = (TextView) view.findViewById(R.id.float_button);
-        mFloatButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //// TODO: 15/12/17 跳转到提问界面
-            }
-        });
+        mFloatButton.setOnClickListener(this);
 
         initData();
         filterData();
@@ -134,10 +126,10 @@ public class CourseStudyFragment extends BaseFragment {
             String content = entity.getContent();
             if (lessonIds.contains(lessonId)) {
                 totalListMap.get(lessonId).add(entity);
-                while (++i<list.size()){
-                    if (list.get(i).getLessonId()==0){
+                while (++i < list.size()) {
+                    if (list.get(i).getLessonId() == 0) {
                         totalListMap.get(lessonId).add(list.get(i));
-                    }else {
+                    } else {
                         break;
                     }
                 }
@@ -147,24 +139,24 @@ public class CourseStudyFragment extends BaseFragment {
                     int j = i;
                     do {
                         j++;
-                        if (!(j < list.size())){
+                        if (!(j < list.size())) {
                             isEndByLength = true;
                             break;
                         }
-                        if (list.get(j).getLessonId() != 0){
+                        if (list.get(j).getLessonId() != 0) {
                             isEndByLength = false;
                             break;
                         }
-                    }while (true);
+                    } while (true);
                     List<NewsCourseEntity> subList = new ArrayList<>();
-                    for (;i<j;i++){
+                    for (; i < j; i++) {
                         subList.add(list.get(i));
                     }
-                    totalListMap.put("0",subList);
-                    if (!isEndByLength){
+                    totalListMap.put("0", subList);
+                    if (!isEndByLength) {
                         i--;
                     }
-                }else {
+                } else {
                     NewsCourseEntity lessonTitleEntity = new NewsCourseEntity();
                     lessonTitleEntity.setContent(content);
                     lessonTitleEntity.setBodyType("course.lessonTitle");
@@ -179,10 +171,10 @@ public class CourseStudyFragment extends BaseFragment {
                     subList.add(lessonTitleEntity);
                     subList.add(costTimeEntity);
                     subList.add(entity);
-                    while (++i<list.size()){
-                        if (list.get(i).getLessonId()==0){
+                    while (++i < list.size()) {
+                        if (list.get(i).getLessonId() == 0) {
                             subList.add(list.get(i));
-                        }else {
+                        } else {
                             break;
                         }
                     }
@@ -205,8 +197,8 @@ public class CourseStudyFragment extends BaseFragment {
     }
 
     private void addFinishTime(List<NewsCourseEntity> list) {
-        if (list == null){
-            return ;
+        if (list == null) {
+            return;
         }
         for (int i = 0; i < list.size(); i++) {
             NewsCourseEntity entity = list.get(i);
@@ -241,7 +233,6 @@ public class CourseStudyFragment extends BaseFragment {
         RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("courseId", mCourseId + "");
-
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -256,7 +247,6 @@ public class CourseStudyFragment extends BaseFragment {
                 entity.setTitle(course.title);
                 dataList.add(0, entity);
                 mAdapter.notifyDataSetChanged();
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -264,6 +254,20 @@ public class CourseStudyFragment extends BaseFragment {
 
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.float_button) {
+            app.mEngine.runNormalPlugin("ThreadDiscussActivity", mActivity, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, mCourseId);
+                    startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, 0);
+                    startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
+                }
+            });
+        }
     }
 
     @Override
@@ -284,5 +288,4 @@ public class CourseStudyFragment extends BaseFragment {
             mAdapter.notifyDataSetChanged();
         }
     }
-
 }
