@@ -57,12 +57,13 @@ import static com.edusoho.kuozhi.v3.adapter.ThreadDiscussAdapter.ThreadDiscussEn
  * Created by JesseHuang on 15/12/23.
  */
 public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapter.ImageErrorClick {
+    public static final String TAG = "ThreadDiscussActivity";
     public static final String ACTIVITY_TYPE = "activity_type";
     public static final String THREAD_ID = "thread_id";
     public static final String COURSE_ID = "course_id";
     public static final String LESSON_ID = "lesson_id";
     public static final String IMAGE_FORMAT = "<img alt=\"\" src=\"%s\" />";
-    public static final String AUDIO_FORMAT = "<audio src=\"%s\" controls=\"controls\" />";
+    public static final String AUDIO_FORMAT = "%s";
 
     /**
      * ask,answer
@@ -84,9 +85,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_chat);
-//        initView();
-//        initData();
     }
 
     @Override
@@ -158,7 +156,8 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 });
             }
         } else {
-            mAdapter = new ThreadDiscussAdapter();
+            mAdapter = new ThreadDiscussAdapter(mContext);
+            lvMessage.setAdapter(mAdapter);
             mAdapter.setSendImageClickListener(this);
             mAudioDownloadReceiver.setAdapter(mAdapter);
         }
@@ -190,34 +189,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
         mAdapter.updateItemState(model.id, PushUtil.MsgDeliveryType.UPLOADING);
         handleSendPost(postModel, mSendMsgNormalCallback);
-    }
-
-    public void sendMediaMsg(final CourseThreadPostEntity model, final String type) {
-        handleSendPost(model, new NormalCallback<String>() {
-            @Override
-            public void success(String obj) {
-                RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
-                HashMap<String, String> params = requestUrl.getParams();
-                params.put("title", "您收到一条问答回复");
-                params.put("content", model.upyunMediaGetUrl);
-                params.put("custom", gson.toJson(getV2CustomContent(model.upyunMediaGetUrl, PushUtil.ThreadMsgType.THREAD_POST, type)));
-                mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        CloudResult result = parseJsonValue(response, new TypeToken<CloudResult>() {
-                        });
-                        if (result != null && result.getResult()) {
-                            model.pid = result.id;
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "发送信息失败");
-                    }
-                });
-            }
-        });
     }
 
     // region 多媒体资源上传
@@ -330,11 +301,16 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             @Override
             public void onResponse(String response) {
                 if (response.contains("threadId")) {
-                    mThreadId = Integer.parseInt(response);
-                    CourseThreadEntity model = createCourseThreadByCurrentUser(content);
-                    ThreadDiscussEntity discussModel = convertThreadDiscuss(model);
-                    mCourseThreadDataSource.create(model);
-                    addItem2ListView(discussModel);
+                    try {
+                        JSONObject jsonObject = new JSONObject(response);
+                        mThreadId = jsonObject.getInt("threadId");
+                        CourseThreadEntity model = createCourseThreadByCurrentUser(content);
+                        ThreadDiscussEntity discussModel = convertThreadDiscuss(model);
+                        discussModel.id = (int) mCourseThreadDataSource.create(model);
+                        addItem2ListView(discussModel);
+                    } catch (Exception ex) {
+                        Log.e(TAG, ex.toString());
+                    }
                 }
             }
         }, new Response.ErrorListener() {
@@ -615,7 +591,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         model.user.id = app.loginUser.id;
         model.user.nickname = app.loginUser.nickname;
         model.user.mediumAvatar = app.loginUser.mediumAvatar;
-        model.type = "question";
+        model.type = PushUtil.ChatMsgType.TEXT;
         model.title = content;
         model.content = content;
         model.createdTime = AppUtil.converMillisecond2TimeZone(System.currentTimeMillis());

@@ -39,15 +39,15 @@ public class CourseStudyFragment extends BaseFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         //ask
-//                        startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, 1);
-//                        startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, 0);
-//                        startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
-
                         startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, 1);
                         startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, 0);
-                        startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, 1);
+                        startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
 
-                        startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
+//                        startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, 1);
+//                        startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, 0);
+//                        startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, 1);
+//
+//                        startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
                     }
                 });
             }

@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
 
@@ -95,6 +96,7 @@ public class CourseThreadPostDataSource {
         cv.put(allColumns[10], model.type);
         cv.put(allColumns[11], model.delivery);
         cv.put(allColumns[12], model.createdTime);
+        Log.d("course thread", "create post:" + model.createdTime);
         long effectRow = mDataBase.insert(TABLE_NAME, null, cv);
         this.close();
         return effectRow;
@@ -116,6 +118,7 @@ public class CourseThreadPostDataSource {
             cv.put(allColumns[10], model.type);
             cv.put(allColumns[11], model.delivery);
             cv.put(allColumns[12], model.createdTime);
+            Log.d("course thread", "create posts:" + model.createdTime);
             mDataBase.insert(TABLE_NAME, null, cv);
         }
         this.close();
@@ -136,6 +139,7 @@ public class CourseThreadPostDataSource {
         cv.put(allColumns[10], model.type);
         cv.put(allColumns[11], model.delivery);
         cv.put(allColumns[12], model.createdTime);
+        Log.d("course thread", "update:" + model.createdTime);
         int effectRow = mDataBase.update(TABLE_NAME, cv, "ID = ?", new String[]{model.pid + ""});
         this.close();
         return effectRow;

@@ -25,7 +25,7 @@ public class CourseThreadEntity implements Serializable {
     public String publicX;
     public String title;
     public String content;
-    public String contentType;
+    public String threadType;
     public int postNum;
     public int hitNum;
     public String followNum;

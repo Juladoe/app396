@@ -40,13 +40,15 @@ public class ThreadDiscussAdapter extends ChatAdapter {
     protected List<ThreadDiscussEntity> mList;
     protected List<CourseThreadPostEntity> mInitPosts;
 
-    public ThreadDiscussAdapter() {
+    public ThreadDiscussAdapter(Context context) {
+        mContext = context;
         mCourseThreadDataSource = new CourseThreadDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mList = new ArrayList<>();
     }
 
     public ThreadDiscussAdapter(List<CourseThreadPostEntity> list, CourseThreadEntity courseThreadEntity, Context context) {
+        mContext = context;
         mCourseThreadDataSource = new CourseThreadDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mInitPosts = list;
@@ -84,8 +86,6 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                     courseThreadPostModel.createdTime);
             mList.add(threadPostDiscussModel);
         }
-
-        mContext = context;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
                 showImageForEmptyUri(R.drawable.default_avatar).
                 showImageOnFail(R.drawable.default_avatar).build();
@@ -449,6 +449,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
 
     private void setTimer(int pos, TextView tvTime) {
         ThreadDiscussEntity model = mList.get(pos);
+        tvTime.setVisibility(View.GONE);
         if (pos > 0) {
             if (AppUtil.convertTimeZone2Millisecond(model.createdTime) - AppUtil.convertTimeZone2Millisecond(mList.get(pos - 1).createdTime) > TIME_INTERVAL) {
                 tvTime.setVisibility(View.VISIBLE);
