@@ -232,7 +232,6 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("courseId", mCourseId + "");
-
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -247,7 +246,6 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                 entity.setTitle(course.title);
                 dataList.add(0, entity);
                 mAdapter.notifyDataSetChanged();
-
             }
         }, new Response.ErrorListener() {
             @Override
@@ -255,6 +253,20 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.float_button) {
+            app.mEngine.runNormalPlugin("ThreadDiscussActivity", mActivity, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, mCourseId);
+                    startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, 0);
+                    startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
+                }
+            });
+        }
     }
 
     @Override
@@ -273,20 +285,6 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
             dataList.add(entity);
             filterData();
             mAdapter.notifyDataSetChanged();
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.float_button) {
-            app.mEngine.runNormalPlugin("ThreadDiscussActivity", mActivity, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, mCourseId);
-                    startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, 0);
-                    startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
-                }
-            });
         }
     }
 }

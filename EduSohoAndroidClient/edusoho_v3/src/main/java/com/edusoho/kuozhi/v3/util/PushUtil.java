@@ -8,6 +8,9 @@ import java.util.regex.Pattern;
  */
 public class PushUtil {
     public static class CourseType {
+        /**
+         * 课程群聊
+         */
         public static final String TYPE = "course";
         public static final String LIVE_NOTIFY = "live.notify";
         public static final String LESSON_PUBLISH = "lesson.publish";
@@ -17,7 +20,7 @@ public class PushUtil {
         public static final String COURSE_ANNOUNCEMENT = "announcement.create";
         public static final String HOMEWORK_REVIEWED = "homework.reviewed";
         public static final String QUESTION_ANSWERED = "question.answered";
-        public static final String LESSON_FINISH  = "lesson.finish";
+        public static final String LESSON_FINISH = "lesson.finish";
         public static final String LESSON_START = "lesson.start";
     }
 
