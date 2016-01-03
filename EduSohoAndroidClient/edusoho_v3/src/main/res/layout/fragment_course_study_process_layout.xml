@@ -12,14 +12,18 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <ImageButton
+    <TextView
         android:id="@+id/float_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="24dp"
-        android:layout_marginRight="24dp"
-        android:background="@drawable/icon_ask_question" />
+        android:layout_marginBottom="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/green_solid_circle"
+        android:gravity="center"
+        android:text="问"
+        android:textColor="@color/white"
+        android:textSize="@dimen/xx_large_font_size" />
 
 </RelativeLayout>
