@@ -64,8 +64,12 @@ public class CommandFactory {
                         pushCommand = new PushClassRoomMsgCommand(pusher);
                     }
                 } else if (PushUtil.ChatUserType.USER.equals(toType)) {
-                    pusher.convertWrapperMessage2V2();
-                    pushCommand = new PushMsgCommand(pusher);
+                    if (PushUtil.ThreadMsgType.THREAD_POST.equals(v2CustomContent.getType())) {
+                        pushCommand = new PushThreadPostCommand(pusher);
+                    } else {
+                        pusher.convertWrapperMessage2V2();
+                        pushCommand = new PushMsgCommand(pusher);
+                    }
                 } else if (PushUtil.ChatUserType.COURSE.equals(toType)) {
                     if (v2CustomContent.getFrom().getId() != EdusohoApp.app.loginUser.id) {
                         pushCommand = new PushCourseDiscussCommand(pusher);
@@ -84,7 +88,7 @@ public class CommandFactory {
                 pushCommand = new PushHomeworkReviewedCommand(pusher);
                 break;
             case PushUtil.CourseType.QUESTION_ANSWERED:
-                pushCommand = new PushQuestionAnsweredCommand(pusher);
+                //pushCommand = new PushQuestionAnsweredCommand(pusher);
                 break;
             case PushUtil.CourseType.LESSON_FINISH:
                 pushCommand = new PushLessonFinishedCommand(pusher);

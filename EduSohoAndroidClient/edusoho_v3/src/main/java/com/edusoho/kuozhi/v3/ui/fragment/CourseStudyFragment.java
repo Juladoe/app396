@@ -262,7 +262,6 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, mCourseId);
-                    startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, 0);
                     startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
                 }
             });

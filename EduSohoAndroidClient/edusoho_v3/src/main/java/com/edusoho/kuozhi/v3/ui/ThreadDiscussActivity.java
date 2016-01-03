@@ -25,7 +25,9 @@ import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.PostThreadResult;
 import com.edusoho.kuozhi.v3.model.result.CloudResult;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseChatActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.AudioCacheUtil;
@@ -39,13 +41,14 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -64,12 +67,14 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     public static final String LESSON_ID = "lesson_id";
     public static final String IMAGE_FORMAT = "<img alt=\"\" src=\"%s\" />";
     public static final String AUDIO_FORMAT = "%s";
+    public static int CurrentThreadId = 0;
 
     /**
      * ask,answer
      */
     private String mActivityType;
     private String mRoleType;
+    private String mCourseTitle;
     private int mToUserId;
     private int mThreadId;
     private int mCourseId;
@@ -124,6 +129,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         mCourseId = intent.getIntExtra(COURSE_ID, 0);
         mLessonId = intent.getIntExtra(LESSON_ID, 0);
         mThreadId = intent.getIntExtra(THREAD_ID, 0);
+        CurrentThreadId = mThreadId;
         if (TextUtils.isEmpty(mRoleType)) {
             String[] roles = new String[app.loginUser.roles.length];
             for (int i = 0; i < app.loginUser.roles.length; i++) {
@@ -173,6 +179,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
     @Override
     public void sendMsg(final String content) {
+        Log.d(TAG, content);
         if (mAdapter.getCount() == 0) {
             handleSendThread(content, PushUtil.ChatMsgType.TEXT);
         } else if (mAdapter.getCount() > 0) {
@@ -304,9 +311,10 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                     try {
                         JSONObject jsonObject = new JSONObject(response);
                         mThreadId = jsonObject.getInt("threadId");
+                        CurrentThreadId = mThreadId;
                         CourseThreadEntity model = createCourseThreadByCurrentUser(content);
                         ThreadDiscussEntity discussModel = convertThreadDiscuss(model);
-                        discussModel.id = (int) mCourseThreadDataSource.create(model);
+                        mCourseThreadDataSource.create(model);
                         addItem2ListView(discussModel);
                     } catch (Exception ex) {
                         Log.e(TAG, ex.toString());
@@ -327,7 +335,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
      * @param postModel      回复对象
      * @param normalCallback 回调,成功：写入本地DB，更新ListView，Push一条消息
      */
-    private void handleSendPost(final CourseThreadPostEntity postModel, final NormalCallback<String> normalCallback) {
+    private void handleSendPost(final CourseThreadPostEntity postModel, final NormalCallback<CourseThreadPostEntity> normalCallback) {
         RequestUrl requestUrl = app.bindUrl(Const.POST_THREAD, true);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("courseId", mCourseId + "");
@@ -338,11 +346,11 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             public void onResponse(String response) {
                 PostThreadResult postThreadResult = parseJsonValue(response, new TypeToken<PostThreadResult>() {
                 });
-                normalCallback.success(postModel.content);
                 postModel.postId = postThreadResult.id;
                 postModel.isElite = postThreadResult.isElite;
                 postModel.createdTime = postThreadResult.createdTime;
                 postModel.delivery = PushUtil.MsgDeliveryType.SUCCESS;
+                normalCallback.success(postModel);
                 mCourseThreadPostDataSource.update(postModel);
                 mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.SUCCESS);
             }
@@ -360,23 +368,23 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     /**
      * 回调推送
      */
-    private NormalCallback<String> mSendMsgNormalCallback = new NormalCallback<String>() {
+    private NormalCallback<CourseThreadPostEntity> mSendMsgNormalCallback = new NormalCallback<CourseThreadPostEntity>() {
         @Override
-        public void success(final String content) {
+        public void success(final CourseThreadPostEntity postModel) {
             getToUserId(new NormalCallback<Integer>() {
                 @Override
                 public void success(Integer toUserId) {
                     WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-                    message.setTitle(content);
-                    message.setContent(content);
-                    V2CustomContent v2CustomContent = getV2CustomContent(content, PushUtil.ChatMsgType.TEXT, getActivityState());
+                    message.setTitle(mCourseTitle);
+                    message.setContent(postModel.content);
+                    V2CustomContent v2CustomContent = getV2CustomContent(postModel, postModel.type, getActivityState());
                     String v2CustomContentJson = gson.toJson(v2CustomContent);
                     message.setCustomContentJson(v2CustomContentJson);
                     message.isForeground = true;
                     RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
                     HashMap<String, String> params = requestUrl.getParams();
-                    params.put("title", "您收到一条回复");
-                    params.put("content", content);
+                    params.put("title", message.title);
+                    params.put("content", message.content);
                     params.put("custom", v2CustomContentJson);
                     mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                         @Override
@@ -410,7 +418,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                     mThreadModel = mActivity.parseJsonValue(response, new TypeToken<CourseThreadEntity>() {
                     });
                     final int threadId = mThreadModel.id;
-                    if (mCourseThreadDataSource.get(threadId) != null) {
+                    if (mCourseThreadDataSource.get(threadId) == null) {
                         mCourseThreadDataSource.create(mThreadModel);
                     }
                     RequestUrl requestUrl = app.bindUrl(Const.GET_THREAD_POST, true);
@@ -424,6 +432,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                             if (result != null && result.data != null) {
                                 mPosts = result.data;
                                 Collections.reverse(mPosts);
+                                filterPostThreads(mPosts);
                                 mCourseThreadPostDataSource.deleteByThreadId(threadId);
                                 mCourseThreadPostDataSource.create(mPosts);
                                 normalCallback.success(true);
@@ -457,20 +466,22 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
     private void getToUserId(final NormalCallback<Integer> normalCallback) {
         if (mToUserId != 0) {
+            normalCallback.success(mToUserId);
             return;
         }
-        if (PushUtil.ChatUserType.TEACHER.equals(mRoleType)) {
+        if (PushUtil.ChatUserType.FRIEND.equals(mRoleType)) {
             RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
             HashMap<String, String> params = requestUrl.getParams();
-            params.put("course", mCourseId + "");
+            params.put("courseId", mCourseId + "");
             ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     CourseDetailsResult courseResult = parseJsonValue(response, new TypeToken<CourseDetailsResult>() {
                     });
-                    if (courseResult != null) {
-                        mToUserId = courseResult.course.id;
-                        normalCallback.success(courseResult.course.id);
+                    if (courseResult != null && courseResult.course != null && courseResult.course.teachers != null) {
+                        mToUserId = courseResult.course.teachers[0].id;
+                        mCourseTitle = courseResult.course.title;
+                        normalCallback.success(mToUserId);
                     }
                 }
             }, new Response.ErrorListener() {
@@ -479,20 +490,19 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
                 }
             });
-        } else if (PushUtil.ChatUserType.FRIEND.equals(mRoleType)) {
+        } else if (PushUtil.ChatUserType.TEACHER.equals(mRoleType)) {
             RequestUrl requestUrl = app.bindUrl(Const.GET_THREAD, true);
             HashMap<String, String> params = requestUrl.getParams();
             params.put("threadId", mThreadId + "");
             ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    JSONObject threadJsonObject;
-                    try {
-                        threadJsonObject = new JSONObject(response);
-                        mToUserId = threadJsonObject.getInt("id");
-                        normalCallback.success(mToUserId);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                    CourseThreadEntity model = parseJsonValue(response, new TypeToken<CourseThreadEntity>() {
+                    });
+                    if (model.user != null) {
+                        mToUserId = model.user.id;
+                        mCourseTitle = model.courseTitle;
+                        //normalCallback.success(mToUserId);
                     }
                 }
             }, new Response.ErrorListener() {
@@ -523,13 +533,15 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     }
 
     private String formatContent(CourseThreadPostEntity model, String type) {
-        String content = "";
+        String content;
         switch (type) {
             case PushUtil.ChatMsgType.IMAGE:
                 content = String.format(IMAGE_FORMAT, model.upyunMediaGetUrl);
+                model.content = model.upyunMediaGetUrl;
                 break;
             case PushUtil.ChatMsgType.AUDIO:
                 content = String.format(AUDIO_FORMAT, model.upyunMediaGetUrl);
+                model.content = model.upyunMediaGetUrl;
                 break;
             default:
                 content = model.content;
@@ -598,6 +610,25 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         return model;
     }
 
+    private void filterPostThreads(List<CourseThreadPostEntity> posts) {
+        for (CourseThreadPostEntity post : posts) {
+            if (post.content.contains("amr")) {
+                post.type = PushUtil.ChatMsgType.AUDIO;
+            } else if (post.content.contains("<img>")) {
+                post.content = PushUtil.replaceImgTag(post.content);
+                Pattern p = Pattern.compile("<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>");
+                Matcher m = p.matcher(post.content);
+                while (m.find()) {
+                    post.content = m.group(1);
+                    post.type = PushUtil.ChatMsgType.IMAGE;
+                    break;
+                }
+            } else {
+                post.type = PushUtil.ChatMsgType.TEXT;
+            }
+        }
+    }
+
     // region convert entity
 
     private ThreadDiscussEntity convertThreadDiscuss(CourseThreadEntity courseThreadEntity) {
@@ -631,8 +662,9 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 courseThreadPostEntity.createdTime);
     }
 
-    private V2CustomContent getV2CustomContent(String content, String msgType, String contentType) {
+    private V2CustomContent getV2CustomContent(CourseThreadPostEntity postModel, String msgType, String type) {
         V2CustomContent v2CustomContent = new V2CustomContent();
+        v2CustomContent.setType(type);
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
         fromEntity.setId(app.loginUser.id);
         fromEntity.setImage(app.loginUser.mediumAvatar);
@@ -645,12 +677,48 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         v2CustomContent.setTo(toEntity);
         V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
         bodyEntity.setType(msgType);
-        bodyEntity.setContent(content);
-        bodyEntity.setContentType(contentType);
+        bodyEntity.setContent(postModel.content);
+        bodyEntity.setPostId(postModel.postId);
+        bodyEntity.setThreadId(mThreadId);
+        bodyEntity.setCourseId(mCourseId);
+        bodyEntity.setLessonId(mLessonId);
         v2CustomContent.setBody(bodyEntity);
         v2CustomContent.setV(Const.PUSH_VERSION);
         //v2CustomContent.setCreatedTime(mSendTime);
         return v2CustomContent;
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{new MessageType(Const.ADD_THREAD_POST, getClass().getSimpleName())};
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        MessageType messageType = message.type;
+        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+        V2CustomContent v2CustomContent = parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<V2CustomContent>() {
+        });
+        switch (messageType.code) {
+            case Const.ADD_THREAD_POST:
+                if (CurrentThreadId == v2CustomContent.getBody().getThreadId()) {
+                    CourseThreadPostEntity postModel = new CourseThreadPostEntity();
+                    postModel.postId = v2CustomContent.getBody().getPostId();
+                    postModel.threadId = v2CustomContent.getBody().getThreadId();
+                    postModel.courseId = mCourseId;
+                    postModel.lessonId = mLessonId;
+                    postModel.content = wrapperMessage.getContent();
+                    postModel.user.id = v2CustomContent.getFrom().getId();
+                    postModel.user.nickname = v2CustomContent.getFrom().getNickname();
+                    postModel.user.mediumAvatar = v2CustomContent.getFrom().getImage();
+                    postModel.createdTime = AppUtil.converMillisecond2TimeZone(v2CustomContent.getCreatedTime());
+                    postModel.delivery = 2;
+                    postModel.type = v2CustomContent.getBody().getType();
+                    postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
+                    mAdapter.addItem(convertThreadDiscuss(postModel));
+                }
+                break;
+        }
     }
 
     // endregion

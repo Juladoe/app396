@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
+import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -57,6 +58,8 @@ import java.util.List;
  * 动态列表
  */
 public class NewsFragment extends BaseFragment {
+    public static final int HANDLE_SEND_THREAD_POST = 9;
+    public static final int HANDLE_RECEIVE_THREAD_POST = 10;
     public static final int HANDLE_SEND_CHAT_MSG = 11;
     public static final int HANDLE_RECEIVE_CHAT_MSG = 12;
     public static final int HANDLE_SEND_CLASSROOM_DISCUSS_MSG = 13;
@@ -318,7 +321,7 @@ public class NewsFragment extends BaseFragment {
                     WrapperXGPushTextMessage newsCourseMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                     handlerReceiveCourse(newsCourseMessage);
                     break;
-                case Const.ADD_BULLETIT_MSG:
+                case Const.ADD_BULLETIN_MSG:
                     WrapperXGPushTextMessage bulletinMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                     handleBulletinMsg(bulletinMessage);
                     break;
@@ -361,6 +364,11 @@ public class NewsFragment extends BaseFragment {
                     int classroomHandleType = message.data.getInt(Const.ADD_DISCUSS_MSG_DESTINATION, 0);
                     getNewChatMsg(classroomHandleType, discussMsg);
                     break;
+                case Const.ADD_THREAD_POST:
+                    WrapperXGPushTextMessage threadMgs = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+                    int threadHandleType = message.data.getInt(Const.ADD_THREAD_POST_DESTINATION, 0);
+                    getNewChatMsg(threadHandleType, threadMgs);
+                    break;
                 case REFRESH_LIST:
                     List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
                     mSwipeAdapter.update(news);
@@ -391,6 +399,11 @@ public class NewsFragment extends BaseFragment {
             case HANDLE_SEND_COURSE_DISCUSS_MSG:
             case HANDLE_SEND_CLASSROOM_DISCUSS_MSG:
                 handleDiscussSendMsg(xgPushTextMessage);
+                break;
+            case HANDLE_SEND_THREAD_POST:
+                break;
+            case HANDLE_RECEIVE_THREAD_POST:
+                handleReceiveThreadPost(xgPushTextMessage);
                 break;
         }
     }
@@ -610,17 +623,47 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
+    private void handleSendThreadPost(WrapperXGPushTextMessage message) {
+
+    }
+
+    private void handleReceiveThreadPost(WrapperXGPushTextMessage message) {
+        New model = new New();
+        V2CustomContent v2CustomContent = message.getV2CustomContent();
+        model.fromId = v2CustomContent.getBody().getCourseId();
+        model.title = message.getTitle();
+        model.content = String.format("问题【%s】得到一个回复",model.title);
+        model.createdTime = v2CustomContent.getCreatedTime();
+        model.imgUrl = v2CustomContent.getTo().getImage();
+        model.type = PushUtil.CourseType.TYPE;
+        model.belongId = EdusohoApp.app.loginUser.id;
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ? AND TYPE = ?",
+                model.fromId + "", app.loginUser.id + "", PushUtil.CourseType.TYPE);
+        if (news.size() == 0) {
+            model.unread = 0;
+            model.id = (int) newDataSource.create(model);
+            insertNew(model);
+        } else {
+            model.unread = (message.isForeground && ThreadDiscussActivity.CurrentThreadId == v2CustomContent.getBody().getThreadId()) ? 0 : news.get(0).unread + 1;
+            newDataSource.update(model);
+            setItemToTop(model);
+        }
+    }
+
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         return new MessageType[]{
                 new MessageType(Const.ADD_MSG, source),
-                new MessageType(Const.ADD_BULLETIT_MSG, source),
+                new MessageType(Const.ADD_BULLETIN_MSG, source),
                 new MessageType(Const.ADD_ARTICLE_CREATE_MAG, source),
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(UPDATE_UNREAD_MSG, source),
                 new MessageType(UPDATE_UNREAD_BULLETIN, source),
-                new MessageType(UPDATE_UNREAD_NEWS_COURSE, source), new MessageType(REFRESH_LIST, source)};
+                new MessageType(UPDATE_UNREAD_NEWS_COURSE, source),
+                new MessageType(REFRESH_LIST, source),
+                new MessageType(Const.ADD_THREAD_POST, source)};
     }
 
     @Override

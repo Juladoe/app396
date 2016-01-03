@@ -13,6 +13,16 @@ public class V2CustomContent implements Serializable {
     private BodyEntity body;
     private int createdTime;
 
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
     public void setTo(ToEntity to) {
         this.to = to;
     }
@@ -143,10 +153,10 @@ public class V2CustomContent implements Serializable {
         private String lessonType;
         private String title;
         private String image;
-        /**
-         * 用于提问类型
-         */
-        private String contentType;
+        private int threadId;
+        private int postId;
+        private int courseId;
+
         private int lessonId;
         private int homeworkResultId;
         private int questionId;
@@ -222,6 +232,32 @@ public class V2CustomContent implements Serializable {
             return title;
         }
 
+        public int getThreadId() {
+            return threadId;
+        }
+
+        public void setThreadId(int threadId) {
+            this.threadId = threadId;
+        }
+
+        public int getPostId() {
+            return postId;
+        }
+
+        public void setPostId(int postId) {
+            this.postId = postId;
+        }
+
+        public int getCourseId() {
+            return courseId;
+        }
+
+        public void setCourseId(int courseId) {
+            this.courseId = courseId;
+        }
+
+
+
         public void setTitle(String title) {
             this.title = title;
         }
@@ -248,14 +284,6 @@ public class V2CustomContent implements Serializable {
 
         public void setLessonType(String lessonType) {
             this.lessonType = lessonType;
-        }
-
-        public String getContentType() {
-            return contentType;
-        }
-
-        public void setContentType(String contentType) {
-            this.contentType = contentType;
         }
     }
 }
