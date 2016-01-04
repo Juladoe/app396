@@ -70,7 +70,6 @@ public class NewsFragment extends BaseFragment {
     public static final int UPDATE_UNREAD_BULLETIN = 18;
     public static final int UPDATE_UNREAD_NEWS_COURSE = 19;
     public static final int UPDATE_UNREAD_ARTICLE_CREATE = 20;
-    public static final int REFRESH_LIST = 21;
 
     private SwipeMenuListView lvNewsList;
     private View mEmptyView;
@@ -369,7 +368,7 @@ public class NewsFragment extends BaseFragment {
                     int threadHandleType = message.data.getInt(Const.ADD_THREAD_POST_DESTINATION, 0);
                     getNewChatMsg(threadHandleType, threadMgs);
                     break;
-                case REFRESH_LIST:
+                case Const.REFRESH_LIST:
                     List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
                     mSwipeAdapter.update(news);
                     break;
@@ -632,7 +631,7 @@ public class NewsFragment extends BaseFragment {
         V2CustomContent v2CustomContent = message.getV2CustomContent();
         model.fromId = v2CustomContent.getBody().getCourseId();
         model.title = message.getTitle();
-        model.content = String.format("问题【%s】得到一个回复",model.title);
+        model.content = String.format("问题【%s】得到一个回复", model.title);
         model.createdTime = v2CustomContent.getCreatedTime();
         model.imgUrl = v2CustomContent.getTo().getImage();
         model.type = PushUtil.CourseType.TYPE;
@@ -662,7 +661,7 @@ public class NewsFragment extends BaseFragment {
                 new MessageType(UPDATE_UNREAD_MSG, source),
                 new MessageType(UPDATE_UNREAD_BULLETIN, source),
                 new MessageType(UPDATE_UNREAD_NEWS_COURSE, source),
-                new MessageType(REFRESH_LIST, source),
+                new MessageType(Const.REFRESH_LIST, source),
                 new MessageType(Const.ADD_THREAD_POST, source)};
     }
 

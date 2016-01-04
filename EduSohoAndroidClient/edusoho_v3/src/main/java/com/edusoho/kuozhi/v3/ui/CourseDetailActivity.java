@@ -18,9 +18,16 @@ import com.edusoho.kuozhi.v3.model.bal.CourseMemberResult;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
+import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
+import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
+import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
+import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -101,66 +108,56 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                 }
             });
         } else if (v.getId() == R.id.rl_clear_record) {
-//            PopupDialog popupDialog = PopupDialog.createMuilt(mContext, "提示", "删除聊天记录？", new PopupDialog.PopupClickListener() {
-//                @Override
-//                public void onClick(int button) {
-//                    if (button == PopupDialog.OK) {
-//                        ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-//                        classroomDiscussDataSource.delete(mFromId, app.loginUser.id);
-//                        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-//                        New newModel = newDataSource.getNew(mFromId, app.loginUser.id);
-//                        newModel.content = "";
-//                        newDataSource.update(newModel);
-//                        Bundle bundle = new Bundle();
-//                        bundle.putInt(Const.FROM_ID, mFromId);
-//                        app.sendMsgToTarget(NewsFragment.REFRESH_LIST, bundle, NewsFragment.class);
-//                    }
-//                }
-//            });
-//            popupDialog.setOkText("清空");
-//            popupDialog.show();
+            PopupDialog popupDialog = PopupDialog.createMuilt(mContext, "提示", "删除聊天记录？", new PopupDialog.PopupClickListener() {
+                @Override
+                public void onClick(int button) {
+                    if (button == PopupDialog.OK) {
+                        CourseDiscussDataSource courseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+                        courseDiscussDataSource.delete(mFromId, app.loginUser.id);
+                        app.sendMsgToTarget(Const.CLEAN_RECORD, new Bundle(), DiscussFragment.class);
+                    }
+                }
+            });
+            popupDialog.setOkText("清空");
+            popupDialog.show();
         } else if (v.getId() == R.id.btn_del_and_quit) {
-//            PopupDialog popupDialog = PopupDialog.createMuilt(mContext, "提示", "退出学习？", new PopupDialog.PopupClickListener() {
-//                @Override
-//                public void onClick(int button) {
-//                    if (button == PopupDialog.OK) {
-//                        RequestUrl requestUrl = app.bindUrl(Const.CLASSROOM_UNLEARN, true);
-//                        HashMap<String, String> params = requestUrl.getParams();
-//                        params.put("classRoomId", mFromId + "");
-//                        params.put("targetType", "classroom");
-//                        ajaxPost(requestUrl, new Response.Listener<String>() {
-//                            @Override
-//                            public void onResponse(String response) {
-//                                if (response.equals("true")) {
-//                                    ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-//                                    classroomDiscussDataSource.delete(mFromId, app.loginUser.id);
-//                                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-//                                    newDataSource.delete("FROMID = ? AND BELONGID = ? AND TYPE = ?",
-//                                            mFromId + "", app.loginUser.id + "", PushUtil.ChatUserType.CLASSROOM);
-//                                    Bundle bundle = new Bundle();
-//                                    bundle.putInt(Const.FROM_ID, mFromId);
-//                                    app.sendMsgToTarget(NewsFragment.REFRESH_LIST, bundle, NewsFragment.class);
-//                                    app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
-//                                        @Override
-//                                        public void setIntentDate(Intent startIntent) {
-//                                            startIntent.putExtra(Const.SWITCH_NEWS_TAB, true);
-//                                        }
-//                                    });
-//                                } else {
-//                                    CommonUtil.shortToast(mContext, "退出失败");
-//                                }
-//                            }
-//                        }, new Response.ErrorListener() {
-//                            @Override
-//                            public void onErrorResponse(VolleyError error) {
-//                                CommonUtil.shortToast(mContext, "退出失败");
-//                            }
-//                        });
-//                    }
-//                }
-//            });
-//            popupDialog.setOkText("确定");
-//            popupDialog.show();
+            PopupDialog popupDialog = PopupDialog.createMuilt(mContext, "提示", "退出学习？", new PopupDialog.PopupClickListener() {
+                @Override
+                public void onClick(int button) {
+                    if (button == PopupDialog.OK) {
+                        RequestUrl requestUrl = app.bindUrl(Const.UN_LEARN_COURSE, true);
+                        HashMap<String, String> params = requestUrl.getParams();
+                        params.put("courseId", mFromId + "");
+                        ajaxPost(requestUrl, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                if (response.equals("true")) {
+                                    SqliteChatUtil chatUtil = SqliteChatUtil.getSqliteChatUtil(mContext, app.domain);
+                                    new NewsCourseDataSource(chatUtil).delete(mFromId, app.loginUser.id);
+                                    new CourseDiscussDataSource(chatUtil).delete(mFromId, app.loginUser.id);
+                                    new NewDataSource(chatUtil).delete(mFromId, app.loginUser.id);
+                                    app.sendMsgToTarget(Const.REFRESH_LIST, new Bundle(), NewsFragment.class);
+                                    app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
+                                        @Override
+                                        public void setIntentDate(Intent startIntent) {
+                                            startIntent.putExtra(Const.SWITCH_NEWS_TAB, true);
+                                        }
+                                    });
+                                } else {
+                                    CommonUtil.shortToast(mContext, "退出失败");
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                CommonUtil.shortToast(mContext, "退出失败");
+                            }
+                        });
+                    }
+                }
+            });
+            popupDialog.setOkText("确定");
+            popupDialog.show();
         }
     }
 

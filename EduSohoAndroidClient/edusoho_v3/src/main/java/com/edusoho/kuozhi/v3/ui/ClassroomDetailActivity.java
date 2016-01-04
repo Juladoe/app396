@@ -108,7 +108,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                         newDataSource.update(newModel);
                         Bundle bundle = new Bundle();
                         bundle.putInt(Const.FROM_ID, mFromId);
-                        app.sendMsgToTarget(NewsFragment.REFRESH_LIST, bundle, NewsFragment.class);
+                        app.sendMsgToTarget(Const.REFRESH_LIST, bundle, NewsFragment.class);
                     }
                 }
             });
@@ -134,7 +134,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                                             mFromId + "", app.loginUser.id + "", PushUtil.ChatUserType.CLASSROOM);
                                     Bundle bundle = new Bundle();
                                     bundle.putInt(Const.FROM_ID, mFromId);
-                                    app.sendMsgToTarget(NewsFragment.REFRESH_LIST, bundle, NewsFragment.class);
+                                    app.sendMsgToTarget(Const.REFRESH_LIST, bundle, NewsFragment.class);
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
                                         @Override
                                         public void setIntentDate(Intent startIntent) {

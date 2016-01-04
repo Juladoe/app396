@@ -145,7 +145,6 @@ public class CourseThreadPostDataSource {
         return effectRow;
     }
 
-
     public void delete(int id) {
         this.openWrite();
         mDataBase.delete(TABLE_NAME, "ID = ?",

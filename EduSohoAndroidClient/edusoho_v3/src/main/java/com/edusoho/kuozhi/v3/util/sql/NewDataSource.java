@@ -136,6 +136,12 @@ public class NewDataSource {
         return id;
     }
 
+    public void delete(int fromId, int belongId) {
+        openWrite();
+        mDataBase.delete(TABLE_NAME, "FROMID = ? AND BELONGID = ?", new String[]{fromId + "", belongId + ""});
+        close();
+    }
+
 
     public New convertCursor2New(Cursor cursor) {
         New newModel = new New();

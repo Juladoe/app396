@@ -99,6 +99,8 @@ public class Const {
     public static final int ADD_CLASSROOM_MSG = 8;
     public static final int ADD_CHAT_MSGS = 9;
     public static final int ADD_BULLETIN_MSG = 10;
+    public static final int CLEAN_RECORD = 11;
+    public static final int REFRESH_LIST = 12;
 
 
     public static final int UPDATE_CHAT_MSG = 0x1000;

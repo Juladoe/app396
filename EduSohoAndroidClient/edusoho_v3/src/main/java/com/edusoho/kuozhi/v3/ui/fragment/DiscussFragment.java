@@ -915,18 +915,24 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        return new MessageType[]{new MessageType(Const.ADD_COURSE_DISCUSS_MSG, source)};
+        return new MessageType[]{new MessageType(Const.ADD_COURSE_DISCUSS_MSG, source), new MessageType(Const.CLEAN_RECORD, source)};
     }
 
     @Override
     public void invoke(WidgetMessage message) {
         try {
             MessageType messageType = message.type;
+            if (message.data == null) {
+                return;
+            }
             WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
             switch (messageType.code) {
                 case Const.ADD_COURSE_DISCUSS_MSG:
                     CourseDiscussEntity model = new CourseDiscussEntity(wrapperMessage);
                     mAdapter.addItem(model);
+                    break;
+                case Const.CLEAN_RECORD:
+                    mAdapter.clear();
                     break;
                 default:
             }
