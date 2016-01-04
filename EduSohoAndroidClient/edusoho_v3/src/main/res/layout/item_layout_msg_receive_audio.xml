@@ -4,7 +4,7 @@
     android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
@@ -12,44 +12,45 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/message_time_bg"
             android:layout_marginTop="8dp"
+            android:background="@drawable/message_time_bg"
             android:textColor="@android:color/white"
             android:textSize="@dimen/x_small_font_size"
             android:visibility="visible" />
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_below="@+id/tv_send_time"
+            android:gravity="left|center_vertical"
             android:paddingBottom="8dp"
-            android:paddingTop="8dp"
-            android:gravity="left|center_vertical">
+            android:paddingTop="8dp">
 
             <ImageView
                 android:id="@+id/ci_send_pic"
                 android:layout_width="@dimen/head_icon_medium"
                 android:layout_height="@dimen/head_icon_medium"
                 android:layout_alignParentLeft="true"
-                android:layout_marginRight="8dp"
                 android:layout_marginLeft="16dp"
+                android:layout_marginRight="8dp"
                 android:src="@drawable/default_avatar" />
 
             <TextView
+                android:id="@+id/tv_nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tv_nickname"
-                android:layout_toRightOf="@+id/ci_send_pic"
                 android:layout_alignTop="@+id/ci_send_pic"
-                android:layout_marginLeft="6dp"
                 android:layout_marginBottom="3dp"
+                android:layout_marginLeft="6dp"
+                android:layout_toRightOf="@+id/ci_send_pic"
+                android:textSize="@dimen/x_small_font_size"
                 android:visibility="gone" />
 
             <RelativeLayout
+                android:id="@+id/rl_voice_dialog"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/rl_voice_dialog"
                 android:layout_below="@+id/tv_nickname"
                 android:layout_toRightOf="@+id/ci_send_pic">
 
@@ -57,53 +58,53 @@
                     android:id="@+id/iv_msg_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/chat_image_from_layout"
-                    android:clickable="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginRight="6dp" />
+                    android:layout_marginRight="6dp"
+                    android:background="@drawable/chat_image_from_layout"
+                    android:clickable="true" />
 
                 <ImageView
+                    android:id="@+id/iv_voice_play_anim"
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:id="@+id/iv_voice_play_anim"
-                    android:background="@drawable/chat_from_speak_voice"
-                    android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_marginLeft="12dp" />
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="12dp"
+                    android:background="@drawable/chat_from_speak_voice" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@+id/iv_msg_image"
-                    android:paddingTop="2dp"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:paddingTop="2dp">
 
                     <ProgressBar
+                        android:id="@+id/sendProgressPar"
                         style="?android:attr/progressBarStyleSmall"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        android:visibility="gone"
-                        android:id="@+id/sendProgressPar" />
+                        android:visibility="gone" />
 
                     <ImageView
                         android:id="@+id/msg_status"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
                         android:clickable="true"
-                        android:src="@drawable/msg_state_failed_resend"
                         android:scaleType="fitXY"
+                        android:src="@drawable/msg_state_failed_resend"
                         android:visibility="gone" />
 
                     <TextView
                         android:id="@+id/tv_audio_length"
-                        android:textSize="@dimen/small_font_size"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
+                        android:gravity="center"
                         android:text="12&apos;&apos;"
                         android:textColor="@color/base_black_35"
-                        android:visibility="gone"
-                        android:gravity="center" />
+                        android:textSize="@dimen/small_font_size"
+                        android:visibility="gone" />
                 </LinearLayout>
 
             </RelativeLayout>

@@ -142,7 +142,6 @@ public class NewDataSource {
         close();
     }
 
-
     public New convertCursor2New(Cursor cursor) {
         New newModel = new New();
         newModel.id = cursor.getInt(0);
