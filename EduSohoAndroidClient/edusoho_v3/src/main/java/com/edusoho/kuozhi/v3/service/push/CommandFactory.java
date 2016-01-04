@@ -88,7 +88,7 @@ public class CommandFactory {
                 pushCommand = new PushHomeworkReviewedCommand(pusher);
                 break;
             case PushUtil.CourseType.QUESTION_ANSWERED:
-                //pushCommand = new PushQuestionAnsweredCommand(pusher);
+                pushCommand = new PushQuestionAnsweredCommand(pusher);
                 break;
             case PushUtil.CourseType.LESSON_FINISH:
                 pushCommand = new PushLessonFinishedCommand(pusher);
