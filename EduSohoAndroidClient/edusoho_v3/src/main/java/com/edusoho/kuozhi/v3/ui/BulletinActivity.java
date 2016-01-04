@@ -157,7 +157,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
         switch (messageType.code) {
-            case Const.ADD_BULLETIT_MSG:
+            case Const.ADD_BULLETIN_MSG:
                 WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
                 Bulletin bulletin = new Bulletin(wrapperMessage);
                 mBulletinAdapter.addItem(bulletin);
@@ -169,7 +169,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        return new MessageType[]{new MessageType(Const.ADD_BULLETIT_MSG, source)};
+        return new MessageType[]{new MessageType(Const.ADD_BULLETIN_MSG, source)};
     }
 
     public class BulletinAdapter extends BaseAdapter {

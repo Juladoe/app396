@@ -863,7 +863,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
         try {
             for (T tmp : mList) {
                 Chat tmpChat = (Chat) tmp;
-                if (tmpChat.id == mDownloadList.get(downId)) {
+                if (mDownloadList.get(downId).equals(tmpChat.id)) {
                     downloadChat = tmpChat;
                     break;
                 }

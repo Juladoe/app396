@@ -89,7 +89,7 @@ create table if not exists course_discuss(
 );
 
 create table if not exists course_thread(
-    id integer primary key AutoIncrement,
+    id integer ,
     courseId integer,
     lessonId integer,
     userId integer,

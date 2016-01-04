@@ -1,7 +1,10 @@
 package com.edusoho.kuozhi.v3.adapter;
 
+import android.app.DownloadManager;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +29,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static com.edusoho.kuozhi.v3.adapter.ClassroomDiscussAdapter.DiscussViewHolder;
@@ -45,6 +49,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         mCourseThreadDataSource = new CourseThreadDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mList = new ArrayList<>();
+        mDownloadList = new HashMap<>();
     }
 
     public ThreadDiscussAdapter(List<CourseThreadPostEntity> list, CourseThreadEntity courseThreadEntity, Context context) {
@@ -53,6 +58,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mInitPosts = list;
         mList = new ArrayList<>();
+        mDownloadList = new HashMap<>();
         int size = mInitPosts.size() + 1;
         mCourseThreadModel = courseThreadEntity;
         //问题
@@ -81,7 +87,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                     courseThreadPostModel.user.nickname,
                     courseThreadPostModel.headImgUrl,
                     courseThreadPostModel.content,
-                    PushUtil.ChatMsgType.TEXT,
+                    courseThreadPostModel.type,
                     1,
                     courseThreadPostModel.createdTime);
             mList.add(threadPostDiscussModel);
@@ -96,15 +102,6 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         return mList;
     }
 
-    public ThreadDiscussEntity getThreadDiscuss(int id) {
-        for (ThreadDiscussEntity model : mList) {
-            if (model.id == id) {
-                return model;
-            }
-        }
-        throw new NullPointerException();
-    }
-
     public void addItem(ThreadDiscussEntity model) {
         mList.add(model);
         notifyDataSetChanged();
@@ -113,22 +110,6 @@ public class ThreadDiscussAdapter extends ChatAdapter {
     public void addItems(ArrayList list) {
         mList.addAll(list);
         notifyDataSetChanged();
-    }
-
-    public void updateItemState(ThreadDiscussEntity model) {
-        try {
-            if (mList.size() > 1) {
-                for (ThreadDiscussEntity tmpModel : mList) {
-                    if (tmpModel.id == model.id) {
-                        tmpModel.delivery = model.delivery;
-                        notifyDataSetChanged();
-                        break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Log.e("updateItemState", e.getMessage());
-        }
     }
 
     public void updateItemState(int id, int state) {
@@ -364,13 +345,18 @@ public class ThreadDiscussAdapter extends ChatAdapter {
     }
 
     protected void handlerReceiveImage(final DiscussViewHolder holder, final int pos) {
-        final ThreadDiscussEntity model = mList.get(0);
+        final ThreadDiscussEntity model = mList.get(pos);
         final MyImageLoadingListener mMyImageLoadingListener = new MyImageLoadingListener(holder) {
             @Override
             public void onLoadingComplete(String s, View view, Bitmap bitmap) {
                 super.onLoadingComplete(s, view, bitmap);
-                model.delivery = PushUtil.MsgDeliveryType.SUCCESS;
-                long id = pos == 0 ? mCourseThreadDataSource.update(mCourseThreadModel) : mCourseThreadPostDataSource.update(mInitPosts.get(pos - 1));
+                if (pos == 0) {
+                    mCourseThreadDataSource.update(mCourseThreadModel);
+                } else {
+                    CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
+                    postModel.delivery = PushUtil.MsgDeliveryType.SUCCESS;
+                    mCourseThreadPostDataSource.update(postModel);
+                }
             }
         };
         setTimer(pos, holder.tvSendTime);
@@ -444,6 +430,45 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                     }
                 });
                 break;
+        }
+    }
+
+    @Override
+    public void updateVoiceDownloadStatus(long downId) {
+        ThreadDiscussEntity model = null;
+        try {
+            for (ThreadDiscussEntity tmp : mList) {
+                if (mDownloadList.get(downId).equals(tmp.id)) {
+                    model = tmp;
+                    break;
+                }
+            }
+            if (model == null) {
+                return;
+            }
+            DownloadManager.Query query = new DownloadManager.Query().setFilterById(downId);
+            Cursor c = mDownloadManager.query(query);
+            if (c != null && c.moveToFirst()) {
+                int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
+                    String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
+                    model.delivery = (TextUtils.isEmpty(fileUri) ? PushUtil.MsgDeliveryType.FAILED : PushUtil.MsgDeliveryType.SUCCESS);
+                    c.close();
+                } else if (DownloadManager.STATUS_FAILED == c.getInt(columnIndex)) {
+                    model.delivery = PushUtil.MsgDeliveryType.FAILED;
+                    c.close();
+                }
+            }
+            CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
+            postModel.delivery = model.delivery;
+            mCourseThreadPostDataSource.update(postModel);
+            mDownloadList.remove(downId);
+            notifyDataSetChanged();
+        } catch (Exception ex) {
+            Log.d("downloader", ex.toString());
+            if (model != null) {
+                model.delivery = PushUtil.MsgDeliveryType.FAILED;
+            }
         }
     }
 

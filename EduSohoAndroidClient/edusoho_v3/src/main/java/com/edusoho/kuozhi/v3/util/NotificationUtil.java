@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.util;
 
 import android.app.ActivityManager;
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -26,6 +25,7 @@ import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
+import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -308,6 +308,34 @@ public class NotificationUtil {
             mNotificationManager.notify(fromId, mBuilder.build());
         } catch (Exception ex) {
             Log.d("Classroom-->", ex.getMessage());
+        }
+    }
+
+    public static void showThreadPost(Context context, WrapperXGPushTextMessage xgMessage) {
+        try {
+            V2CustomContent model = xgMessage.getV2CustomContent();
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(EdusohoApp.app.defaultSchool.name).setContentText("你收到一个问题的回复").setAutoCancel(true);
+            int threadId = model.getBody().getThreadId();
+            NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+            notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+            notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            notifyIntent.putExtra(ThreadDiscussActivity.THREAD_ID, model.getBody().getThreadId());
+            notifyIntent.putExtra(ThreadDiscussActivity.COURSE_ID, model.getBody().getCourseId());
+            notifyIntent.putExtra(ThreadDiscussActivity.LESSON_ID, model.getBody().getLessonId());
+            notifyIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, model.getType());
+            notifyIntent.putExtra(Const.INTENT_TARGET, ThreadDiscussActivity.class);
+            if (isAppExit(context)) {
+                mMessage = xgMessage;
+            }
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, threadId, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            mBuilder.setContentIntent(pendingIntent);
+            mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
+            mNotificationManager.notify(threadId, mBuilder.build());
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 

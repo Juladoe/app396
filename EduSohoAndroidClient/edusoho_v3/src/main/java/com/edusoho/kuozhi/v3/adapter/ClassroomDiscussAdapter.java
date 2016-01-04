@@ -277,7 +277,7 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
         try {
             for (T tmp : mList) {
                 ClassroomDiscussEntity tmpModel = (ClassroomDiscussEntity) tmp;
-                if (tmpModel.id == mDownloadList.get(downId)) {
+                if (mDownloadList.get(downId).equals(tmpModel.id)) {
                     model = tmpModel;
                     break;
                 }

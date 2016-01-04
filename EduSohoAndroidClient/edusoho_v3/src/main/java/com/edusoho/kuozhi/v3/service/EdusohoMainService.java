@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
+import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -198,7 +199,7 @@ public class EdusohoMainService extends Service {
                         NotificationUtil.showMsgNotification(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
-                case Const.ADD_BULLETIT_MSG:
+                case Const.ADD_BULLETIN_MSG:
                     //公告消息消息
                     Bulletin bulletin = new Bulletin(xgMessage);
                     BulletinDataSource bulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
@@ -232,6 +233,12 @@ public class EdusohoMainService extends Service {
                     courseDiscussDataSource.create(courseDiscussEntity);
                     if (!xgMessage.isForeground || NewsCourseActivity.CurrentCourseId != courseDiscussEntity.courseId) {
                         NotificationUtil.showCourseDiscuss(EdusohoApp.app.mContext, xgMessage);
+                    }
+                    break;
+                case Const.ADD_THREAD_POST:
+                    int threadId = xgMessage.getV2CustomContent().getBody().getThreadId();
+                    if (!xgMessage.isForeground || ThreadDiscussActivity.CurrentThreadId != threadId) {
+                        NotificationUtil.showThreadPost(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
             }
@@ -314,7 +321,8 @@ public class EdusohoMainService extends Service {
             OffLineMsgEntity offlineMsgModel = latestChats.get(i);
             V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
             if (v2CustomContent.getFrom() != null) {
-                if (PushUtil.FriendVerified.TYPE.equals(v2CustomContent.getFrom().getType())) {
+                if (PushUtil.FriendVerified.TYPE.equals(v2CustomContent.getFrom().getType()) ||
+                        PushUtil.ThreadMsgType.THREAD_POST.equals(v2CustomContent.getType())) {
                     continue;
                 }
                 int fromId = v2CustomContent.getFrom().getId();

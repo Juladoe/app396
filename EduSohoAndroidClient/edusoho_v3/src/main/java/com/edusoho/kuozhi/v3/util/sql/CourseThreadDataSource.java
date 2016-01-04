@@ -54,7 +54,7 @@ public class CourseThreadDataSource {
 
     public CourseThreadEntity get(int threadId) {
         openRead();
-        CourseThreadEntity model = new CourseThreadEntity();
+        CourseThreadEntity model = null;
         Cursor cursor = mDataBase.rawQuery("SELECT * FROM COURSE_THREAD WHERE ID = ?",
                 new String[]{threadId + ""});
         while (cursor.moveToNext()) {
@@ -68,6 +68,7 @@ public class CourseThreadDataSource {
     public long create(CourseThreadEntity model) {
         this.openWrite();
         ContentValues cv = new ContentValues();
+        cv.put(allColumns[0], model.id);
         cv.put(allColumns[1], model.courseId);
         cv.put(allColumns[2], model.lessonId);
         cv.put(allColumns[3], model.user.id);

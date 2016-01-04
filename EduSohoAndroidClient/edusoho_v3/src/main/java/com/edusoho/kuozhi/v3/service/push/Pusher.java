@@ -11,11 +11,10 @@ import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
-import com.edusoho.kuozhi.v3.ui.CourseStudyPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
+import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseStudyFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.CourseStudyProcessFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.FriendFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.article.ArticleFragment;
@@ -86,10 +85,10 @@ public class Pusher {
         boolean isForeground = EdusohoApp.app.isForeground(BulletinActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
-            EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIT_MSG, mBundle, BulletinActivity.class);
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIN_MSG, mBundle, BulletinActivity.class);
         }
-        EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIT_MSG, mBundle, NewsFragment.class);
-        EdusohoMainService.getService().sendMessage(Const.ADD_BULLETIT_MSG, mWrapperMessage);
+        EdusohoApp.app.sendMsgToTarget(Const.ADD_BULLETIN_MSG, mBundle, NewsFragment.class);
+        EdusohoMainService.getService().sendMessage(Const.ADD_BULLETIN_MSG, mWrapperMessage);
     }
 
     public void pushTestpaperReviewed() {
@@ -102,7 +101,7 @@ public class Pusher {
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
     }
 
-    public void pushHomeworkReviewed(){
+    public void pushHomeworkReviewed() {
         boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
@@ -112,7 +111,7 @@ public class Pusher {
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
     }
 
-    public void pushQuestionAnswered(){
+    public void pushQuestionAnswered() {
         boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
@@ -122,7 +121,7 @@ public class Pusher {
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
     }
 
-    public void pushLessonFinished(){
+    public void pushLessonFinished() {
         boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
@@ -132,7 +131,7 @@ public class Pusher {
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
     }
 
-    public void pushLessonStart(){
+    public void pushLessonStart() {
         boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
         if (isForeground) {
             mWrapperMessage.isForeground = true;
@@ -188,6 +187,17 @@ public class Pusher {
         }
         EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_DISCUSS_MSG, mBundle, NewsFragment.class);
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_DISCUSS_MSG, mWrapperMessage);
+    }
+
+    public void pushThreadPost() {
+        mBundle.putInt(Const.ADD_THREAD_POST_DESTINATION, NewsFragment.HANDLE_RECEIVE_THREAD_POST);
+        boolean isForeground = EdusohoApp.app.isForeground(ThreadDiscussActivity.class.getName());
+        if (isForeground) {
+            mWrapperMessage.isForeground = true;
+            EdusohoApp.app.sendMsgToTarget(Const.ADD_THREAD_POST, mBundle, ThreadDiscussActivity.class);
+        }
+        EdusohoApp.app.sendMsgToTarget(Const.ADD_THREAD_POST, mBundle, NewsFragment.class);
+        EdusohoMainService.getService().sendMessage(Const.ADD_THREAD_POST, mWrapperMessage);
     }
 
     public void convertWrapperMessage2V2() {

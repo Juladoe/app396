@@ -91,22 +91,24 @@ public class Const {
 
     //public static final int ADD_DISCUSS_MSG = 1;
     public static final int ADD_MSG = 2;
+    public static final int ADD_ARTICLE_CREATE_MAG = 3;
+    public static final int ADD_THREAD_POST = 4;
     public static final int ADD_COURSE_MSG = 5;
     public static final int ADD_DISCOUNT_PASS = 6;
     public static final int ADD_COURSE_DISCUSS_MSG = 7;
     public static final int ADD_CLASSROOM_MSG = 8;
     public static final int ADD_CHAT_MSGS = 9;
-    public static final int ADD_BULLETIT_MSG = 10;
-    public static final int ADD_ARTICLE_CREATE_MAG = 3;
+    public static final int ADD_BULLETIN_MSG = 10;
+
 
     public static final int UPDATE_CHAT_MSG = 0x1000;
 
     public static final int SWITCH_TAB = 9;
-    public static final int DRAWER_REGISTER = 10;
 
     public static final int NEW_FANS = 0x0A;
     public static final String ADD_CHAT_MSG_DESTINATION = "add_chat_msg_type";
     public static final String ADD_DISCUSS_MSG_DESTINATION = "add_discuss_msg_destination";
+    public static final String ADD_THREAD_POST_DESTINATION = "add_thread_post_destination";
 
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
