@@ -119,7 +119,7 @@ public class CourseThreadPostDataSource {
             cv.put(allColumns[11], model.delivery);
             cv.put(allColumns[12], model.createdTime);
             Log.d("course thread", "create posts:" + model.createdTime);
-            mDataBase.insert(TABLE_NAME, null, cv);
+            model.pid = (int) mDataBase.insert(TABLE_NAME, null, cv);
         }
         this.close();
     }

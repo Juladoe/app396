@@ -88,7 +88,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                     courseThreadPostModel.headImgUrl,
                     courseThreadPostModel.content,
                     courseThreadPostModel.type,
-                    1,
+                    courseThreadPostModel.delivery,
                     courseThreadPostModel.createdTime);
             mList.add(threadPostDiscussModel);
         }
@@ -302,7 +302,9 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                holder.ivMsgImage.setOnClickListener(new AudioMsgClick(AudioCacheUtil.getInstance().getAudioCacheByPath(model.content).localPath, holder, R.drawable.chat_to_speak_voice, R.drawable.chat_to_voice_play_anim));
+                holder.ivMsgImage.setOnClickListener(
+                        new AudioMsgClick(AudioCacheUtil.getInstance().getAudioCacheByPath(model.content).localPath, holder,
+                                R.drawable.chat_to_speak_voice, R.drawable.chat_to_voice_play_anim));
                 break;
             case PushUtil.MsgDeliveryType.UPLOADING:
                 holder.pbLoading.setVisibility(View.VISIBLE);
@@ -398,6 +400,9 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                 holder.tvAudioLength.setVisibility(View.VISIBLE);
                 String audioFileName = EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" +
                         model.content.substring(model.content.lastIndexOf('/') + 1);
+                if (AudioCacheUtil.getInstance().getAudioCache(audioFileName, model.content) == null) {
+                    AudioCacheUtil.getInstance().create(new AudioCacheEntity(audioFileName, model.content));
+                }
                 try {
                     int duration = getAmrDuration(audioFileName);
                     holder.tvAudioLength.setText(duration + "\"");

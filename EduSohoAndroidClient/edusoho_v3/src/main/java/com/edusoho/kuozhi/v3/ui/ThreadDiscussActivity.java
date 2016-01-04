@@ -25,6 +25,7 @@ import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.PostThreadResult;
 import com.edusoho.kuozhi.v3.model.result.CloudResult;
+import com.edusoho.kuozhi.v3.model.sys.AudioCacheEntity;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -614,17 +615,25 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         for (CourseThreadPostEntity post : posts) {
             if (post.content.contains("amr")) {
                 post.type = PushUtil.ChatMsgType.AUDIO;
-            } else if (post.content.contains("<img>")) {
-                post.content = PushUtil.replaceImgTag(post.content);
+                AudioCacheEntity cache = AudioCacheUtil.getInstance().getAudioCacheByPath(post.content);
+                if (cache != null && !TextUtils.isEmpty(cache.localPath)) {
+                    post.content = cache.localPath;
+                    post.delivery = PushUtil.MsgDeliveryType.SUCCESS;
+                } else {
+                    post.delivery = PushUtil.MsgDeliveryType.UPLOADING;
+                }
+            } else if (post.content.contains("<img")) {
                 Pattern p = Pattern.compile("<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>");
                 Matcher m = p.matcher(post.content);
                 while (m.find()) {
                     post.content = m.group(1);
                     post.type = PushUtil.ChatMsgType.IMAGE;
+                    post.delivery = PushUtil.MsgDeliveryType.SUCCESS;
                     break;
                 }
             } else {
                 post.type = PushUtil.ChatMsgType.TEXT;
+                post.delivery = PushUtil.MsgDeliveryType.SUCCESS;
             }
         }
     }

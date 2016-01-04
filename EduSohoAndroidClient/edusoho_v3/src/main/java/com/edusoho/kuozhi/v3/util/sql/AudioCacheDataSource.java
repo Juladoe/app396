@@ -55,6 +55,19 @@ public class AudioCacheDataSource {
         return model;
     }
 
+    public AudioCacheEntity getAudio(String localPath, String onlinePath) {
+        openRead();
+        AudioCacheEntity model = null;
+        Cursor cursor = mDataBase.rawQuery("SELECT * FROM AUDIO_CACHE WHERE LOCALPATH = ? AND ONLINEPATH = ?",
+                new String[]{localPath + "", onlinePath + ""});
+        while (cursor.moveToNext()) {
+            model = convertCursor2Model(cursor);
+        }
+        cursor.close();
+        close();
+        return model;
+    }
+
     public AudioCacheEntity getAudio(int id) {
         openRead();
         AudioCacheEntity model = null;

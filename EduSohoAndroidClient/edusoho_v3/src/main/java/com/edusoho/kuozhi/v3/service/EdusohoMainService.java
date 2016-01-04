@@ -249,7 +249,7 @@ public class EdusohoMainService extends Service {
         final ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(EdusohoMainService.this, app.domain));
         final NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(EdusohoMainService.this, app.domain));
         final int id = (int) chatDataSource.getMaxId();
-        String path = id == 0 ? Const.GET_LASTEST_OFFLINE_MSG : Const.GET_LASTEST_OFFLINE_MSG + "?lastMaxId=" + id;
+        String path = id == 0 ? Const.GET_LATEST_OFFLINE_MSG : Const.GET_LATEST_OFFLINE_MSG + "?lastMaxId=" + id;
         RequestUrl url = app.bindPushUrl(String.format(path, app.loginUser.id));
         app.getUrl(url, new Response.Listener<String>() {
             @Override

@@ -101,7 +101,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
                         android:gravity="center"
-                        android:text="12&apos;&apos;"
+                        android:text="0&apos;&apos;"
                         android:textColor="@color/base_black_35"
                         android:textSize="@dimen/small_font_size"
                         android:visibility="gone" />
