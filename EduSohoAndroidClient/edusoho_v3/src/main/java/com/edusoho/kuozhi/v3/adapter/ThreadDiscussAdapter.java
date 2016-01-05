@@ -85,7 +85,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                     courseThreadPostModel.lessonId,
                     courseThreadPostModel.user.id,
                     courseThreadPostModel.user.nickname,
-                    courseThreadPostModel.headImgUrl,
+                    courseThreadPostModel.user.mediumAvatar,
                     courseThreadPostModel.content,
                     courseThreadPostModel.type,
                     courseThreadPostModel.delivery,
