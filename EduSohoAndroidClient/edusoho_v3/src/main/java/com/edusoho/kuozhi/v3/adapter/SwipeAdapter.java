@@ -35,9 +35,7 @@ public class SwipeAdapter extends BaseAdapter {
         mContext = ctx;
         mLayoutId = id;
         mList = list;
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
-                showImageForEmptyUri(R.drawable.default_avatar).
-                showImageOnFail(R.drawable.default_avatar).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
 
     public void update(List<New> list) {
