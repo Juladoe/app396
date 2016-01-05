@@ -442,9 +442,9 @@ public class ThreadDiscussAdapter extends ChatAdapter {
     public void updateVoiceDownloadStatus(long downId) {
         ThreadDiscussEntity model = null;
         try {
-            for (ThreadDiscussEntity tmp : mList) {
-                if (mDownloadList.get(downId).equals(tmp.id)) {
-                    model = tmp;
+            for (ThreadDiscussEntity tmpModel : mList) {
+                if (mDownloadList.get(downId).equals(tmpModel.id)) {
+                    model = tmpModel;
                     break;
                 }
             }
@@ -452,16 +452,16 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                 return;
             }
             DownloadManager.Query query = new DownloadManager.Query().setFilterById(downId);
-            Cursor c = mDownloadManager.query(query);
-            if (c != null && c.moveToFirst()) {
-                int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
-                if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
-                    String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
+            Cursor cursor = mDownloadManager.query(query);
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                if (DownloadManager.STATUS_SUCCESSFUL == cursor.getInt(columnIndex)) {
+                    String fileUri = cursor.getString(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
                     model.delivery = (TextUtils.isEmpty(fileUri) ? PushUtil.MsgDeliveryType.FAILED : PushUtil.MsgDeliveryType.SUCCESS);
-                    c.close();
-                } else if (DownloadManager.STATUS_FAILED == c.getInt(columnIndex)) {
+                    cursor.close();
+                } else if (DownloadManager.STATUS_FAILED == cursor.getInt(columnIndex)) {
                     model.delivery = PushUtil.MsgDeliveryType.FAILED;
-                    c.close();
+                    cursor.close();
                 }
             }
             CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
