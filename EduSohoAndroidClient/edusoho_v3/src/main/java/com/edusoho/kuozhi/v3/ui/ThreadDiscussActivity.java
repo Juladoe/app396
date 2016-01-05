@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -632,6 +633,11 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                     break;
                 }
             } else {
+                post.content = Html.fromHtml(post.content).toString();
+                String lastStr = post.content.substring(post.content.length() - 2, post.content.length());
+                if ("\n\n".equals(lastStr)) {
+                    post.content = post.content.substring(0, post.content.length() - 2);
+                }
                 post.type = PushUtil.ChatMsgType.TEXT;
                 post.delivery = PushUtil.MsgDeliveryType.SUCCESS;
             }
