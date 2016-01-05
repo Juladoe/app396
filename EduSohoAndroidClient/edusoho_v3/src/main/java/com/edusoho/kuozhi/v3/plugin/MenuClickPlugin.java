@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.inputmethod.InputMethodManager;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -20,6 +21,7 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
@@ -30,6 +32,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.MultipartRequest;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.annotations.JsAnnotation;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
@@ -41,10 +44,13 @@ import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BaseBridgePlugin;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgeCallback;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -130,7 +136,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
                 ESWebChromeClient.FILECHOOSER_RESULTCODE);
     }
 
-    private void upload(String url, JSONObject heads, JSONObject params, final BridgeCallback callbackContext) throws Exception{
+    private void upload(String url, JSONObject heads, JSONObject params, final BridgeCallback callbackContext) throws Exception {
         final RequestUrl requestUrl = new RequestUrl(url);
         Iterator<String> itor = heads.keys();
         while (itor.hasNext()) {
@@ -398,11 +404,11 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     @JsAnnotation
     public void startAppView(JSONArray args, BridgeCallback callbackContext) throws JSONException {
 
-        String name = args.getString(0);
+        final String name = args.getString(0);
         JSONObject data = args.getJSONObject(1);
         String type = args.getString(2);
 
-        Bundle bundle = new Bundle();
+        final Bundle bundle = new Bundle();
         Iterator<String> iterator = data.keys();
         while (iterator.hasNext()) {
             String key = iterator.next();
@@ -419,7 +425,35 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         if ("Fragment".equals(type)) {
             mActivity.app.mEngine.runPluginWithFragmentByBundle(name + "Fragment", mActivity, bundle);
         } else {
-            mActivity.app.mEngine.runNormalPluginWithBundle(name + "Activity", mActivity, bundle);
+            //final LoadDialog loadDialog = LoadDialog.create(mContext);
+            RequestUrl requestUrl = mActivity.app.bindUrl(Const.USERINFO, false);
+            HashMap<String, String> params = requestUrl.getParams();
+            params.put("userId", bundle.getString("userId"));
+            //loadDialog.show();
+            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    //loadDialog.dismiss();
+                    User user = mActivity.parseJsonValue(response, new TypeToken<User>() {
+                    });
+                    if (user != null) {
+                        bundle.putString(Const.ACTIONBAR_TITLE, user.nickname);
+                        bundle.putInt(ChatActivity.FROM_ID, user.id);
+                        bundle.putString(ChatActivity.HEAD_IMAGE_URL, user.mediumAvatar);
+                        bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.TEACHER);
+                        mActivity.app.mEngine.runNormalPluginWithBundle("ChatActivity", mActivity, bundle);
+                    }
+                    //loadDialog.dismiss();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    //loadDialog.dismiss();
+                    CommonUtil.shortToast(mContext, "无法获取教师信息");
+                }
+            });
+
+
         }
     }
 

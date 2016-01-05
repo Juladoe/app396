@@ -101,7 +101,8 @@ public class NewDataSource {
         cv.put(allColumns[7], newModel.type);
         cv.put(allColumns[8], newModel.belongId);
         cv.put(allColumns[9], newModel.isTop);
-        long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ?", new String[]{newModel.getFromId() + "", EdusohoApp.app.loginUser.id + ""});
+        long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ? AND TYPE = ?",
+                new String[]{newModel.getFromId() + "", EdusohoApp.app.loginUser.id + "", newModel.type});
         close();
         return id;
     }

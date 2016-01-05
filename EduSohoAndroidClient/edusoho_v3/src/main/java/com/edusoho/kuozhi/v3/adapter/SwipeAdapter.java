@@ -88,7 +88,7 @@ public class SwipeAdapter extends BaseAdapter {
         Iterator<New> iterator = mList.iterator();
         while (iterator.hasNext()) {
             New item = iterator.next();
-            if (item.fromId == newModel.fromId) {
+            if (item.fromId == newModel.fromId && item.type.equals(newModel.type)) {
                 mList.remove(item);
                 mList.add(0, newModel);
                 notifyDataSetChanged();

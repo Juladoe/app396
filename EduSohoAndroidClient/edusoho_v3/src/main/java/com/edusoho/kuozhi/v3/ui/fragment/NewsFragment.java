@@ -437,7 +437,6 @@ public class NewsFragment extends BaseFragment {
 
     private void handlerReceiveArticleMessage(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New();
-
         newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
         V2CustomContent v2CustomContent = wrapperMessage.getV2CustomContent();
@@ -460,12 +459,12 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
-    private void handlerReceiveCourse(WrapperXGPushTextMessage wrapperMessage) {
+    private void handlerReceiveCourse(WrapperXGPushTextMessage message) {
         New newModel = new New();
-        V2CustomContent v2CustomContent = wrapperMessage.getV2CustomContent();
+        V2CustomContent v2CustomContent = message.getV2CustomContent();
         newModel.fromId = v2CustomContent.getFrom().getId();
         newModel.belongId = app.loginUser.id;
-        newModel.title = wrapperMessage.title;
+        newModel.title = message.title;
         String type = "";
         switch (v2CustomContent.getBody().getType()) {
             case PushUtil.CourseType.LESSON_PUBLISH:
@@ -479,6 +478,7 @@ public class NewsFragment extends BaseFragment {
                 break;
             case PushUtil.CourseType.QUESTION_ANSWERED:
                 type = PushUtil.CourseType.QUESTION_ANSWERED;
+                newModel.content = String.format("您的问题『%s』有新的回复", message.content);
                 break;
             case PushUtil.CourseType.LESSON_START:
                 type = PushUtil.CourseType.LESSON_START;
@@ -491,21 +491,21 @@ public class NewsFragment extends BaseFragment {
                 break;
             case PushUtil.CourseType.LIVE_NOTIFY:
                 type = PushUtil.CourseCode.Lesson_LIVE_NOTIFY;
-                wrapperMessage.content = wrapperMessage.content + "将在1小时后直播";
+                message.content = message.content + "将在1小时后直播";
+                break;
         }
-        newModel.content = String.format("【%s】%s", type, wrapperMessage.content);
         newModel.imgUrl = v2CustomContent.getFrom().getImage();
         newModel.createdTime = v2CustomContent.getCreatedTime();
         newModel.setType(v2CustomContent.getFrom().getType());
 
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", newModel.fromId + "", app.loginUser.id + "");
+        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ? AND TYPE = ?", newModel.fromId + "", app.loginUser.id + "", newModel.type);
         if (news.size() == 0) {
             newModel.unread = 1;
             newDataSource.create(newModel);
             insertNew(newModel);
         } else {
-            newModel.unread = (wrapperMessage.isForeground && NewsCourseActivity.CurrentCourseId == newModel.fromId) ? 0 : news.get(0).unread + 1;
+            newModel.unread = (message.isForeground && NewsCourseActivity.CurrentCourseId == newModel.fromId) ? 0 : news.get(0).unread + 1;
             newDataSource.update(newModel);
             setItemToTop(newModel);
         }
