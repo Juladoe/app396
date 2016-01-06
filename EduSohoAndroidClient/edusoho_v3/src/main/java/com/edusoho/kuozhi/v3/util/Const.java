@@ -502,4 +502,5 @@ public class Const {
     public static final String EXERCISE_RESULT = "/api/exercise_results/%d";
 
     public static final String LESSON_PLUGIN = "android.intent.action.LESSON_PLUGIN";
+    public static final String TOKEN_LOSE = "token_lose";
 }

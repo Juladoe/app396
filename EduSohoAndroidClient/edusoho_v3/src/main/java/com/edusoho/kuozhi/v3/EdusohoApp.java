@@ -130,7 +130,6 @@ public class EdusohoApp extends Application {
         if (!"debug".equals(BuildConfig.BUILD_TYPE)) {
             EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         }
-
         init();
     }
 

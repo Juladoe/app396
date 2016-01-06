@@ -26,19 +26,26 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FilenameFilter;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.AbstractJsBridgeAdapterWebView;
 import com.google.gson.reflect.TypeToken;
 import cn.trinea.android.common.util.FileUtils;
+import cn.trinea.android.common.util.StringUtils;
 
 /**
  * Created by howzhi on 15/4/16.
@@ -212,51 +219,64 @@ public class ESWebView extends RelativeLayout {
     }
 
     private boolean checkResourceIsExists() {
-        File appZipStorage = AppUtil.getAppZipStorage(mContext);
-
-        File[] files = appZipStorage.listFiles(new FilenameFilter() {
-            @Override
-            public boolean accept(File dir, String filename) {
-                return filename.contains(mAppCode);
-            }
-        });
-
-        final Pattern versionPat = Pattern.compile(".+-([\\.\\d]+)\\..*", Pattern.DOTALL);
-        Arrays.sort(files, new Comparator<File>() {
-            @Override
-            public int compare(File lhs, File rhs) {
-                Matcher matcher = versionPat.matcher(lhs.getName());
-                String lv = matcher.find() ? matcher.group(1) : null;
-                matcher = versionPat.matcher(rhs.getName());
-                String rv = matcher.find() ? matcher.group(1) : null;
-                return CommonUtil.compareVersion(lv, rv);
-            }
-        });
-
-        if (mLocalAppMeta != null) {
-            return true;
-        }
-
         File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, mActivity.app.domain);
         File schoolAppFile = new File(schoolStorage, mAppCode);
         InputStream zinInputStream = null;
 
+        String projectCode = mContext.getString(R.string.app_code);
+        AppMeta innerAppmeta = getInnerHtmlPluginVersion(projectCode);
+
         try {
-            if (files.length == 0) {
-                String projectCode = mContext.getString(R.string.app_code);
-                zinInputStream = mContext.getAssets().open(String.format("%s-html5-%s.Android.zip", projectCode, mAppCode));
-                updateApp(mAppCode, false);
-            } else {
-                zinInputStream = new FileInputStream(files[0]);
-            }
+            zinInputStream = mContext.getAssets().open(String.format("%s-html5-%s.Android.zip", projectCode, mAppCode));
         } catch (Exception e) {
         }
 
-        if (AppUtil.unZipFile(schoolAppFile, zinInputStream)) {
-            mLocalAppMeta = getLocalApp(mAppCode);
+        if (mLocalAppMeta == null) {
+            if (AppUtil.unZipFile(schoolAppFile, zinInputStream)) {
+                mLocalAppMeta = getLocalApp(mAppCode);
+            }
+
+            return mLocalAppMeta != null;
         }
 
+        if (CommonUtil.compareVersion(mLocalAppMeta.version, innerAppmeta.version) == Const.LOW_VERSIO) {
+            if (AppUtil.unZipFile(schoolAppFile, zinInputStream)) {
+                mLocalAppMeta = getLocalApp(mAppCode);
+            }
+        }
+        updateApp(mAppCode, false);
         return mLocalAppMeta != null;
+    }
+
+    private AppMeta getInnerHtmlPluginVersion(String projectCode){
+        ZipEntry zipEntry = null;
+        AppMeta appMeta = null;
+        ZipInputStream zipInputStream = null;
+        try {
+            InputStream inputStream = mContext.getAssets().open(String.format("%s-html5-%s.Android.zip", projectCode, mAppCode));
+            zipInputStream = new ZipInputStream(inputStream);
+            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
+                if ("version.json".equals(zipEntry.getName())) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(zipInputStream));
+                    String line = null;
+                    StringBuilder stringBuilder = new StringBuilder();
+                    while ((line = in.readLine()) != null) {
+                        stringBuilder.append(line);
+                    }
+                    appMeta = mActivity.parseJsonValue(stringBuilder.toString(), new TypeToken<AppMeta>(){});
+                    break;
+                }
+                zipInputStream.closeEntry();
+            }
+        } catch (IOException e) {
+        } finally {
+            try {
+                zipInputStream.close();
+            } catch (Exception e) {
+            }
+        }
+
+        return appMeta;
     }
 
     public void initPlugin(BaseActivity activity) {

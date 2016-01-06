@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +13,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
 
@@ -56,6 +58,18 @@ public class WebViewActivity extends ActionBarBaseActivity {
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
+        if (Const.TOKEN_LOSE.equals(messageType.type)) {
+            PopupDialog dialog = PopupDialog.createNormal(mActivity, "提示", "账号登陆失效，或已在别处登陆！\n请重新登陆");
+            dialog.setOkListener(new PopupDialog.PopupClickListener() {
+                @Override
+                public void onClick(int button) {
+                    finish();
+                }
+            });
+            dialog.show();
+            return;
+        }
+
         if (Const.THIRD_PARTY_LOGIN_SUCCESS.equals(messageType.type) || Const.LOGIN_SUCCESS.equals(messageType.type)) {
             if (getRunStatus() == MSG_PAUSE) {
                 saveMessage(message);
@@ -108,6 +122,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
         String source = this.getClass().getSimpleName();
         MessageType[] messageTypes = new MessageType[]{
                 new MessageType(CLOSE, source),
+                new MessageType(Const.TOKEN_LOSE),
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS),
         };

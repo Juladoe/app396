@@ -6,6 +6,8 @@ import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.internal.widget.DecorToolbar;
@@ -305,7 +307,12 @@ public class FriendFragment extends BaseFragment {
             initViewData();
         }
         if (messageType.type.equals(Const.REFRESH_FRIEND_LIST)) {
-            initViewData();
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    initViewData();
+                }
+            });
         }
         if (messageType.type.equals(Const.THIRD_PARTY_LOGIN_SUCCESS)) {
             initViewData();

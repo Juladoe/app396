@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.android.volley.Request;
@@ -14,6 +15,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
@@ -22,6 +24,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
@@ -30,6 +33,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.MultipartRequest;
+import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
@@ -43,6 +47,7 @@ import com.edusoho.kuozhi.v3.view.webview.ESWebChromeClient;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BaseBridgePlugin;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgeCallback;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -62,6 +67,22 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     @Override
     public String getName() {
         return "ESNativeCore";
+    }
+
+    @JsAnnotation
+    public void sendNativeMessage(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
+        String type = args.getString(0);
+        JSONObject data = args.getJSONObject(1);
+        if ("token_lose".equals(type)) {
+            Bundle bundle = new Bundle();
+            bundle.putString(Const.BIND_USER_ID, "");
+            mActivity.app.pushUnregister(bundle);
+            mActivity.app.removeToken();
+            MessageEngine.getInstance().sendMsg(Const.LOGOUT_SUCCESS, null);
+            MessageEngine.getInstance().sendMsg(Const.TOKEN_LOSE, new Bundle());
+            MessageEngine.getInstance().sendMsgToTaget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
+        }
+        MessageEngine.getInstance().sendMsg(type, JsonObject2Bundle(data));
     }
 
     @JsAnnotation
@@ -469,5 +490,24 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         }
 
         return array;
+    }
+
+    private Bundle JsonObject2Bundle(JSONObject jsonObject) throws JSONException{
+        Bundle bundle = new Bundle();
+        Iterator<String> iterator = jsonObject.keys();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            Object value = jsonObject.get(key);
+
+            if (value instanceof Integer) {
+                bundle.putInt(key, (Integer) value);
+            } else if (value instanceof Double) {
+                bundle.putInt(key, ((Double) value).intValue());
+            } else {
+                bundle.putString(key, value.toString());
+            }
+        }
+
+        return bundle;
     }
 }

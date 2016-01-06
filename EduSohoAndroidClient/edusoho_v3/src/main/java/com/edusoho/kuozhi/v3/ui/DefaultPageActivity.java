@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -35,7 +34,6 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
-
 import java.util.HashMap;
 
 /**
@@ -62,12 +60,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         super.onCreate(savedInstanceState);
         Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_default);
-        initView();
-
         if (mService != null) {
             mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
         }
 
+        initView();
         AppUtil.checkUpateApp(mActivity, new StatusCallback<AppUpdateInfo>() {
             @Override
             public void success(AppUpdateInfo obj) {
@@ -129,6 +126,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             View child = mNavLayout.getChildAt(i);
             child.setOnClickListener(mNavDownTabClickListener);
         }
+        Log.d(TAG, "u>" + app.loginUser);
         if (TextUtils.isEmpty(app.token) || app.loginUser == null) {
             mSelectBtn = R.id.nav_tab_find;
         } else {
@@ -272,16 +270,23 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 app.mEngine.runNormalPlugin("ChatActivity", mContext, null);
                 break;
             case Const.SWITCH_TAB:
-                try {
-                    mLogoutFlag = true;
-                    selectDownTab(R.id.nav_tab_find);
-                    mLogoutFlag = false;
-                } catch (Exception ex) {
-                    Log.d(TAG, ex.getMessage());
-                }
+                new Handler(getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            mLogoutFlag = true;
+                            selectDownTab(R.id.nav_tab_find);
+                            mLogoutFlag = false;
+                        } catch (Exception ex) {
+                            Log.d(TAG, ex.getMessage());
+                        }
+                    }
+                });
+
                 break;
             default:
         }
+
         if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
             mLogoutFlag = true;
             new Handler(getMainLooper()).post(new Runnable() {
@@ -303,7 +308,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         String source = this.getClass().getSimpleName();
         return new MessageType[]{
                 new MessageType(Const.OPEN_COURSE_CHAT, source),
-                new MessageType(Const.SWITCH_TAB, source), new MessageType(Const.LOGIN_SUCCESS)};
+                new MessageType(Const.SWITCH_TAB, source),
+                new MessageType(Const.LOGIN_SUCCESS)};
     }
 
     private Toast mToast;

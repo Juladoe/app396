@@ -13,6 +13,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
@@ -27,6 +28,7 @@ import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -58,7 +60,7 @@ import java.util.Queue;
  */
 public class EdusohoMainService extends Service {
 
-    protected EdusohoApp app;
+    protected WeakReference<EdusohoApp> mAppWeakReference;
     public static final String TAG = "EdusohoMainService";
     private static EdusohoMainService mService;
     private WorkHandler mWorkHandler;
@@ -73,7 +75,7 @@ public class EdusohoMainService extends Service {
         super.onCreate();
         Log.d(null, "create Main service");
         mAjaxQueue = new LinkedList<>();
-        app = (EdusohoApp) getApplication();
+        mAppWeakReference = new WeakReference<EdusohoApp>((EdusohoApp)getApplication());
         mService = this;
         mWorkHandler = new WorkHandler(this);
     }
@@ -84,28 +86,22 @@ public class EdusohoMainService extends Service {
         message.sendToTarget();
     }
 
-    private void loginWithToken() {
+    protected EdusohoApp getEduSohoApp() {
+        return mAppWeakReference.get();
+    }
 
+    private void loginWithToken() {
+        final EdusohoApp app = getEduSohoApp();
         if (TextUtils.isEmpty(app.token)) {
             app.pushRegister(null);
             return;
         }
         synchronized (this) {
             if (!app.getNetIsConnect()) {
-                try {
-                    app.loginUser = app.loadUserInfo();
-                } catch (Exception e) {
-                    Log.d(TAG, e.getMessage());
-                }
-            }
-
-            if (app.loginUser != null) {
-                app.sendMessage(Const.LOGIN_SUCCESS, null);
-                Bundle bundle = new Bundle();
-                bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
-                app.pushRegister(bundle);
+                app.loginUser = app.loadUserInfo();
                 return;
             }
+
             if (!mAjaxQueue.isEmpty()) {
                 return;
             }
@@ -119,13 +115,17 @@ public class EdusohoMainService extends Service {
                                 response, new TypeToken<UserResult>() {
                                 }.getType());
 
+                        Bundle bundle = new Bundle();
                         if (result != null && result.user != null && (!TextUtils.isEmpty(result.token))) {
                             app.saveToken(result);
                             app.sendMessage(Const.LOGIN_SUCCESS, null);
-                            Bundle bundle = new Bundle();
                             bundle.putString(Const.BIND_USER_ID, result.user.id + "");
-                            app.pushRegister(bundle);
+                        } else {
+                            bundle.putString(Const.BIND_USER_ID, "");
+                            app.removeToken();
+                            app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
                         }
+                        app.pushRegister(bundle);
 
                     } catch (Exception e) {
                         Log.d(TAG, e.getMessage());
@@ -176,7 +176,10 @@ public class EdusohoMainService extends Service {
             WrapperXGPushTextMessage xgMessage = (WrapperXGPushTextMessage) msg.obj;
             switch (msg.what) {
                 case EXIT_USER:
-                    mEdusohoMainService.app.loginUser = null;
+                    EdusohoApp app = mEdusohoMainService.getEduSohoApp();
+                    if (app != null) {
+                        app.loginUser = null;
+                    }
                     break;
                 case LOGIN_WITH_TOKEN:
                     mEdusohoMainService.loginWithToken();
@@ -246,6 +249,10 @@ public class EdusohoMainService extends Service {
     }
 
     public void getOfflineMsgs() {
+        final EdusohoApp app = getEduSohoApp();
+        if (app == null) {
+            return;
+        }
         final ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(EdusohoMainService.this, app.domain));
         final NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(EdusohoMainService.this, app.domain));
         final int id = (int) chatDataSource.getMaxId();
@@ -290,6 +297,10 @@ public class EdusohoMainService extends Service {
     }
 
     public ArrayList<Chat> save2DB(ArrayList<OffLineMsgEntity> offLineMsgEntityArrayList) {
+        final EdusohoApp app = getEduSohoApp();
+        if (app == null) {
+            return null;
+        }
         ArrayList<Chat> chatArrayList = new ArrayList<>();
         ArrayList<NewsCourseEntity> courseArrayList = new ArrayList<>();
         for (OffLineMsgEntity offlineMsgModel : offLineMsgEntityArrayList) {
@@ -341,6 +352,10 @@ public class EdusohoMainService extends Service {
     }
 
     public void setNewNotification() {
+        EdusohoApp app = getEduSohoApp();
+        if (app == null) {
+            return;
+        }
         app.config.newVerifiedNotify = true;
         app.saveConfig();
     }
