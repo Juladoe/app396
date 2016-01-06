@@ -465,32 +465,25 @@ public class NewsFragment extends BaseFragment {
         newModel.fromId = v2CustomContent.getFrom().getId();
         newModel.belongId = app.loginUser.id;
         newModel.title = message.title;
-        String type = "";
         switch (v2CustomContent.getBody().getType()) {
             case PushUtil.CourseType.LESSON_PUBLISH:
-                type = PushUtil.CourseCode.LESSON_PUBLISH;
                 break;
             case PushUtil.CourseType.TESTPAPER_REVIEWED:
-                type = PushUtil.CourseCode.TESTPAPER_REVIEWED;
                 break;
             case PushUtil.CourseType.HOMEWORK_REVIEWED:
-                type = PushUtil.CourseType.HOMEWORK_REVIEWED;
                 break;
             case PushUtil.CourseType.QUESTION_ANSWERED:
-                type = PushUtil.CourseType.QUESTION_ANSWERED;
                 newModel.content = String.format("您的问题『%s』有新的回复", message.content);
                 break;
             case PushUtil.CourseType.LESSON_START:
-                type = PushUtil.CourseType.LESSON_START;
+                newModel.content = String.format("您的课时『%s』已经开始学习", message.content);
                 break;
             case PushUtil.CourseType.LESSON_FINISH:
-                type = PushUtil.CourseType.LESSON_FINISH;
+                newModel.content = String.format("您的课时『%s』学习完成", message.content);
                 break;
             case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
-                type = PushUtil.CourseCode.COURSE_ANNOUNCEMENT;
                 break;
             case PushUtil.CourseType.LIVE_NOTIFY:
-                type = PushUtil.CourseCode.Lesson_LIVE_NOTIFY;
                 message.content = message.content + "将在1小时后直播";
                 break;
         }
