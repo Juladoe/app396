@@ -11,7 +11,6 @@
         android:layout_centerInParent="true"
         android:layout_marginRight="-8dp"
         android:background="@drawable/found_compound_btn"
-        android:checkedButton="@+id/rb_study"
         android:orientation="horizontal">
 
         <RadioButton
