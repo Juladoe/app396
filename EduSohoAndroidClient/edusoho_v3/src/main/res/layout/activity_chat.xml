@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.edusoho.kuozhi.v3.ui.ChatActivity">
 
     <LinearLayout
+        android:id="@+id/ll_chat_dialog"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/ll_chat_dialog"
         android:orientation="vertical">
 
         <View
@@ -22,34 +22,34 @@
             android:id="@+id/rl_bottom"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:background="@android:color/white"
             android:orientation="horizontal"
             android:paddingLeft="2dp"
-            android:paddingRight="2dp"
-            android:background="@android:color/white">
+            android:paddingRight="2dp">
 
             <!--语音切换按钮-->
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
                 android:id="@+id/btn_voice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/font_chat_voice"
-                android:background="@drawable/chat_btn_bg"
-                android:textSize="@dimen/chat_btn_size"
-                android:layout_marginRight="8dp"
+                android:layout_gravity="center_vertical"
                 android:layout_marginLeft="8dp"
-                android:layout_gravity="center_vertical" />
+                android:layout_marginRight="8dp"
+                android:background="@drawable/chat_btn_bg"
+                android:text="@string/font_chat_voice"
+                android:textSize="@dimen/chat_btn_size" />
 
             <!--keyboard按钮-->
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
                 android:id="@+id/btn_set_mode_keyboard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/font_chat_keyboard"
-                android:background="@drawable/chat_btn_bg"
-                android:textSize="@dimen/chat_btn_size"
                 android:layout_gravity="center_vertical"
-                android:layout_marginRight="8dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@drawable/chat_btn_bg"
+                android:text="@string/font_chat_keyboard"
+                android:textSize="@dimen/chat_btn_size"
                 android:visibility="gone" />
 
             <!--按住说话按钮-->
@@ -57,21 +57,21 @@
                 android:id="@+id/rl_btn_press_to_speak"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="6dp"
-                android:gravity="center"
                 android:layout_gravity="center_vertical"
+                android:layout_margin="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/chat_press_speak_btn"
+                android:gravity="center"
                 android:visibility="gone">
 
                 <TextView
                     android:id="@+id/tv_speak"
                     android:layout_width="wrap_content"
                     android:layout_height="32dp"
-                    android:textSize="@dimen/medium_font_size"
-                    android:textColor="@color/grey_666666"
                     android:gravity="center_vertical"
-                    android:text="@string/hand_press_and_speak" />
+                    android:text="@string/hand_press_and_speak"
+                    android:textColor="@color/grey_666666"
+                    android:textSize="@dimen/medium_font_size" />
 
             </LinearLayout>
 
@@ -81,48 +81,48 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/chat_send_smd_select"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:background="@drawable/chat_send_smd_select">
 
                 <EditText
                     android:id="@+id/et_send_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:maxLines="4"
-                    android:gravity="center_vertical"
                     android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:gravity="center_vertical"
                     android:inputType="text"
-                    android:textSize="@dimen/medium_font_size"
-                    android:background="@null" />
+                    android:maxLines="4"
+                    android:textSize="@dimen/medium_font_size" />
 
             </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
                 android:layout_gravity="center_vertical"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <!--弹出media_layout 十字按钮-->
                 <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                    android:id="@+id/iv_show_media_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/iv_show_media_layout"
                     android:background="@drawable/chat_btn_bg"
                     android:text="@string/font_chat_add_media"
                     android:textSize="@dimen/chat_btn_size" />
 
                 <!--发送文字按钮-->
                 <Button
-                    android:textSize="@dimen/small_font_size"
                     android:id="@+id/tv_send"
                     android:layout_width="42dp"
                     android:layout_height="32dp"
                     android:background="@drawable/sms_send_btn_bg"
-                    android:visibility="gone"
                     android:text="发送"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/small_font_size"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
 
@@ -135,20 +135,20 @@
             android:id="@+id/ll_media_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:background="@android:color/white"
-            android:paddingTop="6dp"
+            android:orientation="vertical"
             android:paddingBottom="6dp"
-            android:orientation="vertical">
+            android:paddingTop="6dp"
+            android:visibility="gone">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:weightSum="5"
-                android:paddingTop="16dp"
+                android:layout_marginRight="6dp"
                 android:paddingBottom="16dp"
                 android:paddingLeft="6dp"
-                android:layout_marginRight="6dp">
+                android:paddingTop="16dp"
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -157,22 +157,23 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:background="@drawable/chat_media_stroke_bg">
+                        android:background="@drawable/chat_media_stroke_bg"
+                        android:orientation="horizontal">
 
                         <com.edusoho.kuozhi.v3.view.EduSohoIconView
                             android:id="@+id/iv_image"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:clickable="true"
                             android:layout_gravity="center"
-                            android:padding="10dp"
-                            android:textSize="@dimen/chat_media_size"
                             android:background="@drawable/chat_media_bg"
-                            android:text="@string/font_chat_media_photo" />
+                            android:clickable="true"
+                            android:gravity="center"
+                            android:padding="10dp"
+                            android:text="@string/font_chat_media_photo"
+                            android:textSize="@dimen/chat_media_size" />
                     </LinearLayout>
 
                     <TextView
@@ -191,20 +192,21 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:background="@drawable/chat_media_stroke_bg">
+                        android:background="@drawable/chat_media_stroke_bg"
+                        android:orientation="horizontal">
 
                         <com.edusoho.kuozhi.v3.view.EduSohoIconView
                             android:id="@+id/iv_camera"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/font_chat_media_camera"
                             android:layout_gravity="center"
                             android:background="@drawable/chat_media_bg"
+                            android:gravity="center"
                             android:padding="10dp"
+                            android:text="@string/font_chat_media_camera"
                             android:textSize="@dimen/chat_media_size" />
                     </LinearLayout>
 
@@ -232,34 +234,34 @@
             android:id="@+id/recording_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:background="@drawable/recoding_container_bg"
-            android:visibility="gone"
+            android:paddingBottom="18dp"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:paddingTop="18dp"
-            android:paddingBottom="18dp"
-            android:layout_centerInParent="true">
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/iv_voice_volume"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/record_animate_1"
                 android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/record_animate_1" />
 
             <TextView
                 android:id="@+id/tv_speak_hint"
                 android:layout_width="160dp"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
                 android:layout_below="@+id/iv_voice_volume"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="15dp"
-                android:padding="2dp"
-                android:textColor="@android:color/white"
                 android:background="@drawable/speak_hint_bg"
                 android:gravity="center"
+                android:padding="2dp"
                 android:text="@string/hand_move_up_and_send_cancel"
+                android:textColor="@android:color/white"
                 android:textSize="@dimen/medium_font_size" />
 
 
@@ -277,16 +279,16 @@
             app:ptr_resistance="1.7">
 
             <ListView
+                android:id="@+id/lv_messages"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:clickable="true"
                 android:divider="@null"
                 android:fadingEdge="none"
                 android:fastScrollEnabled="false"
                 android:scrollbars="none"
                 android:smoothScrollbar="true"
-                android:clickable="true"
-                android:transcriptMode="alwaysScroll"
-                android:id="@+id/lv_messages" />
+                android:transcriptMode="alwaysScroll" />
 
         </in.srain.cube.views.ptr.PtrClassicFrameLayout>
     </RelativeLayout>
