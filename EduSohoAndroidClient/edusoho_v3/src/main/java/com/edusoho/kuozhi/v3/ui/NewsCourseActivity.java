@@ -2,12 +2,12 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.edusoho.kuozhi.R;
@@ -21,8 +21,10 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
@@ -46,6 +48,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private String mUserType;
 
     private CourseDiscussDataSource mCourseDiscussDataSource;
+    private Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,8 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
+        NotificationUtil.cancelById(mCourseId);
     }
 
     private void initData() {
@@ -69,6 +74,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             CommonUtil.longToast(getApplicationContext(), getString(R.string.course_params_error));
             return;
         }
+        mHandler = new Handler();
         mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         mCourseTitle = mNewItemInfo.title;
         mCourseId = mNewItemInfo.fromId;
@@ -197,4 +203,14 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             return mEntranceType[1];
         }
     }
+
+    private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Bundle bundle = new Bundle();
+            bundle.putInt(Const.FROM_ID, mCourseId);
+            bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.COURSE);
+            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
+        }
+    };
 }
