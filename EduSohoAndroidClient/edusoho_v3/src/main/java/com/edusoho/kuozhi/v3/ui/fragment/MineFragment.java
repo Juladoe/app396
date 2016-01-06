@@ -9,11 +9,12 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.AvatarLoadingListener;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by JesseHuang on 15/12/8.
@@ -76,6 +77,7 @@ public class MineFragment extends BaseFragment {
         }
         tvNickname.setText(app.loginUser.nickname);
         tvTitle.setText(app.loginUser.title);
+        ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, rivAvatar, new AvatarLoadingListener(app.getCurrentUserRole()));
     }
 
     private View.OnClickListener mRadioBtnClickListener = new View.OnClickListener() {
