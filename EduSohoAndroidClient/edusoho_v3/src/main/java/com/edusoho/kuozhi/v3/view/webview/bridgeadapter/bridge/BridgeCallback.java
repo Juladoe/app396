@@ -27,7 +27,7 @@ public class BridgeCallback {
     }
 
     protected void formatMessage(String type, Object message) {
-        String args = TextUtils.isEmpty(message.toString()) ? "''": message.toString();
+        String args = message == null || TextUtils.isEmpty(message.toString()) ? "''": message.toString();
         mJsBridgeAdapter.getWebView().invokeCallback(mCallbackId, type, args);
     }
 }
