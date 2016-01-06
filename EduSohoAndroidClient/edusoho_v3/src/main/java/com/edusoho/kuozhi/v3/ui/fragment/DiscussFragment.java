@@ -238,21 +238,10 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
                     return false;
                 }
             });
-            mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-
-    private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {
-        @Override
-        public void run() {
-            Bundle bundle = new Bundle();
-            bundle.putInt(Const.FROM_ID, mCourseId);
-            bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.COURSE);
-            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
-        }
-    };
 
     protected Runnable mListViewSelectRunnable = new Runnable() {
         @Override

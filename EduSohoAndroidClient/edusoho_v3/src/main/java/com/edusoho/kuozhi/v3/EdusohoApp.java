@@ -865,17 +865,19 @@ public class EdusohoApp extends Application {
     }
 
     public String getCurrentUserRole() {
-        String userType;
-        String[] roles = new String[app.loginUser.roles.length];
-        for (int i = 0; i < app.loginUser.roles.length; i++) {
-            roles[i] = app.loginUser.roles[i].toString();
+        if (TextUtils.isEmpty(loginUser.role)) {
+            String[] roles = new String[app.loginUser.roles.length];
+            for (int i = 0; i < app.loginUser.roles.length; i++) {
+                roles[i] = app.loginUser.roles[i].toString();
+            }
+            if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
+                loginUser.role = PushUtil.ChatUserType.TEACHER;
+            } else {
+                loginUser.role = PushUtil.ChatUserType.FRIEND;
+            }
+            return loginUser.role;
         }
-        if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
-            userType = PushUtil.ChatUserType.TEACHER;
-        } else {
-            userType = PushUtil.ChatUserType.FRIEND;
-        }
-        return userType;
+        return loginUser.role;
     }
 
 }

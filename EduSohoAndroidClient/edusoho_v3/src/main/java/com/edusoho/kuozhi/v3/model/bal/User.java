@@ -43,6 +43,7 @@ public class User implements Serializable {
     public String createdTime;
     public String about;
     public String signature;
+    public String role;
     /**
      * 关注
      */
