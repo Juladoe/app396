@@ -32,6 +32,12 @@ public class MessageType {
         this.type = type;
     }
 
+    public MessageType(String type, int runType) {
+        this(runType);
+        this.code = NONE;
+        this.type = type;
+    }
+
     public MessageType(int code, String type) {
         this(BG_THREAD);
         this.code = code;
