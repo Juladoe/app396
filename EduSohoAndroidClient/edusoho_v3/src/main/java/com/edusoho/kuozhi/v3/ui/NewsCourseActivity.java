@@ -7,11 +7,13 @@ import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
@@ -22,6 +24,8 @@ import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
+import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
+import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -31,13 +35,17 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     public static int CurrentCourseId = 0;
     public static final String COURSE_ID = "course_id";
     private static final String mFragmentTags[] = {"DiscussFragment", "CourseStudyFragment", "TeachFragment"};
+    private static final String mEntranceType[] = {"Discuss", "StudyOrTeacher"};
     private static final String mRadioButtonTitle[] = {"学习", "教学"};
     private int mCourseId;
     private String mCourseTitle;
-    private String mCourseType;
+    private String mFragmentType;
+    private int mCreatedTime;
     private String mCurrentFragmentTag;
     private New mNewItemInfo;
     private String mUserType;
+
+    private CourseDiscussDataSource mCourseDiscussDataSource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,28 +69,19 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             CommonUtil.longToast(getApplicationContext(), getString(R.string.course_params_error));
             return;
         }
+        mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         mCourseTitle = mNewItemInfo.title;
         mCourseId = mNewItemInfo.fromId;
-        mCourseType = mNewItemInfo.type;
-        CurrentCourseId = mCourseId;
+        mCreatedTime = mNewItemInfo.createdTime;
         mUserType = app.getCurrentUserRole();
-        if (PushUtil.ChatUserType.COURSE.equals(mCourseType) && PushUtil.ChatUserType.FRIEND.equals(mUserType)) {
-            //用户，讨论
+        mFragmentType = getFragmentType();
+        if (PushUtil.ChatUserType.FRIEND.equals(mUserType)) {
             initSwitchButton(BACK, mRadioButtonTitle[0], mOnCheckedChangeListener);
-            setRadioButtonChecked(R.id.rb_discuss);
-        } else if (!PushUtil.ChatUserType.COURSE.equals(mCourseType) && PushUtil.ChatUserType.FRIEND.equals(mUserType)) {
-            //用户，学习
-            initSwitchButton(BACK, mRadioButtonTitle[0], mOnCheckedChangeListener);
-            setRadioButtonChecked(R.id.rb_study);
-        } else if (PushUtil.ChatUserType.COURSE.equals(mCourseType) && PushUtil.ChatUserType.TEACHER.equals(mUserType)) {
-            //教师，讨论
+        } else if (PushUtil.ChatUserType.TEACHER.equals(mUserType)) {
             initSwitchButton(BACK, mRadioButtonTitle[1], mOnCheckedChangeListener);
-            setRadioButtonChecked(R.id.rb_discuss);
-        } else if (!PushUtil.ChatUserType.COURSE.equals(mCourseType) && PushUtil.ChatUserType.TEACHER.equals(mUserType)) {
-            //教师，教学
-            initSwitchButton(BACK, mRadioButtonTitle[1], mOnCheckedChangeListener);
-            setRadioButtonChecked(R.id.rb_study);
         }
+        setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
+        CurrentCourseId = mCourseId;
     }
 
     private void showFragment(String tag) {
@@ -139,7 +138,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         @Override
         public void setArguments(Bundle bundle) {
             bundle.putSerializable(Const.NEW_ITEM_INFO, mNewItemInfo);
-            bundle.putInt("course_id",mCourseId);
+            bundle.putInt("course_id", mCourseId);
         }
     };
 
@@ -187,6 +186,15 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 }
                 break;
             default:
+        }
+    }
+
+    private String getFragmentType() {
+        CourseDiscussEntity courseDiscussEntity = mCourseDiscussDataSource.get(" BELONGID = ? AND COURSEID = ? ORDER BY CREATEDTIME DESC LIMIT 0, 1", new String[]{app.loginUser.id + "", mCourseId + ""});
+        if (courseDiscussEntity != null && courseDiscussEntity.createdTime == mCreatedTime) {
+            return mEntranceType[0];
+        } else {
+            return mEntranceType[1];
         }
     }
 }

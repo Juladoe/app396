@@ -52,6 +52,18 @@ public class CourseDiscussDataSource {
         return news;
     }
 
+    public CourseDiscussEntity get(String whereSql, String[] whereArgs) {
+        CourseDiscussEntity model = null;
+        openRead();
+        Cursor cursor = mDataBase.rawQuery("SELECT * FROM COURSE_DISCUSS WHERE " + whereSql, whereArgs);
+        while (cursor.moveToNext()) {
+            model = convertCursor2CourseDiscussEntity(cursor);
+        }
+        cursor.close();
+        close();
+        return model;
+    }
+
     public long create(CourseDiscussEntity model) {
         this.openWrite();
         ContentValues cv = new ContentValues();

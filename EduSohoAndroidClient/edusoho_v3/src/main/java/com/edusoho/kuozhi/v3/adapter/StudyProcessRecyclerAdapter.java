@@ -139,7 +139,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((NormalNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_lesson_start));
                 ((NormalNotificationViewHolder) holder).notificationType.setText("课时完成");
                 String textContont = AppUtil.cutString(entity.getContent(), 30);
-                ((NormalNotificationViewHolder) holder).notificationContent.setText("恭喜您已经完成了课时\"" + textContont + "\"的学习");
+                ((NormalNotificationViewHolder) holder).notificationContent.setText(String.format("恭喜您已经完成了课时『%s』的学习",textContont));
 
             }
             if (entity.getBodyType().equals("lesson.start")) {
@@ -147,7 +147,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((NormalNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_lesson_start));
                 ((NormalNotificationViewHolder) holder).notificationType.setText("课时开始");
                 String textContont = AppUtil.cutString(entity.getContent(), 30);
-                ((NormalNotificationViewHolder) holder).notificationContent.setText("您已经开始了课时\"" + textContont + "\"的学习");
+                ((NormalNotificationViewHolder) holder).notificationContent.setText(String.format("您已经开始了课时『%s』的学习",textContont));
             }
             ((NormalNotificationViewHolder) holder).notificationTime.setText("系统 发布于" + AppUtil.timeStampToDate(String.valueOf(entity.getCreatedTime()), null));
         }
@@ -162,7 +162,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((IntentNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_testpaper));
                 ((IntentNotificationViewHolder) holder).notificationType.setText("试卷批阅完成");
                 String textContont = AppUtil.cutString(entity.getContent(), 30);
-                ((IntentNotificationViewHolder) holder).notificationContent.setText("您的课时：\"" + textContont + "\"，试卷已经批阅完成");
+                ((IntentNotificationViewHolder) holder).notificationContent.setText(String.format("您的课时『%s』，试卷已经批阅完成",textContont));
                 ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -182,7 +182,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((IntentNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_testpaper));
                 ((IntentNotificationViewHolder) holder).notificationType.setText("作业批阅完成");
                 String textContont = AppUtil.cutString(entity.getContent(), 30);
-                ((IntentNotificationViewHolder) holder).notificationContent.setText("课时：\"" + textContont + "\"的作业已经批阅完成");
+                ((IntentNotificationViewHolder) holder).notificationContent.setText(String.format("课时『%s』的作业已经批阅完成",textContont));
                 ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -196,7 +196,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((IntentNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_question));
                 ((IntentNotificationViewHolder) holder).notificationType.setText("问题回复");
                 String textContont = AppUtil.cutString(entity.getContent(), 30);
-                ((IntentNotificationViewHolder) holder).notificationContent.setText("您的问题:\"" + textContont + "\"有新的老师回复");
+                ((IntentNotificationViewHolder) holder).notificationContent.setText(String.format("您的问题『%s』有新的老师回复",textContont));
                 ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
