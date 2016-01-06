@@ -15,7 +15,6 @@ import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
-import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
@@ -113,40 +112,40 @@ public class NotificationUtil {
     }
 
     public static void showNewsCourseNotification(Context context, WrapperXGPushTextMessage xgMessage) {
-        NewsCourseEntity newsCourseEntity = new NewsCourseEntity(xgMessage);
-        String type = "";
-        switch (newsCourseEntity.getBodyType()) {
-            case PushUtil.CourseType.LESSON_PUBLISH:
-                type = PushUtil.CourseCode.LESSON_PUBLISH;
+        V2CustomContent v2CustomContent = xgMessage.getV2CustomContent();
+        switch (v2CustomContent.getBody().getType()) {
+            case PushUtil.CourseType.HOMEWORK_REVIEWED:
+                xgMessage.content = String.format("您的作业『%s』已经批阅完成", xgMessage.content);
                 break;
-            case PushUtil.CourseType.TESTPAPER_REVIEWED:
-                type = PushUtil.CourseCode.TESTPAPER_REVIEWED;
+            case PushUtil.CourseType.QUESTION_ANSWERED:
+                xgMessage.content = String.format("您的问题『%s』有新的回复", xgMessage.content);
                 break;
-            case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
-                type = PushUtil.CourseCode.COURSE_ANNOUNCEMENT;
+            case PushUtil.CourseType.LESSON_START:
+                xgMessage.content = String.format("您的课时『%s』已经开始学习", xgMessage.content);
                 break;
-            case PushUtil.CourseType.LIVE_NOTIFY:
-                type = PushUtil.CourseCode.Lesson_LIVE_NOTIFY;
-                xgMessage.content = xgMessage.content + "将在1小时后直播";
+            case PushUtil.CourseType.LESSON_FINISH:
+                xgMessage.content = String.format("您的课时『%s』学习完成", xgMessage.content);
                 break;
         }
-        xgMessage.content = String.format("【%s】%s", type, xgMessage.content);
-
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle(xgMessage.title)
                         .setContentText(xgMessage.content).setAutoCancel(true);
 
-        int courseId = newsCourseEntity.getCourseId();
+        int courseId = v2CustomContent.getFrom().getId();
 
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
         notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
-        notifyIntent.putExtra(NewsCourseActivity.COURSE_ID, newsCourseEntity.getCourseId());
+        New newModel = new New();
+        newModel.title = xgMessage.title;
+        newModel.fromId = courseId;
+        newModel.type = v2CustomContent.getFrom().getType();
+        newModel.imgUrl = v2CustomContent.getFrom().getImage();
+        notifyIntent.putExtra(Const.NEW_ITEM_INFO, newModel);
         notifyIntent.putExtra(Const.INTENT_TARGET, NewsCourseActivity.class);
         if (isAppExit(context)) {
             mMessage = xgMessage;
@@ -229,7 +228,6 @@ public class NotificationUtil {
                     xgMessage.content = redirectBody.content;
                     break;
             }
-
 
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())

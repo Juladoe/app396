@@ -471,6 +471,7 @@ public class NewsFragment extends BaseFragment {
             case PushUtil.CourseType.TESTPAPER_REVIEWED:
                 break;
             case PushUtil.CourseType.HOMEWORK_REVIEWED:
+                newModel.content = String.format("您的作业『%s』已经批阅完成", message.content);
                 break;
             case PushUtil.CourseType.QUESTION_ANSWERED:
                 newModel.content = String.format("您的问题『%s』有新的回复", message.content);
@@ -480,8 +481,6 @@ public class NewsFragment extends BaseFragment {
                 break;
             case PushUtil.CourseType.LESSON_FINISH:
                 newModel.content = String.format("您的课时『%s』学习完成", message.content);
-                break;
-            case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
                 break;
             case PushUtil.CourseType.LIVE_NOTIFY:
                 message.content = message.content + "将在1小时后直播";
