@@ -16,7 +16,7 @@
     <!--大字-->
     <dimen name="large_font_size">18sp</dimen>
     <!--中字-->
-    <dimen name="medium_font_size">16sp</dimen>
+    <dimen name="medium_font_size">17sp</dimen>
     <!--小一/二字-->
     <dimen name="small_font_size">14sp</dimen>
     <!--超小字-->
