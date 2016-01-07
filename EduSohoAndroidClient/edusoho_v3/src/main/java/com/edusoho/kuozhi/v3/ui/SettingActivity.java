@@ -30,7 +30,6 @@ import java.io.File;
 public class SettingActivity extends ActionBarBaseActivity {
     private View viewScan;
     private View tvMsgNotify;
-    private View tvOnlineDuration;
     private View tvAbout;
     private View viewClearCache;
     private TextView tvCache;
@@ -51,11 +50,9 @@ public class SettingActivity extends ActionBarBaseActivity {
     private void initView() {
         viewScan = findViewById(R.id.linear_scan);
         viewScan.setOnClickListener(scanClickListener);
-        tvMsgNotify = findViewById(R.id.tvMsgNotify);
+        tvMsgNotify = findViewById(R.id.rl_msg_notify);
         tvMsgNotify.setOnClickListener(msgClickListener);
-        tvOnlineDuration = findViewById(R.id.tvOnlineDuration);
-        tvOnlineDuration.setOnClickListener(onlineDurationClickListener);
-        tvAbout = findViewById(R.id.tvAbout);
+        tvAbout = findViewById(R.id.rl_about);
         tvAbout.setOnClickListener(aboutClickListener);
         cbOfflineType = (CheckBox) findViewById(R.id.cb_offline_type);
         cbOfflineType.setOnClickListener(setOfflineTypeListener);

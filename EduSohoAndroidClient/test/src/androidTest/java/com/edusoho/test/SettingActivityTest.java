@@ -37,7 +37,7 @@ public class SettingActivityTest extends BaseActivityUnitTestCase<SettingActivit
         SettingActivity mActivity = getActivity();
         View viewScan = mActivity.findViewById(R.id.linear_scan);
         assertNotNull(viewScan);
-        TextView tvScan = (TextView) mActivity.findViewById(R.id.tvScan);
+        TextView tvScan = (TextView) mActivity.findViewById(R.id.tv_scan);
         assertNotNull(tvScan);
         assertEquals(mActivity.getResources().getString(R.string.setting_scan), tvScan.getText());
 
@@ -56,7 +56,7 @@ public class SettingActivityTest extends BaseActivityUnitTestCase<SettingActivit
         CleanCacheTextView tvCleanCache = (CleanCacheTextView) mActivity.findViewById(R.id.tv_clean_cache);
         assertNotNull(tvCleanCache);
 
-        TextView tvAbout = (TextView) mActivity.findViewById(R.id.tvAbout);
+        TextView tvAbout = (TextView) mActivity.findViewById(R.id.tv_about);
         assertNotNull(tvAbout);
 
         Button btnLogout = (Button) mActivity.findViewById(R.id.setting_logout_btn);
