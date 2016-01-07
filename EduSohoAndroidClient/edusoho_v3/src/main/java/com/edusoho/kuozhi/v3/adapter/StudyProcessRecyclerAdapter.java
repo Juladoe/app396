@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -40,6 +41,8 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     private LayoutInflater mLayoutInflater;
     private Context mContext;
     private EdusohoApp mApp;
+
+    private View.OnClickListener summaryListener;
 
 
     public StudyProcessRecyclerAdapter(Context context, List list, EdusohoApp app) {
@@ -100,6 +103,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             ImageLoader.getInstance().displayImage(entity.getImage(), ((LessonSummaryViewHolder) holder).summaryCourseImage);
             ((LessonSummaryViewHolder) holder).summaryCourseTitle.setText(entity.getTitle());
             ((LessonSummaryViewHolder) holder).summaryCourseTeacher.setText(entity.getTeacher());
+            ((LessonSummaryViewHolder) holder).summaryFrame.setOnClickListener(summaryListener);
         }
 
         if (holder instanceof LessonTitleViewHolder) {
@@ -241,9 +245,11 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         private ImageView summaryCourseImage;
         private TextView summaryCourseIntroduction;
         private TextView summaryCourseTeacher;
+        private RelativeLayout summaryFrame;
 
         public LessonSummaryViewHolder(View itemView) {
             super(itemView);
+            summaryFrame = (RelativeLayout) itemView.findViewById(R.id.process_lesson_summary_frame);
             summaryCourseTitle = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_title);
             summaryCourseImage = (ImageView) itemView.findViewById(R.id.study_process_lesson_summary_image);
             summaryCourseIntroduction = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_introduction);
@@ -288,5 +294,9 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             notificationType = (TextView) itemView.findViewById(R.id.notification_type);
 
         }
+    }
+
+    public void setSummaryListene(View.OnClickListener listener){
+        this.summaryListener = listener;
     }
 }
