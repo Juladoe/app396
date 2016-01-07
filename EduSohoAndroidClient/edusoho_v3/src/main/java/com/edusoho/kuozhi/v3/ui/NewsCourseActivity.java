@@ -135,7 +135,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private PluginFragmentCallback mTeachPluginFragmentCallback = new PluginFragmentCallback() {
         @Override
         public void setArguments(Bundle bundle) {
-            String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.TEACHER_MANAGERMENT, app.loginUser.id));
+            String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.TEACHER_MANAGERMENT, mCourseId));
             bundle.putString(Const.WEB_URL, url);
         }
     };
