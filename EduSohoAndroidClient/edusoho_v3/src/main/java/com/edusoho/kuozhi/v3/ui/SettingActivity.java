@@ -19,7 +19,6 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
-import com.edusoho.kuozhi.v3.view.CleanCacheTextView;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 
 import java.io.File;
@@ -33,7 +32,6 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View tvAbout;
     private View viewClearCache;
     private TextView tvCache;
-    private CleanCacheTextView tvCleanCache;
     private Button btnLogout;
     private CheckBox cbOfflineType;
 
@@ -56,7 +54,6 @@ public class SettingActivity extends ActionBarBaseActivity {
         tvAbout.setOnClickListener(aboutClickListener);
         cbOfflineType = (CheckBox) findViewById(R.id.cb_offline_type);
         cbOfflineType.setOnClickListener(setOfflineTypeListener);
-        tvCleanCache = (CleanCacheTextView) findViewById(R.id.tv_clean_cache);
         tvCache = (TextView) findViewById(R.id.tv_cache);
         viewClearCache = findViewById(R.id.rl_clear_cache);
         viewClearCache.setOnClickListener(cleanCacheListener);
@@ -118,13 +115,6 @@ public class SettingActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             mActivity.app.mEngine.runNormalPlugin("MsgReminderActivity", mActivity, null);
-        }
-    };
-
-    private View.OnClickListener onlineDurationClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            mActivity.app.mEngine.runNormalPlugin("OnlineDurationActivity", mActivity, null);
         }
     };
 

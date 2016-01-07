@@ -15,8 +15,8 @@
             android:layout_alignParentTop="true"
             android:background="@drawable/my_item_bg"
             android:clickable="true"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp">
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp">
 
             <TextView
                 android:id="@+id/tv_scan"
@@ -26,8 +26,9 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:text="@string/setting_scan"
-                android:textColor="@color/grey"
-                android:textSize="@dimen/medium_font_size" />
+                android:textColor="@color/base_black_87"
+                android:textSize="@dimen/medium_font_size"
+                android:layout_marginLeft="4dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -36,9 +37,8 @@
                 android:layout_marginLeft="15dp"
                 android:layout_toLeftOf="@+id/eiv_right_arrow1"
                 android:layout_toRightOf="@+id/tv_scan"
-                android:alpha="0.54"
                 android:text="@string/setting_scan_second"
-                android:textColor="@android:color/black"
+                android:textColor="@color/base_black_54"
                 android:textSize="@dimen/small_font_size" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
@@ -68,8 +68,8 @@
                 android:layout_alignParentTop="true"
                 android:background="@drawable/my_item_bg"
                 android:clickable="true"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
                 <TextView
                     android:id="@+id/tvMsgNotify"
@@ -78,8 +78,9 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/eiv_right_arrow2"
                     android:text="@string/setting_new_msg_notify"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/medium_font_size" />
+                    android:textColor="@color/base_black_87"
+                    android:textSize="@dimen/medium_font_size"
+                    android:layout_marginLeft="4dp" />
 
                 <com.edusoho.kuozhi.v3.view.EduSohoIconView
                     android:id="@+id/eiv_right_arrow2"
@@ -108,8 +109,8 @@
                 android:layout_height="52dp"
                 android:layout_below="@+id/v_separate_line_2"
                 android:background="@drawable/my_item_bg"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -117,8 +118,9 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/cb_offline_type"
                     android:text="@string/setting_wifi_download"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/medium_font_size" />
+                    android:textColor="@color/base_black_87"
+                    android:textSize="@dimen/medium_font_size"
+                    android:layout_marginLeft="4dp" />
 
                 <CheckBox
                     android:id="@+id/cb_offline_type"
@@ -146,8 +148,8 @@
                 android:layout_below="@+id/v_separate_line_3"
                 android:background="@drawable/my_item_bg"
                 android:clickable="true"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
                 <com.edusoho.kuozhi.v3.view.CleanCacheTextView
                     android:id="@+id/tv_clean_cache"
@@ -157,8 +159,9 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/tv_cache"
                     android:text="@string/setting_clean_cache"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/medium_font_size" />
+                    android:textColor="@color/base_black_87"
+                    android:textSize="@dimen/medium_font_size"
+                    android:layout_marginLeft="4dp" />
 
                 <TextView
                     android:id="@+id/tv_cache"
@@ -188,8 +191,8 @@
                 android:layout_below="@+id/v_separate_line_4"
                 android:background="@drawable/my_item_bg"
                 android:clickable="true"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp">
 
                 <TextView
                     android:id="@+id/tv_about"
@@ -199,8 +202,9 @@
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/eiv_right_arrow3"
                     android:text="@string/setting_about"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/medium_font_size" />
+                    android:textColor="@color/base_black_87"
+                    android:textSize="@dimen/medium_font_size"
+                    android:layout_marginLeft="4dp" />
 
                 <com.edusoho.kuozhi.v3.view.EduSohoIconView
                     android:id="@+id/eiv_right_arrow3"
