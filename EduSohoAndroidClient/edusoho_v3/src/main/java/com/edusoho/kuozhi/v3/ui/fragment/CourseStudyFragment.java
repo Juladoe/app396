@@ -65,6 +65,19 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
     List lessonIds = new ArrayList();
 
+    private View.OnClickListener summaryListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.USER_LEARN_COURSE, mCourseId));
+                    startIntent.putExtra(Const.WEB_URL, url);
+                }
+            });
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,6 +111,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         dataList = addLessonTitle(dataList);
         addCourseSummary();
         mAdapter = new StudyProcessRecyclerAdapter(mContext, dataList, app);
+        mAdapter.setSummaryListene(summaryListener);
         studyProcessRecyclerView.setAdapter(mAdapter);
     }
 
