@@ -64,6 +64,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     };
 
     List lessonIds = new ArrayList();
+    List questionIds = new ArrayList();
 
     private View.OnClickListener summaryListener = new View.OnClickListener() {
         @Override
@@ -204,6 +205,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
             List<NewsCourseEntity> subList = (List<NewsCourseEntity>) entry.getValue();
+            filterUselessItem(subList);
             addFinishTime(subList);
             list.addAll(subList);
         }
@@ -241,6 +243,32 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
             }
         }
+    }
+
+    private void filterUselessItem(List<NewsCourseEntity> list){
+        Collections.reverse(list);
+        boolean hasHomework = false;
+        for (int i = 0;i<list.size();i++){
+            NewsCourseEntity entity = list.get(i);
+            String type = entity.getBodyType();
+            if (type.equals("question.answered")){
+                int questionId = entity.getQuestionId();
+                if (!questionIds.contains(questionId)){
+                    questionIds.add(questionId);
+                }else {
+                    list.remove(i);
+                    i--;
+                }
+            }else if (type.equals("homework.reviewed")){
+                if (!hasHomework){
+                    hasHomework = true;
+                }else {
+                    list.remove(i);
+                    i--;
+                }
+            }
+        }
+        Collections.reverse(list);
     }
 
     private void addCourseSummary() {
