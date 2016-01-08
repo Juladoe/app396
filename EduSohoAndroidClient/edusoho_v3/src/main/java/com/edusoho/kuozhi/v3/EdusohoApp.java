@@ -187,7 +187,7 @@ public class EdusohoApp extends Application {
      *
      * @param requestUrl       url、参数、header等信息
      * @param responseListener 返回response信息
-     * @param errorListener    错误信息
+     * @param errorListener    错误信息π
      */
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();

@@ -91,13 +91,14 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 mUserTypeInCourse = role;
                 if (PushUtil.ChatUserType.STUDENT.equals(mUserTypeInCourse)) {
                     initSwitchButton(BACK, mRadioButtonTitle[0], mOnCheckedChangeListener);
+                    setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
                 } else if (PushUtil.ChatUserType.TEACHER.equals(mUserTypeInCourse)) {
                     initSwitchButton(BACK, mRadioButtonTitle[1], mOnCheckedChangeListener);
+                    setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
                 } else {
                     CommonUtil.longToast(mContext, "您不是该课程的学生");
                     finish();
                 }
-                setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
                 CurrentCourseId = mCourseId;
             }
         });
