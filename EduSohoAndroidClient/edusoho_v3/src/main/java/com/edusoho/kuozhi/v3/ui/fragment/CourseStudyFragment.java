@@ -7,7 +7,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -48,6 +47,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     private TextView mFloatButton;
 
     private StudyProcessRecyclerAdapter mAdapter;
+    private RecyclerLinearLayoutManager mRecyclerLinearLayoutManager;
 
     private LinkedHashMap<String, List<NewsCourseEntity>> totalListMap;
     private List<NewsCourseEntity> dataList;
@@ -90,8 +90,9 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     protected void initView(View view) {
         super.initView(view);
 
+        mRecyclerLinearLayoutManager = new RecyclerLinearLayoutManager(mContext);
         studyProcessRecyclerView = (RecyclerView) view.findViewById(R.id.study_process_list);
-        studyProcessRecyclerView.setLayoutManager(new recyclerLinearLayoutManager(mContext));
+        studyProcessRecyclerView.setLayoutManager(mRecyclerLinearLayoutManager);
         studyProcessRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         mAdapter = new StudyProcessRecyclerAdapter(mContext,new ArrayList(), app);
@@ -287,7 +288,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                 CourseDetailsResult courseDetailsResult = mActivity.parseJsonValue(response, new TypeToken<CourseDetailsResult>() {
                 });
                 Course course = courseDetailsResult.course;
-                if (dataList.get(0).getBodyType().equals("course.summary")){
+                if (dataList.size()!=0 && dataList.get(0).getBodyType().equals("course.summary")){
                     return;
                 }else {
                     NewsCourseEntity entity = new NewsCourseEntity();
@@ -339,9 +340,9 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-    private static class recyclerLinearLayoutManager extends LinearLayoutManager{
+    private static class RecyclerLinearLayoutManager extends LinearLayoutManager{
 
-        public recyclerLinearLayoutManager(Context context) {
+        public RecyclerLinearLayoutManager(Context context) {
             super(context);
         }
 
