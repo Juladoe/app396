@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
+import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
@@ -442,16 +443,13 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         }
         if ("Fragment".equals(type)) {
             mActivity.app.mEngine.runPluginWithFragmentByBundle(name + "Fragment", mActivity, bundle);
-        } else {
-            //final LoadDialog loadDialog = LoadDialog.create(mContext);
+        } else if ("courseConsult".equals(name)) {
             RequestUrl requestUrl = mActivity.app.bindUrl(Const.USERINFO, false);
             HashMap<String, String> params = requestUrl.getParams();
             params.put("userId", bundle.getString("userId"));
-            //loadDialog.show();
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    //loadDialog.dismiss();
                     User user = mActivity.parseJsonValue(response, new TypeToken<User>() {
                     });
                     if (user != null) {
@@ -461,17 +459,23 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
                         bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.TEACHER);
                         mActivity.app.mEngine.runNormalPluginWithBundle("ChatActivity", mActivity, bundle);
                     }
-                    //loadDialog.dismiss();
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    //loadDialog.dismiss();
                     CommonUtil.shortToast(mContext, "无法获取教师信息");
                 }
             });
-
-
+        } else if ("threadDiscuss".equals(name)) {
+            mActivity.app.mEngine.runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, Integer.valueOf(bundle.getString("courseId")));
+                    startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, Integer.valueOf(bundle.getString("lessonId")));
+                    startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, Integer.valueOf(bundle.getString("threadId")));
+                    startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
+                }
+            });
         }
     }
 
@@ -489,7 +493,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         return array;
     }
 
-    private Bundle JsonObject2Bundle(JSONObject jsonObject) throws JSONException{
+    private Bundle JsonObject2Bundle(JSONObject jsonObject) throws JSONException {
         Bundle bundle = new Bundle();
         Iterator<String> iterator = jsonObject.keys();
         while (iterator.hasNext()) {
