@@ -253,12 +253,6 @@
             android:launchMode="singleTop"
             android:theme="@style/AppViewPaperTheme" />
 
-        <activity
-            android:name="com.edusoho.kuozhi.v3.ui.CourseStudyPageActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeNoActionBar" />
-
         <!-- 【必须】 exported设置为true -->
         <activity
             android:name="com.tencent.android.tpush.XGPushActivity"
