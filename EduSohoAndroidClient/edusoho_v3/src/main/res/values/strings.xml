@@ -132,7 +132,7 @@
     <string name="learning_status">&#xe638;</string>
     <string name="lesson_next">&#xe63b;</string>
     <string name="lesson_previous">&#xe63a;</string>
-    <string name="learn_more"></string>
+    <string name="lesson_thread">&#xe66a;</string>
 
     <string name="font_group">&#xe643;</string>
     <string name="font_service">&#xe60c;</string>
