@@ -86,7 +86,6 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                 CommonUtil.longToast(mContext, "获取课程信息失败");
             }
         });
-
     }
 
     @Override

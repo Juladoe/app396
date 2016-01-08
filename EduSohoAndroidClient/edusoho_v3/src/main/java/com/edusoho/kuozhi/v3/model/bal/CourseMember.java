@@ -30,7 +30,7 @@ public class CourseMember implements Serializable {
     public UserEntity user;
 
     public static class UserEntity {
-        public String id;
+        public int id;
         public String nickname;
         public String title;
         public String avatar;
