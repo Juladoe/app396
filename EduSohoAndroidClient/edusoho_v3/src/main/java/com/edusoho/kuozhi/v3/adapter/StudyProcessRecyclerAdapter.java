@@ -299,4 +299,9 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
     public void setSummaryListene(View.OnClickListener listener){
         this.summaryListener = listener;
     }
+
+    public void setmDataList(List<NewsCourseEntity> mDataList) {
+        this.mDataList = mDataList;
+        notifyItemRangeChanged(0,getItemCount());
+    }
 }
