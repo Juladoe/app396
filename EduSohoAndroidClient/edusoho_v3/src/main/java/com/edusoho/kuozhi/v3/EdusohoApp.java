@@ -197,6 +197,14 @@ public class EdusohoApp extends Application {
         mVolley.addToRequestQueue(request);
     }
 
+    public void getUrlWithCache(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        mVolley.getRequestQueue();
+        StringVolleyRequest request = new StringVolleyRequest(Request.Method.GET, requestUrl, responseListener, errorListener);
+        request.setCacheMode(StringVolleyRequest.CACHE_ALWAYS);
+        request.setTag(requestUrl.url);
+        mVolley.addToRequestQueue(request);
+    }
+
     public void addMessageListener(String msgId, CoreEngineMsgCallback callback) {
         mEngine.receiveMsg(msgId, callback);
     }
