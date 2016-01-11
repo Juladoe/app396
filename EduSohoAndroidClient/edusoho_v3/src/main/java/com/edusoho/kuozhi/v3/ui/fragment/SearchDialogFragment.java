@@ -289,48 +289,49 @@ public class SearchDialogFragment extends DialogFragment {
                 if ((searchFriendResult.mobile.length == 0) && (searchFriendResult.nickname.length == 0) && (searchFriendResult.qq.length == 0)) {
                     mList.setVisibility(View.GONE);
                     mNotice.setVisibility(View.VISIBLE);
+                    mLoading.setVisibility(View.GONE);
                 } else {
                     mList.setVisibility(View.VISIBLE);
                     mNotice.setVisibility(View.GONE);
-                }
 
-                Arrays.fill(friendIds, 0);
-                count = 0;
-                if (searchFriendResult.mobile.length != 0) {
-                    for (Friend friend : searchFriendResult.mobile) {
-                        if (friend.id == mApp.loginUser.id) {
-                            continue;
-                        }
-                        mAdapter.addItem(friend);
-                        friendIds[count] = friend.id;
-                        count++;
-
-                    }
-                }
-                if (searchFriendResult.qq.length != 0) {
-                    for (Friend friend : searchFriendResult.qq) {
-                        if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
-                            continue;
-                        } else {
-                            friendIds[count] = friend.id;
+                    Arrays.fill(friendIds, 0);
+                    count = 0;
+                    if (searchFriendResult.mobile.length != 0) {
+                        for (Friend friend : searchFriendResult.mobile) {
+                            if (friend.id == mApp.loginUser.id) {
+                                continue;
+                            }
                             mAdapter.addItem(friend);
-                            count++;
-                        }
-                    }
-                }
-                if (searchFriendResult.nickname.length != 0) {
-                    for (Friend friend : searchFriendResult.nickname) {
-                        if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
-                            continue;
-                        } else {
                             friendIds[count] = friend.id;
-                            mAdapter.addItem(friend);
                             count++;
+
                         }
                     }
-                }
+                    if (searchFriendResult.qq.length != 0) {
+                        for (Friend friend : searchFriendResult.qq) {
+                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
+                                continue;
+                            } else {
+                                friendIds[count] = friend.id;
+                                mAdapter.addItem(friend);
+                                count++;
+                            }
+                        }
+                    }
+                    if (searchFriendResult.nickname.length != 0) {
+                        for (Friend friend : searchFriendResult.nickname) {
+                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
+                                continue;
+                            } else {
+                                friendIds[count] = friend.id;
+                                mAdapter.addItem(friend);
+                                count++;
+                            }
+                        }
+                    }
 
-                promise.resolve(searchFriendResult);
+                    promise.resolve(searchFriendResult);
+                }
             }
         });
 
