@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -288,49 +289,60 @@ public class SearchDialogFragment extends DialogFragment {
             public void success(SearchFriendResult searchFriendResult) {
                 if ((searchFriendResult.mobile.length == 0) && (searchFriendResult.nickname.length == 0) && (searchFriendResult.qq.length == 0)) {
                     mList.setVisibility(View.GONE);
+                    mNotice.setText("未能搜索到相关用户");
                     mNotice.setVisibility(View.VISIBLE);
+                    mLoading.setVisibility(View.GONE);
                 } else {
                     mList.setVisibility(View.VISIBLE);
                     mNotice.setVisibility(View.GONE);
-                }
 
-                Arrays.fill(friendIds, 0);
-                count = 0;
-                if (searchFriendResult.mobile.length != 0) {
-                    for (Friend friend : searchFriendResult.mobile) {
-                        if (friend.id == mApp.loginUser.id) {
-                            continue;
-                        }
-                        mAdapter.addItem(friend);
-                        friendIds[count] = friend.id;
-                        count++;
-
-                    }
-                }
-                if (searchFriendResult.qq.length != 0) {
-                    for (Friend friend : searchFriendResult.qq) {
-                        if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
-                            continue;
-                        } else {
-                            friendIds[count] = friend.id;
+                    Arrays.fill(friendIds, 0);
+                    count = 0;
+                    if (searchFriendResult.mobile.length != 0) {
+                        for (Friend friend : searchFriendResult.mobile) {
+                            if (friend.id == mApp.loginUser.id) {
+                                continue;
+                            }
                             mAdapter.addItem(friend);
-                            count++;
-                        }
-                    }
-                }
-                if (searchFriendResult.nickname.length != 0) {
-                    for (Friend friend : searchFriendResult.nickname) {
-                        if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
-                            continue;
-                        } else {
                             friendIds[count] = friend.id;
-                            mAdapter.addItem(friend);
                             count++;
+
                         }
                     }
-                }
+                    if (searchFriendResult.qq.length != 0) {
+                        for (Friend friend : searchFriendResult.qq) {
+                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
+                                continue;
+                            } else {
+                                friendIds[count] = friend.id;
+                                mAdapter.addItem(friend);
+                                count++;
+                            }
+                        }
+                    }
+                    if (searchFriendResult.nickname.length != 0) {
+                        for (Friend friend : searchFriendResult.nickname) {
+                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
+                                continue;
+                            } else {
+                                friendIds[count] = friend.id;
+                                mAdapter.addItem(friend);
+                                count++;
+                            }
+                        }
+                    }
 
-                promise.resolve(searchFriendResult);
+                    promise.resolve(searchFriendResult);
+                }
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                mNotice.setText("出现未知错误，请稍后再试");
+                mNotice.setVisibility(View.VISIBLE);
+                if (mLoading.getVisibility() == View.VISIBLE){
+                    mLoading.setVisibility(View.GONE);
+                }
             }
         });
 
