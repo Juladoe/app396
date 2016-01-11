@@ -1128,7 +1128,7 @@ public class EplayerPluginActivity extends EplayerPluginBaseActivity implements 
             playerData =  new    EPlayerData();
         }
 
-         /*
+        /*
             @fix by suju
          */
         if(playerData.playModel== EPlayerPlayModelType.EPlayerPlayModelTypePlayback){

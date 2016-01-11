@@ -1101,7 +1101,7 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
 
         playerControllerView= (PlayerControllerView) findViewById(R.id.playerControllerView);
 
-         /*
+        /*
             @fix by suju
          */
         if(playerData.playModel== EPlayerPlayModelType.EPlayerPlayModelTypePlayback){
@@ -1109,7 +1109,6 @@ public class EplayerPluginPadActivity extends EplayerPluginBaseActivity  impleme
         }else{
             EplayerSetting.isPlayback = false;
         }
-
         //TODO 回看判断
         if (EplayerSetting.isPlayback){
 //            EplayerSetting.isPlayback = true;
