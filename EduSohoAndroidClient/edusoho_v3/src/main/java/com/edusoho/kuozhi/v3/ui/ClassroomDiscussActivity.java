@@ -93,30 +93,8 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     @Override
     protected void initView() {
         super.initView();
-        mAdapter = new ClassroomDiscussAdapter<>(getList(0), mContext);
-        mAdapter.setSendImageClickListener(this);
-        lvMessage.setAdapter(mAdapter);
-        mAudioDownloadReceiver.setAdapter(mAdapter);
-        mStart = mAdapter.getCount();
         lvMessage.post(mListViewSelectRunnable);
         mPtrFrame.setLastUpdateTimeRelateObject(this);
-        mPtrFrame.setPtrHandler(new PtrHandler() {
-            @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
-                mAdapter.addItems(getList(mStart));
-                mStart = mAdapter.getCount();
-                mPtrFrame.refreshComplete();
-                lvMessage.postDelayed(mListViewSelectRunnable, 100);
-            }
-
-            @Override
-            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                int count = getList(mStart).size();
-                return count > 0 && canDoRefresh;
-            }
-        });
-
         lvMessage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -155,6 +133,28 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
             mClassroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         }
 
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                mAdapter.addItems(getList(mStart));
+                mStart = mAdapter.getCount();
+                mPtrFrame.refreshComplete();
+                lvMessage.postDelayed(mListViewSelectRunnable, 100);
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+                int count = getList(mStart).size();
+                return count > 0 && canDoRefresh;
+            }
+        });
+
+        mAdapter = new ClassroomDiscussAdapter<>(getList(0), mContext);
+        mAdapter.setSendImageClickListener(this);
+        lvMessage.setAdapter(mAdapter);
+        mAudioDownloadReceiver.setAdapter(mAdapter);
+        mStart = mAdapter.getCount();
         super.initCacheFolder();
     }
 
