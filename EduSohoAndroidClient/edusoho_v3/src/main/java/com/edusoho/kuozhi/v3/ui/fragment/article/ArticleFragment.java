@@ -239,6 +239,9 @@ public class ArticleFragment extends BaseFragment {
 
     private void initArticleMenuItem(List<MenuItem> menuItems) {
         mMenuLayout.removeAllViews();
+        if (menuItems.isEmpty()) {
+            return;
+        }
         int childWidth = mMenuLayout.getWidth() / menuItems.size();
         for (MenuItem item : menuItems) {
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
