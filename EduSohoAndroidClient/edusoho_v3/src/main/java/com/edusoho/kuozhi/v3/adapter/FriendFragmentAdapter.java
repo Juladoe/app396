@@ -96,7 +96,7 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
                     itemHolder = new ItemHolder();
                     itemHolder.friendName = (TextView) v.findViewById(R.id.friend_name);
                     itemHolder.friendAvatar = (RoundedImageView) v.findViewById(R.id.friend_avatar);
-                    itemHolder.teacherTag = (ImageView) v.findViewById(R.id.teacher_tag);
+                    itemHolder.teacherTag = (TextView) v.findViewById(R.id.teacher_tag);
                     itemHolder.dividerLine = v.findViewById(R.id.divider_line);
                     itemHolder.catalog = (TextView) v.findViewById(R.id.catalog);
                     v.setTag(itemHolder);
@@ -184,7 +184,7 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
     private class ItemHolder {
         private RoundedImageView friendAvatar;
         private TextView friendName;
-        private ImageView teacherTag;
+        private TextView teacherTag;
         private View dividerLine;
         private TextView catalog;
     }

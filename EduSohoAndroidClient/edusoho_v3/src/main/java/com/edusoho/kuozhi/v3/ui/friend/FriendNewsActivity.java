@@ -272,7 +272,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
             holder.relation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
+                    RequestUrl requestUrl = app.bindNewUrl(Const.USERS, true);
                     StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
                     stringBuffer.append(fn.content.userId + "/followers");
                     requestUrl.url = stringBuffer.toString();

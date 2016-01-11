@@ -220,6 +220,24 @@ public class BaseActivity extends ActionBarActivity {
         });
     }
 
+    public void ajaxGetWithCache(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
+        app.getUrlWithCache(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                responseListener.onResponse(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (errorListener != null) {
+                    errorListener.onErrorResponse(error);
+                } else {
+                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+                }
+            }
+        });
+    }
+
     public void runService(String serviceName) {
         app.mEngine.runService(serviceName, mActivity, null);
     }

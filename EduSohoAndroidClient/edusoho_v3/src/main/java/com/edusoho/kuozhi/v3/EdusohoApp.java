@@ -187,12 +187,20 @@ public class EdusohoApp extends Application {
      *
      * @param requestUrl       url、参数、header等信息
      * @param responseListener 返回response信息
-     * @param errorListener    错误信息
+     * @param errorListener    错误信息π
      */
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
         StringVolleyRequest request = new StringVolleyRequest(Request.Method.GET, requestUrl, responseListener, errorListener);
         request.setCacheMode(StringVolleyRequest.CACHE_AUTO);
+        request.setTag(requestUrl.url);
+        mVolley.addToRequestQueue(request);
+    }
+
+    public void getUrlWithCache(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
+        mVolley.getRequestQueue();
+        StringVolleyRequest request = new StringVolleyRequest(Request.Method.GET, requestUrl, responseListener, errorListener);
+        request.setCacheMode(StringVolleyRequest.CACHE_ALWAYS);
         request.setTag(requestUrl.url);
         mVolley.addToRequestQueue(request);
     }

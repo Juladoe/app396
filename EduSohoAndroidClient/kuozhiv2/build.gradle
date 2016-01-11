@@ -8,8 +8,8 @@ android {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
-        versionName "3.2.2"
-        versionCode 28
+        versionName "3.3.0"
+        versionCode 29
     }
 
     productFlavors {

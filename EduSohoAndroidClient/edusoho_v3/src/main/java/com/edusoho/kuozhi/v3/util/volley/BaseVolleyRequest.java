@@ -124,7 +124,6 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
         map.put("Cache-Control", String.format("max-age=%d,stale-while-revalidate=%d",0, CACHE_MAX_AGE));
         NetworkResponse networkResponse = new NetworkResponse(response.statusCode, response.data, map, true);
         Cache.Entry cache = HttpHeaderParser.parseCacheHeaders(networkResponse);
-
         return cache;
     }
 

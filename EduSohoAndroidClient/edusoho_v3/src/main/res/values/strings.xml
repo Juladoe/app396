@@ -38,7 +38,7 @@
     <string name="setting_about">关于</string>
     <string name="msg_reminder_new_msg">接收新消息通知</string>
     <string name="msg_reminder_sound">声音</string>
-    <string name="msg_reminder_viberate">振动</string>
+    <string name="msg_reminder_vibrate">振动</string>
     <string name="online_duration_content">设置消息接收时，会发出提醒的时间段。</string>
     <string name="online_duration_start">开始时间</string>
     <string name="online_duration_end">结束时间</string>
@@ -132,7 +132,7 @@
     <string name="learning_status">&#xe638;</string>
     <string name="lesson_next">&#xe63b;</string>
     <string name="lesson_previous">&#xe63a;</string>
-    <string name="learn_more"></string>
+    <string name="lesson_thread">&#xe66a;</string>
 
     <string name="font_group">&#xe643;</string>
     <string name="font_service">&#xe60c;</string>

@@ -49,7 +49,6 @@ public class ChatItemBaseDetail extends ActionBarBaseActivity implements View.On
         vAnnouncement = findViewById(R.id.rl_announcement);
         vEntry = findViewById(R.id.rl_entry);
         vClearChatRecord = findViewById(R.id.rl_clear_record);
-
         vAnnouncement.setOnClickListener(this);
         vEntry.setOnClickListener(this);
         vClearChatRecord.setOnClickListener(this);

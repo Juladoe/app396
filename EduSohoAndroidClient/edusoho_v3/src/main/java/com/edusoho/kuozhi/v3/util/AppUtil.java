@@ -61,6 +61,7 @@ import java.util.zip.ZipInputStream;
 public class AppUtil {
 
     public static final String TAG = "AppUtil";
+    public static final long ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
 
     public static int parseInt(String value) {
         int i = 0;
@@ -753,21 +754,48 @@ public class AppUtil {
         return result;
     }
 
-    public static String convertMills2Date(long millsTime) {
+    public static String convertMills2Date(long millis) {
+        String result = "";
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
             String nowTime = sdf.format(System.currentTimeMillis());
-            String showTime = sdf.format(millsTime);
-            if (nowTime.substring(0, 11).equals(
-                    showTime.substring(0, 11))) {
-                return showTime.substring(12);
+            String showTime = sdf.format(millis);
+            if (nowTime.substring(0, 11).equals(showTime.substring(0, 11))) {
+                // 如果是当天
+                result = showTime.substring(12);
+            } else if (System.currentTimeMillis() - millis < ONE_WEEK) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(millis);
+                switch (calendar.get(Calendar.DAY_OF_WEEK) - 1) {
+                    case 1:
+                        result = "星期一";
+                        break;
+                    case 2:
+                        result = "星期二";
+                        break;
+                    case 3:
+                        result = "星期三";
+                        break;
+                    case 4:
+                        result = "星期四";
+                        break;
+                    case 5:
+                        result = "星期五";
+                        break;
+                    case 6:
+                        result = "星期六";
+                        break;
+                    default:
+                        result = "星期日";
+                        break;
+                }
             } else {
-                return showTime.substring(5);
+                result = showTime.substring(5);
             }
         } catch (Exception ex) {
             Log.e("convertMills2Date", ex.getMessage());
-            return "";
         }
+        return result;
     }
 
     public static String convertTimeZone2Time(String timeZone) {
@@ -1130,12 +1158,12 @@ public class AppUtil {
         }
     }
 
-    public static String cutString(String str,int length){
+    public static String cutString(String str, int length) {
         String string = str;
-        if (string.length()<=length){
+        if (string.length() <= length) {
             return string;
-        }else {
-            return string.substring(0,length)+"...";
+        } else {
+            return string.substring(0, length) + "...";
         }
     }
 }

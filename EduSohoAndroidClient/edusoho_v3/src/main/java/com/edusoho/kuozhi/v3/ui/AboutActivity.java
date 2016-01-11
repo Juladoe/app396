@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
@@ -20,10 +19,7 @@ import java.util.Set;
  * Created by JesseHuang on 15/5/18.
  */
 public class AboutActivity extends ActionBarBaseActivity {
-    private TextView tvAboutSchool;
-    private TextView tvFeedback;
     private EduUpdateView tvCheckUpdate;
-    private View viewUpdate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +30,14 @@ public class AboutActivity extends ActionBarBaseActivity {
     }
 
     private void initView() {
-        tvAboutSchool = (TextView) findViewById(R.id.tv_about_school);
-        tvAboutSchool.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.rl_about_school).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 app.mEngine.runNormalPlugin("AboutSchool", mActivity, null);
             }
         });
 
-        tvFeedback = (TextView) findViewById(R.id.tv_feedback);
-        tvFeedback.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.rl_feedback).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 app.mEngine.runNormalPlugin("SuggestionActivity", mActivity, null);
@@ -51,7 +45,7 @@ public class AboutActivity extends ActionBarBaseActivity {
         });
 
         tvCheckUpdate = (EduUpdateView) findViewById(R.id.tv_check_update);
-        viewUpdate = findViewById(R.id.linear_check_update);
+        View viewUpdate = findViewById(R.id.linear_check_update);
 
         viewUpdate.setOnClickListener(new View.OnClickListener() {
             @Override

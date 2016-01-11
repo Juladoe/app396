@@ -26,14 +26,13 @@
                     android:id="@+id/gv_member"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="1dp"
                     android:layout_marginTop="20dp"
                     android:background="@android:color/white"
                     android:columnWidth="60dp"
-                    android:horizontalSpacing="10dp"
-                    android:numColumns="auto_fit"
+                    android:horizontalSpacing="15dp"
+                    android:numColumns="4"
                     android:padding="10dp"
-                    android:verticalSpacing="10dp" />
+                    android:verticalSpacing="15dp" />
 
                 <View
                     android:id="@+id/v_separate_line"
@@ -46,7 +45,7 @@
                 <TextView
                     android:id="@+id/tv_all_member"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="52dp"
                     android:background="@drawable/more_setting_list_select"
                     android:padding="16dp"
                     android:text="@string/classroom_all_members"
@@ -54,86 +53,88 @@
                     android:textSize="@dimen/medium_font_size" />
             </LinearLayout>
 
-            <RelativeLayout
-                android:id="@+id/rl_announcement"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="@drawable/my_item_bg"
-                android:clickable="true"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp">
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/tv_classroom_announcement"
+                <RelativeLayout
+                    android:id="@+id/rl_announcement"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/eiv_right_arrow"
-                    android:text="@string/classroom_announcement"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/medium_font_size" />
+                    android:layout_height="52dp"
+                    android:background="@drawable/my_item_bg"
+                    android:clickable="true"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
 
-                <com.edusoho.kuozhi.v3.view.EduSohoIconView
-                    android:id="@+id/eiv_right_arrow"
+                    <TextView
+                        android:id="@+id/tv_classroom_announcement"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/eiv_right_arrow"
+                        android:text="@string/classroom_announcement"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/medium_font_size" />
+
+                    <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                        android:id="@+id/eiv_right_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/font_right_arrow"
+                        android:textColor="@color/grey_cccccc"
+                        android:textSize="@dimen/large_font_size" />
+                </RelativeLayout>
+
+                <View
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:text="@string/font_right_arrow"
-                    android:textColor="@color/grey_cccccc"
-                    android:textSize="@dimen/large_font_size" />
-            </RelativeLayout>
+                    android:layout_height="1px"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@color/grey_dddddd" />
 
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="1px"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@color/grey_dddddd" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="@drawable/my_item_bg"
-                android:clickable="true"
-                android:paddingLeft="16dp"
-                android:id="@+id/rl_entry"
-                android:paddingRight="16dp">
-
-                <TextView
-                    android:id="@+id/tv_entry_classroom"
+                <RelativeLayout
+                    android:id="@+id/rl_entry"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/eiv_right_arrow1"
-                    android:text="@string/entry_classroom_course"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/medium_font_size" />
+                    android:layout_height="52dp"
+                    android:background="@drawable/my_item_bg"
+                    android:clickable="true"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
 
-                <com.edusoho.kuozhi.v3.view.EduSohoIconView
-                    android:id="@+id/eiv_right_arrow1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:text="@string/font_right_arrow"
-                    android:textColor="@color/grey_cccccc"
-                    android:textSize="@dimen/large_font_size" />
-            </RelativeLayout>
+                    <TextView
+                        android:id="@+id/tv_entry_classroom"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toLeftOf="@+id/eiv_right_arrow1"
+                        android:text="@string/entry_classroom_course"
+                        android:textColor="@color/grey"
+                        android:textSize="@dimen/medium_font_size" />
 
-            <View
-                android:layout_width="wrap_content"
-                android:layout_height="1px"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@color/grey_dddddd" />
+                    <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                        android:id="@+id/eiv_right_arrow1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:text="@string/font_right_arrow"
+                        android:textColor="@color/grey_cccccc"
+                        android:textSize="@dimen/large_font_size" />
+                </RelativeLayout>
+            </LinearLayout>
+
 
             <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:background="@drawable/my_item_bg"
-                android:clickable="true"
                 android:id="@+id/rl_clear_record"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/my_item_bg"
+                android:clickable="true"
                 android:paddingLeft="16dp"
                 android:paddingRight="16dp">
 

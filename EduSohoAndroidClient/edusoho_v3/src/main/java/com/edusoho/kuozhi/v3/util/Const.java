@@ -467,6 +467,7 @@ public class Const {
     public static final String DISCUSSION_GROUP = "/api/me/chatrooms";
     public static final String CLASSROOM_MEMBERS = "/api/classrooms/%d/members";
     public static final String COURSE_MEMBERS = "/api/courses/%d/members";
+    public static final String ROLE_IN_COURSE = "/api/courses/%d/membership/%d";
 
     /**
      * 绑定第三方登录

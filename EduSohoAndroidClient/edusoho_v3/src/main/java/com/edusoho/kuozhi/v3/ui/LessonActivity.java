@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
@@ -33,6 +34,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
@@ -82,7 +84,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private EduSohoTextBtn mLearnBtn;
     private EduSohoTextBtn mLessonNextBtn;
     private EduSohoTextBtn mLessonPreviousBtn;
-    private EduSohoTextBtn mMoreBtn;
+    private EduSohoTextBtn mThreadBtn;
 
     private ExerciseOptionDialog mPluginDialog;
 
@@ -136,7 +138,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             mToolsLayout = findViewById(R.id.lesson_tools_layout);
             mLessonNextBtn = (EduSohoTextBtn) findViewById(R.id.lesson_next);
             mLessonPreviousBtn = (EduSohoTextBtn) findViewById(R.id.lesson_previous);
-            mMoreBtn = (EduSohoTextBtn) findViewById(R.id.lesson_more_btn);
+            mThreadBtn = (EduSohoTextBtn) findViewById(R.id.lesson_thread_btn);
             mLearnBtn = (EduSohoTextBtn) findViewById(R.id.lesson_learn_btn);
 
             if (data != null) {
@@ -253,6 +255,20 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 if (mPreviousLessonId != 0) {
                     goToAnotherLesson(mPreviousLessonId);
                 }
+            }
+        });
+
+        mThreadBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                app.mEngine.runNormalPlugin("ThreadDiscussActivity", mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, mCourseId);
+                        startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, mLessonId);
+                        startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
+                    }
+                });
             }
         });
     }

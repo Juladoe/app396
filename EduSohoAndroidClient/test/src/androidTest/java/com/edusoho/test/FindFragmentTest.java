@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.edusoho.kuozhi.v3.ui.fragment.FindFragment;
-import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebView;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
+import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.AbstractJsBridgeAdapterWebView;
 import com.edusoho.test.base.BaseFragmentTestCase;
 
 /**
@@ -36,7 +36,7 @@ public class FindFragmentTest extends BaseFragmentTestCase<FindFragment> {
 
         assertEquals("main", webView.getAppCode());
         assertNotNull(webView.getWebView());
-    }
+
 
     private ESWebView getWebView(Fragment mFragment) {
         View parentView = mFragment.getView();
@@ -51,7 +51,7 @@ public class FindFragmentTest extends BaseFragmentTestCase<FindFragment> {
         Fragment mFragment = getFragment();
         ESWebView webView = getWebView(mFragment);
 
-        ESCordovaWebView cordovaWebView = webView.getWebView();
+        AbstractJsBridgeAdapterWebView cordovaWebView = webView.getWebView();
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) cordovaWebView.getLayoutParams();
         assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, layoutParams.width);
         assertEquals(ViewGroup.LayoutParams.MATCH_PARENT, layoutParams.height);

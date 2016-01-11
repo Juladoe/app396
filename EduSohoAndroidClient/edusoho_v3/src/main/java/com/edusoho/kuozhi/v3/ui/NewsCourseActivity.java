@@ -10,7 +10,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioGroup;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
@@ -18,6 +21,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
@@ -29,6 +33,9 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by JesseHuang on 15/9/16.
@@ -45,9 +52,8 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private int mCreatedTime;
     private String mCurrentFragmentTag;
     private New mNewItemInfo;
-    private String mUserType;
+    private String mUserTypeInCourse;
 
-    private CourseDiscussDataSource mCourseDiscussDataSource;
     private Handler mHandler;
 
     @Override
@@ -75,19 +81,27 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             return;
         }
         mHandler = new Handler();
-        mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        mFragmentType = getFragmentType();
         mCourseTitle = mNewItemInfo.title;
         mCourseId = mNewItemInfo.fromId;
         mCreatedTime = mNewItemInfo.createdTime;
-        mUserType = app.getCurrentUserRole();
-        mFragmentType = getFragmentType();
-        if (PushUtil.ChatUserType.FRIEND.equals(mUserType)) {
-            initSwitchButton(BACK, mRadioButtonTitle[0], mOnCheckedChangeListener);
-        } else if (PushUtil.ChatUserType.TEACHER.equals(mUserType)) {
-            initSwitchButton(BACK, mRadioButtonTitle[1], mOnCheckedChangeListener);
-        }
-        setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
-        CurrentCourseId = mCourseId;
+        getRoleInCourse(mCourseId, app.loginUser.id, new NormalCallback<String>() {
+            @Override
+            public void success(String role) {
+                mUserTypeInCourse = role;
+                if (PushUtil.ChatUserType.STUDENT.equals(mUserTypeInCourse)) {
+                    initSwitchButton(BACK, mRadioButtonTitle[0], mOnCheckedChangeListener);
+                    setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
+                } else if (PushUtil.ChatUserType.TEACHER.equals(mUserTypeInCourse)) {
+                    initSwitchButton(BACK, mRadioButtonTitle[1], mOnCheckedChangeListener);
+                    setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
+                } else {
+                    CommonUtil.longToast(mContext, "您不是该课程的学生");
+                    finish();
+                }
+                CurrentCourseId = mCourseId;
+            }
+        });
     }
 
     private void showFragment(String tag) {
@@ -121,7 +135,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             if (checkedId == R.id.rb_study) {
-                if (PushUtil.ChatUserType.FRIEND.equals(mUserType)) {
+                if (PushUtil.ChatUserType.STUDENT.equals(mUserTypeInCourse)) {
                     showFragment(mFragmentTags[1]);
                 } else {
                     showFragment(mFragmentTags[2]);
@@ -196,6 +210,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     }
 
     private String getFragmentType() {
+        CourseDiscussDataSource mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         CourseDiscussEntity courseDiscussEntity = mCourseDiscussDataSource.get(" BELONGID = ? AND COURSEID = ? ORDER BY CREATEDTIME DESC LIMIT 0, 1", new String[]{app.loginUser.id + "", mCourseId + ""});
         if (courseDiscussEntity != null && courseDiscussEntity.createdTime == mCreatedTime) {
             return mEntranceType[0];
@@ -213,4 +228,31 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
         }
     };
+
+    private void getRoleInCourse(int courseId, int userId, final NormalCallback<String> normalCallback) {
+        RequestUrl requestUrl = app.bindNewUrl(String.format(Const.ROLE_IN_COURSE, courseId, userId), true);
+        ajaxGetWithCache(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    if (response.contains("membership")) {
+                        JSONObject jsonObject = new JSONObject(response);
+                        if ("teacher".equals(jsonObject.getString("membership"))) {
+                            normalCallback.success("teacher");
+                        } else if ("student".equals(jsonObject.getString("membership"))) {
+                            normalCallback.success("student");
+                        } else {
+                            normalCallback.success("none");
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
+    }
 }

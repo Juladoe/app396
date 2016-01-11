@@ -38,7 +38,7 @@ public class WebViewActivityTest extends BaseActivityUnitTestCase<WebViewActivit
     }
 
     public WebViewActivity getActivity(String url) {
-        mLaunchIntent.putExtra(WebViewActivity.URL, url);
+        mLaunchIntent.putExtra(Const.WEB_URL, url);
         if (mActivity == null) {
             mActivity = startActivity(mLaunchIntent, null, null);
         }
