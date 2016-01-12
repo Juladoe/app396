@@ -55,6 +55,7 @@ public class CommandFactory {
                 pushCommand = new PushArticleCreateCommand(pusher);
                 break;
             case PushUtil.FriendVerified.TYPE:
+                break;
             case PushUtil.ChatMsgType.AUDIO:
             case PushUtil.ChatMsgType.IMAGE:
             case PushUtil.ChatMsgType.TEXT:
