@@ -171,9 +171,11 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         if (length == 0) {
             mEmptyNotice.setVisibility(View.VISIBLE);
             newsList.setVisibility(View.GONE);
+            mLoading.setVisibility(View.GONE);
         } else {
             mEmptyNotice.setVisibility(View.GONE);
             newsList.setVisibility(View.VISIBLE);
+            mLoading.setVisibility(View.GONE);
         }
     }
 
