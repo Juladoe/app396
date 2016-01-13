@@ -236,11 +236,25 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         lvMessage.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                viewMediaLayout.setVisibility(View.GONE);
+                if (viewMediaLayout.getVisibility() == View.VISIBLE) {
+                    viewMediaLayout.setVisibility(View.GONE);
+                }
+                if (etSend.isFocused()) {
+                    etSend.clearFocus();
+                }
                 return false;
             }
         });
         mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
+
+        etSend.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    viewMediaLayout.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     private void initData() {
@@ -738,6 +752,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             //加号，显示多媒体框
             if (viewMediaLayout.getVisibility() == View.GONE) {
                 viewMediaLayout.setVisibility(View.VISIBLE);
+                etSend.clearFocus();
+                ivAddMedia.requestFocus();
             } else {
                 viewMediaLayout.setVisibility(View.GONE);
             }
@@ -747,15 +763,13 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                 return;
             }
             sendMsg(etSend.getText().toString());
-
         } else if (v.getId() == R.id.btn_voice) {
             //语音
             viewMediaLayout.setVisibility(View.GONE);
-            btnKeyBoard.setVisibility(View.VISIBLE);
             btnVoice.setVisibility(View.GONE);
             viewMsgInput.setVisibility(View.GONE);
+            btnKeyBoard.setVisibility(View.VISIBLE);
             viewPressToSpeak.setVisibility(View.VISIBLE);
-
         } else if (v.getId() == R.id.btn_set_mode_keyboard) {
             //键盘
             viewMediaLayout.setVisibility(View.GONE);

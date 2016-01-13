@@ -76,7 +76,7 @@ import in.srain.cube.views.ptr.PtrHandler;
 /**
  * Created by JesseHuang on 15/12/14.
  */
-public class DiscussFragment extends BaseFragment implements View.OnClickListener, View.OnTouchListener, ChatAdapter.ImageErrorClick {
+public class DiscussFragment extends BaseFragment implements View.OnClickListener, View.OnTouchListener, View.OnFocusChangeListener, ChatAdapter.ImageErrorClick {
     private static final String TAG = "DiscussFragment";
     public static int CurrentCourseId = 0;
 
@@ -163,9 +163,11 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         mAudioDownloadReceiver = new AudioDownloadReceiver();
         etSend = (EditText) view.findViewById(R.id.et_send_content);
         etSend.addTextChangedListener(msgTextWatcher);
+        etSend.setOnFocusChangeListener(this);
         tvSend = (Button) view.findViewById(R.id.tv_send);
         tvSend.setOnClickListener(this);
         lvMessage = (ListView) view.findViewById(R.id.lv_messages);
+        lvMessage.setOnTouchListener(this);
         ivAddMedia = (EduSohoIconView) view.findViewById(R.id.iv_show_media_layout);
         ivAddMedia.setOnClickListener(this);
         viewMediaLayout = view.findViewById(R.id.ll_media_layout);
@@ -234,7 +236,12 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
             lvMessage.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    viewMediaLayout.setVisibility(View.GONE);
+                    if (viewMediaLayout.getVisibility() == View.VISIBLE) {
+                        viewMediaLayout.setVisibility(View.GONE);
+                    }
+                    if (etSend.isFocused()) {
+                        etSend.clearFocus();
+                    }
                     return false;
                 }
             });
@@ -592,11 +599,20 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     }
 
     @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            viewMediaLayout.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         if (v.getId() == R.id.iv_show_media_layout) {
             //加号，显示多媒体框
             if (viewMediaLayout.getVisibility() == View.GONE) {
                 viewMediaLayout.setVisibility(View.VISIBLE);
+                etSend.clearFocus();
+                ivAddMedia.requestFocus();
             } else {
                 viewMediaLayout.setVisibility(View.GONE);
             }

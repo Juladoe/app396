@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.volley.Request;
@@ -95,13 +94,6 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         super.initView();
         lvMessage.post(mListViewSelectRunnable);
         mPtrFrame.setLastUpdateTimeRelateObject(this);
-        lvMessage.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                viewMediaLayout.setVisibility(View.GONE);
-                return false;
-            }
-        });
         mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 

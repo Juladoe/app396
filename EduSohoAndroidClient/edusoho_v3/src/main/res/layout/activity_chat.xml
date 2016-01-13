@@ -82,7 +82,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:background="@drawable/chat_send_smd_select">
+                android:background="@drawable/chat_send_smd_select"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
 
                 <EditText
                     android:id="@+id/et_send_content"

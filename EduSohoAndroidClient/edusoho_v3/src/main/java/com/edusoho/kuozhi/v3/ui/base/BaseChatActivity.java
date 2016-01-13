@@ -60,7 +60,7 @@ import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 /**
  * Created by JesseHuang on 15/10/16.
  */
-public class BaseChatActivity extends ActionBarBaseActivity {
+public class BaseChatActivity extends ActionBarBaseActivity implements View.OnClickListener, View.OnFocusChangeListener, View.OnTouchListener {
 
     protected EduSohoIconView btnVoice;
     protected EduSohoIconView btnKeyBoard;
@@ -120,23 +120,25 @@ public class BaseChatActivity extends ActionBarBaseActivity {
         mAudioDownloadReceiver = new AudioDownloadReceiver();
         etSend = (EditText) findViewById(R.id.et_send_content);
         etSend.addTextChangedListener(msgTextWatcher);
+        etSend.setOnFocusChangeListener(this);
         tvSend = (Button) findViewById(R.id.tv_send);
-        tvSend.setOnClickListener(mClickListener);
+        tvSend.setOnClickListener(this);
         lvMessage = (ListView) findViewById(R.id.lv_messages);
+        lvMessage.setOnTouchListener(this);
         ivAddMedia = (EduSohoIconView) findViewById(R.id.iv_show_media_layout);
-        ivAddMedia.setOnClickListener(mClickListener);
+        ivAddMedia.setOnClickListener(this);
         viewMediaLayout = findViewById(R.id.ll_media_layout);
         btnVoice = (EduSohoIconView) findViewById(R.id.btn_voice);
-        btnVoice.setOnClickListener(mClickListener);
+        btnVoice.setOnClickListener(this);
         btnKeyBoard = (EduSohoIconView) findViewById(R.id.btn_set_mode_keyboard);
-        btnKeyBoard.setOnClickListener(mClickListener);
+        btnKeyBoard.setOnClickListener(this);
         viewPressToSpeak = findViewById(R.id.rl_btn_press_to_speak);
-        viewPressToSpeak.setOnClickListener(mClickListener);
+        viewPressToSpeak.setOnClickListener(this);
         viewMsgInput = findViewById(R.id.rl_msg_input);
         EduSohoIconView ivPhoto = (EduSohoIconView) findViewById(R.id.iv_image);
-        ivPhoto.setOnClickListener(mClickListener);
+        ivPhoto.setOnClickListener(this);
         EduSohoIconView ivCamera = (EduSohoIconView) findViewById(R.id.iv_camera);
-        ivCamera.setOnClickListener(mClickListener);
+        ivCamera.setOnClickListener(this);
         viewPressToSpeak.setOnTouchListener(mVoiceRecordingTouchListener);
         tvSpeak = (TextView) findViewById(R.id.tv_speak);
         tvSpeakHint = (TextView) findViewById(R.id.tv_speak_hint);
@@ -201,60 +203,78 @@ public class BaseChatActivity extends ActionBarBaseActivity {
         }
     };
 
-    protected View.OnClickListener mClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (v.getId() == R.id.iv_show_media_layout) {
-                //加号，显示多媒体框
-                if (viewMediaLayout.getVisibility() == View.GONE) {
-                    viewMediaLayout.setVisibility(View.VISIBLE);
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (viewMediaLayout.getVisibility() == View.VISIBLE) {
+            viewMediaLayout.setVisibility(View.GONE);
+        }
+        if (etSend.isFocused()) {
+            etSend.clearFocus();
+        }
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.iv_show_media_layout) {
+            //加号，显示多媒体框
+            if (viewMediaLayout.getVisibility() == View.GONE) {
+                viewMediaLayout.setVisibility(View.VISIBLE);
+                etSend.clearFocus();
+                ivAddMedia.requestFocus();
+            } else {
+                viewMediaLayout.setVisibility(View.GONE);
+            }
+        } else if (v.getId() == R.id.tv_send) {
+            //发送消息
+            if (etSend.getText().length() == 0) {
+                return;
+            }
+            sendMsg(etSend.getText().toString());
+
+        } else if (v.getId() == R.id.btn_voice) {
+            //语音
+            viewMediaLayout.setVisibility(View.GONE);
+            btnKeyBoard.setVisibility(View.VISIBLE);
+            btnVoice.setVisibility(View.GONE);
+            viewMsgInput.setVisibility(View.GONE);
+            viewPressToSpeak.setVisibility(View.VISIBLE);
+
+        } else if (v.getId() == R.id.btn_set_mode_keyboard) {
+            //键盘
+            viewMediaLayout.setVisibility(View.GONE);
+            btnVoice.setVisibility(View.VISIBLE);
+            viewPressToSpeak.setVisibility(View.GONE);
+            viewMsgInput.setVisibility(View.VISIBLE);
+            btnKeyBoard.setVisibility(View.GONE);
+        } else if (v.getId() == R.id.rl_btn_press_to_speak) {
+            //长按发送语音
+            viewMediaLayout.setVisibility(View.GONE);
+        } else if (v.getId() == R.id.iv_image) {
+            //选择图片
+            openPictureFromLocal();
+        } else if (v.getId() == R.id.iv_camera) {
+            try {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                mCameraFile = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+                if (mCameraFile.createNewFile()) {
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
+                    startActivityForResult(intent, SEND_CAMERA);
                 } else {
-                    viewMediaLayout.setVisibility(View.GONE);
+                    CommonUtil.shortToast(mContext, "照片生成失败");
                 }
-            } else if (v.getId() == R.id.tv_send) {
-                //发送消息
-                if (etSend.getText().length() == 0) {
-                    return;
-                }
-                sendMsg(etSend.getText().toString());
-
-            } else if (v.getId() == R.id.btn_voice) {
-                //语音
-                viewMediaLayout.setVisibility(View.GONE);
-                btnKeyBoard.setVisibility(View.VISIBLE);
-                btnVoice.setVisibility(View.GONE);
-                viewMsgInput.setVisibility(View.GONE);
-                viewPressToSpeak.setVisibility(View.VISIBLE);
-
-            } else if (v.getId() == R.id.btn_set_mode_keyboard) {
-                //键盘
-                viewMediaLayout.setVisibility(View.GONE);
-                btnVoice.setVisibility(View.VISIBLE);
-                viewPressToSpeak.setVisibility(View.GONE);
-                viewMsgInput.setVisibility(View.VISIBLE);
-                btnKeyBoard.setVisibility(View.GONE);
-            } else if (v.getId() == R.id.rl_btn_press_to_speak) {
-                //长按发送语音
-                viewMediaLayout.setVisibility(View.GONE);
-            } else if (v.getId() == R.id.iv_image) {
-                //选择图片
-                openPictureFromLocal();
-            } else if (v.getId() == R.id.iv_camera) {
-                try {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    mCameraFile = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
-                    if (mCameraFile.createNewFile()) {
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
-                        startActivityForResult(intent, SEND_CAMERA);
-                    } else {
-                        CommonUtil.shortToast(mContext, "照片生成失败");
-                    }
-                } catch (Exception ex) {
-                    Log.e(TAG, ex.getMessage());
-                }
+            } catch (Exception ex) {
+                Log.e(TAG, ex.getMessage());
             }
         }
-    };
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            viewMediaLayout.setVisibility(View.GONE);
+        }
+    }
 
     protected View.OnTouchListener mVoiceRecordingTouchListener = new View.OnTouchListener() {
         @Override
