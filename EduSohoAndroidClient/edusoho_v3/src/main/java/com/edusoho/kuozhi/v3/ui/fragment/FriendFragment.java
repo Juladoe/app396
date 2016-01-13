@@ -161,21 +161,24 @@ public class FriendFragment extends BaseFragment {
     }
 
     private void showSearchDialog() {
-        final View toolbarView = getToolbarView();
-        ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(toolbarView), "height", toolbarView.getHeight(), 0);
-        toolbarView.setTag(toolbarView.getHeight());
-        animator.setDuration(300);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
-                searchDialogFragment.show(getChildFragmentManager(), "searchDialog");
-                searchDialogFragment.setToolBarView(toolbarView);
-            }
-        });
+//        final View toolbarView = getToolbarView();
+//        ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(toolbarView), "height", toolbarView.getHeight(), 0);
+//        toolbarView.setTag(toolbarView.getHeight());
+//        animator.setDuration(300);
+//        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+//        animator.addListener(new AnimatorListenerAdapter() {
+//            @Override
+//            public void onAnimationEnd(Animator animation) {
+//                SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
+//                searchDialogFragment.show(getChildFragmentManager(), "searchDialog");
+//                searchDialogFragment.setToolBarView(toolbarView);
+//            }
+//        });
+//
+//        animator.start();
 
-        animator.start();
+        SearchDialogFragment searchDialogFragment = new SearchDialogFragment();
+        searchDialogFragment.show(getChildFragmentManager(), "searchDialog");
     }
 
     private void initViewData() {

@@ -188,13 +188,13 @@ public class SearchDialogFragment extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-        if (mToolbarView.getVisibility() == View.GONE) {
-        }
-        int height = (Integer) mToolbarView.getTag();
-        ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mToolbarView), "height", 0, height);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setDuration(300);
-        animator.start();
+//        if (mToolbarView.getVisibility() == View.GONE) {
+//        }
+//        int height = (Integer) mToolbarView.getTag();
+//        ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mToolbarView), "height", 0, height);
+//        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+//        animator.setDuration(300);
+//        animator.start();
     }
 
 
