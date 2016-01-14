@@ -57,7 +57,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
             return;
         }
         mFromId = intent.getIntExtra(Const.FROM_ID, 0);
-        setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE) + "详情");
+        setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
         tvClassroomAnnouncement.setText(getString(R.string.course_announcement));
         tvEntryClassroom.setText(getString(R.string.entry_course));
         btnDelRecordAndQuit.setText(getString(R.string.del_record_and_quit_course));
