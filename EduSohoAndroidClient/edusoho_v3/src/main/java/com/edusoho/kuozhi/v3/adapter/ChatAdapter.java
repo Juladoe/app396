@@ -595,7 +595,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
         private String mImageUrl;
 
         public ImageMsgClick(String url) {
-            this.mImageUrl = url;
+            mImageUrl = url;
         }
 
         @Override
@@ -604,7 +604,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             int index = 0;
             int size = imageUrls.size();
             for (int i = 0; i < size; i++) {
-                if (("file://" + imageUrls.get(i)).equals(mImageUrl)) {
+                if ((imageUrls.get(i).equals(mImageUrl))) {
                     index = i;
                     break;
                 }

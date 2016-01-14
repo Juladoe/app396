@@ -279,7 +279,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         if (cache != null) {
             String imageLocalPath = cache.localPath;
             ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(imageLocalPath), holder.ivMsgImage, EdusohoApp.app.mOptions);
-            holder.ivMsgImage.setOnClickListener(new ImageMsgClick(imageLocalPath));
+            holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         }
         ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
     }
