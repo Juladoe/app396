@@ -49,7 +49,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
             return;
         }
         mFromId = intent.getIntExtra(Const.FROM_ID, 0);
-        setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE) + "详情");
+        setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
 
         RequestUrl requestUrl = app.bindNewUrl(String.format(Const.CLASSROOM_MEMBERS, mFromId), true);
         ajaxGet(requestUrl, new Response.Listener<String>() {
