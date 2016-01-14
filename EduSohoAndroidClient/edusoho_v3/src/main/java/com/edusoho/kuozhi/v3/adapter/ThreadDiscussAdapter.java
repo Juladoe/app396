@@ -439,6 +439,19 @@ public class ThreadDiscussAdapter extends ChatAdapter {
     }
 
     @Override
+    protected ArrayList<String> getCurrentImageUrls() {
+        ArrayList<String> imagesUrls = new ArrayList<>();
+        int size = mList.size();
+        for (int i = 0; i < size; i++) {
+            BaseMsgEntity entity = mList.get(i);
+            if (entity.type.equals(PushUtil.ChatMsgType.IMAGE)) {
+                imagesUrls.add(entity.content);
+            }
+        }
+        return imagesUrls;
+    }
+
+    @Override
     public void updateVoiceDownloadStatus(long downId) {
         ThreadDiscussEntity model = null;
         try {

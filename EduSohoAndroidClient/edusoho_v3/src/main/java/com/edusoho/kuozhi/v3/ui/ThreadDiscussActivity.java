@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.android.volley.Request;
@@ -98,13 +97,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     protected void initView() {
         super.initView();
         setBackMode(BACK, "描述你的问题");
-        lvMessage.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                viewMediaLayout.setVisibility(View.GONE);
-                return false;
-            }
-        });
         mLoadDialog = LoadDialog.create(mContext);
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
@@ -562,6 +554,8 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 }
                 if (viewMediaLayout.getVisibility() == View.GONE) {
                     viewMediaLayout.setVisibility(View.VISIBLE);
+                    etSend.clearFocus();
+                    ivAddMedia.requestFocus();
                 } else {
                     viewMediaLayout.setVisibility(View.GONE);
                 }
