@@ -60,7 +60,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                 int total;
                 if (memberResult != null) {
                     total = memberResult.total;
-                    tvMemberSum.setText(getString(R.string.classroom_all_members) + "(" + total + ")");
+                    tvMemberSum.setText(String.format(getString(R.string.classroom_all_members) + "(%d)", total));
                     if (memberResult.resources != null) {
                         MemberAvatarAdapter adapter = new MemberAvatarAdapter(Arrays.asList(memberResult.resources));
                         gvMemberAvatar.setAdapter(adapter);

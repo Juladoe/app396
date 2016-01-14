@@ -852,6 +852,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
             chat.headImgUrl = app.loginUser.mediumAvatar;
         }
         mAdapter.addItem(chat);
+        mStart = mStart + 1;
     }
 
     /**

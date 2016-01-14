@@ -359,6 +359,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         long discussId = mClassroomDiscussDataSource.create(model);
         model.discussId = (int) discussId;
         mAdapter.addItem(model);
+        mStart = mStart + 1;
     }
 
     @Override

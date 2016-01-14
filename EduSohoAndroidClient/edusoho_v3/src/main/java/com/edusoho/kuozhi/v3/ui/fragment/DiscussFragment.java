@@ -360,6 +360,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         long discussId = mCourseDiscussDataSource.create(model);
         model.discussId = (int) discussId;
         mAdapter.addItem(model);
+        mStart = mStart + 1;
     }
 
     public void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
