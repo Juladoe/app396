@@ -1003,7 +1003,7 @@ public class AppUtil {
     }
 
     /**
-     * 图片分辨率压缩
+     * 图片旋转
      *
      * @param bitmap    图片
      * @param imageSize 图片大小
@@ -1054,6 +1054,30 @@ public class AppUtil {
         }
 
         return -1;
+    }
+
+    /**
+     * 图片压缩
+     *
+     * @param filePath Image Path
+     * @return
+     */
+    public static Bitmap CompressImage(String filePath) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+        int requireWidth = 480;
+        int requireHeight = 800;
+        final int originalWidth = options.outWidth;
+        final int originalHeight = options.outHeight;
+        options.inSampleSize = 1;
+        if (originalWidth > requireWidth || originalHeight > requireHeight) {
+            final int widthRatio = Math.round((float) originalWidth / (float) requireHeight);
+            final int heightRatio = Math.round((float) originalHeight / (float) requireWidth);
+            options.inSampleSize = widthRatio < heightRatio ? widthRatio : heightRatio;
+        }
+        options.inJustDecodeBounds = false;
+        return BitmapFactory.decodeFile(filePath, options);
     }
 
     /**

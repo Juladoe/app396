@@ -382,7 +382,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                 });
                 break;
         }
-        holder.ivMsgImage.setOnClickListener(new ImageMsgClick("file://" + model.content));
+        holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
         ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
     }

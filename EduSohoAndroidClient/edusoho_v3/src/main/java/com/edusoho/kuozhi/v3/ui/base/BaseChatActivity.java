@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -49,7 +48,6 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -489,44 +487,28 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
             CommonUtil.shortToast(mContext, "图片不存在");
             return null;
         }
-        File file = new File(picturePath);
-        Bitmap bitmap = AppUtil.getBitmapFromFile(file);
-        if (bitmap == null) {
-            return null;
-        }
-        return compressImage(bitmap, file);
+        return compressImage(picturePath);
     }
 
-    /**
-     * 图片压缩
-     *
-     * @param bitmap original bitmap
-     * @param file   original image file
-     * @return compressed image file
-     */
-    protected File compressImage(Bitmap bitmap, File file) {
+    private File compressImage(String filePath) {
         File compressedFile;
         try {
-            //分辨率压缩到屏幕的0.4
-            Bitmap compressWidthBitmap = null;
-            if (bitmap.getWidth() > EdusohoApp.screenW * 0.4f) {
-                compressWidthBitmap = AppUtil.scaleImage(bitmap, EdusohoApp.screenW * 0.4f, AppUtil.getImageDegree(file.getPath()));
-                if (AppUtil.getImageSize(compressWidthBitmap) > IMAGE_SIZE) {
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap = AppUtil.compressImage(compressWidthBitmap, baos);
-                }
-            }
-            //大于500K质量压缩
-            if (AppUtil.getImageSize(bitmap) > IMAGE_SIZE) {
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap = AppUtil.compressImage(bitmap, baos);
-            }
-            compressedFile = AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
-
-
-            AppUtil.convertBitmap2File(compressWidthBitmap != null ? compressWidthBitmap : bitmap, EdusohoApp.getChatCacheFile() +
+            Bitmap tmpBitmap = AppUtil.CompressImage(filePath);
+            Bitmap resultBitmap = AppUtil.scaleImage(tmpBitmap, tmpBitmap.getWidth(), AppUtil.getImageDegree(filePath));
+            Bitmap thumbBitmap = AppUtil.scaleImage(tmpBitmap, EdusohoApp.screenW * 0.4f, AppUtil.getImageDegree(filePath));
+            compressedFile = AppUtil.convertBitmap2File(resultBitmap,
+                    EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
+            AppUtil.convertBitmap2File(thumbBitmap, EdusohoApp.getChatCacheFile() +
                     Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
-
+            if (!tmpBitmap.isRecycled()) {
+                tmpBitmap.recycle();
+            }
+            if (!thumbBitmap.isRecycled()) {
+                thumbBitmap.recycle();
+            }
+            if (!resultBitmap.isRecycled()) {
+                resultBitmap.recycle();
+            }
         } catch (IOException ex) {
             Log.e(TAG, ex.getMessage());
             return null;
@@ -549,11 +531,8 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                 }
                 break;
             case SEND_CAMERA:
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 2;
-                Bitmap bitmap = BitmapFactory.decodeFile(mCameraFile.getPath(), options);
-                if (bitmap != null) {
-                    File compressedCameraFile = compressImage(bitmap, mCameraFile);
+                File compressedCameraFile = compressImage(mCameraFile.getAbsolutePath());
+                if (compressedCameraFile != null && compressedCameraFile.exists()) {
                     uploadMedia(compressedCameraFile, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
                 }
                 break;
