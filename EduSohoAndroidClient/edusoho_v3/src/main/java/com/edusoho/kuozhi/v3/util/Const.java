@@ -278,7 +278,6 @@ public class Const {
     public static final String CLASSROOM_UNLEARN = "ClassRoom/unlearn";
 
     public static final int PUSH_VERSION = 2;
-    public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String PUSH_HOST = "http://tui.edusoho.net/v2";
     public static final String ANONYMOUS_BIND = "/auth/anonymousBind";
     public static final String BIND = "/auth/bind";
@@ -460,6 +459,7 @@ public class Const {
      * api
      */
 
+    public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String USERS = "/api/users/";
     public static final String MY_FRIEND = "/api/me/friends";
     public static final String SCHOOL_APPS = "/api/mobileschools/apps";
