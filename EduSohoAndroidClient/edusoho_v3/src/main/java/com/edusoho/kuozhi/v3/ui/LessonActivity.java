@@ -319,19 +319,32 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         if (item.getItemId() == R.id.menu_homework) {
             mPluginDialog = new ExerciseOptionDialog(mContext, getLessonId());
             mPluginDialog.show();
         }
-
         return super.onOptionsItemSelected(item);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.lesson_activity_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.menu_homework);
+        menuItem.setVisible(false);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem menuItem = menu.findItem(R.id.menu_homework);
+        if (mLessonType != null){
+            if (mLessonType.equals("testpaper")){
+                menuItem.setVisible(false);
+            }else {
+                menuItem.setVisible(true);
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     private void loadLesson() {
@@ -395,6 +408,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     bindListener();
                 }
                 switchLoadLessonContent(mLessonItem);
+                mActivity.supportInvalidateOptionsMenu();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -429,6 +443,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             bindListener();
         }
         switchLoadLessonContent(mLessonItem);
+        mActivity.supportInvalidateOptionsMenu();
     }
 
     private LessonItem getLessonResultType(String object) {

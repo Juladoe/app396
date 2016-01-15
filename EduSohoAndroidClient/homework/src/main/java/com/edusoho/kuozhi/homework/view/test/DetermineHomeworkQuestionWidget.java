@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,18 +50,25 @@ public class DetermineHomeworkQuestionWidget extends BaseHomeworkQuestionWidget 
                 bundle.putString("QuestionType", QuestionType.material.name());
                 int count = radioGroup.getChildCount();
                 ArrayList<String> data = new ArrayList<String>();
-                for (int i=0; i < count; i++) {
+                for (int i = 0; i < count; i++) {
                     CompoundButton radioButton = (CompoundButton) radioGroup.getChildAt(i);
                     if (radioButton.isChecked()) {
                         data.add(i + "");
                     }
                 }
+                for (int i = 0;i<data.size();i++) {
+                    if (data.get(i).equals("0")){
+                        data.set(i,"1");
+                    }else {
+                        data.set(i,"0");
+                    }
+                }
 
                 bundle.putStringArrayList("data", data);
-                if (HomeworkSummaryActivity.HOMEWORK.equals(mType)){
+                if (HomeworkSummaryActivity.HOMEWORK.equals(mType)) {
                     MessageEngine.getInstance().sendMsgToTaget(
                             HomeworkActivity.CHANGE_ANSWER, bundle, HomeworkActivity.class);
-                }else {
+                } else {
                     MessageEngine.getInstance().sendMsgToTaget(
                             ExerciseActivity.CHANGE_ANSWER, bundle, ExerciseActivity.class);
                 }
@@ -96,10 +104,9 @@ public class DetermineHomeworkQuestionWidget extends BaseHomeworkQuestionWidget 
         initQuestionResult(resultData);
     }
 
-    private void initQuestionResult(List<String> resultData)
-    {
+    private void initQuestionResult(List<String> resultData) {
         int count = radioGroup.getChildCount();
-        for (int i=0; i < count; i++) {
+        for (int i = 0; i < count; i++) {
             CompoundButton child = (CompoundButton) radioGroup.getChildAt(i);
             for (String answer : resultData) {
                 if (answer.equals(String.valueOf(i))) {

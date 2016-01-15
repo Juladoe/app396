@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.FollowerNotification;
 import com.edusoho.kuozhi.v3.model.bal.FollowerNotificationResult;
+import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.result.FollowResult;
 import com.edusoho.kuozhi.v3.model.sys.Error;
@@ -51,7 +52,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     private ListView newsList;
     private TextView mEmptyNotice;
     private ArrayList<FollowerNotification> mList;
-    private ArrayList ids = new ArrayList();
+    private ArrayList<String> ids = new ArrayList();
     private SparseArray<String> relations;
     private ArrayList existIds;
 
@@ -154,17 +155,15 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         return promise;
     }
 
-    public RequestUrl setRelationParams(ArrayList idList) {
-        RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
-        StringBuffer sb = new StringBuffer(requestUrl.url.toString());
-        sb.append(app.loginUser.id + "/" + "friendship?toIds=");
-        for (Object id : idList) {
-            sb.append(id + ",");
+    public RequestUrl setRelationParams(ArrayList<String> idList) {
+        RequestUrl requestUrl = app.bindNewUrl(Const.GET_RELATIONSHIP, false);
+        StringBuffer users = new StringBuffer();
+        for (String id : idList) {
+            users.append(id + ",");
         }
-        sb.deleteCharAt(sb.length() - 1);
-        requestUrl.url = sb.toString();
+        users.deleteCharAt(users.length() - 1);
+        requestUrl.url = String.format(requestUrl.url, app.loginUser.id, users.toString());
         return requestUrl;
-
     }
 
     public void setEmptyNotice(int length) {
@@ -274,10 +273,8 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
             holder.relation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    RequestUrl requestUrl = app.bindNewUrl(Const.USERS, true);
-                    StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-                    stringBuffer.append(fn.content.userId + "/followers");
-                    requestUrl.url = stringBuffer.toString();
+                    RequestUrl requestUrl = app.bindNewUrl(Const.ADD_FRIEND, true);
+                    requestUrl.url = String.format(requestUrl.url,Integer.parseInt(fn.content.userId));
                     HashMap<String, String> params = requestUrl.getParams();
                     params.put("method", "follow");
                     params.put("userId", app.loginUser.id + "");
