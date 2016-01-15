@@ -4,8 +4,9 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
-import com.android.volley.Response.*;
-import com.android.volley.Request.*;
+
+import com.android.volley.Request.Method;
+import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.RequestFuture;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
@@ -14,7 +15,6 @@ import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.ResourceResponse;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.htmlapp.AppMeta;
 import com.edusoho.kuozhi.v3.model.htmlapp.UpdateAppMeta;
@@ -27,9 +27,7 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -45,12 +43,11 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.HashMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 import cn.trinea.android.common.util.FileUtils;
 
@@ -87,8 +84,7 @@ public class ESWebViewRequestManager extends RequestManager {
         return instance;
     }
 
-    private ESWebViewRequestManager(Context context, String code)
-    {
+    private ESWebViewRequestManager(Context context, String code) {
         super();
         this.mContext = context;
         this.mCode = code;
@@ -98,8 +94,7 @@ public class ESWebViewRequestManager extends RequestManager {
         registHandler(".+", new WebViewRequestHandler());
     }
 
-    private void initHttpClient()
-    {
+    private void initHttpClient() {
         HttpParams params = new BasicHttpParams();
         ConnManagerParams.setMaxTotalConnections(params, 50);
         //超时
@@ -111,13 +106,11 @@ public class ESWebViewRequestManager extends RequestManager {
         mHttpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params, schReg), params);
     }
 
-    public void setUserAgent(String userAgent)
-    {
+    public void setUserAgent(String userAgent) {
         this.mUserAgent = userAgent;
     }
 
-    private HttpGet getHttpGet(String url)
-    {
+    private HttpGet getHttpGet(String url) {
         HttpGet httpGet = new HttpGet(url);
         httpGet.setHeader("User-Agent", mUserAgent);
 
@@ -200,19 +193,16 @@ public class ESWebViewRequestManager extends RequestManager {
         return callback.onResponse(response);
     }
 
-    private String getFileExtension(String filePath)
-    {
+    private String getFileExtension(String filePath) {
         return MimeTypeMap.getFileExtensionFromUrl(filePath);
     }
 
-    private String getFileMime(String extension)
-    {
+    private String getFileMime(String extension) {
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         return mimeType == null ? "text/html" : mimeType;
     }
 
-    private File getResourceStorage(String host)
-    {
+    private File getResourceStorage(String host) {
         File storage = AppUtil.getHtmlPluginStorage(mContext, host);
         File srcDir = new File(storage, mCode);
         if (!srcDir.exists()) {
@@ -301,10 +291,9 @@ public class ESWebViewRequestManager extends RequestManager {
         return cache;
     }
 
-    public class ApiRequestHandler implements RequestHandler
-    {
+    public class ApiRequestHandler implements RequestHandler {
         private VolleySingleton mVolley;
-        private String[] API_FILTERS = new String[]{ "/mapi_v2/User/uploadAvatar" };
+        private String[] API_FILTERS = new String[]{"/mapi_v2/User/uploadAvatar"};
 
         public ApiRequestHandler() {
             this.mVolley = VolleySingleton.getInstance(mContext);
@@ -336,9 +325,9 @@ public class ESWebViewRequestManager extends RequestManager {
         private void handlerApiRequest(Request request, Response proxyResponse) {
             mVolley.getRequestQueue();
             final RequestUrl requestUrl = new RequestUrl(request.url);
-            requestUrl.setHeads(new String[] {
+            requestUrl.setHeads(new String[]{
                     "token", EdusohoApp.app == null ? "" : EdusohoApp.app.token
-            });
+                    , "Auth-Token", EdusohoApp.app == null ? "" : EdusohoApp.app.apiToken});
 
             RequestFuture<String> future = RequestFuture.newFuture();
             StringVolleyRequest stringRequest = new StringVolleyRequest(Method.GET, requestUrl, future, future);
@@ -372,9 +361,8 @@ public class ESWebViewRequestManager extends RequestManager {
         }
     }
 
-    public class WebViewRequestHandler implements RequestHandler
-    {
-        private final String[] MIME_FILTERS = { "html", "js", "css" };
+    public class WebViewRequestHandler implements RequestHandler {
+        private final String[] MIME_FILTERS = {"html", "js", "css"};
 
         private boolean filterMime(String fileName) {
             String extension = getFileExtension(fileName);
@@ -393,13 +381,13 @@ public class ESWebViewRequestManager extends RequestManager {
             }
 
             File cache = getResourceFile(request.getHost(), path);
-            if (! cache.exists()) {
+            if (!cache.exists()) {
                 return;
             }
 
             Log.d(TAG, "file cache :" + request.url);
             handlerResponse(cache, response);
-            if (! filterMime(cache.getName())) {
+            if (!filterMime(cache.getName())) {
                 return;
             }
             executeTask(new SaveResourceCacheTask(path, cache));
