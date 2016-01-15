@@ -370,10 +370,8 @@ public class SearchDialogFragment extends DialogFragment {
     public Promise followUser(Friend friend) {
         final Promise promise = new Promise();
 
-        RequestUrl requestUrl = mApp.bindNewUrl(Const.USERS, true);
-        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        stringBuffer.append(friend.id + "/followers");
-        requestUrl.url = stringBuffer.toString();
+        RequestUrl requestUrl = mApp.bindNewUrl(Const.ADD_FRIEND, true);
+        requestUrl.url = String.format(requestUrl.url,friend.id);
         final HashMap<String, String> params = requestUrl.getParams();
         params.put("method", "follow");
         params.put("userId", mApp.loginUser.id + "");
@@ -398,14 +396,13 @@ public class SearchDialogFragment extends DialogFragment {
     }
 
     public RequestUrl setRelationParams(ArrayList<Friend> list) {
-        RequestUrl requestUrl = mApp.bindNewUrl(Const.USERS, false);
-        StringBuffer sb = new StringBuffer(requestUrl.url.toString());
-        sb.append(mApp.loginUser.id + "/" + "friendship?toIds=");
+        RequestUrl requestUrl = mApp.bindNewUrl(Const.GET_RELATIONSHIP, false);
+        StringBuffer users = new StringBuffer();
         for (Friend friend : list) {
-            sb.append(friend.id + ",");
+            users.append(friend.id + ",");
         }
-        sb.deleteCharAt(sb.length() - 1);
-        requestUrl.url = sb.toString();
+        users.deleteCharAt(users.length() - 1);
+        requestUrl.url = String.format(requestUrl.url,mApp.loginUser.id,users.toString());
 
         return requestUrl;
     }

@@ -461,6 +461,8 @@ public class Const {
      */
     public static final String USERS = "/api/users/";
     public static final String MY_FRIEND = "/api/me/friends";
+    public static final String ADD_FRIEND = "/api/users/%d/followers";
+    public static final String GET_RELATIONSHIP = "/api/users/%d/friendship?toIds=%s";
     public static final String SCHOOL_APPS = "/api/mobileschools/apps";
     public static final String GET_SCHOOL_APP = "/api/mobileschools/app/%d";
     public static final String NEW_FOLLOWER_NOTIFICATION = "/api/me/notifications";
