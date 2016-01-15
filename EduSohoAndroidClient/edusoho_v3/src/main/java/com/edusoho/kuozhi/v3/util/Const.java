@@ -457,8 +457,9 @@ public class Const {
     public static final String CLEAR_WEBVIEW_CACHE = "clear_webview_cache";
 
     /**
-     * 校友api
+     * api
      */
+
     public static final String USERS = "/api/users/";
     public static final String MY_FRIEND = "/api/me/friends";
     public static final String SCHOOL_APPS = "/api/mobileschools/apps";
@@ -469,10 +470,19 @@ public class Const {
     public static final String COURSE_MEMBERS = "/api/courses/%d/members";
     public static final String ROLE_IN_COURSE = "/api/courses/%d/membership/%d";
 
-    /**
-     * 绑定第三方登录
-     */
     public static final String BIND_LOGIN = "/api/users/bind_login";
+
+    public static final String HOMEWORK_CONTENT = "/api/homework/%d";
+    public static final String HOMEWORK_CONTENT_RESULT = "/api/homework/%d/result";
+    public static final String HOMEWORK_RESULT = "/api/homework_results/%d";
+    public static final String FILE_UPLOAD = "/api/upload/%s";
+
+    public static final String EXERCISE_CONTENT = "/api/exercise/%d";
+    public static final String EXERCISE_CONTENT_RESULT = "/api/exercise/%d/result";
+    public static final String EXERCISE_RESULT = "/api/exercise_results/%d";
+
+    public static final String ARTICEL_MENU = "/api/article_categories";
+    public static final String ARTICELS = "/api/articles";
 
     public static final String UPLOAD_AUDIO_CACHE_FILE = "/audio";
     public static final String UPLOAD_IMAGE_CACHE_FILE = "/image";
@@ -483,24 +493,6 @@ public class Const {
      */
     public static final String INTENT_TARGET = "intent_target";
     public static final String SWITCH_NEWS_TAB = "switch_news_tab";
-
-    /*
-        资讯api
-    */
-    public static final String ARTICEL_MENU = "/api/article_categories";
-    public static final String ARTICELS = "/api/articles";
-
-    /**
-     * 作业与练习
-     */
-    public static final String HOMEWORK_CONTENT = "/api/homework/%d";
-    public static final String HOMEWORK_CONTENT_RESULT = "/api/homework/%d/result";
-    public static final String HOMEWORK_RESULT = "/api/homework_results/%d";
-    public static final String FILE_UPLOAD = "/api/upload/%s";
-
-    public static final String EXERCISE_CONTENT = "/api/exercise/%d";
-    public static final String EXERCISE_CONTENT_RESULT = "/api/exercise/%d/result";
-    public static final String EXERCISE_RESULT = "/api/exercise_results/%d";
 
     public static final String LESSON_PLUGIN = "android.intent.action.LESSON_PLUGIN";
     public static final String TOKEN_LOSE = "token_lose";
