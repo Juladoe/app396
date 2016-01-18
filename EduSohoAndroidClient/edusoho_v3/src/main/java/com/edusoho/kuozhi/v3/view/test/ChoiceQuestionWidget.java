@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.bal.test.MaterialQuestionTypeSeq;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionTypeSeq;
 import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import java.util.ArrayList;
 
@@ -76,7 +77,7 @@ public class ChoiceQuestionWidget extends BaseQuestionWidget {
         if (metas != null) {
             int size = metas.size();
             for (int i = 0; i < size; i++) {
-                CheckBox checkBox = initCheckBox(metas.get(i), i + 1);
+                CheckBox checkBox = initCheckBox(AppUtil.removeHtmlSpan(metas.get(i)), i + 1);
                 checkBox.setOnCheckedChangeListener(checkedChangeListener);
                 radioGroup.addView(checkBox);
             }

@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.model.bal.test.Question;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionTypeSeq;
 import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +58,7 @@ public class SingleChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidg
         if (metas != null) {
             int size = metas.size();
             for (int i = 0; i < size; i++) {
-                RadioButton radioButton = initRadioButton(metas.get(i), i + 1);
+                RadioButton radioButton = initRadioButton(AppUtil.removeHtmlSpan(metas.get(i)), i + 1);
                 if (i == 0) {
                     radioGroup.check(radioButton.getId());
                 }

@@ -22,6 +22,8 @@ import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
 import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +84,7 @@ public class ChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
         if (metas != null) {
             int size = metas.size();
             for (int i = 0; i < size; i++) {
-                CheckBox checkBox = initCheckBox(metas.get(i), i + 1);
+                CheckBox checkBox = initCheckBox(AppUtil.removeHtmlSpan(AppUtil.removeHtmlSpan(metas.get(i))), i + 1);
                 checkBox.setOnCheckedChangeListener(checkedChangeListener);
 
                 RadioGroup.LayoutParams layoutParams = new RadioGroup.LayoutParams(
