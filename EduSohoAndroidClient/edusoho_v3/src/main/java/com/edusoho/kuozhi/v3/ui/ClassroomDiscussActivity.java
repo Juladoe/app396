@@ -57,9 +57,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     private String mClassroomName;
     private String mClassroomImage;
     private int mFromClassroomId;
-
     private String mRoleType;
-
     private ClassroomDiscussDataSource mClassroomDiscussDataSource;
     private ClassroomDiscussAdapter<ClassroomDiscussEntity> mAdapter;
 
@@ -90,7 +88,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     }
 
     @Override
-    protected void initView() {
+    public void initView() {
         super.initView();
         lvMessage.post(mListViewSelectRunnable);
         mPtrFrame.setLastUpdateTimeRelateObject(this);
@@ -149,6 +147,13 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         mStart = mAdapter.getCount();
         super.initCacheFolder();
     }
+
+    protected Runnable mListViewSelectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            lvMessage.setSelection(mStart);
+        }
+    };
 
     private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {
         @Override
@@ -244,7 +249,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         }
 
         if (TextUtils.isEmpty(model.upyunMediaPutUrl)) {
-            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
+            getUpYunUploadInfo(file, discussModel.fromId, new NormalCallback<UpYunUploadResult>() {
                 @Override
                 public void success(final UpYunUploadResult result) {
                     if (result != null) {
@@ -257,7 +262,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
                         updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, discussModel);
                     }
                 }
-            }, discussModel.fromId);
+            });
         } else {
             uploadUnYunMedia(file, discussModel, type);
         }
@@ -311,7 +316,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
 
             addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
 
-            super.getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
+            super.getUpYunUploadInfo(file, mFromClassroomId, new NormalCallback<UpYunUploadResult>() {
                 @Override
                 public void success(final UpYunUploadResult result) {
                     if (result != null) {
@@ -324,7 +329,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
                         updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, model);
                     }
                 }
-            }, mFromClassroomId);
+            });
             viewMediaLayout.setVisibility(View.GONE);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());

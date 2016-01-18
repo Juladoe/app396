@@ -94,7 +94,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     }
 
     @Override
-    protected void initView() {
+    public void initView() {
         super.initView();
         setBackMode(BACK, "描述你的问题");
         mLoadDialog = LoadDialog.create(mContext);
@@ -204,7 +204,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
             ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
             addItem2ListView(discussModel);
-            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
+            getUpYunUploadInfo(file, app.loginUser.id, new NormalCallback<UpYunUploadResult>() {
                 @Override
                 public void success(final UpYunUploadResult result) {
                     if (result != null) {
@@ -224,7 +224,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                         mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.FAILED);
                     }
                 }
-            }, app.loginUser.id);
+            });
             viewMediaLayout.setVisibility(View.GONE);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
@@ -254,7 +254,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
         try {
             final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
-            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
+            getUpYunUploadInfo(file, app.loginUser.id, new NormalCallback<UpYunUploadResult>() {
                 @Override
                 public void success(final UpYunUploadResult result) {
                     if (result != null) {
@@ -273,7 +273,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                         mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.FAILED);
                     }
                 }
-            }, app.loginUser.id);
+            });
             viewMediaLayout.setVisibility(View.GONE);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
