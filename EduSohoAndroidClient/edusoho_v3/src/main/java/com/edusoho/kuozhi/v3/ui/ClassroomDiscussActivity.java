@@ -216,58 +216,6 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         });
     }
 
-    public void sendMediaMsg(final ClassroomDiscussEntity model, String type) {
-        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", mClassroomName);
-        params.put("content", model.upyunMediaGetUrl);
-        params.put("custom", gson.toJson(getV2CustomContent(type, model.upyunMediaGetUrl)));
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                CloudResult result = parseJsonValue(response, new TypeToken<CloudResult>() {
-                });
-                if (result != null && result.getResult()) {
-                    model.id = result.id;
-                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, model);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "发送信息失败");
-            }
-        });
-    }
-
-    @Override
-    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
-        final ClassroomDiscussEntity discussModel = (ClassroomDiscussEntity) model;
-        if (file == null || !file.exists()) {
-            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
-            return;
-        }
-
-        if (TextUtils.isEmpty(model.upyunMediaPutUrl)) {
-            getUpYunUploadInfo(file, discussModel.fromId, new NormalCallback<UpYunUploadResult>() {
-                @Override
-                public void success(final UpYunUploadResult result) {
-                    if (result != null) {
-                        model.upyunMediaPutUrl = result.putUrl;
-                        model.upyunMediaGetUrl = result.getUrl;
-                        model.headers = result.getHeaders();
-                        uploadUnYunMedia(file, discussModel, type);
-                        saveUploadResult(result.putUrl, result.getUrl, discussModel.fromId);
-                    } else {
-                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, discussModel);
-                    }
-                }
-            });
-        } else {
-            uploadUnYunMedia(file, discussModel, type);
-        }
-    }
-
     @Override
     public void sendMsgAgain(final BaseMsgEntity model) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
@@ -293,7 +241,29 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         });
     }
 
-    // region 多媒体资源上传
+    public void sendMediaMsg(final ClassroomDiscussEntity model, String type) {
+        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("title", mClassroomName);
+        params.put("content", model.upyunMediaGetUrl);
+        params.put("custom", gson.toJson(getV2CustomContent(type, model.upyunMediaGetUrl)));
+        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                CloudResult result = parseJsonValue(response, new TypeToken<CloudResult>() {
+                });
+                if (result != null && result.getResult()) {
+                    model.id = result.id;
+                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, model);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "发送信息失败");
+            }
+        });
+    }
 
     public void uploadMedia(final File file, final String type, String strType) {
         if (file == null || !file.exists()) {
@@ -356,9 +326,34 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         }, Request.Method.PUT);
     }
 
-    // endregion
+    @Override
+    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
+        final ClassroomDiscussEntity discussModel = (ClassroomDiscussEntity) model;
+        if (file == null || !file.exists()) {
+            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
+            return;
+        }
 
-    // region 数据库操作
+        if (TextUtils.isEmpty(model.upyunMediaPutUrl)) {
+            getUpYunUploadInfo(file, discussModel.fromId, new NormalCallback<UpYunUploadResult>() {
+                @Override
+                public void success(final UpYunUploadResult result) {
+                    if (result != null) {
+                        model.upyunMediaPutUrl = result.putUrl;
+                        model.upyunMediaGetUrl = result.getUrl;
+                        model.headers = result.getHeaders();
+                        uploadUnYunMedia(file, discussModel, type);
+                        saveUploadResult(result.putUrl, result.getUrl, discussModel.fromId);
+                    } else {
+                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, discussModel);
+                    }
+                }
+            });
+        } else {
+            uploadUnYunMedia(file, discussModel, type);
+        }
+    }
+
     public void addSendMsgToListView(int delivery, ClassroomDiscussEntity model) {
         model.delivery = delivery;
         long discussId = mClassroomDiscussDataSource.create(model);
@@ -380,9 +375,6 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         mClassroomDiscussDataSource.update(model);
         mAdapter.updateItemByChatId(model);
     }
-
-    // endregion
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -427,6 +419,14 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         return new MessageType[]{
                 new MessageType(Const.ADD_CLASSROOM_MSG, source),
         };
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mClassroomDiscussDataSource != null) {
+            mClassroomDiscussDataSource.close();
+        }
     }
 
     /**
