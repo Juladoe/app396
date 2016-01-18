@@ -7,5 +7,5 @@ import com.edusoho.kuozhi.v3.cache.request.model.Response;
  */
 public interface RequestCallback<T> {
 
-    public T onResponse(Response<T> response);
+    T onResponse(Response<T> response);
 }

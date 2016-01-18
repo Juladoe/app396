@@ -3,36 +3,18 @@ package com.edusoho.kuozhi.v3.ui;
 import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.provider.MediaStore;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
-import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
@@ -48,113 +30,54 @@ import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
-import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.ChatAudioRecord;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
-import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
 
-/**
- * Created by JesseHuang on 15/6/3.
- * input params:
- * 1. FROM_ID 对方userId
- * 2. ACTIONBAR_TITLE 对方昵称
- * 3. HEAD_IMAGE_URL 对方头像
- */
-public class ChatActivity extends ActionBarBaseActivity implements View.OnClickListener, ChatAdapter.ImageErrorClick {
+public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageErrorClick {
 
-    //region Field
     public static final String TAG = "ChatActivity";
     public static final String FROM_ID = "from_id";
     public static final String MSG_DELIVERY = "msg_delivery";
     public static final String HEAD_IMAGE_URL = "head_image_url";
 
-    private static final int IMAGE_SIZE = 1024 * 500;
-
-    private static final int SEND_IMAGE = 1;
-    private static final int SEND_CAMERA = 2;
-
-    private EduSohoIconView btnVoice;
-    private EduSohoIconView btnKeyBoard;
-    private EditText etSend;
-    private ListView lvMessage;
-    private Button tvSend;
-    private EduSohoIconView ivAddMedia;
-    private ChatAdapter<Chat> mAdapter;
-    private PtrClassicFrameLayout mPtrFrame;
-    private View viewMediaLayout;
-    private View viewPressToSpeak;
-    private View viewMsgInput;
-    /**
-     * 语音录制按钮
-     */
-    private TextView tvSpeak;
-    private TextView tvSpeakHint;
-    private View mViewSpeakContainer;
-    private ImageView ivRecordImage;
-
-    private float mPressDownY;
-    private MediaRecorderTask mMediaRecorderTask;
-    private VolumeHandler mHandler;
-    private AudioDownloadReceiver mAudioDownloadReceiver;
-
-    private ChatDataSource mChatDataSource;
-    private int mSendTime;
-    private int mStart = 0;
-    private File mCameraFile;
-
     public static int CurrentFromId = 0;
 
-    private int[] mSpeakerAnimResId = new int[]{R.drawable.record_animate_1,
-            R.drawable.record_animate_2,
-            R.drawable.record_animate_3,
-            R.drawable.record_animate_4};
-
-    /**
-     * 对方的userInfo信息;
-     */
+    private ChatAdapter<Chat> mAdapter;
+    private ChatDataSource mChatDataSource;
+    private int mSendTime;
     private User mFromUserInfo;
     private int mFromId;
     private int mToId;
 
     /**
-     * 对方的BusinessType
+     * 对方的BusinessType,这里是Role
      */
     private String mType;
 
     /**
-     * 自己的BusinessType
+     * 自己的BusinessType,这里是Role
      */
     private String mMyType;
-    //endregion
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_chat);
-        initView();
     }
 
     @Override
@@ -177,85 +100,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
-    private void initView() {
-        mHandler = new VolumeHandler(this);
-        mAudioDownloadReceiver = new AudioDownloadReceiver();
-        etSend = (EditText) findViewById(R.id.et_send_content);
-        etSend.addTextChangedListener(msgTextWatcher);
-        tvSend = (Button) findViewById(R.id.tv_send);
-        tvSend.setOnClickListener(this);
-        lvMessage = (ListView) findViewById(R.id.lv_messages);
-        ivAddMedia = (EduSohoIconView) findViewById(R.id.iv_show_media_layout);
-        ivAddMedia.setOnClickListener(this);
-        viewMediaLayout = findViewById(R.id.ll_media_layout);
-        btnVoice = (EduSohoIconView) findViewById(R.id.btn_voice);
-        btnVoice.setOnClickListener(this);
-        btnKeyBoard = (EduSohoIconView) findViewById(R.id.btn_set_mode_keyboard);
-        btnKeyBoard.setOnClickListener(this);
-        viewPressToSpeak = findViewById(R.id.rl_btn_press_to_speak);
-        viewPressToSpeak.setOnClickListener(this);
-        viewMsgInput = findViewById(R.id.rl_msg_input);
-        EduSohoIconView ivPhoto = (EduSohoIconView) findViewById(R.id.iv_image);
-        ivPhoto.setOnClickListener(this);
-        EduSohoIconView ivCamera = (EduSohoIconView) findViewById(R.id.iv_camera);
-        ivCamera.setOnClickListener(this);
-        viewPressToSpeak.setOnTouchListener(mVoiceRecordingTouchListener);
-        tvSpeak = (TextView) findViewById(R.id.tv_speak);
-        tvSpeakHint = (TextView) findViewById(R.id.tv_speak_hint);
-        ivRecordImage = (ImageView) findViewById(R.id.iv_voice_volume);
-        mViewSpeakContainer = findViewById(R.id.recording_container);
-        mViewSpeakContainer.bringToFront();
-        initData();
-        mAdapter = new ChatAdapter<>(mContext, getChatList(0), mFromUserInfo);
-        mAdapter.setSendImageClickListener(this);
-        lvMessage.setAdapter(mAdapter);
-        mAudioDownloadReceiver.setAdapter(mAdapter);
-        mStart = mAdapter.getCount();
-        lvMessage.post(mListViewSelectRunnable);
-        mPtrFrame = (PtrClassicFrameLayout) findViewById(R.id.rotate_header_list_view_frame);
-        mPtrFrame.setLastUpdateTimeRelateObject(this);
-        mPtrFrame.setPtrHandler(new PtrHandler() {
-            @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
-                mAdapter.addItems(getChatList(mStart));
-                mStart = mAdapter.getCount();
-                mPtrFrame.refreshComplete();
-                lvMessage.postDelayed(mListViewSelectRunnable, 100);
-            }
-
-            @Override
-            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                int count = getChatList(mStart).size();
-                return count > 0 && canDoRefresh;
-            }
-        });
-
-        lvMessage.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (viewMediaLayout.getVisibility() == View.VISIBLE) {
-                    viewMediaLayout.setVisibility(View.GONE);
-                }
-                if (etSend.isFocused()) {
-                    etSend.clearFocus();
-                }
-                return false;
-            }
-        });
-        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
-
-        etSend.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    viewMediaLayout.setVisibility(View.GONE);
-                }
-            }
-        });
-    }
-
-    private void initData() {
+    @Override
+    public void initData() {
         Intent intent = getIntent();
         if (intent == null) {
             CommonUtil.longToast(mContext, "聊天记录读取错误");
@@ -288,6 +134,32 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
         initCacheFolder();
         getFriendUserInfo();
+        mAdapter = new ChatAdapter<>(mContext, getChatList(0), mFromUserInfo);
+        mAdapter.setSendImageClickListener(this);
+        lvMessage.setAdapter(mAdapter);
+        mAudioDownloadReceiver.setAdapter(mAdapter);
+        mStart = mAdapter.getCount();
+        lvMessage.post(mListViewSelectRunnable);
+
+        mPtrFrame.setLastUpdateTimeRelateObject(this);
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                mAdapter.addItems(getChatList(mStart));
+                mStart = mAdapter.getCount();
+                mPtrFrame.refreshComplete();
+                lvMessage.postDelayed(mListViewSelectRunnable, 100);
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+                int count = getChatList(mStart).size();
+                return count > 0 && canDoRefresh;
+            }
+        });
+
+        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
     private Runnable mListViewSelectRunnable = new Runnable() {
@@ -307,7 +179,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
     };
 
-
     private ArrayList<Chat> getChatList(int start) {
         String selectSql = String.format("(FROMID = %d AND TOID=%d) OR (TOID=%d AND FROMID=%d)", mFromId, mToId, mFromId, mToId);
         ArrayList<Chat> mList = mChatDataSource.getChats(start, Const.NEWS_LIMIT, selectSql);
@@ -315,7 +186,8 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         return mList;
     }
 
-    private void sendMsg(String content) {
+    @Override
+    public void sendMsg(String content) {
         mSendTime = (int) (System.currentTimeMillis() / 1000);
         final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
                 etSend.getText().toString(), PushUtil.ChatMsgType.TEXT, mSendTime);
@@ -361,6 +233,32 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         });
     }
 
+    @Override
+    public void sendMsgAgain(final BaseMsgEntity model) {
+        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("title", app.loginUser.nickname);
+        params.put("content", model.content);
+        params.put("custom", gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
+
+        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                CloudResult result = parseJsonValue(response, new TypeToken<CloudResult>() {
+                });
+                if (result != null && result.getResult()) {
+                    model.id = result.id;
+                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, (Chat) model);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "发送信息失败");
+            }
+        });
+    }
+
     private void sendMediaMsg(final Chat chat, String type) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         V2CustomContent v2CustomContent = getV2CustomContent(type, chat.upyunMediaGetUrl);
@@ -389,66 +287,13 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         });
     }
 
-    @Override
-    public void sendMsgAgain(final BaseMsgEntity model) {
-        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUser.nickname);
-        params.put("content", model.content);
-        params.put("custom", gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
-
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                CloudResult result = parseJsonValue(response, new TypeToken<CloudResult>() {
-                });
-                if (result != null && result.getResult()) {
-                    model.id = result.id;
-                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, (Chat) model);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "发送信息失败");
-            }
-        });
-    }
-
-    @Override
-    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
-        final Chat chat = (Chat) model;
-        if (file == null || !file.exists()) {
-            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
-            return;
-        }
-
-        if (TextUtils.isEmpty(model.upyunMediaPutUrl)) {
-            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
-                @Override
-                public void success(final UpYunUploadResult result) {
-                    if (result != null) {
-                        model.upyunMediaPutUrl = result.putUrl;
-                        model.upyunMediaGetUrl = result.getUrl;
-                        model.headers = result.getHeaders();
-                        uploadUnYunMedia(file, chat, type);
-                        saveUploadResult(result.putUrl, result.getUrl);
-                    } else {
-                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, chat);
-                    }
-                }
-            });
-        } else {
-            uploadUnYunMedia(file, chat, type);
-        }
-    }
-
     /**
      * 上传资源
      *
      * @param file upload file
      */
-    private void uploadMedia(final File file, final String type, String strType) {
+    @Override
+    public void uploadMedia(final File file, final String type, String strType) {
         if (file == null || !file.exists()) {
             CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
             return;
@@ -469,7 +314,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
 
             addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
 
-            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
+            getUpYunUploadInfo(file, mFromId, new NormalCallback<UpYunUploadResult>() {
                 @Override
                 public void success(final UpYunUploadResult result) {
                     if (result != null) {
@@ -477,7 +322,7 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                         chat.upyunMediaGetUrl = result.getUrl;
                         chat.headers = result.getHeaders();
                         uploadUnYunMedia(file, chat, type);
-                        saveUploadResult(result.putUrl, result.getUrl);
+                        saveUploadResult(result.putUrl, result.getUrl, mFromId);
                     } else {
                         updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, chat);
                     }
@@ -489,39 +334,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }
     }
 
-    /**
-     * get upyun upload info from push server
-     *
-     * @param file     upload file
-     * @param callback callback
-     */
-    private void getUpYunUploadInfo(File file, final NormalCallback<UpYunUploadResult> callback) {
-        String path = String.format(Const.GET_UPLOAD_INFO, mFromId, file.length(), file.getName());
-        RequestUrl url = app.bindPushUrl(path);
-        ajaxGet(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                UpYunUploadResult result = parseJsonValue(response, new TypeToken<UpYunUploadResult>() {
-                });
-                callback.success(result);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                callback.success(null);
-                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
-                Log.d(TAG, "get upload info from upyun failed");
-            }
-        });
-    }
-
-    /**
-     * Upload media resources to upyun
-     *
-     * @param file Upload file
-     * @param chat chatInfo
-     * @param type Media Type
-     */
     private void uploadUnYunMedia(final File file, final Chat chat, final String type) {
         RequestUrl putUrl = new RequestUrl(chat.upyunMediaPutUrl);
         putUrl.setHeads(chat.headers);
@@ -542,293 +354,40 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         }, Request.Method.PUT);
     }
 
-    private void saveUploadResult(String putUrl, String getUrl) {
-        String path = String.format(Const.SAVE_UPLOAD_INFO, mFromId);
-        RequestUrl url = app.bindPushUrl(path);
-        HashMap<String, String> hashMap = url.getParams();
-        hashMap.put("putUrl", putUrl);
-        hashMap.put("getUrl", getUrl);
-        ajaxPost(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject result = new JSONObject(response);
-                    if ("success".equals(result.getString("result"))) {
-                        Log.d(TAG, "save upload result success");
-                    }
-                } catch (JSONException e) {
-                    Log.d(TAG, "convert json to obj error");
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "save upload info error");
-            }
-        });
-    }
-
-    //region Touch, Click Listener etc.
-    private View.OnTouchListener mVoiceRecordingTouchListener = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(final View v, MotionEvent event) {
-            /**
-             * 根据滑动距离是否保存
-             */
-            boolean mHandUpAndCancel;
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    try {
-                        if (!CommonUtil.isExitsSdcard()) {
-                            CommonUtil.longToast(mContext, "发送语音需要sdcard");
-                            return false;
-                        }
-                        mPressDownY = event.getY();
-                        mMediaRecorderTask = new MediaRecorderTask();
-                        mMediaRecorderTask.execute();
-                    } catch (Exception e) {
-                        mMediaRecorderTask.getAudioRecord().clear();
-                        Log.d(TAG, e.getMessage());
-                        return false;
-                    }
-                    break;
-                case MotionEvent.ACTION_MOVE:
-                    float mPressMoveY = event.getY();
-                    if (Math.abs(mPressDownY - mPressMoveY) > EdusohoApp.screenH * 0.1) {
-                        tvSpeak.setText(getString(R.string.hand_up_and_exit));
-                        tvSpeakHint.setText(getString(R.string.hand_up_and_exit));
-                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_bg);
-                        ivRecordImage.setImageResource(R.drawable.record_cancel);
-                        mHandUpAndCancel = true;
-                    } else {
-                        tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
-                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
-                        tvSpeak.setText(getString(R.string.hand_up_and_end));
-                        ivRecordImage.setImageResource(R.drawable.record_animate_1);
-                        mHandUpAndCancel = false;
-                    }
-                    mMediaRecorderTask.setCancel(mHandUpAndCancel);
-                    return true;
-                case MotionEvent.ACTION_UP:
-                    mMediaRecorderTask.setAudioStop(true);
-                    return true;
-            }
-            return false;
-        }
-    };
-
-    /**
-     * 录音Task
-     */
-    public class MediaRecorderTask extends AsyncTask<Void, Integer, Boolean> {
-        private ChatAudioRecord mAudioRecord;
-        private boolean mCancelSave = false;
-        private boolean mStopRecord = false;
-        private File mUploadAudio;
-
-        @Override
-        protected void onPreExecute() {
-            if (mAudioRecord == null) {
-                mAudioRecord = new ChatAudioRecord(mContext);
-            }
-            mViewSpeakContainer.setVisibility(View.VISIBLE);
-            tvSpeak.setText(getString(R.string.hand_up_and_end));
-            tvSpeakHint.setText(getResources().getString(R.string.hand_move_up_and_send_cancel));
-            tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
-            ivRecordImage.setImageResource(R.drawable.record_animate_1);
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            mAudioRecord.ready();
-            mAudioRecord.start();
-            while (true) {
-                if (mStopRecord) {
-                    //结束录音
-                    mUploadAudio = mAudioRecord.stop(mCancelSave);
-                    int audioLength = mAudioRecord.getAudioLength();
-                    if (audioLength >= 1) {
-                        Log.d(TAG, "上传成功");
-                    } else {
-                        return false;
-                    }
-                    mAudioRecord.clear();
-                    break;
-                } else {
-                    //录音中动画
-                    double ratio = 0;
-                    if (mAudioRecord.getMediaRecorder() != null) {
-                        ratio = (double) mAudioRecord.getMediaRecorder().getMaxAmplitude();
-                    }
-                    double db = 0;
-                    if (ratio > 1) {
-                        db = 20 * Math.log10(ratio);
-                    }
-                    if (!mCancelSave) {
-                        if (db < 60) {
-                            mHandler.sendEmptyMessage(0);
-                        } else if (db < 70) {
-                            mHandler.sendEmptyMessage(1);
-                        } else if (db < 80) {
-                            mHandler.sendEmptyMessage(2);
-                        } else if (db < 90) {
-                            mHandler.sendEmptyMessage(3);
-                        }
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean isSave) {
-            if (mCancelSave) {
-                mViewSpeakContainer.setVisibility(View.GONE);
-                Log.d(TAG, "手指松开取消保存");
-            } else {
-                if (isSave) {
-                    Log.d(TAG, "正常保存上传");
-                    uploadMedia(mUploadAudio, PushUtil.ChatMsgType.AUDIO, Const.MEDIA_AUDIO);
-                    mViewSpeakContainer.setVisibility(View.GONE);
-                } else {
-                    Log.d(TAG, "录制时间太短");
-                    tvSpeakHint.setText(getString(R.string.audio_length_too_short));
-                    tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
-                    ivRecordImage.setImageResource(R.drawable.record_duration_short);
-                    mHandler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            mViewSpeakContainer.setVisibility(View.GONE);
-                        }
-                    }, 200);
-                    mAudioRecord.delete();
-                }
-            }
-            tvSpeak.setText(getString(R.string.hand_press_and_speak));
-            viewPressToSpeak.setPressed(false);
-            super.onPostExecute(isSave);
-        }
-
-        public void setCancel(boolean cancel) {
-            mCancelSave = cancel;
-        }
-
-        public void setAudioStop(boolean stop) {
-            mStopRecord = stop;
-        }
-
-        public ChatAudioRecord getAudioRecord() {
-            return mAudioRecord;
-        }
-    }
-
-    private static class VolumeHandler extends Handler {
-        private WeakReference<ChatActivity> mWeakReference;
-
-        private VolumeHandler(ChatActivity activity) {
-            mWeakReference = new WeakReference<>(activity);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            ChatActivity activity = mWeakReference.get();
-            if (activity != null) {
-                activity.ivRecordImage.setImageResource(activity.mSpeakerAnimResId[msg.what]);
-            }
-        }
-    }
-
     @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.iv_show_media_layout) {
-            //加号，显示多媒体框
-            if (viewMediaLayout.getVisibility() == View.GONE) {
-                viewMediaLayout.setVisibility(View.VISIBLE);
-                etSend.clearFocus();
-                ivAddMedia.requestFocus();
-            } else {
-                viewMediaLayout.setVisibility(View.GONE);
-            }
-        } else if (v.getId() == R.id.tv_send) {
-            //发送消息
-            if (etSend.getText().length() == 0) {
-                return;
-            }
-            sendMsg(etSend.getText().toString());
-        } else if (v.getId() == R.id.btn_voice) {
-            //语音
-            viewMediaLayout.setVisibility(View.GONE);
-            btnVoice.setVisibility(View.GONE);
-            viewMsgInput.setVisibility(View.GONE);
-            btnKeyBoard.setVisibility(View.VISIBLE);
-            viewPressToSpeak.setVisibility(View.VISIBLE);
-        } else if (v.getId() == R.id.btn_set_mode_keyboard) {
-            //键盘
-            viewMediaLayout.setVisibility(View.GONE);
-            btnVoice.setVisibility(View.VISIBLE);
-            viewPressToSpeak.setVisibility(View.GONE);
-            viewMsgInput.setVisibility(View.VISIBLE);
-            btnKeyBoard.setVisibility(View.GONE);
-        } else if (v.getId() == R.id.rl_btn_press_to_speak) {
-            //长按发送语音
-            viewMediaLayout.setVisibility(View.GONE);
-        } else if (v.getId() == R.id.iv_image) {
-            //选择图片
-            openPictureFromLocal();
-        } else if (v.getId() == R.id.iv_camera) {
-            try {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                mCameraFile = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
-                if (mCameraFile.createNewFile()) {
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
-                    startActivityForResult(intent, SEND_CAMERA);
-                } else {
-                    CommonUtil.shortToast(mContext, "照片生成失败");
+    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
+        final Chat chat = (Chat) model;
+        if (file == null || !file.exists()) {
+            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
+            return;
+        }
+
+        if (TextUtils.isEmpty(model.upyunMediaPutUrl)) {
+            getUpYunUploadInfo(file, mFromId, new NormalCallback<UpYunUploadResult>() {
+                @Override
+                public void success(final UpYunUploadResult result) {
+                    if (result != null) {
+                        model.upyunMediaPutUrl = result.putUrl;
+                        model.upyunMediaGetUrl = result.getUrl;
+                        model.headers = result.getHeaders();
+                        uploadUnYunMedia(file, chat, type);
+                        saveUploadResult(result.putUrl, result.getUrl, mFromId);
+                    } else {
+                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, chat);
+                    }
                 }
-            } catch (Exception ex) {
-                Log.e(TAG, ex.getMessage());
-            }
+            });
+        } else {
+            uploadUnYunMedia(file, chat, type);
         }
     }
-
-    TextWatcher msgTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (!TextUtils.isEmpty(s)) {
-                tvSend.setVisibility(View.VISIBLE);
-                ivAddMedia.setVisibility(View.GONE);
-            } else {
-                ivAddMedia.setVisibility(View.VISIBLE);
-                tvSend.setVisibility(View.GONE);
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-
-        }
-    };
-
-    //endregion
-
 
     /**
      * update badge the ListView of NewsFragment
      *
      * @param message xg message
      */
-    private void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
+    public void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, message);
         bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CHAT_MSG);
@@ -865,26 +424,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         mAdapter.updateItemByChatId(chat);
     }
 
-    //region local func
-
-    /**
-     * 初始化Cache文件夹
-     */
-    private void initCacheFolder() {
-        File imageFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE);
-        if (!imageFolder.exists()) {
-            imageFolder.mkdirs();
-        }
-        File imageThumbFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
-        if (!imageThumbFolder.exists()) {
-            imageThumbFolder.mkdirs();
-        }
-        File audioFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE);
-        if (!audioFolder.exists()) {
-            audioFolder.mkdirs();
-        }
-    }
-
     /**
      * 获取对方信息
      */
@@ -905,95 +444,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
                     Log.d(TAG, "无法获取对方信息");
                 }
             });
-        }
-    }
-
-    /**
-     * 从图库获取图片
-     */
-    private void openPictureFromLocal() {
-        Intent intent;
-        if (Build.VERSION.SDK_INT < 19) {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-        } else {
-            intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        }
-        startActivityForResult(intent, SEND_IMAGE);
-    }
-
-    /**
-     * 选择图片并压缩
-     *
-     * @param selectedImage 原图
-     * @return file
-     */
-    private File selectPicture(Uri selectedImage) {
-        Cursor cursor = getContentResolver().query(selectedImage, null, null, null, null);
-        String picturePath = null;
-        if (cursor != null) {
-            cursor.moveToFirst();
-            picturePath = cursor.getString(1);
-            cursor.close();
-
-            if (TextUtils.isEmpty(picturePath)) {
-                CommonUtil.shortToast(mContext, "找不到图片");
-                return null;
-            }
-        }
-        if (TextUtils.isEmpty(picturePath)) {
-            CommonUtil.shortToast(mContext, "图片不存在");
-            return null;
-        }
-        return compressImage(picturePath);
-    }
-
-    private File compressImage(String filePath) {
-        File compressedFile;
-        try {
-            Bitmap tmpBitmap = AppUtil.CompressImage(filePath);
-            Bitmap resultBitmap = AppUtil.scaleImage(tmpBitmap, tmpBitmap.getWidth(), AppUtil.getImageDegree(filePath));
-            Bitmap thumbBitmap = AppUtil.scaleImage(tmpBitmap, EdusohoApp.screenW * 0.4f, AppUtil.getImageDegree(filePath));
-            compressedFile = AppUtil.convertBitmap2File(resultBitmap,
-                    EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
-            AppUtil.convertBitmap2File(thumbBitmap, EdusohoApp.getChatCacheFile() +
-                    Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
-            if (!tmpBitmap.isRecycled()) {
-                tmpBitmap.recycle();
-            }
-            if (!thumbBitmap.isRecycled()) {
-                thumbBitmap.recycle();
-            }
-            if (!resultBitmap.isRecycled()) {
-                resultBitmap.recycle();
-            }
-        } catch (IOException ex) {
-            Log.e(TAG, ex.getMessage());
-            return null;
-        }
-        return compressedFile;
-    }
-
-    //endregion
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case SEND_IMAGE:
-                if (data != null) {
-                    Uri selectedImage = data.getData();
-                    if (selectedImage != null) {
-                        File file = selectPicture(selectedImage);
-                        uploadMedia(file, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
-                    }
-                }
-                break;
-            case SEND_CAMERA:
-                File compressedCameraFile = compressImage(mCameraFile.getAbsolutePath());
-                if (compressedCameraFile != null && compressedCameraFile.exists()) {
-                    uploadMedia(compressedCameraFile, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
-                }
-                break;
         }
     }
 
@@ -1018,13 +468,6 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * 存本地的Custom信息
-     *
-     * @param type
-     * @param content
-     * @return V2CustomContent
-     */
     private V2CustomContent getV2CustomContent(String type, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
@@ -1099,7 +542,5 @@ public class ChatActivity extends ActionBarBaseActivity implements View.OnClickL
         if (mChatDataSource != null) {
             mChatDataSource.close();
         }
-        unregisterReceiver(mAudioDownloadReceiver);
     }
-
 }
