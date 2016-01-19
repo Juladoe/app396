@@ -152,6 +152,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         @Override
         public void run() {
             lvMessage.setSelection(mStart);
+            lvMessage.setOnScrollListener(mListViewScrollEvent);
         }
     };
 

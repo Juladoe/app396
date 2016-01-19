@@ -166,6 +166,7 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         @Override
         public void run() {
             lvMessage.setSelection(mStart);
+            lvMessage.setOnScrollListener(mListViewScrollEvent);
         }
     };
 
