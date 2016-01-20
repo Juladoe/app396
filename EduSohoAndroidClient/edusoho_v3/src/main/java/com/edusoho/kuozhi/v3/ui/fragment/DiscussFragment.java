@@ -19,6 +19,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -117,11 +118,12 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
 
     private static final int SEND_IMAGE = 1;
     private static final int SEND_CAMERA = 2;
-    private static final int IMAGE_SIZE = 1024 * 500;
 
     protected int mSendTime;
     protected int mStart = 0;
     protected File mCameraFile;
+
+    private boolean initFlags = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -145,7 +147,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
             mAdapter.setSendImageClickListener(this);
             lvMessage.setAdapter(mAdapter);
             mStart = mAdapter.getCount();
-            lvMessage.post(mListViewSelectRunnable);
+            lvMessage.postDelayed(mListViewSelectRunnable, 500);
         }
     }
 
@@ -212,7 +214,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
             lvMessage.setAdapter(mAdapter);
             mAudioDownloadReceiver.setAdapter(mAdapter);
             mStart = mAdapter.getCount();
-            lvMessage.post(mListViewSelectRunnable);
+            lvMessage.postDelayed(mListViewSelectRunnable, 500);
             mPtrFrame.setLastUpdateTimeRelateObject(this);
             mPtrFrame.setPtrHandler(new PtrHandler() {
                 @Override
@@ -252,6 +254,22 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         @Override
         public void run() {
             lvMessage.setSelection(mStart);
+            lvMessage.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    if (firstVisibleItem + visibleItemCount == totalItemCount && initFlags) {
+                        if (lvMessage != null) {
+                            lvMessage.setSelection(lvMessage.getCount() - 1);
+                            initFlags = false;
+                        }
+                    }
+                }
+            });
         }
     };
 
@@ -328,6 +346,32 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         });
     }
 
+    @Override
+    public void sendMsgAgain(final BaseMsgEntity model) {
+        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("title", app.loginUser.nickname);
+        params.put("content", model.content);
+        params.put("custom", mActivity.gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
+
+        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                CloudResult result = mActivity.parseJsonValue(response, new TypeToken<CloudResult>() {
+                });
+                if (result != null && result.getResult()) {
+                    model.id = result.id;
+                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, (CourseDiscussEntity) model);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d(TAG, "发送信息失败");
+            }
+        });
+    }
+
     public void sendMediaMsg(final CourseDiscussEntity model, String type) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
@@ -352,30 +396,6 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         });
     }
 
-    // region 数据库操作
-    public void addSendMsgToListView(int delivery, CourseDiscussEntity model) {
-        model.delivery = delivery;
-        long discussId = mCourseDiscussDataSource.create(model);
-        model.discussId = (int) discussId;
-        mAdapter.addItem(model);
-        mStart = mStart + 1;
-    }
-
-    public void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Const.GET_PUSH_DATA, message);
-        bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_SEND_COURSE_DISCUSS_MSG);
-        app.sendMsgToTarget(Const.ADD_COURSE_DISCUSS_MSG, bundle, NewsFragment.class);
-    }
-
-    public void updateSendMsgToListView(int type, CourseDiscussEntity model) {
-        model.delivery = type;
-        mCourseDiscussDataSource.update(model);
-        mAdapter.updateItemByChatId(model);
-    }
-
-    // endregion
-
     private void uploadMedia(final File file, final String type, String strType) {
         if (file == null || !file.exists()) {
             CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
@@ -397,7 +417,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
 
             addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
 
-            getUpYunUploadInfo(file, new NormalCallback<UpYunUploadResult>() {
+            getUpYunUploadInfo(file, mCourseId, new NormalCallback<UpYunUploadResult>() {
                 @Override
                 public void success(final UpYunUploadResult result) {
                     if (result != null) {
@@ -410,25 +430,14 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
                         updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, model);
                     }
                 }
-            }, mCourseId);
+            });
             viewMediaLayout.setVisibility(View.GONE);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
     }
 
-    @Override
-    public void uploadMediaAgain(File file, BaseMsgEntity model, String type, String strType) {
-
-    }
-
-    /**
-     * get upyun upload info from push server
-     *
-     * @param file     upload file
-     * @param callback callback
-     */
-    public void getUpYunUploadInfo(File file, final NormalCallback<UpYunUploadResult> callback, int fromId) {
+    public void getUpYunUploadInfo(File file, int fromId, final NormalCallback<UpYunUploadResult> callback) {
         String path = String.format(Const.GET_UPLOAD_INFO, fromId, file.length(), file.getName());
         RequestUrl url = app.bindPushUrl(path);
         mActivity.ajaxGet(url, new Response.Listener<String>() {
@@ -446,6 +455,26 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
                 Log.d(TAG, "get upload info from upyun failed");
             }
         });
+    }
+
+    public void uploadUnYunMedia(final File file, final CourseDiscussEntity model, final String type) {
+        RequestUrl putUrl = new RequestUrl(model.upyunMediaPutUrl);
+        putUrl.setHeads(model.headers);
+        putUrl.setMuiltParams(new Object[]{"file", file});
+        mActivity.ajaxPostMultiUrl(putUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "success");
+                sendMediaMsg(model, type);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, model);
+                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
+                Log.d(TAG, "upload media res to upyun failed");
+            }
+        }, Request.Method.PUT);
     }
 
     public void saveUploadResult(String putUrl, String getUrl, int fromId) {
@@ -474,51 +503,57 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         });
     }
 
-    public void uploadUnYunMedia(final File file, final CourseDiscussEntity model, final String type) {
-        RequestUrl putUrl = new RequestUrl(model.upyunMediaPutUrl);
-        putUrl.setHeads(model.headers);
-        putUrl.setMuiltParams(new Object[]{"file", file});
-        mActivity.ajaxPostMultiUrl(putUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "success");
-                sendMediaMsg(model, type);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, model);
-                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
-                Log.d(TAG, "upload media res to upyun failed");
-            }
-        }, Request.Method.PUT);
-    }
-
     @Override
-    public void sendMsgAgain(final BaseMsgEntity model) {
-        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUser.nickname);
-        params.put("content", model.content);
-        params.put("custom", mActivity.gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
+    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
+        final CourseDiscussEntity courseDiscussModel = (CourseDiscussEntity) model;
+        if (file == null || !file.exists()) {
+            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
+            return;
+        }
 
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                CloudResult result = mActivity.parseJsonValue(response, new TypeToken<CloudResult>() {
-                });
-                if (result != null && result.getResult()) {
-                    model.id = result.id;
-                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, (CourseDiscussEntity) model);
+        if (TextUtils.isEmpty(model.upyunMediaPutUrl)) {
+            getUpYunUploadInfo(file, mCourseId, new NormalCallback<UpYunUploadResult>() {
+                @Override
+                public void success(final UpYunUploadResult result) {
+                    if (result != null) {
+                        model.upyunMediaPutUrl = result.putUrl;
+                        model.upyunMediaGetUrl = result.getUrl;
+                        model.headers = result.getHeaders();
+                        uploadUnYunMedia(file, courseDiscussModel, type);
+                        saveUploadResult(result.putUrl, result.getUrl, mCourseId);
+                    } else {
+                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, courseDiscussModel);
+                    }
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "发送信息失败");
-            }
-        });
+            });
+        } else {
+            uploadUnYunMedia(file, courseDiscussModel, type);
+        }
     }
+
+    // region 数据库操作
+    public void addSendMsgToListView(int delivery, CourseDiscussEntity model) {
+        model.delivery = delivery;
+        long discussId = mCourseDiscussDataSource.create(model);
+        model.discussId = (int) discussId;
+        mAdapter.addItem(model);
+        mStart = mStart + 1;
+    }
+
+    public void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Const.GET_PUSH_DATA, message);
+        bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_SEND_COURSE_DISCUSS_MSG);
+        app.sendMsgToTarget(Const.ADD_COURSE_DISCUSS_MSG, bundle, NewsFragment.class);
+    }
+
+    public void updateSendMsgToListView(int type, CourseDiscussEntity model) {
+        model.delivery = type;
+        mCourseDiscussDataSource.update(model);
+        mAdapter.updateItemByChatId(model);
+    }
+
+    // endregion
 
     /**
      * 从图库获取图片
@@ -895,6 +930,9 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     public void onDestroy() {
         super.onDestroy();
         mActivity.unregisterReceiver(mAudioDownloadReceiver);
+        if (mCourseDiscussDataSource != null) {
+            mCourseDiscussDataSource.close();
+        }
     }
 
     @Override

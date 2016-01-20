@@ -89,6 +89,8 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
     protected int mStart = 0;
     protected File mCameraFile;
 
+    private boolean initFlags = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -465,21 +467,6 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
     //endregion
 
     // region widget events
-    protected AbsListView.OnScrollListener mListViewScrollEvent = new AbsListView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-        }
-
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            if (firstVisibleItem + visibleItemCount == totalItemCount) {
-                if (lvMessage != null) {
-                    lvMessage.setSelection(lvMessage.getCount() - 1);
-                }
-            }
-        }
-    };
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {

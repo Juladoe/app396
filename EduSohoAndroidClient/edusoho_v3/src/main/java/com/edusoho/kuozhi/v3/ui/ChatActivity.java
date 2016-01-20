@@ -95,7 +95,7 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         mAdapter.clear();
         mAdapter.addItems(getChatList(0));
         mStart = mAdapter.getCount();
-        lvMessage.post(mListViewSelectRunnable);
+        lvMessage.postDelayed(mListViewSelectRunnable, 500);
         mAdapter.setSendImageClickListener(this);
         mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
@@ -134,12 +134,14 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         }
         initCacheFolder();
         getFriendUserInfo();
+
         mAdapter = new ChatAdapter<>(mContext, getChatList(0), mFromUserInfo);
         mAdapter.setSendImageClickListener(this);
         lvMessage.setAdapter(mAdapter);
-        mAudioDownloadReceiver.setAdapter(mAdapter);
         mStart = mAdapter.getCount();
-        lvMessage.post(mListViewSelectRunnable);
+        lvMessage.postDelayed(mListViewSelectRunnable, 500);
+
+        mAudioDownloadReceiver.setAdapter(mAdapter);
 
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrHandler() {
@@ -148,7 +150,7 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
                 mAdapter.addItems(getChatList(mStart));
                 mStart = mAdapter.getCount();
                 mPtrFrame.refreshComplete();
-                lvMessage.postDelayed(mListViewSelectRunnable, 100);
+                lvMessage.postDelayed(mListViewSelectRunnable, 500);
             }
 
             @Override
@@ -166,7 +168,7 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         @Override
         public void run() {
             lvMessage.setSelection(mStart);
-            lvMessage.setOnScrollListener(mListViewScrollEvent);
+            Log.d("onLayoutChange", "bottom-->");
         }
     };
 

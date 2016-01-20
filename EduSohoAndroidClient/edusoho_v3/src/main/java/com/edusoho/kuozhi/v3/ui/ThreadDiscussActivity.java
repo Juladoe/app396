@@ -150,7 +150,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                             mAdapter.setSendImageClickListener(ThreadDiscussActivity.this);
                             lvMessage.setAdapter(mAdapter);
                             mAudioDownloadReceiver.setAdapter(mAdapter);
-                            lvMessage.post(mListViewSelectRunnable);
+                            lvMessage.postDelayed(mListViewSelectRunnable, 500);
                         }
                     }
                 });
@@ -168,7 +168,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         @Override
         public void run() {
             lvMessage.setSelection(mAdapter.getCount());
-            lvMessage.setOnScrollListener(mListViewScrollEvent);
         }
     };
 

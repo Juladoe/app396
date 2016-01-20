@@ -82,16 +82,8 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         mAdapter.clear();
         mAdapter.addItems(getList(0));
         mStart = mAdapter.getCount();
-        lvMessage.post(mListViewSelectRunnable);
+        lvMessage.postDelayed(mListViewSelectRunnable, 500);
         mAdapter.setSendImageClickListener(this);
-        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
-    }
-
-    @Override
-    public void initView() {
-        super.initView();
-        lvMessage.post(mListViewSelectRunnable);
-        mPtrFrame.setLastUpdateTimeRelateObject(this);
         mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
@@ -123,6 +115,15 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
             mClassroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         }
 
+        mAdapter = new ClassroomDiscussAdapter<>(getList(0), mContext);
+        mAdapter.setSendImageClickListener(this);
+        lvMessage.setAdapter(mAdapter);
+        mStart = mAdapter.getCount();
+        lvMessage.postDelayed(mListViewSelectRunnable, 500);
+
+        mAudioDownloadReceiver.setAdapter(mAdapter);
+
+        mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
@@ -139,20 +140,14 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
                 return count > 0 && canDoRefresh;
             }
         });
-
-        mAdapter = new ClassroomDiscussAdapter<>(getList(0), mContext);
-        mAdapter.setSendImageClickListener(this);
-        lvMessage.setAdapter(mAdapter);
-        mAudioDownloadReceiver.setAdapter(mAdapter);
-        mStart = mAdapter.getCount();
-        super.initCacheFolder();
+        initCacheFolder();
+        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
     protected Runnable mListViewSelectRunnable = new Runnable() {
         @Override
         public void run() {
             lvMessage.setSelection(mStart);
-            lvMessage.setOnScrollListener(mListViewScrollEvent);
         }
     };
 
