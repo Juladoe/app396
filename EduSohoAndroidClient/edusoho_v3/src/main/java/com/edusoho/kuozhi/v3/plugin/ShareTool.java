@@ -114,7 +114,7 @@ public class ShareTool {
             return "";
         }
 
-        Pattern WEB_URL_PAT = Pattern.compile("(http://)?(.+)/(course|classroom)/(\\d+)", Pattern.DOTALL);
+        Pattern WEB_URL_PAT = Pattern.compile("(http://)?(.+)/(course|classroom|article)/(\\d+)", Pattern.DOTALL);
         Matcher matcher = WEB_URL_PAT.matcher(url);
         if (matcher.find()) {
             return String.format(SHARE_COURSE_TO_USER, matcher.group(2), matcher.group(3), matcher.group(4));
