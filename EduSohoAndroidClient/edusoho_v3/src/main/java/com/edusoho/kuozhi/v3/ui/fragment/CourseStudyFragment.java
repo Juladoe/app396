@@ -104,6 +104,9 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
         initData();
         filterData();
+
+        studyProcessRecyclerView.scrollToPosition(dataList.size()-1);
+
     }
 
     public void initData() {
