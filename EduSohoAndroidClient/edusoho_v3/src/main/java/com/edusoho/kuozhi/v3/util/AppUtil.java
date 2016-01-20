@@ -1130,11 +1130,10 @@ public class AppUtil {
      */
     public static String removeHtmlSpan(String string) {
         String htmlRegx = "<[^>]+>";
-        String regxedStr = string;
         Pattern htmlPattern = Pattern.compile(htmlRegx, Pattern.CASE_INSENSITIVE);
         Matcher htmlMatcher = htmlPattern.matcher(string);
-        regxedStr = htmlMatcher.replaceAll("");
-        return regxedStr;
+        string = htmlMatcher.replaceAll("");
+        return string;
     }
 
     /**
