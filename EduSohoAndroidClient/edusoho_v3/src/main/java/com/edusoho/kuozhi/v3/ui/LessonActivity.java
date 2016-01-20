@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -41,12 +40,10 @@ import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
-
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
-
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 
@@ -310,6 +307,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mLearnBtn.setTextColor(resources.getColor(R.color.lesson_learn_btn_normal));
                 break;
             case finished:
+                mLearnBtn.setEnabled(false);
                 mLearnBtn.setTag(false);
                 mLearnBtn.setIcon(R.string.learned_status);
                 mLearnBtn.setTextColor(resources.getColor(R.color.lesson_learned_btn_normal));
