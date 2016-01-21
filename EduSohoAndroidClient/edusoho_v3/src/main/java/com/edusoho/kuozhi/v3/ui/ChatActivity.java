@@ -3,7 +3,9 @@ package com.edusoho.kuozhi.v3.ui;
 import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Trace;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -74,6 +76,13 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
      * 自己的BusinessType,这里是Role
      */
     private String mMyType;
+
+    public ChatActivity() {
+        super();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Trace.beginSection("proccess begin");
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,7 +251,11 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
         params.put("content", model.content);
-        params.put("custom", gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
+        V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content);
+        v2CustomContent.getFrom().setId(app.loginUser.id);
+        v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
+        v2CustomContent.getFrom().setType(mMyType);
+        params.put("custom", gson.toJson(v2CustomContent));
 
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
@@ -544,6 +557,9 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         super.onDestroy();
         if (mChatDataSource != null) {
             mChatDataSource.close();
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            Trace.beginSection("processing end");
         }
     }
 }
