@@ -21,7 +21,7 @@
             android:layout_height="@dimen/head_icon_news_item"
             android:layout_centerInParent="true"
             android:layout_margin="6dp"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:src="@drawable/default_avatar"
             app:riv_corner_radius="4dp" />
 
