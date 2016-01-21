@@ -104,6 +104,10 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
         initData();
         filterData();
+
+
+        studyProcessRecyclerView.scrollToPosition(findPosition());
+
     }
 
     public void initData() {
@@ -288,9 +292,9 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                 CourseDetailsResult courseDetailsResult = mActivity.parseJsonValue(response, new TypeToken<CourseDetailsResult>() {
                 });
                 Course course = courseDetailsResult.course;
-                if (dataList.size()!=0 && dataList.get(0).getBodyType().equals("course.summary")){
+                if (dataList.size() != 0 && dataList.get(0).getBodyType().equals("course.summary")) {
                     return;
-                }else {
+                } else {
                     NewsCourseEntity entity = new NewsCourseEntity();
                     entity.setBodyType("course.summary");
                     entity.setContent(course.about.equals("") ? "暂无课程简介" : course.about);
@@ -307,6 +311,20 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
             }
         });
+    }
+
+    private int findPosition(){
+        Collections.reverse(dataList);
+        int position = 0;
+        for (int i = 0;i<dataList.size();i++){
+            NewsCourseEntity entity = dataList.get(i);
+            if (entity.getBodyType().equals("course.lessonTitle")){
+                position = dataList.size()-i;
+                break;
+            }
+        }
+        Collections.reverse(dataList);
+        return position;
     }
 
     @Override

@@ -116,6 +116,11 @@ public abstract class BaseHomeworkQuestionWidget extends LinearLayout implements
         }
 
     }
+
+    protected String getPlainText(String text) {
+        return AppUtil.removeHtmlSpace(text).replace("\r\n", "");
+    }
+
     /**
      * 获取题干
      */

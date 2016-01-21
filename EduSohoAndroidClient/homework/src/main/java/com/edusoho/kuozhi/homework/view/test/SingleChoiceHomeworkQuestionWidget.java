@@ -11,21 +11,14 @@ import android.view.ViewStub;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-
 import com.edusoho.kuozhi.homework.ExerciseActivity;
 import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.HomeworkSummaryActivity;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.model.bal.test.MaterialQuestionTypeSeq;
-import com.edusoho.kuozhi.v3.model.bal.test.Question;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
-import com.edusoho.kuozhi.v3.model.bal.test.QuestionTypeSeq;
-import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -155,7 +148,7 @@ public class SingleChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidg
     private RadioButton initRadioButton(String text, int index) {
         RadioButton radioButton = (RadioButton) LayoutInflater.from(mContext).inflate(
                 R.layout.question_radiobox, null);
-        radioButton.setText(text);
+        radioButton.setText(getPlainText(text));
         Resources resources = mContext.getResources();
         radioButton.setTextColor(resources.getColor(R.color.assist));
         int id = resources.getIdentifier(

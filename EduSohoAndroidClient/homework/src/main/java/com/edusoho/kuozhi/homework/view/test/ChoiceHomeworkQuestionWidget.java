@@ -11,19 +11,14 @@ import android.view.ViewStub;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
-
 import com.edusoho.kuozhi.homework.ExerciseActivity;
 import com.edusoho.kuozhi.homework.HomeworkActivity;
 import com.edusoho.kuozhi.homework.HomeworkSummaryActivity;
 import com.edusoho.kuozhi.homework.R;
 import com.edusoho.kuozhi.homework.model.HomeWorkQuestion;
-import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
-import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -152,7 +147,7 @@ public class ChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
     private CheckBox initCheckBox(String text, int index) {
         CheckBox checkBox = (CheckBox) LayoutInflater.from(mContext).inflate(
                 R.layout.question_checkbox, null);
-        checkBox.setText(text);
+        checkBox.setText(getPlainText(text));
         Resources resources = mContext.getResources();
         checkBox.setTextColor(resources.getColor(R.color.assist));
         int id = resources.getIdentifier(

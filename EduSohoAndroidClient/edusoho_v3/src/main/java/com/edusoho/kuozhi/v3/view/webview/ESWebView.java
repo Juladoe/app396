@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.view.webview;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -193,7 +194,12 @@ public class ESWebView extends RelativeLayout {
                 @Override
                 public Boolean onResponse(Response response) {
                     loadDialog.dismiss();
-                    mWebView.loadUrl(mUrl);
+                    new Handler(mActivity.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            mWebView.loadUrl(mUrl);
+                        }
+                    });
                     return false;
                 }
             };
@@ -210,8 +216,14 @@ public class ESWebView extends RelativeLayout {
             mLocalAppMeta = getLocalApp(mAppCode);
         }
 
-        if (TextUtils.isEmpty(mAppCode) || checkResourceIsExists()) {
+        if (TextUtils.isEmpty(mAppCode)) {
             mWebView.loadUrl(mUrl);
+            return;
+        }
+
+        if (checkResourceIsExists()) {
+            mWebView.loadUrl(mUrl);
+            updateApp(mAppCode, false);
             return;
         }
 
@@ -221,62 +233,70 @@ public class ESWebView extends RelativeLayout {
     private boolean checkResourceIsExists() {
         File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, mActivity.app.domain);
         File schoolAppFile = new File(schoolStorage, mAppCode);
-        InputStream zinInputStream = null;
-
-        String projectCode = mContext.getString(R.string.app_code);
-        AppMeta innerAppmeta = getInnerHtmlPluginVersion(projectCode);
-
-        try {
-            zinInputStream = mContext.getAssets().open(String.format("%s-html5-%s.Android.zip", projectCode, mAppCode));
-        } catch (Exception e) {
-        }
 
         if (mLocalAppMeta == null) {
-            if (AppUtil.unZipFile(schoolAppFile, zinInputStream)) {
+            if (AppUtil.unZipFile(schoolAppFile, getInnerHtmlPluginInputStream(mAppCode))) {
                 mLocalAppMeta = getLocalApp(mAppCode);
             }
-
             return mLocalAppMeta != null;
         }
 
-        if (CommonUtil.compareVersion(mLocalAppMeta.version, innerAppmeta.version) == Const.LOW_VERSIO) {
-            if (AppUtil.unZipFile(schoolAppFile, zinInputStream)) {
+        AppMeta innerHtmlPluginAppMeta = getHtmlPluginAppMeta(mAppCode);
+        if (innerHtmlPluginAppMeta == null) {
+            return mLocalAppMeta != null;
+        }
+
+        int result = CommonUtil.compareVersion(mLocalAppMeta.version, innerHtmlPluginAppMeta.version);
+        if (result == Const.LOW_VERSIO) {
+            if (AppUtil.unZipFile(schoolAppFile, getInnerHtmlPluginInputStream(mAppCode))) {
                 mLocalAppMeta = getLocalApp(mAppCode);
             }
         }
-        updateApp(mAppCode, false);
         return mLocalAppMeta != null;
     }
 
-    private AppMeta getInnerHtmlPluginVersion(String projectCode){
-        ZipEntry zipEntry = null;
-        AppMeta appMeta = null;
-        ZipInputStream zipInputStream = null;
+    private InputStream getInnerHtmlPluginInputStream(String code) {
+        InputStream zinInputStream = null;
         try {
-            InputStream inputStream = mContext.getAssets().open(String.format("%s-html5-%s.Android.zip", projectCode, mAppCode));
-            zipInputStream = new ZipInputStream(inputStream);
+            String projectCode = mContext.getString(R.string.app_code);
+            zinInputStream = mContext.getAssets().open(String.format("%s-html5-%s.Android.zip", projectCode, code));
+        } catch (Exception e) {
+        }
+
+        return zinInputStream;
+    }
+
+    private AppMeta getHtmlPluginAppMeta(String code) {
+        AppMeta localAppMeta = null;
+        InputStream inputStream = null;
+        String projectCode = mContext.getString(R.string.app_code);
+        try {
+            inputStream = mContext.getAssets().open(String.format("%s-html5-%s.Android.zip", projectCode, code));
+            ZipInputStream zipInputStream = new ZipInputStream(inputStream);
+            ZipEntry zipEntry = null;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 if ("version.json".equals(zipEntry.getName())) {
-                    BufferedReader in = new BufferedReader(new InputStreamReader(zipInputStream));
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(zipInputStream));
                     String line = null;
                     StringBuilder stringBuilder = new StringBuilder();
-                    while ((line = in.readLine()) != null) {
+                    while ((line = bufferedReader.readLine()) != null) {
                         stringBuilder.append(line);
                     }
-                    appMeta = mActivity.parseJsonValue(stringBuilder.toString(), new TypeToken<AppMeta>(){});
+                    localAppMeta = mActivity.parseJsonValue(stringBuilder.toString(), new TypeToken<AppMeta>(){});
                     break;
                 }
                 zipInputStream.closeEntry();
             }
         } catch (IOException e) {
         } finally {
-            try {
-                zipInputStream.close();
-            } catch (Exception e) {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (Exception e) {}
             }
         }
 
-        return appMeta;
+        return localAppMeta;
     }
 
     public void initPlugin(BaseActivity activity) {
