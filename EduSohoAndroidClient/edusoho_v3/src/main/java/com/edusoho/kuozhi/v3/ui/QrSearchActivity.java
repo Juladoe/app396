@@ -64,8 +64,19 @@ public class QrSearchActivity extends CaptureActivity {
         }
 
         if (! resultUrl.getHost().equals(app.domain)) {
-            PopupDialog.createNormal(mContext, "二维码提示", "该二维码对应内容非当前登录网校内教学内容，请核对后重新扫描。").show();
-            return true;
+            PopupDialog popupDialog = PopupDialog.createNormal(
+                    mContext,
+                    "二维码提示",
+                    "该二维码对应内容非当前登录网校内教学内容，请核对后重新扫描。"
+            );
+            popupDialog.setOkListener(new PopupDialog.PopupClickListener() {
+                @Override
+                public void onClick(int button) {
+                    finish();
+                }
+            });
+            popupDialog.show();
+            return false;
         }
 
         Matcher typeMatcher = TYPE_PAT.matcher(resultUrl.getPath());
