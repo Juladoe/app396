@@ -653,8 +653,8 @@ public class EdusohoApp extends Application {
                     });
                     if (token != null) {
                         RequestUrl requestUrl = new RequestUrl(sb.toString());
-                        requestUrl.heads.put("Auth-Token", app.apiToken);
                         app.saveApiToken(token.token);
+                        requestUrl.heads.put("Auth-Token", app.apiToken);
                         normalCallback.success(requestUrl);
                     }
                 }
