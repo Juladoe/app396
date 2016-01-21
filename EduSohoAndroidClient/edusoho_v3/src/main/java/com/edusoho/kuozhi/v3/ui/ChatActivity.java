@@ -77,13 +77,6 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
      */
     private String mMyType;
 
-    public ChatActivity() {
-        super();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            Trace.beginSection("proccess begin");
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -557,9 +550,6 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         super.onDestroy();
         if (mChatDataSource != null) {
             mChatDataSource.close();
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            Trace.beginSection("processing end");
         }
     }
 }
