@@ -131,6 +131,13 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 }
                 promise.resolve(notificationResult);
             }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                mEmptyNotice.setVisibility(View.VISIBLE);
+                newsList.setVisibility(View.GONE);
+                mLoading.setVisibility(View.GONE);
+            }
         });
 
         return promise;
@@ -161,7 +168,9 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         for (String id : idList) {
             users.append(id + ",");
         }
-        users.deleteCharAt(users.length() - 1);
+        if (users.length()>0){
+            users.deleteCharAt(users.length() - 1);
+        }
         requestUrl.url = String.format(requestUrl.url, app.loginUser.id, users.toString());
         return requestUrl;
     }
