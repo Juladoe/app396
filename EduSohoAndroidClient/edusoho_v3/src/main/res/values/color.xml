@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary_color">#36b57b</color>
+    <color name="primary_color">#37b97d</color>
     <!-- base color -->
     <color name="base_card_bg">#ffffff</color>
     <color name="base_light">#fdb933</color>
