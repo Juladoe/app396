@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/base_gray">
+    android:layout_height="match_parent">
 
     <ListView
         android:id="@+id/friends_list"
@@ -44,13 +43,13 @@
             android:indeterminateDrawable="@drawable/load" />
 
         <TextView
-            android:layout_below="@id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/progress"
+            android:layout_gravity="center"
             android:layout_marginTop="36dp"
             android:text="好友加载中..."
-            android:textSize="@dimen/base_large_size"
-            android:layout_gravity="center"/>
+            android:textSize="@dimen/base_large_size" />
 
     </FrameLayout>
 </FrameLayout>
