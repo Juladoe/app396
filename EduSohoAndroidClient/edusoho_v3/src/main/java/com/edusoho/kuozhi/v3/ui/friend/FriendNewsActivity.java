@@ -190,7 +190,6 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
 
     private class FriendNewsAdapter extends BaseAdapter {
         private int mResource;
-
         private FriendNewsAdapter(Context mContext, int mResource) {
             mInflater = LayoutInflater.from(mContext);
             this.mResource = mResource;

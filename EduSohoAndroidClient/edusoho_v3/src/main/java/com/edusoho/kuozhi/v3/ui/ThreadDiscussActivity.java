@@ -411,6 +411,11 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 public void onResponse(String response) {
                     mThreadModel = mActivity.parseJsonValue(response, new TypeToken<CourseThreadEntity>() {
                     });
+                    mThreadModel.content = Html.fromHtml(mThreadModel.content).toString();
+                    String lastStr = mThreadModel.content.substring(mThreadModel.content.length() - 2, mThreadModel.content.length());
+                    if ("\n\n".equals(lastStr)) {
+                        mThreadModel.content = mThreadModel.content.substring(0, mThreadModel.content.length() - 2);
+                    }
                     final int threadId = mThreadModel.id;
                     if (mCourseThreadDataSource.get(threadId) == null) {
                         mCourseThreadDataSource.create(mThreadModel);
