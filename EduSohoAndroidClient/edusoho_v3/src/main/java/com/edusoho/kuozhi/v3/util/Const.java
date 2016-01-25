@@ -490,6 +490,8 @@ public class Const {
     public static final String UPLOAD_IMAGE_CACHE_FILE = "/image";
     public static final String UPLOAD_IMAGE_CACHE_THUMB_FILE = "/image/thumb";
 
+    public static final String MY_COURSES = "/api/courses";
+
     /*
      * intent action
      */

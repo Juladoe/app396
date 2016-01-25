@@ -89,6 +89,24 @@ public class NewDataSource {
         return insertId;
     }
 
+    public void create(List<New> newList) {
+        openWrite();
+        for (New newModel : newList) {
+            ContentValues cv = new ContentValues();
+            cv.put(allColumns[1], newModel.fromId);
+            cv.put(allColumns[2], newModel.title);
+            cv.put(allColumns[3], newModel.content);
+            cv.put(allColumns[4], newModel.createdTime);
+            cv.put(allColumns[5], newModel.imgUrl);
+            cv.put(allColumns[6], newModel.unread);
+            cv.put(allColumns[7], newModel.type);
+            cv.put(allColumns[8], newModel.belongId);
+            cv.put(allColumns[9], newModel.isTop);
+            mDataBase.insert(TABLE_NAME, null, cv);
+        }
+        close();
+    }
+
     public long update(New newModel) {
         openWrite();
         ContentValues cv = new ContentValues();
@@ -137,9 +155,9 @@ public class NewDataSource {
         return id;
     }
 
-    public void delete(int fromId, int belongId) {
+    public void delete(int fromId, String type, int belongId) {
         openWrite();
-        mDataBase.delete(TABLE_NAME, "FROMID = ? AND BELONGID = ?", new String[]{fromId + "", belongId + ""});
+        mDataBase.delete(TABLE_NAME, "FROMID = ? AND TYPE = ? AND BELONGID = ?", new String[]{fromId + "", type, belongId + ""});
         close();
     }
 

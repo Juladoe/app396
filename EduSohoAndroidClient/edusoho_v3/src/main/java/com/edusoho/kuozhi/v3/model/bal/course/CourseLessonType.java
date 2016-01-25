@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.model.bal;
+package com.edusoho.kuozhi.v3.model.bal.course;
 
 public enum CourseLessonType {
 

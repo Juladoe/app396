@@ -130,8 +130,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                                     ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
                                     classroomDiscussDataSource.delete(mFromId, app.loginUser.id);
                                     NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                                    newDataSource.delete("FROMID = ? AND BELONGID = ? AND TYPE = ?",
-                                            mFromId + "", app.loginUser.id + "", PushUtil.ChatUserType.CLASSROOM);
+                                    newDataSource.delete(mFromId + "", PushUtil.ChatUserType.CLASSROOM, app.loginUser.id + "");
                                     Bundle bundle = new Bundle();
                                     bundle.putInt(Const.FROM_ID, mFromId);
                                     app.sendMsgToTarget(Const.REFRESH_LIST, bundle, NewsFragment.class);

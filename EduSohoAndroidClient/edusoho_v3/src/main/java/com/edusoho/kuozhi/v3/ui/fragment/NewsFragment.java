@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -13,19 +16,26 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.model.bal.course.MyCourseResult;
+import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
@@ -50,14 +60,18 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by JesseHuang on 15/4/26.
  * 动态列表
  */
 public class NewsFragment extends BaseFragment {
+    public static final String TAG = "NewsFragment";
     public static final int HANDLE_SEND_THREAD_POST = 9;
     public static final int HANDLE_RECEIVE_THREAD_POST = 10;
     public static final int HANDLE_SEND_CHAT_MSG = 11;
@@ -71,10 +85,16 @@ public class NewsFragment extends BaseFragment {
     public static final int UPDATE_UNREAD_NEWS_COURSE = 19;
     public static final int UPDATE_UNREAD_ARTICLE_CREATE = 20;
 
+    public static final int SHOW = 60;
+    public static final int DISMISS = 61;
+
     private SwipeMenuListView lvNewsList;
     private View mEmptyView;
     private TextView tvEmptyText;
     private SwipeAdapter mSwipeAdapter;
+
+    private ExecutorService mExecutorService;
+    private LoadingHandler mLoadingHandler;
 
     @Override
     public void onAttach(Activity activity) {
@@ -85,6 +105,8 @@ public class NewsFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_news);
+        mExecutorService = Executors.newSingleThreadExecutor();
+        mLoadingHandler = new LoadingHandler(this);
     }
 
     @Override
@@ -99,9 +121,17 @@ public class NewsFragment extends BaseFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("NewsFragment", "onResume");
+        mExecutorService.execute(mGetRestCourse);
+    }
+
+    @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
+
         }
     }
 
@@ -614,10 +644,6 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
-    private void handleSendThreadPost(WrapperXGPushTextMessage message) {
-
-    }
-
     private void handleReceiveThreadPost(WrapperXGPushTextMessage message) {
         New model = new New();
         V2CustomContent v2CustomContent = message.getV2CustomContent();
@@ -671,5 +697,130 @@ public class NewsFragment extends BaseFragment {
     private void setListVisibility(boolean visibility) {
         lvNewsList.setVisibility(visibility ? View.GONE : View.VISIBLE);
         mEmptyView.setVisibility(visibility ? View.VISIBLE : View.GONE);
+    }
+
+    private Runnable mGetRestCourse = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                mLoadingHandler.sendEmptyMessage(SHOW);
+                RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES, true);
+                mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        MyCourseResult myCourseResult = ModelDecor.getInstance().decor(response, new TypeToken<MyCourseResult>() {
+                        });
+                        if (myCourseResult.resources != null) {
+                            filterMyCourses(myCourseResult.resources);
+                        }
+                        mLoadingHandler.sendEmptyMessage(DISMISS);
+                        //mLoadDialog.dismiss();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String message = new String(error.networkResponse.data);
+                        mLoadingHandler.sendEmptyMessage(DISMISS);
+                        Log.d(TAG, message);
+                    }
+                });
+            } catch (Exception ex) {
+                Log.e(TAG, ex.getMessage());
+            }
+        }
+    };
+
+    private void filterMyCourses(Course[] courses) {
+        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+        List<New> newList = newDataSource.getNews("WHERE TYPE = ? ORDER BY FROMID", PushUtil.CourseType.TYPE);
+
+        //本地已经存在的course ids
+        List<Integer> existCourseIds = new ArrayList<>();
+        List<Integer> existCourseIds1 = new ArrayList<>();
+        for (New newModel : newList) {
+            existCourseIds.add(newModel.fromId);
+            existCourseIds1.add(newModel.fromId);
+        }
+
+        //服务器端最新的course ids
+        List<Integer> newCourseIds = new ArrayList<>();
+        List<Integer> newCourseIds1 = new ArrayList<>();
+        for (Course course : courses) {
+            newCourseIds.add(course.id);
+            newCourseIds1.add(course.id);
+        }
+
+        //获取退出的学习 existCourseIds
+        existCourseIds.removeAll(newCourseIds);
+
+        //获取新加入的学习 newCourseIds1
+        newCourseIds1.removeAll(existCourseIds1);
+
+        //如果有退出的学习，则删除本地
+        if (existCourseIds.size() > 0) {
+            Log.d(TAG, "filterMyCourses_delete: " + composeIds(existCourseIds));
+            //newDataSource.delete("FROMID IN {?} AND TYPE = ? AND BELONGID = ?", composeIds(existCourseIds), PushUtil.CourseType.TYPE, app.loginUser.id + "");
+        }
+
+        //如果有新增学习，则添加到本地
+        if (newCourseIds1.size() > 0) {
+            for (Course course : courses) {
+                if (newCourseIds1.contains(course.id)) {
+                    Log.d(TAG, "filterMyCourses_create: " + course.id);
+//                    New newModel = new New();
+//                    newModel.fromId = course.id;
+//                    newModel.title = course.title;
+//                    newModel.content = "";
+//                    newModel.createdTime = (int) (System.currentTimeMillis() / 1000);
+//                    newModel.imgUrl = course.middlePicture;
+//                    newModel.unread = 0;
+//                    newModel.type = PushUtil.CourseType.TYPE;
+//                    newModel.belongId = app.loginUser.id;
+//                    newDataSource.create(newModel);
+                }
+            }
+        }
+    }
+
+    private String composeIds(List<Integer> list) {
+        StringBuilder idSBuilder = new StringBuilder();
+        for (Integer id : list) {
+            idSBuilder.append(id).append(",");
+        }
+        if (idSBuilder.length() > 0) {
+            return idSBuilder.toString().substring(0, idSBuilder.length() - 1);
+        } else {
+            return idSBuilder.toString();
+        }
+    }
+
+    private static class LoadingHandler extends Handler {
+        private final WeakReference<NewsFragment> mFragment;
+
+        public LoadingHandler(NewsFragment fragment) {
+            mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            NewsFragment fragment = mFragment.get();
+            if (fragment != null) {
+
+                try {
+                    switch (msg.what) {
+                        case SHOW:
+                            ((DefaultPageActivity) fragment.getActivity()).setTitleLoading(true);
+                            Log.d(TAG, "handleMessage: " + SHOW);
+                            break;
+                        case DISMISS:
+                            ((DefaultPageActivity) fragment.getActivity()).setTitleLoading(false);
+                            Log.d(TAG, "handleMessage: " + DISMISS);
+                            break;
+                    }
+                } catch (Exception ex) {
+                    Log.e(TAG, "handleMessage: " + ex.getMessage());
+                }
+            }
+        }
     }
 }

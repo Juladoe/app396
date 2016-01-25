@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -34,6 +35,7 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
+
 import java.util.HashMap;
 
 /**
@@ -51,6 +53,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private EduSohoTextBtn mDownTabMine;
     private Toolbar tbActionBar;
     private TextView tvTitle;
+    private View viewTitleLoading;
     private NavDownTabClickListener mNavDownTabClickListener;
 
     private boolean mLogoutFlag = false;
@@ -116,6 +119,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mDownTabMine = (EduSohoTextBtn) findViewById(R.id.nav_tab_mine);
         tbActionBar = (Toolbar) findViewById(R.id.tb_action_bar);
         tvTitle = (TextView) findViewById(R.id.tv_title);
+        viewTitleLoading = findViewById(R.id.ll_title_loading);
         setSupportActionBar(tbActionBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mNavDownTabClickListener = new NavDownTabClickListener();
@@ -138,6 +142,16 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     public void setTitle(String title) {
         tvTitle.setText(title);
+    }
+
+    public void setTitleLoading(boolean isLoading) {
+        if (isLoading) {
+            tvTitle.setVisibility(View.GONE);
+            viewTitleLoading.setVisibility(View.VISIBLE);
+        } else {
+            tvTitle.setVisibility(View.VISIBLE);
+            viewTitleLoading.setVisibility(View.GONE);
+        }
     }
 
     private class NavDownTabClickListener implements View.OnClickListener {

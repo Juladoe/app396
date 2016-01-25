@@ -35,6 +35,7 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     public ActionBar mActionBar;
     protected TextView mTitleTextView;
     private View mTitleLayoutView;
+    private View mTitleLoading;
     protected int mRunStatus;
     private EduSohoCompoundButton switchButton;
     private RadioButton rbStudyRadioButton;
@@ -77,7 +78,6 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         mTitleTextView.setText(title);
         ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                 ActionBar.LayoutParams.MATCH_PARENT);
-        //layoutParams.width = (int) (EdusohoApp.screenW * 0.6);
         layoutParams.gravity = Gravity.CENTER;
         mActionBar.setCustomView(mTitleLayoutView, layoutParams);
 

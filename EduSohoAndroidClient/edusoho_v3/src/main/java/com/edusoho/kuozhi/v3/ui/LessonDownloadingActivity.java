@@ -20,7 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
-import com.edusoho.kuozhi.v3.model.bal.CourseLessonType;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.DownloadStatus;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.DownLessonItem;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;

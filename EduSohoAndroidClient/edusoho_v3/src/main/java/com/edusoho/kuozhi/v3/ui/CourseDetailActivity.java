@@ -13,15 +13,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.CourseMember;
-import com.edusoho.kuozhi.v3.model.bal.CourseMemberResult;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMemberResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
@@ -134,7 +135,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                                     SqliteChatUtil chatUtil = SqliteChatUtil.getSqliteChatUtil(mContext, app.domain);
                                     new NewsCourseDataSource(chatUtil).delete(mFromId, app.loginUser.id);
                                     new CourseDiscussDataSource(chatUtil).delete(mFromId, app.loginUser.id);
-                                    new NewDataSource(chatUtil).delete(mFromId, app.loginUser.id);
+                                    new NewDataSource(chatUtil).delete(mFromId, PushUtil.CourseType.TYPE, app.loginUser.id);
                                     app.sendMsgToTarget(Const.REFRESH_LIST, new Bundle(), NewsFragment.class);
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
                                         @Override
