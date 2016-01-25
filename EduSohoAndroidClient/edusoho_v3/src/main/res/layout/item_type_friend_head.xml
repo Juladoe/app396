@@ -14,7 +14,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/base_gray"
+        android:background="@color/background"
         android:paddingBottom="8dp">
 
         <TextView
@@ -37,7 +37,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/material_grey" />
+        android:background="@color/background" />
 
     <LinearLayout
         android:id="@+id/discussion_group"
@@ -78,7 +78,7 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:layout_marginLeft="16dp"
-        android:background="@color/material_grey" />
+        android:background="@color/background" />
 
     <LinearLayout
         android:id="@+id/service"
@@ -116,7 +116,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/material_grey" />
+        android:background="@color/background" />
 
 
 </LinearLayout>
