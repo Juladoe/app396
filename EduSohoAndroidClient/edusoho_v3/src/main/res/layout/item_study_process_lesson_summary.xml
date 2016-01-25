@@ -29,6 +29,7 @@
             android:layout_marginTop="8dp"
             android:layout_toRightOf="@id/study_process_lesson_summary_image"
             android:ellipsize="end"
+            android:maxLines="2"
             android:textColor="@color/black"
             android:textSize="@dimen/large_font_size" />
 
