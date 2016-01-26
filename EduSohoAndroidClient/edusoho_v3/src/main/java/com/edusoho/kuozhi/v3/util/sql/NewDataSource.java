@@ -150,8 +150,16 @@ public class NewDataSource {
 
     public long delete(String whereSql, String... whereArgs) {
         openWrite();
-        long id = mDataBase.delete(TABLE_NAME, whereSql, whereArgs);
-        close();
+        long id = 0;
+        try {
+            id = mDataBase.delete(TABLE_NAME, whereSql, whereArgs);
+            close();
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            close();
+        }
         return id;
     }
 

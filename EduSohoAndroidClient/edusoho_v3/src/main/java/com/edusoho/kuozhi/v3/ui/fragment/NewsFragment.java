@@ -704,7 +704,7 @@ public class NewsFragment extends BaseFragment {
         public void run() {
             try {
                 mLoadingHandler.sendEmptyMessage(SHOW);
-                RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES, true);
+                RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=learn", true);
                 mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -714,7 +714,6 @@ public class NewsFragment extends BaseFragment {
                             filterMyCourses(myCourseResult.resources);
                         }
                         mLoadingHandler.sendEmptyMessage(DISMISS);
-                        //mLoadDialog.dismiss();
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -756,27 +755,31 @@ public class NewsFragment extends BaseFragment {
 
         //如果有退出的学习，则删除本地
         if (existCourseIds.size() > 0) {
-            Log.d(TAG, "filterMyCourses_delete: " + composeIds(existCourseIds));
-            //newDataSource.delete("FROMID IN {?} AND TYPE = ? AND BELONGID = ?", composeIds(existCourseIds), PushUtil.CourseType.TYPE, app.loginUser.id + "");
+            newDataSource.delete(String.format("FROMID IN (%s) AND TYPE = ? AND BELONGID = ?", composeIds(existCourseIds)),
+                    PushUtil.CourseType.TYPE, app.loginUser.id + "");
+            mSwipeAdapter.deleteItemByFromIds(existCourseIds, PushUtil.CourseType.TYPE);
         }
 
         //如果有新增学习，则添加到本地
         if (newCourseIds1.size() > 0) {
+            List<New> addItemList = new ArrayList<>();
             for (Course course : courses) {
                 if (newCourseIds1.contains(course.id)) {
-                    Log.d(TAG, "filterMyCourses_create: " + course.id);
-//                    New newModel = new New();
-//                    newModel.fromId = course.id;
-//                    newModel.title = course.title;
-//                    newModel.content = "";
-//                    newModel.createdTime = (int) (System.currentTimeMillis() / 1000);
-//                    newModel.imgUrl = course.middlePicture;
-//                    newModel.unread = 0;
-//                    newModel.type = PushUtil.CourseType.TYPE;
-//                    newModel.belongId = app.loginUser.id;
-//                    newDataSource.create(newModel);
+                    Log.d(TAG, "filterMyCourses: create --> " + course.id);
+                    New newModel = new New();
+                    newModel.fromId = course.id;
+                    newModel.title = course.title;
+                    newModel.content = "";
+                    newModel.createdTime = (int) (System.currentTimeMillis() / 1000);
+                    newModel.imgUrl = course.middlePicture;
+                    newModel.unread = 0;
+                    newModel.type = PushUtil.CourseType.TYPE;
+                    newModel.belongId = app.loginUser.id;
+                    newDataSource.create(newModel);
+                    addItemList.add(newModel);
                 }
             }
+            mSwipeAdapter.addItems(addItemList);
         }
     }
 

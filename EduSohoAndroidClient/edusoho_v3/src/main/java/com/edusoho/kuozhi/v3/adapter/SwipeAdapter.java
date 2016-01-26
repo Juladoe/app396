@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -57,13 +56,19 @@ public class SwipeAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void addItems(List<New> list) {
+        mList.addAll(0, list);
+        notifyDataSetChanged();
+
+    }
+
     public void updateItem(New newModel) {
         Iterator<New> iterator = mList.iterator();
         int pos = 0;
         while (iterator.hasNext()) {
             New item = iterator.next();
             if (item.fromId == newModel.fromId) {
-                mList.remove(item);
+                iterator.remove();
                 mList.add(pos, newModel);
                 notifyDataSetChanged();
                 break;
@@ -94,6 +99,24 @@ public class SwipeAdapter extends BaseAdapter {
                 notifyDataSetChanged();
                 break;
             }
+        }
+    }
+
+    public void deleteItemByFromIds(List<Integer> fromIds, String type) {
+        try {
+            Iterator<New> iterator = mList.iterator();
+            while (iterator.hasNext()) {
+                New item = iterator.next();
+                for (int fromId : fromIds) {
+                    if (fromId == item.fromId && type.equals(item.type)) {
+                        iterator.remove();
+                        break;
+                    }
+                }
+            }
+            notifyDataSetChanged();
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 
