@@ -719,9 +719,7 @@ public class NewsFragment extends BaseFragment {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        String message = new String(error.networkResponse.data);
                         mLoadingHandler.sendEmptyMessage(DISMISS);
-                        Log.d(TAG, message);
                     }
                 });
             } catch (Exception ex) {
