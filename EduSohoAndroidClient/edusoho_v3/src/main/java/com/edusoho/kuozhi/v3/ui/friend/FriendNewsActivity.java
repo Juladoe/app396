@@ -163,7 +163,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     }
 
     public RequestUrl setRelationParams(ArrayList<String> idList) {
-        RequestUrl requestUrl = app.bindNewUrl(Const.GET_RELATIONSHIP, false);
+        RequestUrl requestUrl = app.bindNewUrl(Const.GET_RELATIONSHIP, true);
         StringBuffer users = new StringBuffer();
         for (String id : idList) {
             users.append(id + ",");

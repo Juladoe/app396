@@ -340,9 +340,7 @@ public class SearchDialogFragment extends DialogFragment {
             public void success(VolleyError obj) {
                 mNotice.setText("出现未知错误，请稍后再试");
                 mNotice.setVisibility(View.VISIBLE);
-                if (mLoading.getVisibility() == View.VISIBLE){
-                    mLoading.setVisibility(View.GONE);
-                }
+                mLoading.setVisibility(View.GONE);
             }
         });
 
@@ -396,12 +394,14 @@ public class SearchDialogFragment extends DialogFragment {
     }
 
     public RequestUrl setRelationParams(ArrayList<Friend> list) {
-        RequestUrl requestUrl = mApp.bindNewUrl(Const.GET_RELATIONSHIP, false);
+        RequestUrl requestUrl = mApp.bindNewUrl(Const.GET_RELATIONSHIP, true);
         StringBuffer users = new StringBuffer();
         for (Friend friend : list) {
             users.append(friend.id + ",");
         }
-        users.deleteCharAt(users.length() - 1);
+        if (users.length()>0){
+            users.deleteCharAt(users.length() - 1);
+        }
         requestUrl.url = String.format(requestUrl.url,mApp.loginUser.id,users.toString());
 
         return requestUrl;
