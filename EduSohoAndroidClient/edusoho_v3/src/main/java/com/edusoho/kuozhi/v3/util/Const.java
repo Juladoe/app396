@@ -460,7 +460,7 @@ public class Const {
      */
 
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
-    public static final String USERS = "/api/users/";
+    public static final String USERS = "/api/users";
     public static final String MY_FRIEND = "/api/me/friends";
     public static final String ADD_FRIEND = "/api/users/%d/followers";
     public static final String GET_RELATIONSHIP = "/api/users/%d/friendship?toIds=%s";
