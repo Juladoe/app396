@@ -5,67 +5,70 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_gravity="center"
-        android:orientation="horizontal"
         android:id="@+id/lesson_tools_layout"
-        android:layout_alignParentBottom="true"
-        android:background="@drawable/course_details_btn_layout_bg"
         android:layout_width="match_parent"
-        android:layout_height="1dp">
+        android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center"
+        android:background="@drawable/course_details_btn_layout_bg"
+        android:orientation="horizontal">
 
         <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
-            android:padding="8dp"
-            android:orientation="vertical"
-            app:iconSizeScale="2.4"
             android:id="@+id/lesson_learn_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="8dp"
             app:fontColor="@color/lesson_tools_sel"
-            app:size="@dimen/nav_layout_btn"
+            app:iconSizeScale="2.4"
             app:image="@string/learning_status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            app:size="@dimen/nav_layout_btn" />
 
         <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
-            android:padding="8dp"
-            android:orientation="vertical"
-            app:iconSizeScale="2.4"
             android:id="@+id/lesson_previous"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="8dp"
             app:fontColor="@color/lesson_redirect_sel"
-            app:size="@dimen/nav_layout_btn"
+            app:iconSizeScale="2.4"
             app:image="@string/lesson_previous"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            app:size="@dimen/nav_layout_btn" />
 
         <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
-            android:padding="8dp"
-            android:orientation="vertical"
-            app:iconSizeScale="2.4"
             android:id="@+id/lesson_next"
-            android:layout_weight="1"
-            app:fontColor="@color/lesson_redirect_sel"
-            app:size="@dimen/nav_layout_btn"
-            app:image="@string/lesson_next"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="8dp"
+            app:fontColor="@color/lesson_redirect_sel"
+            app:iconSizeScale="2.4"
+            app:image="@string/lesson_next"
+            app:size="@dimen/nav_layout_btn" />
 
         <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
-            android:padding="8dp"
-            android:orientation="vertical"
-            app:iconSizeScale="2.4"
             android:id="@+id/lesson_thread_btn"
-            android:layout_weight="1"
-            app:fontColor="@color/lesson_tools_sel"
-            app:size="@dimen/nav_layout_btn"
-            app:image="@string/lesson_thread"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingBottom="6dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="10dp"
+            app:fontColor="@color/lesson_tools_sel"
+            app:iconSizeScale="2.4"
+            app:image="@string/lesson_thread"
+            app:size="@dimen/nav_layout_btn" />
     </LinearLayout>
 
     <FrameLayout
-        android:layout_above="@id/lesson_tools_layout"
         android:id="@+id/lesson_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent"
+        android:layout_above="@id/lesson_tools_layout" />
 
 </RelativeLayout>
