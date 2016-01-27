@@ -10,51 +10,111 @@
     android:orientation="horizontal"
     android:padding="5dp">
 
-    <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
+    <com.edusoho.kuozhi.v3.view.EduSohoImageText
         android:id="@+id/nav_tab_news"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        app:fontColor="@color/nav_btn_sel"
-        app:iconSizeScale="2.2"
-        app:image="@string/font_news"
-        app:size="@dimen/nav_layout_btn_size"
-        app:text="@string/down_tab_news" />
+        app:EduSohoImageText_image_height="25dp"
+        app:EduSohoImageText_image_normal="@drawable/nav_news"
+        app:EduSohoImageText_image_pressed="@drawable/nav_news_pressed"
+        app:EduSohoImageText_image_width="25dp"
+        app:EduSohoImageText_text="@string/down_tab_news"
+        app:EduSohoImageText_text_color_normal="@color/font_4"
+        app:EduSohoImageText_text_color_pressed="@color/primary"
+        app:EduSohoImageText_text_size="@dimen/small_font_size" />
 
-    <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
+    <com.edusoho.kuozhi.v3.view.EduSohoImageText
         android:id="@+id/nav_tab_find"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        app:fontColor="@color/nav_btn_sel"
-        app:iconSizeScale="2.2"
-        app:image="@string/font_find"
-        app:size="@dimen/nav_layout_btn_size"
-        app:text="@string/down_tab_find" />
+        app:EduSohoImageText_image_height="25dp"
+        app:EduSohoImageText_image_normal="@drawable/nav_found"
+        app:EduSohoImageText_image_pressed="@drawable/nav_found_pressed"
+        app:EduSohoImageText_image_width="25dp"
+        app:EduSohoImageText_text="@string/down_tab_find"
+        app:EduSohoImageText_text_color_normal="@color/font_4"
+        app:EduSohoImageText_text_color_pressed="@color/primary"
+        app:EduSohoImageText_text_size="@dimen/small_font_size" />
 
-    <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
+    <com.edusoho.kuozhi.v3.view.EduSohoImageText
         android:id="@+id/nav_tab_friends"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        app:fontColor="@color/nav_btn_sel"
-        app:iconSizeScale="2.2"
-        app:image="@string/font_friends"
-        app:size="@dimen/nav_layout_btn_size"
-        app:text="@string/down_tab_friends" />
+        app:EduSohoImageText_image_height="25dp"
+        app:EduSohoImageText_image_normal="@drawable/nav_friend"
+        app:EduSohoImageText_image_pressed="@drawable/nav_friend_pressed"
+        app:EduSohoImageText_image_width="25dp"
+        app:EduSohoImageText_text="@string/down_tab_friends"
+        app:EduSohoImageText_text_color_normal="@color/font_4"
+        app:EduSohoImageText_text_color_pressed="@color/primary"
+        app:EduSohoImageText_text_size="@dimen/small_font_size" />
 
-    <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
+    <com.edusoho.kuozhi.v3.view.EduSohoImageText
         android:id="@+id/nav_tab_mine"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        app:fontColor="@color/nav_btn_sel"
-        app:iconSizeScale="2.2"
-        app:image="@string/font_mine"
-        app:size="@dimen/nav_layout_btn_size"
-        app:text="@string/down_tab_mine" />
+        app:EduSohoImageText_image_height="25dp"
+        app:EduSohoImageText_image_normal="@drawable/nav_me"
+        app:EduSohoImageText_image_pressed="@drawable/nav_me_pressed"
+        app:EduSohoImageText_image_width="25dp"
+        app:EduSohoImageText_text="@string/down_tab_mine"
+        app:EduSohoImageText_text_color_normal="@color/font_4"
+        app:EduSohoImageText_text_color_pressed="@color/primary"
+        app:EduSohoImageText_text_size="@dimen/small_font_size" />
+
+    <!--<com.edusoho.kuozhi.v3.view.EduSohoTextBtn-->
+    <!--android:id="@+id/nav_tab_news"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="1"-->
+    <!--android:orientation="vertical"-->
+    <!--app:fontColor="@color/nav_btn_sel"-->
+    <!--app:iconSizeScale="2.2"-->
+    <!--app:image="@string/font_news"-->
+    <!--app:size="@dimen/nav_layout_btn_size"-->
+    <!--app:text="@string/down_tab_news" />-->
+
+    <!--<com.edusoho.kuozhi.v3.view.EduSohoTextBtn-->
+    <!--android:id="@+id/nav_tab_find"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="1"-->
+    <!--android:orientation="vertical"-->
+    <!--app:fontColor="@color/nav_btn_sel"-->
+    <!--app:iconSizeScale="2.2"-->
+    <!--app:image="@string/font_find"-->
+    <!--app:size="@dimen/nav_layout_btn_size"-->
+    <!--app:text="@string/down_tab_find" />-->
+
+    <!--<com.edusoho.kuozhi.v3.view.EduSohoTextBtn-->
+    <!--android:id="@+id/nav_tab_friends"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="1"-->
+    <!--android:orientation="vertical"-->
+    <!--app:fontColor="@color/nav_btn_sel"-->
+    <!--app:iconSizeScale="2.2"-->
+    <!--app:image="@string/font_friends"-->
+    <!--app:size="@dimen/nav_layout_btn_size"-->
+    <!--app:text="@string/down_tab_friends" />-->
+
+    <!--<com.edusoho.kuozhi.v3.view.EduSohoTextBtn-->
+    <!--android:id="@+id/nav_tab_mine"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_weight="1"-->
+    <!--android:orientation="vertical"-->
+    <!--app:fontColor="@color/nav_btn_sel"-->
+    <!--app:iconSizeScale="2.2"-->
+    <!--app:image="@string/font_mine"-->
+    <!--app:size="@dimen/nav_layout_btn_size"-->
+    <!--app:text="@string/down_tab_mine" />-->
 </LinearLayout>

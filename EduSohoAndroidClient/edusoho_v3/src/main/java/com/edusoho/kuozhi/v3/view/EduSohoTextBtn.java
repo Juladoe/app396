@@ -66,6 +66,7 @@ public class EduSohoTextBtn extends LinearLayout {
         mIcon = new EduSohoIconView(mContext);
         mIcon.setText(icon);
         mIcon.setTextColor(color);
+        mIcon.setPadding(0, 6, 0, 0);
         mIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, size * iconSizeScale);
         mIconLayout.setLayoutParams(childlp);
         mIconLayout.addView(mIcon);
@@ -84,7 +85,8 @@ public class EduSohoTextBtn extends LinearLayout {
         if (TextUtils.isEmpty(text)) {
             mText.setVisibility(GONE);
         }
-        notifyTypes = new HashMap<String, Object>();
+        notifyTypes = new HashMap<>();
+        ta.recycle();
     }
 
     public void setText(String text) {

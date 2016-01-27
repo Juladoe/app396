@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <declare-styleable name="EduSohoImageText">
+        <attr name="EduSohoImageText_text" format="string" />
+        <attr name="EduSohoImageText_image_normal" format="reference" />
+        <attr name="EduSohoImageText_image_pressed" format="reference" />
+        <attr name="EduSohoImageText_text_size" format="dimension" />
+        <attr name="EduSohoImageText_image_width" format="dimension" />
+        <attr name="EduSohoImageText_image_height" format="dimension" />
+        <attr name="EduSohoImageText_text_color_normal" format="color" />
+        <attr name="EduSohoImageText_text_color_pressed" format="color" />
+    </declare-styleable>
+
     <declare-styleable name="EduSohoTextBtn">
         <attr name="text" format="string" />
         <attr name="image" format="string" />

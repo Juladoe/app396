@@ -81,7 +81,7 @@
     <dimen name="action_bar_title">20dp</dimen>
     <dimen name="qr_layout_label">48px</dimen>
     <dimen name="qr_layout_label_text">14sp</dimen>
-    <dimen name="nav_layout_btn_size">12dp</dimen>
+    <dimen name="nav_layout_btn_size">12sp</dimen>
     <dimen name="material_title">20dp</dimen>
     <dimen name="material_content">14sp</dimen>
     <dimen name="material_btn">14sp</dimen>
