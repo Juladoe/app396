@@ -43,6 +43,7 @@ import com.edusoho.kuozhi.v3.view.EduSohoRoundCornerImage;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -283,7 +284,7 @@ public class SearchDialogFragment extends DialogFragment {
     public Promise loadSearchResult() {
         final Promise promise = new Promise();
         RequestUrl requestUrl = mApp.bindNewUrl(Const.USERS, false);
-        requestUrl.setGetParams(new String[]{"q", searchStr});
+        requestUrl.setGetParams(new String[]{"q", URLEncoder.encode(searchStr)});
         mFriendProvider.getSearchFriend(requestUrl).success(new NormalCallback<SearchFriendResult>() {
             @Override
             public void success(SearchFriendResult searchFriendResult) {
