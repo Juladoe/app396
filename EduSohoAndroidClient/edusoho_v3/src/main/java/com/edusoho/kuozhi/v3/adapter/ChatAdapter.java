@@ -246,7 +246,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
         });
         holder.multiBodyContent.setText(body.content);
         holder.multiBodyTitle.setText(body.title);
-        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
         ImageLoader.getInstance().displayImage(body.image, holder.multiBodyIcon, mOptions);
 
         holder.multiBodyLayout.setOnClickListener(new View.OnClickListener() {
@@ -299,7 +299,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.pbLoading.setVisibility(View.GONE);
@@ -335,7 +335,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ivAvatar, mOptions);
     }
 
 
@@ -384,7 +384,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
         }
         holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
     }
 
     protected void handlerReceiveImage(final ViewHolder holder, int position) {
@@ -414,7 +414,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                 ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
             }
         });
-        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ivAvatar, mOptions);
 
         File receiveImage = ImageLoader.getInstance().getDiskCache().get(model.content);
         holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
@@ -445,7 +445,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             holder.tvSendTime.setVisibility(View.VISIBLE);
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
@@ -505,7 +505,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             holder.tvSendTime.setVisibility(View.VISIBLE);
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
-        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
@@ -786,7 +786,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     public static class ViewHolder {
         public TextView tvSendTime;
         public TextView tvSendContent;
-        public ImageView ciPic;
+        public ImageView ivAvatar;
         public ImageView ivMsgImage;
         public ProgressBar pbLoading;
         public ImageView ivStateError;
@@ -803,20 +803,20 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                 case MSG_SEND_TEXT:
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
                     tvSendContent = (TextView) view.findViewById(R.id.tv_send_content);
-                    ciPic = (ImageView) view.findViewById(R.id.ci_send_pic);
+                    ivAvatar = (ImageView) view.findViewById(R.id.ci_send_pic);
                     pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
                     break;
                 case MSG_RECEIVE_TEXT:
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
                     tvSendContent = (TextView) view.findViewById(R.id.tv_send_content);
-                    ciPic = (ImageView) view.findViewById(R.id.ci_send_pic);
+                    ivAvatar = (ImageView) view.findViewById(R.id.ci_send_pic);
                     break;
                 case MSG_SEND_IMAGE:
                 case MSG_RECEIVE_IMAGE:
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
                     tvSendContent = (TextView) view.findViewById(R.id.tv_send_content);
-                    ciPic = (ImageView) view.findViewById(R.id.ci_send_pic);
+                    ivAvatar = (ImageView) view.findViewById(R.id.ci_send_pic);
                     ivMsgImage = (ImageView) view.findViewById(R.id.iv_msg_image);
                     pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
@@ -824,7 +824,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                 case MSG_SEND_AUDIO:
                 case MSG_RECEIVE_AUDIO:
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
-                    ciPic = (ImageView) view.findViewById(R.id.ci_send_pic);
+                    ivAvatar = (ImageView) view.findViewById(R.id.ci_send_pic);
                     ivMsgImage = (ImageView) view.findViewById(R.id.iv_msg_image);
                     pbLoading = (ProgressBar) view.findViewById(R.id.sendProgressPar);
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
@@ -836,7 +836,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                     ivStateError = (ImageView) view.findViewById(R.id.msg_status);
                 case MSG_RECEIVE_MULIT:
                     multiBodyLayout = view.findViewById(R.id.chat_multi_body);
-                    ciPic = (ImageView) view.findViewById(R.id.ci_send_pic);
+                    ivAvatar = (ImageView) view.findViewById(R.id.ci_send_pic);
                     tvSendTime = (TextView) view.findViewById(R.id.tv_send_time);
                     multiBodyContent = (TextView) view.findViewById(R.id.chat_multi_content);
                     multiBodyTitle = (TextView) view.findViewById(R.id.chat_multi_title);

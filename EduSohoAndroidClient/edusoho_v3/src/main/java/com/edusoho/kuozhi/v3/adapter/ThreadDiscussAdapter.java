@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.AvatarClickListener;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
@@ -214,12 +215,13 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         return convertView;
     }
 
+    @Override
     protected void handleSendMsgText(ViewHolder holder, int pos) {
         final ThreadDiscussEntity model = mList.get(pos);
         holder.tvSendTime.setVisibility(View.GONE);
         setTimer(pos, holder.tvSendTime);
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.pbLoading.setVisibility(View.GONE);
@@ -242,6 +244,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         }
     }
 
+    @Override
     protected void handlerSendImage(final ViewHolder holder, final int pos) {
         final ThreadDiscussEntity model = mList.get(pos);
         setTimer(pos, holder.tvSendTime);
@@ -281,13 +284,14 @@ public class ThreadDiscussAdapter extends ChatAdapter {
             ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(imageLocalPath), holder.ivMsgImage, EdusohoApp.app.mOptions);
             holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         }
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
     }
 
+    @Override
     protected void handlerSendAudio(final ViewHolder holder, int pos) {
         final ThreadDiscussEntity model = mList.get(pos);
         setTimer(pos, holder.tvSendTime);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
@@ -343,7 +347,8 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         holder.tvNickname.setVisibility(View.VISIBLE);
         holder.tvNickname.setText(model.nickname);
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
+        holder.ivAvatar.setOnClickListener(new AvatarClickListener(mContext, model.userId));
     }
 
     protected void handlerReceiveImage(final DiscussViewHolder holder, final int pos) {
@@ -368,7 +373,8 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                 ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
             }
         });
-        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
+        holder.ivAvatar.setOnClickListener(new AvatarClickListener(mContext, model.userId));
         holder.tvNickname.setVisibility(View.VISIBLE);
         holder.tvNickname.setText(model.nickname);
         File receiveImage = ImageLoader.getInstance().getDiskCache().get(model.content);
@@ -392,7 +398,8 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         setTimer(pos, holder.tvSendTime);
         holder.tvNickname.setVisibility(View.VISIBLE);
         holder.tvNickname.setText(model.nickname);
-        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
+        holder.ivAvatar.setOnClickListener(new AvatarClickListener(mContext, model.userId));
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
