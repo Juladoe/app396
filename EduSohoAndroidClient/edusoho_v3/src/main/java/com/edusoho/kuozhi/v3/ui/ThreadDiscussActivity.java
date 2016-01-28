@@ -554,7 +554,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             if (v.getId() == R.id.iv_show_media_layout) {
                 //加号，显示多媒体框
                 if (mAdapter == null || mAdapter.getCount() == 0) {
-                    handleNetError("提问无法发送图片");
+                    handleNetError("第一条提问无法发送图片");
                     return;
                 }
                 if (viewMediaLayout.getVisibility() == View.GONE) {
@@ -567,7 +567,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             } else if (v.getId() == R.id.btn_voice) {
                 //语音
                 if (mAdapter == null || mAdapter.getCount() == 0) {
-                    handleNetError("提问无法发送语音");
+                    handleNetError("第一条提问无法发送语音");
                     return;
                 }
                 viewMediaLayout.setVisibility(View.GONE);

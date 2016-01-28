@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.AvatarClickListener;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.ClassroomDiscussEntity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -164,7 +165,8 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
         holder.tvNickname.setVisibility(View.VISIBLE);
         holder.tvNickname.setText(model.nickname);
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
+        holder.ivAvatar.setOnClickListener(new AvatarClickListener(mContext, model.fromId));
     }
 
     protected void handlerReceiveImage(final DiscussViewHolder holder, int position) {
@@ -194,7 +196,8 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
                 ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
             }
         });
-        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
+        holder.ivAvatar.setOnClickListener(new AvatarClickListener(mContext, model.fromId));
         holder.tvNickname.setVisibility(View.VISIBLE);
         holder.tvNickname.setText(model.nickname);
         File receiveImage = ImageLoader.getInstance().getDiskCache().get(model.content);
@@ -228,7 +231,8 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
         }
         holder.tvNickname.setVisibility(View.VISIBLE);
         holder.tvNickname.setText(model.nickname);
-        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ciPic, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
+        holder.ivAvatar.setOnClickListener(new AvatarClickListener(mContext, model.fromId));
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
