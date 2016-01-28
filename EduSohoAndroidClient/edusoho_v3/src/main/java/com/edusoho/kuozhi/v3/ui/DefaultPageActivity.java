@@ -32,7 +32,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
-import com.edusoho.kuozhi.v3.view.EduSohoImageText;
+import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
 
@@ -47,10 +47,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private String mCurrentTag;
     private int mSelectBtn;
     private LinearLayout mNavLayout;
-    private EduSohoImageText mDownTabNews;
-    private EduSohoImageText mDownTabFind;
-    private EduSohoImageText mDownTabFriends;
-    private EduSohoImageText mDownTabMine;
+    private EduSohoTextBtn mDownTabNews;
+    private EduSohoTextBtn mDownTabFind;
+    private EduSohoTextBtn mDownTabFriends;
+    private EduSohoTextBtn mDownTabMine;
     private Toolbar tbActionBar;
     private TextView tvTitle;
     private View viewTitleLoading;
@@ -113,10 +113,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     private void initView() {
         mNavLayout = (LinearLayout) findViewById(R.id.nav_bottom_layout);
-        mDownTabNews = (EduSohoImageText) findViewById(R.id.nav_tab_news);
-        mDownTabFind = (EduSohoImageText) findViewById(R.id.nav_tab_find);
-        mDownTabFriends = (EduSohoImageText) findViewById(R.id.nav_tab_friends);
-        mDownTabMine = (EduSohoImageText) findViewById(R.id.nav_tab_mine);
+        mDownTabNews = (EduSohoTextBtn) findViewById(R.id.nav_tab_news);
+        mDownTabFind = (EduSohoTextBtn) findViewById(R.id.nav_tab_find);
+        mDownTabFriends = (EduSohoTextBtn) findViewById(R.id.nav_tab_friends);
+        mDownTabMine = (EduSohoTextBtn) findViewById(R.id.nav_tab_mine);
         tbActionBar = (Toolbar) findViewById(R.id.tb_action_bar);
         tvTitle = (TextView) findViewById(R.id.tv_title);
         viewTitleLoading = findViewById(R.id.ll_title_loading);
@@ -245,18 +245,18 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     private void changeBtnIcon(int id) {
-        mDownTabNews.setNormal();
-        mDownTabFind.setNormal();
-        mDownTabFriends.setNormal();
-        mDownTabMine.setNormal();
+        mDownTabNews.setIcon(getResources().getString(R.string.font_news));
+        mDownTabFind.setIcon(getResources().getString(R.string.font_find));
+        mDownTabFriends.setIcon(getResources().getString(R.string.font_friends));
+        mDownTabMine.setIcon(getResources().getString(R.string.font_mine));
         if (id == R.id.nav_tab_news) {
-            mDownTabNews.setPressed();
+            mDownTabNews.setIcon(getResources().getString(R.string.font_news_pressed));
         } else if (id == R.id.nav_tab_find) {
-            mDownTabFind.setPressed();
+            mDownTabFind.setIcon(getResources().getString(R.string.font_find_pressed));
         } else if (id == R.id.nav_tab_friends) {
-            mDownTabFriends.setPressed();
+            mDownTabFriends.setIcon(getResources().getString(R.string.font_friends_pressed));
         } else if (id == R.id.nav_tab_mine) {
-            mDownTabMine.setPressed();
+            mDownTabMine.setIcon(getResources().getString(R.string.font_mine_pressed));
         }
     }
 

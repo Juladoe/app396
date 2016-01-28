@@ -24,27 +24,9 @@ public class PushUtil {
         public static final String LESSON_START = "lesson.start";
     }
 
-    public static class LessonType {
-        public static final String LIVE = "live";
-        public static final String TEXT = "text";
-        public static final String VIDEO = "video";
-        public static final String AUDIO = "audio";
-        public static final String TESTPAPER = "testpaper";
-        public static final String PPT = "ppt";
-        public static final String DOCUMENT = "document";
-        public static final String FLASH = "flash";
-    }
-
     public static class AnnouncementType {
         public static final String COURSE = "course";
         public static final String GLOBAL = "global";
-    }
-
-    public static class CourseCode {
-        public static final String TESTPAPER_REVIEWED = "试卷批阅完成";
-        public static final String LESSON_PUBLISH = "课时更新";
-        public static final String COURSE_ANNOUNCEMENT = "课程公告";
-        public static final String Lesson_LIVE_NOTIFY = "直播提醒";
     }
 
     public static class ChatUserType {
