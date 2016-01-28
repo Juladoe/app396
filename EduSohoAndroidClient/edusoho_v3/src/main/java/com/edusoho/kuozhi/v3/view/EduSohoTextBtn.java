@@ -64,6 +64,7 @@ public class EduSohoTextBtn extends LinearLayout {
 
         mIconLayout = new FrameLayout(mContext);
         mIcon = new EduSohoIconView(mContext);
+        mIcon.setPadding(1, 1, 1, 1);
         mIcon.setText(icon);
         mIcon.setTextColor(color);
         mIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, size * iconSizeScale);

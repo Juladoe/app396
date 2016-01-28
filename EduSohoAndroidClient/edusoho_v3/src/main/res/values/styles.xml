@@ -128,6 +128,14 @@
         <item name="android:layout_margin">5dp</item>
     </style>
 
+    <style name="TitleIndeterminateProgress" parent="@android:style/Widget.ProgressBar">
+        <item name="android:indeterminateDrawable">@drawable/action_bar_load</item>
+        <item name="android:minWidth">18dp</item>
+        <item name="android:maxWidth">18dp</item>
+        <item name="android:minHeight">18dp</item>
+        <item name="android:maxHeight">18dp</item>
+    </style>
+
     <style name="EdusohoActionBarTextStyle" parent="@android:style/TextAppearance">
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">@dimen/large_font_size</item>

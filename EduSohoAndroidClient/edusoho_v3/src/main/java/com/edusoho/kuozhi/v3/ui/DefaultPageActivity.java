@@ -130,7 +130,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             View child = mNavLayout.getChildAt(i);
             child.setOnClickListener(mNavDownTabClickListener);
         }
-        Log.d(TAG, "u>" + app.loginUser);
         if (TextUtils.isEmpty(app.token) || app.loginUser == null) {
             mSelectBtn = R.id.nav_tab_find;
         } else {
