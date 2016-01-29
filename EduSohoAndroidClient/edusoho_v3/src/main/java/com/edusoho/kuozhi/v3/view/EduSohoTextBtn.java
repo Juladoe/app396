@@ -59,12 +59,11 @@ public class EduSohoTextBtn extends LinearLayout {
         setGravity(Gravity.CENTER);
 
         LayoutParams childlp = new LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.gravity = Gravity.CENTER;
 
         mIconLayout = new FrameLayout(mContext);
         mIcon = new EduSohoIconView(mContext);
-        mIcon.setPadding(1, 1, 1, 1);
         mIcon.setText(icon);
         mIcon.setTextColor(color);
         mIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, size * iconSizeScale);
