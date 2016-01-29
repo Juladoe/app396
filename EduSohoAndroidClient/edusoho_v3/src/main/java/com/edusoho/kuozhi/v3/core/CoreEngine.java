@@ -105,7 +105,7 @@ public class CoreEngine {
     }
 
     public void runPluginFromFragmentForResultWithCallback(
-            String pluginName, Fragment fragment,int requestCode, PluginRunCallback callback){
+            String pluginName, Fragment fragment, int requestCode, PluginRunCallback callback) {
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
@@ -207,6 +207,21 @@ public class CoreEngine {
         if (pluginModel != null) {
             Intent startIntent = new Intent();
             startIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startIntent.setClassName(serverActivity, pluginModel.packAge);
+            if (callback != null) {
+                callback.setIntentDate(startIntent);
+            }
+
+            serverActivity.startActivity(startIntent);
+        }
+    }
+
+    public void runNormalPlugin(
+            String pluginName, Context serverActivity, PluginRunCallback callback, int flags) {
+        PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
+        if (pluginModel != null) {
+            Intent startIntent = new Intent();
+            startIntent.setFlags(flags);
             startIntent.setClassName(serverActivity, pluginModel.packAge);
             if (callback != null) {
                 callback.setIntentDate(startIntent);

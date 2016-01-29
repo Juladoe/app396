@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
@@ -274,7 +275,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                         btnMailReg.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mActivity.finish();
+                                app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 app.sendMessage(Const.LOGIN_SUCCESS, null);
                             }
                         }, 500);
