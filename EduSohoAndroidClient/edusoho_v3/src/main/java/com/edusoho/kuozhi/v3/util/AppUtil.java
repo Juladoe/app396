@@ -757,13 +757,12 @@ public class AppUtil {
     public static String convertMills2Date(long millis) {
         String result = "";
         try {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
-            SimpleDateFormat sdf1 = new SimpleDateFormat("yy/MM/dd HH:mm");
-            String nowTime = sdf1.format(System.currentTimeMillis());
-            String showTime = sdf1.format(millis);
-            if (nowTime.substring(0, 9).equals(showTime.substring(0, 9))) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm");
+            String nowTime = sdf.format(System.currentTimeMillis());
+            String showTime = sdf.format(millis);
+            if (nowTime.substring(0, 8).equals(showTime.substring(0, 8))) {
                 // 如果是当天
-                result = showTime.substring(10);
+                result = showTime.substring(9);
             } else if (System.currentTimeMillis() - millis < ONE_WEEK) {
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(millis);
