@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.view.photo;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -16,8 +16,10 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import photoview.PhotoView;
 import photoview.PhotoViewAttacher;
 
@@ -30,6 +32,7 @@ public class ViewPagerActivity extends ActionBarBaseActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setWindowAnimations(R.style.WindowZoomAnimation);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.photo_layout);
