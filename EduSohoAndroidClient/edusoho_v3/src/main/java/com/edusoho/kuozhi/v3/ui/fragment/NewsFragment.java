@@ -729,7 +729,7 @@ public class NewsFragment extends BaseFragment {
 
     private void filterMyCourses(Course[] courses) {
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<New> newList = newDataSource.getNews("WHERE TYPE = ? ORDER BY FROMID", PushUtil.CourseType.TYPE);
+        List<New> newList = newDataSource.getNews("WHERE TYPE = ? AND BELONGID = ? ORDER BY FROMID ", PushUtil.CourseType.TYPE, app.loginUser.id + "");
 
         //本地已经存在的course ids
         List<Integer> existCourseIds = new ArrayList<>();

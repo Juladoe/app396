@@ -22,6 +22,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
@@ -32,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.AccelerateInterpolator;
 import android.webkit.MimeTypeMap;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -103,6 +105,12 @@ public class CommonUtil {
         }
 
         return bitmap;
+    }
+
+    public static float getTextViewLength(TextView textView, String text) {
+        TextPaint paint = textView.getPaint();
+        float textLength = paint.measureText(text);
+        return textLength;
     }
 
     public static boolean inArray(String find, String[] array) {

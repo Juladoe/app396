@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.AvatarLoadingListener;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.EduBadgeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -29,6 +31,7 @@ public class SwipeAdapter extends BaseAdapter {
     private int mLayoutId;
     private List<New> mList;
     private DisplayImageOptions mOptions;
+    private int mTitleRestWidth;
 
     public SwipeAdapter(Context ctx, int id, List<New> list) {
         mContext = ctx;
@@ -59,7 +62,6 @@ public class SwipeAdapter extends BaseAdapter {
     public void addItems(List<New> list) {
         mList.addAll(0, list);
         notifyDataSetChanged();
-
     }
 
     public void updateItem(New newModel) {
@@ -148,6 +150,8 @@ public class SwipeAdapter extends BaseAdapter {
         final New item = mList.get(position);
         ImageLoader.getInstance().displayImage(item.imgUrl, viewHolder.ivAvatar, mOptions, new AvatarLoadingListener(item.type));
         viewHolder.bvUnread.setBadgeCount(item.unread);
+        calculateTitleMaxWidth();
+        viewHolder.tvTitle.setMaxWidth(mTitleRestWidth);
         switch (item.type) {
             case PushUtil.ChatUserType.TEACHER:
                 viewHolder.tvRole.setVisibility(View.VISIBLE);
@@ -172,7 +176,6 @@ public class SwipeAdapter extends BaseAdapter {
         viewHolder.tvContent.setText(item.content);
         viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime * 1000L));
         return convertView;
-
     }
 
     public void removeItem(int position) {
@@ -200,6 +203,20 @@ public class SwipeAdapter extends BaseAdapter {
             tvPostTime = (TextView) view.findViewById(R.id.tv_post_time);
             tvRole = (TextView) view.findViewById(R.id.tv_role);
             view.setTag(this);
+        }
+    }
+
+    private void calculateTitleMaxWidth() {
+        if (mTitleRestWidth == 0) {
+            //时间
+            float timeWidth = 5 * mContext.getResources().getDimension(R.dimen.new_item_time_size);
+            //标签
+            float roleWidth = 2 * mContext.getResources().getDimensionPixelSize(R.dimen.x_small_font_size);
+            //头像
+            float avatarWidth = mContext.getResources().getDimension(R.dimen.head_icon_news_item);
+            //根据layout计算  10*2+6*2+4+2*6+2*8
+            float marginWidth = CommonUtil.dip2px(mContext, 2 * 6 + 2 * 8 + 4 + 2 * 6 + 2 * 10);
+            mTitleRestWidth = EdusohoApp.screenW - (int) Math.ceil(timeWidth + roleWidth + avatarWidth + marginWidth);
         }
     }
 }
