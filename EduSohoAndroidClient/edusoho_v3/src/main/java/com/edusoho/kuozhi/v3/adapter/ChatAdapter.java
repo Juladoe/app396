@@ -891,6 +891,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             Log.d("downloader", ex.toString());
             if (downloadChat != null) {
                 downloadChat.delivery = PushUtil.MsgDeliveryType.FAILED;
+                notifyDataSetChanged();
             }
         }
     }

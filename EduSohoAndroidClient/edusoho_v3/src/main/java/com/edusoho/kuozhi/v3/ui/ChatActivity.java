@@ -3,9 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.app.DownloadManager;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Trace;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
@@ -480,6 +478,7 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
     private V2CustomContent getV2CustomContent(String type, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
+        fromEntity.setNickname(app.loginUser.nickname);
         fromEntity.setId(mFromId);
         fromEntity.setType(mType);
         fromEntity.setImage(mFromUserInfo.mediumAvatar);
