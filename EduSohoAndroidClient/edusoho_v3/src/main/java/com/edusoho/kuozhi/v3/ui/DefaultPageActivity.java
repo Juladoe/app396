@@ -153,6 +153,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         }
     }
 
+    public String getCurrentFragment() {
+        return mCurrentTag;
+    }
+
     private class NavDownTabClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v) {

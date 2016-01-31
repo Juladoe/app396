@@ -95,6 +95,9 @@ public class NewsFragment extends BaseFragment {
 
     private ExecutorService mExecutorService;
     private LoadingHandler mLoadingHandler;
+    private boolean mIsNeedRefresh;
+
+    private DefaultPageActivity mParentActivity;
 
     @Override
     public void onAttach(Activity activity) {
@@ -123,15 +126,19 @@ public class NewsFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("NewsFragment", "onResume");
-        mExecutorService.execute(mGetRestCourse);
+        if (mParentActivity.getCurrentFragment().equals(getClass().getSimpleName())) {
+            mExecutorService.execute(mGetRestCourse);
+        } else {
+            //延迟到fragment show去刷新数据
+            mIsNeedRefresh = true;
+        }
     }
 
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        if (!hidden) {
-
+        if (!hidden && mIsNeedRefresh) {
+            mExecutorService.execute(mGetRestCourse);
         }
     }
 
@@ -151,6 +158,8 @@ public class NewsFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
+        mParentActivity = (DefaultPageActivity) getActivity();
+        mIsNeedRefresh = true;
         lvNewsList = (SwipeMenuListView) view.findViewById(R.id.lv_news_list);
         mEmptyView = view.findViewById(R.id.view_empty);
         tvEmptyText = (TextView) view.findViewById(R.id.tv_empty_text);
@@ -703,6 +712,7 @@ public class NewsFragment extends BaseFragment {
         @Override
         public void run() {
             try {
+                mIsNeedRefresh = false;
                 mLoadingHandler.sendEmptyMessage(SHOW);
                 RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=learn", true);
                 mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
@@ -810,12 +820,10 @@ public class NewsFragment extends BaseFragment {
                 try {
                     switch (msg.what) {
                         case SHOW:
-                            ((DefaultPageActivity) fragment.getActivity()).setTitleLoading(true);
-                            Log.d(TAG, "handleMessage: " + SHOW);
+                            fragment.mParentActivity.setTitleLoading(true);
                             break;
                         case DISMISS:
-                            ((DefaultPageActivity) fragment.getActivity()).setTitleLoading(false);
-                            Log.d(TAG, "handleMessage: " + DISMISS);
+                            fragment.mParentActivity.setTitleLoading(false);
                             break;
                     }
                 } catch (Exception ex) {
