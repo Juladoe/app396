@@ -76,9 +76,10 @@ public class Const {
     public static final String BIND_USER_ID = "bind_user_id";
     public static final String SHOW_SCH_SPLASH = "show_sch_splash";
 
+    public static final int SHOW_KEYBOARD = 1;
+    public static final int HIDE_KEYBOARD = 2;
+
     //Plugin事件
-    public static final int MAIN_MENU_CLOSE = 1;
-    public static final int MAIN_MENU_OPEN = 2;
     public static final int OPEN_COURSE_CHAT = 3;
 
     public static final String AUDIO_EXTENSION = ".amr";

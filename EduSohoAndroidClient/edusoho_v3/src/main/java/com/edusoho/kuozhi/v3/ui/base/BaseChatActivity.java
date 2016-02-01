@@ -18,7 +18,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -88,8 +87,6 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
     protected int mSendTime;
     protected int mStart = 0;
     protected File mCameraFile;
-
-    private boolean initFlags = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -522,10 +519,9 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-        if (v.getId() == R.id.et_send_content) {
-            if (hasFocus) {
-                viewMediaLayout.setVisibility(View.GONE);
-            }
+        if (hasFocus) {
+            viewMediaLayout.setVisibility(View.GONE);
+            AppUtil.setSoftKeyBoard(etSend, mActivity, Const.SHOW_KEYBOARD);
         }
     }
 
@@ -536,7 +532,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
             if (viewMediaLayout.getVisibility() == View.GONE) {
                 viewMediaLayout.setVisibility(View.VISIBLE);
                 etSend.clearFocus();
-                ivAddMedia.requestFocus();
+                AppUtil.setSoftKeyBoard(etSend, mActivity, Const.HIDE_KEYBOARD);
             } else {
                 viewMediaLayout.setVisibility(View.GONE);
             }
@@ -553,6 +549,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
             viewMsgInput.setVisibility(View.GONE);
             btnKeyBoard.setVisibility(View.VISIBLE);
             viewPressToSpeak.setVisibility(View.VISIBLE);
+            AppUtil.setSoftKeyBoard(etSend, mActivity, Const.HIDE_KEYBOARD);
         } else if (v.getId() == R.id.btn_set_mode_keyboard) {
             //键盘
             viewMediaLayout.setVisibility(View.GONE);
@@ -560,6 +557,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
             viewPressToSpeak.setVisibility(View.GONE);
             viewMsgInput.setVisibility(View.VISIBLE);
             btnKeyBoard.setVisibility(View.GONE);
+            etSend.requestFocus();
         } else if (v.getId() == R.id.rl_btn_press_to_speak) {
             viewMediaLayout.setVisibility(View.GONE);
         } else if (v.getId() == R.id.iv_image) {
