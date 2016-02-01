@@ -14,6 +14,7 @@
         android:background="@drawable/round_grey_bg"
         android:gravity="center"
         android:padding="4dp"
+        android:textColor="@color/white"
         android:textSize="@dimen/x_small_font_size" />
 
 
