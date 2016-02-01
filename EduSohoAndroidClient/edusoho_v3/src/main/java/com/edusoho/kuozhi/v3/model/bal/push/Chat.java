@@ -54,20 +54,39 @@ public class Chat extends BaseMsgEntity {
     }
 
     public Chat(WrapperXGPushTextMessage message) {
-        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
-        });
-        id = customContent.getId();
-        fromId = customContent.getFromId();
+        super(message.getV2CustomContent().getMsgId(),
+                message.getV2CustomContent().getBody().getContent(),
+                message.getV2CustomContent().getFrom().getImage(),
+                PushUtil.MsgDeliveryType.UPLOADING,
+                message.getV2CustomContent().getBody().getType(),
+                message.getV2CustomContent().getCreatedTime());
+        V2CustomContent v2CustomContent = message.getV2CustomContent();
+        id = v2CustomContent.getMsgId();
+        fromId = v2CustomContent.getFrom().getId();
         toId = EdusohoApp.app.loginUser.id;
-        nickname = message.getTitle();
-        headImgUrl = customContent.getImgUrl();
-        content = message.getContent();
-        type = customContent.getTypeMsg();
-        createdTime = customContent.getCreatedTime();
+        nickname = v2CustomContent.getFrom().getNickname();
+        headImgUrl = v2CustomContent.getFrom().getImage();
+        content = v2CustomContent.getBody().getContent();
+        type = v2CustomContent.getBody().getType();
+        createdTime = v2CustomContent.getCreatedTime();
         direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
         if (type == PushUtil.ChatMsgType.TEXT) {
             delivery = PushUtil.MsgDeliveryType.SUCCESS;
         }
+//        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
+//        });
+//        id = customContent.getId();
+//        fromId = customContent.getFromId();
+//        toId = EdusohoApp.app.loginUser.id;
+//        nickname = message.getTitle();
+//        headImgUrl = customContent.getImgUrl();
+//        content = message.getContent();
+//        type = customContent.getTypeMsg();
+//        createdTime = customContent.getCreatedTime();
+//        direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
+//        if (type == PushUtil.ChatMsgType.TEXT) {
+//            delivery = PushUtil.MsgDeliveryType.SUCCESS;
+//        }
     }
 
     public Chat(OffLineMsgEntity offlineMsgModel) {

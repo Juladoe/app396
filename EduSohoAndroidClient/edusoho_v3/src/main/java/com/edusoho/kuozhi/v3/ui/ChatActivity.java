@@ -21,8 +21,6 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
-import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
@@ -501,31 +499,28 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         try {
             MessageType messageType = message.type;
             WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-            CustomContent customContent = parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<CustomContent>() {
+            V2CustomContent v2CustomContent = parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<V2CustomContent>() {
             });
-            if (customContent.getTypeBusiness().equals(TypeBusinessEnum.FRIEND.getName()) ||
-                    customContent.getTypeBusiness().equals(TypeBusinessEnum.TEACHER.getName())) {
-                switch (messageType.code) {
-                    case Const.ADD_MSG:
-                        if (mFromId == customContent.getFromId()) {
-                            Chat chat = new Chat(wrapperMessage);
-                            if (mFromUserInfo != null) {
-                                chat.headImgUrl = mFromUserInfo.mediumAvatar;
-                            }
-                            mAdapter.addItem(chat);
+            switch (messageType.code) {
+                case Const.ADD_MSG:
+                    if (mFromId == v2CustomContent.getFrom().getId()) {
+                        Chat chat = new Chat(wrapperMessage);
+                        if (mFromUserInfo != null) {
+                            chat.headImgUrl = mFromUserInfo.mediumAvatar;
                         }
-                        break;
-                    case Const.ADD_CHAT_MSGS:
-                        ArrayList<Chat> chats = (ArrayList<Chat>) message.data.get(Const.GET_PUSH_DATA);
-                        mAdapter.addItems(chats);
-                        break;
-                    case Const.UPDATE_CHAT_MSG:
-                        if (mFromId == customContent.getFromId()) {
-                            Chat chat = new Chat(wrapperMessage);
-                            updateSendMsgToListView(message.data.getInt(MSG_DELIVERY), chat);
-                        }
-                        break;
-                }
+                        mAdapter.addItem(chat);
+                    }
+                    break;
+                case Const.ADD_CHAT_MSGS:
+                    ArrayList<Chat> chats = (ArrayList<Chat>) message.data.get(Const.GET_PUSH_DATA);
+                    mAdapter.addItems(chats);
+                    break;
+                case Const.UPDATE_CHAT_MSG:
+                    if (mFromId == v2CustomContent.getFrom().getId()) {
+                        Chat chat = new Chat(wrapperMessage);
+                        updateSendMsgToListView(message.data.getInt(MSG_DELIVERY), chat);
+                    }
+                    break;
             }
         } catch (Exception e) {
             e.printStackTrace();

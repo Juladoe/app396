@@ -69,7 +69,7 @@ public class CommandFactory {
                     if (PushUtil.ThreadMsgType.THREAD_POST.equals(v2CustomContent.getType())) {
                         pushCommand = new PushThreadPostCommand(pusher);
                     } else {
-                        pusher.convertWrapperMessage2V2();
+                        //pusher.convertWrapperMessage2V2();
                         pushCommand = new PushMsgCommand(pusher);
                     }
                 } else if (PushUtil.ChatUserType.COURSE.equals(toType)) {
