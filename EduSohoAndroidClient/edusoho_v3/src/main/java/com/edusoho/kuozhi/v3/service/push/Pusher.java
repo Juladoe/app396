@@ -199,17 +199,4 @@ public class Pusher {
         EdusohoApp.app.sendMsgToTarget(Const.ADD_THREAD_POST, mBundle, NewsFragment.class);
         EdusohoMainService.getService().sendMessage(Const.ADD_THREAD_POST, mWrapperMessage);
     }
-
-    public void convertWrapperMessage2V2() {
-        CustomContent v1CustomContent = new CustomContent();
-        v1CustomContent.setId(mV2CustomContent.getMsgId());
-        v1CustomContent.setTypeMsg(mV2CustomContent.getBody().getType());
-        v1CustomContent.setTypeBusiness(mV2CustomContent.getFrom().getType());
-        v1CustomContent.setNickname(mV2CustomContent.getFrom().getNickname());
-        v1CustomContent.setImgUrl(mV2CustomContent.getFrom().getImage());
-        v1CustomContent.setFromId(mV2CustomContent.getFrom().getId());
-        v1CustomContent.setCreatedTime(mV2CustomContent.getCreatedTime());
-        Gson gson = new Gson();
-        mWrapperMessage.setCustomContentJson(gson.toJson(v1CustomContent));
-    }
 }
