@@ -143,7 +143,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((NormalNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_lesson_start));
                 ((NormalNotificationViewHolder) holder).notificationType.setText("课时完成");
                 String textContont = AppUtil.cutString(entity.getContent(), 30);
-                ((NormalNotificationViewHolder) holder).notificationContent.setText(String.format("恭喜您已经完成了课时『%s』的学习",textContont));
+                ((NormalNotificationViewHolder) holder).notificationContent.setText(String.format("恭喜您已经完成了课时『%s』的学习", textContont));
 
             }
             if (entity.getBodyType().equals("lesson.start")) {
@@ -154,12 +154,14 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((NormalNotificationViewHolder) holder).notificationContent.setText(String.format("您已经开始了课时『%s』的学习",textContont));
             }
             ((NormalNotificationViewHolder) holder).notificationTime.setText("系统 发布于" + AppUtil.timeStampToDate(String.valueOf(entity.getCreatedTime()), null));
+            ((NormalNotificationViewHolder) holder).TVMoreInfo.setVisibility(View.GONE);
         }
 
         if (holder instanceof IntentNotificationViewHolder) {
 
             final NewsCourseEntity entity = mDataList.get(position);
             ((IntentNotificationViewHolder) holder).notificationTime.setText("系统 发布于" + AppUtil.timeStampToDate(String.valueOf(entity.getCreatedTime()), null));
+            ((IntentNotificationViewHolder) holder).TVMoreInfo.setVisibility(View.VISIBLE);
 
             if (entity.getBodyType().equals("testpaper.reviewed")) {
                 ((IntentNotificationViewHolder) holder).notificationType.setBackgroundResource(R.drawable.process_testpaper_bg);
@@ -271,12 +273,14 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         private TextView notificationContent;
         private TextView notificationTime;
         private TextView notificationType;
+        private TextView TVMoreInfo;
 
         public NormalNotificationViewHolder(View itemView) {
             super(itemView);
             notificationContent = (TextView) itemView.findViewById(R.id.study_process_notification_content);
             notificationTime = (TextView) itemView.findViewById(R.id.study_process_notification_time);
             notificationType = (TextView) itemView.findViewById(R.id.notification_type);
+            TVMoreInfo = (TextView) itemView.findViewById(R.id.study_process_more_info);
         }
 
     }
@@ -286,13 +290,14 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         private TextView notificationContent;
         private TextView notificationTime;
         private TextView notificationType;
+        private TextView TVMoreInfo;
 
         public IntentNotificationViewHolder(View itemView) {
             super(itemView);
             notificationContent = (TextView) itemView.findViewById(R.id.study_process_notification_content);
             notificationTime = (TextView) itemView.findViewById(R.id.study_process_notification_time);
             notificationType = (TextView) itemView.findViewById(R.id.notification_type);
-
+            TVMoreInfo = (TextView) itemView.findViewById(R.id.study_process_more_info);
         }
     }
 
