@@ -636,6 +636,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
             viewMediaLayout.setVisibility(View.GONE);
+            AppUtil.setSoftKeyBoard(etSend, mActivity, Const.SHOW_KEYBOARD);
         }
     }
 
@@ -646,7 +647,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
             if (viewMediaLayout.getVisibility() == View.GONE) {
                 viewMediaLayout.setVisibility(View.VISIBLE);
                 etSend.clearFocus();
-                ivAddMedia.requestFocus();
+                AppUtil.setSoftKeyBoard(etSend, mActivity, Const.HIDE_KEYBOARD);
             } else {
                 viewMediaLayout.setVisibility(View.GONE);
             }
@@ -664,7 +665,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
             btnVoice.setVisibility(View.GONE);
             viewMsgInput.setVisibility(View.GONE);
             viewPressToSpeak.setVisibility(View.VISIBLE);
-
+            AppUtil.setSoftKeyBoard(etSend, mActivity, Const.HIDE_KEYBOARD);
         } else if (v.getId() == R.id.btn_set_mode_keyboard) {
             //键盘
             viewMediaLayout.setVisibility(View.GONE);
@@ -672,6 +673,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
             viewPressToSpeak.setVisibility(View.GONE);
             viewMsgInput.setVisibility(View.VISIBLE);
             btnKeyBoard.setVisibility(View.GONE);
+            etSend.requestFocus();
         } else if (v.getId() == R.id.rl_btn_press_to_speak) {
             //长按发送语音
             viewMediaLayout.setVisibility(View.GONE);

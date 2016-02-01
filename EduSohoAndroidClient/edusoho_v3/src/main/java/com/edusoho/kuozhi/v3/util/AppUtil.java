@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.util;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentUris;
 import android.content.Context;
@@ -24,6 +25,8 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.animation.AccelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -1187,6 +1190,16 @@ public class AppUtil {
             return string;
         } else {
             return string.substring(0, length) + "...";
+        }
+    }
+
+    public static void setSoftKeyBoard(EditText editText, Activity activity, int status) {
+        InputMethodManager inputMethodManager = (InputMethodManager) activity.getApplicationContext().
+                getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (Const.SHOW_KEYBOARD == status) {
+            inputMethodManager.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+        } else if (Const.HIDE_KEYBOARD == status) {
+            inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
         }
     }
 }
