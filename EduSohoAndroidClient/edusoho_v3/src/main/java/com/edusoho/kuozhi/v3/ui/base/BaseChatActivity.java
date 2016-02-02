@@ -470,9 +470,8 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         if (v.getId() == R.id.lv_messages) {
             if (viewMediaLayout.getVisibility() == View.VISIBLE) {
                 viewMediaLayout.setVisibility(View.GONE);
-            }
-            if (etSend.isFocused()) {
-                etSend.clearFocus();
+            } else {
+                AppUtil.setSoftKeyBoard(etSend, mActivity, Const.HIDE_KEYBOARD);
             }
         } else if (v.getId() == R.id.rl_btn_press_to_speak) {
             boolean mHandUpAndCancel;

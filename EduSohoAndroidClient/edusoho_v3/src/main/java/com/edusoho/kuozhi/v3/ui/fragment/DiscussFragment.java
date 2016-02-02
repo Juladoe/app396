@@ -167,7 +167,6 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         tvSend = (Button) view.findViewById(R.id.tv_send);
         tvSend.setOnClickListener(this);
         lvMessage = (ListView) view.findViewById(R.id.lv_messages);
-        lvMessage.setOnTouchListener(this);
         ivAddMedia = (EduSohoIconView) view.findViewById(R.id.iv_show_media_layout);
         ivAddMedia.setOnClickListener(this);
         viewMediaLayout = view.findViewById(R.id.ll_media_layout);
@@ -238,9 +237,8 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
                 public boolean onTouch(View v, MotionEvent event) {
                     if (viewMediaLayout.getVisibility() == View.VISIBLE) {
                         viewMediaLayout.setVisibility(View.GONE);
-                    }
-                    if (etSend.isFocused()) {
-                        etSend.clearFocus();
+                    } else {
+                        AppUtil.setSoftKeyBoard(etSend, mActivity, Const.HIDE_KEYBOARD);
                     }
                     return false;
                 }
