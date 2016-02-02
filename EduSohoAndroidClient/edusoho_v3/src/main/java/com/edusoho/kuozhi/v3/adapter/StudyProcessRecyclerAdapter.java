@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextPaint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -234,6 +235,8 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             super(itemView);
             lessonState = (ImageView) itemView.findViewById(R.id.studyprocess_lesson_state_icon);
             lessonTitle = (TextView) itemView.findViewById(R.id.study_process_lesson_title);
+            TextPaint textPaint = lessonTitle.getPaint();
+            textPaint.setFakeBoldText(true);
         }
     }
 
