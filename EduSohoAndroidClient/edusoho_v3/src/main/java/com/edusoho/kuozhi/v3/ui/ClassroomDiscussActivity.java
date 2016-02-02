@@ -241,7 +241,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", mClassroomName);
-        params.put("content", model.upyunMediaGetUrl);
+        params.put("content", PushUtil.getNotificationContent(type));
         params.put("custom", gson.toJson(getV2CustomContent(type, model.upyunMediaGetUrl)));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
