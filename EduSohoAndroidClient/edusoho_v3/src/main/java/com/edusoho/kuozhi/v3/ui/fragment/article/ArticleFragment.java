@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
+import android.util.SparseArray;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -76,6 +76,7 @@ public class ArticleFragment extends BaseFragment {
 
     private int mStart;
     private int mServiceProvierId;
+    private SparseArray<Integer> mCategoryCacheArray;
 
     private PtrHandler mMessageListPtrHandler = new PtrHandler() {
         @Override
@@ -122,6 +123,7 @@ public class ArticleFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCategoryCacheArray = new SparseArray<>();
         setHasOptionsMenu(true);
         setContainerView(R.layout.article_layout);
         ModelProvider.init(mContext, this);
@@ -304,6 +306,7 @@ public class ArticleFragment extends BaseFragment {
     private void clearArticleList() {
         mStart = 0;
         mArticleAdapter.clear();
+        mCategoryCacheArray.clear();
     }
 
     private boolean loadLocalArticles() {
@@ -317,11 +320,12 @@ public class ArticleFragment extends BaseFragment {
         return true;
     }
 
-    private void insertArticles(String categoryId) {
+    private void insertArticles(final String categoryId) {
 
         final LoadDialog loadDialog = LoadDialog.create(mActivity);
         loadDialog.show();
-        String url = String.format("%s?categoryId=%s&limit=%s&start=-1", Const.ARTICELS, categoryId, "3");
+        final int start = mCategoryCacheArray.get(AppUtil.parseInt(categoryId), 0);
+        String url = String.format("%s?categoryId=%s&limit=%s&start=%d", Const.ARTICELS, categoryId, "3", start);
         RequestUrl requestUrl = app.bindNewUrl(url, true);
         mArticleProvider.getArticles(requestUrl).success(new NormalCallback<ArticleList>() {
             @Override
@@ -331,6 +335,8 @@ public class ArticleFragment extends BaseFragment {
                     CommonUtil.longToast(mContext, "没有相关资讯!");
                     return;
                 }
+
+                mCategoryCacheArray.put(AppUtil.parseInt(categoryId), start + 3);
                 ArticleModel articleModel = ArticleModel.create(app.loginUser.id, articleList.resources);
                 mArticleAdapter.addArticleChat(articleModel);
                 expandArticle();
