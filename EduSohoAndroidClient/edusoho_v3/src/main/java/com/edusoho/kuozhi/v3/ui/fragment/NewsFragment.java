@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.MyCourseResult;
@@ -41,6 +42,7 @@ import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
@@ -708,30 +710,74 @@ public class NewsFragment extends BaseFragment {
         mEmptyView.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
 
+    private void getLearnCourses(final NormalCallback<MyCourseResult> normalCallback) {
+        RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=learn", true);
+        mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                MyCourseResult myCourseResult = ModelDecor.getInstance().decor(response, new TypeToken<MyCourseResult>() {
+                });
+                if (myCourseResult.resources != null) {
+                    normalCallback.success(myCourseResult);
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mLoadingHandler.sendEmptyMessage(DISMISS);
+            }
+        });
+    }
+
+    private void getTeachingCourses(final NormalCallback<MyCourseResult> normalCallback) {
+        RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=teaching", true);
+        mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                MyCourseResult myCourseResult = ModelDecor.getInstance().decor(response, new TypeToken<MyCourseResult>() {
+                });
+                if (myCourseResult.resources != null) {
+                    normalCallback.success(myCourseResult);
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mLoadingHandler.sendEmptyMessage(DISMISS);
+            }
+        });
+    }
+
     private Runnable mGetRestCourse = new Runnable() {
         @Override
         public void run() {
             try {
                 mIsNeedRefresh = false;
                 mLoadingHandler.sendEmptyMessage(SHOW);
-                RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=learn", true);
-                mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+                getLearnCourses(new NormalCallback<MyCourseResult>() {
                     @Override
-                    public void onResponse(String response) {
-                        MyCourseResult myCourseResult = ModelDecor.getInstance().decor(response, new TypeToken<MyCourseResult>() {
-                        });
-                        if (myCourseResult.resources != null) {
-                            filterMyCourses(myCourseResult.resources);
+                    public void success(final MyCourseResult learnCourses) {
+                        if (PushUtil.ChatUserType.TEACHER.equals(app.getCurrentUserRole())) {
+                            getTeachingCourses(new NormalCallback<MyCourseResult>() {
+                                @Override
+                                public void success(MyCourseResult teachingCourses) {
+                                    Course[] courses = CommonUtil.concatArray(learnCourses.resources, teachingCourses.resources);
+                                    Log.d(TAG, "success: learn" + learnCourses.resources.length);
+                                    Log.d(TAG, "success: teaching" + teachingCourses.resources.length);
+                                    filterMyCourses(courses);
+                                }
+                            });
+                        } else {
+                            Log.d(TAG, "success: learn" + learnCourses.resources.length);
+                            filterMyCourses(learnCourses.resources);
                         }
-                        mLoadingHandler.sendEmptyMessage(DISMISS);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
                         mLoadingHandler.sendEmptyMessage(DISMISS);
                     }
                 });
             } catch (Exception ex) {
+                mLoadingHandler.sendEmptyMessage(DISMISS);
                 Log.e(TAG, ex.getMessage());
             }
         }
