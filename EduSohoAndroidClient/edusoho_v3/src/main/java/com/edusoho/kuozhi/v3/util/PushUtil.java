@@ -90,4 +90,17 @@ public class PushUtil {
         Matcher matcher = pattern.matcher(source);
         return matcher.replaceAll("[图片]");
     }
+
+    public static String getNotificationContent(String type) {
+        String result = null;
+        switch (type) {
+            case ChatMsgType.IMAGE:
+                result = "[图片]";
+                break;
+            case ChatMsgType.AUDIO:
+                result = "[语音]";
+                break;
+        }
+        return result;
+    }
 }

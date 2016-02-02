@@ -272,7 +272,7 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         v2CustomContent.getFrom().setType(mMyType);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", app.loginUser.nickname);
-        params.put("content", chat.upyunMediaGetUrl);
+        params.put("content", PushUtil.getNotificationContent(type));
         params.put("custom", gson.toJson(v2CustomContent));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override

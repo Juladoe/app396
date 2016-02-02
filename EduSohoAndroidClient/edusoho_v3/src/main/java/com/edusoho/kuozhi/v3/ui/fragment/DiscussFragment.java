@@ -374,7 +374,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("title", mCourseName);
-        params.put("content", model.upyunMediaGetUrl);
+        params.put("content", PushUtil.getNotificationContent(type));
         params.put("custom", mActivity.gson.toJson(getV2CustomContent(type, model.upyunMediaGetUrl)));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
