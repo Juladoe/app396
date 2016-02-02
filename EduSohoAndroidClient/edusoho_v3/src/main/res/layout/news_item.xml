@@ -25,6 +25,17 @@
             android:src="@drawable/default_avatar"
             app:riv_corner_radius="4dp" />
 
+        <TextView
+            android:id="@+id/tv_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            android:background="@drawable/item_class_tag"
+            android:text="班级"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/xx_small_font_size"
+            android:visibility="gone" />
+
         <com.edusoho.kuozhi.v3.view.EduBadgeView
             android:id="@+id/bv_unread"
             android:layout_width="wrap_content"

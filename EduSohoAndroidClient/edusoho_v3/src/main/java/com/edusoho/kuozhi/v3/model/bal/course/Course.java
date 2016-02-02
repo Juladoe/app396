@@ -14,6 +14,7 @@ public class Course implements Serializable {
     public String smallPicture;
     public double price;
     public int id;
+    public int parentId;
     public String subtitle;
     public int expiryDay;
     public String showStudentNumType;

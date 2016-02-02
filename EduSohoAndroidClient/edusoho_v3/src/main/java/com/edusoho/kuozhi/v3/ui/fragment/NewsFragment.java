@@ -588,13 +588,15 @@ public class NewsFragment extends BaseFragment {
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
                 model.fromId + "", model.type, app.loginUser.id + "");
+        New localNewModel = news.get(0);
         if (news.size() == 0) {
             model.unread = 1;
             model.id = (int) newDataSource.create(model);
             insertNew(model);
         } else {
             boolean isCurActivity = ClassroomDiscussActivity.CurrentClassroomId == model.fromId || NewsCourseActivity.CurrentCourseId == model.fromId;
-            model.unread = (message.isForeground && isCurActivity) ? 0 : news.get(0).unread + 1;
+            model.unread = (message.isForeground && isCurActivity) ? 0 : localNewModel.unread + 1;
+            model.parentId = localNewModel.parentId;
             newDataSource.update(model);
             setItemToTop(model);
         }
@@ -643,13 +645,15 @@ public class NewsFragment extends BaseFragment {
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
                 model.fromId + "", model.type, app.loginUser.id + "");
+        New localNewModel = news.get(0);
         if (news.size() == 0) {
             model.unread = 0;
             model.id = (int) newDataSource.create(model);
             insertNew(model);
         } else {
             boolean isCurrentId = DiscussFragment.CurrentCourseId == model.fromId || ClassroomDiscussActivity.CurrentClassroomId == model.fromId;
-            model.unread = (message.isForeground && isCurrentId) ? 0 : news.get(0).unread + 1;
+            model.unread = (message.isForeground && isCurrentId) ? 0 : localNewModel.unread + 1;
+            model.parentId = localNewModel.parentId;
             newDataSource.update(model);
             setItemToTop(model);
         }
@@ -831,6 +835,7 @@ public class NewsFragment extends BaseFragment {
                     newModel.unread = 0;
                     newModel.type = PushUtil.CourseType.TYPE;
                     newModel.belongId = app.loginUser.id;
+                    newModel.parentId = course.parentId;
                     newDataSource.create(newModel);
                     addItemList.add(newModel);
                 }
