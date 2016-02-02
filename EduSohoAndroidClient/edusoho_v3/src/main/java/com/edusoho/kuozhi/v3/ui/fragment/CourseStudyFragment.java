@@ -301,8 +301,9 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                     entity.setTeacher(course.teachers[0].nickname);
                     entity.setImage(course.smallPicture);
                     entity.setTitle(course.title);
+                    mAdapter.notifyItemInserted(0);
                     dataList.add(0, entity);
-                    mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
+                    mAdapter.notifyItemRangeChanged(0,mAdapter.getItemCount());
                 }
             }
         }, new Response.ErrorListener() {
@@ -324,7 +325,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
             }
         }
         Collections.reverse(dataList);
-        return position;
+        return position-1;
     }
 
     @Override
