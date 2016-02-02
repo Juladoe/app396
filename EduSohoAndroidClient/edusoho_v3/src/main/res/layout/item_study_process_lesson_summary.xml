@@ -30,7 +30,7 @@
             android:layout_toRightOf="@id/study_process_lesson_summary_image"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textColor="@color/black"
+            android:textColor="@color/font_1"
             android:textSize="@dimen/large_font_size" />
 
         <RelativeLayout
@@ -45,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginBottom="8dp"
+                android:textColor="@color/font_2"
                 android:layout_marginLeft="12dp" />
 
 
@@ -84,7 +85,7 @@
                 android:ellipsize="end"
                 android:lineSpacingMultiplier="1.2"
                 android:maxLines="3"
-                android:textColor="@color/system_gray_text" />
+                android:textColor="@color/font_3" />
 
         </LinearLayout>
 
