@@ -825,7 +825,6 @@ public class NewsFragment extends BaseFragment {
             List<New> addItemList = new ArrayList<>();
             for (Course course : courses) {
                 if (newCourseIds1.contains(course.id)) {
-                    Log.d(TAG, "filterMyCourses: create --> " + course.id);
                     New newModel = new New();
                     newModel.fromId = course.id;
                     newModel.title = course.title;
