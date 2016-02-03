@@ -26,4 +26,6 @@
         android:textColor="@color/white"
         android:textSize="@dimen/xx_large_font_size" />
 
+    <include layout="@layout/load_dig_layout"/>
+
 </RelativeLayout>

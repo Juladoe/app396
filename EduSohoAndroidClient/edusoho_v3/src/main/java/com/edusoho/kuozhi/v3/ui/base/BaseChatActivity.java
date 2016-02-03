@@ -250,9 +250,11 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                 }
                 break;
             case SEND_CAMERA:
-                File compressedCameraFile = compressImage(mCameraFile.getAbsolutePath());
-                if (compressedCameraFile != null && compressedCameraFile.exists()) {
-                    uploadMedia(compressedCameraFile, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
+                if (resultCode == RESULT_OK) {
+                    File compressedCameraFile = compressImage(mCameraFile.getAbsolutePath());
+                    if (compressedCameraFile != null && compressedCameraFile.exists()) {
+                        uploadMedia(compressedCameraFile, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
+                    }
                 }
                 break;
         }

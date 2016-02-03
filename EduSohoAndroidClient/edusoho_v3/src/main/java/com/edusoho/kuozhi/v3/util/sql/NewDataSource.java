@@ -18,7 +18,7 @@ public class NewDataSource {
     private static final String TABLE_NAME = "NEW";
     private SqliteChatUtil mDbHelper;
     private SQLiteDatabase mDataBase;
-    private String[] allColumns = {"ID", "FROMID", "TITLE", "CONTENT", "CREATEDTIME", "IMGURL", "UNREAD", "TYPE", "BELONGID", "ISTOP"};
+    private String[] allColumns = {"ID", "FROMID", "TITLE", "CONTENT", "CREATEDTIME", "IMGURL", "UNREAD", "TYPE", "BELONGID", "ISTOP", "PARENTID"};
 
     public NewDataSource(SqliteChatUtil sqliteChatUtil) {
         mDbHelper = sqliteChatUtil;
@@ -84,6 +84,7 @@ public class NewDataSource {
         cv.put(allColumns[7], newModel.type);
         cv.put(allColumns[8], newModel.belongId);
         cv.put(allColumns[9], newModel.isTop);
+        cv.put(allColumns[10], newModel.parentId);
         long insertId = mDataBase.insert(TABLE_NAME, null, cv);
         close();
         return insertId;
@@ -102,6 +103,7 @@ public class NewDataSource {
             cv.put(allColumns[7], newModel.type);
             cv.put(allColumns[8], newModel.belongId);
             cv.put(allColumns[9], newModel.isTop);
+            cv.put(allColumns[10], newModel.parentId);
             mDataBase.insert(TABLE_NAME, null, cv);
         }
         close();
@@ -119,6 +121,26 @@ public class NewDataSource {
         cv.put(allColumns[7], newModel.type);
         cv.put(allColumns[8], newModel.belongId);
         cv.put(allColumns[9], newModel.isTop);
+        cv.put(allColumns[10], newModel.parentId);
+        long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ? AND TYPE = ?",
+                new String[]{newModel.getFromId() + "", EdusohoApp.app.loginUser.id + "", newModel.type});
+        close();
+        return id;
+    }
+
+    public long update1(New newModel) {
+        openWrite();
+        ContentValues cv = new ContentValues();
+        cv.put(allColumns[1], newModel.fromId);
+        cv.put(allColumns[2], newModel.title);
+        cv.put(allColumns[3], newModel.content);
+        cv.put(allColumns[4], newModel.createdTime);
+        cv.put(allColumns[5], newModel.imgUrl);
+        cv.put(allColumns[6], newModel.unread);
+        cv.put(allColumns[7], newModel.type);
+        cv.put(allColumns[8], newModel.belongId);
+        cv.put(allColumns[9], newModel.isTop);
+        cv.put(allColumns[10], newModel.parentId);
         long id = mDataBase.update(TABLE_NAME, cv, "FROMID = ? AND BELONGID = ? AND TYPE = ?",
                 new String[]{newModel.getFromId() + "", EdusohoApp.app.loginUser.id + "", newModel.type});
         close();
@@ -181,6 +203,7 @@ public class NewDataSource {
         newModel.type = cursor.getString(7);
         newModel.belongId = cursor.getInt(8);
         newModel.isTop = cursor.getInt(9);
+        newModel.parentId = cursor.getInt(10);
         return newModel;
     }
 

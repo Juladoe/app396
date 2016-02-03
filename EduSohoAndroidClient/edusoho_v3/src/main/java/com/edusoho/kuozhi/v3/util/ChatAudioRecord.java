@@ -41,8 +41,8 @@ public class ChatAudioRecord {
             if (mMediaRecorder == null) {
                 mMediaRecorder = new MediaRecorder();
                 mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.DEFAULT);
-                mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+                mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+                mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             }
         } catch (Exception e) {
             e.printStackTrace();

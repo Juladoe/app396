@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -56,6 +57,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     private boolean isEndByLength = false;
 
     private NewsCourseDataSource newsCourseDataSource;
+    private LinearLayout mLoading;
 
     private String[] types = {PushUtil.CourseType.TESTPAPER_REVIEWED,
             PushUtil.CourseType.QUESTION_ANSWERED,
@@ -102,11 +104,13 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         mFloatButton = (TextView) view.findViewById(R.id.float_button);
         mFloatButton.setOnClickListener(this);
 
+        mLoading = (LinearLayout) view.findViewById(R.id.load_layout);
+
         initData();
         filterData();
 
-
         studyProcessRecyclerView.scrollToPosition(findPosition());
+        mLoading.setVisibility(View.GONE);
 
     }
 

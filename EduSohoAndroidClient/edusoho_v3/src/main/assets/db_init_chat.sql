@@ -8,7 +8,8 @@ create table if not exists new (
     unread integer,
     type varchar,
     belongId integer,
-    isTop integer
+    isTop integer,
+    parentId integer
 );
 
 create table if not exists chat (

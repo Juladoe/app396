@@ -171,7 +171,7 @@ public class SwipeAdapter extends BaseAdapter {
             default:
                 viewHolder.tvRole.setVisibility(View.GONE);
         }
-
+        viewHolder.tvParent.setVisibility(item.parentId == 0 ? View.GONE : View.VISIBLE);
         viewHolder.tvTitle.setText(item.title);
         viewHolder.tvContent.setText(item.content);
         viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime * 1000L));
@@ -191,6 +191,7 @@ public class SwipeAdapter extends BaseAdapter {
         public TextView tvPostTime;
         public View viewAvatar;
         public TextView tvRole;
+        public TextView tvParent;
 
         public ViewHolder(View view) {
             ivAvatar = (ImageView) view.findViewById(R.id.iv_avatar);
@@ -202,6 +203,7 @@ public class SwipeAdapter extends BaseAdapter {
             tvContent = (TextView) view.findViewById(R.id.tv_content);
             tvPostTime = (TextView) view.findViewById(R.id.tv_post_time);
             tvRole = (TextView) view.findViewById(R.id.tv_role);
+            tvParent = (TextView) view.findViewById(R.id.tv_parent);
             view.setTag(this);
         }
     }

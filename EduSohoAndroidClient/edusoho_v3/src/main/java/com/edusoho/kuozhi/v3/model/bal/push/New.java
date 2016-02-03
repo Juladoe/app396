@@ -33,6 +33,7 @@ public class New implements Serializable {
 
     public int belongId;
     public int isTop = 0;
+    public int parentId;
 
     public int getId() {
         return id;
