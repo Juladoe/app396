@@ -1,18 +1,26 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
-
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.model.sys.*;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.RequestUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.LinkedHashMap;
+
+import com.edusoho.kuozhi.v3.model.sys.Error;
 
 
 /**
@@ -88,21 +96,22 @@ public abstract class ModelProvider {
     }
 
     private <T> BaseVolleyRequest getVolleyRequest(
-            int method, RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, Response.ErrorListener errorListener
+            int method, final RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, final Response.ErrorListener errorListener
     ) {
         mVolley.getRequestQueue();
         BaseVolleyRequest request = new BaseVolleyRequest(
-                method, requestUrl, responseListener, errorListener) {
+                method, requestUrl, responseListener, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (TextUtils.isEmpty(RequestUtil.handleRquestError(error.networkResponse.data))) {
+                    errorListener.onErrorResponse(error);
+                }
+            }
+        }) {
             @Override
             protected T getResponseData(NetworkResponse response) {
-                T value = null;
-                try {
-                    value = mGson.fromJson(
-                            new String(response.data, "UTF-8"), typeToken.getType());
-                } catch (Exception e) {
-                }
-
-                return value;
+                String jsonStr = RequestUtil.handleRquestError(response.data);
+                return mGson.fromJson(jsonStr, typeToken.getType());
             }
         };
 

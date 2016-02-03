@@ -206,4 +206,7 @@
     <string name="chat_select_label">最近聊天</string>
     <string name="chat_select_create">创建新聊天</string>
     <string name="group_select_create">选择讨论组</string>
+
+    <!-- error notice -->
+    <string name="token_lose_notice">账号登陆失效，或已在别处登陆\n请重新登陆</string>
 </resources>

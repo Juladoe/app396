@@ -187,11 +187,15 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
-        return new MessageType[]{new MessageType(Const.ADD_COURSE_DISCUSS_MSG, source)};
+        return new MessageType[]{
+                new MessageType(Const.ADD_COURSE_DISCUSS_MSG, source),
+                new MessageType(Const.TOKEN_LOSE)
+        };
     }
 
     @Override
     public void invoke(WidgetMessage message) {
+        processMessage(message);
         MessageType messageType = message.type;
         switch (messageType.code) {
             case Const.ADD_COURSE_DISCUSS_MSG:

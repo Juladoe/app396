@@ -340,6 +340,9 @@ public class NewsFragment extends BaseFragment {
 
     @Override
     public void invoke(WidgetMessage message) {
+        if (app == null || app.loginUser == null) {
+            return;
+        }
         MessageType messageType = message.type;
         if (Const.LOGIN_SUCCESS.equals(message.type.type)) {
             initData();

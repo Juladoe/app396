@@ -72,6 +72,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         String type = args.getString(0);
         JSONObject data = args.getJSONObject(1);
         if ("token_lose".equals(type)) {
+            /*
             Bundle bundle = new Bundle();
             bundle.putString(Const.BIND_USER_ID, "");
             mActivity.app.pushUnregister(bundle);
@@ -79,6 +80,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
             MessageEngine.getInstance().sendMsg(Const.LOGOUT_SUCCESS, null);
             MessageEngine.getInstance().sendMsg(Const.TOKEN_LOSE, new Bundle());
             MessageEngine.getInstance().sendMsgToTaget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
+            */
         }
         MessageEngine.getInstance().sendMsg(type, JsonObject2Bundle(data));
     }

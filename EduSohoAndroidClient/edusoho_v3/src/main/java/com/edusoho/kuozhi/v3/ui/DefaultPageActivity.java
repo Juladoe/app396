@@ -30,6 +30,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
@@ -273,6 +274,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     @Override
     public void invoke(WidgetMessage message) {
+        processMessage(message);
         MessageType messageType = message.type;
         switch (messageType.code) {
             case Const.OPEN_COURSE_CHAT:
@@ -313,12 +315,23 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     @Override
+    protected void processMessage(WidgetMessage message) {
+        MessageType messageType = message.type;
+        if (Const.TOKEN_LOSE.equals(messageType.type)) {
+            CommonUtil.longToast(getBaseContext(), getString(R.string.token_lose_notice));
+            handleTokenLostMsg();
+        }
+    }
+
+    @Override
     public MessageType[] getMsgTypes() {
         String source = this.getClass().getSimpleName();
         return new MessageType[]{
                 new MessageType(Const.OPEN_COURSE_CHAT, source),
                 new MessageType(Const.SWITCH_TAB, source),
-                new MessageType(Const.LOGIN_SUCCESS)};
+                new MessageType(Const.LOGIN_SUCCESS),
+                new MessageType(Const.TOKEN_LOSE)
+        };
     }
 
     private Toast mToast;

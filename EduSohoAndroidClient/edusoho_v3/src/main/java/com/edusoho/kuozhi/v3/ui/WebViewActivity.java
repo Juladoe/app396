@@ -56,18 +56,8 @@ public class WebViewActivity extends ActionBarBaseActivity {
 
     @Override
     public void invoke(WidgetMessage message) {
+        processMessage(message);
         MessageType messageType = message.type;
-        if (Const.TOKEN_LOSE.equals(messageType.type)) {
-            PopupDialog dialog = PopupDialog.createNormal(mActivity, "提示", "账号登陆失效，或已在别处登陆！\n请重新登陆");
-            dialog.setOkListener(new PopupDialog.PopupClickListener() {
-                @Override
-                public void onClick(int button) {
-                    finish();
-                }
-            });
-            dialog.show();
-            return;
-        }
 
         if (Const.THIRD_PARTY_LOGIN_SUCCESS.equals(messageType.type) || Const.LOGIN_SUCCESS.equals(messageType.type)) {
             if (getRunStatus() == MSG_PAUSE) {
