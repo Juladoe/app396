@@ -866,7 +866,6 @@ public class NewsFragment extends BaseFragment {
         public void handleMessage(Message msg) {
             NewsFragment fragment = mFragment.get();
             if (fragment != null) {
-
                 try {
                     switch (msg.what) {
                         case SHOW:
