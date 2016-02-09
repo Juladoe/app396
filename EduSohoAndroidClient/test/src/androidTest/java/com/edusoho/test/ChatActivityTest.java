@@ -82,7 +82,7 @@ public class ChatActivityTest extends BaseActivityUnitTestCase<ChatActivity> {
         EduSohoIconView ivAddMedia = (EduSohoIconView) mChatActivity.findViewById(R.id.iv_show_media_layout);
         assertNotNull(ivAddMedia);
         assertEquals(mChatActivity.getResources().getString(R.string.font_chat_add_media), ivAddMedia.getText());
-        Button btnSend = (Button) mChatActivity.findViewById(R.id.tv_send);
+        Button btnSend = (Button) mChatActivity.findViewById(R.id.btn_send);
         assertNotNull(btnSend);
         assertEquals(View.GONE, btnSend.getVisibility());
 

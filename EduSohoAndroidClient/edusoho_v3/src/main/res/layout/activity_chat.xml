@@ -61,6 +61,7 @@
                 android:layout_margin="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/chat_press_speak_btn"
+                android:descendantFocusability="blocksDescendants"
                 android:gravity="center"
                 android:visibility="gone">
 
@@ -117,7 +118,7 @@
 
                 <!--发送文字按钮-->
                 <Button
-                    android:id="@+id/tv_send"
+                    android:id="@+id/btn_send"
                     android:layout_width="42dp"
                     android:layout_height="32dp"
                     android:background="@drawable/sms_send_btn_bg"
@@ -265,8 +266,6 @@
                 android:text="@string/hand_move_up_and_send_cancel"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/small_font_size" />
-
-
         </RelativeLayout>
 
         <in.srain.cube.views.ptr.PtrClassicFrameLayout
@@ -292,7 +291,7 @@
                 android:fastScrollEnabled="false"
                 android:scrollbars="none"
                 android:smoothScrollbar="true"
-                android:transcriptMode="alwaysScroll" />
+                android:transcriptMode="normal" />
 
         </in.srain.cube.views.ptr.PtrClassicFrameLayout>
     </RelativeLayout>

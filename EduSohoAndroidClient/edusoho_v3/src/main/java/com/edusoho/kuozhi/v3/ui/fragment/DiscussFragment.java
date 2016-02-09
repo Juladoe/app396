@@ -19,7 +19,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -92,7 +91,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     protected EduSohoIconView btnKeyBoard;
     protected EditText etSend;
     protected ListView lvMessage;
-    protected Button tvSend;
+    protected Button btnSend;
     protected EduSohoIconView ivAddMedia;
     protected PtrClassicFrameLayout mPtrFrame;
     protected View viewMediaLayout;
@@ -164,9 +163,10 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         etSend = (EditText) view.findViewById(R.id.et_send_content);
         etSend.addTextChangedListener(msgTextWatcher);
         etSend.setOnFocusChangeListener(this);
-        tvSend = (Button) view.findViewById(R.id.tv_send);
-        tvSend.setOnClickListener(this);
+        etSend.setOnClickListener(this);
+        btnSend = (Button) view.findViewById(R.id.btn_send);
         lvMessage = (ListView) view.findViewById(R.id.lv_messages);
+        lvMessage.setOnTouchListener(this);
         ivAddMedia = (EduSohoIconView) view.findViewById(R.id.iv_show_media_layout);
         ivAddMedia.setOnClickListener(this);
         viewMediaLayout = view.findViewById(R.id.ll_media_layout);
@@ -231,45 +231,10 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
                     return count > 0 && canDoRefresh;
                 }
             });
-
-            lvMessage.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (viewMediaLayout.getVisibility() == View.VISIBLE) {
-                        viewMediaLayout.setVisibility(View.GONE);
-                    } else {
-                        AppUtil.setSoftKeyBoard(etSend, mActivity, Const.HIDE_KEYBOARD);
-                    }
-                    return false;
-                }
-            });
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
-
-    protected Runnable mListViewSelectRunnable = new Runnable() {
-        @Override
-        public void run() {
-            lvMessage.setSelection(mStart);
-            lvMessage.setOnScrollListener(new AbsListView.OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-                }
-
-                @Override
-                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                    if (firstVisibleItem + visibleItemCount == totalItemCount && initFlags) {
-                        if (lvMessage != null) {
-                            lvMessage.setSelection(lvMessage.getCount() - 1);
-                            initFlags = false;
-                        }
-                    }
-                }
-            });
-        }
-    };
 
     private ArrayList<CourseDiscussEntity> getList(int start) {
         ArrayList<CourseDiscussEntity> list = mCourseDiscussDataSource.getLists(mCourseId, app.loginUser.id, start, Const.NEWS_LIMIT);
@@ -286,11 +251,11 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (!TextUtils.isEmpty(s)) {
-                tvSend.setVisibility(View.VISIBLE);
+                btnSend.setVisibility(View.VISIBLE);
                 ivAddMedia.setVisibility(View.GONE);
             } else {
                 ivAddMedia.setVisibility(View.VISIBLE);
-                tvSend.setVisibility(View.GONE);
+                btnSend.setVisibility(View.GONE);
             }
         }
 
@@ -586,46 +551,52 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        /**
-         * 根据滑动距离是否保存
-         */
-        boolean mHandUpAndCancel;
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                try {
-                    if (!CommonUtil.isExitsSdcard()) {
-                        CommonUtil.longToast(mContext, "发送语音需要sdcard");
+        if (v.getId() == R.id.lv_messages) {
+            if (viewMediaLayout.getVisibility() == View.VISIBLE) {
+                viewMediaLayout.setVisibility(View.GONE);
+            } else {
+                AppUtil.setSoftKeyBoard(etSend, mActivity, Const.HIDE_KEYBOARD);
+            }
+        } else if (v.getId() == R.id.rl_btn_press_to_speak) {
+            lvMessage.post(mListViewSelectRunnable);
+            boolean mHandUpAndCancel;
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    try {
+                        if (!CommonUtil.isExitsSdcard()) {
+                            CommonUtil.longToast(mContext, "发送语音需要sdcard");
+                            return false;
+                        }
+                        mPressDownY = event.getY();
+                        mMediaRecorderTask = new MediaRecorderTask();
+                        mMediaRecorderTask.execute();
+                    } catch (Exception e) {
+                        mMediaRecorderTask.getAudioRecord().clear();
+                        Log.d(TAG, e.getMessage());
                         return false;
                     }
-                    mPressDownY = event.getY();
-                    mMediaRecorderTask = new MediaRecorderTask();
-                    mMediaRecorderTask.execute();
-                } catch (Exception e) {
-                    mMediaRecorderTask.getAudioRecord().clear();
-                    Log.d(TAG, e.getMessage());
-                    return false;
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                float mPressMoveY = event.getY();
-                if (Math.abs(mPressDownY - mPressMoveY) > EdusohoApp.screenH * 0.1) {
-                    tvSpeak.setText(getString(R.string.hand_up_and_exit));
-                    tvSpeakHint.setText(getString(R.string.hand_up_and_exit));
-                    tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_bg);
-                    ivRecordImage.setImageResource(R.drawable.record_cancel);
-                    mHandUpAndCancel = true;
-                } else {
-                    tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
-                    tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
-                    tvSpeak.setText(getString(R.string.hand_up_and_end));
-                    ivRecordImage.setImageResource(R.drawable.record_animate_1);
-                    mHandUpAndCancel = false;
-                }
-                mMediaRecorderTask.setCancel(mHandUpAndCancel);
-                return true;
-            case MotionEvent.ACTION_UP:
-                mMediaRecorderTask.setAudioStop(true);
-                return true;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float mPressMoveY = event.getY();
+                    if (Math.abs(mPressDownY - mPressMoveY) > EdusohoApp.screenH * 0.1) {
+                        tvSpeak.setText(getString(R.string.hand_up_and_exit));
+                        tvSpeakHint.setText(getString(R.string.hand_up_and_exit));
+                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_bg);
+                        ivRecordImage.setImageResource(R.drawable.record_cancel);
+                        mHandUpAndCancel = true;
+                    } else {
+                        tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
+                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+                        tvSpeak.setText(getString(R.string.hand_up_and_end));
+                        ivRecordImage.setImageResource(R.drawable.record_animate_1);
+                        mHandUpAndCancel = false;
+                    }
+                    mMediaRecorderTask.setCancel(mHandUpAndCancel);
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    mMediaRecorderTask.setAudioStop(true);
+                    return true;
+            }
         }
         return false;
     }
@@ -635,12 +606,15 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         if (hasFocus) {
             viewMediaLayout.setVisibility(View.GONE);
             AppUtil.setSoftKeyBoard(etSend, mActivity, Const.SHOW_KEYBOARD);
+            lvMessage.post(mListViewSelectRunnable);
         }
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.iv_show_media_layout) {
+        if (v.getId() == R.id.et_send_content) {
+            lvMessage.post(mListViewSelectRunnable);
+        } else if (v.getId() == R.id.iv_show_media_layout) {
             //加号，显示多媒体框
             if (viewMediaLayout.getVisibility() == View.GONE) {
                 viewMediaLayout.setVisibility(View.VISIBLE);
@@ -649,13 +623,13 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
             } else {
                 viewMediaLayout.setVisibility(View.GONE);
             }
-        } else if (v.getId() == R.id.tv_send) {
+            lvMessage.post(mListViewSelectRunnable);
+        } else if (v.getId() == R.id.btn_send) {
             //发送消息
             if (etSend.getText().length() == 0) {
                 return;
             }
             sendMsg(etSend.getText().toString());
-
         } else if (v.getId() == R.id.btn_voice) {
             //语音
             viewMediaLayout.setVisibility(View.GONE);
@@ -672,9 +646,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
             viewMsgInput.setVisibility(View.VISIBLE);
             btnKeyBoard.setVisibility(View.GONE);
             etSend.requestFocus();
-        } else if (v.getId() == R.id.rl_btn_press_to_speak) {
-            //长按发送语音
-            viewMediaLayout.setVisibility(View.GONE);
+            lvMessage.post(mListViewSelectRunnable);
         } else if (v.getId() == R.id.iv_image) {
             //选择图片
             openPictureFromLocal();
@@ -829,6 +801,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
      *
      * @return V2CustomContent
      */
+
     private V2CustomContent getV2CustomContent(String type, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
@@ -925,6 +898,15 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         }
         return compressedFile;
     }
+
+    protected Runnable mListViewSelectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (lvMessage != null && lvMessage.getAdapter() != null) {
+                lvMessage.setSelection(lvMessage.getCount());
+            }
+        }
+    };
 
     @Override
     public void onDestroy() {

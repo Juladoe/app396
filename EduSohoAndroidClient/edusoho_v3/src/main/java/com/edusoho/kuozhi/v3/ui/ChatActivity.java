@@ -148,7 +148,6 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
                 mAdapter.addItems(getChatList(mStart));
                 mStart = mAdapter.getCount();
                 mPtrFrame.refreshComplete();
-                lvMessage.postDelayed(mListViewSelectRunnable, 500);
             }
 
             @Override
@@ -166,7 +165,6 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         @Override
         public void run() {
             lvMessage.setSelection(mStart);
-            Log.d("onLayoutChange", "bottom-->");
         }
     };
 

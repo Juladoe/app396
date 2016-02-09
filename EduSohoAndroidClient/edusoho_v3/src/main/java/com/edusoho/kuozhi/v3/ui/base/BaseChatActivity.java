@@ -63,7 +63,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
     protected EduSohoIconView btnKeyBoard;
     protected EditText etSend;
     protected ListView lvMessage;
-    protected Button tvSend;
+    protected Button btnSend;
     protected EduSohoIconView ivAddMedia;
     protected PtrClassicFrameLayout mPtrFrame;
     protected View viewMediaLayout;
@@ -109,9 +109,9 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         mAudioDownloadReceiver = new AudioDownloadReceiver();
         etSend = (EditText) findViewById(R.id.et_send_content);
         etSend.addTextChangedListener(mContentTextWatcher);
-        tvSend = (Button) findViewById(R.id.tv_send);
-        tvSend.setOnClickListener(this);
+        btnSend = (Button) findViewById(R.id.btn_send);
         etSend.setOnFocusChangeListener(this);
+        etSend.setOnClickListener(this);
         lvMessage = (ListView) findViewById(R.id.lv_messages);
         lvMessage.setOnTouchListener(this);
         ivAddMedia = (EduSohoIconView) findViewById(R.id.iv_show_media_layout);
@@ -122,8 +122,8 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         btnKeyBoard = (EduSohoIconView) findViewById(R.id.btn_set_mode_keyboard);
         btnKeyBoard.setOnClickListener(this);
         viewPressToSpeak = findViewById(R.id.rl_btn_press_to_speak);
-        viewPressToSpeak.setOnClickListener(this);
         viewPressToSpeak.setOnTouchListener(this);
+        viewPressToSpeak.setOnClickListener(this);
         viewMsgInput = findViewById(R.id.rl_msg_input);
         EduSohoIconView ivPhoto = (EduSohoIconView) findViewById(R.id.iv_image);
         ivPhoto.setOnClickListener(this);
@@ -476,6 +476,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                 AppUtil.setSoftKeyBoard(etSend, mActivity, Const.HIDE_KEYBOARD);
             }
         } else if (v.getId() == R.id.rl_btn_press_to_speak) {
+            lvMessage.post(mListViewSelectRunnable);
             boolean mHandUpAndCancel;
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -512,7 +513,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                     return true;
                 case MotionEvent.ACTION_UP:
                     mMediaRecorderTask.setAudioStop(true);
-                    return true;
+                    return false;
             }
         }
         return false;
@@ -523,12 +524,17 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         if (hasFocus) {
             viewMediaLayout.setVisibility(View.GONE);
             AppUtil.setSoftKeyBoard(etSend, mActivity, Const.SHOW_KEYBOARD);
+            lvMessage.post(mListViewSelectRunnable);
         }
     }
 
+    public static final String TAG = "BaseChatActivity";
+
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.iv_show_media_layout) {
+        if (v.getId() == R.id.et_send_content) {
+            lvMessage.post(mListViewSelectRunnable);
+        } else if (v.getId() == R.id.iv_show_media_layout) {
             //加号，显示多媒体框
             if (viewMediaLayout.getVisibility() == View.GONE) {
                 viewMediaLayout.setVisibility(View.VISIBLE);
@@ -537,7 +543,8 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
             } else {
                 viewMediaLayout.setVisibility(View.GONE);
             }
-        } else if (v.getId() == R.id.tv_send) {
+            lvMessage.post(mListViewSelectRunnable);
+        } else if (v.getId() == R.id.btn_send) {
             //发送消息
             if (etSend.getText().length() == 0) {
                 return;
@@ -559,6 +566,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
             viewMsgInput.setVisibility(View.VISIBLE);
             btnKeyBoard.setVisibility(View.GONE);
             etSend.requestFocus();
+            lvMessage.post(mListViewSelectRunnable);
         } else if (v.getId() == R.id.rl_btn_press_to_speak) {
             viewMediaLayout.setVisibility(View.GONE);
         } else if (v.getId() == R.id.iv_image) {
@@ -588,11 +596,11 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             if (!TextUtils.isEmpty(s)) {
-                tvSend.setVisibility(View.VISIBLE);
+                btnSend.setVisibility(View.VISIBLE);
                 ivAddMedia.setVisibility(View.GONE);
             } else {
                 ivAddMedia.setVisibility(View.VISIBLE);
-                tvSend.setVisibility(View.GONE);
+                btnSend.setVisibility(View.GONE);
             }
         }
 
@@ -603,4 +611,22 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
     };
 
     // endregion widget events
+
+    protected Runnable mListViewSelectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (lvMessage != null && lvMessage.getAdapter() != null) {
+                lvMessage.setSelection(lvMessage.getCount());
+            }
+        }
+    };
+
+    @Override
+    public void onBackPressed() {
+        if (viewMediaLayout.getVisibility() == View.VISIBLE) {
+            viewMediaLayout.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
+        }
+    }
 }
