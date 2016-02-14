@@ -165,6 +165,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         etSend.setOnFocusChangeListener(this);
         etSend.setOnClickListener(this);
         btnSend = (Button) view.findViewById(R.id.btn_send);
+        btnSend.setOnClickListener(this);
         lvMessage = (ListView) view.findViewById(R.id.lv_messages);
         lvMessage.setOnTouchListener(this);
         ivAddMedia = (EduSohoIconView) view.findViewById(R.id.iv_show_media_layout);

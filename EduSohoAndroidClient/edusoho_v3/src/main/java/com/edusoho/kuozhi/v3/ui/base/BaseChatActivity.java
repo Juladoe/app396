@@ -110,6 +110,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         etSend = (EditText) findViewById(R.id.et_send_content);
         etSend.addTextChangedListener(mContentTextWatcher);
         btnSend = (Button) findViewById(R.id.btn_send);
+        btnSend.setOnClickListener(this);
         etSend.setOnFocusChangeListener(this);
         etSend.setOnClickListener(this);
         lvMessage = (ListView) findViewById(R.id.lv_messages);
