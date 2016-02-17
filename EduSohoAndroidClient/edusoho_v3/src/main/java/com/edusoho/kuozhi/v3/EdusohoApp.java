@@ -205,7 +205,6 @@ public class EdusohoApp extends Application {
 
     public Request<String> postUrl(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
-        //      StringVolleyRequest request = new StringVolleyRequest(Request.Method.POST, requestUrl, responseListener, errorListener);
         StringVolleyRequest request = processorStringVolleyRequest(requestUrl, responseListener, errorListener, Request.Method.POST);
         request.setCacheMode(StringVolleyRequest.CACHE_AUTO);
         request.setTag(requestUrl.url);
