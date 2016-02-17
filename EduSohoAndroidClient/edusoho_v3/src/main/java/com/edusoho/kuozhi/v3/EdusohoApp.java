@@ -39,7 +39,11 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
-import com.edusoho.kuozhi.v3.model.sys.*;
+import com.edusoho.kuozhi.v3.model.sys.AppConfig;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
@@ -71,11 +75,9 @@ import com.tencent.android.tpush.common.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -178,10 +180,10 @@ public class EdusohoApp extends Application {
         return new StringVolleyRequest(method, requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (TextUtils.isEmpty(RequestUtil.handleRquestError(response))) {
+                response = RequestUtil.handleRquestError(response);
+                if (TextUtils.isEmpty(response)) {
                     return;
                 }
-
                 responseListener.onResponse(response);
             }
         }, new Response.ErrorListener() {
@@ -203,18 +205,19 @@ public class EdusohoApp extends Application {
 
     public Request<String> postUrl(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
+        //      StringVolleyRequest request = new StringVolleyRequest(Request.Method.POST, requestUrl, responseListener, errorListener);
         StringVolleyRequest request = processorStringVolleyRequest(requestUrl, responseListener, errorListener, Request.Method.POST);
+        request.setCacheMode(StringVolleyRequest.CACHE_AUTO);
         request.setTag(requestUrl.url);
         return mVolley.addToRequestQueue(request);
     }
-
 
     /**
      * volley get 请求
      *
      * @param requestUrl       url、参数、header等信息
      * @param responseListener 返回response信息
-     * @param errorListener    错误信息π
+     * @param errorListener    错误信息
      */
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
         mVolley.getRequestQueue();
