@@ -510,9 +510,8 @@ public class NewsFragment extends BaseFragment {
         newModel.belongId = app.loginUser.id;
         newModel.title = message.title;
         switch (v2CustomContent.getBody().getType()) {
-            case PushUtil.CourseType.LESSON_PUBLISH:
-                break;
             case PushUtil.CourseType.TESTPAPER_REVIEWED:
+                newModel.content = String.format("您的考试『%s』已经批阅完成", message.content);
                 break;
             case PushUtil.CourseType.HOMEWORK_REVIEWED:
                 newModel.content = String.format("您的作业『%s』已经批阅完成", message.content);

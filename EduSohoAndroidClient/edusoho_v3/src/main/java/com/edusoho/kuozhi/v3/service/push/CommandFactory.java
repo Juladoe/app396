@@ -39,7 +39,7 @@ public class CommandFactory {
         String bodyType = v2CustomContent.getBody().getType();
         switch (bodyType) {
             case PushUtil.CourseType.LESSON_PUBLISH:
-//                pushCommand = new PushLessonPublishCommand(pusher);
+                //pushCommand = new PushLessonPublishCommand(pusher);
                 break;
             case PushUtil.CourseType.TESTPAPER_REVIEWED:
                 pushCommand = new PushTestpaperReviewedCommand(pusher);
