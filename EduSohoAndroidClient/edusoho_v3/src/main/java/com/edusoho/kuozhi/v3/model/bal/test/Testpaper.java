@@ -20,6 +20,7 @@ public class Testpaper {
     public String description;
     public String createdTime;
     public String updatedTime;
+    public String passedScore;
 
     public Metas metas;
 
