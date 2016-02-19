@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,10 +12,12 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.AvatarLoadingListener;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.EduBadgeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -40,6 +43,21 @@ public class SwipeAdapter extends BaseAdapter {
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
 
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        Bundle bundle = new Bundle();
+        bundle.putInt("badge", getAllUnreadNum());
+        MessageEngine.getInstance().sendMsg(Const.BADGE_UPDATE, bundle);
+    }
+
+    private int getAllUnreadNum() {
+        int total = 0;
+        for (New item : mList) {
+            total += item.unread;
+        }
+        return total;
+    }
     public void update(List<New> list) {
         mList = list;
         notifyDataSetChanged();

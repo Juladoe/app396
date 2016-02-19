@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
@@ -138,6 +139,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         }
         selectDownTab(mSelectBtn);
         mToast = Toast.makeText(getApplicationContext(), getString(R.string.app_exit_msg), Toast.LENGTH_SHORT);
+        mDownTabNews.setUpdateIcon(7);
     }
 
     public void setTitle(String title) {
@@ -273,9 +275,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     @Override
-    public void invoke(WidgetMessage message) {
+    public void invoke(final WidgetMessage message) {
         processMessage(message);
-        MessageType messageType = message.type;
+        final MessageType messageType = message.type;
         switch (messageType.code) {
             case Const.OPEN_COURSE_CHAT:
                 app.mEngine.runNormalPlugin("ChatActivity", mContext, null);
@@ -298,6 +300,15 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             default:
         }
 
+        if (messageType.type.equals(Const.BADGE_UPDATE)) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    mDownTabNews.setUpdateIcon(message.data.getInt("badge"));
+                }
+            });
+            return;
+        }
         if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
             mLogoutFlag = true;
             new Handler(getMainLooper()).post(new Runnable() {
@@ -330,7 +341,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 new MessageType(Const.OPEN_COURSE_CHAT, source),
                 new MessageType(Const.SWITCH_TAB, source),
                 new MessageType(Const.LOGIN_SUCCESS),
-                new MessageType(Const.TOKEN_LOSE)
+                new MessageType(Const.TOKEN_LOSE),
+                new MessageType(Const.BADGE_UPDATE)
         };
     }
 

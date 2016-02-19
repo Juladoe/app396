@@ -8,12 +8,9 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
-
 import java.util.HashMap;
 
 /**
@@ -29,7 +26,7 @@ public class EduSohoTextBtn extends LinearLayout {
     private TextView mText;
     private EduSohoIconView mIcon;
     private FrameLayout mIconLayout;
-    private ImageView mUpdateIcon;
+    private TextView mUpdateIcon;
 
     private boolean mIsUpdate;
     private HashMap<String, Object> notifyTypes;
@@ -114,21 +111,39 @@ public class EduSohoTextBtn extends LinearLayout {
         mIcon.setText(iconId);
     }
 
-    public void setUpdateIcon() {
+    public void setUpdateIcon(int badge) {
+        if (badge <= 0) {
+            clearUpdateIcon();
+            return;
+        }
         mIsUpdate = true;
-        mUpdateIcon = new ImageView(mContext);
-        mUpdateIcon.setImageResource(R.drawable.update_bg);
+        if (mUpdateIcon == null) {
+            mUpdateIcon = new TextView(mContext);
+            mUpdateIcon.setGravity(Gravity.CENTER);
+            mUpdateIcon.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 8);
+            mUpdateIcon.setTextColor(getResources().getColor(android.R.color.white));
+            mUpdateIcon.setPadding(0, 0, 0, 0);
+            mUpdateIcon.setBackgroundResource(R.drawable.update_bg);
 
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.RIGHT;
-        mUpdateIcon.setLayoutParams(layoutParams);
-        mIconLayout.addView(mUpdateIcon);
+            FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            layoutParams.gravity = Gravity.CENTER | Gravity.TOP;
+            layoutParams.leftMargin = 30;
+            mUpdateIcon.setLayoutParams(layoutParams);
+            mIconLayout.addView(mUpdateIcon);
+        }
+
+        mUpdateIcon.setText(badge > 99 ? ".." : String.valueOf(Math.abs(badge)));
     }
 
     public void clearUpdateIcon() {
         mIsUpdate = false;
+        if (mUpdateIcon == null) {
+            return;
+        }
+        mUpdateIcon.setVisibility(GONE);
         mIconLayout.removeView(mUpdateIcon);
+        mUpdateIcon = null;
     }
 
     public boolean getUpdateMode() {
