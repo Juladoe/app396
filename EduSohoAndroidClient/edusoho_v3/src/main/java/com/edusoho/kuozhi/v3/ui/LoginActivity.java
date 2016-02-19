@@ -20,7 +20,6 @@ import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
-import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -149,10 +148,8 @@ public class LoginActivity extends ActionBarBaseActivity {
                         }, 500);
                     } else {
                         mBtnLogin.setInitState();
-                        ErrorResult errorResult = mActivity.parseJsonValue(response, new TypeToken<ErrorResult>() {
-                        });
-                        if (errorResult != null) {
-                            CommonUtil.longToast(mContext, errorResult.error.message);
+                        if (!TextUtils.isEmpty(response)) {
+                            CommonUtil.longToast(mContext, response);
                         } else {
                             CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
                         }

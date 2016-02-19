@@ -47,7 +47,7 @@ public class CommandFactory {
             case PushUtil.CourseType.COURSE_ANNOUNCEMENT:
                 if (PushUtil.AnnouncementType.COURSE.equals(v2CustomContent.getFrom().getType())) {
                     pushCommand = new PushCourseAnnouncementCommand(pusher);
-                } else {
+                } else if (PushUtil.AnnouncementType.GLOBAL.equals(v2CustomContent.getFrom().getType())) {
                     pushCommand = new PushGlobalAnnouncementCommand(pusher);
                 }
                 break;

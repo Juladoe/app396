@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.google.gson.Gson;
+
 import java.util.LinkedHashMap;
 
 /**
@@ -26,8 +27,11 @@ public class RequestUtil {
 
             if ("not_login".equals(errorMap.get("name"))) {
                 MessageEngine.getInstance().sendMsg(Const.TOKEN_LOSE, new Bundle());
+                return null;
             }
-            return null;
+            if (errorMap.containsKey("message")) {
+                return errorMap.get("message");
+            }
         }
 
         if (errorResult.containsKey("code")) {

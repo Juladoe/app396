@@ -9,7 +9,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public abstract class BaseVolleyRequest<T> extends Request<T> {
 
-    private static final String TAG  = "BaseVolleyRequest";
+    private static final String TAG = "BaseVolleyRequest";
 
     protected static final int CACHE_MAX_AGE = 604800;
 
@@ -89,7 +89,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
         if (mCacheUseMode == ALWAYS_USE_CACHE && mIsCache != CACHE_NONE) {
             return super.getCacheKey();
         }
-        if (! PARSE_RESPONSE.equals(getTag()) && AppUtil.isNetConnect(EdusohoApp.app)) {
+        if (!PARSE_RESPONSE.equals(getTag()) && AppUtil.isNetConnect(EdusohoApp.app)) {
             return null;
         }
         return super.getCacheKey();
@@ -110,18 +110,18 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     protected Cache.Entry handleResponseCache(NetworkResponse response) {
 
         switch (mIsCache) {
-            case CACHE_ALWAYS :
+            case CACHE_ALWAYS:
                 return parseResponseCache(response);
-            case CACHE_AUTO :
+            case CACHE_AUTO:
                 return HttpHeaderParser.parseCacheHeaders(response);
-            case CACHE_NONE :
+            case CACHE_NONE:
         }
         return null;
     }
 
     private Cache.Entry parseResponseCache(NetworkResponse response) {
         Map<String, String> map = response.headers;
-        map.put("Cache-Control", String.format("max-age=%d,stale-while-revalidate=%d",0, CACHE_MAX_AGE));
+        map.put("Cache-Control", String.format("max-age=%d,stale-while-revalidate=%d", 0, CACHE_MAX_AGE));
         NetworkResponse networkResponse = new NetworkResponse(response.statusCode, response.data, map, true);
         Cache.Entry cache = HttpHeaderParser.parseCacheHeaders(networkResponse);
         return cache;
