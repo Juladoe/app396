@@ -14,4 +14,38 @@ public class Properties {
     private DynamicsHomeworkResult homeworkResult;
     private Testpaper testpaper;
     private DynamicsTestpaperResult result;
+    private DynamicsThread thread;
+    private DynamicsPost post;
+
+    public Course getCourse() {
+        return course;
+    }
+
+    public LessonItem getLesson() {
+        return lesson;
+    }
+
+    public DynamicsHomeworkItem getHomework() {
+        return homework;
+    }
+
+    public DynamicsHomeworkResult getHomeworkResult() {
+        return homeworkResult;
+    }
+
+    public Testpaper getTestpaper() {
+        return testpaper;
+    }
+
+    public DynamicsTestpaperResult getResult() {
+        return result;
+    }
+
+    public DynamicsThread getThread() {
+        return thread;
+    }
+
+    public DynamicsPost getPost() {
+        return post;
+    }
 }

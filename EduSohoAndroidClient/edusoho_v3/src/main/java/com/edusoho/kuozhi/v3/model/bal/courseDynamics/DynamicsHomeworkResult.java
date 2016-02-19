@@ -18,4 +18,8 @@ public class DynamicsHomeworkResult {
     private String updatedTime;
     private String createdTime;
     private String passedStatus;
+
+    public String getId() {
+        return id;
+    }
 }

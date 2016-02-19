@@ -16,4 +16,20 @@ public class CourseDynamicsItem {
     private String commentNum;
     private String likeNum;
     private String createdTime;
+
+    public String getType() {
+        return type;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public String getCreatedTime() {
+        return createdTime;
+    }
 }

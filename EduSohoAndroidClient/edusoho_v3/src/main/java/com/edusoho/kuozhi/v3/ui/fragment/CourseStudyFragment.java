@@ -9,14 +9,19 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.StudyProcessRecyclerAdapter;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.bal.courseDynamics.CourseDynamicsItem;
+import com.edusoho.kuozhi.v3.model.bal.courseDynamics.DynamicsProvider;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -26,6 +31,7 @@ import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
@@ -69,6 +75,8 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     List lessonIds = new ArrayList();
     List questionIds = new ArrayList();
 
+    private DynamicsProvider mDynamicsProvider;
+
     private View.OnClickListener summaryListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -97,17 +105,19 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         studyProcessRecyclerView.setLayoutManager(mRecyclerLinearLayoutManager);
         studyProcessRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        mAdapter = new StudyProcessRecyclerAdapter(mContext,new ArrayList(), app);
+        mAdapter = new StudyProcessRecyclerAdapter(mContext, new ArrayList(), app);
         mAdapter.setSummaryListene(summaryListener);
         studyProcessRecyclerView.setAdapter(mAdapter);
 
         mFloatButton = (TextView) view.findViewById(R.id.float_button);
         mFloatButton.setOnClickListener(this);
 
+        mDynamicsProvider = new DynamicsProvider(mContext);
+
         mLoading = (LinearLayout) view.findViewById(R.id.load_layout);
 
         initData();
-        filterData();
+//        filterData();
 
         studyProcessRecyclerView.scrollToPosition(findPosition());
         mLoading.setVisibility(View.GONE);
@@ -117,9 +127,39 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     public void initData() {
         mBundle = getArguments();
         mCourseId = mBundle.getInt("course_id");
-        newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        totalListMap = new LinkedHashMap<>();
-        dataList = getNewsCourseList(0);
+        //// TODO: 16/2/19 use net to get data
+        getDynamicsByNet().then(new PromiseCallback() {
+            @Override
+            public Promise invoke(Object obj) {
+                filterData();
+                return null;
+            }
+        });
+
+//        newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
+//        totalListMap = new LinkedHashMap<>();
+//        dataList = getNewsCourseList(0);
+    }
+
+    public Promise getDynamicsByNet(){
+        final Promise promise = new Promise();
+
+        String subUrl = String.format(Const.COURSE_LEARNING_DYNAMICS, app.loginUser.id, mCourseId);
+        RequestUrl requestUrl = app.bindNewApiUrl(subUrl, true);
+        requestUrl.setGetParams(new String[]{"limit", "10000"});
+        mDynamicsProvider.getDynamics(requestUrl).success(new NormalCallback<ArrayList<CourseDynamicsItem>>() {
+            @Override
+            public void success(ArrayList<CourseDynamicsItem> dynamicsItems) {
+                promise.resolve(filterIntoEntity(dynamicsItems));
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                Toast.makeText(mContext, "网络问题或未知错误，请稍后再试", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        return promise;
     }
 
     public void filterData() {
@@ -128,6 +168,68 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         addCourseSummary();
 
         mAdapter.setmDataList(dataList);
+    }
+
+    public List<NewsCourseEntity> filterIntoEntity(ArrayList<CourseDynamicsItem> dynamicsItems) {
+        Collections.reverse(dynamicsItems);
+        for (CourseDynamicsItem dynamicsItem :
+                dynamicsItems) {
+            String type = dynamicsItem.getType();
+            switch (type) {
+                case "reviewed_homework":
+                    NewsCourseEntity homworkEntity = new NewsCourseEntity();
+                    homworkEntity.setBodyType("homework.reviewed");
+                    homworkEntity.setContent(dynamicsItem.getProperties().getLesson().title);
+                    homworkEntity.setLessonId(dynamicsItem.getProperties().getLesson().id);
+                    dataList.add(homworkEntity);
+                    break;
+
+                case "reviewed_testpaper":
+                    NewsCourseEntity testpaperEntity = new NewsCourseEntity();
+                    testpaperEntity.setBodyType("homework.reviewed");
+
+                    testpaperEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
+                    testpaperEntity.setContent(dynamicsItem.getProperties().getLesson().title);
+                    testpaperEntity.setTitle(dynamicsItem.getProperties().getTestpaper().name);
+                    testpaperEntity.setObjectId(Integer.parseInt(dynamicsItem.getProperties().getHomeworkResult().getId()));
+                    dataList.add(testpaperEntity);
+                    break;
+
+                case "start_learn_lesson":
+                    NewsCourseEntity lessonStartEntity = new NewsCourseEntity();
+                    lessonStartEntity.setBodyType("lesson.start");
+                    lessonStartEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
+                    lessonStartEntity.setContent(dynamicsItem.getProperties().getLesson().title);
+                    lessonStartEntity.setLessonId(Integer.parseInt(dynamicsItem.getObjectId()));
+                    dataList.add(lessonStartEntity);
+                    break;
+
+                case "learned_lesson":
+                    NewsCourseEntity lessonFinishEntity = new NewsCourseEntity();
+                    lessonFinishEntity.setBodyType("lesson.finish");
+                    lessonFinishEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
+                    lessonFinishEntity.setContent(dynamicsItem.getProperties().getLesson().title);
+                    lessonFinishEntity.setLessonId(Integer.parseInt(dynamicsItem.getObjectId()));
+                    dataList.add(lessonFinishEntity);
+                    break;
+
+                case "teacher_thread_post":
+                    NewsCourseEntity questionEntity = new NewsCourseEntity();
+                    questionEntity.setBodyType("question.answered");
+
+                    questionEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
+                    questionEntity.setContent(dynamicsItem.getProperties().getThread().getTitle());
+                    questionEntity.setLessonId(Integer.parseInt(dynamicsItem.getProperties().getThread().getLessonId()));
+                    dataList.add(questionEntity);
+                    break;
+
+                case "become_student":
+                default:
+                    break;
+
+            }
+        }
+        return dataList;
     }
 
     private List<NewsCourseEntity> getNewsCourseList(int start) {
@@ -263,21 +365,21 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     private void filterUselessItem(List<NewsCourseEntity> list) {
         Collections.reverse(list);
         boolean hasHomework = false;
-        for (int i = 0;i<list.size();i++){
+        for (int i = 0; i < list.size(); i++) {
             NewsCourseEntity entity = list.get(i);
             String type = entity.getBodyType();
-            if (type.equals("question.answered")){
+            if (type.equals("question.answered")) {
                 int questionId = entity.getQuestionId();
-                if (!questionIds.contains(questionId)){
+                if (!questionIds.contains(questionId)) {
                     questionIds.add(questionId);
-                }else {
+                } else {
                     list.remove(i);
                     i--;
                 }
-            }else if (type.equals("homework.reviewed")){
-                if (!hasHomework){
+            } else if (type.equals("homework.reviewed")) {
+                if (!hasHomework) {
                     hasHomework = true;
-                }else {
+                } else {
                     list.remove(i);
                     i--;
                 }
@@ -307,7 +409,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                     entity.setTitle(course.title);
                     mAdapter.notifyItemInserted(0);
                     dataList.add(0, entity);
-                    mAdapter.notifyItemRangeChanged(0,mAdapter.getItemCount());
+                    mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
                 }
             }
         }, new Response.ErrorListener() {
@@ -318,18 +420,18 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         });
     }
 
-    private int findPosition(){
+    private int findPosition() {
         Collections.reverse(dataList);
         int position = 0;
-        for (int i = 0;i<dataList.size();i++){
+        for (int i = 0; i < dataList.size(); i++) {
             NewsCourseEntity entity = dataList.get(i);
-            if (entity.getBodyType().equals("course.lessonTitle")){
-                position = dataList.size()-i;
+            if (entity.getBodyType().equals("course.lessonTitle")) {
+                position = dataList.size() - i;
                 break;
             }
         }
         Collections.reverse(dataList);
-        return position-1;
+        return position - 1;
     }
 
     @Override
@@ -363,7 +465,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-    private static class RecyclerLinearLayoutManager extends LinearLayoutManager{
+    private static class RecyclerLinearLayoutManager extends LinearLayoutManager {
 
         public RecyclerLinearLayoutManager(Context context) {
             super(context);

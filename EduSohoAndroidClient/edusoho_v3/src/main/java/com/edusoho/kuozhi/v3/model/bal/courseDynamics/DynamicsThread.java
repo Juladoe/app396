@@ -21,4 +21,36 @@ public class DynamicsThread {
     private String latestPostTime;
     private String createdTime;
     private String updatedTime;
+
+    public String getId() {
+        return id;
+    }
+
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public String getLessonId() {
+        return lessonId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getCreatedTime() {
+        return createdTime;
+    }
 }
