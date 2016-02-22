@@ -175,63 +175,48 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         for (CourseDynamicsItem dynamicsItem :
                 dynamicsItems) {
             String type = dynamicsItem.getType();
+            NewsCourseEntity entity = new NewsCourseEntity();
+            if (dynamicsItem.getProperties().getLesson() != null) {
+                entity.setContent(dynamicsItem.getProperties().getLesson().title);
+                entity.setLessonId(dynamicsItem.getProperties().getLesson().id);
+            }
+            entity.setCourseId(mCourseId);
+            entity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
             switch (type) {
                 case "reviewed_homework":
-                    NewsCourseEntity homworkEntity = new NewsCourseEntity();
-                    homworkEntity.setBodyType("homework.reviewed");
-                    homworkEntity.setContent(dynamicsItem.getProperties().getLesson().title);
-                    homworkEntity.setLessonId(dynamicsItem.getProperties().getLesson().id);
-                    dataList.add(homworkEntity);
+                    entity.setBodyType("homework.reviewed");
+                    dataList.add(entity);
                     break;
 
                 case "reviewed_testpaper":
-                    NewsCourseEntity testpaperEntity = new NewsCourseEntity();
-                    testpaperEntity.setBodyType("testpaper.reviewed");
-                    testpaperEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
-                    if (dynamicsItem.getProperties().getLesson() != null) {
-                        testpaperEntity.setContent(dynamicsItem.getProperties().getLesson().title);
-                        testpaperEntity.setLessonId(dynamicsItem.getProperties().getLesson().id);
-                    } else {
-                        break;
-                    }
-                    testpaperEntity.setTitle(dynamicsItem.getProperties().getTestpaper().name);
-                    testpaperEntity.setObjectId(Integer.parseInt(dynamicsItem.getProperties().getResult().getId()));
-                    dataList.add(testpaperEntity);
+                    entity.setBodyType("testpaper.reviewed");
+                    entity.setTitle(dynamicsItem.getProperties().getTestpaper().name);
+                    entity.setObjectId(Integer.parseInt(dynamicsItem.getProperties().getResult().getId()));
+                    dataList.add(entity);
                     break;
 
                 case "start_learn_lesson":
-                    NewsCourseEntity lessonStartEntity = new NewsCourseEntity();
-                    lessonStartEntity.setBodyType("lesson.start");
-                    lessonStartEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
-                    lessonStartEntity.setContent(dynamicsItem.getProperties().getLesson().title);
-                    lessonStartEntity.setLessonId(Integer.parseInt(dynamicsItem.getObjectId()));
-                    dataList.add(lessonStartEntity);
+                    entity.setBodyType("lesson.start");
+                    dataList.add(entity);
                     break;
 
                 case "learned_lesson":
-                    NewsCourseEntity lessonFinishEntity = new NewsCourseEntity();
-                    lessonFinishEntity.setBodyType("lesson.finish");
-                    lessonFinishEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
-                    lessonFinishEntity.setContent(dynamicsItem.getProperties().getLesson().title);
-                    lessonFinishEntity.setLessonId(Integer.parseInt(dynamicsItem.getObjectId()));
+                    entity.setBodyType("lesson.finish");
                     lessonStartTime = 0;
                     if (dynamicsItem.getProperties().getLessonLearnStartTime() != null) {
                         lessonStartTime = Integer.parseInt(dynamicsItem.getProperties().getLessonLearnStartTime());
                     }
-                    lessonFinishEntity.setLearnStartTime(lessonStartTime);
-                    lessonFinishEntity.setLearnFinishTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
-                    dataList.add(lessonFinishEntity);
+                    entity.setLearnStartTime(lessonStartTime);
+                    entity.setLearnFinishTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
+                    dataList.add(entity);
                     break;
 
                 case "teacher_thread_post":
-                    NewsCourseEntity questionEntity = new NewsCourseEntity();
-                    questionEntity.setBodyType("question.answered");
-                    questionEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
-                    questionEntity.setContent(dynamicsItem.getProperties().getThread().getTitle());
-                    questionEntity.setLessonId(Integer.parseInt(dynamicsItem.getProperties().getThread().getLessonId()));
-                    questionEntity.setCourseId(mCourseId);
-                    questionEntity.setQuestionId(Integer.parseInt(dynamicsItem.getProperties().getThread().getId()));
-                    dataList.add(questionEntity);
+                    entity.setBodyType("question.answered");
+                    entity.setContent(dynamicsItem.getProperties().getThread().getTitle());
+                    entity.setLessonId(Integer.parseInt(dynamicsItem.getProperties().getThread().getLessonId()));
+                    entity.setQuestionId(Integer.parseInt(dynamicsItem.getProperties().getThread().getId()));
+                    dataList.add(entity);
                     break;
 
                 case "become_student":
