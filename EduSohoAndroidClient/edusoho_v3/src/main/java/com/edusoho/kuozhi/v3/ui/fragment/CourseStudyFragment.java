@@ -229,6 +229,8 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                     questionEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
                     questionEntity.setContent(dynamicsItem.getProperties().getThread().getTitle());
                     questionEntity.setLessonId(Integer.parseInt(dynamicsItem.getProperties().getThread().getLessonId()));
+                    questionEntity.setCourseId(mCourseId);
+                    questionEntity.setQuestionId(Integer.parseInt(dynamicsItem.getProperties().getThread().getId()));
                     dataList.add(questionEntity);
                     break;
 
