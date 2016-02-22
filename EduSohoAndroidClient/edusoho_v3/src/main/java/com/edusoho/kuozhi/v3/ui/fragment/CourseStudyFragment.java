@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,7 +64,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     private boolean isEndByLength = false;
 
     private NewsCourseDataSource newsCourseDataSource;
-    private LinearLayout mLoading;
+    private FrameLayout mLoading;
 
     private String[] types = {PushUtil.CourseType.TESTPAPER_REVIEWED,
             PushUtil.CourseType.QUESTION_ANSWERED,
@@ -74,6 +75,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
     List lessonIds = new ArrayList();
     List questionIds = new ArrayList();
+    int lessonStartTime;
 
     private DynamicsProvider mDynamicsProvider;
 
@@ -114,34 +116,32 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
         mDynamicsProvider = new DynamicsProvider(mContext);
 
-        mLoading = (LinearLayout) view.findViewById(R.id.load_layout);
+        mLoading = (FrameLayout) view.findViewById(R.id.study_dynamics_loading);
 
         initData();
-//        filterData();
-
-        studyProcessRecyclerView.scrollToPosition(findPosition());
-        mLoading.setVisibility(View.GONE);
 
     }
 
     public void initData() {
         mBundle = getArguments();
         mCourseId = mBundle.getInt("course_id");
-        //// TODO: 16/2/19 use net to get data
+        dataList = new ArrayList<NewsCourseEntity>();
+        totalListMap = new LinkedHashMap<>();
+
         getDynamicsByNet().then(new PromiseCallback() {
             @Override
             public Promise invoke(Object obj) {
                 filterData();
+
+                studyProcessRecyclerView.scrollToPosition(findPosition());
+                mLoading.setVisibility(View.GONE);
                 return null;
             }
         });
 
-//        newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-//        totalListMap = new LinkedHashMap<>();
-//        dataList = getNewsCourseList(0);
     }
 
-    public Promise getDynamicsByNet(){
+    public Promise getDynamicsByNet() {
         final Promise promise = new Promise();
 
         String subUrl = String.format(Const.COURSE_LEARNING_DYNAMICS, app.loginUser.id, mCourseId);
@@ -186,12 +186,16 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
                 case "reviewed_testpaper":
                     NewsCourseEntity testpaperEntity = new NewsCourseEntity();
-                    testpaperEntity.setBodyType("homework.reviewed");
-
+                    testpaperEntity.setBodyType("testpaper.reviewed");
                     testpaperEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
-                    testpaperEntity.setContent(dynamicsItem.getProperties().getLesson().title);
+                    if (dynamicsItem.getProperties().getLesson() != null) {
+                        testpaperEntity.setContent(dynamicsItem.getProperties().getLesson().title);
+                        testpaperEntity.setLessonId(dynamicsItem.getProperties().getLesson().id);
+                    } else {
+                        break;
+                    }
                     testpaperEntity.setTitle(dynamicsItem.getProperties().getTestpaper().name);
-                    testpaperEntity.setObjectId(Integer.parseInt(dynamicsItem.getProperties().getHomeworkResult().getId()));
+                    testpaperEntity.setObjectId(Integer.parseInt(dynamicsItem.getProperties().getResult().getId()));
                     dataList.add(testpaperEntity);
                     break;
 
@@ -210,13 +214,18 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                     lessonFinishEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
                     lessonFinishEntity.setContent(dynamicsItem.getProperties().getLesson().title);
                     lessonFinishEntity.setLessonId(Integer.parseInt(dynamicsItem.getObjectId()));
+                    lessonStartTime = 0;
+                    if (dynamicsItem.getProperties().getLessonLearnStartTime() != null) {
+                        lessonStartTime = Integer.parseInt(dynamicsItem.getProperties().getLessonLearnStartTime());
+                    }
+                    lessonFinishEntity.setLearnStartTime(lessonStartTime);
+                    lessonFinishEntity.setLearnFinishTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
                     dataList.add(lessonFinishEntity);
                     break;
 
                 case "teacher_thread_post":
                     NewsCourseEntity questionEntity = new NewsCourseEntity();
                     questionEntity.setBodyType("question.answered");
-
                     questionEntity.setCreatedTime(Integer.parseInt(dynamicsItem.getCreatedTime()));
                     questionEntity.setContent(dynamicsItem.getProperties().getThread().getTitle());
                     questionEntity.setLessonId(Integer.parseInt(dynamicsItem.getProperties().getThread().getLessonId()));
@@ -341,7 +350,11 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                 } else {
                     NewsCourseEntity finishTime = new NewsCourseEntity();
                     finishTime.setBodyType("lesson.costTime");
-                    finishTime.setContent("课时学习耗时：" + AppUtil.timeStampDiffToDay((entity.getLearnFinishTime() - entity.getLearnStartTime())));
+                    if (entity.getLearnStartTime() == 0) {
+                        finishTime.setContent("");
+                    } else {
+                        finishTime.setContent("课时学习耗时：" + AppUtil.timeStampDiffToDay((entity.getLearnFinishTime() - entity.getLearnStartTime())));
+                    }
                     list.add(finishTime);
                     for (int j = 0; j < i; j++) {
                         NewsCourseEntity tmpEntity = list.get(j);
@@ -421,6 +434,9 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     }
 
     private int findPosition() {
+        if (dataList == null) {
+            return 0;
+        }
         Collections.reverse(dataList);
         int position = 0;
         for (int i = 0; i < dataList.size(); i++) {

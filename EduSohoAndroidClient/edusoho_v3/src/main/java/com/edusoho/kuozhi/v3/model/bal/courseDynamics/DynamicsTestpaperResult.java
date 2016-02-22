@@ -12,4 +12,19 @@ public class DynamicsTestpaperResult {
     private String teacherSay;
     private String passedStatus;
 
+    public String getId() {
+        return id;
+    }
+
+    public String getScore() {
+        return score;
+    }
+
+    public String getTeacherSay() {
+        return teacherSay;
+    }
+
+    public String getPassedStatus() {
+        return passedStatus;
+    }
 }

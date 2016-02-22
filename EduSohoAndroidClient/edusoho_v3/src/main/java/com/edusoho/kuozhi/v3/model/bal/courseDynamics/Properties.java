@@ -16,6 +16,11 @@ public class Properties {
     private DynamicsTestpaperResult result;
     private DynamicsThread thread;
     private DynamicsPost post;
+    private String lessonLearnStartTime;
+
+    public String getLessonLearnStartTime() {
+        return lessonLearnStartTime;
+    }
 
     public Course getCourse() {
         return course;

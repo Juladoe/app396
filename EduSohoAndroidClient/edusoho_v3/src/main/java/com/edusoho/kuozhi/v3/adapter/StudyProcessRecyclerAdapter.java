@@ -134,7 +134,13 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         }
         if (holder instanceof CostTimeViewHolder) {
             NewsCourseEntity entity = mDataList.get(position);
-            ((CostTimeViewHolder) holder).costTime.setText(entity.getContent());
+            String costTime = entity.getContent();
+            if (costTime.equals("")){
+                ((CostTimeViewHolder) holder).costTime.setVisibility(View.GONE);
+            }else {
+                ((CostTimeViewHolder) holder).costTime.setText(entity.getContent());
+                ((CostTimeViewHolder) holder).costTime.setVisibility(View.VISIBLE);
+            }
         }
         if (holder instanceof NormalNotificationViewHolder) {
 
