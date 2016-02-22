@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:gravity="center_vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/card_title"
+        android:drawablePadding="5dp"
+        android:gravity="center"
+        android:drawableLeft="@drawable/find_card_head_icon"
+        android:text="活动2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginLeft="8dp"
+        android:padding="3dp"
+        android:textSize="@dimen/small_btn"
+        android:background="@drawable/find_card_head_label_bg"
+        android:text="活动"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:drawableRight="@drawable/find_card_head_arrow_icon"
+        android:layout_weight="1"
+        android:gravity="right|center_vertical"
+        android:text="更多"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

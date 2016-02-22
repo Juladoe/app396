@@ -3,8 +3,11 @@ package com.edusoho.kuozhi.v3.model.provider;
 import android.content.Context;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
 
 /**
  * Created by howzhi on 15/9/24.
@@ -21,5 +24,13 @@ public class SystemProvider extends ModelProvider {
 
         requestOption.getRequest().setCacheUseMode(BaseVolleyRequest.ALWAYS_USE_CACHE);
         return requestOption.build();
+    }
+
+    public ProviderListener getSchoolBanners(RequestUrl requestUrl) {
+        ProviderListener<List<SchoolBanner>> responseListener = new ProviderListener<List<SchoolBanner>>() {
+        };
+        addRequest(requestUrl, new TypeToken<List<SchoolBanner>>() {
+        }, responseListener, responseListener);
+        return responseListener;
     }
 }

@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -37,7 +36,6 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
-
 import java.util.HashMap;
 
 /**
@@ -181,19 +179,16 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
         if (id == R.id.nav_tab_find) {
             tag = "FindFragment";
-            tbActionBar.setVisibility(View.GONE);
+            setTitle(getSchoolTitle());
         } else if (id == R.id.nav_tab_news) {
             tag = "NewsFragment";
             setTitle(getString(R.string.title_news));
-            tbActionBar.setVisibility(View.VISIBLE);
         } else if (id == R.id.nav_tab_friends) {
             tag = "FriendFragment";
             setTitle(getString(R.string.title_friends));
-            tbActionBar.setVisibility(View.VISIBLE);
         } else {
             tag = "MineFragment";
             setTitle(getString(R.string.title_mine));
-            tbActionBar.setVisibility(View.VISIBLE);
         }
         if (tag.equals(mCurrentTag)) {
             return;
@@ -203,6 +198,10 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         changeNavBtn(id);
         changeBtnIcon(id);
         mSelectBtn = id;
+    }
+
+    protected String getSchoolTitle() {
+        return app.defaultSchool == null ? getString(R.string.title_find) : app.defaultSchool.name;
     }
 
     private void hideFragment(String tag) {
@@ -376,7 +375,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     public void finish() {
         super.finish();
-        //this.onDestroy();
         Log.d(TAG, "finish");
     }
 
