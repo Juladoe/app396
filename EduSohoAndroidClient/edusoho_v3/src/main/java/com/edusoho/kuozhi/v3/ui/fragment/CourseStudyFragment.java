@@ -190,6 +190,9 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
                 case "reviewed_testpaper":
                     entity.setBodyType("testpaper.reviewed");
+                    if (entity.getContent() == null){
+                        break;
+                    }
                     entity.setTitle(dynamicsItem.getProperties().getTestpaper().name);
                     entity.setObjectId(Integer.parseInt(dynamicsItem.getProperties().getResult().getId()));
                     dataList.add(entity);
