@@ -294,8 +294,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         String picturePath = null;
         if (cursor != null) {
             cursor.moveToFirst();
-            //int pictureIndex = cursor.getColumnIndex("_data");
-            picturePath = cursor.getString(4);
+            picturePath = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
             cursor.close();
 
             if (TextUtils.isEmpty(picturePath)) {
