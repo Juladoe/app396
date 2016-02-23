@@ -15,7 +15,6 @@ import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.adapter.ThreadDiscussAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseThreadPostResult;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
@@ -24,7 +23,6 @@ import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.PostThreadResult;
-import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.sys.AudioCacheEntity;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -181,7 +179,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
             final ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
             addItem2ListView(discussModel);
-            handleSendPost(postModel, mSendMsgNormalCallback);
+            handleSendPost(postModel);
         }
     }
 
@@ -189,7 +187,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     public void sendMsgAgain(final BaseMsgEntity model) {
         final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
         mAdapter.updateItemState(model.id, PushUtil.MsgDeliveryType.UPLOADING);
-        handleSendPost(postModel, mSendMsgNormalCallback);
+        handleSendPost(postModel);
     }
 
     // region 多媒体资源上传
@@ -239,7 +237,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "success");
-                handleSendPost(model, mSendMsgNormalCallback);
+                handleSendPost(model);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -292,10 +290,14 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             CommonUtil.shortToast(mContext, "描述的问题不能图片或语音");
             return;
         }
-        RequestUrl requestUrl = app.bindNewUrl(Const.CREATE_THREAD, true);
+        RequestUrl requestUrl = app.bindNewApiUrl(Const.CREATE_THREAD, true);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("targetType", mLessonId == 0 ? "course" : "lesson");
-        params.put("targetId", (mLessonId == 0 ? mCourseId : mLessonId) + "");
+        params.put("threadType", "course");
+        params.put("courseId", mCourseId + "");
+        if (mLessonId != 0) {
+            params.put("lessonId", mLessonId + "");
+        }
+        params.put("type", "question");
         params.put("title", content);
         params.put("content", content);
         ajaxPost(requestUrl, new Response.Listener<String>() {
@@ -326,15 +328,15 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     /**
      * 处理用户的回复
      *
-     * @param postModel      回复对象
-     * @param normalCallback 回调,成功：写入本地DB，更新ListView，Push一条消息
+     * @param postModel 回复对象
      */
-    private void handleSendPost(final CourseThreadPostEntity postModel, final NormalCallback<CourseThreadPostEntity> normalCallback) {
-        RequestUrl requestUrl = app.bindUrl(Const.POST_THREAD, true);
+    private void handleSendPost(final CourseThreadPostEntity postModel) {
+        RequestUrl requestUrl = app.bindNewApiUrl(Const.POST_THREAD, true);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("courseId", mCourseId + "");
         params.put("threadId", mThreadId + "");
         params.put("content", formatContent(postModel, postModel.type));
+        params.put("threadType", "course");
         ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -344,7 +346,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 postModel.isElite = postThreadResult.isElite;
                 postModel.createdTime = postThreadResult.createdTime;
                 postModel.delivery = PushUtil.MsgDeliveryType.SUCCESS;
-                normalCallback.success(postModel);
                 mCourseThreadPostDataSource.update(postModel);
                 mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.SUCCESS);
             }
@@ -358,47 +359,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             }
         });
     }
-
-    /**
-     * 回调推送
-     */
-    private NormalCallback<CourseThreadPostEntity> mSendMsgNormalCallback = new NormalCallback<CourseThreadPostEntity>() {
-        @Override
-        public void success(final CourseThreadPostEntity postModel) {
-            getToUserId(new NormalCallback<Integer>() {
-                @Override
-                public void success(Integer toUserId) {
-                    WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-                    message.setTitle(mCourseTitle);
-                    message.setContent(postModel.content);
-                    V2CustomContent v2CustomContent = getV2CustomContent(postModel, postModel.type, getActivityState());
-                    String v2CustomContentJson = gson.toJson(v2CustomContent);
-                    message.setCustomContentJson(v2CustomContentJson);
-                    message.isForeground = true;
-                    RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
-                    HashMap<String, String> params = requestUrl.getParams();
-                    params.put("title", message.title);
-                    params.put("content", message.content);
-                    params.put("custom", v2CustomContentJson);
-                    mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            CloudResult result = parseJsonValue(response, new TypeToken<CloudResult>() {
-                            });
-                            if (result != null && result.getResult()) {
-                                Log.d("sendMsg", "text success");
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.d("sendMsg", "text failed");
-                        }
-                    });
-                }
-            });
-        }
-    };
 
     private void getLists(final int threadId, final NormalCallback<Boolean> normalCallback) {
         if (app.getNetIsConnect()) {
@@ -463,64 +423,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         }
     }
 
-    private void getToUserId(final NormalCallback<Integer> normalCallback) {
-        if (mToUserId != 0) {
-            normalCallback.success(mToUserId);
-            return;
-        }
-        if (PushUtil.ChatUserType.FRIEND.equals(mRoleType)) {
-            RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("courseId", mCourseId + "");
-            ajaxPost(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    CourseDetailsResult courseResult = parseJsonValue(response, new TypeToken<CourseDetailsResult>() {
-                    });
-                    if (courseResult != null && courseResult.course != null && courseResult.course.teachers != null) {
-                        mToUserId = courseResult.course.teachers[0].id;
-                        mCourseTitle = courseResult.course.title;
-                        normalCallback.success(mToUserId);
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-        } else if (PushUtil.ChatUserType.TEACHER.equals(mRoleType)) {
-            RequestUrl requestUrl = app.bindUrl(Const.GET_THREAD, true);
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("threadId", mThreadId + "");
-            ajaxPost(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    CourseThreadEntity model = parseJsonValue(response, new TypeToken<CourseThreadEntity>() {
-                    });
-                    if (model.user != null) {
-                        mToUserId = model.user.id;
-                        mCourseTitle = model.courseTitle;
-                        //normalCallback.success(mToUserId);
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
-                }
-            });
-        }
-    }
-
-    private String getActivityState() {
-        if (mAdapter.getCount() == 0) {
-            return PushUtil.ThreadMsgType.THREAD;
-        } else {
-            return PushUtil.ThreadMsgType.THREAD_POST;
-        }
-    }
-
     private void handleNetError(String msg) {
         CommonUtil.shortToast(mContext, msg);
     }
@@ -560,10 +462,11 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 if (viewMediaLayout.getVisibility() == View.GONE) {
                     viewMediaLayout.setVisibility(View.VISIBLE);
                     etSend.clearFocus();
-                    ivAddMedia.requestFocus();
+                    AppUtil.setSoftKeyBoard(etSend, mActivity, Const.HIDE_KEYBOARD);
                 } else {
                     viewMediaLayout.setVisibility(View.GONE);
                 }
+                lvMessage.post(mListViewSelectRunnable);
             } else if (v.getId() == R.id.btn_voice) {
                 //语音
                 if (mAdapter == null || mAdapter.getCount() == 0) {
@@ -571,10 +474,11 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                     return;
                 }
                 viewMediaLayout.setVisibility(View.GONE);
-                btnKeyBoard.setVisibility(View.VISIBLE);
                 btnVoice.setVisibility(View.GONE);
                 viewMsgInput.setVisibility(View.GONE);
+                btnKeyBoard.setVisibility(View.VISIBLE);
                 viewPressToSpeak.setVisibility(View.VISIBLE);
+                AppUtil.setSoftKeyBoard(etSend, mActivity, Const.HIDE_KEYBOARD);
             }
         }
     };

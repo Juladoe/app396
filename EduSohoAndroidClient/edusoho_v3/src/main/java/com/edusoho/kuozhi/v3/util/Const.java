@@ -176,8 +176,8 @@ public class Const {
      */
     public static final String GET_THREAD = "Course/getThread";
     public static final String GET_THREAD_POST = "Course/getThreadPost";
-    public static final String POST_THREAD = "Course/postThread";
-    public static final String CREATE_THREAD = "/api/thread/create";
+//    public static final String POST_THREAD = "Course/postThread";
+//    public static final String CREATE_THREAD = "/api/thread/create";
 
     /**
      * 获取用户所学课程下的所有问题或者讨论
@@ -493,6 +493,9 @@ public class Const {
 
     public static final String MY_COURSES = "/api/me/courses?";
     public static final String COURSE_LEARNING_DYNAMICS = "/api/user/%d/status/%d";
+
+    public static final String CREATE_THREAD = "/api/chaos_threads";
+    public static final String POST_THREAD = "/api/chaos_threads_posts";
 
     /*
      * intent action
