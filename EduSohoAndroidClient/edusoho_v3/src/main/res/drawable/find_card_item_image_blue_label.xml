@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- shape的颜色，支持渐变 -->
+    <gradient
+        android:centerColor="#c84f68b0"
+        android:endColor="#c84f68b0"
+        android:startColor="#c84f68b0" />
+
+</shape>

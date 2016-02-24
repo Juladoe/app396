@@ -61,7 +61,8 @@ public class FindCardView extends LinearLayout {
 
     public void setAdapter(ListAdapter adapter) {
         mGridView.setAdapter(adapter);
-        int count = adapter.getCount() / 2;
+        int count = adapter.getCount();
+        count = count % 2 == 0 ? count / 2 : count / 2 + 1;
 
         int totalHeight = 0;
         for (int i = 0; i < count; i++) {

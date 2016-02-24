@@ -38,6 +38,14 @@ public class EdusohoViewPager extends RelativeLayout {
 
     private Handler workHandler = new Handler();
 
+    private Runnable mAutoPlayRunnable = new Runnable() {
+        @Override
+        public void run() {
+            setCurrentItem(mCurrent + 1, true);
+            workHandler.postDelayed(this, 3000);
+        }
+    };
+
     public EdusohoViewPager(Context context) {
         super(context);
         mContext = context;
@@ -108,9 +116,18 @@ public class EdusohoViewPager extends RelativeLayout {
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
+    }
+
+    public void setupAutoPlay() {
+        workHandler.postDelayed(mAutoPlayRunnable, 3000);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        workHandler.removeCallbacks(mAutoPlayRunnable);
     }
 
     private void moveToIndex(final int index)
@@ -118,15 +135,19 @@ public class EdusohoViewPager extends RelativeLayout {
         workHandler.postAtTime(new Runnable() {
             @Override
             public void run() {
-                setCurrentItem(index);
+                setCurrentItem(index, false);
             }
         }, SystemClock.uptimeMillis() + 500);
     }
 
-    public void setCurrentItem(int index)
+    public void setCurrentItem(int index, boolean smoothScroll)
     {
         mCurrent = index;
-        mHackyViewPager.setCurrentItem(index, false);
+        mHackyViewPager.setCurrentItem(index, smoothScroll);
+    }
+
+    public int getCurrentIndex() {
+        return mCurrent;
     }
 
     class CarouselPointLayout extends PointLayout

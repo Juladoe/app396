@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
@@ -21,10 +23,8 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EdusohoViewPager;
 import com.edusoho.kuozhi.v3.view.FindCardView;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -41,12 +41,15 @@ public class FindFragment extends BaseFragment {
     private ViewGroup mCardContent;
     private PtrClassicFrameLayout mFindContentLayout;
     private EdusohoViewPager mFindBannerView;
+    private Handler mAutoPlayHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_find_layout);
         mSystemProvider = ModelProvider.initProvider(mContext, SystemProvider.class);
+
+        mAutoPlayHandler = new Handler();
     }
 
     @Override
@@ -71,18 +74,40 @@ public class FindFragment extends BaseFragment {
                 return super.checkCanDoRefresh(frame, content, header);
             }
         });
-
     }
 
-    protected ArrayList getFindCardData() {
+    protected ArrayList getFindCardData(String type) {
         ArrayList list = new ArrayList();
         FindCardEntity findCardEntity = new FindCardEntity();
         findCardEntity.title = "微信登录与微信支付";
         findCardEntity.picture = "http://demo.edusoho.com/files/default/2015/07-20/150221d08183090386.jpg?6.15.3";
         findCardEntity.price = 20.5f;
         findCardEntity.studentNum = 20;
+        findCardEntity.type = type;
+        findCardEntity.startTime = "0";
+        findCardEntity.endTime = "0";
         list.add(findCardEntity);
+
+        findCardEntity = new FindCardEntity();
+        findCardEntity.title = "微信登录与微信支付2";
+        findCardEntity.picture = "http://demo.edusoho.com/files/default/2015/07-20/150221d08183090386.jpg?6.15.3";
+        findCardEntity.price = 20.5f;
+        findCardEntity.studentNum = 20;
+        findCardEntity.type = type;
+        findCardEntity.startTime = "2016-02-07 22:13:50+08:00";
+        findCardEntity.endTime = "2016-03-07 22:13:50+08:00";
         list.add(findCardEntity);
+
+        findCardEntity = new FindCardEntity();
+        findCardEntity.title = "微信登录与微信支付3";
+        findCardEntity.picture = "http://demo.edusoho.com/files/default/2015/07-20/150221d08183090386.jpg?6.15.3";
+        findCardEntity.price = 20.5f;
+        findCardEntity.studentNum = 20;
+        findCardEntity.type = type;
+        findCardEntity.startTime = "0";
+        findCardEntity.endTime = "0";
+        findCardEntity.startTime = "2016-06-07 22:13:50+08:00";
+        findCardEntity.endTime = "2016-06-08 22:13:50+08:00";
         list.add(findCardEntity);
 
         return list;
@@ -90,13 +115,18 @@ public class FindFragment extends BaseFragment {
 
     protected void initCard() {
         FindCardView findCardView = new FindCardView(mContext);
-        findCardView.setTitle("推荐班级");
-        findCardView.setAdapter(new FindCardItemAdapter(mContext, getFindCardData()));
+        findCardView.setTitle("推荐课程");
+        findCardView.setAdapter(new FindCardItemAdapter(mContext, getFindCardData("course")));
+        mCardContent.addView(findCardView);
+
+        findCardView = new FindCardView(mContext);
+        findCardView.setTitle("推荐直播");
+        findCardView.setAdapter(new FindCardItemAdapter(mContext, getFindCardData("live")));
         mCardContent.addView(findCardView);
 
         findCardView = new FindCardView(mContext);
         findCardView.setTitle("推荐班级");
-        findCardView.setAdapter(new FindCardItemAdapter(mContext, getFindCardData()));
+        findCardView.setAdapter(new FindCardItemAdapter(mContext, getFindCardData("classroom")));
         mCardContent.addView(findCardView);
     }
 
@@ -112,7 +142,8 @@ public class FindFragment extends BaseFragment {
                     adapter = new SchoolBannerAdapter(
                             mActivity, schoolBanners);
                     mFindBannerView.setAdapter(adapter);
-                    mFindBannerView.setCurrentItem(1);
+                    mFindBannerView.setCurrentItem(1, false);
+                    mFindBannerView.setupAutoPlay();
                 }
             }
         });

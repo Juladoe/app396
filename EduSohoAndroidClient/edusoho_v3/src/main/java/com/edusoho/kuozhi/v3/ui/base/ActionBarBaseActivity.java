@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui.base;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -73,6 +74,12 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         Log.d("MainActivity-->", "onPause");
         XGPushManager.onActivityStoped(this);
         mXGClick = null;
+    }
+
+    @Override
+    public void setSupportActionBar(Toolbar toolbar) {
+        super.setSupportActionBar(toolbar);
+        mActionBar = getSupportActionBar();
     }
 
     @Override

@@ -12,4 +12,10 @@ public class FindCardEntity {
     public double price;
 
     public int studentNum;
+
+    public String type;
+
+    public String startTime;
+
+    public String endTime;
 }
