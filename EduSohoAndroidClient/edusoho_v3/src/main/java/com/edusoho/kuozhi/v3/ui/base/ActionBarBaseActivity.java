@@ -75,6 +75,11 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         mXGClick = null;
     }
 
+    @Override
+    public void setTitle(CharSequence title) {
+        setBackMode(BACK, title.toString());
+    }
+
     public void setBackMode(String backTitle, String title) {
         mTitleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
         mTitleTextView = (TextView) mTitleLayoutView.findViewById(R.id.tv_action_bar_title);

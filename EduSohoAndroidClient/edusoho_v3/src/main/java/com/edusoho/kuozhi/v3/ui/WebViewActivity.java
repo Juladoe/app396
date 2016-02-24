@@ -49,6 +49,10 @@ public class WebViewActivity extends ActionBarBaseActivity {
             CommonUtil.longToast(mActivity, "访问的地址不存在");
             return;
         }
+
+        if (!url.startsWith(app.host)) {
+            showActionBar();
+        }
         mWebView = (ESWebView) findViewById(R.id.webView);
         mWebView.initPlugin(mActivity);
         mWebView.loadUrl(url);

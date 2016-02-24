@@ -32,6 +32,6 @@ public class ESJsNativeWebView extends AbstractJsBridgeAdapterWebView<ActionBarB
     protected void initWebSetting(WebSettings webSettings) {
         super.initWebSetting(webSettings);
         String userAgent = webSettings.getUserAgentString();
-        webSettings.setUserAgentString(userAgent.replace("Android", "Android-kuozhi"));
+        webSettings.setUserAgentString(userAgent.replace("Android", "Android-kuozhi;Android"));
     }
 }

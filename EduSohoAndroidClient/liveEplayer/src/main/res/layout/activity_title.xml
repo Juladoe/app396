@@ -13,8 +13,8 @@
                   android:layout_centerVertical="true"
                   android:layout_alignParentLeft="true"
                   android:id="@+id/li_top_title_left">
-    <TextView android:layout_width="15dp"
-              android:layout_height="28dp"
+    <TextView android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
               android:background="@drawable/eplay_title_left"
               android:id="@+id/top_title_left"
             />

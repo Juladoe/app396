@@ -37,14 +37,14 @@
     <color name="text3_normal_color">#646464</color>
 
 
-    <color name="eplayer_title_bg">#3b82c4</color>
+    <color name="eplayer_title_bg">#37b97d</color>
     <color name="eplayer_activity_bg">#e8e8e8</color>
     <color name="eplayer_face_unselect">#dddddd</color>
 
     <color name="eplayer_list_item_separator">#a0b4b5b5</color>
 
     <color name="eplayer_pad_title_bg">#3FB558</color><!--绿-->
-    <color name="eplayer_pad_title_bg2">#3B82C4</color><!--蓝-->
+    <color name="eplayer_pad_title_bg2">#37b97d</color><!--蓝-->
 
 
     <color name="grid_line_bg">#b4b5b5</color>
@@ -57,5 +57,5 @@
 
     <color name="pad_teacher_area_tv_color">#9a9a9a</color>
 
-    <color name="vote_select_bt_bg">#5591ca</color>
+    <color name="vote_select_bt_bg">#37b97d</color>
 </resources>

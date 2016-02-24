@@ -46,6 +46,7 @@ import com.edusoho.kuozhi.v3.view.webview.ESWebChromeClient;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BaseBridgePlugin;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgeCallback;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
+import com.edusoho.liveplayer.LiveUtil;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -478,6 +479,11 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
                     startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
                 }
             });
+        } else if ("sooonerLivePlayer".equals(name)) {
+            String liveClassroomId = bundle.getString("liveClassroomId");
+            String exStr = bundle.getString("exStr");
+            boolean replayState = bundle.getBoolean("replayState");
+            new LiveUtil(mActivity).startLiveActivity(liveClassroomId, exStr, replayState);
         }
     }
 
