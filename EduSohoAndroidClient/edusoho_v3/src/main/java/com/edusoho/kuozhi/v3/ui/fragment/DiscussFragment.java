@@ -858,8 +858,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         String picturePath = null;
         if (cursor != null) {
             cursor.moveToFirst();
-            //int pictureIndex = cursor.getColumnIndex("_data");
-            picturePath = cursor.getString(1);
+            picturePath = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
             cursor.close();
 
             if (TextUtils.isEmpty(picturePath)) {

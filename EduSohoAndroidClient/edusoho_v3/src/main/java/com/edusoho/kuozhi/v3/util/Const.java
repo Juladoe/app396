@@ -102,7 +102,8 @@ public class Const {
     public static final int ADD_BULLETIN_MSG = 10;
     public static final int CLEAN_RECORD = 11;
     public static final int REFRESH_LIST = 12;
-
+    public static final int QUESTION_CREATED = 13;
+    public static final int QUESTION_ANSWERD = 14;
 
     public static final int UPDATE_CHAT_MSG = 0x1000;
 
@@ -176,8 +177,8 @@ public class Const {
      */
     public static final String GET_THREAD = "Course/getThread";
     public static final String GET_THREAD_POST = "Course/getThreadPost";
-    public static final String POST_THREAD = "Course/postThread";
-    public static final String CREATE_THREAD = "/api/thread/create";
+//    public static final String POST_THREAD = "Course/postThread";
+//    public static final String CREATE_THREAD = "/api/thread/create";
 
     /**
      * 获取用户所学课程下的所有问题或者讨论
@@ -493,6 +494,9 @@ public class Const {
 
     public static final String MY_COURSES = "/api/me/courses?";
     public static final String COURSE_LEARNING_DYNAMICS = "/api/user/%d/status/%d";
+
+    public static final String CREATE_THREAD = "/api/chaos_threads";
+    public static final String POST_THREAD = "/api/chaos_threads_posts";
 
     /*
      * intent action
