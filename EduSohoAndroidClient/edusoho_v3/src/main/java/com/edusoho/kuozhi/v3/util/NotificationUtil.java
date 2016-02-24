@@ -111,6 +111,60 @@ public class NotificationUtil {
         }
     }
 
+    public static void showQuestionCreatedNotification(Context context, WrapperXGPushTextMessage xgMessage) {
+        V2CustomContent model = xgMessage.getV2CustomContent();
+        xgMessage.content = String.format("您有一个新的问题『%s』", xgMessage.content);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(EdusohoApp.app.defaultSchool.name).setContentText(xgMessage.content).setAutoCancel(true);
+
+        int threadId = model.getBody().getThreadId();
+
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        notifyIntent.putExtra(ThreadDiscussActivity.THREAD_ID, model.getBody().getThreadId());
+        notifyIntent.putExtra(ThreadDiscussActivity.COURSE_ID, model.getBody().getCourseId());
+        notifyIntent.putExtra(ThreadDiscussActivity.LESSON_ID, model.getBody().getLessonId());
+        notifyIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
+        notifyIntent.putExtra(Const.INTENT_TARGET, ThreadDiscussActivity.class);
+        if (isAppExit(context)) {
+            mMessage = xgMessage;
+        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, threadId, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendingIntent);
+        mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
+        mNotificationManager.notify(threadId, mBuilder.build());
+    }
+
+    public static void showQuestionAnsweredNotification(Context context, WrapperXGPushTextMessage xgMessage) {
+        V2CustomContent model = xgMessage.getV2CustomContent();
+        xgMessage.content = String.format("您的问题『%s』有新的回复", xgMessage.content);
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(EdusohoApp.app.defaultSchool.name).setContentText(xgMessage.content).setAutoCancel(true);
+
+        int threadId = model.getBody().getThreadId();
+
+        NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        Intent notifyIntent = context.getPackageManager().getLaunchIntentForPackage(context.getPackageName());
+        notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        notifyIntent.putExtra(ThreadDiscussActivity.THREAD_ID, model.getBody().getThreadId());
+        notifyIntent.putExtra(ThreadDiscussActivity.COURSE_ID, model.getBody().getCourseId());
+        notifyIntent.putExtra(ThreadDiscussActivity.LESSON_ID, model.getBody().getLessonId());
+        notifyIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
+        notifyIntent.putExtra(Const.INTENT_TARGET, ThreadDiscussActivity.class);
+        if (isAppExit(context)) {
+            mMessage = xgMessage;
+        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, threadId, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pendingIntent);
+        mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
+        mNotificationManager.notify(threadId, mBuilder.build());
+    }
+
     public static void showNewsCourseNotification(Context context, WrapperXGPushTextMessage xgMessage) {
         V2CustomContent v2CustomContent = xgMessage.getV2CustomContent();
         switch (v2CustomContent.getBody().getType()) {

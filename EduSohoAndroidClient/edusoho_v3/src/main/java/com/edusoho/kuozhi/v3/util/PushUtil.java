@@ -20,6 +20,7 @@ public class PushUtil {
         public static final String COURSE_ANNOUNCEMENT = "announcement.create";
         public static final String HOMEWORK_REVIEWED = "homework.reviewed";
         public static final String QUESTION_ANSWERED = "question.answered";
+        public static final String QUESTION_CREATED = "question.created";
         public static final String LESSON_FINISH = "lesson.finish";
         public static final String LESSON_START = "lesson.start";
     }
