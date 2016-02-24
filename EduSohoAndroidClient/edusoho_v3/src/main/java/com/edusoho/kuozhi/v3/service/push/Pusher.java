@@ -110,14 +110,6 @@ public class Pusher {
     }
 
     public void pushQuestionAnswered() {
-//        boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
-//        if (isForeground) {
-//            mWrapperMessage.isForeground = true;
-//            EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, CourseStudyFragment.class);
-//        }
-//        EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsFragment.class);
-//        EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
-
         if (EdusohoApp.app.isForeground(NewsCourseActivity.class.getName())) {
             mWrapperMessage.isForeground = true;
             EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, CourseStudyFragment.class);
