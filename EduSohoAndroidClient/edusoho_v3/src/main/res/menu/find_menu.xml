@@ -6,7 +6,7 @@
         android:id="@+id/find_search"
         android:icon="@drawable/found_menu_search"
         android:orderInCategory="100"
-        android:title="@null"
+        android:title="搜索"
         app:showAsAction="ifRoom" />
 
 </menu>

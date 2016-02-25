@@ -18,4 +18,24 @@ public class FindCardEntity {
     public String startTime;
 
     public String endTime;
+
+    public String avatar;
+
+    public String nickname;
+
+    public boolean mIsEmpty;
+
+    public FindCardEntity()
+    {
+        this.mIsEmpty = false;
+    }
+
+    public FindCardEntity(boolean isEmpty)
+    {
+        this.mIsEmpty = isEmpty;
+    }
+
+    public boolean isEmpty() {
+        return mIsEmpty;
+    }
 }

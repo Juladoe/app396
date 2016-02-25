@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.edusoho.kuozhi.v3.view.FixPtrClassicFrameLayout
+        android:scrollbars="none"
         android:id="@+id/find_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,49 +18,17 @@
         app:ptr_ratio_of_header_height_to_refresh="1.2"
         app:ptr_resistance="1.7">
 
-        <ScrollView
-            android:descendantFocusability="blocksDescendants"
+        <ListView
+            android:paddingBottom="2dp"
+            android:divider="@color/transparent"
+            android:dividerHeight="8dp"
+            android:scrollbars="none"
+            android:id="@+id/listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/background">
+        </ListView>
 
-                <TextView
-                    android:id="@+id/search_friend_btn"
-                    android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/search_friend_bg"
-                    android:drawableLeft="@drawable/icon_edittext_search"
-                    android:drawablePadding="8dp"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="12dp"
-                    android:text="搜索"
-                    android:textColor="@color/gray"
-                    android:textSize="14sp" />
-
-                <com.edusoho.kuozhi.v3.view.EdusohoViewPager
-                    android:id="@+id/find_banner"
-                    android:layout_width="match_parent"
-                    android:layout_height="185dp" />
-
-                <LinearLayout
-                    android:layout_marginTop="8dp"
-                    android:orientation="vertical"
-                    android:id="@+id/card_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></LinearLayout>
-            </LinearLayout>
-        </ScrollView>
     </com.edusoho.kuozhi.v3.view.FixPtrClassicFrameLayout>
 
 </LinearLayout>

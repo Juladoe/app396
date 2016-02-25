@@ -6,13 +6,33 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        android:id="@+id/card_cover"
-        app:riv_corner_radius="5dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/default_course"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="90dp" />
+        android:layout_height="match_parent">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/card_cover"
+            app:riv_corner_radius="5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_course"
+            android:layout_width="match_parent"
+            android:layout_height="110dp" />
+
+        <TextView
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingBottom="3dp"
+            android:paddingTop="3dp"
+            android:textSize="@dimen/base_x_small_size"
+            android:background="@drawable/find_card_classroom_label_bg"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="班级"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
 
     <TextView
         android:textColor="@color/base_black_87"

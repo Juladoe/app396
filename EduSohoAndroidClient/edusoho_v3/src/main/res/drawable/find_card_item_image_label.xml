@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+<shape
+    android:shape="rectangle"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
 
+    <!-- 是否是圆角 -->
+    <corners android:bottomLeftRadius="5dp"
+        android:bottomRightRadius="5dp" />
     <!-- shape的颜色，支持渐变 -->
     <gradient
-        android:centerColor="@color/base_black_12"
-        android:endColor="@color/base_black_12"
-        android:startColor="@color/base_black_12" />
+        android:centerColor="@color/base_black_54"
+        android:endColor="@color/base_black_54"
+        android:startColor="@color/base_black_54" />
 
 </shape>

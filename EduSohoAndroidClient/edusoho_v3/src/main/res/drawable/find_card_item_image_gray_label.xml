@@ -7,7 +7,7 @@
 
     <gradient
         android:angle="270"
-        android:endColor="#0099ff"
-        android:startColor="#0099ff" />
+        android:endColor="@color/recommend_sch_info"
+        android:startColor="@color/recommend_sch_info" />
 
 </shape>
