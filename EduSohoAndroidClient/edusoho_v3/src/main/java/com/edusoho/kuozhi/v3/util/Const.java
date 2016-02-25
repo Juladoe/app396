@@ -493,7 +493,7 @@ public class Const {
     public static final String UPLOAD_IMAGE_CACHE_THUMB_FILE = "/image/thumb";
 
     public static final String MY_COURSES = "/api/me/courses?";
-    public static final String COURSE_LEARNING_DYNAMICS = "/api/user/%d/status/%d";
+    public static final String COURSE_LEARNING_DYNAMICS = "/api/course/%d/status";
 
     public static final String CREATE_THREAD = "/api/chaos_threads";
     public static final String POST_THREAD = "/api/chaos_threads_posts";

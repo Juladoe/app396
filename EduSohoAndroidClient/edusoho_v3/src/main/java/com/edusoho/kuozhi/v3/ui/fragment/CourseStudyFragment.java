@@ -144,7 +144,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     public Promise getDynamicsByNet() {
         final Promise promise = new Promise();
 
-        String subUrl = String.format(Const.COURSE_LEARNING_DYNAMICS, app.loginUser.id, mCourseId);
+        String subUrl = String.format(Const.COURSE_LEARNING_DYNAMICS, mCourseId);
         RequestUrl requestUrl = app.bindNewApiUrl(subUrl, true);
         requestUrl.setGetParams(new String[]{"limit", "10000"});
         mDynamicsProvider.getDynamics(requestUrl).success(new NormalCallback<ArrayList<CourseDynamicsItem>>() {
