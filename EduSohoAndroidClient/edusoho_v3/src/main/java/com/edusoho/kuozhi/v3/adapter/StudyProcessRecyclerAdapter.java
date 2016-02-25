@@ -217,7 +217,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                             @Override
                             public void setIntentDate(Intent startIntent) {
                                 startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, entity.getCourseId());
-                                startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, entity.getQuestionId());
+                                startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, entity.getThreadId());
                                 startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
                             }
                         });

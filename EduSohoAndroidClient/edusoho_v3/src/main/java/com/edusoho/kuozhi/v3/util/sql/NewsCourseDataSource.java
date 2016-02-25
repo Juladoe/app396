@@ -73,7 +73,7 @@ public class NewsCourseDataSource {
         entity.setCreatedTime(cursor.getInt(9));
         entity.setLessonId(cursor.getInt(10));
         entity.setHomworkResultId(cursor.getInt(11));
-        entity.setQuestionId(cursor.getInt(12));
+        entity.setThreadId(cursor.getInt(12));
         entity.setLearnStartTime(cursor.getInt(13));
         entity.setLearnFinishTime(cursor.getInt(14));
         return entity;
@@ -94,7 +94,7 @@ public class NewsCourseDataSource {
         cv.put(allColumns[9], newsCourseEntity.getCreatedTime());
         cv.put(allColumns[10], newsCourseEntity.getLessonId());
         cv.put(allColumns[11], newsCourseEntity.getHomworkResultId());
-        cv.put(allColumns[12], newsCourseEntity.getQuestionId());
+        cv.put(allColumns[12], newsCourseEntity.getThreadId());
         cv.put(allColumns[13], newsCourseEntity.getLearnStartTime());
         cv.put(allColumns[14], newsCourseEntity.getLearnFinishTime());
         long effectRow = mDataBase.insert(TABLE_NAME, null, cv);
@@ -118,7 +118,7 @@ public class NewsCourseDataSource {
             cv.put(allColumns[9], newsCourseEntity.getCreatedTime());
             cv.put(allColumns[10], newsCourseEntity.getLessonId());
             cv.put(allColumns[11], newsCourseEntity.getHomworkResultId());
-            cv.put(allColumns[12], newsCourseEntity.getQuestionId());
+            cv.put(allColumns[12], newsCourseEntity.getThreadId());
             cv.put(allColumns[13], newsCourseEntity.getLearnStartTime());
             cv.put(allColumns[14], newsCourseEntity.getLearnFinishTime());
             mDataBase.insert(TABLE_NAME, null, cv);
@@ -140,7 +140,7 @@ public class NewsCourseDataSource {
         cv.put(allColumns[9], newsCourseEntity.getCreatedTime());
         cv.put(allColumns[10], newsCourseEntity.getLessonId());
         cv.put(allColumns[11], newsCourseEntity.getHomworkResultId());
-        cv.put(allColumns[12], newsCourseEntity.getQuestionId());
+        cv.put(allColumns[12], newsCourseEntity.getThreadId());
         cv.put(allColumns[13], newsCourseEntity.getLearnStartTime());
         cv.put(allColumns[14], newsCourseEntity.getLearnFinishTime());
         int effectRow = mDataBase.update(TABLE_NAME, cv, "ID = ?", new String[]{newsCourseEntity.getId() + ""});

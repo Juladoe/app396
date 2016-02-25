@@ -218,7 +218,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                     entity.setBodyType("question.answered");
                     entity.setContent(dynamicsItem.getProperties().getThread().getTitle());
                     entity.setLessonId(Integer.parseInt(dynamicsItem.getProperties().getThread().getLessonId()));
-                    entity.setQuestionId(Integer.parseInt(dynamicsItem.getProperties().getThread().getId()));
+                    entity.setThreadId(Integer.parseInt(dynamicsItem.getProperties().getThread().getId()));
                     dataList.add(entity);
                     break;
 
@@ -372,7 +372,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
             NewsCourseEntity entity = list.get(i);
             String type = entity.getBodyType();
             if (type.equals("question.answered")) {
-                int questionId = entity.getQuestionId();
+                int questionId = entity.getThreadId();
                 if (!questionIds.contains(questionId)) {
                     questionIds.add(questionId);
                 } else {
