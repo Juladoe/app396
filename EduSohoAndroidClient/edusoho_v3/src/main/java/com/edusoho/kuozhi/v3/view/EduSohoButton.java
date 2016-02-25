@@ -270,7 +270,7 @@ public class EduSohoButton extends FrameLayout {
         mDefaultTextSize = (int) attrsArray.getDimension(R.styleable.FancyButtonsAttrs_textSize, mDefaultTextSize);
 
         mBorderColor = attrsArray.getColor(R.styleable.FancyButtonsAttrs_borderColor, mBorderColor);
-        mBorderWidth = (int) attrsArray.getDimension(R.styleable.FancyButtonsAttrs_borderWidth, mBorderWidth);
+        mBorderWidth = (int) attrsArray.getDimension(R.styleable.FancyButtonsAttrs_es_borderWidth, mBorderWidth);
 
         mRadius = (int) attrsArray.getDimension(R.styleable.FancyButtonsAttrs_radius, mRadius);
         mFontIconSize = (int) attrsArray.getDimension(R.styleable.FancyButtonsAttrs_fontIconSize, mFontIconSize);

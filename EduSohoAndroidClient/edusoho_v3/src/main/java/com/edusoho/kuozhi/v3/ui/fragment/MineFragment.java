@@ -111,6 +111,8 @@ public class MineFragment extends BaseFragment {
                 });
             } else if (v.getId() == R.id.rl_my_5) {
                 mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
+            } else if (v.getId() == R.id.rl_my_6) {
+                //// TODO: 16/2/25 question jump
             }
         }
     };
