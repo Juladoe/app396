@@ -10,6 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        app:pst_dividerPadding="4dp"
         app:dividerColor="@color/material_grey"
         app:indicatorHeight="1dp"
         app:pst_textSize="@dimen/small_font_size">

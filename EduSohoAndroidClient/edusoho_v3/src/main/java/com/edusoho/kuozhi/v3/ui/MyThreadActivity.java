@@ -45,8 +45,6 @@ public class MyThreadActivity extends ActionBarBaseActivity {
 
         mTab = (PagerSlidingTabStrip) findViewById(R.id.my_thread_tab);
         mTab.setIndicatorColor(R.color.material_green);
-        mTab.setPadding(0,20,0,20);
-
 
         mViewPager = (ViewPager) findViewById(R.id.my_thread_viewpager);
 
