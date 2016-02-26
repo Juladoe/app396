@@ -97,7 +97,6 @@
     <string name="font_my_vip">&#xe62e;</string>
     <string name="font_my_collection">&#xe661;</string>
     <string name="font_my_setting">&#xe60e;</string>
-    <string name="font_my_question">&#xe66a;</string>
     <string name="font_friends">&#xe628;</string>
     <string name="font_friends_pressed">&#xe609;</string>
     <string name="font_news">&#xe66c;</string>
@@ -199,7 +198,6 @@
     <string name="mine_items_download">我的下载</string>
     <string name="mine_items_buy_vip">开通会员</string>
     <string name="mine_items_collection">我的收藏</string>
-    <string name="mine_items_question">我的问答</string>
     <string name="mine_items_setting">我的设置</string>
 
     <string name="qr_search_notice">将二维码放入框内，即可自动扫描</string>
