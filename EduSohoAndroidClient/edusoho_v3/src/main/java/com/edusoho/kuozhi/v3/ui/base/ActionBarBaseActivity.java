@@ -10,7 +10,6 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -22,10 +21,8 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.tencent.android.tpush.XGPushClickedResult;
 import com.tencent.android.tpush.XGPushManager;
 import com.umeng.analytics.MobclickAgent;
-
 import java.util.ArrayDeque;
 import java.util.Queue;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -55,6 +52,10 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         mActionBar = getSupportActionBar();
         app.registMsgSource(this);
         mUIMessageQueue = new ArrayDeque<>();
+        if (mActionBar != null) {
+            mActionBar.setWindowTitle("title");
+        }
+        //getWindow().findViewById(R.id.decor_content_parent).setVisibility(View.GONE);
     }
 
     @Override

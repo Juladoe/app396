@@ -209,4 +209,6 @@
 
     <!-- error notice -->
     <string name="token_lose_notice">账号登陆失效，或已在别处登陆\n请重新登陆</string>
+    <string name="title_activity_tab_main">TabMainActivity</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>
