@@ -32,6 +32,7 @@ public class MineFragment extends BaseFragment {
             R.id.rl_my_3,
             R.id.rl_my_4,
             R.id.rl_my_5,
+            R.id.rl_my_6
     };
 
     private final View[] mViews = new View[mViewIds.length];
@@ -111,6 +112,8 @@ public class MineFragment extends BaseFragment {
                 });
             } else if (v.getId() == R.id.rl_my_5) {
                 mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
+            } else if (v.getId() == R.id.rl_my_6) {
+                mActivity.app.mEngine.runNormalPlugin("MyThreadActivity", mContext, null);
             }
         }
     };
