@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -10,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -59,6 +61,20 @@ public class FindFragment extends BaseFragment {
         mSystemProvider = ModelProvider.initProvider(mContext, SystemProvider.class);
     }
 
+    private float getViewScale() {
+        WindowManager wm = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+
+        return wm.getDefaultDisplay().getWidth() / 750f;
+    }
+
+    private void addBannerView() {
+        mFindBannerView = (EdusohoViewPager) LayoutInflater.from(mContext).inflate(R.layout.find_listview_head_layout, null);
+        int bannerHeight = AppUtil.dp2px(mContext, 300 * getViewScale());
+        AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, bannerHeight);
+        mFindBannerView.setLayoutParams(lp);
+        mListView.addHeaderView(mFindBannerView);
+    }
+
     @Override
     protected void initView(View view) {
         super.initView(view);
@@ -66,11 +82,7 @@ public class FindFragment extends BaseFragment {
         mFindContentLayout = (PtrClassicFrameLayout) view.findViewById(R.id.find_content);
         mListView = (ListView) view.findViewById(R.id.listview);
 
-        mFindBannerView = (EdusohoViewPager) LayoutInflater.from(mContext).inflate(R.layout.find_listview_head_layout, null);
-        int bannerHeight = AppUtil.dp2px(mContext, 185);
-        AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, bannerHeight);
-        mFindBannerView.setLayoutParams(lp);
-        mListView.addHeaderView(mFindBannerView);
+        addBannerView();
         mListView.setAdapter(new FindListAdapter(mContext, getFindItemData()));
         initSchoolBanner(false);
 
