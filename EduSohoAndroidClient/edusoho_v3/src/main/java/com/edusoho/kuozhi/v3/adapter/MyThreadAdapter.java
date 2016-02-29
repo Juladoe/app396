@@ -10,15 +10,23 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 
+import java.util.List;
+
 /**
  * Created by melomelon on 16/2/29.
  */
 public class MyThreadAdapter extends RecyclerView.Adapter {
 
     private LayoutInflater mLayoutInflater;
+    private List mDataList;
 
     public MyThreadAdapter(Context context) {
         mLayoutInflater = LayoutInflater.from(context);
+    }
+
+    public MyThreadAdapter(Context context, List mDataList) {
+        mLayoutInflater = LayoutInflater.from(context);
+        this.mDataList = mDataList;
     }
 
     @Override
@@ -35,7 +43,7 @@ public class MyThreadAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return 20;
+        return mDataList.size();
     }
 
     private class ThreadItemViewHolder extends RecyclerView.ViewHolder{

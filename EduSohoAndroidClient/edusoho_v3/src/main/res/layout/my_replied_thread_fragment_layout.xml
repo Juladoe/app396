@@ -12,4 +12,13 @@
 
     </android.support.v7.widget.RecyclerView>
 
+    <TextView
+        android:id="@+id/empty_replied_thread"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="您还没有回复过的问答"
+        android:textSize="@dimen/large_font_size"
+        android:visibility="gone" />
+
 </LinearLayout>
