@@ -4,12 +4,12 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.MyPostedThreadFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.MyRepliedThreadFragment;
+import com.edusoho.kuozhi.v3.view.EduSohoViewPager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,7 @@ import extensions.PagerSlidingTabStrip;
 public class MyThreadActivity extends ActionBarBaseActivity {
 
     private PagerSlidingTabStrip mTab;
-    private ViewPager mViewPager;
+    private EduSohoViewPager mViewPager;
 
     private List<Fragment> mFragmentList;
     private String[] mFragmentTitles = {"我发起的","我回复的"};
@@ -46,7 +46,9 @@ public class MyThreadActivity extends ActionBarBaseActivity {
         mTab = (PagerSlidingTabStrip) findViewById(R.id.my_thread_tab);
         mTab.setIndicatorColor(R.color.material_green);
 
-        mViewPager = (ViewPager) findViewById(R.id.my_thread_viewpager);
+
+        mViewPager = (EduSohoViewPager) findViewById(R.id.my_thread_viewpager);
+        mViewPager.setIsPagingEnable(false);
 
         myPostedThreadFragment = new MyPostedThreadFragment();
         myRepliedThreadFragment = new MyRepliedThreadFragment();
