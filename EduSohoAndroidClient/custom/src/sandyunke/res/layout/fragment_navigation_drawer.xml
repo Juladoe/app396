@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@drawable/drawer_bg"
+        tools:context="com.edusoho.kuozhi.v3.ui.fragment.FragmentNavigationDrawer">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/navigation_userinfo_layout"
+                android:layout_width="match_parent"
+                android:layout_marginTop="10dp"
+                android:layout_height="100dp">
+
+                <RelativeLayout
+                    android:id="@+id/circleLayout"
+                    android:layout_width="73dp"
+                    android:layout_height="73dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="38dp"
+                    android:layout_marginRight="16dp"
+                    android:background="@drawable/navigation_user_sharow">
+
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/circleIcon"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_centerInParent="true"
+                        android:paddingTop="11dp"
+                        android:background="@drawable/user_avatar_bg"
+                        android:src="@drawable/user_avatar" />
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:text="未登录"
+                    android:layout_toRightOf="@+id/circleLayout"
+                    android:layout_toEndOf="@+id/circleLayout"
+                    android:textColor="@color/grey_alpha"
+                    android:textSize="@dimen/medium_font_size"
+                    android:visibility="gone"
+                    android:id="@+id/tv_login" />
+
+                <TextView
+                    android:id="@+id/tv_nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/drawer_nickname"
+                    android:textColor="@color/grey_alpha"
+                    android:textSize="@dimen/medium_font_size"
+                    android:layout_alignTop="@+id/circleLayout"
+                    android:layout_toRightOf="@+id/circleLayout"
+                    android:layout_toEndOf="@+id/circleLayout"
+                    android:layout_marginTop="10dp" />
+
+                <TextView
+                    android:id="@+id/tv_user_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="神马都没有"
+                    android:singleLine="true"
+                    android:ellipsize="end"
+                    android:textColor="@color/grey_beta"
+                    android:textSize="@dimen/medium_font_size"
+                    android:layout_alignBottom="@+id/circleLayout"
+                    android:layout_alignLeft="@+id/tv_nickname"
+                    android:layout_alignStart="@+id/tv_nickname"
+                    android:layout_marginBottom="10dp" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/grey_alpha"
+                android:alpha="0.56"
+                android:layout_marginRight="20dp"
+                android:layout_marginLeft="20dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                android:id="@+id/ll_item"
+                android:paddingLeft="10dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/radio0"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/drawer_selector_0"
+                        android:drawablePadding="15dp"
+                        android:paddingEnd="0dp"
+                        android:paddingLeft="40dp"
+                        android:paddingRight="0dp"
+                        android:text="@string/drawer_items_learn"
+                        android:textColor="@drawable/drawer_selector_font"
+                        android:textSize="@dimen/large_font_size" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/radio1"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/drawer_selector_1"
+                        android:drawablePadding="15dp"
+                        android:paddingEnd="0dp"
+                        android:paddingLeft="40dp"
+                        android:paddingRight="0dp"
+                        android:text="@string/drawer_items_download"
+                        android:textColor="@drawable/drawer_selector_font"
+                        android:textSize="@dimen/large_font_size" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+                        android:id="@+id/radio2"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/drawer_selector_2"
+                        android:drawablePadding="15dp"
+                        android:paddingEnd="0dp"
+                        android:paddingLeft="40dp"
+                        android:paddingRight="0dp"
+                        android:text="@string/drawer_items_buy_vip"
+                        android:textColor="@drawable/drawer_selector_font"
+                        android:textSize="@dimen/large_font_size" />
+
+                </RelativeLayout>
+
+                <RadioButton
+                    android:id="@+id/radio3"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:button="@null"
+                    android:background="@color/transparent"
+                    android:drawableLeft="@drawable/drawer_selector_3"
+                    android:drawablePadding="15dp"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="0dp"
+                    android:text="@string/drawer_items_collection"
+                    android:textColor="@drawable/drawer_selector_font"
+                    android:textSize="@dimen/large_font_size" />
+
+                <RadioButton
+                    android:id="@+id/radio4"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/transparent"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/drawer_selector_5"
+                    android:drawablePadding="15dp"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="0dp"
+                    android:text="@string/drawer_items_setting"
+                    android:textColor="@drawable/drawer_selector_font"
+                    android:textSize="@dimen/large_font_size" />
+
+                <RadioButton
+                    android:id="@id/radio5"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/transparent"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/drawer_selector_6"
+                    android:drawablePadding="15dp"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="40dp"
+                    android:paddingRight="0dp"
+                    android:text="@string/drawer_items_forum"
+                    android:textColor="@drawable/drawer_selector_font"
+                    android:textSize="@dimen/large_font_size" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical"
+                android:id="@+id/ll_login"
+                android:gravity="center_horizontal">
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/login_btn_bg"
+                    android:text="@string/login"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textColor="@android:color/white"
+                    android:id="@+id/btn_login" />
+
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="30dp"
+                    android:background="@drawable/register_btn_bg"
+                    android:text="@string/register"
+                    android:textSize="@dimen/medium_font_size"
+                    android:textColor="@android:color/white"
+                    android:id="@+id/btn_register" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <com.edusoho.kuozhi.v3.view.EduSohoIconView
+        android:id="@+id/iv_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="24dp"
+        android:layout_marginBottom="24dp"
+        android:textSize="@dimen/x_large_font_size"
+        android:text="@string/font_drawer_setting"
+        android:textColor="@color/grey_alpha"
+        android:layout_alignParentBottom="true" />
+
+</RelativeLayout>
