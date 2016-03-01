@@ -12,29 +12,27 @@
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/card_cover"
-            app:riv_corner_radius="5dp"
+            app:riv_corner_radius="4dp"
             android:scaleType="centerCrop"
             android:src="@drawable/default_course"
             android:layout_width="match_parent"
-            android:layout_height="110dp" />
+            android:layout_height="@dimen/card_grid_height" />
 
         <TextView
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingBottom="3dp"
-            android:paddingTop="3dp"
-            android:textSize="@dimen/base_x_small_size"
+            android:gravity="center"
+            android:textSize="@dimen/title_label_xxx_s"
             android:background="@drawable/find_card_classroom_label_bg"
             android:textColor="@color/white"
             android:layout_marginTop="8dp"
             android:layout_marginLeft="8dp"
             android:text="班级"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="29dp"
+            android:layout_height="14dp" />
 
     </FrameLayout>
 
     <TextView
+        android:textSize="@dimen/title_label_s"
         android:textColor="@color/base_black_87"
         android:id="@+id/card_title"
         android:layout_marginTop="8dp"
@@ -50,8 +48,8 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:textSize="@dimen/base_small_size"
-            android:textColor="@color/red"
+            android:textSize="@dimen/title_label_x_s"
+            android:textColor="@color/red_primary"
             android:id="@+id/card_price"
             android:gravity="left"
             android:layout_weight="1"
@@ -61,8 +59,8 @@
 
         <TextView
             android:drawableLeft="@drawable/find_card_item_num_icon"
-            android:textColor="@color/base_black_35"
-            android:textSize="@dimen/base_small_size"
+            android:textColor="@color/black_back_primary"
+            android:textSize="@dimen/title_label_xx_s"
             android:id="@+id/card_num"
             android:gravity="right"
             android:layout_weight="0"

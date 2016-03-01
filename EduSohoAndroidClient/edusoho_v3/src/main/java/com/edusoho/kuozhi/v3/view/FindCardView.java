@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,8 +43,9 @@ public class FindCardView extends LinearLayout {
 
     protected void initView() {
         setOrientation(LinearLayout.VERTICAL);
-        int padding = AppUtil.dp2px(getContext(), 16);
-        setPadding(padding, 0, padding, 0);
+        int padding = AppUtil.dp2px(getContext(), 14);
+        int paddingTop = AppUtil.dp2px(getContext(), 10);
+        setPadding(padding, paddingTop, padding, 0);
         setBackgroundColor(Color.WHITE);
         View headView = LayoutInflater.from(getContext()).inflate(R.layout.view_find_card_head_layout, null);
         mTitleView = (TextView) headView.findViewById(R.id.card_title);
@@ -67,12 +69,8 @@ public class FindCardView extends LinearLayout {
     protected GridView createGridView() {
         GridView gridView = new GridView(getContext());
         gridView.setBackgroundResource(R.color.background);
-        WindowManager wm = (WindowManager) getContext()
-                .getSystemService(Context.WINDOW_SERVICE);
 
-        int width = wm.getDefaultDisplay().getWidth();
-
-        gridView.setColumnWidth(width / 2);
+        gridView.setColumnWidth(getContext().getResources().getDimensionPixelSize(R.dimen.card_grid_width));
         gridView.setNumColumns(2);
         gridView.setVerticalSpacing(2);
         gridView.setVerticalScrollBarEnabled(false);

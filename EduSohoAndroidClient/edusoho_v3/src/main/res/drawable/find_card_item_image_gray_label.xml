@@ -3,11 +3,11 @@
     android:shape="rectangle">
 
     <!-- 是否是圆角 -->
-    <corners android:radius="5dip" />
+    <corners android:radius="3dip" />
 
     <gradient
         android:angle="270"
-        android:endColor="@color/recommend_sch_info"
-        android:startColor="@color/recommend_sch_info" />
+        android:endColor="@color/black_back_primary"
+        android:startColor="@color/black_back_primary" />
 
 </shape>

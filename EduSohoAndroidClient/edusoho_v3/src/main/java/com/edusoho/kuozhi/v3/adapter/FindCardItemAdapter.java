@@ -157,7 +157,7 @@ public class FindCardItemAdapter extends BaseAdapter {
 
         ImageLoader.getInstance().displayImage(findCardEntity.picture, viewHolder.coverView, mOptions);
         viewHolder.titleView.setText(findCardEntity.title);
-        int padding = AppUtil.dp2px(mContext, 8);
+        int padding = AppUtil.dp2px(mContext, 10);
         if (position % 2 == 0) {
             convertView.setPadding(0, padding, padding, padding);
         } else {
@@ -171,10 +171,10 @@ public class FindCardItemAdapter extends BaseAdapter {
 
         viewHolder.studentNumView.setText(String.valueOf(findCardEntity.studentNum));
         if (findCardEntity.price > 0) {
-            viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.red));
+            viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.red_primary));
             viewHolder.priceView.setText(String.format("%.2f元", findCardEntity.price));
         } else {
-            viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.post_edit_color));
+            viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.green_primary));
             viewHolder.priceView.setText("免费");
         }
         return convertView;

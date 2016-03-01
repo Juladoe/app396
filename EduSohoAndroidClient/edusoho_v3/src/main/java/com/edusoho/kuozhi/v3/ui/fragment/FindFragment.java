@@ -2,10 +2,7 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -13,12 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.adapter.FindCardItemAdapter;
 import com.edusoho.kuozhi.v3.adapter.FindListAdapter;
 import com.edusoho.kuozhi.v3.adapter.SchoolBannerAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -32,11 +25,8 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EdusohoViewPager;
-import com.edusoho.kuozhi.v3.view.FindCardView;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -69,7 +59,7 @@ public class FindFragment extends BaseFragment {
 
     private void addBannerView() {
         mFindBannerView = (EdusohoViewPager) LayoutInflater.from(mContext).inflate(R.layout.find_listview_head_layout, null);
-        int bannerHeight = AppUtil.dp2px(mContext, 300 * getViewScale());
+        int bannerHeight = (int) (300 * getViewScale());
         AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, bannerHeight);
         mFindBannerView.setLayoutParams(lp);
         mListView.addHeaderView(mFindBannerView);
