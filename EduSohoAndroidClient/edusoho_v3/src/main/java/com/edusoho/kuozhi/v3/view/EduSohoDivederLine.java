@@ -20,6 +20,8 @@ public class EduSohoDivederLine extends RecyclerView.ItemDecoration {
     private int orientation;
     private int color;
     private int size;
+    private int marginLeft = 0;
+    private int marginRight = 0;
 
     public EduSohoDivederLine() {
         this(VERTICAL);
@@ -67,8 +69,8 @@ public class EduSohoDivederLine extends RecyclerView.ItemDecoration {
     }
 
     protected void drawHorizontal(Canvas c, RecyclerView parent) {
-        final int left = parent.getPaddingLeft();
-        final int right = parent.getWidth() - parent.getPaddingRight();
+        final int left = parent.getPaddingLeft() + marginLeft;
+        final int right = parent.getWidth() - parent.getPaddingRight() - marginRight;
 
         final int childCount = parent.getChildCount();
         for (int i = 0; i < childCount; i++) {
@@ -79,5 +81,13 @@ public class EduSohoDivederLine extends RecyclerView.ItemDecoration {
 
             c.drawRect(left, top, right, bottom, paint);
         }
+    }
+
+    public void setMarginLeft(int marginLeft) {
+        this.marginLeft = marginLeft;
+    }
+
+    public void setMarginRight(int marginRight) {
+        this.marginRight = marginRight;
     }
 }

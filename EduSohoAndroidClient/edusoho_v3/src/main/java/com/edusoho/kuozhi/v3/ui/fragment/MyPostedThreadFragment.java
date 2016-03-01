@@ -45,6 +45,8 @@ public class MyPostedThreadFragment extends BaseFragment {
         mDividerLine = new EduSohoDivederLine(EduSohoDivederLine.VERTICAL);
         mDividerLine.setColor(getResources().getColor(R.color.material_grey));
         mDividerLine.setSize(1);
+        mDividerLine.setMarginLeft(24);
+        mDividerLine.setMarginRight(24);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_posted_Thread_recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));

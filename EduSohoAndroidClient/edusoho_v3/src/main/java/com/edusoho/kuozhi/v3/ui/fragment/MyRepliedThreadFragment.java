@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.view.EduSohoDivederLine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -43,6 +44,8 @@ public class MyRepliedThreadFragment extends BaseFragment {
         mDividerLine = new EduSohoDivederLine(EduSohoDivederLine.VERTICAL);
         mDividerLine.setColor(getResources().getColor(R.color.material_grey));
         mDividerLine.setSize(1);
+        mDividerLine.setMarginLeft(24);
+        mDividerLine.setMarginRight(24);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.my_replied_thread_recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
