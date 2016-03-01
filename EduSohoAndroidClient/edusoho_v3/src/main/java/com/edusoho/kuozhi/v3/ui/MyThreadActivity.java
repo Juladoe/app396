@@ -48,7 +48,7 @@ public class MyThreadActivity extends ActionBarBaseActivity {
 
 
         mViewPager = (EduSohoViewPager) findViewById(R.id.my_thread_viewpager);
-        mViewPager.setIsPagingEnable(false);
+        mViewPager.setIsPagingEnable(true);
 
         myPostedThreadFragment = new MyPostedThreadFragment();
         myRepliedThreadFragment = new MyRepliedThreadFragment();

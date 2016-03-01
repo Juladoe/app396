@@ -10,12 +10,19 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.MyThreadAdapter;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
+import com.edusoho.kuozhi.v3.model.provider.MyThreadProvider;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoDivederLine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -29,6 +36,7 @@ public class MyPostedThreadFragment extends BaseFragment {
     private TextView mEmptyTv;
     private FrameLayout mLoading;
 
+    private MyThreadProvider mProvider;
     private List mDataList;
 
     public MyPostedThreadFragment() {
@@ -44,6 +52,7 @@ public class MyPostedThreadFragment extends BaseFragment {
     protected void initView(View view) {
         mEmptyTv = (TextView) view.findViewById(R.id.empty_posted_thread);
         mLoading = (FrameLayout) view.findViewById(R.id.my_posted_thread_loading);
+        mLoading.setVisibility(View.VISIBLE);
 
         mDividerLine = new EduSohoDivederLine(EduSohoDivederLine.VERTICAL);
         mDividerLine.setColor(getResources().getColor(R.color.material_grey));
@@ -62,19 +71,55 @@ public class MyPostedThreadFragment extends BaseFragment {
 
     public void initData() {
         mDataList = new ArrayList();
-        mDataList.addAll(Arrays.asList(1, 2, 3));
+        loadPostedThread().then(new PromiseCallback() {
+            @Override
+            public Promise invoke(Object object) {
+                if (mDataList.size() == 0) {
+                    mRecyclerView.setVisibility(View.GONE);
+                    mEmptyTv.setVisibility(View.VISIBLE);
+                } else {
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    mEmptyTv.setVisibility(View.GONE);
+                }
 
-        //// TODO: 16/2/29
-        if (mDataList.size() == 0) {
-            mRecyclerView.setVisibility(View.GONE);
-            mEmptyTv.setVisibility(View.VISIBLE);
-        } else {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mEmptyTv.setVisibility(View.GONE);
-        }
+                mLoading.setVisibility(View.GONE);
+                return null;
+            }
+        });
 
-        mAdapter = new MyThreadAdapter(mContext, mDataList);
+        mAdapter = new MyThreadAdapter(mContext);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    public Promise loadPostedThread() {
+        final Promise promise = new Promise();
+
+        //// TODO: 16/3/1 for Test
+        RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
+        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
+        stringBuffer.append("?start=0&limit=10000/");
+        requestUrl.url = stringBuffer.toString();
+
+        mProvider = new MyThreadProvider(mContext);
+        mProvider.getMyPostedThread(requestUrl).success(new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap string) {
+
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mDataList.addAll(Arrays.asList(1, 2, 3));
+                mAdapter.addDataList(mDataList);
+
+                //// TODO: 16/3/1  类型
+                promise.resolve(mDataList);
+            }
+
+        });
+
+        return promise;
     }
 
 }

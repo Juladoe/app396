@@ -10,11 +10,18 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.MyThreadAdapter;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
+import com.edusoho.kuozhi.v3.model.provider.MyThreadProvider;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoDivederLine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -28,6 +35,7 @@ public class MyRepliedThreadFragment extends BaseFragment {
     private TextView mEmptyTv;
     private FrameLayout mLoading;
 
+    private MyThreadProvider mProvider;
     private List mDataList;
 
     public MyRepliedThreadFragment() {
@@ -43,6 +51,7 @@ public class MyRepliedThreadFragment extends BaseFragment {
     protected void initView(View view) {
         mEmptyTv = (TextView) view.findViewById(R.id.empty_replied_thread);
         mLoading = (FrameLayout) view.findViewById(R.id.my_replied_thread_loading);
+        mLoading.setVisibility(View.VISIBLE);
 
         mDividerLine = new EduSohoDivederLine(EduSohoDivederLine.VERTICAL);
         mDividerLine.setColor(getResources().getColor(R.color.material_grey));
@@ -61,16 +70,48 @@ public class MyRepliedThreadFragment extends BaseFragment {
     public void initData() {
         mDataList = new ArrayList();
 
-        //// TODO: 16/2/29
-        if (mDataList.size() == 0) {
-            mRecyclerView.setVisibility(View.GONE);
-            mEmptyTv.setVisibility(View.VISIBLE);
-        } else {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mEmptyTv.setVisibility(View.GONE);
-        }
+        loadRepliedThread().then(new PromiseCallback() {
+            @Override
+            public Promise invoke(Object obj) {
 
-        mAdapter = new MyThreadAdapter(mContext, mDataList);
+                if (mDataList.size() == 0) {
+                    mRecyclerView.setVisibility(View.GONE);
+                    mEmptyTv.setVisibility(View.VISIBLE);
+                } else {
+                    mRecyclerView.setVisibility(View.VISIBLE);
+                    mEmptyTv.setVisibility(View.GONE);
+                }
+
+                mLoading.setVisibility(View.GONE);
+                return null;
+            }
+        });
+
+        mAdapter = new MyThreadAdapter(mContext);
         mRecyclerView.setAdapter(mAdapter);
+    }
+
+    public Promise loadRepliedThread() {
+        final Promise promise = new Promise();
+
+        //// TODO: 16/3/1 for Test
+        RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
+        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
+        stringBuffer.append("?start=0&limit=10000/");
+        requestUrl.url = stringBuffer.toString();
+
+        mProvider = new MyThreadProvider(mContext);
+        mProvider.getMyRepliedThread(requestUrl).success(new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap string) {
+
+                mDataList.addAll(Arrays.asList(1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 41, 2));
+                mAdapter.addDataList(mDataList);
+                promise.resolve(mDataList);
+            }
+
+        });
+
+        return promise;
     }
 }

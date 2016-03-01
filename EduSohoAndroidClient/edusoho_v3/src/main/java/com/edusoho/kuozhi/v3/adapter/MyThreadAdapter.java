@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,11 +23,7 @@ public class MyThreadAdapter extends RecyclerView.Adapter {
 
     public MyThreadAdapter(Context context) {
         mLayoutInflater = LayoutInflater.from(context);
-    }
-
-    public MyThreadAdapter(Context context, List mDataList) {
-        mLayoutInflater = LayoutInflater.from(context);
-        this.mDataList = mDataList;
+        mDataList = new ArrayList();
     }
 
     @Override
@@ -64,6 +61,11 @@ public class MyThreadAdapter extends RecyclerView.Adapter {
             tvThreadCourseTitle = (TextView) itemView.findViewById(R.id.my_thread_item_course);
         }
 
+    }
+
+    public void addDataList(List list){
+        mDataList.addAll(list);
+        notifyDataSetChanged();
     }
 
 }

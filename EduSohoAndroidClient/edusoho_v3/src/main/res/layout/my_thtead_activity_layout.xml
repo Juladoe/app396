@@ -14,7 +14,9 @@
         android:paddingBottom="12dp"
         app:pst_dividerPadding="8dp"
         app:dividerColor="@color/material_grey"
-        app:indicatorHeight="2dp"
+        app:underlineColor="@color/material_grey"
+        app:underlineHeight="1dp"
+        app:indicatorHeight="3dp"
         app:pst_textSize="@dimen/small_font_size">
 
     </extensions.PagerSlidingTabStrip>
