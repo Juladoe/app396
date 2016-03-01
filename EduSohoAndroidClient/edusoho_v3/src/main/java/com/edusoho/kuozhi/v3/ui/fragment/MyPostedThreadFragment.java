@@ -5,6 +5,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -26,6 +27,7 @@ public class MyPostedThreadFragment extends BaseFragment {
     private MyThreadAdapter mAdapter;
     private EduSohoDivederLine mDividerLine;
     private TextView mEmptyTv;
+    private FrameLayout mLoading;
 
     private List mDataList;
 
@@ -41,6 +43,7 @@ public class MyPostedThreadFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         mEmptyTv = (TextView) view.findViewById(R.id.empty_posted_thread);
+        mLoading = (FrameLayout) view.findViewById(R.id.my_posted_thread_loading);
 
         mDividerLine = new EduSohoDivederLine(EduSohoDivederLine.VERTICAL);
         mDividerLine.setColor(getResources().getColor(R.color.material_grey));
