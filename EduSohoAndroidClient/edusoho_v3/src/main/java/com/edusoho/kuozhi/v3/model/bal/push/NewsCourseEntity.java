@@ -19,6 +19,7 @@ public class NewsCourseEntity {
     private int lessonId;
     private int homworkResultId;
     private int questionId;
+    private int threadId;
     private boolean isLessonfinished;
     private int learnStartTime;
     private int learnFinishTime;
@@ -44,7 +45,7 @@ public class NewsCourseEntity {
         this.createdTime = v2CustomContent.getCreatedTime();
         this.lessonId = v2CustomContent.getBody().getLessonId();
         this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
-        this.questionId = v2CustomContent.getBody().getQuestionId();
+        this.threadId = v2CustomContent.getBody().getThreadId();
         this.isLessonfinished = v2CustomContent.getBody().getIsLessonFinished();
         this.learnStartTime = v2CustomContent.getBody().getLearnStartTime();
         this.learnFinishTime = v2CustomContent.getBody().getLearnFinishTime();
@@ -64,7 +65,7 @@ public class NewsCourseEntity {
         this.createdTime = v2CustomContent.getCreatedTime();
         this.lessonId = v2CustomContent.getBody().getLessonId();
         this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
-        this.questionId = v2CustomContent.getBody().getQuestionId();
+        this.threadId = v2CustomContent.getBody().getThreadId();
         this.isLessonfinished = v2CustomContent.getBody().getIsLessonFinished();
         this.learnStartTime = v2CustomContent.getBody().getLearnStartTime();
         this.learnFinishTime = v2CustomContent.getBody().getLearnFinishTime();
@@ -182,12 +183,12 @@ public class NewsCourseEntity {
         this.homworkResultId = homworkResultId;
     }
 
-    public int getQuestionId() {
-        return questionId;
+    public int getThreadId() {
+        return threadId;
     }
 
-    public void setQuestionId(int questionId) {
-        this.questionId = questionId;
+    public void setThreadId(int threadId) {
+        this.threadId = threadId;
     }
 
     public boolean getIsLessonfinished() {

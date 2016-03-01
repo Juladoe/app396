@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.text.Html;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.push.CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
@@ -20,7 +19,6 @@ import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.article.ArticleFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.google.gson.Gson;
 
 /**
  * Created by JesseHuang on 15/9/11.
@@ -112,13 +110,22 @@ public class Pusher {
     }
 
     public void pushQuestionAnswered() {
-        boolean isForeground = EdusohoApp.app.isForeground(NewsCourseActivity.class.getName());
-        if (isForeground) {
+        if (EdusohoApp.app.isForeground(NewsCourseActivity.class.getName())) {
             mWrapperMessage.isForeground = true;
             EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, CourseStudyFragment.class);
+            EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
+        } else if (EdusohoApp.app.isForeground(ThreadDiscussActivity.class.getName())) {
+            mWrapperMessage.isForeground = true;
+            //EdusohoApp.app.sendMsgToTarget(Const.ADD_THREAD_POST, mBundle, ThreadDiscussActivity.class);
+            EdusohoMainService.getService().sendMessage(Const.QUESTION_ANSWERD, mWrapperMessage);
+        } else {
+            EdusohoMainService.getService().sendMessage(Const.QUESTION_ANSWERD, mWrapperMessage);
         }
         EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_MSG, mBundle, NewsFragment.class);
-        EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_MSG, mWrapperMessage);
+    }
+
+    public void pushQuestionCreated() {
+        EdusohoMainService.getService().sendMessage(Const.QUESTION_CREATED, mWrapperMessage);
     }
 
     public void pushLessonFinished() {
@@ -187,16 +194,5 @@ public class Pusher {
         }
         EdusohoApp.app.sendMsgToTarget(Const.ADD_COURSE_DISCUSS_MSG, mBundle, NewsFragment.class);
         EdusohoMainService.getService().sendMessage(Const.ADD_COURSE_DISCUSS_MSG, mWrapperMessage);
-    }
-
-    public void pushThreadPost() {
-        mBundle.putInt(Const.ADD_THREAD_POST_DESTINATION, NewsFragment.HANDLE_RECEIVE_THREAD_POST);
-        boolean isForeground = EdusohoApp.app.isForeground(ThreadDiscussActivity.class.getName());
-        if (isForeground) {
-            mWrapperMessage.isForeground = true;
-            EdusohoApp.app.sendMsgToTarget(Const.ADD_THREAD_POST, mBundle, ThreadDiscussActivity.class);
-        }
-        EdusohoApp.app.sendMsgToTarget(Const.ADD_THREAD_POST, mBundle, NewsFragment.class);
-        EdusohoMainService.getService().sendMessage(Const.ADD_THREAD_POST, mWrapperMessage);
     }
 }

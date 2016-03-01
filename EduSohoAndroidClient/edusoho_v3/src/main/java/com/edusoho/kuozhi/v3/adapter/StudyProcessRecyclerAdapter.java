@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseStudyFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.test.TestpaperResultFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -104,6 +105,11 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             ImageLoader.getInstance().displayImage(entity.getImage(), ((LessonSummaryViewHolder) holder).summaryCourseImage);
             ((LessonSummaryViewHolder) holder).summaryCourseTitle.setText(entity.getTitle());
             ((LessonSummaryViewHolder) holder).summaryCourseTeacher.setText(entity.getTeacher());
+            if (entity.getTeacher().equals("暂无教师")) {
+                ((LessonSummaryViewHolder) holder).summaryTeacherTag.setVisibility(View.GONE);
+            } else {
+                ((LessonSummaryViewHolder) holder).summaryTeacherTag.setVisibility(View.VISIBLE);
+            }
             ((LessonSummaryViewHolder) holder).summaryFrame.setOnClickListener(summaryListener);
         }
 
@@ -135,9 +141,9 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         if (holder instanceof CostTimeViewHolder) {
             NewsCourseEntity entity = mDataList.get(position);
             String costTime = entity.getContent();
-            if (costTime.equals("")){
+            if (costTime.equals("")) {
                 ((CostTimeViewHolder) holder).costTime.setVisibility(View.GONE);
-            }else {
+            } else {
                 ((CostTimeViewHolder) holder).costTime.setText(entity.getContent());
                 ((CostTimeViewHolder) holder).costTime.setVisibility(View.VISIBLE);
             }
@@ -158,7 +164,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((NormalNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_lesson_start));
                 ((NormalNotificationViewHolder) holder).notificationType.setText("课时开始");
                 String textContont = AppUtil.cutString(entity.getContent(), 30);
-                ((NormalNotificationViewHolder) holder).notificationContent.setText(String.format("您已经开始了课时『%s』的学习",textContont));
+                ((NormalNotificationViewHolder) holder).notificationContent.setText(String.format("您已经开始了课时『%s』的学习", textContont));
             }
             ((NormalNotificationViewHolder) holder).notificationTime.setText("系统 发布于" + AppUtil.timeStampToDate(String.valueOf(entity.getCreatedTime()), null));
             ((NormalNotificationViewHolder) holder).TVMoreInfo.setVisibility(View.GONE);
@@ -175,7 +181,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((IntentNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_testpaper));
                 ((IntentNotificationViewHolder) holder).notificationType.setText("试卷批阅完成");
                 String textContont = AppUtil.cutString(entity.getContent(), 30);
-                ((IntentNotificationViewHolder) holder).notificationContent.setText(String.format("您的课时『%s』，试卷已经批阅完成",textContont));
+                ((IntentNotificationViewHolder) holder).notificationContent.setText(String.format("您的课时『%s』，试卷已经批阅完成", textContont));
                 ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -195,7 +201,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((IntentNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_testpaper));
                 ((IntentNotificationViewHolder) holder).notificationType.setText("作业批阅完成");
                 String textContont = AppUtil.cutString(entity.getContent(), 30);
-                ((IntentNotificationViewHolder) holder).notificationContent.setText(String.format("课时『%s』的作业已经批阅完成",textContont));
+                ((IntentNotificationViewHolder) holder).notificationContent.setText(String.format("课时『%s』的作业已经批阅完成", textContont));
                 ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -209,7 +215,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                 ((IntentNotificationViewHolder) holder).notificationType.setTextColor(mContext.getResources().getColor(R.color.process_question));
                 ((IntentNotificationViewHolder) holder).notificationType.setText("问题回复");
                 String textContont = AppUtil.cutString(entity.getContent(), 30);
-                ((IntentNotificationViewHolder) holder).notificationContent.setText(String.format("您的问题『%s』有新的老师回复",textContont));
+                ((IntentNotificationViewHolder) holder).notificationContent.setText(String.format("您的问题『%s』有新的老师回复", textContont));
                 ((IntentNotificationViewHolder) holder).notificationContent.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -217,7 +223,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                             @Override
                             public void setIntentDate(Intent startIntent) {
                                 startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, entity.getCourseId());
-                                startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, entity.getQuestionId());
+                                startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, entity.getThreadId());
                                 startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
                             }
                         });
@@ -256,6 +262,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         private ImageView summaryCourseImage;
         private TextView summaryCourseIntroduction;
         private TextView summaryCourseTeacher;
+        private TextView summaryTeacherTag;
         private RelativeLayout summaryFrame;
 
         public LessonSummaryViewHolder(View itemView) {
@@ -264,6 +271,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             summaryCourseTitle = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_title);
             summaryCourseImage = (ImageView) itemView.findViewById(R.id.study_process_lesson_summary_image);
             summaryCourseIntroduction = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_introduction);
+            summaryTeacherTag = (TextView) itemView.findViewById(R.id.study_process_lesson_teacher_tag);
             summaryCourseTeacher = (TextView) itemView.findViewById(R.id.study_process_lesson_summary_teacher);
         }
     }
@@ -310,12 +318,12 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         }
     }
 
-    public void setSummaryListene(View.OnClickListener listener){
+    public void setSummaryListene(View.OnClickListener listener) {
         this.summaryListener = listener;
     }
 
     public void setmDataList(List<NewsCourseEntity> mDataList) {
         this.mDataList = mDataList;
-        notifyItemRangeChanged(0,getItemCount());
+        notifyItemRangeChanged(0, getItemCount());
     }
 }

@@ -13,7 +13,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
@@ -75,7 +74,7 @@ public class EdusohoMainService extends Service {
         super.onCreate();
         Log.d(null, "create Main service");
         mAjaxQueue = new LinkedList<>();
-        mAppWeakReference = new WeakReference<EdusohoApp>((EdusohoApp)getApplication());
+        mAppWeakReference = new WeakReference<EdusohoApp>((EdusohoApp) getApplication());
         mService = this;
         mWorkHandler = new WorkHandler(this);
     }
@@ -219,6 +218,14 @@ public class EdusohoMainService extends Service {
                         NotificationUtil.showNewsCourseNotification(EdusohoApp.app.mContext, xgMessage);
                     }
                     break;
+                case Const.QUESTION_ANSWERD:
+                    NewsCourseEntity newsCourseEntity1 = new NewsCourseEntity(xgMessage);
+                    NewsCourseDataSource newsCourseDataSource1 = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
+                    newsCourseDataSource1.create(newsCourseEntity1);
+                    if (!xgMessage.isForeground) {
+                        NotificationUtil.showQuestionAnsweredNotification(EdusohoApp.app.mContext, xgMessage);
+                    }
+                    break;
                 case Const.ADD_DISCOUNT_PASS:
                     NotificationUtil.showDiscountPass(EdusohoApp.app.mContext, xgMessage);
                     break;
@@ -243,6 +250,9 @@ public class EdusohoMainService extends Service {
                     if (!xgMessage.isForeground || ThreadDiscussActivity.CurrentThreadId != threadId) {
                         NotificationUtil.showThreadPost(EdusohoApp.app.mContext, xgMessage);
                     }
+                    break;
+                case Const.QUESTION_CREATED:
+                    NotificationUtil.showQuestionCreatedNotification(EdusohoApp.app.mContext, xgMessage);
                     break;
             }
         }

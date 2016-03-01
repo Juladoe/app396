@@ -257,7 +257,6 @@ public class V2CustomContent implements Serializable {
         }
 
 
-
         public void setTitle(String title) {
             this.title = title;
         }
