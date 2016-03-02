@@ -1,14 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
 
     defaultConfig {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
-        manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi"]
+        manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi",startActivity:"com.meishuhezi.CustomStartActivity"]
     }
 
     //签名
@@ -267,8 +267,4 @@ android {
 
 dependencies {
     compile project(':edusoho_v3')
-}
-
-task newcustom (type: Copy) {
-    println "qweqweqwe"
 }

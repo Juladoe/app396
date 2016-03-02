@@ -40,3 +40,7 @@
 打包所有定制app
 切换到custom目录下执行gradle assembleRelease 就可以
 
+html5包有定制的项目有：
+itgege ：
+
+
