@@ -90,6 +90,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     }
 
     public void loadData() {
+        mList.clear();
         if (!app.getNetIsConnect()) {
             mLoading.setVisibility(View.GONE);
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
@@ -168,7 +169,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         for (String id : idList) {
             users.append(id + ",");
         }
-        if (users.length()>0){
+        if (users.length() > 0) {
             users.deleteCharAt(users.length() - 1);
         }
         requestUrl.url = String.format(requestUrl.url, app.loginUser.id, users.toString());
@@ -199,6 +200,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
 
     private class FriendNewsAdapter extends BaseAdapter {
         private int mResource;
+
         private FriendNewsAdapter(Context mContext, int mResource) {
             mInflater = LayoutInflater.from(mContext);
             this.mResource = mResource;
@@ -282,7 +284,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 @Override
                 public void onClick(View view) {
                     RequestUrl requestUrl = app.bindNewUrl(Const.ADD_FRIEND, true);
-                    requestUrl.url = String.format(requestUrl.url,Integer.parseInt(fn.content.userId));
+                    requestUrl.url = String.format(requestUrl.url, Integer.parseInt(fn.content.userId));
                     HashMap<String, String> params = requestUrl.getParams();
                     params.put("method", "follow");
                     params.put("userId", app.loginUser.id + "");
