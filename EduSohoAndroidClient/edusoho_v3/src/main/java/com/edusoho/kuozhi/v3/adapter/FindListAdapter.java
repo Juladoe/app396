@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import com.edusoho.kuozhi.v3.model.sys.FindListEntity;
+import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.view.FindCardView;
 import java.util.List;
 
@@ -14,15 +14,15 @@ import java.util.List;
 public class FindListAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<FindListEntity> mList;
+    private List<DiscoveryColumn> mList;
 
-    public FindListAdapter(Context context, List<FindListEntity> list)
+    public FindListAdapter(Context context, List<DiscoveryColumn> list)
     {
         this.mContext = context;
         this.mList = list;
     }
 
-    public void addData(FindListEntity findCardEntity) {
+    public void addData(DiscoveryColumn findCardEntity) {
         this.mList.add(findCardEntity);
         notifyDataSetChanged();
     }
@@ -50,9 +50,9 @@ public class FindListAdapter extends BaseAdapter {
             ((FindCardView) convertView).setAdapter(new FindCardItemAdapter(mContext));
         }
 
-        FindListEntity findListEntity = mList.get(position);
+        DiscoveryColumn discoveryColumn = mList.get(position);
         FindCardView findCardView = (FindCardView) convertView;
-        findCardView.setFindListEntity(findListEntity);
+        findCardView.setFindListEntity(discoveryColumn);
         return convertView;
     }
 }

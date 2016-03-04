@@ -3,20 +3,18 @@ package com.edusoho.kuozhi.v3.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FindCardItemAdapter;
-import com.edusoho.kuozhi.v3.model.sys.FindCardEntity;
-import com.edusoho.kuozhi.v3.model.sys.FindListEntity;
+import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryCardEntity;
+import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import java.util.List;
 
@@ -56,10 +54,10 @@ public class FindCardView extends LinearLayout {
         mChildHeightArray = new SparseArray<>();
     }
 
-    public void setFindListEntity(FindListEntity findListEntity) {
-        this.mChildId = findListEntity.id;
-        setTitle(findListEntity.title);
-        setData(findListEntity.data);
+    public void setFindListEntity(DiscoveryColumn discoveryColumn) {
+        this.mChildId = discoveryColumn.id;
+        setTitle(discoveryColumn.title);
+        setData(discoveryColumn.data);
     }
 
     protected void setTitle(String title) {
@@ -81,7 +79,7 @@ public class FindCardView extends LinearLayout {
     public void setData(List data) {
         mAdapter.clear();
         if (data.size() % 2 != 0) {
-            data.add(new FindCardEntity(true));
+            data.add(new DiscoveryCardEntity(true));
         }
         addData(data);
     }
@@ -110,7 +108,7 @@ public class FindCardView extends LinearLayout {
     public void setAdapter(ListAdapter adapter) {
         mAdapter = (FindCardItemAdapter) adapter;
         if (mAdapter.getCount() % 2 != 0) {
-            mAdapter.addData(new FindCardEntity(true));
+            mAdapter.addData(new DiscoveryCardEntity(true));
         }
         mGridView.setAdapter(adapter);
     }

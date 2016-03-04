@@ -11,7 +11,7 @@ public class DiscoveryColumn {
     public String categoryId;
     public String orderType;
     public String showCount;
+    public String seq;
     public String createTime;
     public String updateTime;
-
 }

@@ -11,22 +11,29 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.ListView;
+
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FindListAdapter;
 import com.edusoho.kuozhi.v3.adapter.SchoolBannerAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryCardEntity;
+import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryColumn;
+import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryColumnResult;
+import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.provider.SystemProvider;
-import com.edusoho.kuozhi.v3.model.sys.FindCardEntity;
-import com.edusoho.kuozhi.v3.model.sys.FindListEntity;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EdusohoViewPager;
+import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -73,7 +80,14 @@ public class FindFragment extends BaseFragment {
         mListView = (ListView) view.findViewById(R.id.listview);
 
         addBannerView();
-        mListView.setAdapter(new FindListAdapter(mContext, getFindItemData()));
+
+        getDiscoveryColumns(new NormalCallback<List<DiscoveryColumn>>() {
+            @Override
+            public void success(List<DiscoveryColumn> discoveryColumnList) {
+                mListView.setAdapter(new FindListAdapter(mContext, discoveryColumnList));
+            }
+        });
+
         initSchoolBanner(false);
 
         mFindContentLayout.setPtrHandler(new PtrDefaultHandler() {
@@ -89,94 +103,72 @@ public class FindFragment extends BaseFragment {
         });
     }
 
-    private ArrayList getFindItemData() {
-        ArrayList list = new ArrayList();
-        FindListEntity listEntity = null;
+    private void getDiscoveryColumns(final NormalCallback<List<DiscoveryColumn>> normalCallback) {
+        RequestUrl requestUrl = app.bindNewApiUrl(Const.DISCOVERY_COLUMNS, true);
+        mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                DiscoveryColumnResult discoveryColumn = ModelDecor.getInstance().decor(response, new TypeToken<DiscoveryColumnResult>() {
+                });
+                if (discoveryColumn != null) {
+                    normalCallback.success(discoveryColumn.datas);
+                } else {
+                    normalCallback.success(null);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-        listEntity = new FindListEntity();
-        listEntity.title = "推荐课程";
-        listEntity.id = 1;
-        listEntity.data = getFindCardData("course");
-        list.add(listEntity);
-
-        listEntity = new FindListEntity();
-        listEntity.title = "推荐班级";
-        listEntity.id = 3;
-        listEntity.data = getFindCardData("classroom");
-        list.add(listEntity);
-
-        listEntity = new FindListEntity();
-        listEntity.title = "推荐直播";
-        listEntity.id = 3;
-        listEntity.data = getFindCardData("live");
-        list.add(listEntity);
-
-        listEntity = new FindListEntity();
-        listEntity.title = "推荐课程2";
-        listEntity.id = 4;
-        listEntity.data = getFindCardData("course");
-        list.add(listEntity);
-
-        listEntity = new FindListEntity();
-        listEntity.title = "推荐班级3";
-        listEntity.id = 5;
-        listEntity.data = getFindCardData("classroom");
-        list.add(listEntity);
-
-        listEntity = new FindListEntity();
-        listEntity.title = "推荐直播4";
-        listEntity.id = 6;
-        listEntity.data = getFindCardData("live");
-        list.add(listEntity);
-
-        return list;
+            }
+        });
     }
 
-    protected ArrayList getFindCardData(String type) {
+    private ArrayList getDicoveryDataFromCategoryId(String type) {
         ArrayList list = new ArrayList();
-        FindCardEntity findCardEntity = null;
+        DiscoveryCardEntity discoveryCardEntity = null;
         for (int i = 0; i < 2; i++) {
-            findCardEntity = new FindCardEntity();
-            findCardEntity.title = "微信登录与微信支付";
-            findCardEntity.picture = "http://demo.edusoho.com/files/default/2015/07-20/150221d08183090386.jpg?6.15.3";
-            findCardEntity.price = 0;
-            findCardEntity.studentNum = 20;
-            findCardEntity.type = type;
-            findCardEntity.startTime = "2016-02-07 22:13:50+08:00";
-            findCardEntity.endTime = "2016-02-07 22:13:50+08:00";
-            findCardEntity.nickname = "sujudz";
-            findCardEntity.avatar = "http://demo.edusoho.com/files/user/2014/10-13/132605d4ca82252495.JPG?6.15.3";
-            list.add(findCardEntity);
+            discoveryCardEntity = new DiscoveryCardEntity();
+            discoveryCardEntity.title = "微信登录与微信支付";
+            discoveryCardEntity.picture = "http://demo.edusoho.com/files/default/2015/07-20/150221d08183090386.jpg?6.15.3";
+            discoveryCardEntity.price = 0;
+            discoveryCardEntity.studentNum = 20;
+            discoveryCardEntity.type = type;
+            discoveryCardEntity.startTime = "2016-02-07 22:13:50+08:00";
+            discoveryCardEntity.endTime = "2016-02-07 22:13:50+08:00";
+            discoveryCardEntity.nickname = "sujudz";
+            discoveryCardEntity.avatar = "http://demo.edusoho.com/files/user/2014/10-13/132605d4ca82252495.JPG?6.15.3";
+            list.add(discoveryCardEntity);
         }
 
         for (int i = 0; i < 1; i++) {
-            findCardEntity = new FindCardEntity();
-            findCardEntity.title = "微信登录与微信支付2";
-            findCardEntity.picture = "http://demo.edusoho.com/files/default/2015/10-14/1614400dc36d466096.jpg?6.15.3";
-            findCardEntity.price = 20.5f;
-            findCardEntity.studentNum = 20;
-            findCardEntity.type = type;
-            findCardEntity.startTime = "2016-02-07 22:13:50+08:00";
-            findCardEntity.endTime = "2016-03-07 22:13:50+08:00";
-            findCardEntity.nickname = "admin";
-            findCardEntity.avatar = "http://demo.edusoho.com/files/default/2015/07-30/1211131d9908593356.jpg?6.15.3";
-            list.add(findCardEntity);
+            discoveryCardEntity = new DiscoveryCardEntity();
+            discoveryCardEntity.title = "微信登录与微信支付2";
+            discoveryCardEntity.picture = "http://demo.edusoho.com/files/default/2015/10-14/1614400dc36d466096.jpg?6.15.3";
+            discoveryCardEntity.price = 20.5f;
+            discoveryCardEntity.studentNum = 20;
+            discoveryCardEntity.type = type;
+            discoveryCardEntity.startTime = "2016-02-07 22:13:50+08:00";
+            discoveryCardEntity.endTime = "2016-03-07 22:13:50+08:00";
+            discoveryCardEntity.nickname = "admin";
+            discoveryCardEntity.avatar = "http://demo.edusoho.com/files/default/2015/07-30/1211131d9908593356.jpg?6.15.3";
+            list.add(discoveryCardEntity);
         }
 
         for (int i = 0; i < 2; i++) {
-            findCardEntity = new FindCardEntity();
-            findCardEntity.title = "微信登录与微信支付3";
-            findCardEntity.picture = "http://demo.edusoho.com/files/default/2015/10-14/161517518061383672.jpg?6.15.3";
-            findCardEntity.price = 20.5f;
-            findCardEntity.studentNum = 20;
-            findCardEntity.type = type;
-            findCardEntity.startTime = "0";
-            findCardEntity.endTime = "0";
-            findCardEntity.startTime = "2016-06-07 22:13:50+08:00";
-            findCardEntity.endTime = "2016-06-08 22:13:50+08:00";
-            findCardEntity.nickname = "咯咯米";
-            findCardEntity.avatar = "http://demo.edusoho.com/files/default/2015/08-31/091008008a96767512.jpg?6.15.3";
-            list.add(findCardEntity);
+            discoveryCardEntity = new DiscoveryCardEntity();
+            discoveryCardEntity.title = "微信登录与微信支付3";
+            discoveryCardEntity.picture = "http://demo.edusoho.com/files/default/2015/10-14/161517518061383672.jpg?6.15.3";
+            discoveryCardEntity.price = 20.5f;
+            discoveryCardEntity.studentNum = 20;
+            discoveryCardEntity.type = type;
+            discoveryCardEntity.startTime = "0";
+            discoveryCardEntity.endTime = "0";
+            discoveryCardEntity.startTime = "2016-06-07 22:13:50+08:00";
+            discoveryCardEntity.endTime = "2016-06-08 22:13:50+08:00";
+            discoveryCardEntity.nickname = "咯咯米";
+            discoveryCardEntity.avatar = "http://demo.edusoho.com/files/default/2015/08-31/091008008a96767512.jpg?6.15.3";
+            list.add(discoveryCardEntity);
         }
 
         return list;
