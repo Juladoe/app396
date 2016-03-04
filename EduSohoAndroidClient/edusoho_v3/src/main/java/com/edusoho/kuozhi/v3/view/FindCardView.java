@@ -11,11 +11,13 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FindCardItemAdapter;
-import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryCardEntity;
+import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryCardProperty;
 import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+
 import java.util.List;
 
 /**
@@ -76,15 +78,11 @@ public class FindCardView extends LinearLayout {
         return gridView;
     }
 
-    public void setData(List data) {
-        mAdapter.clear();
-        if (data.size() % 2 != 0) {
-            data.add(new DiscoveryCardEntity(true));
-        }
+    public void setData(List<DiscoveryCardProperty> data) {
         addData(data);
     }
 
-    private void addData(List data) {
+    private void addData(List<DiscoveryCardProperty> data) {
         mAdapter.addList(data);
 
         int totalHeight = 0, childHeight = 0;
@@ -107,9 +105,6 @@ public class FindCardView extends LinearLayout {
 
     public void setAdapter(ListAdapter adapter) {
         mAdapter = (FindCardItemAdapter) adapter;
-        if (mAdapter.getCount() % 2 != 0) {
-            mAdapter.addData(new DiscoveryCardEntity(true));
-        }
         mGridView.setAdapter(adapter);
     }
 

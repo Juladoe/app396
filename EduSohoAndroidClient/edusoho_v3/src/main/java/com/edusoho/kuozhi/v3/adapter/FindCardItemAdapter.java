@@ -9,11 +9,13 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryCardEntity;
+import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryCardProperty;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,16 +32,14 @@ public class FindCardItemAdapter extends BaseAdapter {
     private static final int CLASSROOM = 3;
 
     private Context mContext;
-    private List<DiscoveryCardEntity> mList;
+    private List<DiscoveryCardProperty> mList;
     private DisplayImageOptions mOptions;
 
-    public FindCardItemAdapter(Context context)
-    {
-        this(context, new ArrayList<DiscoveryCardEntity>());
+    public FindCardItemAdapter(Context context) {
+        this(context, new ArrayList<DiscoveryCardProperty>());
     }
 
-    public FindCardItemAdapter(Context context, List<DiscoveryCardEntity> list)
-    {
+    public FindCardItemAdapter(Context context, List<DiscoveryCardProperty> list) {
         this.mContext = context;
         this.mList = list;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_course).
@@ -50,12 +50,12 @@ public class FindCardItemAdapter extends BaseAdapter {
         mList.clear();
     }
 
-    public void addData(DiscoveryCardEntity discoveryCardEntity) {
+    public void addData(DiscoveryCardProperty discoveryCardEntity) {
         this.mList.add(discoveryCardEntity);
         notifyDataSetChanged();
     }
 
-    public void addList(List<DiscoveryCardEntity> list) {
+    public void addList(List<DiscoveryCardProperty> list) {
         this.mList.addAll(list);
         notifyDataSetChanged();
     }
@@ -72,11 +72,11 @@ public class FindCardItemAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        DiscoveryCardEntity discoveryCardEntity = mList.get(position);
+        DiscoveryCardProperty discoveryCardEntity = mList.get(position);
         if (discoveryCardEntity.isEmpty()) {
             return EMPTY;
         }
-        switch (discoveryCardEntity.type) {
+        switch (discoveryCardEntity.getType()) {
             case "course":
                 return COURSE;
             case "classroom":
@@ -98,7 +98,7 @@ public class FindCardItemAdapter extends BaseAdapter {
             return parent.getHeight() / (count / 2);
         }
 
-        return parent.getHeight() / (count / 2 + 1 );
+        return parent.getHeight() / (count / 2 + 1);
     }
 
     private View getViewByType(int position, ViewGroup parent) {
@@ -144,7 +144,7 @@ public class FindCardItemAdapter extends BaseAdapter {
         }
 
         viewHolder = (ViewHolder) convertView.getTag();
-        DiscoveryCardEntity discoveryCardEntity = mList.get(position);
+        DiscoveryCardProperty discoveryCardEntity = mList.get(position);
         if (discoveryCardEntity.isEmpty()) {
             AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
                     parent.getWidth() / 2, getItemHeight(parent));
@@ -152,8 +152,8 @@ public class FindCardItemAdapter extends BaseAdapter {
             return convertView;
         }
 
-        ImageLoader.getInstance().displayImage(discoveryCardEntity.picture, viewHolder.coverView, mOptions);
-        viewHolder.titleView.setText(discoveryCardEntity.title);
+        ImageLoader.getInstance().displayImage(discoveryCardEntity.getPicture(), viewHolder.coverView, mOptions);
+        viewHolder.titleView.setText(discoveryCardEntity.getTitle());
         int padding = AppUtil.dp2px(mContext, 10);
         if (position % 2 == 0) {
             convertView.setPadding(0, padding, padding, padding);
@@ -161,15 +161,15 @@ public class FindCardItemAdapter extends BaseAdapter {
             convertView.setPadding(padding, padding, 0, padding);
         }
 
-        if ("live".equals(discoveryCardEntity.type)) {
+        if ("live".equals(discoveryCardEntity.getType())) {
             setLiveViewInfo(viewHolder, discoveryCardEntity);
             return convertView;
         }
 
-        viewHolder.studentNumView.setText(String.valueOf(discoveryCardEntity.studentNum));
-        if (discoveryCardEntity.price > 0) {
+        viewHolder.studentNumView.setText(String.valueOf(discoveryCardEntity.getStudentNum()));
+        if (discoveryCardEntity.getPrice() > 0) {
             viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.red_primary));
-            viewHolder.priceView.setText(String.format("%.2f元", discoveryCardEntity.price));
+            viewHolder.priceView.setText(String.format("%.2f元", discoveryCardEntity.getPrice()));
         } else {
             viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.green_primary));
             viewHolder.priceView.setText("免费");
@@ -177,21 +177,21 @@ public class FindCardItemAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void setLiveViewInfo(ViewHolder viewHolder, DiscoveryCardEntity discoveryCardEntity) {
+    private void setLiveViewInfo(ViewHolder viewHolder, DiscoveryCardProperty discoveryCardEntity) {
         SpannableString colorStr = AppUtil.getColorTextAfter(
-                String.valueOf(discoveryCardEntity.studentNum),
+                String.valueOf(discoveryCardEntity.getStudentNum()),
                 " 人参与",
                 mContext.getResources().getColor(R.color.base_black_35)
         );
         viewHolder.studentNumView.setText(colorStr);
-        viewHolder.liveNicknameView.setText(discoveryCardEntity.nickname);
-        ImageLoader.getInstance().displayImage(discoveryCardEntity.avatar, viewHolder.liveAvatarView, mOptions);
+        viewHolder.liveNicknameView.setText(discoveryCardEntity.getTeacherNickname());
+        ImageLoader.getInstance().displayImage(discoveryCardEntity.getTeacherAvatar(), viewHolder.liveAvatarView, mOptions);
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             long currentTime = new Date().getTime();
-            Date startTimeDate = dateFormat.parse(discoveryCardEntity.startTime);
+            Date startTimeDate = dateFormat.parse(discoveryCardEntity.getStartTime());
             long startTime = startTimeDate.getTime();
-            long endTime = dateFormat.parse(discoveryCardEntity.endTime).getTime();
+            long endTime = dateFormat.parse(discoveryCardEntity.getEndTime()).getTime();
             if (currentTime > startTime && currentTime < endTime) {
                 viewHolder.liveStartLabelView.setText("直播中");
                 viewHolder.liveStartLabelView.setBackgroundResource(R.drawable.find_card_item_image_green_label);
@@ -213,8 +213,7 @@ public class FindCardItemAdapter extends BaseAdapter {
         return mList.size();
     }
 
-    class ViewHolder
-    {
+    class ViewHolder {
         public ImageView coverView;
         public TextView titleView;
         public TextView priceView;

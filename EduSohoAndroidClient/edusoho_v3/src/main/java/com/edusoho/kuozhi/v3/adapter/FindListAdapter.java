@@ -4,8 +4,10 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
 import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.view.FindCardView;
+
 import java.util.List;
 
 /**
@@ -16,14 +18,13 @@ public class FindListAdapter extends BaseAdapter {
     private Context mContext;
     private List<DiscoveryColumn> mList;
 
-    public FindListAdapter(Context context, List<DiscoveryColumn> list)
-    {
-        this.mContext = context;
-        this.mList = list;
+    public FindListAdapter(Context context, List<DiscoveryColumn> list) {
+        mContext = context;
+        mList = list;
     }
 
     public void addData(DiscoveryColumn findCardEntity) {
-        this.mList.add(findCardEntity);
+        mList.add(findCardEntity);
         notifyDataSetChanged();
     }
 

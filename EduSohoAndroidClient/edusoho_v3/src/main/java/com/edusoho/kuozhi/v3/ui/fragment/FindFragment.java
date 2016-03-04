@@ -18,9 +18,10 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FindListAdapter;
 import com.edusoho.kuozhi.v3.adapter.SchoolBannerAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryCardEntity;
+import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryClassroomResult;
 import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryColumnResult;
+import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryCourseResult;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.provider.SystemProvider;
@@ -31,7 +32,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EdusohoViewPager;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
@@ -50,6 +50,7 @@ public class FindFragment extends BaseFragment {
     private ListView mListView;
     private PtrClassicFrameLayout mFindContentLayout;
     private EdusohoViewPager mFindBannerView;
+    private FindListAdapter mFindListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,51 @@ public class FindFragment extends BaseFragment {
         getDiscoveryColumns(new NormalCallback<List<DiscoveryColumn>>() {
             @Override
             public void success(List<DiscoveryColumn> discoveryColumnList) {
-                mListView.setAdapter(new FindListAdapter(mContext, discoveryColumnList));
+                mFindListAdapter = new FindListAdapter(mContext, discoveryColumnList);
+                for (final DiscoveryColumn discoveryColumn : discoveryColumnList) {
+                    if ("course".equals(discoveryColumn.type) || "live".equals(discoveryColumn.type)) {
+                        String url = String.format(Const.DISCOVERY_COURSES_COLUMNS, discoveryColumn.orderType, discoveryColumn.categoryId + "",
+                                discoveryColumn.showCount + "", discoveryColumn.type);
+                        RequestUrl requestUrl = app.bindNewApiUrl(url, true);
+                        mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                DiscoveryCourseResult courseResult = ModelDecor.getInstance().decor(response, new TypeToken<DiscoveryCourseResult>() {
+                                });
+                                if (courseResult != null && courseResult.resources.length > 0) {
+                                    discoveryColumn.setDiscoveryCardProperty(courseResult.resources);
+                                    mListView.setAdapter(mFindListAdapter);
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+                        });
+                    } else if ("classroom".equals(discoveryColumn.type)) {
+                        String url = String.format(Const.DISCOVERY_CLASSROOMS_COLUMNS, discoveryColumn.orderType, discoveryColumn.categoryId + "",
+                                discoveryColumn.showCount + "");
+                        RequestUrl requestUrl = app.bindNewApiUrl(url, true);
+                        mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String response) {
+                                DiscoveryClassroomResult classroomResult = ModelDecor.getInstance().decor(response, new TypeToken<DiscoveryClassroomResult>() {
+                                });
+                                if (classroomResult != null && classroomResult.resources.length > 0) {
+                                    discoveryColumn.setDiscoveryCardProperty(classroomResult.resources);
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+
+                            }
+                        });
+                    }
+                }
+
+                //mListView.setAdapter(mFindListAdapter);
             }
         });
 
@@ -110,8 +155,8 @@ public class FindFragment extends BaseFragment {
             public void onResponse(String response) {
                 DiscoveryColumnResult discoveryColumn = ModelDecor.getInstance().decor(response, new TypeToken<DiscoveryColumnResult>() {
                 });
-                if (discoveryColumn != null) {
-                    normalCallback.success(discoveryColumn.datas);
+                if (discoveryColumn != null && discoveryColumn.resources != null) {
+                    normalCallback.success(discoveryColumn.resources);
                 } else {
                     normalCallback.success(null);
                 }
@@ -122,56 +167,6 @@ public class FindFragment extends BaseFragment {
 
             }
         });
-    }
-
-    private ArrayList getDicoveryDataFromCategoryId(String type) {
-        ArrayList list = new ArrayList();
-        DiscoveryCardEntity discoveryCardEntity = null;
-        for (int i = 0; i < 2; i++) {
-            discoveryCardEntity = new DiscoveryCardEntity();
-            discoveryCardEntity.title = "微信登录与微信支付";
-            discoveryCardEntity.picture = "http://demo.edusoho.com/files/default/2015/07-20/150221d08183090386.jpg?6.15.3";
-            discoveryCardEntity.price = 0;
-            discoveryCardEntity.studentNum = 20;
-            discoveryCardEntity.type = type;
-            discoveryCardEntity.startTime = "2016-02-07 22:13:50+08:00";
-            discoveryCardEntity.endTime = "2016-02-07 22:13:50+08:00";
-            discoveryCardEntity.nickname = "sujudz";
-            discoveryCardEntity.avatar = "http://demo.edusoho.com/files/user/2014/10-13/132605d4ca82252495.JPG?6.15.3";
-            list.add(discoveryCardEntity);
-        }
-
-        for (int i = 0; i < 1; i++) {
-            discoveryCardEntity = new DiscoveryCardEntity();
-            discoveryCardEntity.title = "微信登录与微信支付2";
-            discoveryCardEntity.picture = "http://demo.edusoho.com/files/default/2015/10-14/1614400dc36d466096.jpg?6.15.3";
-            discoveryCardEntity.price = 20.5f;
-            discoveryCardEntity.studentNum = 20;
-            discoveryCardEntity.type = type;
-            discoveryCardEntity.startTime = "2016-02-07 22:13:50+08:00";
-            discoveryCardEntity.endTime = "2016-03-07 22:13:50+08:00";
-            discoveryCardEntity.nickname = "admin";
-            discoveryCardEntity.avatar = "http://demo.edusoho.com/files/default/2015/07-30/1211131d9908593356.jpg?6.15.3";
-            list.add(discoveryCardEntity);
-        }
-
-        for (int i = 0; i < 2; i++) {
-            discoveryCardEntity = new DiscoveryCardEntity();
-            discoveryCardEntity.title = "微信登录与微信支付3";
-            discoveryCardEntity.picture = "http://demo.edusoho.com/files/default/2015/10-14/161517518061383672.jpg?6.15.3";
-            discoveryCardEntity.price = 20.5f;
-            discoveryCardEntity.studentNum = 20;
-            discoveryCardEntity.type = type;
-            discoveryCardEntity.startTime = "0";
-            discoveryCardEntity.endTime = "0";
-            discoveryCardEntity.startTime = "2016-06-07 22:13:50+08:00";
-            discoveryCardEntity.endTime = "2016-06-08 22:13:50+08:00";
-            discoveryCardEntity.nickname = "咯咯米";
-            discoveryCardEntity.avatar = "http://demo.edusoho.com/files/default/2015/08-31/091008008a96767512.jpg?6.15.3";
-            list.add(discoveryCardEntity);
-        }
-
-        return list;
     }
 
     protected void initSchoolBanner(final boolean isUpdate) {

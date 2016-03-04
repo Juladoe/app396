@@ -9,5 +9,5 @@ import java.util.List;
  */
 public class DiscoveryColumnResult extends BaseResult {
 
-    public List<DiscoveryColumn> datas;
+    public List<DiscoveryColumn> resources;
 }
