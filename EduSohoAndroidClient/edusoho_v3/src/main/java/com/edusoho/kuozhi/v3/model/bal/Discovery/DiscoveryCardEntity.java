@@ -1,9 +1,9 @@
-package com.edusoho.kuozhi.v3.model.sys;
+package com.edusoho.kuozhi.v3.model.bal.Discovery;
 
 /**
  * Created by su on 2016/2/19.
  */
-public class FindCardEntity {
+public class DiscoveryCardEntity {
 
     public String picture;
 
@@ -25,12 +25,12 @@ public class FindCardEntity {
 
     public boolean mIsEmpty;
 
-    public FindCardEntity()
+    public DiscoveryCardEntity()
     {
         this.mIsEmpty = false;
     }
 
-    public FindCardEntity(boolean isEmpty)
+    public DiscoveryCardEntity(boolean isEmpty)
     {
         this.mIsEmpty = isEmpty;
     }
