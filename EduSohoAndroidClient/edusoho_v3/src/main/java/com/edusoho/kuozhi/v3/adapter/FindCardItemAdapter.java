@@ -1,10 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.SpannableString;
-import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +9,15 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.sys.FindCardEntity;
+import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCardProperty;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -33,16 +31,14 @@ public class FindCardItemAdapter extends BaseAdapter {
     private static final int CLASSROOM = 3;
 
     private Context mContext;
-    private List<FindCardEntity> mList;
+    private List<DiscoveryCardProperty> mList;
     private DisplayImageOptions mOptions;
 
-    public FindCardItemAdapter(Context context)
-    {
-        this(context, new ArrayList<FindCardEntity>());
+    public FindCardItemAdapter(Context context) {
+        this(context, new ArrayList<DiscoveryCardProperty>());
     }
 
-    public FindCardItemAdapter(Context context, List<FindCardEntity> list)
-    {
+    public FindCardItemAdapter(Context context, List<DiscoveryCardProperty> list) {
         this.mContext = context;
         this.mList = list;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_course).
@@ -53,13 +49,8 @@ public class FindCardItemAdapter extends BaseAdapter {
         mList.clear();
     }
 
-    public void addData(FindCardEntity findCardEntity) {
-        this.mList.add(findCardEntity);
-        notifyDataSetChanged();
-    }
-
-    public void addList(List<FindCardEntity> list) {
-        this.mList.addAll(list);
+    public void setData(List<DiscoveryCardProperty> list) {
+        mList = list;
         notifyDataSetChanged();
     }
 
@@ -75,11 +66,11 @@ public class FindCardItemAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        FindCardEntity findCardEntity = mList.get(position);
-        if (findCardEntity.isEmpty()) {
+        DiscoveryCardProperty discoveryCardEntity = mList.get(position);
+        if (discoveryCardEntity.isEmpty()) {
             return EMPTY;
         }
-        switch (findCardEntity.type) {
+        switch (discoveryCardEntity.getType()) {
             case "course":
                 return COURSE;
             case "classroom":
@@ -101,10 +92,10 @@ public class FindCardItemAdapter extends BaseAdapter {
             return parent.getHeight() / (count / 2);
         }
 
-        return parent.getHeight() / (count / 2 + 1 );
+        return parent.getHeight() / (count / 2 + 1);
     }
 
-    private View getViewByType(int position, ViewGroup parent) {
+    private View getViewByType(int position) {
         int viewType = getItemViewType(position);
         View convertView = null;
 
@@ -141,22 +132,22 @@ public class FindCardItemAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder viewHolder = null;
+        ViewHolder viewHolder;
         if (convertView == null) {
-            convertView = getViewByType(position, parent);
+            convertView = getViewByType(position);
         }
-
         viewHolder = (ViewHolder) convertView.getTag();
-        FindCardEntity findCardEntity = mList.get(position);
-        if (findCardEntity.isEmpty()) {
+        DiscoveryCardProperty discoveryCardEntity = mList.get(position);
+
+        if (discoveryCardEntity.isEmpty()) {
             AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
                     parent.getWidth() / 2, getItemHeight(parent));
             convertView.setLayoutParams(lp);
             return convertView;
         }
 
-        ImageLoader.getInstance().displayImage(findCardEntity.picture, viewHolder.coverView, mOptions);
-        viewHolder.titleView.setText(findCardEntity.title);
+        ImageLoader.getInstance().displayImage(discoveryCardEntity.getPicture(), viewHolder.coverView, mOptions);
+        viewHolder.titleView.setText(discoveryCardEntity.getTitle());
         int padding = AppUtil.dp2px(mContext, 10);
         if (position % 2 == 0) {
             convertView.setPadding(0, padding, padding, padding);
@@ -164,15 +155,15 @@ public class FindCardItemAdapter extends BaseAdapter {
             convertView.setPadding(padding, padding, 0, padding);
         }
 
-        if ("live".equals(findCardEntity.type)) {
-            setLiveViewInfo(viewHolder, findCardEntity);
+        if ("live".equals(discoveryCardEntity.getType())) {
+            setLiveViewInfo(viewHolder, discoveryCardEntity);
             return convertView;
         }
 
-        viewHolder.studentNumView.setText(String.valueOf(findCardEntity.studentNum));
-        if (findCardEntity.price > 0) {
+        viewHolder.studentNumView.setText(String.valueOf(discoveryCardEntity.getStudentNum()));
+        if (discoveryCardEntity.getPrice() > 0) {
             viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.red_primary));
-            viewHolder.priceView.setText(String.format("%.2f元", findCardEntity.price));
+            viewHolder.priceView.setText(String.format("%.2f元", discoveryCardEntity.getPrice()));
         } else {
             viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.green_primary));
             viewHolder.priceView.setText("免费");
@@ -180,21 +171,19 @@ public class FindCardItemAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void setLiveViewInfo(ViewHolder viewHolder, FindCardEntity findCardEntity) {
+    private void setLiveViewInfo(ViewHolder viewHolder, DiscoveryCardProperty discoveryCardEntity) {
         SpannableString colorStr = AppUtil.getColorTextAfter(
-                String.valueOf(findCardEntity.studentNum),
+                String.valueOf(discoveryCardEntity.getStudentNum()),
                 " 人参与",
                 mContext.getResources().getColor(R.color.base_black_35)
         );
         viewHolder.studentNumView.setText(colorStr);
-        viewHolder.liveNicknameView.setText(findCardEntity.nickname);
-        ImageLoader.getInstance().displayImage(findCardEntity.avatar, viewHolder.liveAvatarView, mOptions);
+        viewHolder.liveNicknameView.setText(discoveryCardEntity.getTeacherNickname());
+        ImageLoader.getInstance().displayImage(discoveryCardEntity.getTeacherAvatar(), viewHolder.liveAvatarView, mOptions);
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            long currentTime = new Date().getTime();
-            Date startTimeDate = dateFormat.parse(findCardEntity.startTime);
-            long startTime = startTimeDate.getTime();
-            long endTime = dateFormat.parse(findCardEntity.endTime).getTime();
+            long startTime = discoveryCardEntity.getStartTime();
+            long currentTime = System.currentTimeMillis();
+            long endTime = discoveryCardEntity.getStartTime();
             if (currentTime > startTime && currentTime < endTime) {
                 viewHolder.liveStartLabelView.setText("直播中");
                 viewHolder.liveStartLabelView.setBackgroundResource(R.drawable.find_card_item_image_green_label);
@@ -205,7 +194,7 @@ public class FindCardItemAdapter extends BaseAdapter {
                 viewHolder.liveStartLabelView.setText("未开始");
                 viewHolder.liveStartLabelView.setBackgroundResource(R.drawable.find_card_item_image_blue_label);
             }
-            viewHolder.liveTimeView.setText("直播时间: " + new SimpleDateFormat("MM-dd HH:mm").format(startTimeDate));
+            viewHolder.liveTimeView.setText("直播时间: " + new SimpleDateFormat("MM-dd HH:mm").format(startTime));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -216,8 +205,7 @@ public class FindCardItemAdapter extends BaseAdapter {
         return mList.size();
     }
 
-    class ViewHolder
-    {
+    class ViewHolder {
         public ImageView coverView;
         public TextView titleView;
         public TextView priceView;

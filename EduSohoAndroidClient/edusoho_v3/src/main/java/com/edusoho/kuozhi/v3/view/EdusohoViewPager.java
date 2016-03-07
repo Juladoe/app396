@@ -60,7 +60,7 @@ public class EdusohoViewPager extends RelativeLayout {
     public void update(List<SchoolBanner> schoolBanners)
     {
         mAdapter.setItems(schoolBanners);
-        mAdapter.wrapContent();
+        //mAdapter.wrapContent();
         mAdapter.notifyDataSetChanged();
         mPointLayout.updatePointImages(schoolBanners.size());
     }

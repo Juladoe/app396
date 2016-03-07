@@ -3,21 +3,21 @@ package com.edusoho.kuozhi.v3.view;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FindCardItemAdapter;
-import com.edusoho.kuozhi.v3.model.sys.FindCardEntity;
-import com.edusoho.kuozhi.v3.model.sys.FindListEntity;
+import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCardProperty;
+import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+
 import java.util.List;
 
 /**
@@ -56,10 +56,10 @@ public class FindCardView extends LinearLayout {
         mChildHeightArray = new SparseArray<>();
     }
 
-    public void setFindListEntity(FindListEntity findListEntity) {
-        this.mChildId = findListEntity.id;
-        setTitle(findListEntity.title);
-        setData(findListEntity.data);
+    public void setDiscoveryCardEntity(DiscoveryColumn discoveryColumn) {
+        this.mChildId = discoveryColumn.id;
+        setTitle(discoveryColumn.title);
+        setData(discoveryColumn.data);
     }
 
     protected void setTitle(String title) {
@@ -78,17 +78,12 @@ public class FindCardView extends LinearLayout {
         return gridView;
     }
 
-    public void setData(List data) {
-        mAdapter.clear();
-        if (data.size() % 2 != 0) {
-            data.add(new FindCardEntity(true));
-        }
-        addData(data);
+    public void setData(List<DiscoveryCardProperty> data) {
+        mAdapter.setData(data);
+        drawGridView();
     }
 
-    private void addData(List data) {
-        mAdapter.addList(data);
-
+    private void drawGridView() {
         int totalHeight = 0, childHeight = 0;
         totalHeight = mChildHeightArray.get(mChildId, 0);
         if (totalHeight == 0) {
@@ -109,10 +104,11 @@ public class FindCardView extends LinearLayout {
 
     public void setAdapter(ListAdapter adapter) {
         mAdapter = (FindCardItemAdapter) adapter;
-        if (mAdapter.getCount() % 2 != 0) {
-            mAdapter.addData(new FindCardEntity(true));
-        }
         mGridView.setAdapter(adapter);
+    }
+
+    public int getCardViewListSize() {
+        return mAdapter.getCount();
     }
 
     @Override

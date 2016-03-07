@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.util;
 
 public class Const {
+    public static final long ONE_DAY_MILLISECOND = 24 * 60 * 60 * 1000;
+
     //popular热门 recommended推荐 latest最新
     public static final String[] SORT = {
             "latest", "popular", "recommended"
@@ -417,7 +419,7 @@ public class Const {
     public static final String ONE_REPLY = "Course/getOneThreadPost";
 
     /**
-     * 更新问答浏览次数
+     * 更新问答 览 数
      */
     public static final String HitThread = "Course/hitThread";
 
@@ -487,11 +489,11 @@ public class Const {
     public static final String ARTICEL_MENU = "/api/article_categories";
     public static final String ARTICELS = "/api/articles";
 
+    public static final String MY_COURSES = "/api/me/courses?";
+
     public static final String UPLOAD_AUDIO_CACHE_FILE = "/audio";
     public static final String UPLOAD_IMAGE_CACHE_FILE = "/image";
     public static final String UPLOAD_IMAGE_CACHE_THUMB_FILE = "/image/thumb";
-
-    public static final String MY_COURSES = "/api/me/courses?";
 
     /*
      * intent action

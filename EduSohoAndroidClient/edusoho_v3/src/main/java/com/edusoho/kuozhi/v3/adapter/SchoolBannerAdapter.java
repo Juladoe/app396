@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.adapter;
 /**
  * Created by su on 2016/2/19.
  */
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
 import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -27,8 +29,7 @@ public class SchoolBannerAdapter extends PagerAdapter {
     private Bitmap cacheBitmap;
     private List<SchoolBanner> mSchoolBanners;
 
-    public SchoolBannerAdapter(Context context, List<SchoolBanner> schoolBanners)
-    {
+    public SchoolBannerAdapter(Context context, List<SchoolBanner> schoolBanners) {
         mContext = context;
         mSchoolBanners = schoolBanners;
     }
@@ -38,19 +39,17 @@ public class SchoolBannerAdapter extends PagerAdapter {
         return mSchoolBanners.size();
     }
 
-    public void setItems(List<SchoolBanner> schoolBanners)
-    {
+    public void setItems(List<SchoolBanner> schoolBanners) {
         this.mSchoolBanners.clear();
         this.mSchoolBanners = schoolBanners;
         notifyDataSetChanged();
     }
 
-    public void wrapContent()
-    {
-        SchoolBanner top = mSchoolBanners.get(0);
-        SchoolBanner last = mSchoolBanners.get(mSchoolBanners.size() - 1);
-        mSchoolBanners.add(mSchoolBanners.size(), top);
-        mSchoolBanners.add(0, last);
+    public void wrapContent() {
+//        SchoolBanner top = mSchoolBanners.get(0);
+//        SchoolBanner last = mSchoolBanners.get(mSchoolBanners.size() - 1);
+//        mSchoolBanners.add(mSchoolBanners.size(), top);
+//        mSchoolBanners.add(0, last);
     }
 
     @Override

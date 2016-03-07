@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class Course implements Serializable {
     public String title;
-    public String studentNum;
+    public int studentNum;
     public double rating;
     public String smallPicture;
     public double price;
