@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.model.bal.Discovery;
+package com.edusoho.kuozhi.v3.model.bal.discovery;
 
 /**
  * Created by su on 2016/2/19.

@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FindCardItemAdapter;
-import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryCardProperty;
-import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryColumn;
+import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCardProperty;
+import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import java.util.List;
@@ -56,7 +56,7 @@ public class FindCardView extends LinearLayout {
         mChildHeightArray = new SparseArray<>();
     }
 
-    public void setFindListEntity(DiscoveryColumn discoveryColumn) {
+    public void setDiscoveryCardEntity(DiscoveryColumn discoveryColumn) {
         this.mChildId = discoveryColumn.id;
         setTitle(discoveryColumn.title);
         setData(discoveryColumn.data);
@@ -79,12 +79,11 @@ public class FindCardView extends LinearLayout {
     }
 
     public void setData(List<DiscoveryCardProperty> data) {
-        addData(data);
+        mAdapter.setData(data);
+        drawGridView();
     }
 
-    private void addData(List<DiscoveryCardProperty> data) {
-        mAdapter.addList(data);
-
+    private void drawGridView() {
         int totalHeight = 0, childHeight = 0;
         totalHeight = mChildHeightArray.get(mChildId, 0);
         if (totalHeight == 0) {
@@ -106,6 +105,10 @@ public class FindCardView extends LinearLayout {
     public void setAdapter(ListAdapter adapter) {
         mAdapter = (FindCardItemAdapter) adapter;
         mGridView.setAdapter(adapter);
+    }
+
+    public int getCardViewListSize() {
+        return mAdapter.getCount();
     }
 
     @Override

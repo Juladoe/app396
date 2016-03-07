@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.util;
 
 public class Const {
+    public static final long ONE_DAY_MILLISECOND = 24 * 60 * 60 * 1000;
+
     //popular热门 recommended推荐 latest最新
     public static final String[] SORT = {
             "latest", "popular", "recommended"
@@ -488,10 +490,6 @@ public class Const {
     public static final String ARTICELS = "/api/articles";
 
     public static final String MY_COURSES = "/api/me/courses?";
-
-    public static final String DISCOVERY_COURSES_COLUMNS = "/api/courses/discovery/columns?orderType=%s&categoryId=%s&showCount=%s&type=%s";
-    public static final String DISCOVERY_CLASSROOMS_COLUMNS = "/api/classrooms/discovery/columns?orderType=%s&categoryId=%s&showCount=%s";
-    public static final String DISCOVERY_COLUMNS = "/api/discovery_columns";
 
     public static final String UPLOAD_AUDIO_CACHE_FILE = "/audio";
     public static final String UPLOAD_IMAGE_CACHE_FILE = "/image";

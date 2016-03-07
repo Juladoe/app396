@@ -1,4 +1,6 @@
-package com.edusoho.kuozhi.v3.model.bal.Discovery;
+package com.edusoho.kuozhi.v3.entity.discovery;
+
+import android.text.TextUtils;
 
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 
@@ -35,13 +37,17 @@ public class DiscoveryClassroom extends Classroom implements DiscoveryCardProper
     }
 
     @Override
-    public String getStartTime() {
-        return createdTime;
+    public long getStartTime() {
+        if (!TextUtils.isEmpty(createdTime)) {
+            return Long.parseLong(createdTime) * 1000;
+        } else {
+            return System.currentTimeMillis();
+        }
     }
 
     @Override
-    public String getEndTime() {
-        return "";
+    public long getEndTime() {
+        return 0;
     }
 
     @Override

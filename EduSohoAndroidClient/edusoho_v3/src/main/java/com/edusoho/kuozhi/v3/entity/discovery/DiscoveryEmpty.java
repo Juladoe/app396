@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.model.bal.Discovery;
+package com.edusoho.kuozhi.v3.entity.discovery;
 
 /**
  * Created by JesseHuang on 16/3/4.
@@ -30,13 +30,13 @@ public class DiscoveryEmpty implements DiscoveryCardProperty {
     }
 
     @Override
-    public String getStartTime() {
-        return null;
+    public long getStartTime() {
+        return 0;
     }
 
     @Override
-    public String getEndTime() {
-        return null;
+    public long getEndTime() {
+        return 0;
     }
 
     @Override

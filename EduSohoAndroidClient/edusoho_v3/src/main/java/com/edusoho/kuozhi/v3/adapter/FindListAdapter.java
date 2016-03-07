@@ -1,13 +1,15 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.edusoho.kuozhi.v3.model.bal.Discovery.DiscoveryColumn;
+import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.view.FindCardView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,7 +25,16 @@ public class FindListAdapter extends BaseAdapter {
         mList = list;
     }
 
+    public FindListAdapter(Context mContext) {
+        this.mContext = mContext;
+        mList = new ArrayList<>();
+    }
+
     public void addData(DiscoveryColumn findCardEntity) {
+        Log.d("FindListAdapter", "------addData------");
+        Log.d("FindListAdapter", "card.title" + findCardEntity.title);
+        Log.d("FindListAdapter", "addData: " + findCardEntity.data.size());
+        Log.d("FindListAdapter", "-------------------");
         mList.add(findCardEntity);
         notifyDataSetChanged();
     }
@@ -44,7 +55,6 @@ public class FindListAdapter extends BaseAdapter {
     }
 
     @Override
-
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = new FindCardView(mContext);
@@ -53,7 +63,14 @@ public class FindListAdapter extends BaseAdapter {
 
         DiscoveryColumn discoveryColumn = mList.get(position);
         FindCardView findCardView = (FindCardView) convertView;
-        findCardView.setFindListEntity(discoveryColumn);
+        Log.d("FindListAdapter", "------getView------");
+        Log.d("FindListAdapter", "position " + position);
+        Log.d("FindListAdapter", "data.size " + discoveryColumn.data.size());
+        Log.d("FindListAdapter", "title " + discoveryColumn.title);
+        Log.d("FindListAdapter", "list.size " + mList.size());
+        Log.d("FindListAdapter", "findCardView.list.size " + findCardView.getCardViewListSize());
+        Log.d("FindListAdapter", "-------------------");
+        findCardView.setDiscoveryCardEntity(discoveryColumn);
         return convertView;
     }
 }

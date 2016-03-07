@@ -1,11 +1,16 @@
-package com.edusoho.kuozhi.v3.model.bal.Discovery;
+package com.edusoho.kuozhi.v3.entity.discovery;
+
+import android.text.TextUtils;
 
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.util.Const;
+
+import java.io.Serializable;
 
 /**
  * Created by JesseHuang on 16/3/4.
  */
-public class DiscoveryCourse extends Course implements DiscoveryCardProperty {
+public class DiscoveryCourse extends Course implements DiscoveryCardProperty, Serializable {
     public boolean mEmpty = false;
 
     @Override
@@ -34,13 +39,17 @@ public class DiscoveryCourse extends Course implements DiscoveryCardProperty {
     }
 
     @Override
-    public String getStartTime() {
-        return null;
+    public long getStartTime() {
+        if (!TextUtils.isEmpty(createdTime)) {
+            return Long.parseLong(createdTime) * 1000;
+        } else {
+            return System.currentTimeMillis();
+        }
     }
 
     @Override
-    public String getEndTime() {
-        return null;
+    public long getEndTime() {
+        return getStartTime() + Const.ONE_DAY_MILLISECOND * expiryDay;
     }
 
     @Override

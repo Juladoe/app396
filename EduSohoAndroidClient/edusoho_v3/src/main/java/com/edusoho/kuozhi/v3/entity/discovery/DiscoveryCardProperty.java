@@ -1,9 +1,10 @@
-package com.edusoho.kuozhi.v3.model.bal.Discovery;
+package com.edusoho.kuozhi.v3.entity.discovery;
 
 /**
  * Created by JesseHuang on 16/3/4.
  */
 public interface DiscoveryCardProperty {
+
     String getPicture();
 
     String getTitle();
@@ -14,9 +15,9 @@ public interface DiscoveryCardProperty {
 
     String getType();
 
-    String getStartTime();
+    long getStartTime();
 
-    String getEndTime();
+    long getEndTime();
 
     String getTeacherAvatar();
 
