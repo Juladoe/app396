@@ -12,6 +12,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.MyThreadAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
+import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.model.provider.MyThreadProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -94,18 +95,14 @@ public class MyPostedThreadFragment extends BaseFragment {
     public Promise loadPostedThread() {
         final Promise promise = new Promise();
 
-        //// TODO: 16/3/1 for Test
         RequestUrl requestUrl = app.bindNewUrl(Const.MY_POSTED_THREADS, true);
-        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        stringBuffer.append("?start=0&limit=10000/");
-        requestUrl.url = stringBuffer.toString();
 
         mProvider = new MyThreadProvider(mContext);
-        mProvider.getMyPostedThread(requestUrl).success(new NormalCallback<LinkedHashMap>() {
+        mProvider.getMyPostedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
             @Override
-            public void success(LinkedHashMap string) {
+            public void success(MyThreadEntity[] entities) {
 
-                mDataList.addAll(Arrays.asList(1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 41, 2));
+                mDataList.addAll(Arrays.asList(entities));
                 mAdapter.addDataList(mDataList);
                 promise.resolve(mDataList);
             }

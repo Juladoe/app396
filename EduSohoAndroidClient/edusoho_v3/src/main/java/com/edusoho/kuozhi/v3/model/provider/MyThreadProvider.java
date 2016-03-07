@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
 
+import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.google.gson.reflect.TypeToken;
 
@@ -15,19 +16,17 @@ public class MyThreadProvider extends ModelProvider {
     }
 
     public ProviderListener getMyCreatedThread(RequestUrl requestUrl) {
-        //// TODO: 16/3/1 根据接口返回再更改类型
-        ProviderListener<Object> providerListener = new ProviderListener() {
+        ProviderListener<MyThreadEntity[]> providerListener = new ProviderListener() {
         };
-        addRequest(requestUrl, new TypeToken<Object>() {
+        addRequest(requestUrl, new TypeToken<MyThreadEntity[]>() {
         }, providerListener, providerListener);
         return providerListener;
     }
 
     public ProviderListener getMyPostedThread(RequestUrl requestUrl) {
-        //// TODO: 16/3/1 根据接口返回再更改类型
-        ProviderListener<Object> providerListener = new ProviderListener() {
+        ProviderListener<MyThreadEntity[]> providerListener = new ProviderListener() {
         };
-        addRequest(requestUrl, new TypeToken<Object>() {
+        addRequest(requestUrl, new TypeToken<MyThreadEntity[]>() {
         }, providerListener, providerListener);
         return providerListener;
     }
