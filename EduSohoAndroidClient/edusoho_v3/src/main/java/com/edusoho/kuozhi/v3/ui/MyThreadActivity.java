@@ -7,8 +7,8 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.MyCreatedThreadFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.MyPostedThreadFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.MyRepliedThreadFragment;
 import com.edusoho.kuozhi.v3.view.EduSohoViewPager;
 
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ public class MyThreadActivity extends ActionBarBaseActivity {
     private List<Fragment> mFragmentList;
     private String[] mFragmentTitles = {"我发起的","我回复的"};
 
+    private MyCreatedThreadFragment myCreatedThreadFragment;
     private MyPostedThreadFragment myPostedThreadFragment;
-    private MyRepliedThreadFragment myRepliedThreadFragment;
 
     private MyThreadPageAdapter mAdapter;
 
@@ -50,10 +50,10 @@ public class MyThreadActivity extends ActionBarBaseActivity {
         mViewPager = (EduSohoViewPager) findViewById(R.id.my_thread_viewpager);
         mViewPager.setIsPagingEnable(true);
 
+        myCreatedThreadFragment = new MyCreatedThreadFragment();
         myPostedThreadFragment = new MyPostedThreadFragment();
-        myRepliedThreadFragment = new MyRepliedThreadFragment();
+        mFragmentList.add(myCreatedThreadFragment);
         mFragmentList.add(myPostedThreadFragment);
-        mFragmentList.add(myRepliedThreadFragment);
 
         mAdapter = new MyThreadPageAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mAdapter);

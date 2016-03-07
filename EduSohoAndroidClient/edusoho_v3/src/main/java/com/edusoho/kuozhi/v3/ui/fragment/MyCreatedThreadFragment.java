@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * Created by melomelon on 16/2/26.
  */
-public class MyRepliedThreadFragment extends BaseFragment {
+public class MyCreatedThreadFragment extends BaseFragment {
 
     private RecyclerView mRecyclerView;
     private MyThreadAdapter mAdapter;
@@ -38,19 +38,19 @@ public class MyRepliedThreadFragment extends BaseFragment {
     private MyThreadProvider mProvider;
     private List mDataList;
 
-    public MyRepliedThreadFragment() {
+    public MyCreatedThreadFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContainerView(R.layout.my_replied_thread_fragment_layout);
+        setContainerView(R.layout.my_created_thread_fragment_layout);
     }
 
     @Override
     protected void initView(View view) {
-        mEmptyTv = (TextView) view.findViewById(R.id.empty_replied_thread);
-        mLoading = (FrameLayout) view.findViewById(R.id.my_replied_thread_loading);
+        mEmptyTv = (TextView) view.findViewById(R.id.empty_created_thread);
+        mLoading = (FrameLayout) view.findViewById(R.id.my_created_thread_loading);
         mLoading.setVisibility(View.VISIBLE);
 
         mDividerLine = new EduSohoDivederLine(EduSohoDivederLine.VERTICAL);
@@ -59,21 +59,20 @@ public class MyRepliedThreadFragment extends BaseFragment {
         mDividerLine.setMarginLeft(24);
         mDividerLine.setMarginRight(24);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.my_replied_thread_recyclerView);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.my_created_Thread_recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(mDividerLine);
 
         initData();
+
     }
 
     public void initData() {
         mDataList = new ArrayList();
-
-        loadRepliedThread().then(new PromiseCallback() {
+        loadCreatedThread().then(new PromiseCallback() {
             @Override
-            public Promise invoke(Object obj) {
-
+            public Promise invoke(Object object) {
                 if (mDataList.size() == 0) {
                     mRecyclerView.setVisibility(View.GONE);
                     mEmptyTv.setVisibility(View.VISIBLE);
@@ -91,7 +90,7 @@ public class MyRepliedThreadFragment extends BaseFragment {
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    public Promise loadRepliedThread() {
+    public Promise loadCreatedThread() {
         final Promise promise = new Promise();
 
         //// TODO: 16/3/1 for Test
@@ -101,12 +100,19 @@ public class MyRepliedThreadFragment extends BaseFragment {
         requestUrl.url = stringBuffer.toString();
 
         mProvider = new MyThreadProvider(mContext);
-        mProvider.getMyRepliedThread(requestUrl).success(new NormalCallback<LinkedHashMap>() {
+        mProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap string) {
 
-                mDataList.addAll(Arrays.asList(1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 41, 2));
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mDataList.addAll(Arrays.asList(1, 2, 3));
                 mAdapter.addDataList(mDataList);
+
+                //// TODO: 16/3/1  类型
                 promise.resolve(mDataList);
             }
 
@@ -114,4 +120,5 @@ public class MyRepliedThreadFragment extends BaseFragment {
 
         return promise;
     }
+
 }

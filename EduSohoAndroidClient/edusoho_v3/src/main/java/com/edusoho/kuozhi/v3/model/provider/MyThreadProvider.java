@@ -14,7 +14,7 @@ public class MyThreadProvider extends ModelProvider {
         super(context);
     }
 
-    public ProviderListener getMyPostedThread(RequestUrl requestUrl) {
+    public ProviderListener getMyCreatedThread(RequestUrl requestUrl) {
         //// TODO: 16/3/1 根据接口返回再更改类型
         ProviderListener<Object> providerListener = new ProviderListener() {
         };
@@ -23,7 +23,7 @@ public class MyThreadProvider extends ModelProvider {
         return providerListener;
     }
 
-    public ProviderListener getMyRepliedThread(RequestUrl requestUrl) {
+    public ProviderListener getMyPostedThread(RequestUrl requestUrl) {
         //// TODO: 16/3/1 根据接口返回再更改类型
         ProviderListener<Object> providerListener = new ProviderListener() {
         };

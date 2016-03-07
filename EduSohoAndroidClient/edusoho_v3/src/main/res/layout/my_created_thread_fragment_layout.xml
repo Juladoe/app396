@@ -5,23 +5,23 @@
     android:background="@color/white">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_replied_thread_recyclerView"
+        android:id="@+id/my_created_Thread_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
     </android.support.v7.widget.RecyclerView>
 
     <TextView
-        android:id="@+id/empty_replied_thread"
+        android:id="@+id/empty_created_thread"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="您还没有回复过的问答"
+        android:text="您还没有发起过问答"
         android:textSize="@dimen/large_font_size"
         android:visibility="gone" />
 
     <FrameLayout
-        android:id="@+id/my_replied_thread_loading"
+        android:id="@+id/my_created_thread_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
@@ -44,5 +44,6 @@
             android:textSize="@dimen/base_large_size" />
 
     </FrameLayout>
+
 
 </RelativeLayout>

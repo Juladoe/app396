@@ -5,7 +5,7 @@
     android:background="@color/white">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/my_posted_Thread_recyclerView"
+        android:id="@+id/my_posted_thread_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="您还没有发起过问答"
+        android:text="您还没有回复过的问答"
         android:textSize="@dimen/large_font_size"
         android:visibility="gone" />
 
@@ -44,6 +44,5 @@
             android:textSize="@dimen/base_large_size" />
 
     </FrameLayout>
-
 
 </RelativeLayout>

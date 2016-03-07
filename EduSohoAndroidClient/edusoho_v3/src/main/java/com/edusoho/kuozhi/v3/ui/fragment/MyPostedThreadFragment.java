@@ -21,7 +21,6 @@ import com.edusoho.kuozhi.v3.view.EduSohoDivederLine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -60,20 +59,21 @@ public class MyPostedThreadFragment extends BaseFragment {
         mDividerLine.setMarginLeft(24);
         mDividerLine.setMarginRight(24);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.my_posted_Thread_recyclerView);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.my_posted_thread_recyclerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(mDividerLine);
 
         initData();
-
     }
 
     public void initData() {
         mDataList = new ArrayList();
+
         loadPostedThread().then(new PromiseCallback() {
             @Override
-            public Promise invoke(Object object) {
+            public Promise invoke(Object obj) {
+
                 if (mDataList.size() == 0) {
                     mRecyclerView.setVisibility(View.GONE);
                     mEmptyTv.setVisibility(View.VISIBLE);
@@ -95,7 +95,7 @@ public class MyPostedThreadFragment extends BaseFragment {
         final Promise promise = new Promise();
 
         //// TODO: 16/3/1 for Test
-        RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
+        RequestUrl requestUrl = app.bindNewUrl(Const.MY_POSTED_THREADS, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
         stringBuffer.append("?start=0&limit=10000/");
         requestUrl.url = stringBuffer.toString();
@@ -105,15 +105,8 @@ public class MyPostedThreadFragment extends BaseFragment {
             @Override
             public void success(LinkedHashMap string) {
 
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                mDataList.addAll(Arrays.asList(1, 2, 3));
+                mDataList.addAll(Arrays.asList(1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 41, 2));
                 mAdapter.addDataList(mDataList);
-
-                //// TODO: 16/3/1  类型
                 promise.resolve(mDataList);
             }
 
@@ -121,5 +114,4 @@ public class MyPostedThreadFragment extends BaseFragment {
 
         return promise;
     }
-
 }
