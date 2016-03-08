@@ -19,7 +19,7 @@ public class RequestUtil {
             errorResult = new Gson().fromJson(jsonStr, LinkedHashMap.class);
         } catch (Exception e) {
         }
-        if (errorResult == null) {
+            if (errorResult == null) {
             return jsonStr;
         }
         if (errorResult.containsKey("error")) {
@@ -38,9 +38,10 @@ public class RequestUtil {
             String message = errorResult.containsKey("message") ? errorResult.get("message").toString() : "";
             if (!TextUtils.isEmpty(message) && message.startsWith("API Token")) {
                 MessageEngine.getInstance().sendMsg(Const.TOKEN_LOSE, new Bundle());
+                return null;
             }
 
-            return null;
+            return jsonStr;
         }
 
         return jsonStr;

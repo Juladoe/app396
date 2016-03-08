@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">小牛学堂</string>
+
+    <string name="app_host">http://www.edu360.cn</string>
+    <string name="app_code">xiaoniuxuetang</string>
+    <string name="about_welcome">关于小牛学堂</string>
+    <string name="channel_name">xiaoniuxuetang</string>
+    <string name="splash_num">5</string>
+    <string name="splash_padding">0</string>
+    <string name="app_id">wx0be7bc544b29c191</string>
+
+    <string-array
+        name="shard_filter"
+        >
+        <item>TencentWeibo</item>
+        <item>QZone</item>
+
+    </string-array>
+
+</resources>

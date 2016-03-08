@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DevInfor>
+
+    <ShareSDK AppKey="41f51eeb5d88" />
+    <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
+
+    <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
+    <Wechat Id="1" SortId="1" AppId="wx10ab70921e4b7554"
+        AppSecret="dcada9d4a0c6750b2d06b97b91eb4e2c" BypassApproval="false" Enable="true" />
+
+    <WechatMoments Id="2" SortId="2" AppId="wx10ab70921e4b7554"
+        AppSecret="dcada9d4a0c6750b2d06b97b91eb4e2c" BypassApproval="true" Enable="true" />
+
+    <WechatFavorite Id="3" SortId="3" AppId="wx10ab70921e4b7554"
+        AppSecret="dcada9d4a0c6750b2d06b97b91eb4e2c" Enable="true" />
+
+    <!--demo站-->   <SinaWeibo Id="4" SortId="4" AppKey="2128814312" AppSecret="b1d8ed5a2ba0ef2046ab20309f26290e"
+        RedirectUrl="http://www.qswangxiao.com" ShareByAppClient="true" Enable="true" />
+
+    <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
+
+    <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
+    <QQ Id="7" SortId="7" AppId="1105000500"  ShareByAppClient="true"
+        Enable="true" />
+
+</DevInfor>

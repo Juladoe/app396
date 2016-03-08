@@ -239,7 +239,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     /**
      * 检查网校Api版本
      */
-    private void checkSchoolApiVersion() {
+    protected void checkSchoolApiVersion() {
         ajaxGet(app.host + Const.VERIFYVERSION, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
