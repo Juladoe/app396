@@ -647,12 +647,12 @@ public class NewsFragment extends BaseFragment {
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
                 model.fromId + "", model.type, app.loginUser.id + "");
-        New localNewModel = news.get(0);
         if (news.size() == 0) {
             model.unread = 0;
             model.id = (int) newDataSource.create(model);
             insertNew(model);
         } else {
+            New localNewModel = news.get(0);
             boolean isCurrentId = DiscussFragment.CurrentCourseId == model.fromId || ClassroomDiscussActivity.CurrentClassroomId == model.fromId;
             model.unread = (message.isForeground && isCurrentId) ? 0 : localNewModel.unread + 1;
             model.parentId = localNewModel.parentId;
