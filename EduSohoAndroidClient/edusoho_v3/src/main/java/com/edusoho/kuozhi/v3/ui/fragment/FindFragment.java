@@ -29,6 +29,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EdusohoViewPager;
 
+import java.util.Iterator;
 import java.util.List;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
@@ -124,6 +125,7 @@ public class FindFragment extends BaseFragment {
                             @Override
                             public void onSuccess(List<DiscoveryCourse> discoveryCourseList) {
                                 if (discoveryCourseList != null && discoveryCourseList.size() > 0) {
+                                    filterCoursesInClassroom(discoveryCourseList);
                                     if (discoveryCourseList.size() % 2 != 0) {
                                         discoveryCourseList.add(new DiscoveryCourse(true));
                                     }
@@ -165,6 +167,15 @@ public class FindFragment extends BaseFragment {
 
             }
         });
+    }
+
+    private void filterCoursesInClassroom(List<DiscoveryCourse> list) {
+        Iterator<DiscoveryCourse> iterator = list.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().parentId != 0) {
+                iterator.remove();
+            }
+        }
     }
 
     @Override
