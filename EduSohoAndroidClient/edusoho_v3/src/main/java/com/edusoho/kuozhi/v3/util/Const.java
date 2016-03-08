@@ -498,6 +498,10 @@ public class Const {
     public static final String CREATE_THREAD = "/api/chaos_threads";
     public static final String POST_THREAD = "/api/chaos_threads_posts";
 
+    public static final String MY_CREATED_THREADS = "/api/chaos_threads/getThreads";
+    public static final String MY_POSTED_THREADS = "/api/chaos_threads_posts/getThreadPosts";
+
+
     /*
      * intent action
      */
