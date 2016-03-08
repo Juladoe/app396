@@ -59,6 +59,7 @@ public class FindListAdapter extends BaseAdapter {
         DiscoveryColumn discoveryColumn = mList.get(position);
         FindCardView findCardView = (FindCardView) convertView;
         findCardView.setDiscoveryCardEntity(discoveryColumn);
+        findCardView.setMoreClickListener(discoveryColumn.type);
         return convertView;
     }
 }

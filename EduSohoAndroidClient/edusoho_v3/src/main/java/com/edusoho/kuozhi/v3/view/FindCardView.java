@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -13,10 +14,13 @@ import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.FindCardItemAdapter;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCardProperty;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 
 import java.util.List;
 
@@ -25,19 +29,23 @@ import java.util.List;
  */
 public class FindCardView extends LinearLayout {
 
+    private Context mContext;
     private GridView mGridView;
     private TextView mTitleView;
+    private TextView tvMore;
     private FindCardItemAdapter mAdapter;
     private SparseArray<Integer> mChildHeightArray;
     private int mChildId;
 
     public FindCardView(Context context) {
         super(context, null);
+        mContext = context;
         initView();
     }
 
     public FindCardView(Context context, AttributeSet attrs) {
         super(context, attrs, 0);
+        mContext = context;
         initView();
     }
 
@@ -49,6 +57,7 @@ public class FindCardView extends LinearLayout {
         setBackgroundColor(Color.WHITE);
         View headView = LayoutInflater.from(getContext()).inflate(R.layout.view_find_card_head_layout, null);
         mTitleView = (TextView) headView.findViewById(R.id.card_title);
+        tvMore = (TextView) headView.findViewById(R.id.tv_more);
         addView(headView);
 
         mGridView = createGridView();
@@ -58,12 +67,35 @@ public class FindCardView extends LinearLayout {
 
     public void setDiscoveryCardEntity(DiscoveryColumn discoveryColumn) {
         this.mChildId = discoveryColumn.id;
-        setTitle(discoveryColumn.title);
+        mTitleView.setText(discoveryColumn.title);
         setData(discoveryColumn.data);
     }
 
-    protected void setTitle(String title) {
-        mTitleView.setText(title);
+    public void setMoreClickListener(String type) {
+        final String url;
+        switch (type) {
+            case "course":
+                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, Const.MOBILE_WEB_COURSES);
+                break;
+            case "live":
+                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, Const.MOBILE_WEB_LIVE_COURSES);
+                break;
+            case "classroom":
+            default:
+                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, Const.MOBILE_WEB_CLASSROOMS);
+        }
+
+        tvMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.WEB_URL, url);
+                    }
+                });
+            }
+        });
     }
 
     protected GridView createGridView() {

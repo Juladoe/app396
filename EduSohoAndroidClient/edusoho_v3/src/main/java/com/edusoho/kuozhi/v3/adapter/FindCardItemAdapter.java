@@ -233,6 +233,8 @@ public class FindCardItemAdapter extends BaseAdapter {
         });
     }
 
+
+
     class ViewHolder {
         public ImageView coverView;
         public TextView titleView;
