@@ -19,7 +19,7 @@ import java.util.List;
  * Created by JesseHuang on 15/7/1.
  */
 public class SqliteChatUtil extends SQLiteOpenHelper {
-    private static final int VERSION = 6;
+    private static final int VERSION = 7;
     private static String mCurDbName;
     private static SqliteChatUtil instance;
     private Context mContext;
@@ -47,7 +47,6 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("SqliteChatUtil", "onCreate");
         List<String> sqlList = getInitSql("db_init_chat.sql");
         for (String sql : sqlList) {
             db.execSQL(sql);
@@ -56,8 +55,10 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.d("SqliteChatUtil", "onUpgrade");
-        List<String> sqlList = getInitSql("db_init_chat.sql");
+        List<String> sqlList = getInitSql(String.format("db_init_chat.%s.sql", newVersion + ""));
+        for (int i = oldVersion; i < newVersion - 1; i++) {
+            sqlList.addAll(getInitSql(String.format("db_init_chat.%s.sql", i + "")));
+        }
         for (String sql : sqlList) {
             db.execSQL(sql);
         }
