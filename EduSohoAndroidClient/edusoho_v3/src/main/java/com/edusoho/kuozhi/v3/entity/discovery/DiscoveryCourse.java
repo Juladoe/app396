@@ -14,6 +14,11 @@ public class DiscoveryCourse extends Course implements DiscoveryCardProperty, Se
     public boolean mEmpty = false;
 
     @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
     public String getPicture() {
         return middlePicture;
     }

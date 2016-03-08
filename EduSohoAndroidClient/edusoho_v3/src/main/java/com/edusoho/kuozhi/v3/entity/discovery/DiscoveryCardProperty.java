@@ -4,6 +4,7 @@ package com.edusoho.kuozhi.v3.entity.discovery;
  * Created by JesseHuang on 16/3/4.
  */
 public interface DiscoveryCardProperty {
+    int getId();
 
     String getPicture();
 

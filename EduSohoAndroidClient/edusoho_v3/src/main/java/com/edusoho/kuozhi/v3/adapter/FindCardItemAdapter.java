@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.SpannableString;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCardProperty;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -168,6 +172,7 @@ public class FindCardItemAdapter extends BaseAdapter {
             viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.green_primary));
             viewHolder.priceView.setText("免费");
         }
+        setDiscoveryCardClickListener(convertView, discoveryCardEntity.getType(), discoveryCardEntity.getId());
         return convertView;
     }
 
@@ -201,6 +206,31 @@ public class FindCardItemAdapter extends BaseAdapter {
     @Override
     public int getCount() {
         return mList.size();
+    }
+
+    private void setDiscoveryCardClickListener(View view, String type, int id) {
+        final String url;
+        switch (type) {
+            case "normal":
+            case "live":
+                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.MOBILE_WEB_COURSE, id));
+                break;
+            case "classroom":
+            default:
+                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.CLASSROOM_COURSES, id));
+        }
+
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.WEB_URL, url);
+                    }
+                });
+            }
+        });
     }
 
     class ViewHolder {

@@ -12,6 +12,11 @@ public class DiscoveryClassroom extends Classroom implements DiscoveryCardProper
     public boolean mEmpty = false;
 
     @Override
+    public int getId() {
+        return id;
+    }
+
+    @Override
     public String getPicture() {
         return middlePicture;
     }
