@@ -56,7 +56,7 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         List<String> sqlList = getInitSql(String.format("db_init_chat.%s.sql", newVersion + ""));
-        for (int i = oldVersion; i < newVersion - 1; i++) {
+        for (int i = oldVersion; i < newVersion; i++) {
             sqlList.addAll(getInitSql(String.format("db_init_chat.%s.sql", i + "")));
         }
         for (String sql : sqlList) {
