@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.entity.discovery;
 
 import android.text.TextUtils;
 
-import com.edusoho.kuozhi.v3.entity.user.UserEntity;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.util.Const;
 
@@ -13,7 +12,6 @@ import java.io.Serializable;
  */
 public class DiscoveryCourse extends Course implements DiscoveryCardProperty, Serializable {
     public boolean mEmpty = false;
-    public UserEntity teacherInfo = new UserEntity();
 
     @Override
     public String getPicture() {
@@ -56,12 +54,26 @@ public class DiscoveryCourse extends Course implements DiscoveryCardProperty, Se
 
     @Override
     public String getTeacherAvatar() {
-        return;
+        if (hasTeachers()) {
+            return teachers[0].mediumAvatar;
+        }
+        return "";
     }
 
     @Override
     public String getTeacherNickname() {
-        return null;
+        if (hasTeachers()) {
+            return teachers[0].nickname;
+        }
+        return "";
+    }
+
+    private boolean hasTeachers() {
+        if (teachers.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

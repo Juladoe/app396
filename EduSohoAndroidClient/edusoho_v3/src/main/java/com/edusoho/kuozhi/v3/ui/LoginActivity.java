@@ -132,12 +132,12 @@ public class LoginActivity extends ActionBarBaseActivity {
                 public void onResponse(String response) {
                     UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
                     });
-                    if (userResult != null && userResult.userEntity != null) {
+                    if (userResult != null && userResult.user != null) {
                         mActivity.app.saveToken(userResult);
                         mActivity.setResult(LoginActivity.OK);
                         app.sendMessage(Const.LOGIN_SUCCESS, null);
                         Bundle bundle = new Bundle();
-                        bundle.putString(Const.BIND_USER_ID, userResult.userEntity.id + "");
+                        bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
                         app.pushRegister(bundle);
                         mBtnLogin.setSuccessState();
                         mBtnLogin.postDelayed(new Runnable() {
@@ -183,7 +183,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                 app.saveToken(userResult);
                 app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                 Bundle bundle = new Bundle();
-                bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUserEntity.id));
+                bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUser.id));
                 app.pushRegister(bundle);
                 mActivity.finish();
             }

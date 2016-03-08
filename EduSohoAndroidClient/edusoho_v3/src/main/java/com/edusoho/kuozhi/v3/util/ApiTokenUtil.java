@@ -44,7 +44,7 @@ public class ApiTokenUtil {
         SharedPreferences sp = context.getSharedPreferences("token", context.MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("token", userResult.token);
-        edit.putString("userInfo", AppUtil.encode2(new Gson().toJson(userResult.userEntity)));
+        edit.putString("userInfo", AppUtil.encode2(new Gson().toJson(userResult.user)));
         edit.apply();
     }
 

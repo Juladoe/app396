@@ -23,7 +23,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.ChatDownloadListener;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.entity.user.UserEntity;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
@@ -65,7 +65,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     protected String mCurrentAudioPath;
     protected AnimationDrawable mAnimDrawable;
 
-    private UserEntity mChatOpposite;
+    private User mChatOpposite;
 
     protected static long TIME_INTERVAL = 60 * 5;
     protected static final int TYPE_COUNT = 8;
@@ -91,7 +91,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
 
     }
 
-    public ChatAdapter(Context ctx, ArrayList<T> list, UserEntity userEntity) {
+    public ChatAdapter(Context ctx, ArrayList<T> list, User user) {
         mContext = ctx;
         mList = list;
         mDownloadList = new HashMap<>();
@@ -99,7 +99,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
                 showImageForEmptyUri(R.drawable.default_avatar).
                 showImageOnFail(R.drawable.default_avatar).build();
-        mChatOpposite = userEntity;
+        mChatOpposite = user;
     }
 
     public void addItem(T chat) {
@@ -299,7 +299,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUserEntity.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.pbLoading.setVisibility(View.GONE);
@@ -384,7 +384,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
         }
         holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUserEntity.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
     }
 
     protected void handlerReceiveImage(final ViewHolder holder, int position) {
@@ -445,7 +445,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             holder.tvSendTime.setVisibility(View.VISIBLE);
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUserEntity.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);

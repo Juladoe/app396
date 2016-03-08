@@ -17,7 +17,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
 import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
-import com.edusoho.kuozhi.v3.entity.user.UserEntity;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -130,7 +130,7 @@ public class M3U8DownService extends Service {
         mThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                if (EdusohoApp.app.loginUserEntity == null) {
+                if (EdusohoApp.app.loginUser == null) {
                     return;
                 }
                 Log.d(TAG, "m3u8 download_service onStartCommand");
@@ -142,7 +142,7 @@ public class M3U8DownService extends Service {
                 M3U8Util m3U8Util = new M3U8Util(mContext);
                 mM3U8UitlList.put(lessonId, m3U8Util);
                 createNotification(lessonId, lessonTitle);
-                m3U8Util.download(lessonId, courseId, EdusohoApp.app.loginUserEntity.id);
+                m3U8Util.download(lessonId, courseId, EdusohoApp.app.loginUser.id);
             }
         });
     }
@@ -220,14 +220,14 @@ public class M3U8DownService extends Service {
         public void invoke(Intent intent) {
             int lessonId = intent.getIntExtra(Const.LESSON_ID, 0);
             M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
-            UserEntity loginUserEntity = EdusohoApp.app.loginUserEntity;
-            if (m3U8Util == null || loginUserEntity == null) {
+            User loginUser = EdusohoApp.app.loginUser;
+            if (m3U8Util == null || loginUser == null) {
                 return;
             }
             String title = m3U8Util.getLessonTitle();
 
             M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
-                    mContext, loginUserEntity.id, lessonId, EdusohoApp.app.domain, M3U8Util.ALL);
+                    mContext, loginUser.id, lessonId, EdusohoApp.app.domain, M3U8Util.ALL);
             if (m3U8DbModel == null) {
                 return;
             }
@@ -243,12 +243,12 @@ public class M3U8DownService extends Service {
     };
 
     public void startDownloadLasterTask() {
-        UserEntity loginUserEntity = EdusohoApp.app.loginUserEntity;
-        if (loginUserEntity == null) {
+        User loginUser = EdusohoApp.app.loginUser;
+        if (loginUser == null) {
             return;
         }
         ArrayList<M3U8DbModel> m3U8DbModels = M3U8Util.queryM3U8DownTasks(
-                mContext, EdusohoApp.app.domain, loginUserEntity.id);
+                mContext, EdusohoApp.app.domain, loginUser.id);
         int size = m3U8DbModels.size();
         size = size > 3 ? 3 : size;
 

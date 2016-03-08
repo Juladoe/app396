@@ -297,7 +297,7 @@ public class SearchDialogFragment extends DialogFragment {
                     count = 0;
                     if (searchFriendResult.mobile.length != 0) {
                         for (Friend friend : searchFriendResult.mobile) {
-                            if (friend.id == mApp.loginUserEntity.id) {
+                            if (friend.id == mApp.loginUser.id) {
                                 continue;
                             }
                             mAdapter.addItem(friend);
@@ -308,7 +308,7 @@ public class SearchDialogFragment extends DialogFragment {
                     }
                     if (searchFriendResult.qq.length != 0) {
                         for (Friend friend : searchFriendResult.qq) {
-                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUserEntity.id)) {
+                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
                                 continue;
                             } else {
                                 friendIds[count] = friend.id;
@@ -319,7 +319,7 @@ public class SearchDialogFragment extends DialogFragment {
                     }
                     if (searchFriendResult.nickname.length != 0) {
                         for (Friend friend : searchFriendResult.nickname) {
-                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUserEntity.id)) {
+                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
                                 continue;
                             } else {
                                 friendIds[count] = friend.id;
@@ -369,7 +369,7 @@ public class SearchDialogFragment extends DialogFragment {
         requestUrl.url = String.format(requestUrl.url,friend.id);
         final HashMap<String, String> params = requestUrl.getParams();
         params.put("method", "follow");
-        params.put("userId", mApp.loginUserEntity.id + "");
+        params.put("userId", mApp.loginUser.id + "");
 
         mFriendProvider.followUsers(requestUrl).success(new NormalCallback<FollowResult>() {
             @Override
@@ -399,7 +399,7 @@ public class SearchDialogFragment extends DialogFragment {
         if (users.length()>0){
             users.deleteCharAt(users.length() - 1);
         }
-        requestUrl.url = String.format(requestUrl.url,mApp.loginUserEntity.id,users.toString());
+        requestUrl.url = String.format(requestUrl.url,mApp.loginUser.id,users.toString());
 
         return requestUrl;
     }

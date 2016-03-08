@@ -213,7 +213,7 @@ public class DownLoadService extends Service {
                 queryParser,
                 "select * from lesson_resource where materialId=? and userId=? and host=?",
                 String.valueOf(materialId),
-                String.valueOf(app.loginUserEntity.id),
+                String.valueOf(app.loginUser.id),
                 String.valueOf(app.domain)
         );
 
@@ -225,7 +225,7 @@ public class DownLoadService extends Service {
         cv.put("host", app.domain);
         cv.put("lessonId", lessonMaterial.lessonId);
         cv.put("materialId", lessonMaterial.id);
-        cv.put("userId", app.loginUserEntity.id);
+        cv.put("userId", app.loginUser.id);
         cv.put("total", 0);
         cv.put("download", 0);
         sqliteUtil.insert("lesson_resource", cv);
@@ -274,7 +274,7 @@ public class DownLoadService extends Service {
                 "select * from lesson_resource where lessonId=? and host=? and userId=?",
                 String.valueOf(lessonId),
                 app.domain,
-                String.valueOf(app.loginUserEntity.id)
+                String.valueOf(app.loginUser.id)
         );
         return list;
     }
@@ -341,7 +341,7 @@ public class DownLoadService extends Service {
 
         StringBuffer dirBuilder = new StringBuffer(workSpace.getAbsolutePath());
         dirBuilder.append("/lesson_resource/")
-                .append(app.loginUserEntity.id)
+                .append(app.loginUser.id)
                 .append("/")
                 .append(app.domain);
 

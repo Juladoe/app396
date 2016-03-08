@@ -125,9 +125,9 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         mThreadId = intent.getIntExtra(THREAD_ID, 0);
         CurrentThreadId = mThreadId;
         if (TextUtils.isEmpty(mRoleType)) {
-            String[] roles = new String[app.loginUserEntity.roles.length];
-            for (int i = 0; i < app.loginUserEntity.roles.length; i++) {
-                roles[i] = app.loginUserEntity.roles[i].toString();
+            String[] roles = new String[app.loginUser.roles.length];
+            for (int i = 0; i < app.loginUser.roles.length; i++) {
+                roles[i] = app.loginUser.roles[i].toString();
             }
             if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
                 mRoleType = PushUtil.ChatUserType.TEACHER;
@@ -204,7 +204,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
             ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
             addItem2ListView(discussModel);
-            getUpYunUploadInfo(file, app.loginUserEntity.id, new NormalCallback<UpYunUploadResult>() {
+            getUpYunUploadInfo(file, app.loginUser.id, new NormalCallback<UpYunUploadResult>() {
                 @Override
                 public void success(final UpYunUploadResult result) {
                     if (result != null) {
@@ -254,7 +254,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
         try {
             final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
-            getUpYunUploadInfo(file, app.loginUserEntity.id, new NormalCallback<UpYunUploadResult>() {
+            getUpYunUploadInfo(file, app.loginUser.id, new NormalCallback<UpYunUploadResult>() {
                 @Override
                 public void success(final UpYunUploadResult result) {
                     if (result != null) {
@@ -585,9 +585,9 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         model.lessonId = mLessonId;
         model.threadId = mThreadId;
         model.user = new CourseThreadPostEntity.UserEntity();
-        model.user.id = app.loginUserEntity.id;
-        model.user.nickname = app.loginUserEntity.nickname;
-        model.user.mediumAvatar = app.loginUserEntity.mediumAvatar;
+        model.user.id = app.loginUser.id;
+        model.user.nickname = app.loginUser.nickname;
+        model.user.mediumAvatar = app.loginUser.mediumAvatar;
         model.content = content;
         model.type = contentType;
         model.delivery = deliveryState;
@@ -601,9 +601,9 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         model.courseId = mCourseId;
         model.lessonId = mLessonId;
         model.user = new CourseThreadEntity.UserEntity();
-        model.user.id = app.loginUserEntity.id;
-        model.user.nickname = app.loginUserEntity.nickname;
-        model.user.mediumAvatar = app.loginUserEntity.mediumAvatar;
+        model.user.id = app.loginUser.id;
+        model.user.nickname = app.loginUser.nickname;
+        model.user.mediumAvatar = app.loginUser.mediumAvatar;
         model.type = PushUtil.ChatMsgType.TEXT;
         model.title = content;
         model.content = content;
@@ -680,9 +680,9 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         V2CustomContent v2CustomContent = new V2CustomContent();
         v2CustomContent.setType(type);
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setId(app.loginUserEntity.id);
-        fromEntity.setImage(app.loginUserEntity.mediumAvatar);
-        fromEntity.setNickname(app.loginUserEntity.nickname);
+        fromEntity.setId(app.loginUser.id);
+        fromEntity.setImage(app.loginUser.mediumAvatar);
+        fromEntity.setNickname(app.loginUser.nickname);
         fromEntity.setType(mRoleType);
         v2CustomContent.setFrom(fromEntity);
         V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();

@@ -301,7 +301,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             });
 
             model.m3U8DbModles = M3U8Util.getM3U8ModelList(
-                    mContext, ids, app.loginUserEntity.id, this.host, isFinish);
+                    mContext, ids, app.loginUser.id, this.host, isFinish);
             for (LessonItem lessonItem : lessonItems) {
                 if (model.m3U8DbModles.indexOfKey(lessonItem.id) < 0) {
                     continue;
@@ -423,7 +423,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
         if (workSpace == null) {
             return;
         }
-        File videosDir = new File(workSpace, "videos/" + app.loginUserEntity.id + "/" + app.domain);
+        File videosDir = new File(workSpace, "videos/" + app.loginUser.id + "/" + app.domain);
         for (int id : ids) {
             FileUtils.deleteFile(new File(videosDir, String.valueOf(id)).getAbsolutePath());
         }

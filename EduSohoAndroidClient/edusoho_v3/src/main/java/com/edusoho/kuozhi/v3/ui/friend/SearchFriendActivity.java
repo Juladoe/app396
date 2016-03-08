@@ -106,7 +106,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
     public RequestUrl setRelationParams(ArrayList<Friend> list) {
         RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
         StringBuffer sb = new StringBuffer(requestUrl.url.toString());
-        sb.append(app.loginUserEntity.id + "/" + "friendship?toIds=");
+        sb.append(app.loginUser.id + "/" + "friendship?toIds=");
         for (Friend friend : list) {
             sb.append(friend.id + ",");
         }
@@ -139,7 +139,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                 count = 0;
                 if (searchFriendResult.mobile != null) {
                     for (Friend friend : searchFriendResult.mobile) {
-                        if (friend.id == app.loginUserEntity.id) {
+                        if (friend.id == app.loginUser.id) {
                             continue;
                         }
                         mAdapter.addItem(friend);
@@ -150,7 +150,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                 }
                 if (searchFriendResult.qq != null) {
                     for (Friend friend : searchFriendResult.qq) {
-                        if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUserEntity.id)) {
+                        if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUser.id)) {
                             continue;
                         } else {
                             friendIds[count] = friend.id;
@@ -161,7 +161,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                 }
                 if (searchFriendResult.nickname != null) {
                     for (Friend friend : searchFriendResult.nickname) {
-                        if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUserEntity.id)) {
+                        if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == app.loginUser.id)) {
                             continue;
                         } else {
                             friendIds[count] = friend.id;
@@ -259,7 +259,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                     requestUrl.url = stringBuffer.toString();
                     HashMap<String, String> params = requestUrl.getParams();
                     params.put("method", "follow");
-                    params.put("userId", app.loginUserEntity.id + "");
+                    params.put("userId", app.loginUser.id + "");
                     ajaxPost(requestUrl, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {

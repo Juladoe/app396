@@ -60,7 +60,7 @@ public class SettingActivity extends ActionBarBaseActivity {
 
         btnLogout = (Button) findViewById(R.id.setting_logout_btn);
         btnLogout.setOnClickListener(logoutClickLister);
-        if (app.loginUserEntity != null) {
+        if (app.loginUser != null) {
             btnLogout.setVisibility(View.VISIBLE);
         } else {
             btnLogout.setVisibility(View.INVISIBLE);
@@ -128,13 +128,13 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener logoutClickLister = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (TextUtils.isEmpty(app.loginUserEntity.thirdParty)) {
+            if (TextUtils.isEmpty(app.loginUser.thirdParty)) {
                 RequestUrl requestUrl = app.bindUrl(Const.LOGOUT, true);
                 mActivity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Bundle bundle = new Bundle();
-                        bundle.putString(Const.BIND_USER_ID, app.loginUserEntity.id + "");
+                        bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
                         app.pushUnregister(bundle);
                         app.removeToken();
                         btnLogout.setVisibility(View.INVISIBLE);
@@ -152,7 +152,7 @@ public class SettingActivity extends ActionBarBaseActivity {
                 }, "");
 
             } else {
-                ThirdPartyLogin.getInstance(mContext).loginOut(app.loginUserEntity.thirdParty);
+                ThirdPartyLogin.getInstance(mContext).loginOut(app.loginUser.thirdParty);
                 app.removeToken();
                 btnLogout.setVisibility(View.INVISIBLE);
                 app.sendMessage(Const.LOGOUT_SUCCESS, null);

@@ -72,12 +72,12 @@ public class MineFragment extends BaseFragment {
     }
 
     private void initData() {
-        if (app.loginUserEntity == null || TextUtils.isEmpty(app.token)) {
+        if (app.loginUser == null || TextUtils.isEmpty(app.token)) {
             return;
         }
-        tvNickname.setText(app.loginUserEntity.nickname);
-        tvTitle.setText(app.loginUserEntity.title);
-        ImageLoader.getInstance().displayImage(app.loginUserEntity.mediumAvatar, rivAvatar, new AvatarLoadingListener(app.getCurrentUserRole()));
+        tvNickname.setText(app.loginUser.nickname);
+        tvTitle.setText(app.loginUser.title);
+        ImageLoader.getInstance().displayImage(app.loginUser.mediumAvatar, rivAvatar, new AvatarLoadingListener(app.getCurrentUserRole()));
     }
 
     private View.OnClickListener mRadioBtnClickListener = new View.OnClickListener() {
@@ -118,7 +118,7 @@ public class MineFragment extends BaseFragment {
     private View.OnClickListener mUserInfoClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (app.loginUserEntity == null) {
+            if (app.loginUser == null) {
                 return;
             }
 

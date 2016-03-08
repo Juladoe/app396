@@ -99,9 +99,9 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         setBackMode(BACK, mClassroomName);
         mFromClassroomId = intent.getIntExtra(FROM_ID, mFromClassroomId);
         if (TextUtils.isEmpty(mRoleType)) {
-            String[] roles = new String[app.loginUserEntity.roles.length];
-            for (int i = 0; i < app.loginUserEntity.roles.length; i++) {
-                roles[i] = app.loginUserEntity.roles[i].toString();
+            String[] roles = new String[app.loginUser.roles.length];
+            for (int i = 0; i < app.loginUser.roles.length; i++) {
+                roles[i] = app.loginUser.roles[i].toString();
             }
             if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
                 mRoleType = PushUtil.ChatUserType.TEACHER;
@@ -162,7 +162,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     };
 
     private ArrayList<ClassroomDiscussEntity> getList(int start) {
-        ArrayList<ClassroomDiscussEntity> list = mClassroomDiscussDataSource.getLists(mFromClassroomId, app.loginUserEntity.id, start, Const.NEWS_LIMIT);
+        ArrayList<ClassroomDiscussEntity> list = mClassroomDiscussDataSource.getLists(mFromClassroomId, app.loginUser.id, start, Const.NEWS_LIMIT);
         Collections.reverse(list);
         return list;
     }
@@ -170,8 +170,8 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     @Override
     public void sendMsg(String content) {
         mSendTime = (int) (System.currentTimeMillis() / 1000);
-        final ClassroomDiscussEntity model = new ClassroomDiscussEntity(0, mFromClassroomId, app.loginUserEntity.id, app.loginUserEntity.nickname, app.loginUserEntity.mediumAvatar,
-                etSend.getText().toString(), app.loginUserEntity.id, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
+        final ClassroomDiscussEntity model = new ClassroomDiscussEntity(0, mFromClassroomId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
+                etSend.getText().toString(), app.loginUser.id, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
 
         addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
 
@@ -216,7 +216,7 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     public void sendMsgAgain(final BaseMsgEntity model) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUserEntity.nickname);
+        params.put("title", app.loginUser.nickname);
         params.put("content", model.content);
         params.put("custom", gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
@@ -268,8 +268,8 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
         }
         try {
             mSendTime = (int) (System.currentTimeMillis() / 1000);
-            final ClassroomDiscussEntity model = new ClassroomDiscussEntity(0, mFromClassroomId, app.loginUserEntity.id, app.loginUserEntity.nickname, app.loginUserEntity.mediumAvatar,
-                    file.getPath(), app.loginUserEntity.id, type, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
+            final ClassroomDiscussEntity model = new ClassroomDiscussEntity(0, mFromClassroomId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
+                    file.getPath(), app.loginUser.id, type, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
 
             //生成New页面的消息并通知更改
             WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
@@ -433,9 +433,9 @@ public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAd
     private V2CustomContent getV2CustomContent(String type, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setId(app.loginUserEntity.id);
-        fromEntity.setImage(app.loginUserEntity.mediumAvatar);
-        fromEntity.setNickname(app.loginUserEntity.nickname);
+        fromEntity.setId(app.loginUser.id);
+        fromEntity.setImage(app.loginUser.mediumAvatar);
+        fromEntity.setNickname(app.loginUser.nickname);
         fromEntity.setType(mRoleType);
         v2CustomContent.setFrom(fromEntity);
         V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();

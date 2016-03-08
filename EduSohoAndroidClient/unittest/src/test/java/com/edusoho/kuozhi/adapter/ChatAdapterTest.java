@@ -5,7 +5,7 @@ import android.view.View;
 import com.edusoho.kuozhi.BuildConfig;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
-import com.edusoho.kuozhi.v3.entity.user.UserEntity;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -32,7 +32,7 @@ import java.util.ArrayList;
 public class ChatAdapterTest {
 
     private Context mContext;
-    private UserEntity mUserEntity;
+    private User mUser;
 
     @Before
     public void setUp() {
@@ -40,7 +40,7 @@ public class ChatAdapterTest {
         ActionBarBaseActivity actionBarBaseActivity = Robolectric.buildActivity(ActionBarBaseActivity.class).get();
         EdusohoApp.app = new EdusohoApp();
         EdusohoApp.app.domain = "";
-        mUserEntity = new UserEntity();
+        mUser = new User();
 
         mContext = actionBarBaseActivity.getApplicationContext();
 
@@ -54,7 +54,7 @@ public class ChatAdapterTest {
 
     @Test
     public void testAdapterAddItem() {
-        ChatAdapter<Chat> adapter = new ChatAdapter<Chat>(mContext, new ArrayList<Chat>(), mUserEntity);
+        ChatAdapter<Chat> adapter = new ChatAdapter<Chat>(mContext, new ArrayList<Chat>(), mUser);
 
         Chat chat = new Chat();
         chat.chatId = 1;
@@ -86,7 +86,7 @@ public class ChatAdapterTest {
         chat.content = "content";
         list.add(chat);
 
-        ChatAdapter<Chat> adapter = new ChatAdapter<Chat>(mContext, list, mUserEntity);
+        ChatAdapter<Chat> adapter = new ChatAdapter<Chat>(mContext, list, mUser);
 
         Assert.assertEquals(1, adapter.getCount());
         Chat chat1 = (Chat) adapter.getItem(0);
@@ -109,7 +109,7 @@ public class ChatAdapterTest {
         chat.type = PushUtil.ChatMsgType.TEXT;
         list.add(chat);
 
-        ChatAdapter<Chat> adapter = new ChatAdapter<Chat>(mContext, list, mUserEntity);
+        ChatAdapter<Chat> adapter = new ChatAdapter<Chat>(mContext, list, mUser);
 
         View view = adapter.getView(0, null, null);
         Assert.assertNotNull(view);

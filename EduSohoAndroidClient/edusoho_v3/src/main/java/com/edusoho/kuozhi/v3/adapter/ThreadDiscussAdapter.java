@@ -152,7 +152,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
     public int getItemViewType(int pos) {
         ThreadDiscussEntity model = mList.get(pos);
         int msgType = -1;
-        if (model.userId == EdusohoApp.app.loginUserEntity.id) {
+        if (model.userId == EdusohoApp.app.loginUser.id) {
             switch (model.type) {
                 case PushUtil.ChatMsgType.TEXT:
                     msgType = MSG_SEND_TEXT;
@@ -221,7 +221,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         holder.tvSendTime.setVisibility(View.GONE);
         setTimer(pos, holder.tvSendTime);
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUserEntity.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.pbLoading.setVisibility(View.GONE);
@@ -284,14 +284,14 @@ public class ThreadDiscussAdapter extends ChatAdapter {
             ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(imageLocalPath), holder.ivMsgImage, EdusohoApp.app.mOptions);
             holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         }
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUserEntity.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
     }
 
     @Override
     protected void handlerSendAudio(final ViewHolder holder, int pos) {
         final ThreadDiscussEntity model = mList.get(pos);
         setTimer(pos, holder.tvSendTime);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUserEntity.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);

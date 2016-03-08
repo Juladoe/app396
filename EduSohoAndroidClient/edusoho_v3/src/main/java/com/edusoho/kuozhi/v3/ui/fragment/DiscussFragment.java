@@ -238,7 +238,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     }
 
     private ArrayList<CourseDiscussEntity> getList(int start) {
-        ArrayList<CourseDiscussEntity> list = mCourseDiscussDataSource.getLists(mCourseId, app.loginUserEntity.id, start, Const.NEWS_LIMIT);
+        ArrayList<CourseDiscussEntity> list = mCourseDiscussDataSource.getLists(mCourseId, app.loginUser.id, start, Const.NEWS_LIMIT);
         Collections.reverse(list);
         return list;
     }
@@ -268,8 +268,8 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
 
     private void sendMsg(String content) {
         mSendTime = (int) (System.currentTimeMillis() / 1000);
-        final CourseDiscussEntity model = new CourseDiscussEntity(0, mCourseId, app.loginUserEntity.id, app.loginUserEntity.nickname, app.loginUserEntity.mediumAvatar,
-                etSend.getText().toString(), app.loginUserEntity.id, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
+        final CourseDiscussEntity model = new CourseDiscussEntity(0, mCourseId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
+                etSend.getText().toString(), app.loginUser.id, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
 
         addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
 
@@ -314,7 +314,7 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     public void sendMsgAgain(final BaseMsgEntity model) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUserEntity.nickname);
+        params.put("title", app.loginUser.nickname);
         params.put("content", model.content);
         params.put("custom", mActivity.gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
 
@@ -367,8 +367,8 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         }
         try {
             mSendTime = (int) (System.currentTimeMillis() / 1000);
-            final CourseDiscussEntity model = new CourseDiscussEntity(0, mCourseId, app.loginUserEntity.id, app.loginUserEntity.nickname, app.loginUserEntity.mediumAvatar,
-                    file.getPath(), app.loginUserEntity.id, type, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
+            final CourseDiscussEntity model = new CourseDiscussEntity(0, mCourseId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
+                    file.getPath(), app.loginUser.id, type, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
 
             //生成New页面的消息并通知更改
             WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
@@ -806,9 +806,9 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
     private V2CustomContent getV2CustomContent(String type, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setId(app.loginUserEntity.id);
-        fromEntity.setImage(app.loginUserEntity.mediumAvatar);
-        fromEntity.setNickname(app.loginUserEntity.nickname);
+        fromEntity.setId(app.loginUser.id);
+        fromEntity.setImage(app.loginUser.mediumAvatar);
+        fromEntity.setNickname(app.loginUser.nickname);
         fromEntity.setType(mUserType);
         v2CustomContent.setFrom(fromEntity);
         V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();

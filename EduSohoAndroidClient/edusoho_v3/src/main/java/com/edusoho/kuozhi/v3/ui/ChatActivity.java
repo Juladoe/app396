@@ -16,7 +16,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.entity.user.UserEntity;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
@@ -56,7 +56,7 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
     private ChatAdapter<Chat> mAdapter;
     private ChatDataSource mChatDataSource;
     private int mSendTime;
-    private UserEntity mFromUserEntityInfo;
+    private User mFromUserInfo;
     private int mFromId;
     private int mToId;
 
@@ -103,9 +103,9 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
             return;
         }
         if (TextUtils.isEmpty(mMyType)) {
-            String[] roles = new String[app.loginUserEntity.roles.length];
-            for (int i = 0; i < app.loginUserEntity.roles.length; i++) {
-                roles[i] = app.loginUserEntity.roles[i].toString();
+            String[] roles = new String[app.loginUser.roles.length];
+            for (int i = 0; i < app.loginUser.roles.length; i++) {
+                roles[i] = app.loginUser.roles[i].toString();
             }
             if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
                 mMyType = PushUtil.ChatUserType.TEACHER;
@@ -116,11 +116,11 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
 
         mFromId = intent.getIntExtra(FROM_ID, mFromId);
         mType = intent.getStringExtra(Const.NEWS_TYPE);
-        mToId = app.loginUserEntity.id;
-        mFromUserEntityInfo = new UserEntity();
-        mFromUserEntityInfo.id = mFromId;
-        mFromUserEntityInfo.mediumAvatar = intent.getStringExtra(HEAD_IMAGE_URL);
-        mFromUserEntityInfo.nickname = intent.getStringExtra(Const.ACTIONBAR_TITLE);
+        mToId = app.loginUser.id;
+        mFromUserInfo = new User();
+        mFromUserInfo.id = mFromId;
+        mFromUserInfo.mediumAvatar = intent.getStringExtra(HEAD_IMAGE_URL);
+        mFromUserInfo.nickname = intent.getStringExtra(Const.ACTIONBAR_TITLE);
         NotificationUtil.cancelById(mFromId);
         setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
         CurrentFromId = mFromId;
@@ -130,7 +130,7 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         initCacheFolder();
         getFriendUserInfo();
 
-        mAdapter = new ChatAdapter<>(mContext, getChatList(0), mFromUserEntityInfo);
+        mAdapter = new ChatAdapter<>(mContext, getChatList(0), mFromUserInfo);
         mAdapter.setSendImageClickListener(this);
         lvMessage.setAdapter(mAdapter);
         mStart = mAdapter.getCount();
@@ -185,7 +185,7 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
     @Override
     public void sendMsg(String content) {
         mSendTime = (int) (System.currentTimeMillis() / 1000);
-        final Chat chat = new Chat(app.loginUserEntity.id, mFromId, app.loginUserEntity.nickname, app.loginUserEntity.mediumAvatar,
+        final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
                 etSend.getText().toString(), PushUtil.ChatMsgType.TEXT, mSendTime);
 
         addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
@@ -194,7 +194,7 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         etSend.requestFocus();
 
         WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-        message.setTitle(mFromUserEntityInfo.nickname);
+        message.setTitle(mFromUserInfo.nickname);
         message.setContent(chat.content);
         V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, chat.content);
         String v2CustomContentJson = gson.toJson(v2CustomContent);
@@ -204,10 +204,10 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
 
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUserEntity.nickname);
+        params.put("title", app.loginUser.nickname);
         params.put("content", content);
-        v2CustomContent.getFrom().setId(app.loginUserEntity.id);
-        v2CustomContent.getFrom().setImage(app.loginUserEntity.mediumAvatar);
+        v2CustomContent.getFrom().setId(app.loginUser.id);
+        v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
         v2CustomContent.getFrom().setType(mMyType);
         params.put("custom", gson.toJson(v2CustomContent));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
@@ -233,11 +233,11 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
     public void sendMsgAgain(final BaseMsgEntity model) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUserEntity.nickname);
+        params.put("title", app.loginUser.nickname);
         params.put("content", model.content);
         V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content);
-        v2CustomContent.getFrom().setId(app.loginUserEntity.id);
-        v2CustomContent.getFrom().setImage(app.loginUserEntity.mediumAvatar);
+        v2CustomContent.getFrom().setId(app.loginUser.id);
+        v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
         v2CustomContent.getFrom().setType(mMyType);
         params.put("custom", gson.toJson(v2CustomContent));
 
@@ -262,11 +262,11 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
     private void sendMediaMsg(final Chat chat, String type) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         V2CustomContent v2CustomContent = getV2CustomContent(type, chat.upyunMediaGetUrl);
-        v2CustomContent.getFrom().setId(app.loginUserEntity.id);
-        v2CustomContent.getFrom().setImage(app.loginUserEntity.mediumAvatar);
+        v2CustomContent.getFrom().setId(app.loginUser.id);
+        v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
         v2CustomContent.getFrom().setType(mMyType);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUserEntity.nickname);
+        params.put("title", app.loginUser.nickname);
         params.put("content", PushUtil.getNotificationContent(type));
         params.put("custom", gson.toJson(v2CustomContent));
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
@@ -300,12 +300,12 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         }
         try {
             mSendTime = (int) (System.currentTimeMillis() / 1000);
-            final Chat chat = new Chat(app.loginUserEntity.id, mFromId, app.loginUserEntity.nickname, app.loginUserEntity.mediumAvatar,
+            final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
                     file.getPath(), type, mSendTime);
 
             //生成New页面的消息并通知更改
             WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-            message.setTitle(mFromUserEntityInfo.nickname);
+            message.setTitle(mFromUserInfo.nickname);
             message.setContent(String.format("[%s]", strType));
             V2CustomContent v2CustomContent = getV2CustomContent(type, message.getContent());
             message.setCustomContentJson(gson.toJson(v2CustomContent));
@@ -405,8 +405,8 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
         chat.delivery = delivery;
         long chatId = mChatDataSource.create(chat);
         chat.chatId = (int) chatId;
-        if (app.loginUserEntity != null) {
-            chat.headImgUrl = app.loginUserEntity.mediumAvatar;
+        if (app.loginUser != null) {
+            chat.headImgUrl = app.loginUser.mediumAvatar;
         }
         mAdapter.addItem(chat);
         mStart = mStart + 1;
@@ -428,14 +428,14 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
      * 获取对方信息
      */
     private void getFriendUserInfo() {
-        if (mFromUserEntityInfo == null) {
+        if (mFromUserInfo == null) {
             RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
             HashMap<String, String> params = requestUrl.getParams();
             params.put("userId", mFromId + "");
             ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    mFromUserEntityInfo = parseJsonValue(response, new TypeToken<UserEntity>() {
+                    mFromUserInfo = parseJsonValue(response, new TypeToken<User>() {
                     });
                 }
             }, new Response.ErrorListener() {
@@ -471,10 +471,10 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
     private V2CustomContent getV2CustomContent(String type, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setNickname(app.loginUserEntity.nickname);
+        fromEntity.setNickname(app.loginUser.nickname);
         fromEntity.setId(mFromId);
         fromEntity.setType(mType);
-        fromEntity.setImage(mFromUserEntityInfo.mediumAvatar);
+        fromEntity.setImage(mFromUserInfo.mediumAvatar);
         v2CustomContent.setFrom(fromEntity);
         V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
         toEntity.setId(mFromId);
@@ -500,8 +500,8 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
                 case Const.ADD_MSG:
                     if (mFromId == v2CustomContent.getFrom().getId()) {
                         Chat chat = new Chat(wrapperMessage);
-                        if (mFromUserEntityInfo != null) {
-                            chat.headImgUrl = mFromUserEntityInfo.mediumAvatar;
+                        if (mFromUserInfo != null) {
+                            chat.headImgUrl = mFromUserInfo.mediumAvatar;
                         }
                         mAdapter.addItem(chat);
                     }

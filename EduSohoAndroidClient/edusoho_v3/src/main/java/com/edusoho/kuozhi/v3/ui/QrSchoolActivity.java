@@ -142,7 +142,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         final School site = userResult.site;
                         mApp.saveApiToken(token.token);
                         Bundle bundle = new Bundle();
-                        bundle.putString(Const.BIND_USER_ID, userResult.userEntity == null ? "" : userResult.userEntity.id + "");
+                        bundle.putString(Const.BIND_USER_ID, userResult.user == null ? "" : userResult.user.id + "");
                         bundle.putSerializable(Const.SHOW_SCH_SPLASH, new SwitchNetSchoolListener() {
                             @Override
                             public void showSplash() {
@@ -150,7 +150,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                             }
                         });
                         mApp.pushRegister(bundle);
-                        if (userResult.userEntity == null) {
+                        if (userResult.user == null) {
                             startSchoolActivity(site);
                         }
                     }

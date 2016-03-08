@@ -10,7 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.entity.user.UserEntity;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
 import com.edusoho.kuozhi.v3.util.AssetsUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -45,12 +45,12 @@ public class SqliteUtil extends SQLiteOpenHelper {
         return instance;
     }
 
-    public static void saveUser(UserEntity userEntity) {
+    public static void saveUser(User user) {
         //保存用户
         EdusohoApp app = EdusohoApp.app;
         ContentValues cv = new ContentValues();
-        cv.put("key", "data-" + userEntity.id);
-        cv.put("value", app.gson.toJson(userEntity));
+        cv.put("key", "data-" + user.id);
+        cv.put("value", app.gson.toJson(user));
         cv.put("type", Const.CACHE_USER_TYPE);
         SqliteUtil.getUtil(app).insert("data_cache", cv);
     }

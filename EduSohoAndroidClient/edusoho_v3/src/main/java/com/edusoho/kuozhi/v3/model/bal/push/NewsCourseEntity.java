@@ -40,7 +40,7 @@ public class NewsCourseEntity {
         this.fromType = v2CustomContent.getFrom().getType();
         this.bodyType = v2CustomContent.getBody().getType();
         this.lessonType = v2CustomContent.getBody().getLessonType();
-        this.userId = EdusohoApp.app.loginUserEntity.id;
+        this.userId = EdusohoApp.app.loginUser.id;
         this.createdTime = v2CustomContent.getCreatedTime();
         this.lessonId = v2CustomContent.getBody().getLessonId();
         this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
@@ -60,7 +60,7 @@ public class NewsCourseEntity {
         this.fromType = v2CustomContent.getFrom().getType();
         this.bodyType = v2CustomContent.getBody().getType();
         this.lessonType = v2CustomContent.getBody().getLessonType();
-        this.userId = EdusohoApp.app.loginUserEntity.id;
+        this.userId = EdusohoApp.app.loginUser.id;
         this.createdTime = v2CustomContent.getCreatedTime();
         this.lessonId = v2CustomContent.getBody().getLessonId();
         this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();

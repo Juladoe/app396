@@ -136,7 +136,7 @@ public class ShareTool {
 
     private List<ListData> getCustomListData() {
         List<ListData> listDatas = new ArrayList<>();
-        if (EdusohoApp.app.loginUserEntity == null) {
+        if (EdusohoApp.app.loginUser == null) {
             return listDatas;
         }
         ListData data = new ListData(

@@ -35,7 +35,7 @@ import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
 import com.edusoho.kuozhi.v3.listener.SwitchNetSchoolListener;
-import com.edusoho.kuozhi.v3.entity.user.UserEntity;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
@@ -90,7 +90,7 @@ public class EdusohoApp extends Application {
     public String domain;
     public Gson gson;
     public School defaultSchool;
-    public UserEntity loginUserEntity;
+    public User loginUser;
     public String apiVersion;
     public String schoolHost = "";
     public CoreEngine mEngine;
@@ -470,15 +470,15 @@ public class EdusohoApp extends Application {
         this.domain = getDomain();
     }
 
-    public UserEntity loadUserInfo() {
+    public User loadUserInfo() {
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(getBaseContext());
         String strUser = tokenMap.get("userInfo").toString();
-        UserEntity userEntity = null;
+        User user = null;
         if (!TextUtils.isEmpty(strUser)) {
-            userEntity = parseJsonValue(AppUtil.encode2(strUser), new TypeToken<UserEntity>() {
+            user = parseJsonValue(AppUtil.encode2(strUser), new TypeToken<User>() {
             });
         }
-        return userEntity;
+        return user;
     }
 
     private void loadToken() {
@@ -500,26 +500,26 @@ public class EdusohoApp extends Application {
 
         token = userResult.token == null || "".equals(userResult.token) ? "" : userResult.token;
         if (TextUtils.isEmpty(token)) {
-            loginUserEntity = null;
+            loginUser = null;
         } else {
-            loginUserEntity = userResult.userEntity;
-            SqliteUtil.saveUser(loginUserEntity);
+            loginUser = userResult.user;
+            SqliteUtil.saveUser(loginUser);
         }
     }
 
     public void removeToken() {
         ApiTokenUtil.removeToken(getBaseContext());
 
-        SqliteUtil.clearUser(loginUserEntity == null ? 0 : loginUserEntity.id);
+        SqliteUtil.clearUser(loginUser == null ? 0 : loginUser.id);
         token = null;
-        loginUserEntity = null;
+        loginUser = null;
 
         EdusohoMainService mService = getService();
         if (mService == null) {
             return;
         }
         mService.sendMessage(EdusohoMainService.EXIT_USER, null);
-        Log.d(null, "remove->token data->" + loginUserEntity);
+        Log.d(null, "remove->token data->" + loginUser);
     }
 
     public boolean taskIsRun(String name) {
@@ -555,12 +555,12 @@ public class EdusohoApp extends Application {
     }
 
     public int getMsgDisturbFromCourseId(int fromId) {
-        SharedPreferences sp = getSharedPreferences("msgDisturbConfig_" + loginUserEntity.id, MODE_APPEND);
+        SharedPreferences sp = getSharedPreferences("msgDisturbConfig_" + loginUser.id, MODE_APPEND);
         return sp.getInt(fromId + "", 0);
     }
 
     public void saveMsgDisturbConfig(int fromId, int param) {
-        SharedPreferences sp = getSharedPreferences("msgDisturbConfig_" + loginUserEntity.id, MODE_APPEND);
+        SharedPreferences sp = getSharedPreferences("msgDisturbConfig_" + loginUser.id, MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
         edit.putInt(fromId + "", param);
         edit.apply();
@@ -907,19 +907,19 @@ public class EdusohoApp extends Application {
     }
 
     public String getCurrentUserRole() {
-        if (TextUtils.isEmpty(loginUserEntity.role)) {
-            String[] roles = new String[app.loginUserEntity.roles.length];
-            for (int i = 0; i < app.loginUserEntity.roles.length; i++) {
-                roles[i] = app.loginUserEntity.roles[i].toString();
+        if (TextUtils.isEmpty(loginUser.role)) {
+            String[] roles = new String[app.loginUser.roles.length];
+            for (int i = 0; i < app.loginUser.roles.length; i++) {
+                roles[i] = app.loginUser.roles[i].toString();
             }
             if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
-                loginUserEntity.role = PushUtil.ChatUserType.TEACHER;
+                loginUser.role = PushUtil.ChatUserType.TEACHER;
             } else {
-                loginUserEntity.role = PushUtil.ChatUserType.FRIEND;
+                loginUser.role = PushUtil.ChatUserType.FRIEND;
             }
-            return loginUserEntity.role;
+            return loginUser.role;
         }
-        return loginUserEntity.role;
+        return loginUser.role;
     }
 
 }

@@ -220,9 +220,9 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void initData() {
-        if (app.loginUserEntity != null) {
+        if (app.loginUser != null) {
             NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-            List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUserEntity.id + "");
+            List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
             mSwipeAdapter.update(news);
             setListVisibility(mSwipeAdapter.getCount() == 0);
         }
@@ -247,18 +247,18 @@ public class NewsFragment extends BaseFragment {
                         case PushUtil.ChatUserType.FRIEND:
                         case PushUtil.ChatUserType.TEACHER:
                             ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                            chatDataSource.delete(newModel.fromId, app.loginUserEntity.id);
+                            chatDataSource.delete(newModel.fromId, app.loginUser.id);
                             notificationId = newModel.fromId;
                             break;
                         case PushUtil.ChatUserType.CLASSROOM:
                             ClassroomDiscussDataSource mClassroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                            mClassroomDiscussDataSource.delete(newModel.fromId, app.loginUserEntity.id);
+                            mClassroomDiscussDataSource.delete(newModel.fromId, app.loginUser.id);
                             notificationId = newModel.fromId;
                             break;
                         case PushUtil.CourseType.TYPE:
                             NewsCourseDataSource newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
                             notificationId = newModel.fromId;
-                            newsCourseDataSource.delete(newModel.fromId, app.loginUserEntity.id);
+                            newsCourseDataSource.delete(newModel.fromId, app.loginUser.id);
                             break;
                         case PushUtil.ArticleType.TYPE:
                             notificationId = newModel.fromId;
@@ -342,7 +342,7 @@ public class NewsFragment extends BaseFragment {
 
     @Override
     public void invoke(WidgetMessage message) {
-        if (app == null || app.loginUserEntity == null) {
+        if (app == null || app.loginUser == null) {
             return;
         }
         MessageType messageType = message.type;
@@ -370,15 +370,15 @@ public class NewsFragment extends BaseFragment {
                     break;
                 case UPDATE_UNREAD_MSG:
                     String type = message.data.getString(Const.NEWS_TYPE);
-                    newDataSource.updateUnread(fromId, app.loginUserEntity.id, type);
+                    newDataSource.updateUnread(fromId, app.loginUser.id, type);
                     mSwipeAdapter.updateItem(fromId, type);
                     break;
                 case UPDATE_UNREAD_BULLETIN:
-                    newDataSource.updateBulletinUnread(app.loginUserEntity.id, PushUtil.BulletinType.TYPE);
+                    newDataSource.updateBulletinUnread(app.loginUser.id, PushUtil.BulletinType.TYPE);
                     mSwipeAdapter.updateItem(fromId, PushUtil.BulletinType.TYPE);
                     break;
                 case UPDATE_UNREAD_NEWS_COURSE:
-                    newDataSource.updateUnread(fromId, app.loginUserEntity.id, PushUtil.CourseType.TYPE);
+                    newDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.CourseType.TYPE);
                     mSwipeAdapter.updateItem(fromId, PushUtil.CourseType.TYPE);
                     break;
                 case Const.ADD_CHAT_MSGS:
@@ -397,7 +397,7 @@ public class NewsFragment extends BaseFragment {
                     break;
                 case UPDATE_UNREAD_ARTICLE_CREATE:
                     NewDataSource articleDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                    articleDataSource.updateUnread(fromId, app.loginUserEntity.id, PushUtil.ArticleType.TYPE);
+                    articleDataSource.updateUnread(fromId, app.loginUser.id, PushUtil.ArticleType.TYPE);
                     mSwipeAdapter.updateItem(fromId, PushUtil.ArticleType.TYPE);
                     NotificationUtil.cancelById(fromId);
                     break;
@@ -413,7 +413,7 @@ public class NewsFragment extends BaseFragment {
                     getNewChatMsg(threadHandleType, threadMgs);
                     break;
                 case Const.REFRESH_LIST:
-                    List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUserEntity.id + "");
+                    List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
                     mSwipeAdapter.update(news);
                     break;
             }
@@ -458,7 +458,7 @@ public class NewsFragment extends BaseFragment {
      */
     private void handleBulletinMsg(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New();
-        newModel.belongId = app.loginUserEntity.id;
+        newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
         newModel.content = wrapperMessage.content;
         V2CustomContent customContent = wrapperMessage.getV2CustomContent();
@@ -466,7 +466,7 @@ public class NewsFragment extends BaseFragment {
         newModel.createdTime = customContent.getCreatedTime();
         newModel.setType(TypeBusinessEnum.BULLETIN.getName());
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<New> bulletins = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ? ORDER BY CREATEDTIME DESC", mActivity.app.loginUserEntity.id + "",
+        List<New> bulletins = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ? ORDER BY CREATEDTIME DESC", mActivity.app.loginUser.id + "",
                 TypeBusinessEnum.BULLETIN.getName());
         if (bulletins.size() == 0) {
             newModel.unread = 1;
@@ -481,7 +481,7 @@ public class NewsFragment extends BaseFragment {
 
     private void handlerReceiveArticleMessage(WrapperXGPushTextMessage wrapperMessage) {
         New newModel = new New();
-        newModel.belongId = app.loginUserEntity.id;
+        newModel.belongId = app.loginUser.id;
         newModel.title = wrapperMessage.title;
         V2CustomContent v2CustomContent = wrapperMessage.getV2CustomContent();
         newModel.content = wrapperMessage.content;
@@ -491,7 +491,7 @@ public class NewsFragment extends BaseFragment {
         newModel.setCreatedTime(v2CustomContent.getCreatedTime());
 
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<New> news = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ?", app.loginUserEntity.id + "", newModel.type);
+        List<New> news = newDataSource.getNews("WHERE BELONGID = ? AND TYPE = ?", app.loginUser.id + "", newModel.type);
         if (news.size() == 0) {
             newModel.unread = 1;
             newDataSource.create(newModel);
@@ -507,7 +507,7 @@ public class NewsFragment extends BaseFragment {
         New newModel = new New();
         V2CustomContent v2CustomContent = message.getV2CustomContent();
         newModel.fromId = v2CustomContent.getFrom().getId();
-        newModel.belongId = app.loginUserEntity.id;
+        newModel.belongId = app.loginUser.id;
         newModel.title = message.title;
         switch (v2CustomContent.getBody().getType()) {
             case PushUtil.CourseType.TESTPAPER_REVIEWED:
@@ -534,7 +534,7 @@ public class NewsFragment extends BaseFragment {
         newModel.setType(v2CustomContent.getFrom().getType());
 
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ? AND TYPE = ?", newModel.fromId + "", app.loginUserEntity.id + "", newModel.type);
+        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ? AND TYPE = ?", newModel.fromId + "", app.loginUser.id + "", newModel.type);
         if (news.size() == 0) {
             newModel.unread = 1;
             newDataSource.create(newModel);
@@ -550,7 +550,7 @@ public class NewsFragment extends BaseFragment {
         New newModel = new New(wrapperMessage);
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
-                newModel.fromId + "", newModel.type, app.loginUserEntity.id + "");
+                newModel.fromId + "", newModel.type, app.loginUser.id + "");
         if (news.size() == 0) {
             newModel.unread = 1;
             newDataSource.create(newModel);
@@ -586,10 +586,10 @@ public class NewsFragment extends BaseFragment {
         model.createdTime = v2CustomContent.getCreatedTime();
         model.imgUrl = v2CustomContent.getTo().getImage();
         model.type = v2CustomContent.getTo().getType();
-        model.belongId = EdusohoApp.app.loginUserEntity.id;
+        model.belongId = EdusohoApp.app.loginUser.id;
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
-                model.fromId + "", model.type, app.loginUserEntity.id + "");
+                model.fromId + "", model.type, app.loginUser.id + "");
         New localNewModel = news.get(0);
         if (news.size() == 0) {
             model.unread = 1;
@@ -608,7 +608,7 @@ public class NewsFragment extends BaseFragment {
         New newModel = new New(wrapperMessage);
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
-                newModel.fromId + "", newModel.type, app.loginUserEntity.id + "");
+                newModel.fromId + "", newModel.type, app.loginUser.id + "");
         if (news.size() == 0) {
             newModel.unread = 0;
             newModel.id = (int) newDataSource.create(newModel);
@@ -643,10 +643,10 @@ public class NewsFragment extends BaseFragment {
         model.createdTime = v2CustomContent.getCreatedTime();
         model.imgUrl = v2CustomContent.getTo().getImage();
         model.type = v2CustomContent.getTo().getType();
-        model.belongId = EdusohoApp.app.loginUserEntity.id;
+        model.belongId = EdusohoApp.app.loginUser.id;
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
-                model.fromId + "", model.type, app.loginUserEntity.id + "");
+                model.fromId + "", model.type, app.loginUser.id + "");
         New localNewModel = news.get(0);
         if (news.size() == 0) {
             model.unread = 0;
@@ -670,10 +670,10 @@ public class NewsFragment extends BaseFragment {
         model.createdTime = v2CustomContent.getCreatedTime();
         model.imgUrl = v2CustomContent.getTo().getImage();
         model.type = PushUtil.CourseType.TYPE;
-        model.belongId = EdusohoApp.app.loginUserEntity.id;
+        model.belongId = EdusohoApp.app.loginUser.id;
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ? AND TYPE = ?",
-                model.fromId + "", app.loginUserEntity.id + "", PushUtil.CourseType.TYPE);
+                model.fromId + "", app.loginUser.id + "", PushUtil.CourseType.TYPE);
         if (news.size() == 0) {
             model.unread = 0;
             model.id = (int) newDataSource.create(model);
@@ -791,7 +791,7 @@ public class NewsFragment extends BaseFragment {
 
     private void filterMyCourses(Course[] courses) {
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<New> newList = newDataSource.getNews("WHERE TYPE = ? AND BELONGID = ? ORDER BY FROMID ", PushUtil.CourseType.TYPE, app.loginUserEntity.id + "");
+        List<New> newList = newDataSource.getNews("WHERE TYPE = ? AND BELONGID = ? ORDER BY FROMID ", PushUtil.CourseType.TYPE, app.loginUser.id + "");
 
         //本地已经存在的course ids
         List<Integer> existCourseIds = new ArrayList<>();
@@ -818,7 +818,7 @@ public class NewsFragment extends BaseFragment {
         //如果有退出的学习，则删除本地
         if (existCourseIds.size() > 0) {
             newDataSource.delete(String.format("FROMID IN (%s) AND TYPE = ? AND BELONGID = ?", composeIds(existCourseIds)),
-                    PushUtil.CourseType.TYPE, app.loginUserEntity.id + "");
+                    PushUtil.CourseType.TYPE, app.loginUser.id + "");
             mSwipeAdapter.deleteItemByFromIds(existCourseIds, PushUtil.CourseType.TYPE);
         }
 
@@ -835,7 +835,7 @@ public class NewsFragment extends BaseFragment {
                     newModel.imgUrl = course.middlePicture;
                     newModel.unread = 0;
                     newModel.type = PushUtil.CourseType.TYPE;
-                    newModel.belongId = app.loginUserEntity.id;
+                    newModel.belongId = app.loginUser.id;
                     newModel.parentId = course.parentId;
                     newDataSource.create(newModel);
                     addItemList.add(newModel);

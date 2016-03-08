@@ -348,7 +348,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private void loadLesson() {
         initLessonIds();
         initRedirectBtn();
-        int userId = app.loginUserEntity == null ? 0 : app.loginUserEntity.id;
+        int userId = app.loginUser == null ? 0 : app.loginUser.id;
         M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
                 mContext, userId, mLessonId, app.domain, M3U8Util.FINISH);
         mFromCache = m3U8DbModel != null;
@@ -488,7 +488,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     if (lessonItem.mediaUri.contains("getLocalVideo")) {
                         StringBuffer dirBuilder = new StringBuffer(EdusohoApp.getWorkSpace().getAbsolutePath());
                         dirBuilder.append("/videos/")
-                                .append(app.loginUserEntity.id)
+                                .append(app.loginUser.id)
                                 .append("/")
                                 .append(app.domain)
                                 .append("/")
@@ -584,7 +584,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private boolean getM3U8Cache(int lessonId) {
-        M3U8DbModel model = M3U8Util.queryM3U8Model(mContext, app.loginUserEntity.id, lessonId, app.domain, M3U8Util.FINISH);
+        M3U8DbModel model = M3U8Util.queryM3U8Model(mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.FINISH);
         return model != null;
     }
 

@@ -78,11 +78,11 @@ public class ChatSendHandler {
     }
 
     private Chat updateChatData(int toId, String content, int createdTime) {
-        Chat chat = new Chat(app.loginUserEntity.id, toId, app.loginUserEntity.nickname, app.loginUserEntity.mediumAvatar,
+        Chat chat = new Chat(app.loginUser.id, toId, app.loginUser.nickname, app.loginUser.mediumAvatar,
                 content, PushUtil.ChatMsgType.MULTI.toLowerCase(), createdTime);
         chat.direct = Chat.Direct.SEND;
         chat.delivery = PushUtil.MsgDeliveryType.UPLOADING;
-        chat.headImgUrl = app.loginUserEntity.mediumAvatar;
+        chat.headImgUrl = app.loginUser.mediumAvatar;
         chat.chatId = (int) mChatDataSource.create(chat);
 
         return chat;
@@ -102,8 +102,8 @@ public class ChatSendHandler {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
         fromEntity.setType(customContent.getTypeBusiness());
-        fromEntity.setId(app.loginUserEntity.id);
-        fromEntity.setImage(app.loginUserEntity.mediumAvatar);
+        fromEntity.setId(app.loginUser.id);
+        fromEntity.setImage(app.loginUser.mediumAvatar);
 
         v2CustomContent.setFrom(fromEntity);
         V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
@@ -139,7 +139,7 @@ public class ChatSendHandler {
     protected RequestUrl getRequestUrl(CustomContent customContent, BaseMsgEntity entity, WrapperXGPushTextMessage message) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUserEntity.nickname);
+        params.put("title", app.loginUser.nickname);
         params.put("content", entity.content);
         params.put("custom", new Gson().toJson(getV2CustomContent(customContent, entity)));
 

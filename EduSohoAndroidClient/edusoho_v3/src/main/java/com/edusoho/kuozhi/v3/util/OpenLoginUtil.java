@@ -74,7 +74,7 @@ public class OpenLoginUtil {
                 activity.app.saveToken(userResult);
                 activity.app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                 Bundle bundle = new Bundle();
-                bundle.putString(Const.BIND_USER_ID, String.valueOf(activity.app.loginUserEntity.id));
+                bundle.putString(Const.BIND_USER_ID, String.valueOf(activity.app.loginUser.id));
                 activity.app.pushRegister(bundle);
                 mLoginhandler.success(userResult);
             }

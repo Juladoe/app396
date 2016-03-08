@@ -91,7 +91,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 return;
             }
             M3U8DbModel m3u8Model = M3U8Util.queryM3U8Model(
-                    mContext, app.loginUserEntity.id, lessonId, app.domain, M3U8Util.ALL);
+                    mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.ALL);
             if (mAdapter != null) {
                 mAdapter.updateDownloadSign(lessonId, m3u8Model);
             }
@@ -325,7 +325,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
 
         final SparseArray<M3U8DbModel> m3U8DbModels = M3U8Util.getM3U8ModelList(
-                mContext, ids, app.loginUserEntity.id, app.domain, M3U8Util.ALL);
+                mContext, ids, app.loginUser.id, app.domain, M3U8Util.ALL);
 
         SqliteUtil.QueryParser<SparseArray<DownloadStatus>> queryParser;
         queryParser = new SqliteUtil.QueryParser<SparseArray<DownloadStatus>>() {
@@ -397,12 +397,12 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 );
 
                 M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
-                        mContext, app.loginUserEntity.id, lessonItem.id, app.domain, M3U8Util.ALL);
+                        mContext, app.loginUser.id, lessonItem.id, app.domain, M3U8Util.ALL);
                 if (m3U8DbModel != null) {
                     return;
                 }
                 m3U8DbModel = M3U8Util.saveM3U8Model(
-                        mContext, lessonItem.id, app.domain, app.loginUserEntity.id);
+                        mContext, lessonItem.id, app.domain, app.loginUser.id);
                 M3U8DownService.startDown(
                         mContext, lessonItem.id, lessonItem.courseId, lessonItem.title);
                 mAdapter.updateDownloadSign(lessonItem.id, m3U8DbModel);

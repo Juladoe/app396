@@ -169,7 +169,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         if (users.length()>0){
             users.deleteCharAt(users.length() - 1);
         }
-        requestUrl.url = String.format(requestUrl.url, app.loginUserEntity.id, users.toString());
+        requestUrl.url = String.format(requestUrl.url, app.loginUser.id, users.toString());
         return requestUrl;
     }
 
@@ -283,7 +283,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                     requestUrl.url = String.format(requestUrl.url,Integer.parseInt(fn.content.userId));
                     HashMap<String, String> params = requestUrl.getParams();
                     params.put("method", "follow");
-                    params.put("userId", app.loginUserEntity.id + "");
+                    params.put("userId", app.loginUser.id + "");
                     ajaxPost(requestUrl, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {

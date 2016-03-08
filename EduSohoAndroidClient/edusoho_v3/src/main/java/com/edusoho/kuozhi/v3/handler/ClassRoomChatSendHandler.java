@@ -54,7 +54,7 @@ public class ClassRoomChatSendHandler extends ChatSendHandler {
     protected RequestUrl getRequestUrl(CustomContent customContent, BaseMsgEntity entity, WrapperXGPushTextMessage message) {
         RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUserEntity.nickname);
+        params.put("title", app.loginUser.nickname);
         params.put("content", entity.content);
         params.put("custom", message.getCustomContentJson());
 
@@ -80,9 +80,9 @@ public class ClassRoomChatSendHandler extends ChatSendHandler {
     }
 
     private String getBusinessType() {
-        String[] roles = new String[app.loginUserEntity.roles.length];
-        for (int i = 0; i < app.loginUserEntity.roles.length; i++) {
-            roles[i] = app.loginUserEntity.roles[i].toString();
+        String[] roles = new String[app.loginUser.roles.length];
+        for (int i = 0; i < app.loginUser.roles.length; i++) {
+            roles[i] = app.loginUser.roles[i].toString();
         }
         if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
             return PushUtil.ChatUserType.TEACHER;
@@ -94,9 +94,9 @@ public class ClassRoomChatSendHandler extends ChatSendHandler {
     private V2CustomContent getV2CustomContent(String classRoomAvatar, String type, ClassroomDiscussEntity modle) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setId(app.loginUserEntity.id);
-        fromEntity.setImage(app.loginUserEntity.mediumAvatar);
-        fromEntity.setNickname(app.loginUserEntity.nickname);
+        fromEntity.setId(app.loginUser.id);
+        fromEntity.setImage(app.loginUser.mediumAvatar);
+        fromEntity.setNickname(app.loginUser.nickname);
         fromEntity.setType(getBusinessType());
         v2CustomContent.setFrom(fromEntity);
         V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
@@ -116,8 +116,8 @@ public class ClassRoomChatSendHandler extends ChatSendHandler {
 
     private ClassroomDiscussEntity createSendMsgCustomContent(int toId, String content) {
         int sendTime = (int) (System.currentTimeMillis() / 1000);
-        ClassroomDiscussEntity model = new ClassroomDiscussEntity(0, toId, app.loginUserEntity.id, app.loginUserEntity.nickname, app.loginUserEntity.mediumAvatar,
-                content, app.loginUserEntity.id, PushUtil.ChatMsgType.MULTI, PushUtil.MsgDeliveryType.UPLOADING, sendTime);
+        ClassroomDiscussEntity model = new ClassroomDiscussEntity(0, toId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
+                content, app.loginUser.id, PushUtil.ChatMsgType.MULTI, PushUtil.MsgDeliveryType.UPLOADING, sendTime);
 
         return model;
     }
