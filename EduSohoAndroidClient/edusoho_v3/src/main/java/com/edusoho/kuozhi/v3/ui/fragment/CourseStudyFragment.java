@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -53,9 +55,12 @@ import java.util.Map;
 public class CourseStudyFragment extends BaseFragment implements View.OnClickListener {
     private RecyclerView studyProcessRecyclerView;
     private TextView mFloatButton;
+    private TextView mErrorTip;
 
     private StudyProcessRecyclerAdapter mAdapter;
     private RecyclerLinearLayoutManager mRecyclerLinearLayoutManager;
+
+    private ErrorHandler mErrorHandler;
 
     private LinkedHashMap<String, List<NewsCourseEntity>> totalListMap;
     private List<NewsCourseEntity> dataList;
@@ -102,6 +107,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     protected void initView(View view) {
         super.initView(view);
 
+        mErrorTip = (TextView) view.findViewById(R.id.error_tip);
         mRecyclerLinearLayoutManager = new RecyclerLinearLayoutManager(mContext);
         studyProcessRecyclerView = (RecyclerView) view.findViewById(R.id.study_process_list);
         studyProcessRecyclerView.setLayoutManager(mRecyclerLinearLayoutManager);
@@ -135,6 +141,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
                 studyProcessRecyclerView.scrollToPosition(findPosition());
                 mLoading.setVisibility(View.GONE);
+                mErrorTip.setVisibility(View.GONE);
                 return null;
             }
         });
@@ -190,7 +197,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
                 case "reviewed_testpaper":
                     entity.setBodyType("testpaper.reviewed");
-                    if (entity.getContent() == null){
+                    if (entity.getContent() == null) {
                         break;
                     }
                     entity.setTitle(dynamicsItem.getProperties().getTestpaper().name);
@@ -400,20 +407,31 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
             public void onResponse(String response) {
                 CourseDetailsResult courseDetailsResult = mActivity.parseJsonValue(response, new TypeToken<CourseDetailsResult>() {
                 });
-                Course course = courseDetailsResult.course;
-                if (dataList.size() != 0 && dataList.get(0).getBodyType().equals("course.summary")) {
+                if (courseDetailsResult == null) {
+                    mErrorHandler = new ErrorHandler();
+                    mErrorHandler.sendEmptyMessage(0);
                     return;
                 } else {
-                    NewsCourseEntity entity = new NewsCourseEntity();
-                    entity.setBodyType("course.summary");
-                    entity.setContent(course.about.equals("") ? "暂无课程简介" : course.about);
-                    entity.setTeacher(course.teachers[0].nickname);
-                    entity.setImage(course.smallPicture);
-                    entity.setTitle(course.title);
-                    mAdapter.notifyItemInserted(0);
-                    dataList.add(0, entity);
-                    mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
+                    Course course = courseDetailsResult.course;
+                    if (dataList.size() != 0 && "course.summary".equals(dataList.get(0).getBodyType())) {
+                        return;
+                    } else {
+                        NewsCourseEntity entity = new NewsCourseEntity();
+                        entity.setBodyType("course.summary");
+                        entity.setContent("".equals(course.about) ? "暂无课程简介" : course.about);
+                        if (course.teachers.length != 0) {
+                            entity.setTeacher(course.teachers[0].nickname);
+                        } else {
+                            entity.setTeacher("暂无教师");
+                        }
+                        entity.setImage(course.smallPicture);
+                        entity.setTitle(course.title);
+                        mAdapter.notifyItemInserted(0);
+                        dataList.add(0, entity);
+                        mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
+                    }
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -480,6 +498,19 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         @Override
         public boolean supportsPredictiveItemAnimations() {
             return false;
+        }
+    }
+
+    private class ErrorHandler extends Handler{
+        public ErrorHandler() {
+            super();
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            mErrorTip.setVisibility(View.VISIBLE);
+            studyProcessRecyclerView.setVisibility(View.GONE);
+            mLoading.setVisibility(View.GONE);
         }
     }
 }

@@ -139,7 +139,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         }
         selectDownTab(mSelectBtn);
         mToast = Toast.makeText(getApplicationContext(), getString(R.string.app_exit_msg), Toast.LENGTH_SHORT);
-        mDownTabNews.setUpdateIcon(7);
+        mDownTabNews.setUpdateIcon(0);
     }
 
     public void setTitle(String title) {
