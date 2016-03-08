@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.entity.user.UserEntity;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -74,12 +74,12 @@ public class FileHandler implements HttpRequestHandler {
 
         if (queryName.startsWith("playlist")) {
             int lessonId = CommonUtil.parseInt(queryName.substring("playlist/".length(), queryName.length()));
-            User loginUser = mActivity.app.loginUser;
-            if (loginUser == null) {
+            UserEntity loginUserEntity = mActivity.app.loginUserEntity;
+            if (loginUserEntity == null) {
                 return;
             }
             M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
-                    mActivity, loginUser.id, lessonId, this.mTargetHost, M3U8Util.ALL);
+                    mActivity, loginUserEntity.id, lessonId, this.mTargetHost, M3U8Util.ALL);
             if (m3U8DbModel != null) {
                 httpResponse.setEntity(new StringEntity(m3U8DbModel.playList));
                 return;
@@ -250,13 +250,13 @@ public class FileHandler implements HttpRequestHandler {
             return null;
         }
 
-        User loginUser = mActivity.app.loginUser;
-        if (loginUser == null) {
+        UserEntity loginUserEntity = mActivity.app.loginUserEntity;
+        if (loginUserEntity == null) {
             return null;
         }
         StringBuffer dirBuilder = new StringBuffer(workSpace.getAbsolutePath());
         dirBuilder.append("/videos/")
-                .append(loginUser.id)
+                .append(loginUserEntity.id)
                 .append("/")
                 .append(mTargetHost);
 

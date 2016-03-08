@@ -149,7 +149,7 @@ public class New implements Serializable {
                 break;
         }
 
-        belongId = EdusohoApp.app.loginUser.id;
+        belongId = EdusohoApp.app.loginUserEntity.id;
     }
 
     public New(Chat chat) {
@@ -166,7 +166,7 @@ public class New implements Serializable {
         } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.AUDIO)) {
             content = String.format("[%s]", Const.MEDIA_AUDIO);
         }
-        belongId = EdusohoApp.app.loginUser.id;
+        belongId = EdusohoApp.app.loginUserEntity.id;
     }
 
     public New(WrapperXGPushTextMessage message) {
@@ -193,7 +193,7 @@ public class New implements Serializable {
             createdTime = v2CustomContent.getCreatedTime();
             imgUrl = v2CustomContent.getFrom().getImage();
             type = v2CustomContent.getFrom().getType();
-            belongId = EdusohoApp.app.loginUser.id;
+            belongId = EdusohoApp.app.loginUserEntity.id;
         } else {
             CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
             });
@@ -214,7 +214,7 @@ public class New implements Serializable {
             imgUrl = customContent.getImgUrl();
             //newModel.setUnread();
             type = customContent.getTypeBusiness();
-            belongId = EdusohoApp.app.loginUser.id;
+            belongId = EdusohoApp.app.loginUserEntity.id;
         }
     }
 }

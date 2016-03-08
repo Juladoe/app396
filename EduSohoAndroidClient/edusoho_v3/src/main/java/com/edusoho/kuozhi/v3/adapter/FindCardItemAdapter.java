@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCardProperty;
+import com.edusoho.kuozhi.v3.model.bal.user.UserModel;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -33,9 +34,11 @@ public class FindCardItemAdapter extends BaseAdapter {
     private Context mContext;
     private List<DiscoveryCardProperty> mList;
     private DisplayImageOptions mOptions;
+    private UserModel mUserModel;
 
     public FindCardItemAdapter(Context context) {
         this(context, new ArrayList<DiscoveryCardProperty>());
+        mUserModel = new UserModel();
     }
 
     public FindCardItemAdapter(Context context, List<DiscoveryCardProperty> list) {
@@ -43,6 +46,7 @@ public class FindCardItemAdapter extends BaseAdapter {
         this.mList = list;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_course).
                 showImageOnFail(R.drawable.default_course).build();
+        mUserModel = new UserModel();
     }
 
     public void clear() {
@@ -172,9 +176,7 @@ public class FindCardItemAdapter extends BaseAdapter {
     }
 
     private void setLiveViewInfo(ViewHolder viewHolder, DiscoveryCardProperty discoveryCardEntity) {
-        SpannableString colorStr = AppUtil.getColorTextAfter(
-                String.valueOf(discoveryCardEntity.getStudentNum()),
-                " 人参与",
+        SpannableString colorStr = AppUtil.getColorTextAfter(String.valueOf(discoveryCardEntity.getStudentNum()), " 人参与",
                 mContext.getResources().getColor(R.color.base_black_35)
         );
         viewHolder.studentNumView.setText(colorStr);
@@ -198,6 +200,10 @@ public class FindCardItemAdapter extends BaseAdapter {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void getTeacherNickname() {
+        mUserModel.get
     }
 
     @Override

@@ -101,9 +101,9 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                 public void onClick(int button) {
                     if (button == PopupDialog.OK) {
                         ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                        classroomDiscussDataSource.delete(mFromId, app.loginUser.id);
+                        classroomDiscussDataSource.delete(mFromId, app.loginUserEntity.id);
                         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                        New newModel = newDataSource.getNew(mFromId, app.loginUser.id);
+                        New newModel = newDataSource.getNew(mFromId, app.loginUserEntity.id);
                         newModel.content = "";
                         newDataSource.update(newModel);
                         Bundle bundle = new Bundle();
@@ -128,9 +128,9 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                             public void onResponse(String response) {
                                 if (response.equals("true")) {
                                     ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                                    classroomDiscussDataSource.delete(mFromId, app.loginUser.id);
+                                    classroomDiscussDataSource.delete(mFromId, app.loginUserEntity.id);
                                     NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                                    newDataSource.delete(mFromId + "", PushUtil.ChatUserType.CLASSROOM, app.loginUser.id + "");
+                                    newDataSource.delete(mFromId + "", PushUtil.ChatUserType.CLASSROOM, app.loginUserEntity.id + "");
                                     Bundle bundle = new Bundle();
                                     bundle.putInt(Const.FROM_ID, mFromId);
                                     app.sendMsgToTarget(Const.REFRESH_LIST, bundle, NewsFragment.class);

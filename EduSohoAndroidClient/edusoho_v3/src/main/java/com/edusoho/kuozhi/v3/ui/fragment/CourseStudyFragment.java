@@ -131,7 +131,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     }
 
     private List<NewsCourseEntity> getNewsCourseList(int start) {
-        List<NewsCourseEntity> entities = newsCourseDataSource.getNewsCourses(start, Const.STUDY_PROCESS_LIMIT, mCourseId, app.loginUser.id);
+        List<NewsCourseEntity> entities = newsCourseDataSource.getNewsCourses(start, Const.STUDY_PROCESS_LIMIT, mCourseId, app.loginUserEntity.id);
         Collections.reverse(entities);
         return entities;
     }

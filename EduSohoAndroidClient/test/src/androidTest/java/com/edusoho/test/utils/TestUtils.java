@@ -3,7 +3,7 @@ package com.edusoho.test.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.entity.user.UserEntity;
 import com.edusoho.test.TestEduSohoApp;
 import com.google.gson.Gson;
 
@@ -40,6 +40,6 @@ public class TestUtils {
                 "\"roles\":[\"ROLE_USER\"],\"setup\":\"1\",\"smallAvatar\":\"http://trymob.edusoho.cn/assets/img/default/avatar.png?6.4.3\"," +
                 "\"title\":\"\",\"type\":\"default\",\"id\":268,\"dataType\":0}";
         app.gson = new Gson();
-        app.loginUser = app.gson.fromJson(loginUserJson, User.class);
+        app.loginUser = app.gson.fromJson(loginUserJson, UserEntity.class);
     }
 }

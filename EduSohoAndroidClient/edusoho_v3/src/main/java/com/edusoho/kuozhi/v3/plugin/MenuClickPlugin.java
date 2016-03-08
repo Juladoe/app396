@@ -18,12 +18,11 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
-import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.entity.user.UserEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
-import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
@@ -261,9 +260,9 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     @JsAnnotation
     public JSONObject getUserToken(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         JSONObject result = new JSONObject();
-        User user = EdusohoApp.app.loginUser;
-        if (user != null) {
-            result.put("user", new JSONObject(mActivity.gson.toJson(user)));
+        UserEntity userEntity = EdusohoApp.app.loginUserEntity;
+        if (userEntity != null) {
+            result.put("user", new JSONObject(mActivity.gson.toJson(userEntity)));
             result.put("token", EdusohoApp.app.token);
         }
 
@@ -314,12 +313,12 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
 
         UserResult userResult = new UserResult();
         userResult.token = args.length() > 1 ? args.getString(1) : "";
-        userResult.user = mActivity.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
+        userResult.userEntity = mActivity.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<UserEntity>() {
         });
         mActivity.app.saveToken(userResult);
         mActivity.app.sendMessage(Const.LOGIN_SUCCESS, null);
         Bundle bundle = new Bundle();
-        bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
+        bundle.putString(Const.BIND_USER_ID, userResult.userEntity.id + "");
         mActivity.app.pushRegister(bundle);
     }
 
@@ -327,13 +326,13 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     public void updateUser(JSONArray args, BridgeCallback callbackContext) throws JSONException {
 
         UserResult userResult = new UserResult();
-        userResult.user = mActivity.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
+        userResult.userEntity = mActivity.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<UserEntity>() {
         });
         userResult.token = mActivity.app.token;
         mActivity.app.saveToken(userResult);
 
         Bundle bundle = new Bundle();
-        bundle.putInt("id", userResult.user.id);
+        bundle.putInt("id", userResult.userEntity.id);
         mActivity.app.sendMessage(Const.USER_UPDATE, bundle);
     }
 
@@ -453,12 +452,12 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    User user = mActivity.parseJsonValue(response, new TypeToken<User>() {
+                    UserEntity userEntity = mActivity.parseJsonValue(response, new TypeToken<UserEntity>() {
                     });
-                    if (user != null) {
-                        bundle.putString(Const.ACTIONBAR_TITLE, user.nickname);
-                        bundle.putInt(ChatActivity.FROM_ID, user.id);
-                        bundle.putString(ChatActivity.HEAD_IMAGE_URL, user.mediumAvatar);
+                    if (userEntity != null) {
+                        bundle.putString(Const.ACTIONBAR_TITLE, userEntity.nickname);
+                        bundle.putInt(ChatActivity.FROM_ID, userEntity.id);
+                        bundle.putString(ChatActivity.HEAD_IMAGE_URL, userEntity.mediumAvatar);
                         bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.TEACHER);
                         mActivity.app.mEngine.runNormalPluginWithBundle("ChatActivity", mActivity, bundle);
                     }

@@ -127,7 +127,7 @@ public class DownloadingFragment extends BaseFragment {
 
     private void updateLocalCourseList(int lessonId) {
         M3U8DbModel m3u8Model = M3U8Util.queryM3U8Model(
-                mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.ALL);
+                mContext, app.loginUserEntity.id, lessonId, app.domain, M3U8Util.ALL);
         if (m3u8Model.finish == M3U8Util.FINISH) {
             if (mActivityContainer != null) {
                 DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);

@@ -110,7 +110,7 @@ public class ChatSelectFragment extends BaseFragment {
 
     private void initChatList() {
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
+        List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUserEntity.id + "");
         mChatSelectListAdapter = new ChatSelectListAdapter(mContext, filterChatSelectList(news));
         mChatSelectListView.setAdapter(mChatSelectListAdapter);
     }

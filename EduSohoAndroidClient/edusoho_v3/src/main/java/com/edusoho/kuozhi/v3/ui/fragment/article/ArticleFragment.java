@@ -38,7 +38,6 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
-import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.ServiceProfileFragment;
@@ -293,7 +292,7 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private ArrayList<ArticleModel> getChatList(int start) {
-        ArrayList<ServiceProviderModel> mList = mSPDataSource.getServiceProviderMsgs(app.loginUser.id, start, 5);
+        ArrayList<ServiceProviderModel> mList = mSPDataSource.getServiceProviderMsgs(app.loginUserEntity.id, start, 5);
         Collections.reverse(mList);
 
         ArrayList<ArticleModel> articleModels = new ArrayList<>();
@@ -337,7 +336,7 @@ public class ArticleFragment extends BaseFragment {
                 }
 
                 mCategoryCacheArray.put(AppUtil.parseInt(categoryId), start + 3);
-                ArticleModel articleModel = ArticleModel.create(app.loginUser.id, articleList.resources);
+                ArticleModel articleModel = ArticleModel.create(app.loginUserEntity.id, articleList.resources);
                 mArticleAdapter.addArticleChat(articleModel);
                 expandArticle();
                 new ServiceProviderDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).create(articleModel);

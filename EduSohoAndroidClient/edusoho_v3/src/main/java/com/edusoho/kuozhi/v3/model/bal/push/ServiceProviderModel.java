@@ -26,7 +26,7 @@ public class ServiceProviderModel {
         V2CustomContent.BodyEntity bodyEntity = v2CustomContent.getBody();
         this.id = v2CustomContent.getMsgId();
         this.spId = v2CustomContent.getFrom().getId();
-        this.toId = EdusohoApp.app.loginUser.id;
+        this.toId = EdusohoApp.app.loginUserEntity.id;
         this.title = xgMessage.getTitle();
         this.content = xgMessage.getContent();
         this.type = bodyEntity.getType();

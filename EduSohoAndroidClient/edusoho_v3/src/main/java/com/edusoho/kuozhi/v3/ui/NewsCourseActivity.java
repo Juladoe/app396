@@ -85,7 +85,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         mCourseId = mNewItemInfo.fromId;
         mCreatedTime = mNewItemInfo.createdTime;
         mFragmentType = getFragmentType();
-        getRoleInCourse(mCourseId, app.loginUser.id, new NormalCallback<String>() {
+        getRoleInCourse(mCourseId, app.loginUserEntity.id, new NormalCallback<String>() {
             @Override
             public void success(String role) {
                 mUserTypeInCourse = role;
@@ -216,7 +216,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private String getFragmentType() {
         CourseDiscussDataSource mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         CourseDiscussEntity courseDiscussEntity = mCourseDiscussDataSource.get(" BELONGID = ? AND COURSEID = ? ORDER BY CREATEDTIME DESC LIMIT 0, 1",
-                new String[]{app.loginUser.id + "", mCourseId + ""});
+                new String[]{app.loginUserEntity.id + "", mCourseId + ""});
         if (courseDiscussEntity != null && courseDiscussEntity.createdTime == mCreatedTime) {
             return mEntranceType[0];
         } else {

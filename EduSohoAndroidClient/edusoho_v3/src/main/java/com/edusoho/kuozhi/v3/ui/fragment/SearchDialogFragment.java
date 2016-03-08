@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +12,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
@@ -38,8 +36,6 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
-import com.edusoho.kuozhi.v3.view.EduSohoRoundCornerImage;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -301,7 +297,7 @@ public class SearchDialogFragment extends DialogFragment {
                     count = 0;
                     if (searchFriendResult.mobile.length != 0) {
                         for (Friend friend : searchFriendResult.mobile) {
-                            if (friend.id == mApp.loginUser.id) {
+                            if (friend.id == mApp.loginUserEntity.id) {
                                 continue;
                             }
                             mAdapter.addItem(friend);
@@ -312,7 +308,7 @@ public class SearchDialogFragment extends DialogFragment {
                     }
                     if (searchFriendResult.qq.length != 0) {
                         for (Friend friend : searchFriendResult.qq) {
-                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
+                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUserEntity.id)) {
                                 continue;
                             } else {
                                 friendIds[count] = friend.id;
@@ -323,7 +319,7 @@ public class SearchDialogFragment extends DialogFragment {
                     }
                     if (searchFriendResult.nickname.length != 0) {
                         for (Friend friend : searchFriendResult.nickname) {
-                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUser.id)) {
+                            if ((Arrays.asList(friendIds).contains(friend.id)) || (friend.id == mApp.loginUserEntity.id)) {
                                 continue;
                             } else {
                                 friendIds[count] = friend.id;
@@ -373,7 +369,7 @@ public class SearchDialogFragment extends DialogFragment {
         requestUrl.url = String.format(requestUrl.url,friend.id);
         final HashMap<String, String> params = requestUrl.getParams();
         params.put("method", "follow");
-        params.put("userId", mApp.loginUser.id + "");
+        params.put("userId", mApp.loginUserEntity.id + "");
 
         mFriendProvider.followUsers(requestUrl).success(new NormalCallback<FollowResult>() {
             @Override
@@ -403,7 +399,7 @@ public class SearchDialogFragment extends DialogFragment {
         if (users.length()>0){
             users.deleteCharAt(users.length() - 1);
         }
-        requestUrl.url = String.format(requestUrl.url,mApp.loginUser.id,users.toString());
+        requestUrl.url = String.format(requestUrl.url,mApp.loginUserEntity.id,users.toString());
 
         return requestUrl;
     }

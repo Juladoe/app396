@@ -1,11 +1,14 @@
-package com.edusoho.kuozhi.v3.model.bal;
+package com.edusoho.kuozhi.v3.entity.user;
+
+import com.edusoho.kuozhi.v3.model.bal.UserRole;
+import com.edusoho.kuozhi.v3.model.bal.Vip;
 
 import java.io.Serializable;
 
 /**
  * Created by howzhi on 14-5-25.
  */
-public class User implements Serializable {
+public class UserEntity implements Serializable {
     public String nickname;
     public String email;
     public String password;

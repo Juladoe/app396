@@ -44,7 +44,7 @@ public class ClassroomDiscussEntity extends BaseMsgEntity {
         classroomId = v2CustomContent.getTo().getId();
         fromId = v2CustomContent.getFrom().getId();
         nickname = v2CustomContent.getFrom().getNickname();
-        belongId = EdusohoApp.app.loginUser.id;
+        belongId = EdusohoApp.app.loginUserEntity.id;
         type = v2CustomContent.getBody().getType();
     }
 

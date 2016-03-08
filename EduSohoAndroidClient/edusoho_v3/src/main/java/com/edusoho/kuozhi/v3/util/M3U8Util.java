@@ -93,7 +93,7 @@ public class M3U8Util {
     public M3U8Util(Context context) {
         this.mContext = context;
         this.app = EdusohoApp.app;
-        this.mUserId = app.loginUser.id;
+        this.mUserId = app.loginUserEntity.id;
 
         Uri hostUri = Uri.parse(app.host);
         if (hostUri != null) {

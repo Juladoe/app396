@@ -113,7 +113,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                 public void onClick(int button) {
                     if (button == PopupDialog.OK) {
                         CourseDiscussDataSource courseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                        courseDiscussDataSource.delete(mFromId, app.loginUser.id);
+                        courseDiscussDataSource.delete(mFromId, app.loginUserEntity.id);
                         app.sendMsgToTarget(Const.CLEAN_RECORD, new Bundle(), DiscussFragment.class);
                     }
                 }
@@ -133,9 +133,9 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                             public void onResponse(String response) {
                                 if (response.equals("true")) {
                                     SqliteChatUtil chatUtil = SqliteChatUtil.getSqliteChatUtil(mContext, app.domain);
-                                    new NewsCourseDataSource(chatUtil).delete(mFromId, app.loginUser.id);
-                                    new CourseDiscussDataSource(chatUtil).delete(mFromId, app.loginUser.id);
-                                    new NewDataSource(chatUtil).delete(mFromId, PushUtil.CourseType.TYPE, app.loginUser.id);
+                                    new NewsCourseDataSource(chatUtil).delete(mFromId, app.loginUserEntity.id);
+                                    new CourseDiscussDataSource(chatUtil).delete(mFromId, app.loginUserEntity.id);
+                                    new NewDataSource(chatUtil).delete(mFromId, PushUtil.CourseType.TYPE, app.loginUserEntity.id);
                                     app.sendMsgToTarget(Const.REFRESH_LIST, new Bundle(), NewsFragment.class);
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
                                         @Override

@@ -20,7 +20,6 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.FollowerNotification;
 import com.edusoho.kuozhi.v3.model.bal.FollowerNotificationResult;
-import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.result.FollowResult;
 import com.edusoho.kuozhi.v3.model.sys.Error;
@@ -30,7 +29,6 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.edusoho.kuozhi.v3.view.EduSohoRoundCornerImage;
 import com.google.gson.reflect.TypeToken;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -171,7 +169,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         if (users.length()>0){
             users.deleteCharAt(users.length() - 1);
         }
-        requestUrl.url = String.format(requestUrl.url, app.loginUser.id, users.toString());
+        requestUrl.url = String.format(requestUrl.url, app.loginUserEntity.id, users.toString());
         return requestUrl;
     }
 
@@ -285,7 +283,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                     requestUrl.url = String.format(requestUrl.url,Integer.parseInt(fn.content.userId));
                     HashMap<String, String> params = requestUrl.getParams();
                     params.put("method", "follow");
-                    params.put("userId", app.loginUser.id + "");
+                    params.put("userId", app.loginUserEntity.id + "");
                     ajaxPost(requestUrl, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {

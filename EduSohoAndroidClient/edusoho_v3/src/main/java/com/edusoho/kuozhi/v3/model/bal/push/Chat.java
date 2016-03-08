@@ -21,8 +21,8 @@ public class Chat extends BaseMsgEntity {
     public String custom;
 
     public Direct getDirect() {
-        if (fromId != 0 && EdusohoApp.app.loginUser != null) {
-            return Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
+        if (fromId != 0 && EdusohoApp.app.loginUserEntity != null) {
+            return Direct.getDirect(fromId == EdusohoApp.app.loginUserEntity.id);
         }
         return direct;
     }
@@ -41,7 +41,7 @@ public class Chat extends BaseMsgEntity {
         this.fromId = fromId;
         this.toId = toId;
         this.nickname = nickname;
-        this.direct = Direct.getDirect(this.fromId == EdusohoApp.app.loginUser.id);
+        this.direct = Direct.getDirect(this.fromId == EdusohoApp.app.loginUserEntity.id);
     }
 
     public Chat(int chatId, int id, int fromId, int toId, String nickname, String headImgUrl, String content, String type, int delivery, int createdTime) {
@@ -50,7 +50,7 @@ public class Chat extends BaseMsgEntity {
         this.fromId = fromId;
         this.toId = toId;
         this.nickname = nickname;
-        this.direct = Direct.getDirect(this.fromId == EdusohoApp.app.loginUser.id);
+        this.direct = Direct.getDirect(this.fromId == EdusohoApp.app.loginUserEntity.id);
     }
 
     public Chat(WrapperXGPushTextMessage message) {
@@ -63,13 +63,13 @@ public class Chat extends BaseMsgEntity {
         V2CustomContent v2CustomContent = message.getV2CustomContent();
         id = v2CustomContent.getMsgId();
         fromId = v2CustomContent.getFrom().getId();
-        toId = EdusohoApp.app.loginUser.id;
+        toId = EdusohoApp.app.loginUserEntity.id;
         nickname = v2CustomContent.getFrom().getNickname();
         headImgUrl = v2CustomContent.getFrom().getImage();
         content = v2CustomContent.getBody().getContent();
         type = v2CustomContent.getBody().getType();
         createdTime = v2CustomContent.getCreatedTime();
-        direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
+        direct = Direct.getDirect(fromId == EdusohoApp.app.loginUserEntity.id);
         if (type == PushUtil.ChatMsgType.TEXT) {
             delivery = PushUtil.MsgDeliveryType.SUCCESS;
         }
@@ -93,13 +93,13 @@ public class Chat extends BaseMsgEntity {
         V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
         id = v2CustomContent.getMsgId();
         fromId = v2CustomContent.getFrom().getId();
-        toId = EdusohoApp.app.loginUser.id;
+        toId = EdusohoApp.app.loginUserEntity.id;
         nickname = v2CustomContent.getFrom().getNickname();
         headImgUrl = v2CustomContent.getFrom().getImage();
         content = v2CustomContent.getBody().getContent();
         type = v2CustomContent.getBody().getType();
         createdTime = v2CustomContent.getCreatedTime();
-        direct = Direct.getDirect(fromId == EdusohoApp.app.loginUser.id);
+        direct = Direct.getDirect(fromId == EdusohoApp.app.loginUserEntity.id);
     }
 
     public CustomContent getCustomContent() {

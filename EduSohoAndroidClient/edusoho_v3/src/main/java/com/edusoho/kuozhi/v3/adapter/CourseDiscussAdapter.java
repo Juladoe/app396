@@ -68,7 +68,7 @@ public class CourseDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapter<T
     public int getItemViewType(int position) {
         CourseDiscussEntity model = (CourseDiscussEntity) mList.get(position);
         int type = -1;
-        if (model.fromId == EdusohoApp.app.loginUser.id) {
+        if (model.fromId == EdusohoApp.app.loginUserEntity.id) {
             switch (model.type) {
                 case PushUtil.ChatMsgType.TEXT:
                     type = MSG_SEND_TEXT;

@@ -13,7 +13,6 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
@@ -98,7 +97,7 @@ public class EdusohoMainService extends Service {
         }
         synchronized (this) {
             if (!app.getNetIsConnect()) {
-                app.loginUser = app.loadUserInfo();
+                app.loginUserEntity = app.loadUserInfo();
                 return;
             }
 
@@ -116,10 +115,10 @@ public class EdusohoMainService extends Service {
                                 }.getType());
 
                         Bundle bundle = new Bundle();
-                        if (result != null && result.user != null && (!TextUtils.isEmpty(result.token))) {
+                        if (result != null && result.userEntity != null && (!TextUtils.isEmpty(result.token))) {
                             app.saveToken(result);
                             app.sendMessage(Const.LOGIN_SUCCESS, null);
-                            bundle.putString(Const.BIND_USER_ID, result.user.id + "");
+                            bundle.putString(Const.BIND_USER_ID, result.userEntity.id + "");
                         } else {
                             bundle.putString(Const.BIND_USER_ID, "");
                             app.removeToken();
@@ -178,7 +177,7 @@ public class EdusohoMainService extends Service {
                 case EXIT_USER:
                     EdusohoApp app = mEdusohoMainService.getEduSohoApp();
                     if (app != null) {
-                        app.loginUser = null;
+                        app.loginUserEntity = null;
                     }
                     break;
                 case LOGIN_WITH_TOKEN:
@@ -257,7 +256,7 @@ public class EdusohoMainService extends Service {
         final NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(EdusohoMainService.this, app.domain));
         final int id = (int) chatDataSource.getMaxId();
         String path = id == 0 ? Const.GET_LATEST_OFFLINE_MSG : Const.GET_LATEST_OFFLINE_MSG + "?lastMaxId=" + id;
-        RequestUrl url = app.bindPushUrl(String.format(path, app.loginUser.id));
+        RequestUrl url = app.bindPushUrl(String.format(path, app.loginUserEntity.id));
         app.getUrl(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -273,7 +272,7 @@ public class EdusohoMainService extends Service {
                         save2DB(iterator.getValue());
                         OffLineMsgEntity offlineMsgModel = iterator.getValue().get(iterator.getValue().size() - 1); //最新一个消息
                         New newModel = new New(offlineMsgModel);
-                        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", offlineMsgModel.getCustom().getFrom().getId() + "", EdusohoApp.app.loginUser.id + "");
+                        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", offlineMsgModel.getCustom().getFrom().getId() + "", EdusohoApp.app.loginUserEntity.id + "");
                         if (news.size() == 0) {
                             newModel.unread = iterator.getValue().size();
                             newDataSource.create(newModel);

@@ -86,7 +86,7 @@ public class NewsCourseProfileActivity extends ActionBarBaseActivity {
                 showImageForEmptyUri(R.drawable.default_avatar).
                 showImageOnFail(R.drawable.default_course).build();
 
-        New entity = newsCourseDataSource.getNew(mCourseId, app.loginUser.id);
+        New entity = newsCourseDataSource.getNew(mCourseId, app.loginUserEntity.id);
         setBackMode(BACK, entity.getTitle());
         tvCourseTitle.setText(entity.getTitle());
         ImageLoader.getInstance().displayImage(entity.getImgUrl(), ivCourseImage, mOptions);
@@ -107,7 +107,7 @@ public class NewsCourseProfileActivity extends ActionBarBaseActivity {
                     public void onClick(int button) {
                         if (button == PopupDialog.OK) {
                             NewsCourseDataSource newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                            newsCourseDataSource.delete(mCourseId, app.loginUser.id);
+                            newsCourseDataSource.delete(mCourseId, app.loginUserEntity.id);
                         }
                     }
                 }).show();
