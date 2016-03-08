@@ -87,7 +87,7 @@ public class MyCreatedThreadFragment extends BaseFragment {
             }
         });
 
-        mAdapter = new MyThreadAdapter(mContext);
+        mAdapter = new MyThreadAdapter(mContext, app);
         mRecyclerView.setAdapter(mAdapter);
     }
 
@@ -95,6 +95,9 @@ public class MyCreatedThreadFragment extends BaseFragment {
         final Promise promise = new Promise();
 
         RequestUrl requestUrl = app.bindNewUrl(Const.MY_CREATED_THREADS, true);
+        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
+        stringBuffer.append("?start=0&limit=10000/");
+        requestUrl.url = stringBuffer.toString();
 
         mProvider = new MyThreadProvider(mContext);
         mProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {

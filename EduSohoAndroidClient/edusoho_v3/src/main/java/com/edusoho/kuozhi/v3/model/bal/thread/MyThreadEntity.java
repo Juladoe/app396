@@ -5,6 +5,7 @@ package com.edusoho.kuozhi.v3.model.bal.thread;
  */
 public class MyThreadEntity {
     private String id;
+    private String threadId;
     private String courseId;
     private String courseTitle;
     private String smallPicture;
@@ -15,6 +16,10 @@ public class MyThreadEntity {
 
     public String getId() {
         return id;
+    }
+
+    public String getThreadId() {
+        return threadId;
     }
 
     public String getCourseId() {

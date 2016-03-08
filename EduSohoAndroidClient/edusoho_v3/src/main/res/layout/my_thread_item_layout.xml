@@ -12,7 +12,7 @@
         android:layout_width="80dp"
         android:layout_height="50dp"
         android:padding="4dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:src="@drawable/default_avatar" />
 
     <TextView
@@ -51,11 +51,11 @@
         android:layout_below="@id/my_thread_item_title"
         android:paddingBottom="2dp"
         android:text="三天前"
-        android:textSize="@dimen/xx_small_font_size" />
+        android:textSize="@dimen/x_small_font_size" />
 
     <TextView
         android:id="@+id/my_thread_item_course"
-        android:layout_width="wrap_content"
+        android:layout_width="210dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_below="@id/my_thread_item_type"
