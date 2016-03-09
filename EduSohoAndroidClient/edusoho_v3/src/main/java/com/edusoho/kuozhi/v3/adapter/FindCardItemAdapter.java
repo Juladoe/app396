@@ -101,7 +101,7 @@ public class FindCardItemAdapter extends BaseAdapter {
 
     private View getViewByType(int position) {
         int viewType = getItemViewType(position);
-        View convertView = null;
+        View convertView;
 
         if (viewType == EMPTY) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.find_card_item_empty_layout, null);
@@ -232,8 +232,6 @@ public class FindCardItemAdapter extends BaseAdapter {
             }
         });
     }
-
-
 
     class ViewHolder {
         public ImageView coverView;
