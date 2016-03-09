@@ -27,7 +27,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.EduSohoViewPager;
+import com.edusoho.kuozhi.v3.view.EduSohoBanner;
 
 import java.util.Iterator;
 import java.util.List;
@@ -47,8 +47,7 @@ public class FindFragment extends BaseFragment {
 
     private ListView mListView;
     private PtrClassicFrameLayout mFindContentLayout;
-    private EduSohoViewPager
-            mFindBannerView;
+    private EduSohoBanner mFindBannerView;
     private FindListAdapter mFindListAdapter;
 
     private DiscoveryModel discoveryModel;
@@ -67,7 +66,7 @@ public class FindFragment extends BaseFragment {
     }
 
     private void addBannerView() {
-        mFindBannerView = (EduSohoViewPager) LayoutInflater.from(mContext).inflate(R.layout.find_listview_head_layout, null);
+        mFindBannerView = (EduSohoBanner) LayoutInflater.from(mContext).inflate(R.layout.find_listview_head_layout, null);
         int bannerHeight = (int) (300 * getViewScale());
         AbsListView.LayoutParams lp = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, bannerHeight);
         mFindBannerView.setLayoutParams(lp);
