@@ -300,9 +300,6 @@
             android:name="XG_V2_ACCESS_KEY"
             android:value="A27EK3I9M9PQ" />
 
-        <activity
-            android:name=".v3.ui.base.TabMainActivity"
-            android:label="@string/title_activity_tab_main"></activity>
     </application>
 
 </manifest>
