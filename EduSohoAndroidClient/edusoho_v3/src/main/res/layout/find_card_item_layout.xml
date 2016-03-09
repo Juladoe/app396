@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/card_cover"
+        app:riv_corner_radius="4dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_course"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/card_grid_height_s" />
+
+    <TextView
+        android:textSize="@dimen/title_label_s"
+        android:textColor="@color/black_primary"
+        android:id="@+id/card_title"
+        android:layout_marginTop="8dp"
+        android:singleLine="true"
+        android:ellipsize="end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textSize="@dimen/title_label_x_s"
+            android:textColor="@color/red_primary"
+            android:id="@+id/card_price"
+            android:gravity="left"
+            android:layout_weight="1"
+            android:text="免费"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:drawableLeft="@drawable/find_card_item_num_icon"
+            android:textColor="@color/black_back_primary"
+            android:textSize="@dimen/title_label_xx_s"
+            android:drawablePadding="4dp"
+            android:id="@+id/card_num"
+            android:gravity="right"
+            android:layout_weight="0"
+            android:text="0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</LinearLayout>

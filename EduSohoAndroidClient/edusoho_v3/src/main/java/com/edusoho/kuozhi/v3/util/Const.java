@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.util;
 
 public class Const {
+    public static final long ONE_DAY_MILLISECOND = 24 * 60 * 60 * 1000;
+
     //popular热门 recommended推荐 latest最新
     public static final String[] SORT = {
             "latest", "popular", "recommended"
@@ -418,7 +420,7 @@ public class Const {
     public static final String ONE_REPLY = "Course/getOneThreadPost";
 
     /**
-     * 更新问答浏览次数
+     * 更新问答 览 数
      */
     public static final String HitThread = "Course/hitThread";
 
@@ -438,7 +440,10 @@ public class Const {
     public static final String MY_INFO = "main#/myinfo";
     public static final String MY_FAVORITE = "main#/myfavorite";
     public static final String USER_PROFILE = "main#/userinfo/%d";
-    public static final String USER_LEARN_COURSE = "main#/course/%d";
+    public static final String MOBILE_WEB_COURSE = "main#/course/%d";
+    public static final String MOBILE_WEB_CLASSROOMS = "main#/classroomlist/";
+    public static final String MOBILE_WEB_COURSES = "main#/courselist/normal/";
+    public static final String MOBILE_WEB_LIVE_COURSES = "main#/courselist/live/";
     public static final String ANNOUNCEMENT = "main#/coursenotice/course/%d";
     public static final String ARTICLE_CONTENT = "%smobile/main#/article/%d";
     public static final String CLASSROOM_ANNOUNCEMENT = "main#/coursenotice/classroom/%d";
@@ -500,7 +505,6 @@ public class Const {
 
     public static final String MY_CREATED_THREADS = "/api/chaos_threads/getThreads";
     public static final String MY_POSTED_THREADS = "/api/chaos_threads_posts/getThreadPosts";
-
 
     /*
      * intent action
