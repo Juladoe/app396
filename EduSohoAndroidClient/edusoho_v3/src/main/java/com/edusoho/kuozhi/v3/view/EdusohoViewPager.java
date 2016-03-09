@@ -3,14 +3,13 @@ package com.edusoho.kuozhi.v3.view;
 /**
  * Created by su on 2016/2/19.
  */
+
 import android.content.Context;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -57,21 +56,18 @@ public class EdusohoViewPager extends RelativeLayout {
         initView(attrs);
     }
 
-    public void update(List<SchoolBanner> schoolBanners)
-    {
+    public void update(List<SchoolBanner> schoolBanners) {
         mAdapter.setItems(schoolBanners);
         //mAdapter.wrapContent();
         mAdapter.notifyDataSetChanged();
         mPointLayout.updatePointImages(schoolBanners.size());
     }
 
-    public SchoolBannerAdapter getAdapter()
-    {
+    public SchoolBannerAdapter getAdapter() {
         return mAdapter;
     }
 
-    private void initView(AttributeSet attrs)
-    {
+    private void initView(AttributeSet attrs) {
         mHackyViewPager = new HackyViewPager(mContext);
         mPointLayout = new CarouselPointLayout(mContext);
         mPointLayout.setViewPaper(mHackyViewPager);
@@ -85,8 +81,7 @@ public class EdusohoViewPager extends RelativeLayout {
         mPointLayout.setLayoutParams(layoutParams);
     }
 
-    public void setAdapter(PagerAdapter adapter)
-    {
+    public void setAdapter(PagerAdapter adapter) {
         mAdapter = (SchoolBannerAdapter) adapter;
         mAdapter.wrapContent();
 
@@ -130,8 +125,7 @@ public class EdusohoViewPager extends RelativeLayout {
         workHandler.removeCallbacks(mAutoPlayRunnable);
     }
 
-    private void moveToIndex(final int index)
-    {
+    private void moveToIndex(final int index) {
         workHandler.postAtTime(new Runnable() {
             @Override
             public void run() {
@@ -140,8 +134,7 @@ public class EdusohoViewPager extends RelativeLayout {
         }, SystemClock.uptimeMillis() + 500);
     }
 
-    public void setCurrentItem(int index, boolean smoothScroll)
-    {
+    public void setCurrentItem(int index, boolean smoothScroll) {
         mCurrent = index;
         mHackyViewPager.setCurrentItem(index, smoothScroll);
     }
@@ -150,29 +143,25 @@ public class EdusohoViewPager extends RelativeLayout {
         return mCurrent;
     }
 
-    class CarouselPointLayout extends PointLayout
-    {
+    class CarouselPointLayout extends PointLayout {
         public CarouselPointLayout(Context context) {
             super(context);
             setPadding(mPadding, mPadding, mPadding, mPadding);
         }
 
-        public void clear()
-        {
+        public void clear() {
             removeAllViews();
         }
 
-        public void updatePointImages(int count)
-        {
+        public void updatePointImages(int count) {
             clear();
             addPointImages(count);
         }
 
         @Override
-        public void addPointImages(int count)
-        {
+        public void addPointImages(int count) {
             mCount = count;
-            for (int i=0; i < count; i++) {
+            for (int i = 0; i < count; i++) {
                 ImageView imageView = new ImageView(mContext);
                 if (i == 0 || i == count - 1) {
                     imageView.setVisibility(INVISIBLE);
