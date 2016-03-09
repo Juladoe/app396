@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -8,29 +9,26 @@ import android.widget.BaseAdapter;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.view.FindCardView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by su on 2016/2/24.
  */
 public class FindListAdapter extends BaseAdapter {
 
     private Context mContext;
-    private List<DiscoveryColumn> mList;
+    private SparseArray<DiscoveryColumn> mList;
 
-    public FindListAdapter(Context context, List<DiscoveryColumn> list) {
+    public FindListAdapter(Context context, SparseArray<DiscoveryColumn> list) {
         mContext = context;
         mList = list;
     }
 
     public FindListAdapter(Context mContext) {
         this.mContext = mContext;
-        mList = new ArrayList<>();
+        mList = new SparseArray<>();
     }
 
-    public void addData(DiscoveryColumn findCardEntity) {
-        mList.add(findCardEntity);
+    public void addData(int position, DiscoveryColumn findCardEntity) {
+        mList.append(position, findCardEntity);
         notifyDataSetChanged();
     }
 
