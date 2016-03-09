@@ -10,7 +10,10 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -36,8 +39,17 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,12 +57,15 @@ import java.util.Map;
  */
 public class NetSchoolActivity extends ActionBarBaseActivity implements Response.ErrorListener {
     private static final String SEARCH_HISTORY = "search_history";
+    private static final String EnterSchool = "enter_school";
     private static final int REQUEST_QR = 001;
     private static final int RESULT_QR = 002;
     private EdusohoAutoCompleteTextView mSearchEdt;
     private View mSearchBtn;
     protected LoadDialog mLoading;
     private ArrayList<String> mSchoolList;
+    private ListView mListView;
+    private List mList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +79,26 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
     private void initView() {
         mSearchBtn = findViewById(R.id.normal_search_btn);
         mSearchEdt = (EdusohoAutoCompleteTextView) findViewById(R.id.school_url_edit);
+        mListView = (ListView)this.findViewById(R.id.net_school_listview);
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        if (loadEnterSchool(EnterSchool) != null){
+        list = loadEnterSchool(EnterSchool);
+            Collections.reverse(list);
+        }
+        mList = list;
+        SimpleAdapter simpleAdapter = new SimpleAdapter(this, list, R.layout.activity_net_school_listviewitem,
+                new String[] {"schoolname","entertime","loginname"},
+                new int[] {R.id.net_school_name, R.id.login_time,R.id.login_name});
+
+        mListView.setAdapter(simpleAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                HashMap map = (HashMap) mList.get(position);
+                String schoolhost = map.get("schoolhost").toString();
+                searchSchool(schoolhost);
+            }
+        });
         mSearchEdt.setKeyDownCallback(new EdusohoAutoCompleteTextView.KeyDownCallback() {
             @Override
             public void invoke(int length) {
@@ -130,6 +165,77 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         }
         editor.putString(text, "");
         editor.commit();
+    }
+
+    public void saveEnterSchool(String schoolname,String entertime,String loginname,String schoolhost) {
+        Map map = new HashMap();
+        map.put("schoolname",schoolname);
+        map.put("entertime",entertime);
+        map.put("loginname",loginname);
+        map.put("schoolhost",schoolhost);
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        if (loadEnterSchool(EnterSchool) != null){
+            list = loadEnterSchool(EnterSchool);
+        }
+        for (int i = 0; i < list.size(); i++){
+            if (list.get(i).get("schoolname").toString().equals(map.get("schoolname"))){
+                list.remove(i);
+                i--;
+            }
+        }
+        list.add(map);
+        if (list.size()>4){
+            list.remove(0);
+        }
+        JSONArray mJsonArray;
+        mJsonArray = new JSONArray();
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> itemMap = list.get(i);
+            Iterator<Map.Entry<String, Object>> iterator = itemMap.entrySet().iterator();
+
+            JSONObject object = new JSONObject();
+
+            while (iterator.hasNext()) {
+                Map.Entry<String,Object> entry = iterator.next();
+                try {
+                    object.put(entry.getKey(), entry.getValue());
+                } catch (JSONException e) {
+
+                }
+            }
+            mJsonArray.put(object);
+        }
+
+        SharedPreferences sp = getSharedPreferences("EnterSchool", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(EnterSchool, mJsonArray.toString());
+        editor.commit();
+    }
+
+    private List<Map<String, Object>> loadEnterSchool(String fileName) {
+        List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
+        SharedPreferences sp = getSharedPreferences("EnterSchool", Context.MODE_PRIVATE);
+        String result = sp.getString(EnterSchool, "");
+        try {
+            JSONArray array = new JSONArray(result);
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject itemObject = array.getJSONObject(i);
+                Map<String, Object> itemMap = new HashMap<String, Object>();
+                JSONArray names = itemObject.names();
+                if (names != null) {
+                    for (int j = 0; j < names.length(); j++) {
+                        String name = names.getString(j);
+                        String value = itemObject.getString(name);
+                        itemMap.put(name, value);
+                    }
+                }
+                datas.add(itemMap);
+            }
+        } catch (JSONException e) {
+
+        }
+
+        return datas;
     }
 
     protected void setSearchEdtHistory(ArrayList<String> list) {
@@ -326,6 +432,10 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                         public void showSplash() {
                             mLoading.dismiss();
                             showSchSplash(site.name, site.splashs);
+                            SimpleDateFormat nowfmt = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+                            Date date = new Date();
+                            String entertime = nowfmt.format(date);
+                            saveEnterSchool(site.name, entertime, "登录名：未登录",app.domain);
                         }
                     });
                     app.pushRegister(bundle);
@@ -333,4 +443,5 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
             }
         }, this);
     }
+
 }
