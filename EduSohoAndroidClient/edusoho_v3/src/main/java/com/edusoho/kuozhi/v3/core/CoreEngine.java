@@ -132,8 +132,7 @@ public class CoreEngine {
         }
     }
 
-    public void runService(
-            String serviceName, Context serverActivity, PluginRunCallback callback) {
+    public void runService(String serviceName, Context serverActivity, PluginRunCallback callback) {
         PluginModel pluginModel = mPluginModelHashMap.get(serviceName);
         if (pluginModel != null) {
             Intent startIntent = new Intent();
