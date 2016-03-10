@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.text.SpannableString;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -219,17 +218,13 @@ public class FindCardItemAdapter extends BaseAdapter {
 
     private void getLiveLessons(final int courseId, final NormalCallback<List<Lesson>> callback) {
         if (mCourseLessonsCache.get(courseId) != null) {
-            Log.d("discovery_cache", "cache_no-> " + courseId);
             callback.success(mCourseLessonsCache.get(courseId));
-            Log.d("discovery_cache", "cache_size-> " + mCourseLessonsCache.size());
         } else {
-            Log.d("discovery_cache", "get data " + mCourseLessonsCache.size());
             mLessonModel.getLessonByCourseId(courseId, new ResponseCallbackListener<List<Lesson>>() {
                 @Override
                 public void onSuccess(List<Lesson> data) {
                     callback.success(data);
                     mCourseLessonsCache.append(courseId, data);
-                    Log.d("discovery_cache", "add to cache data " + mCourseLessonsCache.size());
                 }
 
                 @Override
