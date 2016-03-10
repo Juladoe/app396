@@ -111,7 +111,11 @@ public abstract class ModelProvider {
             @Override
             protected T getResponseData(NetworkResponse response) {
                 String jsonStr = RequestUtil.handleRquestError(response.data);
-                return mGson.fromJson(jsonStr, typeToken.getType());
+                try {
+                    return mGson.fromJson(jsonStr, typeToken.getType());
+                } catch (Exception e) {
+                }
+                return null;
             }
         };
 
