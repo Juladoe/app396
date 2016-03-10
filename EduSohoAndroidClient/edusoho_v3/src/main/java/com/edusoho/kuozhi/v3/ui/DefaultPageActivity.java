@@ -323,6 +323,14 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 }
             });
         }
+        if (messageType.type.equals(Const.LOGOUT_SUCCESS)) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    mDownTabNews.setUpdateIcon(0);
+                }
+            });
+        }
     }
 
     @Override
@@ -341,6 +349,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 new MessageType(Const.OPEN_COURSE_CHAT, source),
                 new MessageType(Const.SWITCH_TAB, source),
                 new MessageType(Const.LOGIN_SUCCESS),
+                new MessageType(Const.LOGOUT_SUCCESS),
                 new MessageType(Const.TOKEN_LOSE),
                 new MessageType(Const.BADGE_UPDATE)
         };
