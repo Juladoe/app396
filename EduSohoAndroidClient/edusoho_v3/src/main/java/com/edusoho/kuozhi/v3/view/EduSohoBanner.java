@@ -61,7 +61,7 @@ public class EduSohoBanner extends RelativeLayout {
 
     public void update(List<SchoolBanner> schoolBanners) {
         mAdapter.setItems(schoolBanners);
-        //mAdapter.wrapContent();
+        mAdapter.wrapContent();
         mAdapter.notifyDataSetChanged();
         mPointLayout.updatePointImages(schoolBanners.size());
     }
@@ -119,7 +119,7 @@ public class EduSohoBanner extends RelativeLayout {
     }
 
     public void setupAutoPlay() {
-        workHandler.postDelayed(mAutoPlayRunnable, 3000);
+        //workHandler.postDelayed(mAutoPlayRunnable, 3000);
     }
 
     @Override

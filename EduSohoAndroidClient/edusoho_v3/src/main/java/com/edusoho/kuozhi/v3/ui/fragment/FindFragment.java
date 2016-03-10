@@ -84,6 +84,7 @@ public class FindFragment extends BaseFragment {
         mFindContentLayout.setPtrHandler(new PtrDefaultHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
+                initSchoolBanner(true);
                 getDiscoveryData();
                 mFindContentLayout.refreshComplete();
             }
