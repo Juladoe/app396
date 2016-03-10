@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment.lesson;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,12 +11,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.Lesson.LiveLesson;
+import com.edusoho.kuozhi.v3.entity.lesson.LiveLesson;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.appplugin.PluginUtil;
 import com.edusoho.kuozhi.v3.view.ESExpandableTextView;
 import com.edusoho.liveplayer.LiveUtil;
 import com.google.gson.reflect.TypeToken;

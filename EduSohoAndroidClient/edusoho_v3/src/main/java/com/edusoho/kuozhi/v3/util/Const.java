@@ -236,7 +236,7 @@ public class Const {
 
     public static final String CHECKTOKEN = "User/loginWithToken";
     public static final String REGIST = "User/regist";
-    public static final String LOGIN = "User/login";
+    public static final String LOGIN = "get/login";
     public static final String SMS_SEND = "User/smsSend";
     public static final String ADDCOMMENT = "Course/commitCourse";
     public static final String ABOUT = "School/getSchoolInfo";

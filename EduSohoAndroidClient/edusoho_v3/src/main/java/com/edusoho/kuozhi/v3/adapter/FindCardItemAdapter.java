@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.v3.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.text.SpannableString;
+import android.util.Log;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,12 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCardProperty;
+import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCourse;
+import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.lesson.LessonModel;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -33,13 +40,21 @@ public class FindCardItemAdapter extends BaseAdapter {
     private static final int COURSE = 1;
     private static final int LIVE = 2;
     private static final int CLASSROOM = 3;
+    private static final String LIVE_START = "直播中";
+    private static final String LIVE_NOTE_START = "未开始";
+    private static final String LIVE_FINISH = "已结束";
 
     private Context mContext;
     private List<DiscoveryCardProperty> mList;
     private DisplayImageOptions mOptions;
+    private LessonModel mLessonModel;
+    private SimpleDateFormat mLiveFormat = new SimpleDateFormat("MM-dd HH:mm");
+
+    private SparseArray<List<Lesson>> mCourseLessonsCache = new SparseArray<>();
 
     public FindCardItemAdapter(Context context) {
         this(context, new ArrayList<DiscoveryCardProperty>());
+        mLessonModel = new LessonModel();
     }
 
     public FindCardItemAdapter(Context context, List<DiscoveryCardProperty> list) {
@@ -47,6 +62,7 @@ public class FindCardItemAdapter extends BaseAdapter {
         this.mList = list;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_course).
                 showImageOnFail(R.drawable.default_course).build();
+        mLessonModel = new LessonModel();
     }
 
     public void clear() {
@@ -88,6 +104,11 @@ public class FindCardItemAdapter extends BaseAdapter {
     @Override
     public int getViewTypeCount() {
         return 4;
+    }
+
+    @Override
+    public int getCount() {
+        return mList.size();
     }
 
     private int getItemHeight(ViewGroup parent) {
@@ -176,7 +197,7 @@ public class FindCardItemAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private void setLiveViewInfo(ViewHolder viewHolder, DiscoveryCardProperty discoveryCardEntity) {
+    private void setLiveViewInfo(final ViewHolder viewHolder, DiscoveryCardProperty discoveryCardEntity) {
         SpannableString colorStr = AppUtil.getColorTextAfter(String.valueOf(discoveryCardEntity.getStudentNum()), " 人参与",
                 mContext.getResources().getColor(R.color.base_black_35)
         );
@@ -184,28 +205,79 @@ public class FindCardItemAdapter extends BaseAdapter {
         viewHolder.liveNicknameView.setText(discoveryCardEntity.getTeacherNickname());
         ImageLoader.getInstance().displayImage(discoveryCardEntity.getTeacherAvatar(), viewHolder.liveAvatarView, mOptions);
         try {
-            long startTime = discoveryCardEntity.getStartTime();
-            long currentTime = System.currentTimeMillis();
-            long endTime = discoveryCardEntity.getStartTime();
-            if (currentTime > startTime && currentTime < endTime) {
-                viewHolder.liveStartLabelView.setText("直播中");
-                viewHolder.liveStartLabelView.setBackgroundResource(R.drawable.find_card_item_image_green_label);
-            } else if (currentTime > endTime) {
-                viewHolder.liveStartLabelView.setText("已结束");
-                viewHolder.liveStartLabelView.setBackgroundResource(R.drawable.find_card_item_image_gray_label);
-            } else if (currentTime < startTime) {
-                viewHolder.liveStartLabelView.setText("未开始");
-                viewHolder.liveStartLabelView.setBackgroundResource(R.drawable.find_card_item_image_blue_label);
-            }
-            viewHolder.liveTimeView.setText("直播时间: " + new SimpleDateFormat("MM-dd HH:mm").format(startTime));
+            final DiscoveryCourse discoveryCourse = (DiscoveryCourse) discoveryCardEntity;
+            getLiveLessons(discoveryCourse.getId(), new NormalCallback<List<Lesson>>() {
+                @Override
+                public void success(List<Lesson> lessonList) {
+                    setLiveStatus(lessonList, viewHolder.liveStartLabelView, viewHolder.liveTimeView);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    @Override
-    public int getCount() {
-        return mList.size();
+    private void getLiveLessons(final int courseId, final NormalCallback<List<Lesson>> callback) {
+        if (mCourseLessonsCache.get(courseId) != null) {
+            Log.d("discovery_cache", "cache_no-> " + courseId);
+            callback.success(mCourseLessonsCache.get(courseId));
+            Log.d("discovery_cache", "cache_size-> " + mCourseLessonsCache.size());
+        } else {
+            Log.d("discovery_cache", "get data " + mCourseLessonsCache.size());
+            mLessonModel.getLessonByCourseId(courseId, new ResponseCallbackListener<List<Lesson>>() {
+                @Override
+                public void onSuccess(List<Lesson> data) {
+                    callback.success(data);
+                    mCourseLessonsCache.append(courseId, data);
+                    Log.d("discovery_cache", "add to cache data " + mCourseLessonsCache.size());
+                }
+
+                @Override
+                public void onFailure(String code, String message) {
+                    callback.success(null);
+                }
+            });
+        }
+    }
+
+    private void setLiveStatus(final List<Lesson> lessonList, final TextView liveStartTimeLabel, final TextView liveStartTime) {
+        int lessonNum = lessonList.size();
+        if (lessonNum == 0) {
+            liveStartTimeLabel.setVisibility(View.GONE);
+            liveStartTime.setVisibility(View.GONE);
+        } else {
+            liveStartTimeLabel.setVisibility(View.VISIBLE);
+            Lesson lessonCursor;
+            long currentTime = System.currentTimeMillis();
+            long startTime = 0;
+            int backgroundResourceId = R.drawable.find_card_item_image_blue_label;
+            String liveTag = LIVE_NOTE_START;
+            for (int i = 0; i < lessonNum; i++) {
+                lessonCursor = lessonList.get(i);
+                if (lessonCursor.status.equals("unpublished")) {
+                    continue;
+                }
+                if (lessonCursor.startTime * 1000 > currentTime) {
+                    break;
+                } else if (lessonCursor.startTime * 1000 < currentTime && lessonCursor.endTime * 1000 > currentTime) {
+                    liveTag = LIVE_START;
+                    backgroundResourceId = R.drawable.find_card_item_image_green_label;
+                    startTime = lessonCursor.startTime * 1000;
+                    break;
+                } else if (currentTime > lessonCursor.endTime && i == lessonNum - 1) {
+                    liveTag = LIVE_FINISH;
+                    backgroundResourceId = R.drawable.find_card_item_image_gray_label;
+                }
+            }
+            liveStartTimeLabel.setText(liveTag);
+            liveStartTimeLabel.setBackgroundResource(backgroundResourceId);
+            if (startTime != 0) {
+                liveStartTime.setVisibility(View.VISIBLE);
+                liveStartTime.setText(mLiveFormat.format(startTime));
+            } else {
+                liveStartTime.setVisibility(View.GONE);
+            }
+        }
     }
 
     private void setDiscoveryCardClickListener(View view, String type, int id) {

@@ -13,7 +13,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
-import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8File;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8ListItem;

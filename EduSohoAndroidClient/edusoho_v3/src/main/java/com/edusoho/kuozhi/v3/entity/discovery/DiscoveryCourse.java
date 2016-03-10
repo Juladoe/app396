@@ -1,9 +1,6 @@
 package com.edusoho.kuozhi.v3.entity.discovery;
 
-import android.text.TextUtils;
-
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
-import com.edusoho.kuozhi.v3.util.Const;
 
 import java.io.Serializable;
 
@@ -11,7 +8,8 @@ import java.io.Serializable;
  * Created by JesseHuang on 16/3/4.
  */
 public class DiscoveryCourse extends Course implements DiscoveryCardProperty, Serializable {
-    public boolean mEmpty = false;
+    private boolean mEmpty = false;
+    private long latestLessonStartTime = 0;
 
     @Override
     public int getId() {
@@ -43,18 +41,12 @@ public class DiscoveryCourse extends Course implements DiscoveryCardProperty, Se
         return type;
     }
 
-    @Override
-    public long getStartTime() {
-        if (!TextUtils.isEmpty(createdTime)) {
-            return Long.parseLong(createdTime) * 1000;
-        } else {
-            return System.currentTimeMillis();
-        }
+    public long getLatestLessonStartTime() {
+        return latestLessonStartTime;
     }
 
-    @Override
-    public long getEndTime() {
-        return getStartTime() + Const.ONE_DAY_MILLISECOND * expiryDay;
+    public void setLatestLessonStartTime(long time) {
+        time = latestLessonStartTime;
     }
 
     @Override

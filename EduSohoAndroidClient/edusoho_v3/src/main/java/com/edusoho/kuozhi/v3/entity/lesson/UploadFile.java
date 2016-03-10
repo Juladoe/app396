@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.model.bal.Lesson;
+package com.edusoho.kuozhi.v3.entity.lesson;
 
 /**
  * Created by howzhi on 14/12/24.

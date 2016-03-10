@@ -24,7 +24,7 @@ import android.widget.Toast;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.model.bal.Lesson;
+package com.edusoho.kuozhi.v3.entity.lesson;
 
 
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;

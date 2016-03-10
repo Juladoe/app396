@@ -16,10 +16,6 @@ public interface DiscoveryCardProperty {
 
     String getType();
 
-    long getStartTime();
-
-    long getEndTime();
-
     String getTeacherAvatar();
 
     String getTeacherNickname();
