@@ -202,13 +202,17 @@ public class FindCardItemAdapter extends BaseAdapter {
         );
         viewHolder.studentNumView.setText(colorStr);
         viewHolder.liveNicknameView.setText(discoveryCardEntity.getTeacherNickname());
+        viewHolder.liveStartLabelView.setVisibility(View.GONE);
+        viewHolder.liveTimeView.setVisibility(View.GONE);
         ImageLoader.getInstance().displayImage(discoveryCardEntity.getTeacherAvatar(), viewHolder.liveAvatarView, mOptions);
         try {
             final DiscoveryCourse discoveryCourse = (DiscoveryCourse) discoveryCardEntity;
             getLiveLessons(discoveryCourse.getId(), new NormalCallback<List<Lesson>>() {
                 @Override
                 public void success(List<Lesson> lessonList) {
-                    setLiveStatus(lessonList, viewHolder.liveStartLabelView, viewHolder.liveTimeView);
+                    if (lessonList != null) {
+                        setLiveStatus(lessonList, viewHolder.liveStartLabelView, viewHolder.liveTimeView);
+                    }
                 }
             });
         } catch (Exception e) {
@@ -220,7 +224,8 @@ public class FindCardItemAdapter extends BaseAdapter {
         if (mCourseLessonsCache.get(courseId) != null) {
             callback.success(mCourseLessonsCache.get(courseId));
         } else {
-            mLessonModel.getLessonByCourseId(courseId, new ResponseCallbackListener<List<Lesson>>() {
+            String[] conditions = new String[]{"status", "published"};
+            mLessonModel.getLessonByCourseId(courseId, conditions, new ResponseCallbackListener<List<Lesson>>() {
                 @Override
                 public void onSuccess(List<Lesson> data) {
                     callback.success(data);
@@ -249,9 +254,6 @@ public class FindCardItemAdapter extends BaseAdapter {
             String liveTag = LIVE_NOTE_START;
             for (int i = 0; i < lessonNum; i++) {
                 lessonCursor = lessonList.get(i);
-                if (lessonCursor.status.equals("unpublished")) {
-                    continue;
-                }
                 if (lessonCursor.startTime * 1000 > currentTime) {
                     break;
                 } else if (lessonCursor.startTime * 1000 < currentTime && lessonCursor.endTime * 1000 > currentTime) {
@@ -259,7 +261,7 @@ public class FindCardItemAdapter extends BaseAdapter {
                     backgroundResourceId = R.drawable.find_card_item_image_green_label;
                     startTime = lessonCursor.startTime * 1000;
                     break;
-                } else if (currentTime > lessonCursor.endTime && i == lessonNum - 1) {
+                } else if (currentTime > lessonCursor.endTime * 1000 && i == lessonNum - 1) {
                     liveTag = LIVE_FINISH;
                     backgroundResourceId = R.drawable.find_card_item_image_gray_label;
                 }
