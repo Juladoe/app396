@@ -179,6 +179,7 @@ public class FindCardItemAdapter extends BaseAdapter {
             convertView.setPadding(padding, padding, 0, padding);
         }
 
+        setDiscoveryCardClickListener(convertView, discoveryCardEntity.getType(), discoveryCardEntity.getId());
         if ("live".equals(discoveryCardEntity.getType())) {
             setLiveViewInfo(viewHolder, discoveryCardEntity);
             return convertView;
@@ -192,7 +193,6 @@ public class FindCardItemAdapter extends BaseAdapter {
             viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.green_primary));
             viewHolder.priceView.setText("免费");
         }
-        setDiscoveryCardClickListener(convertView, discoveryCardEntity.getType(), discoveryCardEntity.getId());
         return convertView;
     }
 
