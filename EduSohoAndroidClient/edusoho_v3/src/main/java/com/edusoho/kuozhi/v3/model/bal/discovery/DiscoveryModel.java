@@ -27,7 +27,28 @@ public class DiscoveryModel {
             public void onResponse(String response) {
                 ApiResponse<DiscoveryColumn> apiResponse = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<DiscoveryColumn>>() {
                 });
-                if (apiResponse.resources != null && apiResponse.resources.size() > 0) {
+                if (apiResponse.resources != null) {
+                    callbackListener.onSuccess(apiResponse.resources);
+                } else if (apiResponse.error != null) {
+                    callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+    }
+
+    public void getDiscoveryEmptyColumns(final ResponseCallbackListener<List<DiscoveryCourse>> callbackListener) {
+        RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(Api.DISCOVERY_COURSES_COLUMNS_EMPTY_COLUMNS, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                ApiResponse<DiscoveryCourse> apiResponse = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<DiscoveryCourse>>() {
+                });
+                if (apiResponse.resources != null) {
                     callbackListener.onSuccess(apiResponse.resources);
                 } else if (apiResponse.error != null) {
                     callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
@@ -50,7 +71,7 @@ public class DiscoveryModel {
             public void onResponse(String response) {
                 ApiResponse<DiscoveryCourse> apiResponse = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<DiscoveryCourse>>() {
                 });
-                if (apiResponse.resources != null && apiResponse.resources.size() > 0) {
+                if (apiResponse.resources != null) {
                     callbackListener.onSuccess(apiResponse.resources);
                 } else if (apiResponse.error != null) {
                     callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);

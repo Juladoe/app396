@@ -119,51 +119,75 @@ public class FindFragment extends BaseFragment {
         discoveryModel.getDiscoveryColumns(new ResponseCallbackListener<List<DiscoveryColumn>>() {
             @Override
             public void onSuccess(List<DiscoveryColumn> discoveryColumnList) {
-                mFindListAdapter = new FindListAdapter(mContext);
-                int size = discoveryColumnList.size();
-                for (int i = 0; i < size; i++) {
-                    final DiscoveryColumn discoveryColumn = discoveryColumnList.get(i);
-                    if ("course".equals(discoveryColumn.type) || "live".equals(discoveryColumn.type)) {
-                        final int finalI = i;
-                        discoveryModel.getDiscoveryCourseByColumn(discoveryColumn, new ResponseCallbackListener<List<DiscoveryCourse>>() {
-                            @Override
-                            public void onSuccess(List<DiscoveryCourse> discoveryCourseList) {
-                                if (discoveryCourseList != null && discoveryCourseList.size() > 0) {
-                                    filterCoursesInClassroom(discoveryCourseList);
-                                    if (discoveryCourseList.size() % 2 != 0) {
-                                        discoveryCourseList.add(new DiscoveryCourse(true));
+                if (discoveryColumnList.size() != 0) {
+                    int size = discoveryColumnList.size();
+                    for (int i = 0; i < size; i++) {
+                        final DiscoveryColumn discoveryColumn = discoveryColumnList.get(i);
+                        if ("course".equals(discoveryColumn.type) || "live".equals(discoveryColumn.type)) {
+                            final int finalI = i;
+                            discoveryModel.getDiscoveryCourseByColumn(discoveryColumn, new ResponseCallbackListener<List<DiscoveryCourse>>() {
+                                @Override
+                                public void onSuccess(List<DiscoveryCourse> discoveryCourseList) {
+                                    if (discoveryCourseList != null && discoveryCourseList.size() > 0) {
+                                        filterCoursesInClassroom(discoveryCourseList);
+                                        if (discoveryCourseList.size() % 2 != 0) {
+                                            discoveryCourseList.add(new DiscoveryCourse(true));
+                                        }
+                                        discoveryColumn.data = discoveryCourseList;
+                                        mFindListAdapter.addData(finalI, discoveryColumn);
                                     }
-                                    discoveryColumn.data = discoveryCourseList;
-                                    mFindListAdapter.addData(finalI, discoveryColumn);
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(String code, String message) {
+                                @Override
+                                public void onFailure(String code, String message) {
 
-                            }
-                        });
-                    } else if ("classroom".equals(discoveryColumn.type)) {
-                        final int finalI = i;
-                        discoveryModel.getDiscoveryClassroomByColumn(discoveryColumn, new ResponseCallbackListener<List<DiscoveryClassroom>>() {
-                            @Override
-                            public void onSuccess(List<DiscoveryClassroom> discoveryClassroomList) {
-                                if (discoveryClassroomList != null && discoveryClassroomList.size() > 0) {
-                                    if (discoveryClassroomList.size() % 2 != 0) {
-                                        discoveryClassroomList.add(new DiscoveryClassroom(true));
+                                }
+                            });
+                        } else if ("classroom".equals(discoveryColumn.type)) {
+                            final int finalI = i;
+                            discoveryModel.getDiscoveryClassroomByColumn(discoveryColumn, new ResponseCallbackListener<List<DiscoveryClassroom>>() {
+                                @Override
+                                public void onSuccess(List<DiscoveryClassroom> discoveryClassroomList) {
+                                    if (discoveryClassroomList != null && discoveryClassroomList.size() > 0) {
+                                        if (discoveryClassroomList.size() % 2 != 0) {
+                                            discoveryClassroomList.add(new DiscoveryClassroom(true));
+                                        }
+                                        discoveryColumn.data = discoveryClassroomList;
+                                        mFindListAdapter.addData(finalI, discoveryColumn);
                                     }
-                                    discoveryColumn.data = discoveryClassroomList;
-                                    mFindListAdapter.addData(finalI, discoveryColumn);
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(String code, String message) {
+                                @Override
+                                public void onFailure(String code, String message) {
 
-                            }
-                        });
+                                }
+                            });
+                        }
                     }
+                } else {
+                    discoveryModel.getDiscoveryEmptyColumns(new ResponseCallbackListener<List<DiscoveryCourse>>() {
+                        @Override
+                        public void onSuccess(List<DiscoveryCourse> discoveryCourseList) {
+                            if (discoveryCourseList != null && discoveryCourseList.size() > 0) {
+                                filterCoursesInClassroom(discoveryCourseList);
+                                if (discoveryCourseList.size() % 2 != 0) {
+                                    discoveryCourseList.add(new DiscoveryCourse(true));
+                                }
+                                DiscoveryColumn discoveryColumn = new DiscoveryColumn();
+                                discoveryColumn.title = "课程推荐";
+                                discoveryColumn.type = "course";
+                                discoveryColumn.data = discoveryCourseList;
+                                mFindListAdapter.addData(0, discoveryColumn);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(String code, String message) {
+
+                        }
+                    });
                 }
+                mFindListAdapter = new FindListAdapter(mContext);
                 mListView.setAdapter(mFindListAdapter);
             }
 
