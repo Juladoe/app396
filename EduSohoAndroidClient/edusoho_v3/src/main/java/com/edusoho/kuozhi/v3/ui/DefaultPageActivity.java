@@ -17,16 +17,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -37,8 +33,6 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
-
-import java.util.HashMap;
 
 /**
  * Created by JesseHuang on 15/4/24.
@@ -80,8 +74,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 app.addNotify("app_update", null);
             }
         });
-
-        logSchoolInfoToServer();
         if (getIntent().hasExtra(Const.INTENT_TARGET) || getIntent().hasExtra(Const.SWITCH_NEWS_TAB)) {
             processIntent(getIntent());
         }
@@ -405,30 +397,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
         popupDialog.setOkText("更新");
         popupDialog.show();
-    }
-
-    private void logSchoolInfoToServer() {
-        HashMap<String, String> params = app.getPlatformInfo();
-        School school = app.defaultSchool;
-        params.put("siteHost", school.name);
-        params.put("siteName", school.host);
-        if (checkSchoolHasLogined(school.host)) {
-            params.put("firstInstall", "true");
-        }
-        RequestUrl url = new RequestUrl(Const.MOBILE_SCHOOL_LOGIN);
-        url.setParams(params);
-
-        ajaxPost(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "MOBILE_SCHOOL_LOGIN success!");
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("tag", "logSchoolInfoToServer failed");
-            }
-        });
     }
 
     private boolean checkSchoolHasLogined(String host) {
