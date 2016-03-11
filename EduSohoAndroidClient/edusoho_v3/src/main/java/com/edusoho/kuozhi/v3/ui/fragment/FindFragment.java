@@ -41,7 +41,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  */
 public class FindFragment extends BaseFragment {
 
-    private static final String TAG = "FindFragment";
+    private static final String DEFAULT_DISCOVERY_TITLE = "推荐课程";
 
     private SystemProvider mSystemProvider;
 
@@ -174,7 +174,7 @@ public class FindFragment extends BaseFragment {
                                     discoveryCourseList.add(new DiscoveryCourse(true));
                                 }
                                 DiscoveryColumn discoveryColumn = new DiscoveryColumn();
-                                discoveryColumn.title = "课程推荐";
+                                discoveryColumn.title = DEFAULT_DISCOVERY_TITLE;
                                 discoveryColumn.type = "course";
                                 discoveryColumn.data = discoveryCourseList;
                                 mFindListAdapter.addData(0, discoveryColumn);
