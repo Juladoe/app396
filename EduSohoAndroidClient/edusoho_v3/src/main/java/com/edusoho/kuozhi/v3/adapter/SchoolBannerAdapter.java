@@ -5,6 +5,7 @@ package com.edusoho.kuozhi.v3.adapter;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -67,17 +70,39 @@ public class SchoolBannerAdapter extends PagerAdapter {
         photoView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SchoolBanner banner = mSchoolBanners.get(position);
-                if ("webview".equals(banner.action)) {
-                    Pattern CLASSROOM_PAT = Pattern.compile("/classroom/(\\d+)", Pattern.DOTALL);
-                    Matcher matcher = CLASSROOM_PAT.matcher(banner.params);
-                    if (matcher.find()) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Const.ACTIONBAR_TITLE, "班级标题");
-                        return;
+                try {
+                    final SchoolBanner banner = mSchoolBanners.get(position);
+                    if ("webview".equals(banner.action)) {
+                        final String url;
+                        Pattern CLASSROOM_PAT = Pattern.compile("/classroom/(\\d+)", Pattern.DOTALL);
+                        Matcher matcher = CLASSROOM_PAT.matcher(banner.params);
+                        if (matcher.find()) {
+                            Bundle bundle = new Bundle();
+                            bundle.putString(Const.ACTIONBAR_TITLE, "班级标题");
+                            int classroomIdSeek = banner.params.lastIndexOf('/');
+                            String classroomId = banner.params.substring(classroomIdSeek + 1);
+                            url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.CLASSROOM_COURSES, Integer.parseInt(classroomId)));
+                        } else {
+                            url = banner.params;
+                        }
+                        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.WEB_URL, url);
+                            }
+                        });
+                    } else if ("course".equals(banner.action)) {
+                        final String url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost,
+                                String.format(Const.MOBILE_WEB_COURSE, Integer.parseInt(banner.params)));
+                        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.WEB_URL, url);
+                            }
+                        });
                     }
-                } else if ("course".equals(banner.action)) {
-
+                } catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
         });

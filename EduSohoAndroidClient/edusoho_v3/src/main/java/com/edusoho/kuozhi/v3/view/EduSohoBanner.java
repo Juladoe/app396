@@ -119,7 +119,7 @@ public class EduSohoBanner extends RelativeLayout {
     }
 
     public void setupAutoPlay() {
-        //workHandler.postDelayed(mAutoPlayRunnable, 3000);
+        workHandler.postDelayed(mAutoPlayRunnable, 3000);
     }
 
     @Override
