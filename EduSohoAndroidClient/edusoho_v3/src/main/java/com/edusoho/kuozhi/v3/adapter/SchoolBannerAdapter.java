@@ -49,10 +49,12 @@ public class SchoolBannerAdapter extends PagerAdapter {
     }
 
     public void wrapContent() {
-        SchoolBanner top = mSchoolBanners.get(0);
-        SchoolBanner last = mSchoolBanners.get(mSchoolBanners.size() - 1);
-        mSchoolBanners.add(mSchoolBanners.size(), top);
-        mSchoolBanners.add(0, last);
+        if (mSchoolBanners != null && mSchoolBanners.size() > 0) {
+            SchoolBanner top = mSchoolBanners.get(0);
+            SchoolBanner last = mSchoolBanners.get(mSchoolBanners.size() - 1);
+            mSchoolBanners.add(mSchoolBanners.size(), top);
+            mSchoolBanners.add(0, last);
+        }
     }
 
     @Override
