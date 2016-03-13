@@ -87,6 +87,10 @@ public class EdusohoMainService extends Service {
         return mAppWeakReference.get();
     }
 
+    public Queue<Request<String>> getAjaxQueue() {
+        return mAjaxQueue;
+    }
+
     private void loginWithToken() {
         final EdusohoApp app = getEduSohoApp();
         if (TextUtils.isEmpty(app.token)) {
