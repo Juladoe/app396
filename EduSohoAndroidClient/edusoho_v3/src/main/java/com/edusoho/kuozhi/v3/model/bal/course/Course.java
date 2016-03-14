@@ -1,6 +1,6 @@
 package com.edusoho.kuozhi.v3.model.bal.course;
 
-import com.edusoho.kuozhi.v3.model.bal.Teacher;
+import com.edusoho.kuozhi.v3.model.bal.User;
 
 import java.io.Serializable;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class Course implements Serializable {
     public String title;
-    public String studentNum;
+    public int studentNum;
     public double rating;
     public String smallPicture;
     public double price;
@@ -41,6 +41,6 @@ public class Course implements Serializable {
     public String userId;
     public int vipLevelId;
     public String createdTime;
-    public Teacher[] teachers;
+    public User[] teachers;
     public String type;
 }

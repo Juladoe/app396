@@ -44,8 +44,9 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="startTheme" parent="EdusohoAppTheme">
+    <style name="startTheme" parent="@style/EdusohoAppTheme">
         <item name="android:textColor">@color/system_text</item>
+        <item name="windowActionBar">true</item>
     </style>
 
     <style name="loadDlgTheme" parent="android:Theme.Dialog">
@@ -96,6 +97,11 @@
         <item name="colorAccent">@color/primary</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_fb</item>
+        <item name="windowActionBar">true</item>
+        <item name="android:windowNoTitle">false</item>
+        <item name="windowNoTitle">false</item>
+        <item name="android:windowTitleSize">0px</item>
+
     </style>
 
     <style name="EdusohoActivityAnim">

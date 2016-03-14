@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -48,6 +50,10 @@ public class WebViewActivity extends ActionBarBaseActivity {
         if (TextUtils.isEmpty(url)) {
             CommonUtil.longToast(mActivity, "访问的地址不存在");
             return;
+        }
+
+        if (!url.startsWith(app.host)) {
+            showActionBar();
         }
         mWebView = (ESWebView) findViewById(R.id.webView);
         mWebView.initPlugin(mActivity);
@@ -103,6 +109,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
     protected void onDestroy() {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
+        destoryVideoResource();
         destoryWebView();
     }
 
@@ -135,5 +142,29 @@ public class WebViewActivity extends ActionBarBaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         BridgePluginContext pluginContext = mWebView.getWebView().getBridgePluginContext();
         pluginContext.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void destoryVideoResource() {
+        AudioManager audioManager = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.requestAudioFocus(
+                new AudioManager.OnAudioFocusChangeListener() {
+                    @Override
+                    public void onAudioFocusChange(int i) {
+                        //nothing
+                    }
+                },
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT
+        );
+
+        Log.i(null, "WebVideoActivity webview stop");
+        try {
+            Class.forName("android.webkit.WebView")
+                    .getMethod("onPause", (Class[]) null)
+                    .invoke(mWebView.getWebView(), (Object[]) null);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

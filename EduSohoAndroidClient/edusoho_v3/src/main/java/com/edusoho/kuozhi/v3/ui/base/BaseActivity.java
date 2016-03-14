@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -189,6 +190,8 @@ public class BaseActivity extends ActionBarActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                String errorStr = new String(error.networkResponse.data);
+                Log.d(TAG, new String(error.networkResponse.data));
                 if (errorListener != null) {
                     errorListener.onErrorResponse(error);
                 } else {

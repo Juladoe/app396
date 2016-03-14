@@ -24,7 +24,7 @@ import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
-import com.edusoho.kuozhi.v3.model.bal.course.MyCourseResult;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
@@ -647,12 +647,12 @@ public class NewsFragment extends BaseFragment {
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
                 model.fromId + "", model.type, app.loginUser.id + "");
-        New localNewModel = news.get(0);
         if (news.size() == 0) {
             model.unread = 0;
             model.id = (int) newDataSource.create(model);
             insertNew(model);
         } else {
+            New localNewModel = news.get(0);
             boolean isCurrentId = DiscussFragment.CurrentCourseId == model.fromId || ClassroomDiscussActivity.CurrentClassroomId == model.fromId;
             model.unread = (message.isForeground && isCurrentId) ? 0 : localNewModel.unread + 1;
             model.parentId = localNewModel.parentId;
@@ -716,15 +716,15 @@ public class NewsFragment extends BaseFragment {
         mEmptyView.setVisibility(visibility ? View.VISIBLE : View.GONE);
     }
 
-    private void getLearnCourses(final NormalCallback<MyCourseResult> normalCallback) {
+    private void getLearnCourses(final NormalCallback<CourseResult> normalCallback) {
         RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=learn", true);
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                MyCourseResult myCourseResult = ModelDecor.getInstance().decor(response, new TypeToken<MyCourseResult>() {
+                CourseResult courseResult = ModelDecor.getInstance().decor(response, new TypeToken<CourseResult>() {
                 });
-                if (myCourseResult.resources != null) {
-                    normalCallback.success(myCourseResult);
+                if (courseResult.resources != null) {
+                    normalCallback.success(courseResult);
                 }
 
             }
@@ -736,15 +736,15 @@ public class NewsFragment extends BaseFragment {
         });
     }
 
-    private void getTeachingCourses(final NormalCallback<MyCourseResult> normalCallback) {
+    private void getTeachingCourses(final NormalCallback<CourseResult> normalCallback) {
         RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=teaching", true);
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                MyCourseResult myCourseResult = ModelDecor.getInstance().decor(response, new TypeToken<MyCourseResult>() {
+                CourseResult courseResult = ModelDecor.getInstance().decor(response, new TypeToken<CourseResult>() {
                 });
-                if (myCourseResult.resources != null) {
-                    normalCallback.success(myCourseResult);
+                if (courseResult.resources != null) {
+                    normalCallback.success(courseResult);
                 }
 
             }
@@ -762,13 +762,13 @@ public class NewsFragment extends BaseFragment {
             try {
                 mIsNeedRefresh = false;
                 mLoadingHandler.sendEmptyMessage(SHOW);
-                getLearnCourses(new NormalCallback<MyCourseResult>() {
+                getLearnCourses(new NormalCallback<CourseResult>() {
                     @Override
-                    public void success(final MyCourseResult learnCourses) {
+                    public void success(final CourseResult learnCourses) {
                         if (PushUtil.ChatUserType.TEACHER.equals(app.getCurrentUserRole())) {
-                            getTeachingCourses(new NormalCallback<MyCourseResult>() {
+                            getTeachingCourses(new NormalCallback<CourseResult>() {
                                 @Override
-                                public void success(MyCourseResult teachingCourses) {
+                                public void success(CourseResult teachingCourses) {
                                     Course[] courses = CommonUtil.concatArray(learnCourses.resources, teachingCourses.resources);
                                     Log.d(TAG, "success: learn" + learnCourses.resources.length);
                                     Log.d(TAG, "success: teaching" + teachingCourses.resources.length);

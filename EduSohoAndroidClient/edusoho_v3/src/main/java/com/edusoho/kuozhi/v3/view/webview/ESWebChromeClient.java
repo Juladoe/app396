@@ -81,4 +81,9 @@ public class ESWebChromeClient extends BridgeWebChromeClient {
         result.cancel();
         return true;
     }
+
+    @Override
+    public void onReceivedTitle(WebView view, String title) {
+        mActivity.setTitle(title);
+    }
 }

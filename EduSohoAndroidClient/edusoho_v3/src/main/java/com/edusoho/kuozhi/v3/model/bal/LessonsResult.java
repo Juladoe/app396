@@ -1,6 +1,6 @@
 package com.edusoho.kuozhi.v3.model.bal;
 
-import com.edusoho.kuozhi.v3.model.bal.Lesson.LessonItem;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;

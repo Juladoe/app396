@@ -118,7 +118,6 @@ public class EdusohoApp extends Application {
 
     private ImageLoaderConfiguration mImageLoaderConfiguration;
     public DisplayImageOptions mOptions;
-    public VolleySingleton mVolley;
 
     //cache 缓存服务器
     private CacheServer mResouceCacheServer;
@@ -156,7 +155,7 @@ public class EdusohoApp extends Application {
      * @return
      */
     public Request<String> postMultiUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener, int method) {
-        mVolley.getRequestQueue();
+        VolleySingleton.getInstance(this).getRequestQueue();
         MultipartRequest multipartRequest = new MultipartRequest(method, requestUrl, responseListener, errorListener) {
 
             @Override
@@ -168,7 +167,7 @@ public class EdusohoApp extends Application {
         multipartRequest.setRetryPolicy(new DefaultRetryPolicy(Const.TIMEOUT,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        return mVolley.addToRequestQueue(multipartRequest);
+        return VolleySingleton.getInstance(this).addToRequestQueue(multipartRequest);
     }
 
     private StringVolleyRequest processorStringVolleyRequest(
@@ -204,11 +203,11 @@ public class EdusohoApp extends Application {
     }
 
     public Request<String> postUrl(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
-        mVolley.getRequestQueue();
+        VolleySingleton.getInstance(this).getRequestQueue();
         StringVolleyRequest request = processorStringVolleyRequest(requestUrl, responseListener, errorListener, Request.Method.POST);
         request.setCacheMode(StringVolleyRequest.CACHE_AUTO);
         request.setTag(requestUrl.url);
-        return mVolley.addToRequestQueue(request);
+        return VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
     /**
@@ -219,19 +218,19 @@ public class EdusohoApp extends Application {
      * @param errorListener    错误信息
      */
     public void getUrl(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        mVolley.getRequestQueue();
+        VolleySingleton.getInstance(this).getRequestQueue();
         StringVolleyRequest request = processorStringVolleyRequest(requestUrl, responseListener, errorListener, Request.Method.GET);
         request.setCacheMode(StringVolleyRequest.CACHE_AUTO);
         request.setTag(requestUrl.url);
-        mVolley.addToRequestQueue(request);
+        VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
     public void getUrlWithCache(final RequestUrl requestUrl, Response.Listener<String> responseListener, Response.ErrorListener errorListener) {
-        mVolley.getRequestQueue();
+        VolleySingleton.getInstance(this).getRequestQueue();
         StringVolleyRequest request = processorStringVolleyRequest(requestUrl, responseListener, errorListener, Request.Method.GET);
         request.setCacheMode(StringVolleyRequest.CACHE_ALWAYS);
         request.setTag(requestUrl.url);
-        mVolley.addToRequestQueue(request);
+        VolleySingleton.getInstance(this).addToRequestQueue(request);
     }
 
     public void addMessageListener(String msgId, CoreEngineMsgCallback callback) {
@@ -296,7 +295,6 @@ public class EdusohoApp extends Application {
     private void init() {
         app = this;
         gson = new Gson();
-        mVolley = VolleySingleton.getInstance(getApplicationContext());
         apiVersion = getString(R.string.api_version);
         setHost(getString(R.string.app_host));
         notifyMap = new HashMap<>();

@@ -64,6 +64,7 @@ import java.util.zip.ZipInputStream;
 public class AppUtil {
 
     public static final String TAG = "AppUtil";
+    private static String FLAVOR = "edusoho";
     public static final long ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
 
     public static int parseInt(String value) {
@@ -78,6 +79,13 @@ public class AppUtil {
         }
 
         return i;
+    }
+
+    public static void initConfig(String[] config) {
+        if (config == null || config.length == 0) {
+            return;
+        }
+        FLAVOR = config[0];
     }
 
     public static float parseFloat(String value) {

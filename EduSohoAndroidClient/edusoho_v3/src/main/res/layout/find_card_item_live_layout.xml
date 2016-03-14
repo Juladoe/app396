@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/card_cover"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/card_grid_height_s"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_course"
+            app:riv_corner_radius="4dp" />
+
+        <TextView
+            android:id="@+id/card_live_start_label"
+            android:layout_width="29dp"
+            android:layout_height="14dp"
+            android:layout_gravity="right"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="@dimen/title_label_xxx_s" />
+
+        <TextView
+            android:id="@+id/card_live_time"
+            android:layout_width="match_parent"
+            android:layout_height="19dp"
+            android:layout_gravity="bottom"
+            android:background="@drawable/find_card_item_image_label"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:singleLine="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/base_x_small_size" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/card_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:singleLine="true"
+        android:text="课程名称"
+        android:textColor="@color/black_primary"
+        android:textSize="@dimen/title_label_s" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/card_user_avatar"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/default_avatar"
+            app:riv_corner_radius="20dp" />
+
+        <TextView
+            android:id="@+id/card_nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:gravity="left"
+            android:textColor="@color/base_black_26"
+            android:textSize="@dimen/title_label_xx_s" />
+
+        <TextView
+            android:id="@+id/card_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="0"
+            android:textColor="@color/red_primary"
+            android:textSize="@dimen/title_label_x_s" />
+
+    </LinearLayout>
+</LinearLayout>
