@@ -140,7 +140,6 @@ public class Const {
 
     public static final String DB_NAME = "edusoho";
 
-    public static final String MOBILE_SCHOOL_LOGIN = "http://open.edusoho.com/mobstat/logined";
     public static final String MOBILE_REGIST = "http://open.edusoho.com/mobstat/installed";
 
     public static final String REGIST_DEVICE = "School/registDevice";
