@@ -160,7 +160,7 @@ public class Const {
     /**
      * mobile/{code}/version  *
      */
-    public static final String MOBILE_APP_VERSION = "mobile/%s/version";
+    public static final String MOBILE_APP_VERSION = "mobile/%s/version?code=%s";
     public static final String MOBILE_APP_RESOURCE = "mobile/%s/resources";
     public static final String MOBILE_APP_URL = "%smobile/%s";
 

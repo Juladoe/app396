@@ -17,14 +17,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
+import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -33,6 +37,9 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.Queue;
 
 /**
  * Created by JesseHuang on 15/4/24.
@@ -51,23 +58,22 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private TextView tvTitle;
     private View viewTitleLoading;
     private NavDownTabClickListener mNavDownTabClickListener;
-
+    private Queue<Request<String>> mAjaxQueue;
     private boolean mLogoutFlag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "onCreate");
         setContentView(R.layout.activity_default);
-        if (mService != null) {
-            mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
+        if (mAjaxQueue == null) {
+            mAjaxQueue = mService.getAjaxQueue();
+            //mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
         }
 
         initView();
         AppUtil.checkUpateApp(mActivity, new StatusCallback<AppUpdateInfo>() {
             @Override
             public void success(AppUpdateInfo obj) {
-                Log.d(null, "new verson" + obj.androidVersion);
                 if (obj.show) {
                     showUpdateDlg(obj);
                 }
@@ -118,19 +124,25 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mNavDownTabClickListener = new NavDownTabClickListener();
 
+        mToast = Toast.makeText(getApplicationContext(), getString(R.string.app_exit_msg), Toast.LENGTH_SHORT);
 
         int count = mNavLayout.getChildCount();
         for (int i = 0; i < count; i++) {
             View child = mNavLayout.getChildAt(i);
             child.setOnClickListener(mNavDownTabClickListener);
         }
-        if (TextUtils.isEmpty(app.token) || app.loginUser == null) {
-            mSelectBtn = R.id.nav_tab_find;
-        } else {
-            mSelectBtn = R.id.nav_tab_news;
-        }
-        selectDownTab(mSelectBtn);
-        mToast = Toast.makeText(getApplicationContext(), getString(R.string.app_exit_msg), Toast.LENGTH_SHORT);
+
+        isLoginWithToken(new NormalCallback<Boolean>() {
+            @Override
+            public void success(Boolean isLogin) {
+                if (isLogin) {
+                    selectDownTab(R.id.nav_tab_news);
+                } else {
+                    selectDownTab(R.id.nav_tab_find);
+                }
+            }
+        });
+
         mDownTabNews.setUpdateIcon(0);
     }
 
@@ -371,15 +383,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy");
         ESWebViewRequestManager.clear();
         VolleySingleton.getInstance(getApplicationContext()).cancelAll();
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        Log.d(TAG, "finish");
     }
 
     private void showUpdateDlg(final AppUpdateInfo result) {
@@ -398,6 +403,64 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
         popupDialog.setOkText("更新");
         popupDialog.show();
+    }
+
+    private void isLoginWithToken(final NormalCallback<Boolean> callback) {
+        if (TextUtils.isEmpty(app.token)) {
+            callback.success(false);
+            app.pushRegister(null);
+            return;
+        }
+
+        synchronized (this) {
+            if (!app.getNetIsConnect()) {
+                app.loginUser = app.loadUserInfo();
+                callback.success(true);
+                return;
+            }
+
+            if (!mAjaxQueue.isEmpty()) {
+                callback.success(false);
+                return;
+            }
+
+            RequestUrl url = app.bindUrl(Const.CHECKTOKEN, true);
+            Request<String> request = app.postUrl(url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        mAjaxQueue.poll();
+                        UserResult result = app.gson.fromJson(response, new TypeToken<UserResult>() {
+                        }.getType());
+
+                        Bundle bundle = new Bundle();
+                        if (result != null && result.user != null && (!TextUtils.isEmpty(result.token))) {
+                            app.saveToken(result);
+                            //app.sendMessage(Const.LOGIN_SUCCESS, null);
+                            bundle.putString(Const.BIND_USER_ID, result.user.id + "");
+                            callback.success(true);
+                        } else {
+                            bundle.putString(Const.BIND_USER_ID, "");
+                            app.removeToken();
+                            //app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
+                            callback.success(false);
+                        }
+                        app.pushRegister(bundle);
+
+                    } catch (Exception e) {
+                        Log.d(TAG, e.getMessage());
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+
+            mAjaxQueue.offer(request);
+        }
+
     }
 
     private boolean checkSchoolHasLogined(String host) {

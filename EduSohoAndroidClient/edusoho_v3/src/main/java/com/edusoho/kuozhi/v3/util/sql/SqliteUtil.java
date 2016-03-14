@@ -168,6 +168,15 @@ public class SqliteUtil extends SQLiteOpenHelper {
             }
         }
 
+        if (type == String.class) {
+            return (T) "";
+        } else if (type == Integer.class) {
+            return (T) new Integer(0);
+        } else if (type == Float.class) {
+            return (T) new Float(0.0f);
+        } else if (type == Double.class) {
+            return (T) new Double(0);
+        }
         return null;
     }
 
