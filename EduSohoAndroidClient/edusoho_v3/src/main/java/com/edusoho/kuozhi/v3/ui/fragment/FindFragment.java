@@ -1,11 +1,13 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -13,12 +15,14 @@ import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.FindListAdapter;
 import com.edusoho.kuozhi.v3.adapter.SchoolBannerAdapter;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryClassroom;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCourse;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.discovery.DiscoveryModel;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
@@ -216,5 +220,19 @@ public class FindFragment extends BaseFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.find_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.find_search) {
+            EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    String url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, Const.MOBILE_SEARCH);
+                    startIntent.putExtra(Const.WEB_URL, url);
+                }
+            });
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

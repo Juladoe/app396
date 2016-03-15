@@ -1,4 +1,14 @@
 <resources>
+    <dimen name="font_size_l">20sp</dimen>
+    <dimen name="font_size_m">18sp</dimen>
+    <dimen name="font_size_s">16sp</dimen>
+    <dimen name="font_size_x_s">14sp</dimen>
+    <dimen name="font_size_xx_s">12sp</dimen>
+    <dimen name="font_size_xxx_s">8sp</dimen>
+
+    <dimen name="card_grid_width">158dp</dimen>
+    <dimen name="card_grid_height">106dp</dimen>
+    <dimen name="card_grid_height_s">88dp</dimen>
     <!-- base size -->
     <dimen name="base_size">14sp</dimen>
     <dimen name="base_small_size">12sp</dimen>
