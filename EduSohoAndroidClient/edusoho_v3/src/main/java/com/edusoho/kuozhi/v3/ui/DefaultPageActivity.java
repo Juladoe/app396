@@ -436,13 +436,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                         Bundle bundle = new Bundle();
                         if (result != null && result.user != null && (!TextUtils.isEmpty(result.token))) {
                             app.saveToken(result);
-                            //app.sendMessage(Const.LOGIN_SUCCESS, null);
                             bundle.putString(Const.BIND_USER_ID, result.user.id + "");
                             callback.success(true);
                         } else {
                             bundle.putString(Const.BIND_USER_ID, "");
                             app.removeToken();
-                            //app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
                             callback.success(false);
                         }
                         app.pushRegister(bundle);

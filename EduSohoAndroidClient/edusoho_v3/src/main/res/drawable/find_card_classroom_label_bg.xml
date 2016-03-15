@@ -3,7 +3,7 @@
     android:shape="rectangle">
 
     <!-- 是否是圆角 -->
-    <corners android:radius="10dip" />
+    <corners android:radius="3dip" />
 
     <gradient
         android:angle="270"

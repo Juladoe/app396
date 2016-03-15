@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@android:color/white"
     android:orientation="vertical">
 
     <FrameLayout
@@ -19,15 +19,15 @@
             app:riv_corner_radius="3dp" />
 
         <TextView
-            android:layout_width="29dp"
-            android:layout_height="14dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="30dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
             android:background="@drawable/find_card_classroom_label_bg"
             android:gravity="center"
             android:text="班级"
             android:textColor="@color/white"
-            android:textSize="@dimen/title_label_xxx_s" />
+            android:textSize="@dimen/font_size_xxx_s" />
 
     </FrameLayout>
 
@@ -35,38 +35,34 @@
         android:id="@+id/card_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:ellipsize="end"
         android:singleLine="true"
         android:textColor="@color/base_black_87"
-        android:textSize="@dimen/title_label_s" />
+        android:textSize="@dimen/font_size_x_s" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
+        android:layout_marginTop="6dp">
 
         <TextView
             android:id="@+id/card_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left"
-            android:text="免费"
-            android:textColor="@color/red_primary"
-            android:textSize="@dimen/title_label_x_s" />
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/grey_666666"
+            android:textSize="@dimen/font_size_xx_s" />
 
         <TextView
             android:id="@+id/card_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:drawableLeft="@drawable/find_card_item_num_icon"
-            android:gravity="right"
-            android:text="0"
-            android:textColor="@color/black_back_primary"
-            android:textSize="@dimen/title_label_xx_s" />
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/grey_666666"
+            android:textSize="@dimen/font_size_xx_s" />
 
-    </LinearLayout>
+    </RelativeLayout>
 </LinearLayout>

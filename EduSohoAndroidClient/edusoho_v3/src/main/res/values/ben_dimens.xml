@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="title_label">12dp</dimen>
-    <dimen name="title_label_s">11dp</dimen>
-    <dimen name="title_label_x_s">10dp</dimen>
-    <dimen name="title_label_xx_s">9dp</dimen>
-    <dimen name="title_label_xxx_s">8dp</dimen>
+    <dimen name="font_size_l">20sp</dimen>
+    <dimen name="font_size_m">18sp</dimen>
+    <dimen name="font_size_s">16sp</dimen>
+    <dimen name="font_size_x_s">14sp</dimen>
+    <dimen name="font_size_xx_s">12sp</dimen>
+    <dimen name="font_size_xxx_s">8sp</dimen>
 
     <dimen name="card_grid_width">158dp</dimen>
     <dimen name="card_grid_height">106dp</dimen>
