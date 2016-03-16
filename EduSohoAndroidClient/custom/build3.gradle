@@ -8,7 +8,7 @@ android {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
-        manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+        manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi",startActivity:"com.edusoho.kuozhi.KuozhiActivity"]
     }
 
     //签名
@@ -20,28 +20,29 @@ android {
             keyPassword "10001000"
         }
 
-
+        chinahadoop {
+            storeFile file("key/chinahadoop.jks")
+            storePassword "10001000"
+            keyAlias "cn"
+            keyPassword "10001000"
+        }
     }
 
     productFlavors {
 
-        kaoshi60 {
-            signingConfig signingConfigs.debugConfig
-
-            applicationId "com.edusoho.kaoshi60"
-            manifestPlaceholders = [wxpkg: "com.edusoho.kaoshi60", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
-
+        chinahadoop {
+            signingConfig signingConfigs.chinahadoop
+            applicationId "com.chinahadoop.kuozhi"
+            manifestPlaceholders = [wxpkg: "com.chinahadoop.kuozhi",startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
         }
     }
 
     sourceSets {
 
-
-        kaoshi60 {
-            java.srcDirs = ['src/kaoshi60/java']
-            res.srcDirs = ['src/kaoshi60/res']
-            assets.srcDirs = ['src/kaoshi60/assets']
-
+        chinahadoop {
+            java.srcDirs = ['src/chinahadoop/java']
+            res.srcDirs = ['src/chinahadoop/res']
+            assets.srcDirs = ['src/chinahadoop/assets'];
         }
     }
 
@@ -56,8 +57,4 @@ android {
 
 dependencies {
     compile project(':edusoho_v3')
-}
-
-task newcustom (type: Copy) {
-    println "qweqweqwe"
 }

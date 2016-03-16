@@ -554,7 +554,19 @@ public class M3U8Util {
         mSqliteUtil.insert("data_m3u8_url", cv);
     }
 
-    private void updateDownloadStatus(String url, int finish) {
+    private void updateDownloadStatus(String url, int lessonId,  int finish) {
+        int isFinished = mSqliteUtil.query(
+                Integer.class,
+                "finish",
+                "select * from data_m3u8_url where url=? and lessonId=?",
+                DigestUtils.md5(url),
+                String.valueOf(lessonId)
+        );
+        Log.d("updateDownloadStatus:", url + "--" + isFinished);
+        if (isFinished == FINISH) {
+            return;
+        }
+
         ContentValues cv = new ContentValues();
         cv.put("finish", finish);
         int result = mSqliteUtil.update(
@@ -667,7 +679,7 @@ public class M3U8Util {
                         );
                     }
 
-                    updateDownloadStatus(url, 1);
+                    updateDownloadStatus(url, mLessonId, 1);
 
                     //发送下载广播
                     Intent intent = new Intent(DownloadStatusReceiver.ACTION);
@@ -678,7 +690,7 @@ public class M3U8Util {
                 } catch (Exception e) {
                     //超时处理
                     int count = mTimeOutList.get(key);
-                    if (count < 3) {
+                    if (count < 10) {
                         Log.d(TAG, "timeiout count " + count);
                         getResourceFromNet(url, type);
                         mTimeOutList.put(key, ++count);

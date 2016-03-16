@@ -63,7 +63,6 @@ public class EdusohoMainService extends Service {
     public static final String TAG = "EdusohoMainService";
     private static EdusohoMainService mService;
     private WorkHandler mWorkHandler;
-    //private User mLoginUser;
     private Queue<Request<String>> mAjaxQueue;
 
     public static final int LOGIN_WITH_TOKEN = 11;
@@ -72,9 +71,8 @@ public class EdusohoMainService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(null, "create Main service");
         mAjaxQueue = new LinkedList<>();
-        mAppWeakReference = new WeakReference<EdusohoApp>((EdusohoApp) getApplication());
+        mAppWeakReference = new WeakReference<>((EdusohoApp) getApplication());
         mService = this;
         mWorkHandler = new WorkHandler(this);
     }
@@ -87,6 +85,10 @@ public class EdusohoMainService extends Service {
 
     protected EdusohoApp getEduSohoApp() {
         return mAppWeakReference.get();
+    }
+
+    public Queue<Request<String>> getAjaxQueue() {
+        return mAjaxQueue;
     }
 
     private void loginWithToken() {

@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.text.SpannableString;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +41,8 @@ public class FindCardItemAdapter extends BaseAdapter {
     private static final String LIVE_START = "直播中";
     private static final String LIVE_NOTE_START = "未开始";
     private static final String LIVE_FINISH = "已结束";
+    private int paddingLeftRight;
+    private int paddingTopBottom;
 
     private Context mContext;
     private List<DiscoveryCardProperty> mList;
@@ -54,6 +55,8 @@ public class FindCardItemAdapter extends BaseAdapter {
     public FindCardItemAdapter(Context context) {
         this(context, new ArrayList<DiscoveryCardProperty>());
         mLessonModel = new LessonModel();
+        paddingLeftRight = AppUtil.dp2px(mContext, 8);
+        paddingTopBottom = AppUtil.dp2px(mContext, 10);
     }
 
     public FindCardItemAdapter(Context context, List<DiscoveryCardProperty> list) {
@@ -62,6 +65,8 @@ public class FindCardItemAdapter extends BaseAdapter {
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_course).
                 showImageOnFail(R.drawable.default_course).build();
         mLessonModel = new LessonModel();
+        paddingLeftRight = AppUtil.dp2px(mContext, 8);
+        paddingTopBottom = AppUtil.dp2px(mContext, 10);
     }
 
     public void clear() {
@@ -172,11 +177,11 @@ public class FindCardItemAdapter extends BaseAdapter {
 
         ImageLoader.getInstance().displayImage(discoveryCardEntity.getPicture(), viewHolder.coverView, mOptions);
         viewHolder.titleView.setText(discoveryCardEntity.getTitle());
-        int padding = AppUtil.dp2px(mContext, 10);
+
         if (position % 2 == 0) {
-            convertView.setPadding(0, padding, padding, padding);
+            convertView.setPadding(0, paddingTopBottom, paddingLeftRight, paddingTopBottom);
         } else {
-            convertView.setPadding(padding, padding, 0, padding);
+            convertView.setPadding(paddingLeftRight, paddingTopBottom, 0, paddingTopBottom);
         }
 
         setDiscoveryCardClickListener(convertView, discoveryCardEntity.getType(), discoveryCardEntity.getId());
@@ -185,22 +190,17 @@ public class FindCardItemAdapter extends BaseAdapter {
             return convertView;
         }
 
-        viewHolder.studentNumView.setText(String.valueOf(discoveryCardEntity.getStudentNum()));
+        viewHolder.studentNumView.setText(discoveryCardEntity.getStudentNum() + " " + mContext.getString(R.string.find_card_student_num));
         if (discoveryCardEntity.getPrice() > 0) {
-            viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.red_primary));
             viewHolder.priceView.setText(String.format("%.2f元", discoveryCardEntity.getPrice()));
         } else {
-            viewHolder.priceView.setTextColor(mContext.getResources().getColor(R.color.green_primary));
             viewHolder.priceView.setText("免费");
         }
         return convertView;
     }
 
     private void setLiveViewInfo(final ViewHolder viewHolder, DiscoveryCardProperty discoveryCardEntity) {
-        SpannableString colorStr = AppUtil.getColorTextAfter(String.valueOf(discoveryCardEntity.getStudentNum()), " 人参与",
-                mContext.getResources().getColor(R.color.base_black_35)
-        );
-        viewHolder.studentNumView.setText(colorStr);
+        viewHolder.studentNumView.setText(discoveryCardEntity.getStudentNum() + " " + mContext.getString(R.string.find_card_student_num));
         viewHolder.liveNicknameView.setText(discoveryCardEntity.getTeacherNickname());
         viewHolder.liveStartLabelView.setVisibility(View.GONE);
         viewHolder.liveTimeView.setVisibility(View.GONE);
@@ -255,6 +255,7 @@ public class FindCardItemAdapter extends BaseAdapter {
             for (int i = 0; i < lessonNum; i++) {
                 lessonCursor = lessonList.get(i);
                 if (lessonCursor.startTime * 1000 > currentTime) {
+                    startTime = lessonCursor.startTime * 1000;
                     break;
                 } else if (lessonCursor.startTime * 1000 < currentTime && lessonCursor.endTime * 1000 > currentTime) {
                     liveTag = LIVE_START;
@@ -270,7 +271,7 @@ public class FindCardItemAdapter extends BaseAdapter {
             liveStartTimeLabel.setBackgroundResource(backgroundResourceId);
             if (startTime != 0) {
                 liveStartTime.setVisibility(View.VISIBLE);
-                liveStartTime.setText(mLiveFormat.format(startTime));
+                liveStartTime.setText("直播时间：" + mLiveFormat.format(startTime));
             } else {
                 liveStartTime.setVisibility(View.GONE);
             }

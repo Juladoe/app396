@@ -160,7 +160,7 @@ public class Const {
     /**
      * mobile/{code}/version  *
      */
-    public static final String MOBILE_APP_VERSION = "mobile/%s/version";
+    public static final String MOBILE_APP_VERSION = "mobile/%s/version?code=%s";
     public static final String MOBILE_APP_RESOURCE = "mobile/%s/resources";
     public static final String MOBILE_APP_URL = "%smobile/%s";
 
@@ -443,6 +443,7 @@ public class Const {
     public static final String MOBILE_WEB_CLASSROOMS = "main#/classroomlist/";
     public static final String MOBILE_WEB_COURSES = "main#/courselist/normal/";
     public static final String MOBILE_WEB_LIVE_COURSES = "main#/courselist/live/";
+    public static final String MOBILE_SEARCH = "main#/search";
     public static final String ANNOUNCEMENT = "main#/coursenotice/course/%d";
     public static final String ARTICLE_CONTENT = "%smobile/main#/article/%d";
     public static final String CLASSROOM_ANNOUNCEMENT = "main#/coursenotice/classroom/%d";

@@ -51,9 +51,8 @@ public class FindCardView extends LinearLayout {
 
     protected void initView() {
         setOrientation(LinearLayout.VERTICAL);
-        int padding = AppUtil.dp2px(getContext(), 14);
-        int paddingTop = AppUtil.dp2px(getContext(), 10);
-        setPadding(padding, paddingTop, padding, 0);
+        int padding = AppUtil.dp2px(getContext(), 16);
+        setPadding(padding, padding, padding, padding);
         setBackgroundColor(Color.WHITE);
         View headView = LayoutInflater.from(getContext()).inflate(R.layout.view_find_card_head_layout, null);
         mTitleView = (TextView) headView.findViewById(R.id.card_title);
@@ -104,7 +103,7 @@ public class FindCardView extends LinearLayout {
 
         gridView.setColumnWidth(getContext().getResources().getDimensionPixelSize(R.dimen.card_grid_width));
         gridView.setNumColumns(2);
-        gridView.setVerticalSpacing(2);
+        gridView.setVerticalSpacing(0);
         gridView.setVerticalScrollBarEnabled(false);
         gridView.setHorizontalScrollBarEnabled(false);
         return gridView;
