@@ -256,6 +256,9 @@ public class LoginActivity extends ActionBarBaseActivity {
 
     public void saveEnterSchool(String schoolname,String entertime,String loginname,String schoolhost) {
         Map map = new HashMap();
+        String lable = new String();
+        lable = schoolname.substring(0,1);
+        map.put("lable",lable);
         map.put("schoolname",schoolname);
         map.put("entertime",entertime);
         map.put("loginname",loginname);
