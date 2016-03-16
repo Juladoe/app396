@@ -439,6 +439,8 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
                 bundle.putInt(key, (Integer) value);
             } else if (value instanceof Double) {
                 bundle.putInt(key, ((Double) value).intValue());
+            } else if (value instanceof Boolean) {
+                bundle.putBoolean(key, ((Boolean) value).booleanValue());
             } else {
                 bundle.putString(key, value.toString());
             }
