@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.view.View;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ListData;
 import com.edusoho.kuozhi.shard.ShareHandler;
@@ -27,6 +28,7 @@ import com.tencent.mm.sdk.modelmsg.WXTextObject;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,9 +92,17 @@ public class ShareTool {
             public boolean handler(String type) {
                 if (type.startsWith("Wechat")) {
                     //朋友圈
-                    int wxType = SendMessageToWX.Req.WXSceneTimeline;
-                    if ("Wechat".equals(type)) {
-                        wxType = SendMessageToWX.Req.WXSceneSession;
+                    int wxType;
+                    switch (type) {
+                        case "Wechat":
+                            wxType = SendMessageToWX.Req.WXSceneSession;
+                            break;
+                        case "WechatMoments":
+                            wxType = SendMessageToWX.Req.WXSceneTimeline;
+                            break;
+                        default:
+                            wxType = SendMessageToWX.Req.WXSceneFavorite;
+                            break;
                     }
                     shardToMM(mContext, wxType);
                     return true;
@@ -163,7 +173,7 @@ public class ShareTool {
         wXMediaMessage.description = AppUtil.coverCourseAbout(mAbout);
         wXMediaMessage.title = mTitle;
         //具体尺寸new ImageSize(100, 99)待修改
-        if (! TextUtils.isEmpty(mPic)) {
+        if (!TextUtils.isEmpty(mPic)) {
             wXMediaMessage.setThumbImage(ImageLoader.getInstance().loadImageSync(mPic,
                     new ImageSize(100, 99), EdusohoApp.app.mOptions));
         }
