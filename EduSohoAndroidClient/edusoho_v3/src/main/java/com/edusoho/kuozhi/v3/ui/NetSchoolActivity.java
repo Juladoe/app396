@@ -12,12 +12,10 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -65,46 +63,38 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
     private static final int REQUEST_QR = 001;
     private static final int RESULT_QR = 002;
     private EdusohoAutoCompleteTextView mSearchEdt;
-    private View mSearchBtn;
     protected LoadDialog mLoading;
     private ArrayList<String> mSchoolList;
     private ListView mListView;
     private List<Map<String, Object>> mList;
+    private MyAdapter adapter;
+    private TextView mtv;
+    private Button mCancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_net_school);
-        setBackMode(BACK, "输入域名");
         app.addTask("NetSchoolActivity", this);
+        getSupportActionBar().hide();
         initView();
     }
 
     private void initView() {
-        mSearchBtn = findViewById(R.id.normal_search_btn);
+        mCancel = (Button) findViewById(R.id.net_school_cancel_search_btn);
+        mtv = (TextView) findViewById(R.id.net_school_tv);
         mSearchEdt = (EdusohoAutoCompleteTextView) findViewById(R.id.school_url_edit);
         mListView = (ListView) this.findViewById(R.id.net_school_listview);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        if (loadEnterSchool(EnterSchool) != null) {
+        if (loadEnterSchool(EnterSchool).size() != 0) {
             list = loadEnterSchool(EnterSchool);
             Collections.reverse(list);
+        } else {
+            mtv.setVisibility(View.GONE);
         }
         mList = list;
-        MyAdapter adapter = new MyAdapter(this);
+        adapter = new MyAdapter(this);
         mListView.setAdapter(adapter);
-//        SimpleAdapter simpleAdapter = new SimpleAdapter(this, list, R.layout.activity_net_school_listviewitem,
-//                new String[]{"lable", "schoolname", "entertime", "loginname"},
-//                new int[]{R.id.net_school_lable, R.id.net_school_name, R.id.login_time, R.id.login_name});
-//
-//        mListView.setAdapter(simpleAdapter);
-//        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                HashMap map = (HashMap) mList.get(position);
-//                String schoolhost = map.get("schoolhost").toString();
-//                searchSchool(schoolhost);
-//            }
-//        });
         mSearchEdt.setKeyDownCallback(new EdusohoAutoCompleteTextView.KeyDownCallback() {
             @Override
             public void invoke(int length) {
@@ -128,6 +118,13 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
             }
         });
 
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         mSearchEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -135,15 +132,6 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                 saveSearchHistory(searchStr);
                 searchSchool(searchStr);
                 return true;
-            }
-        });
-
-        mSearchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String searchStr = mSearchEdt.getText().toString();
-                saveSearchHistory(searchStr);
-                searchSchool(searchStr);
             }
         });
 
@@ -176,7 +164,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
     public void saveEnterSchool(String schoolname, String entertime, String loginname, String schoolhost) {
         Map map = new HashMap();
         String lable = new String();
-        lable = schoolname.substring(0, 1);
+        lable = schoolname.substring(0, 2);
         map.put("lable", lable);
         map.put("schoolname", schoolname);
         map.put("entertime", entertime);
@@ -454,22 +442,22 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
     }
 
     private class MyAdapter extends BaseAdapter {
-        private LayoutInflater mInflater;
+        Context context;
 
         public MyAdapter(Context context) {
-            this.mInflater = LayoutInflater.from(context);
+            this.context = context;
         }
 
         @Override
-        public int getCount () {
+        public int getCount() {
             // TODO Auto-generated method stub
-            return 0;
+            return mList.size();
         }
 
         @Override
         public Object getItem(int position) {
             // TODO Auto-generated method stub
-            return null;
+            return mList.get(position);
         }
 
         @Override
@@ -479,27 +467,41 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         }
 
         @Override
-        public View getView(final int position, View convertView, ViewGroup parent){
+        public View getView(final int position, View convertView, ViewGroup parent) {
             ViewHolder holder = null;
+            Map map = (Map) getItem(position);
             if (convertView == null) {
 
-                holder=new ViewHolder();
+                holder = new ViewHolder();
 
-                //可以理解为从vlist获取view  之后把view返回给ListView
 
-                convertView = mInflater.inflate(R.layout.activity_net_school_listviewitem,null);
-                holder.enterbtn = (Button)findViewById(R.id.enter_btn);
-                holder.entertimetv = (TextView)findViewById(R.id.login_time);
-                holder.loginnametv = (TextView)findViewById(R.id.login_name);
-                holder.labletv = (TextView)findViewById(R.id.net_school_lable);
-                holder.schoolnametv = (TextView)findViewById(R.id.net_school_name);
+                convertView = LayoutInflater.from(context).inflate(R.layout.activity_net_school_listviewitem, null);
+                holder.enterbtn = (Button) convertView.findViewById(R.id.enter_btn);
+                holder.entertimetv = (TextView) convertView.findViewById(R.id.login_time);
+                holder.loginnametv = (TextView) convertView.findViewById(R.id.login_name);
+                holder.labletv = (TextView) convertView.findViewById(R.id.net_school_lable);
+                holder.schoolnametv = (TextView) convertView.findViewById(R.id.net_school_name);
                 convertView.setTag(holder);
-            }else {
-                holder = (ViewHolder)convertView.getTag();
+            } else {
+                holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.entertimetv.setText((String)mList.get(position).get("logintime"));
-            holder.labletv.setText((String)mList.get(position).get("lable"));
+
+            holder.entertimetv.setText((String) mList.get(position).get("entertime"));
+            holder.labletv.setText((String) mList.get(position).get("lable"));
+            if (position == 0) {
+                holder.labletv.setBackgroundResource(R.drawable.round_blue_bg);
+            }
+            if (position == 1) {
+                holder.labletv.setBackgroundResource(R.drawable.round_green2_bg);
+            }
+            if (position == 2) {
+                holder.labletv.setBackgroundResource(R.drawable.round_orange_bg);
+            }
+            if (position == 3) {
+                holder.labletv.setBackgroundResource(R.drawable.round_blue2_bg);
+            }
+
             holder.loginnametv.setText((String) mList.get(position).get("loginname"));
             holder.schoolnametv.setText((String) mList.get(position).get("schoolname"));
             holder.enterbtn.setOnClickListener(new View.OnClickListener() {
@@ -521,7 +523,6 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         public TextView loginnametv;
         public Button enterbtn;
     }
-
 
 
 }

@@ -92,10 +92,10 @@ public class OpenLoginUtil {
                 bundle.putString(Const.BIND_USER_ID, String.valueOf(activity.app.loginUser.id));
                 activity.app.pushRegister(bundle);
                 mLoginhandler.success(userResult);
-                SimpleDateFormat nowfmt = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+                SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
                 String entertime = nowfmt.format(date);
-                saveEnterSchool(activity.app.defaultSchool.name, entertime, "登录名："+activity.app.loginUser.nickname, activity.app.domain);
+                saveEnterSchool(activity.app.defaultSchool.name, entertime, "登录账号："+activity.app.loginUser.nickname, activity.app.domain);
             }
         }, null);
         Looper.loop();
@@ -177,6 +177,9 @@ public class OpenLoginUtil {
 
     public void saveEnterSchool(String schoolname,String entertime,String loginname,String schoolhost) {
         Map map = new HashMap();
+        String lable = new String();
+        lable = schoolname.substring(0, 2);
+        map.put("lable", lable);
         map.put("schoolname",schoolname);
         map.put("entertime",entertime);
         map.put("loginname",loginname);

@@ -147,10 +147,10 @@ public class LoginActivity extends ActionBarBaseActivity {
                     if (userResult != null && userResult.user != null) {
                         mActivity.app.saveToken(userResult);
                         mActivity.setResult(LoginActivity.OK);
-                        SimpleDateFormat nowfmt = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+                        SimpleDateFormat nowfmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                         Date date = new Date();
                         String entertime = nowfmt.format(date);
-                        saveEnterSchool(mActivity.app.defaultSchool.name, entertime, "登录名：" + mActivity.app.loginUser.nickname, mActivity.app.domain);
+                        saveEnterSchool(mActivity.app.defaultSchool.name, entertime, "登录账号：" + mActivity.app.loginUser.nickname, mActivity.app.domain);
                         app.sendMessage(Const.LOGIN_SUCCESS, null);
                         Bundle bundle = new Bundle();
                         bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
@@ -254,27 +254,27 @@ public class LoginActivity extends ActionBarBaseActivity {
         }
     };
 
-    public void saveEnterSchool(String schoolname,String entertime,String loginname,String schoolhost) {
+    public void saveEnterSchool(String schoolname, String entertime, String loginname, String schoolhost) {
         Map map = new HashMap();
         String lable = new String();
-        lable = schoolname.substring(0,1);
-        map.put("lable",lable);
-        map.put("schoolname",schoolname);
-        map.put("entertime",entertime);
-        map.put("loginname",loginname);
-        map.put("schoolhost",schoolhost);
+        lable = schoolname.substring(0, 2);
+        map.put("lable", lable);
+        map.put("schoolname", schoolname);
+        map.put("entertime", entertime);
+        map.put("loginname", loginname);
+        map.put("schoolhost", schoolhost);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        if (loadEnterSchool(EnterSchool) != null){
+        if (loadEnterSchool(EnterSchool) != null) {
             list = loadEnterSchool(EnterSchool);
         }
-        for (int i = 0; i < list.size(); i++){
-            if (list.get(i).get("schoolname").toString().equals(map.get("schoolname"))){
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).get("schoolname").toString().equals(map.get("schoolname"))) {
                 list.remove(i);
                 i--;
             }
         }
         list.add(map);
-        if (list.size()>4){
+        if (list.size() > 4) {
             list.remove(0);
         }
         JSONArray mJsonArray;
@@ -286,7 +286,7 @@ public class LoginActivity extends ActionBarBaseActivity {
             JSONObject object = new JSONObject();
 
             while (iterator.hasNext()) {
-                Map.Entry<String,Object> entry = iterator.next();
+                Map.Entry<String, Object> entry = iterator.next();
                 try {
                     object.put(entry.getKey(), entry.getValue());
                 } catch (JSONException e) {
