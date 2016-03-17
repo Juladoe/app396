@@ -2,7 +2,9 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,8 +31,17 @@ import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by JesseHuang on 15/5/22.
@@ -39,6 +50,7 @@ public class LoginActivity extends ActionBarBaseActivity {
 
     public static final int TYPE_LOGIN = 1;
     public static final int OK = 1003;
+    private static final String EnterSchool = "enter_school";
     private static boolean isRun;
     private EditText etUsername;
     private EditText etPassword;
@@ -135,6 +147,10 @@ public class LoginActivity extends ActionBarBaseActivity {
                     if (userResult != null && userResult.user != null) {
                         mActivity.app.saveToken(userResult);
                         mActivity.setResult(LoginActivity.OK);
+                        SimpleDateFormat nowfmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                        Date date = new Date();
+                        String entertime = nowfmt.format(date);
+                        saveEnterSchool(mActivity.app.defaultSchool.name, entertime, "登录账号：" + mActivity.app.loginUser.nickname, mActivity.app.domain);
                         app.sendMessage(Const.LOGIN_SUCCESS, null);
                         Bundle bundle = new Bundle();
                         bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
@@ -237,6 +253,80 @@ public class LoginActivity extends ActionBarBaseActivity {
             mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
         }
     };
+
+    public void saveEnterSchool(String schoolname, String entertime, String loginname, String schoolhost) {
+        Map map = new HashMap();
+        String lable = new String();
+        lable = schoolname.substring(0, 2);
+        map.put("lable", lable);
+        map.put("schoolname", schoolname);
+        map.put("entertime", entertime);
+        map.put("loginname", loginname);
+        map.put("schoolhost", schoolhost);
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        if (loadEnterSchool(EnterSchool) != null) {
+            list = loadEnterSchool(EnterSchool);
+        }
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).get("schoolname").toString().equals(map.get("schoolname"))) {
+                list.remove(i);
+                i--;
+            }
+        }
+        list.add(map);
+        if (list.size() > 4) {
+            list.remove(0);
+        }
+        JSONArray mJsonArray;
+        mJsonArray = new JSONArray();
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> itemMap = list.get(i);
+            Iterator<Map.Entry<String, Object>> iterator = itemMap.entrySet().iterator();
+
+            JSONObject object = new JSONObject();
+
+            while (iterator.hasNext()) {
+                Map.Entry<String, Object> entry = iterator.next();
+                try {
+                    object.put(entry.getKey(), entry.getValue());
+                } catch (JSONException e) {
+
+                }
+            }
+            mJsonArray.put(object);
+        }
+
+        SharedPreferences sp = mContext.getSharedPreferences("EnterSchool", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(EnterSchool, mJsonArray.toString());
+        editor.commit();
+    }
+
+    private List<Map<String, Object>> loadEnterSchool(String fileName) {
+        List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
+        SharedPreferences sp = mContext.getSharedPreferences("EnterSchool", Context.MODE_PRIVATE);
+        String result = sp.getString(EnterSchool, "");
+        try {
+            JSONArray array = new JSONArray(result);
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject itemObject = array.getJSONObject(i);
+                Map<String, Object> itemMap = new HashMap<String, Object>();
+                JSONArray names = itemObject.names();
+                if (names != null) {
+                    for (int j = 0; j < names.length(); j++) {
+                        String name = names.getString(j);
+                        String value = itemObject.getString(name);
+                        itemMap.put(name, value);
+                    }
+                }
+                datas.add(itemMap);
+            }
+        } catch (JSONException e) {
+
+        }
+
+        return datas;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
