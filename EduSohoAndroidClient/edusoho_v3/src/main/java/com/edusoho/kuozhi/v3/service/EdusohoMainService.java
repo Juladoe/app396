@@ -273,7 +273,7 @@ public class EdusohoMainService extends Service {
         app.getUrl(url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                ArrayList<OffLineMsgEntity> latestChat = app.parseJsonValue(response, new TypeToken<ArrayList<OffLineMsgEntity>>() {
+                     ArrayList<OffLineMsgEntity> latestChat = app.parseJsonValue(response, new TypeToken<ArrayList<OffLineMsgEntity>>() {
                 });
                 if (latestChat.size() > 0 && latestChat.get(0).getCustom().getV() >= 2) {
                     //Collections.reverse(latestChat);
