@@ -30,7 +30,7 @@ public class DiscoveryModel {
                 if (apiResponse.resources != null) {
                     callbackListener.onSuccess(apiResponse.resources);
                 } else if (apiResponse.error != null) {
-                    callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                    callbackListener.onFailure(apiResponse.error.code, apiResponse.error.message);
                 }
             }
         }, new Response.ErrorListener() {
@@ -51,7 +51,7 @@ public class DiscoveryModel {
                 if (apiResponse.resources != null) {
                     callbackListener.onSuccess(apiResponse.resources);
                 } else if (apiResponse.error != null) {
-                    callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                    callbackListener.onFailure(apiResponse.error.code, apiResponse.error.message);
                 }
             }
         }, new Response.ErrorListener() {
@@ -74,7 +74,7 @@ public class DiscoveryModel {
                 if (apiResponse.resources != null) {
                     callbackListener.onSuccess(apiResponse.resources);
                 } else if (apiResponse.error != null) {
-                    callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                    callbackListener.onFailure(apiResponse.error.code, apiResponse.error.message);
                 }
             }
         }, new Response.ErrorListener() {
@@ -97,7 +97,7 @@ public class DiscoveryModel {
                 if (apiResponse.resources != null && apiResponse.resources.size() > 0) {
                     callbackListener.onSuccess(apiResponse.resources);
                 } else if (apiResponse.error != null) {
-                    callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                    callbackListener.onFailure(apiResponse.error.code, apiResponse.error.message);
                 }
             }
         }, new Response.ErrorListener() {
