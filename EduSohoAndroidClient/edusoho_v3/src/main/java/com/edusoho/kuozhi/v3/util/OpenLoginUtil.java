@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
@@ -72,9 +73,9 @@ public class OpenLoginUtil {
                 "type", params[3],
                 "id", params[0],
                 "name", params[1],
-                "avatar", params[2]
+                "avatar", params[2],
         });
-
+        final String thirdPartyType = params.length > 4 ? params[4] : "";
         Looper.prepare();
         final LoadDialog loadDialog = LoadDialog.create(activity);
         loadDialog.setMessage("登录中...");
@@ -87,6 +88,7 @@ public class OpenLoginUtil {
                         response, new TypeToken<UserResult>() {
                         });
                 activity.app.saveToken(userResult);
+                activity.app.loginUser.thirdParty = thirdPartyType;
                 activity.app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                 Bundle bundle = new Bundle();
                 bundle.putString(Const.BIND_USER_ID, String.valueOf(activity.app.loginUser.id));
@@ -95,7 +97,7 @@ public class OpenLoginUtil {
                 SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
                 String entertime = nowfmt.format(date);
-                saveEnterSchool(activity.app.defaultSchool.name, entertime, "登录账号："+activity.app.loginUser.nickname, activity.app.domain);
+                saveEnterSchool(activity.app.defaultSchool.name, entertime, "登录账号：" + activity.app.loginUser.nickname, activity.app.domain);
             }
         }, null);
         Looper.loop();
@@ -106,7 +108,7 @@ public class OpenLoginUtil {
         String name = res.get("nickname").toString();
         String avatar = res.get("headimgurl").toString();
 
-        return new String[]{id, name, avatar, "weixinmob"};
+        return new String[]{id, name, avatar, "weixinmob", "Wechat"};
     }
 
     private String[] getWeiboLoginResult(HashMap<String, Object> res) {
@@ -114,7 +116,7 @@ public class OpenLoginUtil {
         String name = res.get("name").toString();
         String avatar = res.get("avatar_large").toString();
 
-        return new String[]{id, name, avatar, "weibo"};
+        return new String[]{id, name, avatar, "weibo", "SinaWeibo"};
     }
 
     private String[] getQQLoginResult(HashMap<String, Object> res) {
@@ -122,7 +124,7 @@ public class OpenLoginUtil {
         String name = res.get("nickname").toString();
         String avatar = res.get("figureurl_qq_2").toString();
 
-        return new String[]{id, name, avatar, "qq"};
+        return new String[]{id, name, avatar, "qq", "QQ"};
     }
 
     public String[] bindByPlatform(String type, HashMap<String, Object> res) {
@@ -175,27 +177,27 @@ public class OpenLoginUtil {
         return mPromise;
     }
 
-    public void saveEnterSchool(String schoolname,String entertime,String loginname,String schoolhost) {
+    public void saveEnterSchool(String schoolname, String entertime, String loginname, String schoolhost) {
         Map map = new HashMap();
         String lable = new String();
         lable = schoolname.substring(0, 2);
         map.put("lable", lable);
-        map.put("schoolname",schoolname);
-        map.put("entertime",entertime);
-        map.put("loginname",loginname);
-        map.put("schoolhost",schoolhost);
+        map.put("schoolname", schoolname);
+        map.put("entertime", entertime);
+        map.put("loginname", loginname);
+        map.put("schoolhost", schoolhost);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        if (loadEnterSchool(EnterSchool) != null){
+        if (loadEnterSchool(EnterSchool) != null) {
             list = loadEnterSchool(EnterSchool);
         }
-        for (int i = 0; i < list.size(); i++){
-            if (list.get(i).get("schoolname").toString().equals(map.get("schoolname"))){
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).get("schoolname").toString().equals(map.get("schoolname"))) {
                 list.remove(i);
                 i--;
             }
         }
         list.add(map);
-        if (list.size()>4){
+        if (list.size() > 4) {
             list.remove(0);
         }
         JSONArray mJsonArray;
@@ -207,7 +209,7 @@ public class OpenLoginUtil {
             JSONObject object = new JSONObject();
 
             while (iterator.hasNext()) {
-                Map.Entry<String,Object> entry = iterator.next();
+                Map.Entry<String, Object> entry = iterator.next();
                 try {
                     object.put(entry.getKey(), entry.getValue());
                 } catch (JSONException e) {
