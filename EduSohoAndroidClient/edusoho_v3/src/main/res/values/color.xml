@@ -148,8 +148,8 @@
     <color name="action_bg_gradient">#F9F9F9</color>
     <color name="audio_thum_nomal_stroke">#03b884</color>
     <color name="audio_thum_nomal_gradient">#ccc</color>
-    <color name="card_bg_gradient">#ffffff</color>
-    <color name="card_bg_stroke">#DFDFDF</color>
+    <color name="view_pager_point_bg_normal">#1EFFFFFF</color>
+    <color name="view_pager_point_bg_sel">#FFFFFF</color>
     <color name="normal_bg_gradient">#ffffff</color>
     <color name="normal_bg_stroke">#DFDFDF</color>
 
