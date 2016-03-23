@@ -7,8 +7,8 @@
     <dimen name="font_size_xxx_s">8sp</dimen>
 
     <dimen name="card_grid_width">158dp</dimen>
-    <dimen name="card_grid_height">106dp</dimen>
-    <dimen name="card_grid_height_s">88dp</dimen>
+    <dimen name="discovery_classroom_card_height">106dp</dimen>
+    <dimen name="discovert_course_card_height">88dp</dimen>
     <!-- base size -->
     <dimen name="base_size">14sp</dimen>
     <dimen name="base_small_size">12sp</dimen>
