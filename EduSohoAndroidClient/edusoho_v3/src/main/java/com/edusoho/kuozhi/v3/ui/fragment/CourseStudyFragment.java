@@ -501,13 +501,14 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         }
     }
 
-    private class ErrorHandler extends Handler{
+    private class ErrorHandler extends Handler {
         public ErrorHandler() {
             super();
         }
 
         @Override
         public void handleMessage(Message msg) {
+            mFloatButton.setVisibility(View.GONE);
             mErrorTip.setVisibility(View.VISIBLE);
             studyProcessRecyclerView.setVisibility(View.GONE);
             mLoading.setVisibility(View.GONE);
