@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/ll_discovery_more"
         android:text="推荐课程"
         android:textColor="@android:color/black"

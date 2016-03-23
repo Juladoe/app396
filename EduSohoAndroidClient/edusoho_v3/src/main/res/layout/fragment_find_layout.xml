@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/find_fragment_background"
     android:orientation="vertical">
 
     <com.edusoho.kuozhi.v3.view.FixPtrClassicFrameLayout
@@ -22,7 +22,7 @@
             android:id="@+id/listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/transparent"
+            android:divider="@color/find_fragment_background"
             android:dividerHeight="10dp"
             android:scrollbars="none">
 

@@ -99,7 +99,6 @@ public class FindCardView extends LinearLayout {
 
     protected GridView createGridView() {
         GridView gridView = new GridView(getContext());
-        gridView.setBackgroundResource(R.color.background);
 
         gridView.setColumnWidth(getContext().getResources().getDimensionPixelSize(R.dimen.card_grid_width));
         gridView.setNumColumns(2);
