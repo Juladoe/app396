@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -26,16 +27,21 @@ import java.util.List;
  */
 public class MyThreadAdapter extends RecyclerView.Adapter {
 
+    public static String POST_THREAD = "postThread";
+    public static String CREAT_THREAD = "creatThread";
+    private String originType;
+
     private LayoutInflater mLayoutInflater;
     private List<MyThreadEntity> mDataList;
     private EdusohoApp mApp;
     private Context mContext;
 
-    public MyThreadAdapter(Context context, EdusohoApp app) {
+    public MyThreadAdapter(Context context, EdusohoApp app,String type) {
         mLayoutInflater = LayoutInflater.from(context);
         mContext = context;
         mDataList = new ArrayList();
         mApp = app;
+        originType = type;
     }
 
     @Override
@@ -47,6 +53,13 @@ public class MyThreadAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ThreadItemViewHolder) {
             final MyThreadEntity threadEntity = mDataList.get(position);
+            final Course course = threadEntity.getCourse();
+            final int threadId;
+            if (POST_THREAD.equals(originType)){
+                threadId = Integer.parseInt(threadEntity.getThreadId());
+            }else {
+                threadId = Integer.parseInt(threadEntity.getId());
+            }
             if ("question".equals(threadEntity.getType())) {
                 ((ThreadItemViewHolder) holder).tvThreadType.setText("问");
                 ((ThreadItemViewHolder) holder).tvThreadType.setBackgroundResource(R.drawable.round_green_bg);
@@ -54,12 +67,12 @@ public class MyThreadAdapter extends RecyclerView.Adapter {
                 ((ThreadItemViewHolder) holder).tvThreadType.setText("话");
                 ((ThreadItemViewHolder) holder).tvThreadType.setBackgroundResource(R.drawable.round_blue_bg);
             }
-            if ("".equals(threadEntity.getSmallPicture())) {
+            if ("".equals(course.smallPicture)) {
                 ((ThreadItemViewHolder) holder).ivAvatar.setImageResource(R.drawable.defaultpic);
             } else {
-                ImageLoader.getInstance().displayImage(threadEntity.getSmallPicture(), ((ThreadItemViewHolder) holder).ivAvatar, mApp.mOptions);
+                ImageLoader.getInstance().displayImage(course.smallPicture, ((ThreadItemViewHolder) holder).ivAvatar, mApp.mOptions);
             }
-            ((ThreadItemViewHolder) holder).tvThreadCourseTitle.setText(String.format("来自课程：『%s』", threadEntity.getCourseTitle()));
+            ((ThreadItemViewHolder) holder).tvThreadCourseTitle.setText(String.format("来自课程：『%s』", course.title));
             ((ThreadItemViewHolder) holder).tvThreadTitle.setText(threadEntity.getTitle());
             ((ThreadItemViewHolder) holder).tvTime.setText(AppUtil.convertMills2Date(Long.parseLong(threadEntity.getCreatedTime()) * 1000));
 
@@ -69,8 +82,8 @@ public class MyThreadAdapter extends RecyclerView.Adapter {
                     mApp.mEngine.runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, Integer.parseInt(threadEntity.getCourseId()));
-                            startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, Integer.parseInt(threadEntity.getThreadId()));
+                            startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, course.id);
+                            startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, threadId);
                             startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
                         }
                     });
