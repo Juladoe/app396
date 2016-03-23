@@ -88,7 +88,7 @@ public class MyPostedThreadFragment extends BaseFragment {
             }
         });
 
-        mAdapter = new MyThreadAdapter(mContext, app);
+        mAdapter = new MyThreadAdapter(mContext, app, MyThreadAdapter.POST_THREAD);
         mRecyclerView.setAdapter(mAdapter);
     }
 
