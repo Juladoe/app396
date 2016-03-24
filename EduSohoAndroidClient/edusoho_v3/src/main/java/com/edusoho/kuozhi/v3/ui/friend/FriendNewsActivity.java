@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.FollowerNotification;
@@ -24,6 +25,7 @@ import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.result.FollowResult;
 import com.edusoho.kuozhi.v3.model.sys.Error;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -75,6 +77,9 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
         newsList.setAdapter(mAdapter);
 
         mFriendProvider = new FriendProvider(mContext);
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("isNew",false);
+        app.sendMsgToTarget(Const.NEW_FANS, bundle, DefaultPageActivity.class);
     }
 
     @Override
