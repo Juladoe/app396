@@ -27,6 +27,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -68,10 +69,11 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private CheckBox mFullBtn = null;
 
     private LinearLayout mController = null;
+    private RelativeLayout rlayoutPlayerTitleStatus = null;
 
     private SeekBar mProgress = null;
     private TextView mDuration = null;
-    private TextView mCurrPostion = null;
+    private TextView mCurrPosition = null;
 
     private boolean mIsHwDecode = false;
     private boolean mIsPlayEnd;
@@ -104,15 +106,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
      * 播放状态
      */
     protected enum PLAYER_STATUS {
-        PLAYER_IDLE, PLAYER_PREPARING, PLAYER_PREPARED, PLAYER_PAUSE;
+        PLAYER_IDLE, PLAYER_PREPARING, PLAYER_PREPARED, PLAYER_PAUSE
     }
 
     protected enum PLAYER_HEAD_STATUS {
-        PLAYER_START, PLAYER_END, PLAYER_IDLE;
+        PLAYER_START, PLAYER_END, PLAYER_IDLE
     }
 
     protected PLAYER_STATUS mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
-
 
     /**
      * 记录播放位置
@@ -121,6 +122,132 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected int mCurrentPos = 0;
     protected int mDurationCount = 0;
     private PLAYER_HEAD_STATUS mPlayHeadStatus;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.controllerplaying, container, false);
+        initUI(view);
+
+        /**
+         * 开启后台事件处理线程
+         */
+        mHandlerThread = new HandlerThread("event handler thread",
+                android.os.Process.THREAD_PRIORITY_BACKGROUND);
+        mHandlerThread.start();
+        mEventHandler = new EventHandler(mHandlerThread.getLooper());
+        return view;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "bd fragment create");
+        mContext = getActivity();
+
+        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
+
+        Bundle bundle = getArguments();
+        mIsHwDecode = bundle.getBoolean("isHW", false);
+        isCacheVideo = bundle.getBoolean("from_cache", false);
+        Log.d(TAG, "isCacheVideo " + isCacheVideo);
+
+        initSoLib();
+        mVideoSource = getUrlPath(bundle.getString("mediaUrl"));
+
+        int decodeMode = TextUtils.isEmpty(mVideoSource) || mVideoSource.contains("Lesson/getLocalVideo") ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
+        mDecodeMode = bundle.getInt("decode", decodeMode);
+        mVideoHead = getUrlPath(bundle.getString("headUrl"));
+        autoHideTimer = new Timer();
+
+        mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_IDLE;
+        mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    private void initSoLib() {
+        File libDir = mContext.getDir(getCpuType() + "lib", Context.MODE_PRIVATE);
+        if (new File(libDir, "libcyberplayer.so").exists()) {
+            mSoLibDir = libDir.getAbsolutePath();
+        }
+    }
+
+    /**
+     * 初始化界面
+     */
+    private void initUI(View view) {
+        mPlaybtn = (ImageView) view.findViewById(R.id.play_btn);
+        mFullBtn = (CheckBox) view.findViewById(R.id.full_btn);
+        mReplayBtn = (ImageView) view.findViewById(R.id.video_replay);
+
+        mProgress = (SeekBar) view.findViewById(R.id.media_progress);
+        mDuration = (TextView) view.findViewById(R.id.time_total);
+        mCurrPosition = (TextView) view.findViewById(R.id.time_current);
+
+        registerCallbackForControl();
+        /**
+         * 设置ak及sk的前16位
+         */
+        BVideoView.setAKSK(AK, SK);
+        if (!TextUtils.isEmpty(mSoLibDir)) {
+            BVideoView.setNativeLibsDirectory(mSoLibDir);
+        }
+        /**
+         *创建BVideoView和BMediaController
+         */
+        mVV = (BVideoView) view.findViewById(R.id.video_view);
+        /*
+            mVVCtl = new BMediaController(this);
+            mViewHolder.addView(mVV);
+            mControllerHolder.addView(mVVCtl);
+        */
+        mController = (LinearLayout) view.findViewById(R.id.video_controller);
+        /**
+         *注册listener
+         */
+        mVV.setOnPreparedListener(this);
+        mVV.setOnCompletionListener(this);
+        mVV.setOnErrorListener(this);
+        mVV.setOnInfoListener(this);
+        mVV.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    mIsShowControllerCount = 0;
+                    if (mIsShowController) {
+                        hideController();
+                    } else {
+                        showController();
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        /**
+         *关联BMediaController
+         */
+        //mVV.setMediaController(mVVCtl);
+        /**
+         *设置解码模式
+         */
+
+        mVV.setDecodeMode(mDecodeMode);
+        if (mDecodeMode == BVideoView.DECODE_HW) {
+            mVV.setVideoScalingMode(BVideoView.VIDEO_SCALING_MODE_SCALE_TO_FIT);
+        }
+        mController.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    mIsShowControllerCount = 0;
+                    return true;
+                }
+                return false;
+            }
+        });
+        autoHideTimer.schedule(autoHideTimerTask, 1000, 1000);
+    }
 
     Handler mUIHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -131,8 +258,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 case UI_EVENT_UPDATE_CURRPOSITION:
                     mCurrentPos = mVV.getCurrentPosition();
                     int duration = mVV.getDuration();
-
-                    updateTextViewWithTimeFormat(mCurrPostion, mCurrentPos);
+                    updateTextViewWithTimeFormat(mCurrPosition, mCurrentPos);
                     updateTextViewWithTimeFormat(mDuration, duration);
                     mProgress.setMax(duration);
                     mProgress.setProgress(mCurrentPos);
@@ -385,11 +511,13 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private void hideController() {
         mIsShowController = false;
         mController.setVisibility(View.GONE);
+        rlayoutPlayerTitleStatus.setVisibility(View.GONE);
     }
 
     private void showController() {
         mIsShowController = true;
         mController.setVisibility(View.VISIBLE);
+        rlayoutPlayerTitleStatus.setVisibility(View.VISIBLE);
     }
 
     /**
@@ -424,53 +552,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
     };
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.controllerplaying, container, false);
-        initUI(view);
-
-        /**
-         * 开启后台事件处理线程
-         */
-        mHandlerThread = new HandlerThread("event handler thread",
-                android.os.Process.THREAD_PRIORITY_BACKGROUND);
-        mHandlerThread.start();
-        mEventHandler = new EventHandler(mHandlerThread.getLooper());
-        return view;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG, "bd fragment create");
-        mContext = getActivity();
-
-        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
-
-        Bundle bundle = getArguments();
-        mIsHwDecode = bundle.getBoolean("isHW", false);
-        isCacheVideo = bundle.getBoolean("from_cache", false);
-        Log.d(TAG, "isCacheVideo " + isCacheVideo);
-
-        initSoLib();
-        mVideoSource = getUrlPath(bundle.getString("mediaUrl"));
-
-        int decodeMode = TextUtils.isEmpty(mVideoSource) || mVideoSource.contains("Lesson/getLocalVideo") ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
-        mDecodeMode = bundle.getInt("decode", decodeMode);
-        mVideoHead = getUrlPath(bundle.getString("headUrl"));
-        autoHideTimer = new Timer();
-
-        mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_IDLE;
-    }
-
-    private void initSoLib() {
-        File libDir = mContext.getDir(getCpuType() + "lib", Context.MODE_PRIVATE);
-        if (new File(libDir, "libcyberplayer.so").exists()) {
-            mSoLibDir = libDir.getAbsolutePath();
-        }
-    }
-
     private String getUrlPath(String uriPath) {
         String playUrl = null;
         if (uriPath == null) {
@@ -487,84 +568,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
         Log.d(TAG, "playUrl->" + playUrl);
         return playUrl;
-    }
-
-    /**
-     * 初始化界面
-     */
-    private void initUI(View view) {
-        mPlaybtn = (ImageView) view.findViewById(R.id.play_btn);
-        mFullBtn = (CheckBox) view.findViewById(R.id.full_btn);
-        mReplayBtn = (ImageView) view.findViewById(R.id.video_replay);
-
-        mProgress = (SeekBar) view.findViewById(R.id.media_progress);
-        mDuration = (TextView) view.findViewById(R.id.time_total);
-        mCurrPostion = (TextView) view.findViewById(R.id.time_current);
-
-        registerCallbackForControl();
-        /**
-         * 设置ak及sk的前16位
-         */
-        BVideoView.setAKSK(AK, SK);
-        if (!TextUtils.isEmpty(mSoLibDir)) {
-            BVideoView.setNativeLibsDirectory(mSoLibDir);
-        }
-        /**
-         *创建BVideoView和BMediaController
-         */
-        mVV = (BVideoView) view.findViewById(R.id.video_view);
-        /*
-            mVVCtl = new BMediaController(this);
-            mViewHolder.addView(mVV);
-            mControllerHolder.addView(mVVCtl);
-        */
-        mController = (LinearLayout) view.findViewById(R.id.video_controller);
-        /**
-         *注册listener
-         */
-        mVV.setOnPreparedListener(this);
-        mVV.setOnCompletionListener(this);
-        mVV.setOnErrorListener(this);
-        mVV.setOnInfoListener(this);
-        mVV.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    mIsShowControllerCount = 0;
-                    if (mIsShowController) {
-                        hideController();
-                    } else {
-                        showController();
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
-
-        /**
-         *关联BMediaController
-         */
-        //mVV.setMediaController(mVVCtl);
-        /**
-         *设置解码模式
-         */
-
-        mVV.setDecodeMode(mDecodeMode);
-        if (mDecodeMode == BVideoView.DECODE_HW) {
-            mVV.setVideoScalingMode(BVideoView.VIDEO_SCALING_MODE_SCALE_TO_FIT);
-        }
-        mController.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    mIsShowControllerCount = 0;
-                    return true;
-                }
-                return false;
-            }
-        });
-        autoHideTimer.schedule(autoHideTimerTask, 1000, 1000);
     }
 
     @Override
@@ -749,7 +752,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         SeekBar.OnSeekBarChangeListener osbc1 = new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress,
                                           boolean fromUser) {
-                updateTextViewWithTimeFormat(mCurrPostion, progress);
+                updateTextViewWithTimeFormat(mCurrPosition, progress);
             }
 
             public void onStartTrackingTouch(SeekBar seekBar) {
