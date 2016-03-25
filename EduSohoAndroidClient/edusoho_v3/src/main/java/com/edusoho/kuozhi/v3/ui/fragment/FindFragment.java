@@ -134,6 +134,9 @@ public class FindFragment extends BaseFragment {
                                 public void onSuccess(List<DiscoveryCourse> discoveryCourseList) {
                                     if (discoveryCourseList != null && discoveryCourseList.size() > 0) {
                                         filterCoursesInClassroom(discoveryCourseList);
+                                        if (discoveryCourseList.size() <= 0) {
+                                            return;
+                                        }
                                         if (discoveryCourseList.size() % 2 != 0) {
                                             discoveryCourseList.add(new DiscoveryCourse(true));
                                         }
@@ -174,6 +177,9 @@ public class FindFragment extends BaseFragment {
                         public void onSuccess(List<DiscoveryCourse> discoveryCourseList) {
                             if (discoveryCourseList != null && discoveryCourseList.size() > 0) {
                                 filterCoursesInClassroom(discoveryCourseList);
+                                if (discoveryCourseList.size() <= 0) {
+                                    return;
+                                }
                                 if (discoveryCourseList.size() % 2 != 0) {
                                     discoveryCourseList.add(new DiscoveryCourse(true));
                                 }
