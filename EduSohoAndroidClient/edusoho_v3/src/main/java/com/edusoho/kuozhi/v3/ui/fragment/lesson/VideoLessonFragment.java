@@ -15,8 +15,8 @@ import android.widget.VideoView;
 
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -233,7 +233,7 @@ public class VideoLessonFragment extends BaseFragment {
         if (autoHideTimer != null) {
             autoHideTimer.cancel();
         }
-        mMediaController.destory();
+        mMediaController.destroy();
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
         }

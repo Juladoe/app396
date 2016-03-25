@@ -166,6 +166,6 @@ public class EduVideoViewFragment extends Fragment {
         super.onDestroy();
         mVideoView = null;
         hideLoadTimer = null;
-        mCustomMediaController.destory();
+        mCustomMediaController.destroy();
     }
 }

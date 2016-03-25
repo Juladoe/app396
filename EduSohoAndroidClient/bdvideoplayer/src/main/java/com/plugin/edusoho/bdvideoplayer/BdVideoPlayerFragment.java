@@ -7,8 +7,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
-import android.os.*;
-import android.provider.Settings;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
+import android.os.PowerManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -21,17 +27,15 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
 import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
 import com.baidu.cyberplayer.core.BVideoView.OnInfoListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -291,7 +295,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         try {
             Field SUPPORTED_64_BIT_ABIS_FIELD = android.os.Build.class.getField("SUPPORTED_64_BIT_ABIS");
             SUPPORTED_64_BIT_ABIS_FIELD.setAccessible(true);
-            String[] SUPPORTED_64_BIT_ABIS = (String[])  SUPPORTED_64_BIT_ABIS_FIELD.get(null);
+            String[] SUPPORTED_64_BIT_ABIS = (String[]) SUPPORTED_64_BIT_ABIS_FIELD.get(null);
             cupBit = SUPPORTED_64_BIT_ABIS == null || SUPPORTED_64_BIT_ABIS.length == 0 ? 32 : 64;
         } catch (Exception e) {
             cupBit = 32;
