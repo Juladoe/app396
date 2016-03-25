@@ -268,7 +268,7 @@ public class LoginActivity extends ActionBarBaseActivity {
             list = loadEnterSchool(EnterSchool);
         }
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).get("schoolname").toString().equals(map.get("schoolname"))) {
+            if (list.get(i).get("schoolhost").toString().equals(map.get("schoolhost"))) {
                 list.remove(i);
                 i--;
             }
