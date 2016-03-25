@@ -290,7 +290,7 @@ public class CustomMediaController extends RelativeLayout {
         });
     }
 
-    public void destory() {
+    public void destroy() {
         if (updateTimer != null) {
             updateTimer.cancel();
             updateTimer = null;
@@ -303,6 +303,6 @@ public class CustomMediaController extends RelativeLayout {
     }
 
     public interface MediaControllerListener {
-        public void startPlay();
+        void startPlay();
     }
 }

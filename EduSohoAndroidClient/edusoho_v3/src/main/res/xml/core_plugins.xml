@@ -310,7 +310,7 @@
         version="1.0" />
     <plugin
         name="BDVideoLessonFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.video.CustomVideoFragment"
+        package="com.edusoho.kuozhi.v3.view.video.CustomVideoFragment"
         version="1.0" />
     <plugin
         name="DocumentLessonFragment"
