@@ -85,10 +85,12 @@ public class FindFragment extends BaseFragment {
         addBannerView();
         getDiscoveryData();
         initSchoolBanner(false);
+        mFindListAdapter = new FindListAdapter(mContext);
         mFindContentLayout.setPtrHandler(new PtrDefaultHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
                 initSchoolBanner(true);
+                mFindListAdapter.clear();
                 getDiscoveryData();
                 mFindContentLayout.refreshComplete();
             }
@@ -123,6 +125,7 @@ public class FindFragment extends BaseFragment {
         discoveryModel.getDiscoveryColumns(new ResponseCallbackListener<List<DiscoveryColumn>>() {
             @Override
             public void onSuccess(List<DiscoveryColumn> discoveryColumnList) {
+                mFindListAdapter = new FindListAdapter(mContext);
                 if (discoveryColumnList.size() != 0) {
                     int size = discoveryColumnList.size();
                     for (int i = 0; i < size; i++) {
@@ -141,7 +144,7 @@ public class FindFragment extends BaseFragment {
                                             discoveryCourseList.add(new DiscoveryCourse(true));
                                         }
                                         discoveryColumn.data = discoveryCourseList;
-                                        mFindListAdapter.addData(mFindListAdapter.getCount(), discoveryColumn);
+                                        mFindListAdapter.addData(finalI, discoveryColumn);
                                     }
                                 }
 
@@ -160,7 +163,7 @@ public class FindFragment extends BaseFragment {
                                             discoveryClassroomList.add(new DiscoveryClassroom(true));
                                         }
                                         discoveryColumn.data = discoveryClassroomList;
-                                        mFindListAdapter.addData(mFindListAdapter.getCount(), discoveryColumn);
+                                        mFindListAdapter.addData(finalI, discoveryColumn);
                                     }
                                 }
 
@@ -187,7 +190,7 @@ public class FindFragment extends BaseFragment {
                                 discoveryColumn.title = DEFAULT_DISCOVERY_TITLE;
                                 discoveryColumn.type = "course";
                                 discoveryColumn.data = discoveryCourseList;
-                                mFindListAdapter.addData(mFindListAdapter.getCount(), discoveryColumn);
+                                mFindListAdapter.addData(0, discoveryColumn);
                             }
                         }
 
@@ -197,7 +200,6 @@ public class FindFragment extends BaseFragment {
                         }
                     });
                 }
-                mFindListAdapter = new FindListAdapter(mContext);
                 mListView.setAdapter(mFindListAdapter);
             }
 

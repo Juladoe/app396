@@ -9,6 +9,9 @@ import android.widget.BaseAdapter;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.view.FindCardView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by su on 2016/2/24.
  */
@@ -16,20 +19,23 @@ public class FindListAdapter extends BaseAdapter {
 
     private Context mContext;
     private SparseArray<DiscoveryColumn> mList;
+    private List<Integer> mIndexs;
 
-    public FindListAdapter(Context context, SparseArray<DiscoveryColumn> list) {
+    public FindListAdapter(Context context) {
         mContext = context;
-        mList = list;
-    }
-
-    public FindListAdapter(Context mContext) {
-        this.mContext = mContext;
         mList = new SparseArray<>();
+        mIndexs = new ArrayList<>();
     }
 
     public void addData(int position, DiscoveryColumn findCardEntity) {
         mList.append(position, findCardEntity);
+        mIndexs.add(position);
         notifyDataSetChanged();
+    }
+
+    public void clear() {
+        mList.clear();
+        mIndexs.clear();
     }
 
     @Override
@@ -54,10 +60,12 @@ public class FindListAdapter extends BaseAdapter {
             ((FindCardView) convertView).setAdapter(new FindCardItemAdapter(mContext));
         }
 
-        DiscoveryColumn discoveryColumn = mList.get(position);
+        DiscoveryColumn discoveryColumn = mList.get(mIndexs.get(position));
         if (discoveryColumn == null) {
+            convertView.setVisibility(View.GONE);
             return convertView;
         }
+        convertView.setVisibility(View.VISIBLE);
         FindCardView findCardView = (FindCardView) convertView;
         findCardView.setDiscoveryCardEntity(discoveryColumn);
         findCardView.setMoreClickListener(discoveryColumn.type);

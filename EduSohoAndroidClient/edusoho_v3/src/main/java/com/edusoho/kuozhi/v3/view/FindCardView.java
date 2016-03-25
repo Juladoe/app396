@@ -38,7 +38,7 @@ public class FindCardView extends LinearLayout {
     private int mChildId;
 
     public FindCardView(Context context) {
-        super(context, null);
+        super(context);
         mContext = context;
         initView();
     }
