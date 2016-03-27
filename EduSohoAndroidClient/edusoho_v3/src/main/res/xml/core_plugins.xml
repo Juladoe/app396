@@ -173,7 +173,7 @@
 
     <plugin
         name="VideoLessonFragment"
-        package="com.edusoho.kuozhi.v3.view.video.CustomVideoFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.video.CustomVideoFragment"
         version="1.0" />
 
     <plugin
@@ -188,7 +188,7 @@
 
     <plugin
         name="CustomVideoFragment"
-        package="com.edusoho.kuozhi.v3.view.video.CustomVideoFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.video.CustomVideoFragment"
         version="1.0" />
 
     <plugin
@@ -310,7 +310,7 @@
         version="1.0" />
     <plugin
         name="BDVideoLessonFragment"
-        package="com.edusoho.kuozhi.v3.view.video.CustomVideoFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.video.CustomVideoFragment"
         version="1.0" />
     <plugin
         name="DocumentLessonFragment"

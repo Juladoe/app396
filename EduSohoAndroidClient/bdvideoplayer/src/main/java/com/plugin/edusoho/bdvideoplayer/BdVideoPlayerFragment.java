@@ -39,18 +39,14 @@ import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.Timer;
 import java.util.TimerTask;
 
 /**
  * Created by howzhi on 14-8-5.
  */
-public class BdVideoPlayerFragment extends Fragment implements OnPreparedListener,
-        OnCompletionListener,
-        OnErrorListener,
-        OnInfoListener,
-        OnPlayingBufferCacheListener {
+public class BdVideoPlayerFragment extends Fragment implements OnPreparedListener, OnCompletionListener, OnErrorListener,
+        OnInfoListener, OnPlayingBufferCacheListener {
     protected final String TAG = "BdVideoPlayerFragment";
 
     private String AK = "6ZB2kShzunG7baVCPLWe7Ebc";
@@ -59,17 +55,22 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected String mVideoSource = null;
     protected String mVideoHead = null;
 
-    private BVideoView mVV = null;
     private Activity mContext = null;
+    private BVideoView mVV = null;
 
-    private ImageView mPlaybtn = null;
-    private ImageView mBackbtn = null;
-    private ImageView mForwardbtn = null;
-    private ImageView mReplayBtn = null;
-    private CheckBox mFullBtn = null;
+    private LinearLayout llayoutPlayerControlPanel = null;
+    private ImageView ivVideoPlay = null;
+    private ImageView ivVideoBack = null;
+    private ImageView ivVideoForward = null;
+    private ImageView ivVideoReplay = null;
+    private CheckBox chkFullScreen = null;
 
-    private LinearLayout mController = null;
-    private RelativeLayout rlayoutPlayerTitleStatus = null;
+    protected RelativeLayout rlayoutTitleStatus = null;
+    protected ImageView ivBack;
+    protected TextView tvVideoTitle;
+    protected CheckBox chkLearned;
+    protected ImageView ivShare;
+
 
     private SeekBar mProgress = null;
     private TextView mDuration = null;
@@ -126,7 +127,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.controllerplaying, container, false);
-        initUI(view);
+        initView(view);
 
         /**
          * 开启后台事件处理线程
@@ -164,6 +165,55 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.v(TAG, "onPause");
+        /**
+         *在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
+         */
+        if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
+            mLastPos = mVV.getCurrentPosition();
+            mVV.pause();
+            mVV.setTag("pause");
+            Log.v(TAG, "mVV onPause");
+            mUIHandler.sendEmptyMessage(UI_EVENT_PAUSE);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (null != mWakeLock && (!mWakeLock.isHeld())) {
+            mWakeLock.acquire();
+        }
+
+        ivVideoReplay.setVisibility(View.GONE);
+        resumePlay();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: BdVideoPlayer ");
+        /**
+         * 结束后台事件处理线程
+         */
+
+        mHandlerThread.quit();
+        if (mWakeLock != null) {
+            try {
+                mWakeLock.release();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        if (autoHideTimer != null) {
+            autoHideTimer.cancel();
+            autoHideTimer = null;
+        }
+    }
+
     private void initSoLib() {
         File libDir = mContext.getDir(getCpuType() + "lib", Context.MODE_PRIVATE);
         if (new File(libDir, "libcyberplayer.so").exists()) {
@@ -174,14 +224,19 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     /**
      * 初始化界面
      */
-    private void initUI(View view) {
-        mPlaybtn = (ImageView) view.findViewById(R.id.play_btn);
-        mFullBtn = (CheckBox) view.findViewById(R.id.full_btn);
-        mReplayBtn = (ImageView) view.findViewById(R.id.video_replay);
-
+    protected void initView(View view) {
+        llayoutPlayerControlPanel = (LinearLayout) view.findViewById(R.id.llayout_player_control_panel);
+        ivVideoPlay = (ImageView) view.findViewById(R.id.play_btn);
+        chkFullScreen = (CheckBox) view.findViewById(R.id.full_btn);
+        ivVideoReplay = (ImageView) view.findViewById(R.id.video_replay);
         mProgress = (SeekBar) view.findViewById(R.id.media_progress);
         mDuration = (TextView) view.findViewById(R.id.time_total);
         mCurrPosition = (TextView) view.findViewById(R.id.time_current);
+        rlayoutTitleStatus = (RelativeLayout) view.findViewById(R.id.rlayout_title_status);
+        ivBack = (ImageView) view.findViewById(R.id.iv_back);
+        tvVideoTitle = (TextView) view.findViewById(R.id.tv_video_title);
+        chkLearned = (CheckBox) view.findViewById(R.id.chk_learned);
+        ivShare = (ImageView) view.findViewById(R.id.iv_share);
 
         registerCallbackForControl();
         /**
@@ -191,16 +246,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         if (!TextUtils.isEmpty(mSoLibDir)) {
             BVideoView.setNativeLibsDirectory(mSoLibDir);
         }
-        /**
-         *创建BVideoView和BMediaController
-         */
         mVV = (BVideoView) view.findViewById(R.id.video_view);
-        /*
-            mVVCtl = new BMediaController(this);
-            mViewHolder.addView(mVV);
-            mControllerHolder.addView(mVVCtl);
-        */
-        mController = (LinearLayout) view.findViewById(R.id.video_controller);
+
         /**
          *注册listener
          */
@@ -236,7 +283,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         if (mDecodeMode == BVideoView.DECODE_HW) {
             mVV.setVideoScalingMode(BVideoView.VIDEO_SCALING_MODE_SCALE_TO_FIT);
         }
-        mController.setOnTouchListener(new View.OnTouchListener() {
+        llayoutPlayerControlPanel.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
@@ -248,6 +295,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         });
         autoHideTimer.schedule(autoHideTimerTask, 1000, 1000);
     }
+
+    // region handler
 
     Handler mUIHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -268,18 +317,18 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     showErrorDialog();
                     break;
                 case UI_EVENT_FINISH:
-                    mReplayBtn.setVisibility(View.VISIBLE);
-                    mPlaybtn.setImageResource(R.drawable.video_play);
+                    ivVideoReplay.setVisibility(View.VISIBLE);
+                    ivVideoPlay.setImageResource(R.drawable.video_play);
                     break;
                 case HIDE:
                     hideController();
                     break;
                 case UI_EVENT_PAUSE:
                     Log.d(TAG, "UI_EVENT_PAUSE");
-                    mPlaybtn.setImageResource(R.drawable.video_play);
+                    ivVideoPlay.setImageResource(R.drawable.video_play);
                     break;
                 case UI_EVENT_PLAY:
-                    mPlaybtn.setImageResource(R.drawable.video_pause);
+                    ivVideoPlay.setImageResource(R.drawable.video_pause);
                     break;
                 default:
                     break;
@@ -321,6 +370,10 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             }
         }
     }
+
+    // endregion
+
+    // region player action
 
     private void playVideo() {
         Log.v(TAG, "playVideo " + mVideoSource);
@@ -382,6 +435,30 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_START;
     }
 
+    protected void startVideo() {
+        try {
+            checkVideoCanPlayer();
+            mVV.start();
+            mVV.setTag("start");
+        } catch (Exception e) {
+            Log.d(TAG, "error:" + e.getMessage());
+        }
+    }
+
+    protected void resumePlay() {
+        /**
+         *发起一次播放任务,当然您不一定要在这发起
+         */
+        if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED
+                || mPlayerStatus == PLAYER_STATUS.PLAYER_PAUSE) {
+            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
+        } else {
+            mEventHandler.sendEmptyMessage(EVENT_START);
+        }
+    }
+
+    // endregion
+
     private String getCpuType() {
         String CPU_ABI = android.os.Build.CPU_ABI;
         if (TextUtils.isEmpty(CPU_ABI)) {
@@ -406,31 +483,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         alertDialog.show();
     }
 
-    protected void startVideo() {
-        try {
-            chackVideoCanPlayer();
-            mVV.start();
-            mVV.setTag("start");
-        } catch (Exception e) {
-            Log.d(TAG, "error:" + e.getMessage());
-        }
-    }
-
-    private int getCpuBit() {
-        int cupBit;
-        try {
-            Field SUPPORTED_64_BIT_ABIS_FIELD = android.os.Build.class.getField("SUPPORTED_64_BIT_ABIS");
-            SUPPORTED_64_BIT_ABIS_FIELD.setAccessible(true);
-            String[] SUPPORTED_64_BIT_ABIS = (String[]) SUPPORTED_64_BIT_ABIS_FIELD.get(null);
-            cupBit = SUPPORTED_64_BIT_ABIS == null || SUPPORTED_64_BIT_ABIS.length == 0 ? 32 : 64;
-        } catch (Exception e) {
-            cupBit = 32;
-        }
-
-        return cupBit;
-    }
-
-    private void chackVideoCanPlayer() {
+    private void checkVideoCanPlayer() {
         String CPU_ABI = getCpuType();
         if (CPU_ABI.contains("x86")) {
             File libDir = mContext.getDir("x86lib", Context.MODE_PRIVATE);
@@ -501,7 +554,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 return;
             }
             mIsShowControllerCount++;
-            Log.d(null, "mIsShowControllerCount " + mIsShowControllerCount);
         }
     };
 
@@ -510,47 +562,15 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     private void hideController() {
         mIsShowController = false;
-        mController.setVisibility(View.GONE);
-        rlayoutPlayerTitleStatus.setVisibility(View.GONE);
+        llayoutPlayerControlPanel.setVisibility(View.GONE);
+        rlayoutTitleStatus.setVisibility(View.GONE);
     }
 
     private void showController() {
         mIsShowController = true;
-        mController.setVisibility(View.VISIBLE);
-        rlayoutPlayerTitleStatus.setVisibility(View.VISIBLE);
+        llayoutPlayerControlPanel.setVisibility(View.VISIBLE);
+        rlayoutTitleStatus.setVisibility(View.VISIBLE);
     }
-
-    /**
-     * 实现切换示例
-     */
-    private View.OnClickListener mPreListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            // TODO Auto-generated method stub
-            Log.v(TAG, "pre btn clicked");
-            /**
-             * 如果已经播放，先停止播放
-             */
-            if (mPlayerStatus != PLAYER_STATUS.PLAYER_IDLE) {
-                mVV.stopPlayback();
-            }
-
-            /**
-             * 发起一次新的播放任务
-             */
-            if (mEventHandler.hasMessages(EVENT_START))
-                mEventHandler.removeMessages(EVENT_START);
-            mEventHandler.sendEmptyMessage(EVENT_START);
-        }
-    };
-
-    private View.OnClickListener mNextListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Log.v(TAG, "next btn clicked");
-        }
-    };
 
     private String getUrlPath(String uriPath) {
         String playUrl = null;
@@ -568,74 +588,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
         Log.d(TAG, "playUrl->" + playUrl);
         return playUrl;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        Log.v(TAG, "onPause");
-        /**
-         *在停止播放前 你可以先记录当前播放的位置,以便以后可以续播
-         */
-        if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
-            mLastPos = mVV.getCurrentPosition();
-            mVV.pause();
-            mVV.setTag("pause");
-            Log.v(TAG, "mVV onPause");
-            mUIHandler.sendEmptyMessage(UI_EVENT_PAUSE);
-        }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.v(TAG, "onResume");
-        if (null != mWakeLock && (!mWakeLock.isHeld())) {
-            mWakeLock.acquire();
-        }
-
-        mReplayBtn.setVisibility(View.GONE);
-        resumePlay();
-    }
-
-    protected void resumePlay() {
-        /**
-         *发起一次播放任务,当然您不一定要在这发起
-         */
-        if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED
-                || mPlayerStatus == PLAYER_STATUS.PLAYER_PAUSE) {
-            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
-        } else {
-            mEventHandler.sendEmptyMessage(EVENT_START);
-        }
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.v(TAG, "onStop");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        /**
-         * 结束后台事件处理线程
-         */
-
-        mHandlerThread.quit();
-        Log.v(TAG, "onDestroy");
-        if (mWakeLock != null) {
-            try {
-                mWakeLock.release();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        if (autoHideTimer != null) {
-            autoHideTimer.cancel();
-            autoHideTimer = null;
-        }
     }
 
     @Override
@@ -710,7 +662,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
      * 为控件注册回调处理函数
      */
     private void registerCallbackForControl() {
-        mFullBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        chkFullScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //水平
@@ -723,20 +675,20 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             }
         });
 
-        mPlaybtn.setOnClickListener(new View.OnClickListener() {
+        ivVideoPlay.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (mVV.isPlaying()) {
                     mIsPlayEnd = true;
-                    mPlaybtn.setImageResource(R.drawable.video_play);
+                    ivVideoPlay.setImageResource(R.drawable.video_play);
                     /**
                      * 暂停播放
                      */
                     mVV.pause();
                 } else {
                     mIsPlayEnd = false;
-                    mPlaybtn.setImageResource(R.drawable.video_pause);
+                    ivVideoPlay.setImageResource(R.drawable.video_pause);
                     if (mPlayerStatus == PLAYER_STATUS.PLAYER_IDLE) {
-                        mReplayBtn.setVisibility(View.GONE);
+                        ivVideoReplay.setVisibility(View.GONE);
                         resumePlay();
                         return;
                     }
@@ -775,10 +727,10 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         };
         mProgress.setOnSeekBarChangeListener(osbc1);
 
-        mReplayBtn.setOnClickListener(new View.OnClickListener() {
+        ivVideoReplay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mReplayBtn.setVisibility(View.GONE);
+                ivVideoReplay.setVisibility(View.GONE);
                 resumePlay();
             }
         });

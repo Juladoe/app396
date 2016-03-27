@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">android_native_rf</string>
     <string name="player_version">ARMV7_VFPV3</string>
 </resources>
