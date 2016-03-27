@@ -200,7 +200,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }, null);
     }
 
-    private void changeLessonStatus(boolean isLearn) {
+    public void changeLessonStatus(boolean isLearn) {
         mLearnBtn.setEnabled(false);
         RequestUrl requestUrl = app.bindUrl(
                 isLearn ? Const.LEARN_LESSON : Const.UNLEARN_LESSON, true);
