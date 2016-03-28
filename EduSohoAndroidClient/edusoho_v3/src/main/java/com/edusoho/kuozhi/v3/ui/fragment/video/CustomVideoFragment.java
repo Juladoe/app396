@@ -140,7 +140,8 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
 
                 }
             });
-
         }
     }
+
+
 }

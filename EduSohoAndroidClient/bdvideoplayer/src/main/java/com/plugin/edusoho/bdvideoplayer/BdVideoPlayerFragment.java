@@ -70,7 +70,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected TextView tvVideoTitle;
     protected CheckBox chkLearned;
     protected ImageView ivShare;
-
+    protected Reviewable reviewable;
 
     private SeekBar mProgress = null;
     private TextView mDuration = null;
@@ -586,8 +586,11 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 playUrl = uri.getPath();
             }
         }
-        Log.d(TAG, "playUrl->" + playUrl);
         return playUrl;
+    }
+
+    private void setReviewable(Reviewable reviewable) {
+        this.reviewable = reviewable;
     }
 
     @Override
@@ -784,6 +787,10 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mUIHandler.sendEmptyMessage(UI_EVENT_PLAY);
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
         mDurationCount = mVV.getDuration();
+    }
+
+    public interface Reviewable {
+        void review();
     }
 
 }
