@@ -131,7 +131,6 @@ public class FindFragment extends BaseFragment {
                     for (int i = 0; i < size; i++) {
                         final DiscoveryColumn discoveryColumn = discoveryColumnList.get(i);
                         if ("course".equals(discoveryColumn.type) || "live".equals(discoveryColumn.type)) {
-                            final int finalI = i;
                             discoveryModel.getDiscoveryCourseByColumn(discoveryColumn, new ResponseCallbackListener<List<DiscoveryCourse>>() {
                                 @Override
                                 public void onSuccess(List<DiscoveryCourse> discoveryCourseList) {
@@ -144,7 +143,7 @@ public class FindFragment extends BaseFragment {
                                             discoveryCourseList.add(new DiscoveryCourse(true));
                                         }
                                         discoveryColumn.data = discoveryCourseList;
-                                        mFindListAdapter.addData(finalI, discoveryColumn);
+                                        mFindListAdapter.addData(discoveryColumn);
                                     }
                                 }
 
@@ -154,7 +153,6 @@ public class FindFragment extends BaseFragment {
                                 }
                             });
                         } else if ("classroom".equals(discoveryColumn.type)) {
-                            final int finalI = i;
                             discoveryModel.getDiscoveryClassroomByColumn(discoveryColumn, new ResponseCallbackListener<List<DiscoveryClassroom>>() {
                                 @Override
                                 public void onSuccess(List<DiscoveryClassroom> discoveryClassroomList) {
@@ -163,7 +161,7 @@ public class FindFragment extends BaseFragment {
                                             discoveryClassroomList.add(new DiscoveryClassroom(true));
                                         }
                                         discoveryColumn.data = discoveryClassroomList;
-                                        mFindListAdapter.addData(finalI, discoveryColumn);
+                                        mFindListAdapter.addData(discoveryColumn);
                                     }
                                 }
 
@@ -190,7 +188,7 @@ public class FindFragment extends BaseFragment {
                                 discoveryColumn.title = DEFAULT_DISCOVERY_TITLE;
                                 discoveryColumn.type = "course";
                                 discoveryColumn.data = discoveryCourseList;
-                                mFindListAdapter.addData(0, discoveryColumn);
+                                mFindListAdapter.addData(discoveryColumn);
                             }
                         }
 
