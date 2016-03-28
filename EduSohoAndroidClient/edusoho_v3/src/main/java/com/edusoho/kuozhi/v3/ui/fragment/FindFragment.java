@@ -144,7 +144,7 @@ public class FindFragment extends BaseFragment {
                                             discoveryCourseList.add(new DiscoveryCourse(true));
                                         }
                                         discoveryColumn.data = discoveryCourseList;
-                                        mFindListAdapter.addData(finalI, discoveryColumn);
+                                        mFindListAdapter.addData(discoveryColumn);
                                     }
                                 }
 
@@ -163,7 +163,7 @@ public class FindFragment extends BaseFragment {
                                             discoveryClassroomList.add(new DiscoveryClassroom(true));
                                         }
                                         discoveryColumn.data = discoveryClassroomList;
-                                        mFindListAdapter.addData(finalI, discoveryColumn);
+                                        mFindListAdapter.addData(discoveryColumn);
                                     }
                                 }
 
@@ -190,7 +190,7 @@ public class FindFragment extends BaseFragment {
                                 discoveryColumn.title = DEFAULT_DISCOVERY_TITLE;
                                 discoveryColumn.type = "course";
                                 discoveryColumn.data = discoveryCourseList;
-                                mFindListAdapter.addData(0, discoveryColumn);
+                                mFindListAdapter.addData(discoveryColumn);
                             }
                         }
 

@@ -1,7 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.util.SparseArray;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,6 +10,8 @@ import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.view.FindCardView;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -18,24 +20,26 @@ import java.util.List;
 public class FindListAdapter extends BaseAdapter {
 
     private Context mContext;
-    private SparseArray<DiscoveryColumn> mList;
-    private List<Integer> mIndexs;
+    private List<DiscoveryColumn> mList;
 
     public FindListAdapter(Context context) {
         mContext = context;
-        mList = new SparseArray<>();
-        mIndexs = new ArrayList<>();
+        mList = new ArrayList<>();
     }
 
-    public void addData(int position, DiscoveryColumn findCardEntity) {
-        mList.append(position, findCardEntity);
-        mIndexs.add(position);
+    public void addData(DiscoveryColumn findCardEntity) {
+        mList.add(findCardEntity);
+        Collections.sort(mList, new Comparator<DiscoveryColumn>() {
+            @Override
+            public int compare(DiscoveryColumn lhs, DiscoveryColumn rhs) {
+                return lhs.seq.compareTo(rhs.seq);
+            }
+        });
         notifyDataSetChanged();
     }
 
     public void clear() {
         mList.clear();
-        mIndexs.clear();
     }
 
     @Override
@@ -60,12 +64,9 @@ public class FindListAdapter extends BaseAdapter {
             ((FindCardView) convertView).setAdapter(new FindCardItemAdapter(mContext));
         }
 
-        DiscoveryColumn discoveryColumn = mList.get(mIndexs.get(position));
-        if (discoveryColumn == null) {
-            convertView.setVisibility(View.GONE);
-            return convertView;
-        }
-        convertView.setVisibility(View.VISIBLE);
+        DiscoveryColumn discoveryColumn = mList.get(position);
+        Log.d("FindListAdapter", "position: " + position);
+        Log.d("FindListAdapter", "getView: " + discoveryColumn.title);
         FindCardView findCardView = (FindCardView) convertView;
         findCardView.setDiscoveryCardEntity(discoveryColumn);
         findCardView.setMoreClickListener(discoveryColumn.type);
