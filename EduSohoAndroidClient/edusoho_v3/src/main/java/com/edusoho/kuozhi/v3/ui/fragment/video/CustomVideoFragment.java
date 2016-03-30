@@ -86,6 +86,30 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         }, null);
     }
 
+    private void reloadNewApiLessonMediaUrl(final NormalCallback<LessonItem> callback) {
+        final LessonActivity lessonActivity = (LessonActivity) getActivity();
+        RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.COURSELESSON, true);
+
+        requestUrl.setParams(new String[]{
+                "courseId", String.valueOf(lessonActivity.getCourseId()),
+                "lessonId", String.valueOf(lessonActivity.getLessonId())
+        });
+
+        lessonActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                LessonItem lessonItem = lessonActivity.parseJsonValue(
+                        response, new TypeToken<LessonItem<String>>() {
+                        });
+                if (lessonItem == null) {
+                    showErrorDialog(lessonActivity);
+                    return;
+                }
+                callback.success(lessonItem);
+            }
+        }, null);
+    }
+
     private void showErrorDialog(Activity activity) {
         PopupDialog popupDialog = PopupDialog.createNormal(
                 activity, "播放提示", "该视频播放出现了问题！请联系网站管理员!");

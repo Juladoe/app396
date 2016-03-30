@@ -57,6 +57,20 @@
             android:textColor="@android:color/white" />
 
         <TextView
+            android:id="@+id/tv_sd_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/tv_hd_video"
+            android:text="标清" />
+
+        <TextView
+            android:id="@+id/tv_hd_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/chk_learned"
+            android:text="高清" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"

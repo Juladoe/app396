@@ -58,19 +58,21 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private Activity mContext = null;
     private BVideoView mVV = null;
 
-    private LinearLayout llayoutPlayerControlPanel = null;
+    private LinearLayout llayoutPlayerControlPanel;
     private ImageView ivVideoPlay = null;
     private ImageView ivVideoBack = null;
     private ImageView ivVideoForward = null;
     private ImageView ivVideoReplay = null;
     private CheckBox chkFullScreen = null;
 
-    protected RelativeLayout rlayoutTitleStatus = null;
+    protected RelativeLayout rlayoutTitleStatus;
     protected ImageView ivBack;
     protected TextView tvVideoTitle;
     protected CheckBox chkLearned;
     protected ImageView ivShare;
     protected Reviewable reviewable;
+    protected TextView tvSDVideo;
+    protected TextView tvHDVideo;
 
     private SeekBar mProgress = null;
     private TextView mDuration = null;
@@ -237,6 +239,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         tvVideoTitle = (TextView) view.findViewById(R.id.tv_video_title);
         chkLearned = (CheckBox) view.findViewById(R.id.chk_learned);
         ivShare = (ImageView) view.findViewById(R.id.iv_share);
+        tvSDVideo = (TextView) view.findViewById(R.id.tv_sd_video);
+        tvHDVideo = (TextView) view.findViewById(R.id.tv_hd_video);
 
         registerCallbackForControl();
         /**
