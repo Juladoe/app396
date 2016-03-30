@@ -24,6 +24,7 @@ public class MyThreadEntity {
     private String latestPostTime;
     private String createdTime;
     private String updatedTime;
+    private String isPrivate;
 
 
     public String getId() {
