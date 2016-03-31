@@ -15,6 +15,7 @@
         <attr name="text" format="string" />
         <attr name="image" format="string" />
         <attr name="size" format="dimension" />
+        <attr name="text_size" format="dimension" />
         <attr name="fontColor" format="color" />
         <attr name="iconSizeScale" format="float" />
     </declare-styleable>
@@ -64,7 +65,7 @@
             <enum name="bottom" value="4" />
         </attr>
         <attr name="borderColor" format="color" />
-        <attr name="borderWidth" format="dimension" />
+        <attr name="pba_borderWidth" format="dimension" />
         <attr name="focusColor" format="color" />
         <attr name="radius" format="dimension" />
     </declare-styleable>

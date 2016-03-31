@@ -60,6 +60,8 @@ import static com.edusoho.kuozhi.v3.adapter.ThreadDiscussAdapter.ThreadDiscussEn
  */
 public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapter.ImageErrorClick {
     public static final String TAG = "ThreadDiscussActivity";
+    public static final String DEFAULT_TITLE = "请描述你的问题";
+    public static final String THREAD_ERROR_HINT = "问题不存在";
     public static final String ACTIVITY_TYPE = "activity_type";
     public static final String THREAD_ID = "thread_id";
     public static final String COURSE_ID = "course_id";
@@ -94,7 +96,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     @Override
     public void initView() {
         super.initView();
-        setBackMode(BACK, "描述你的问题");
         mLoadDialog = LoadDialog.create(mContext);
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
@@ -137,13 +138,14 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         if (PushUtil.ThreadMsgType.THREAD_POST.equals(mActivityType)) {
             if (mThreadId == 0) {
-                CommonUtil.shortToast(mContext, "问题不存在");
+                CommonUtil.shortToast(mContext, THREAD_ERROR_HINT);
                 finish();
             } else {
                 getLists(mThreadId, new NormalCallback<Boolean>() {
                     @Override
                     public void success(Boolean tag) {
                         if (tag) {
+                            setBackMode(BACK, mThreadModel.title);
                             mAdapter = new ThreadDiscussAdapter(mPosts, mThreadModel, mContext);
                             mAdapter.setSendImageClickListener(ThreadDiscussActivity.this);
                             lvMessage.setAdapter(mAdapter);
@@ -154,12 +156,14 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 });
             }
         } else {
+            setBackMode(BACK, DEFAULT_TITLE);
             mAdapter = new ThreadDiscussAdapter(mContext);
             lvMessage.setAdapter(mAdapter);
             mAdapter.setSendImageClickListener(this);
             mAudioDownloadReceiver.setAdapter(mAdapter);
         }
         NotificationUtil.cancelById(mThreadId);
+
     }
 
     protected Runnable mListViewSelectRunnable = new Runnable() {
@@ -372,9 +376,11 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                     mThreadModel = mActivity.parseJsonValue(response, new TypeToken<CourseThreadEntity>() {
                     });
                     mThreadModel.content = Html.fromHtml(mThreadModel.content).toString();
-                    String lastStr = mThreadModel.content.substring(mThreadModel.content.length() - 2, mThreadModel.content.length());
-                    if ("\n\n".equals(lastStr)) {
-                        mThreadModel.content = mThreadModel.content.substring(0, mThreadModel.content.length() - 2);
+                    if (mThreadModel.content.length() > 2) {
+                        String lastStr = mThreadModel.content.substring(mThreadModel.content.length() - 2, mThreadModel.content.length());
+                        if ("\n\n".equals(lastStr)) {
+                            mThreadModel.content = mThreadModel.content.substring(0, mThreadModel.content.length() - 2);
+                        }
                     }
                     final int threadId = mThreadModel.id;
                     if (mCourseThreadDataSource.get(threadId) == null) {
@@ -516,34 +522,40 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     }
 
     private void filterPostThreads(List<CourseThreadPostEntity> posts) {
-        for (CourseThreadPostEntity post : posts) {
-            if (post.content.contains("amr")) {
-                post.type = PushUtil.ChatMsgType.AUDIO;
-                AudioCacheEntity cache = AudioCacheUtil.getInstance().getAudioCacheByPath(post.content);
-                if (cache != null && !TextUtils.isEmpty(cache.localPath)) {
-                    post.content = cache.localPath;
-                    post.delivery = PushUtil.MsgDeliveryType.SUCCESS;
+        try {
+            for (CourseThreadPostEntity post : posts) {
+                if (post.content.contains("amr")) {
+                    post.type = PushUtil.ChatMsgType.AUDIO;
+                    AudioCacheEntity cache = AudioCacheUtil.getInstance().getAudioCacheByPath(post.content);
+                    if (cache != null && !TextUtils.isEmpty(cache.localPath)) {
+                        post.content = cache.localPath;
+                        post.delivery = PushUtil.MsgDeliveryType.SUCCESS;
+                    } else {
+                        post.delivery = PushUtil.MsgDeliveryType.UPLOADING;
+                    }
+                } else if (post.content.contains("<img")) {
+                    Pattern p = Pattern.compile("<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>");
+                    Matcher m = p.matcher(post.content);
+                    while (m.find()) {
+                        post.content = m.group(1);
+                        post.type = PushUtil.ChatMsgType.IMAGE;
+                        post.delivery = PushUtil.MsgDeliveryType.SUCCESS;
+                        break;
+                    }
                 } else {
-                    post.delivery = PushUtil.MsgDeliveryType.UPLOADING;
-                }
-            } else if (post.content.contains("<img")) {
-                Pattern p = Pattern.compile("<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>");
-                Matcher m = p.matcher(post.content);
-                while (m.find()) {
-                    post.content = m.group(1);
-                    post.type = PushUtil.ChatMsgType.IMAGE;
+                    post.content = Html.fromHtml(post.content).toString();
+                    if (post.content.length() > 2) {
+                        String lastStr = post.content.substring(post.content.length() - 2, post.content.length());
+                        if ("\n\n".equals(lastStr)) {
+                            post.content = post.content.substring(0, post.content.length() - 2);
+                        }
+                    }
+                    post.type = PushUtil.ChatMsgType.TEXT;
                     post.delivery = PushUtil.MsgDeliveryType.SUCCESS;
-                    break;
                 }
-            } else {
-                post.content = Html.fromHtml(post.content).toString();
-                String lastStr = post.content.substring(post.content.length() - 2, post.content.length());
-                if ("\n\n".equals(lastStr)) {
-                    post.content = post.content.substring(0, post.content.length() - 2);
-                }
-                post.type = PushUtil.ChatMsgType.TEXT;
-                post.delivery = PushUtil.MsgDeliveryType.SUCCESS;
             }
+        } catch (Exception ex) {
+            Log.d(TAG, "filterPostThreads: " + ex.getMessage());
         }
     }
 

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.view.photo;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewParent;
 
@@ -23,7 +24,9 @@ public class HackyViewPager extends ViewPager {
     private int isDown = 1;
     private float mLastMotionX;
     private float mLastMotionY;
+    private GestureDetector mGestureDetector;
     private OnClickListener mViewPagerClickListener;
+
 
     public HackyViewPager(Context context) {
         super(context);
@@ -33,17 +36,45 @@ public class HackyViewPager extends ViewPager {
         super(context, attrs);
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        try {
-            return super.onInterceptTouchEvent(ev);
-        } catch (Exception e) {
-            return false;
-        }
+    protected void initView() {
+        mGestureDetector = new GestureDetector(null);
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
+    public boolean dispatchTouchEvent(MotionEvent e) {
+        ViewParent parent = getParent();
+        if (e.getAction() != MotionEvent.ACTION_UP) {
+            if (parent != null) {
+                parent.requestDisallowInterceptTouchEvent(true);
+            }
+        }
+        return super.dispatchTouchEvent(e);
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent e) {
+        ViewParent parent = getParent();
+        if (e.getAction() != MotionEvent.ACTION_UP) {
+            if (parent != null) {
+                parent.requestDisallowInterceptTouchEvent(true);
+            }
+        }
+        return super.onInterceptTouchEvent(e);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        ViewParent parent = getParent();
+        if (ev.getAction() != MotionEvent.ACTION_UP) {
+            if (parent != null) {
+                parent.requestDisallowInterceptTouchEvent(true);
+            }
+        }
+        return super.onTouchEvent(ev);
+    }
+
+    public boolean dispatchTouchEvent2(MotionEvent ev) {
+        /*
         ViewParent parent = getParent();
         final float x = ev.getX();
         final float y = ev.getY();
@@ -85,6 +116,7 @@ public class HackyViewPager extends ViewPager {
                 parent.requestDisallowInterceptTouchEvent(false);
                 break;
         }
+        */
         return super.dispatchTouchEvent(ev);
     }
 

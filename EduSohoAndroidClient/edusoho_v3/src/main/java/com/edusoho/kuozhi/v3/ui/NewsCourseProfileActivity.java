@@ -120,7 +120,7 @@ public class NewsCourseProfileActivity extends ActionBarBaseActivity {
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.USER_LEARN_COURSE, mCourseId));
+                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.MOBILE_WEB_COURSE, mCourseId));
                         startIntent.putExtra(Const.WEB_URL, url);
                     }
                 });

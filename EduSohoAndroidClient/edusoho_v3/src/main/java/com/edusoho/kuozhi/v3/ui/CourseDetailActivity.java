@@ -72,7 +72,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                 int total;
                 if (courseMemberResult != null) {
                     total = courseMemberResult.total;
-                    tvMemberSum.setText(String.format(getString(R.string.classroom_all_members) + "(%d)", total));
+                    tvMemberSum.setText(getString(R.string.classroom_all_members) + "（" + total + "）");
                     if (courseMemberResult.resources != null) {
                         CourseMemberAvatarAdapter adapter = new CourseMemberAvatarAdapter(Arrays.asList(courseMemberResult.resources));
                         gvMemberAvatar.setAdapter(adapter);
@@ -103,7 +103,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
             app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.USER_LEARN_COURSE, mFromId));
+                    String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.MOBILE_WEB_COURSE, mFromId));
                     startIntent.putExtra(Const.WEB_URL, url);
                 }
             });

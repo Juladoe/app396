@@ -23,7 +23,6 @@ import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
-import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
@@ -46,6 +45,7 @@ import com.edusoho.kuozhi.v3.view.webview.ESWebChromeClient;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BaseBridgePlugin;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgeCallback;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
+import com.edusoho.liveplayer.LiveUtil;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -439,6 +439,8 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
                 bundle.putInt(key, (Integer) value);
             } else if (value instanceof Double) {
                 bundle.putInt(key, ((Double) value).intValue());
+            } else if (value instanceof Boolean) {
+                bundle.putBoolean(key, ((Boolean) value).booleanValue());
             } else {
                 bundle.putString(key, value.toString());
             }
@@ -478,6 +480,11 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
                     startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
                 }
             });
+        } else if ("sooonerLivePlayer".equals(name)) {
+            String liveClassroomId = bundle.getString("liveClassroomId");
+            String exStr = bundle.getString("exStr");
+            boolean replayState = bundle.getBoolean("replayState");
+            new LiveUtil(mActivity).startLiveActivity(liveClassroomId, exStr, replayState);
         }
     }
 

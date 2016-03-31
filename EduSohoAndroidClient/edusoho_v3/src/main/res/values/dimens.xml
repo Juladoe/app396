@@ -1,4 +1,14 @@
 <resources>
+    <dimen name="font_size_l">20sp</dimen>
+    <dimen name="font_size_m">18sp</dimen>
+    <dimen name="font_size_s">16sp</dimen>
+    <dimen name="font_size_x_s">14sp</dimen>
+    <dimen name="font_size_xx_s">12sp</dimen>
+    <dimen name="font_size_xxx_s">8sp</dimen>
+
+    <dimen name="card_grid_width">158dp</dimen>
+    <dimen name="discovery_classroom_card_height">106dp</dimen>
+    <dimen name="discovert_course_card_height">88dp</dimen>
     <!-- base size -->
     <dimen name="base_size">14sp</dimen>
     <dimen name="base_small_size">12sp</dimen>
@@ -81,7 +91,8 @@
     <dimen name="action_bar_title">20dp</dimen>
     <dimen name="qr_layout_label">48px</dimen>
     <dimen name="qr_layout_label_text">14sp</dimen>
-    <dimen name="nav_layout_btn_size">12sp</dimen>
+    <dimen name="nav_layout_btn_size">10sp</dimen>
+    <dimen name="nav_layout_btn_text_size">12sp</dimen>
     <dimen name="material_title">20dp</dimen>
     <dimen name="material_content">14sp</dimen>
     <dimen name="material_btn">14sp</dimen>

@@ -104,6 +104,10 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         });
     }
 
+    @Override
+    public void setTitle(CharSequence title) {
+    }
+
     private void showFragment(String tag) {
         Fragment fragment;
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
