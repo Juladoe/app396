@@ -36,7 +36,12 @@ public class PingManager {
     private Timer mPingTimer;
 
     public PingManager() {
+        init();
+    }
+
+    private void init() {
         this.pingFailCount = 0;
+        this.pingTotalCount = 0;
         this.pingSuccessCount = 0;
         switchPingType(WCDMA);
     }
@@ -89,14 +94,8 @@ public class PingManager {
     }
 
     public void start() {
-        mPingThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mPingTimer = new Timer();
-                mPingTimer.schedule(getPingTimerTask(), 0);
-            }
-        });
-        mPingThread.run();
+        mPingTimer = new Timer();
+        mPingTimer.schedule(getPingTimerTask(), 1);
     }
 
     private TimerTask getPingTimerTask() {
@@ -105,6 +104,7 @@ public class PingManager {
             public void run() {
                 lasterPingTime = SystemClock.currentThreadTimeMillis();
                 pingTotalCount ++;
+                Log.d(getClass().getSimpleName(), "lasterPingTime:" + pingTotalCount);
                 if (pingSuccessCount > getPingMaxCount()) {
                     pingSuccessCount = 0;
                     upgradePingSpeed();
@@ -127,11 +127,23 @@ public class PingManager {
         }
     }
 
+    public void stop() {
+        if (mPingTimer != null) {
+            mPingTimer.cancel();
+        }
+        if (mPingThread != null) {
+            mPingThread.interrupt();
+            mPingThread = null;
+        }
+
+        init();
+    }
+
     public void setPingCallback(PingCallback pingCallback) {
         this.mPingCallback = pingCallback;
     }
 
-    public interface PingCallback
+    public static interface PingCallback
     {
         void onPing();
     }

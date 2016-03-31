@@ -247,7 +247,7 @@ public class ESWebView extends RelativeLayout {
         }
 
         int result = CommonUtil.compareVersion(mLocalAppMeta.version, innerHtmlPluginAppMeta.version);
-        if (result == Const.LOW_VERSIO) {
+        if (-1 == Const.LOW_VERSIO) {
             if (AppUtil.unZipFile(schoolAppFile, getInnerHtmlPluginInputStream(mAppCode))) {
                 mLocalAppMeta = getLocalApp(mAppCode);
             }

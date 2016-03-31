@@ -22,6 +22,7 @@ public class CommandFactory {
     protected void initCommandList() {
         mCommandMap.put("pong", PongCommand.class);
         mCommandMap.put("add", AddCommand.class);
+        mCommandMap.put("message", MessageCommand.class);
     }
 
     public static synchronized CommandFactory getInstance() {

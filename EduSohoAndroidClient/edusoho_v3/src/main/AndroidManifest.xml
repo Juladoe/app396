@@ -237,6 +237,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".v3.ui.ImChatActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
         <!-- 【必须】 信鸽receiver广播接收 -->
         <receiver
             android:name="com.tencent.android.tpush.XGPushReceiver"
@@ -275,8 +280,12 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.edusoho.kuozhi.v3.service.ImService"/>
-
+        <receiver android:name=".v3.broadcast.ImServerReceiver">
+            <intent-filter>
+                <action android:name="com.edusoho.kuozhi.push.action.IM_MESSAGE" />
+            </intent-filter>
+        </receiver>
+        
         <service
             android:name="com.tencent.android.tpush.service.XGPushService"
             android:exported="true"

@@ -16,14 +16,16 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.ImService;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
+import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
+import com.edusoho.kuozhi.v3.model.provider.SystemProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -39,6 +41,8 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -61,15 +65,17 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private Queue<Request<String>> mAjaxQueue;
     private boolean mLogoutFlag = false;
 
+    protected SystemProvider mSystemProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_default);
         if (mAjaxQueue == null) {
             mAjaxQueue = mService.getAjaxQueue();
-            //mService.sendMessage(EdusohoMainService.LOGIN_WITH_TOKEN, null);
         }
 
+        mSystemProvider = new SystemProvider(getBaseContext());
         initView();
         AppUtil.checkUpateApp(mActivity, new StatusCallback<AppUpdateInfo>() {
             @Override
@@ -136,6 +142,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             @Override
             public void success(Boolean isLogin) {
                 if (isLogin) {
+                    bindImServerHost();
                     selectDownTab(R.id.nav_tab_news);
                 } else {
                     selectDownTab(R.id.nav_tab_find);
@@ -144,6 +151,19 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         });
 
         mDownTabNews.setUpdateIcon(0);
+    }
+
+    private void bindImServerHost() {
+        RequestUrl requestUrl = app.bindNewUrl("/api/me/im/login", true);
+        mSystemProvider.getImServerHosts(requestUrl).success(new NormalCallback<ArrayList<String>>() {
+            @Override
+            public void success(ArrayList<String> hostList) {
+                Intent intent = new Intent("com.edusoho.kuozhi.imserver.IImServerAidlInterface");
+                intent.setPackage(getPackageName());
+                intent.putStringArrayListExtra(ImService.HOST, hostList);
+                startService(intent);
+            }
+        });
     }
 
     @Override

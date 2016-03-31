@@ -19,7 +19,7 @@ public class CourseProvider extends ModelProvider {
     }
 
     public ProviderListener getCourse(RequestUrl requestUrl) {
-        RequestOption requestOption = buildSimpleGetRequest(
+        RequestOption requestOption = buildSimplePostRequest(
                 requestUrl, new TypeToken<CourseDetailsResult>(){});
 
         requestOption.getRequest().setCacheUseMode(BaseVolleyRequest.ALWAYS_USE_CACHE);

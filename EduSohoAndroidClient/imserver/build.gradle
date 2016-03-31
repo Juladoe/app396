@@ -21,5 +21,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     testCompile 'org.robolectric:robolectric:3.0'
 
+    compile project (':commonUtils')
     compile 'com.koushikdutta.async:androidasync:2.1.6'
 }

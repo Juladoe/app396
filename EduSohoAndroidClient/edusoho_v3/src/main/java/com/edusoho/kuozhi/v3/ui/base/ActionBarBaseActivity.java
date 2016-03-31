@@ -55,7 +55,6 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         if (mActionBar != null) {
             mActionBar.setWindowTitle("title");
         }
-        //getWindow().findViewById(R.id.decor_content_parent).setVisibility(View.GONE);
     }
 
     @Override

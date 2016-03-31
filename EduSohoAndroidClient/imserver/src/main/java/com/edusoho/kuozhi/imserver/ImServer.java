@@ -14,6 +14,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
+import cn.trinea.android.common.util.DigestUtils;
+
 
 /**
  * Created by su on 2016/3/17.
@@ -31,17 +35,21 @@ public class ImServer {
             "toId"
     };
 
-    private String mHost;
+    private List<String> mHostList;
+    private int mCurrentHostIndex;
     private String mToken;
     private String mConvNo;
+    private String mClientName;
     private String mClientId;
     private PingManager mPingManager;
     private Future<WebSocket> mWebSocketFuture;
+    private Receiver mReceiver;
     private AsyncHttpClient.WebSocketConnectCallback mWebSocketConnectCallback;
 
     private PingManager.PingCallback mPingCallback = new PingManager.PingCallback() {
         @Override
         public void onPing() {
+            Log.d(TAG, "onPing");
             ping();
         }
     };
@@ -49,11 +57,24 @@ public class ImServer {
     public ImServer() {
         this.mPingManager = new PingManager();
         this.mPingManager.setPingCallback(mPingCallback);
-        this.mConvNo = "b6565ecacef7fd0f3ea1fab66e7b3a49";
+        //this.mConvNo = "b6565ecacef7fd0f3ea1fab66e7b3a49";
     }
 
-    public void initWithHost(String host) {
-        this.mHost = host;
+    public List<String> getHost() {
+        return mHostList;
+    }
+
+    public void setReceiver(Receiver receiver) {
+        this.mReceiver = receiver;
+    }
+
+    public void clear() {
+        mPingManager.stop();
+    }
+
+    public void initWithHost(List<String> host) {
+        this.mHostList = host;
+        this.mCurrentHostIndex = 0;
         loginImServer();
     }
 
@@ -68,6 +89,13 @@ public class ImServer {
                 "convNo" , mConvNo,
                 "msg", msg
         });
+    }
+
+    public void onReceiveMessage(String msg) {
+        if (mReceiver == null) {
+            return;
+        }
+        mReceiver.onReceive(msg);
     }
 
     public void ping() {
@@ -94,7 +122,6 @@ public class ImServer {
                     ex.printStackTrace();
                 }
                 Log.d(TAG, "onCompleted:" + webSocket);
-                mPingManager.start();
                 webSocket.setEndCallback(new CompletedCallback() {
                     @Override
                     public void onCompleted(Exception e) {
@@ -108,6 +135,7 @@ public class ImServer {
                         handleCmd(s);
                     }
                 });
+
                 webSocket.setClosedCallback(new CompletedCallback() {
                     @Override
                     public void onCompleted(Exception e) {
@@ -127,7 +155,7 @@ public class ImServer {
                         Log.d(TAG, "pone " + s);
                     }
                 });
-                getJoinToken();
+                mPingManager.start();
             }
         };
     }
@@ -142,61 +170,46 @@ public class ImServer {
         }
     }
 
+    private void createJoinToken(String userId, String clientId) {
+        int time = (int) System.currentTimeMillis();
+
+        String token = String.format("%s:%s:%s:%d:%s:%s", userId, clientId, clientId, time, clientId);
+    }
+
     private void getJoinToken() {
-        String url = String.format("http://im-rpc.han.dev.qiqiuyun.cn:8081/tmp.php?act=getJoinToken&clientId=%s&no=%s", mClientId, mConvNo);
+    }
+
+    public void joinConversation(String clientId, String nickname, final String convNo) {
+        this.mClientName = nickname;
+        this.mConvNo = convNo;
+
+        String url = String.format("http://im-rpc.han.dev.qiqiuyun.cn:8081/tmp.php?act=getJoinToken&clientId=%s&no=%s", clientId, convNo);
         AsyncHttpClient.getDefaultInstance().executeString(new AsyncHttpGet(url), new AsyncHttpClient.StringCallback() {
             @Override
             public void onCompleted(Exception e, AsyncHttpResponse asyncHttpResponse, String s) {
                 mToken = s.substring(1, s.length() - 1);
-                Log.d(TAG, s);
-                addConversation();
+
+                send(new String[] {
+                        "cmd", "add",
+                        "convNo", convNo,
+                        "token", mToken
+                });
             }
         });
-    }
-
-    private void addConversation() {
-        send(new String[] {
-                "cmd", "add",
-                "convNo", mConvNo,
-                "token", mToken
-        });
-    }
-
-    private void parseClientId(String serverUrl) {
-        int firstTokenIndex = serverUrl.indexOf("token=");
-        if (firstTokenIndex > 0) {
-            String token = serverUrl.substring(firstTokenIndex);
-            String[] splits = token.split(":");
-            if (splits != null && splits.length > 2) {
-                mClientId = splits[1];
-            }
-        }
     }
 
     private void loginImServer() {
-
-        String url = String.format("http://trymob3.edusoho.cn/api/me/im/login");
-        AsyncHttpRequest request = new AsyncHttpGet(url);
-        request.addHeader("Auth-Token", "amgt5sd48r48oog08cks88oosw04k4g");
-        AsyncHttpClient.getDefaultInstance().executeJSONObject(request, new AsyncHttpClient.JSONObjectCallback() {
-            @Override
-            public void onCompleted(Exception e, AsyncHttpResponse asyncHttpResponse, JSONObject jsonObject) {
-                try {
-                    JSONArray serviceArray = jsonObject.getJSONArray("servers");
-                    mHost = serviceArray.getString(0);
-                    parseClientId(mHost);
-                    connectWebsocket();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
+        if (mCurrentHostIndex > mHostList.size()) {
+            return;
+        }
+        String host = mHostList.get(mCurrentHostIndex++);
+        connectWebsocket(host);
     }
 
-    private void connectWebsocket() {
-        Log.d(TAG, mHost);
+    private void connectWebsocket(String host) {
+        Log.d(TAG, host);
         mWebSocketFuture =  AsyncHttpClient.getDefaultInstance().websocket(
-                mHost  + "&clientName=suju3",
+                host  + "&clientName=" + mClientName,
                 null,
                 getWebSocketConnectCallback()
         );
@@ -204,5 +217,10 @@ public class ImServer {
 
     public Future<WebSocket> getSocket() {
         return mWebSocketFuture;
+    }
+
+    public static interface Receiver
+    {
+        public void onReceive(String msg);
     }
 }

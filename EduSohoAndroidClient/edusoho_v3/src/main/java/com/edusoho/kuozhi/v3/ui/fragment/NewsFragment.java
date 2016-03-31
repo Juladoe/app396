@@ -283,7 +283,7 @@ public class NewsFragment extends BaseFragment {
             switch (newItem.type) {
                 case PushUtil.ChatUserType.FRIEND:
                 case PushUtil.ChatUserType.TEACHER:
-                    app.mEngine.runNormalPlugin("ChatActivity", mContext, new PluginRunCallback() {
+                    app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(ChatActivity.FROM_ID, newItem.fromId);

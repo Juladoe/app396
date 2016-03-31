@@ -142,7 +142,7 @@
 
     <plugin
         name="DiscussFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.IMDiscussFragment"
         version="1.0" />
 
     <plugin
@@ -375,4 +375,8 @@
         package="com.edusoho.kuozhi.v3.ui.MyThreadActivity"
         version="1.0" />
 
+    <plugin
+        name="ImChatActivity"
+        package="com.edusoho.kuozhi.v3.ui.ImChatActivity"
+        version="1.0" />
 </plugins>
