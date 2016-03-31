@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
         android:layout_toLeftOf="@+id/ll_discovery_more"
         android:text="推荐课程"
         android:textColor="@android:color/black"
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/card_title"
         android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -38,6 +40,7 @@
             android:id="@+id/iv_discovery_card_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:src="@drawable/discovery_more" />
     </LinearLayout>
 

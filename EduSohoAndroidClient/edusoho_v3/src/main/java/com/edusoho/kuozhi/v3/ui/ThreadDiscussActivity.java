@@ -376,9 +376,11 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                     mThreadModel = mActivity.parseJsonValue(response, new TypeToken<CourseThreadEntity>() {
                     });
                     mThreadModel.content = Html.fromHtml(mThreadModel.content).toString();
-                    String lastStr = mThreadModel.content.substring(mThreadModel.content.length() - 2, mThreadModel.content.length());
-                    if ("\n\n".equals(lastStr)) {
-                        mThreadModel.content = mThreadModel.content.substring(0, mThreadModel.content.length() - 2);
+                    if (mThreadModel.content.length() > 2) {
+                        String lastStr = mThreadModel.content.substring(mThreadModel.content.length() - 2, mThreadModel.content.length());
+                        if ("\n\n".equals(lastStr)) {
+                            mThreadModel.content = mThreadModel.content.substring(0, mThreadModel.content.length() - 2);
+                        }
                     }
                     final int threadId = mThreadModel.id;
                     if (mCourseThreadDataSource.get(threadId) == null) {
@@ -542,9 +544,11 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                     }
                 } else {
                     post.content = Html.fromHtml(post.content).toString();
-                    String lastStr = post.content.substring(post.content.length() - 2, post.content.length());
-                    if ("\n\n".equals(lastStr)) {
-                        post.content = post.content.substring(0, post.content.length() - 2);
+                    if (post.content.length() > 2) {
+                        String lastStr = post.content.substring(post.content.length() - 2, post.content.length());
+                        if ("\n\n".equals(lastStr)) {
+                            post.content = post.content.substring(0, post.content.length() - 2);
+                        }
                     }
                     post.type = PushUtil.ChatMsgType.TEXT;
                     post.delivery = PushUtil.MsgDeliveryType.SUCCESS;

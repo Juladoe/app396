@@ -9,7 +9,7 @@
     <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/card_cover"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/card_grid_height_s"
+        android:layout_height="@dimen/discovert_course_card_height"
         android:scaleType="centerCrop"
         android:src="@drawable/default_course"
         app:riv_corner_radius="4dp" />

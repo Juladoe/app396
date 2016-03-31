@@ -10,6 +10,7 @@ import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
@@ -55,7 +56,9 @@ public class Pusher {
 
     public void pushVerified() {
         EdusohoMainService.getService().setNewNotification();
+        mBundle.putBoolean("isNew",true);
         EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS, mBundle, FriendFragment.class);
+        EdusohoApp.app.sendMsgToTarget(Const.NEW_FANS, mBundle, DefaultPageActivity.class);
     }
 
     public void pushLessonPublish() {

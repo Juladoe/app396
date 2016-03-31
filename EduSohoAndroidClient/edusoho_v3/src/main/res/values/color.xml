@@ -148,8 +148,8 @@
     <color name="action_bg_gradient">#F9F9F9</color>
     <color name="audio_thum_nomal_stroke">#03b884</color>
     <color name="audio_thum_nomal_gradient">#ccc</color>
-    <color name="card_bg_gradient">#ffffff</color>
-    <color name="card_bg_stroke">#DFDFDF</color>
+    <color name="view_pager_point_bg_normal">#1EFFFFFF</color>
+    <color name="view_pager_point_bg_sel">#FFFFFF</color>
     <color name="normal_bg_gradient">#ffffff</color>
     <color name="normal_bg_stroke">#DFDFDF</color>
 
@@ -424,6 +424,7 @@
     <color name="assist">#444</color>
     <color name="error">#e96969</color>
     <color name="background">#ebebeb</color>
+    <color name="find_fragment_background">#F4F7F9</color>
     <color name="font_1">#444444</color>
     <color name="font_2">#666666</color>
     <color name="font_3">#999999</color>

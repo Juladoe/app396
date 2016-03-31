@@ -1,6 +1,6 @@
 package com.edusoho.kuozhi.v3.model.base;
 
-import com.edusoho.kuozhi.v3.model.sys.Error;
+import com.edusoho.kuozhi.v3.entity.error.Error;
 
 import java.util.List;
 

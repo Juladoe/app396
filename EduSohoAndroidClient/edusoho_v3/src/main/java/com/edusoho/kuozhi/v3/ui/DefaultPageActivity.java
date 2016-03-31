@@ -144,6 +144,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         });
 
         mDownTabNews.setUpdateIcon(0);
+        if (app.config.newVerifiedNotify){
+            mDownTabFriends.setBageIcon(true);
+        }
     }
 
     @Override
@@ -337,6 +340,19 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 }
             });
         }
+        if (messageType.code == Const.NEW_FANS) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    if (message.data.getBoolean("isNew")) {
+                        mDownTabFriends.setBageIcon(true);
+                    } else {
+                        mDownTabFriends.setBageIcon(false);
+                    }
+                }
+            });
+            return;
+        }
     }
 
     @Override
@@ -357,7 +373,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(Const.LOGOUT_SUCCESS),
                 new MessageType(Const.TOKEN_LOSE),
-                new MessageType(Const.BADGE_UPDATE)
+                new MessageType(Const.BADGE_UPDATE),
+                new MessageType(Const.NEW_FANS)
         };
     }
 
