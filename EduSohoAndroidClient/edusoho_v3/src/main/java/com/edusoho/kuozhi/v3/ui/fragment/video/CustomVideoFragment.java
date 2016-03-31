@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment.video;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.CompoundButton;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.entity.lesson.StreamInfo;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
@@ -20,7 +22,10 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by howzhi on 14-10-25.
@@ -28,16 +33,29 @@ import java.util.HashMap;
 public class CustomVideoFragment extends BdVideoPlayerFragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     LessonActivity lessonActivity = null;
+    static final String SD = "SD";
+    static final String HD = "HD";
+    static final String SHD = "SHD";
+
+    List<StreamInfo> streamInfoLists = new ArrayList<>();
 
     @Override
     protected void initView(View view) {
         super.initView(view);
-        if (getActivity() instanceof LessonActivity) {
-            lessonActivity = (LessonActivity) getActivity();
-        }
         ivBack.setOnClickListener(this);
         chkLearned.setOnCheckedChangeListener(this);
         ivShare.setOnClickListener(this);
+        tvSDVideo.setOnClickListener(this);
+        tvHDVideo.setOnClickListener(this);
+        tvSHDVideo.setOnClickListener(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getActivity() instanceof LessonActivity) {
+            lessonActivity = (LessonActivity) getActivity();
+        }
     }
 
     @Override
@@ -45,18 +63,35 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         /**
          * 发起一次播放任务,当然您不一定要在这发起
          */
-        if (mLastPos > 0) {
-            Log.d(null, "resumePlay--->");
-            if (isCacheVideo) {
-                mEventHandler.sendEmptyMessage(EVENT_START);
-                return;
-            }
-            reloadLessonMediaUrl(new NormalCallback<LessonItem>() {
+        if (isCacheVideo) {
+            mEventHandler.sendEmptyMessage(EVENT_START);
+            return;
+        }
+
+        if (mVideoSource != null && streamInfoLists.size() == 0) {
+            getVideoStream(mVideoSource, new NormalCallback<StreamInfo[]>() {
                 @Override
-                public void success(LessonItem lessonItem) {
-                    mVideoHead = lessonItem.headUrl;
-                    mVideoSource = lessonItem.mediaUri;
-                    mEventHandler.sendEmptyMessage(EVENT_START);
+                public void success(StreamInfo[] streamInfos) {
+                    if (streamInfos != null) {
+                        for (StreamInfo streamInfo : streamInfos) {
+                            streamInfoLists.add(streamInfo);
+                        }
+                        setStreamTypeBtnStatus();
+                        setCurMediaSource();
+//                        if (mLastPos > 0) {
+//                            reloadLessonMediaUrl(new NormalCallback<LessonItem>() {
+//                                @Override
+//                                public void success(LessonItem lessonItem) {
+//                                    mVideoHead = lessonItem.headUrl;
+//                                    mVideoSource = lessonItem.mediaUri;
+//                                    mEventHandler.sendEmptyMessage(EVENT_START);
+//                                }
+//                            });
+//                        } else {
+//                            mEventHandler.sendEmptyMessage(EVENT_START);
+//                        }
+                        mEventHandler.sendEmptyMessage(EVENT_START);
+                    }
                 }
             });
         } else {
@@ -86,27 +121,28 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         }, null);
     }
 
-    private void reloadNewApiLessonMediaUrl(final NormalCallback<LessonItem> callback) {
-        final LessonActivity lessonActivity = (LessonActivity) getActivity();
-        RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.COURSELESSON, true);
-        requestUrl.setParams(new String[]{
-                "courseId", String.valueOf(lessonActivity.getCourseId()),
-                "lessonId", String.valueOf(lessonActivity.getLessonId())
-        });
-
-        lessonActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+    private void getVideoStream(String url, final NormalCallback<StreamInfo[]> normalCallback) {
+        RequestUrl requestUrl = lessonActivity.app.bindNewApiUrl(url, false);
+        requestUrl.setHeads(new String[]{"x-auth-token", "tbxll7dnspc8o8oss4o4ss4408kk8os"});
+        requestUrl.url = url;
+        lessonActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                LessonItem lessonItem = lessonActivity.parseJsonValue(
-                        response, new TypeToken<LessonItem<String>>() {
-                        });
-                if (lessonItem == null) {
-                    showErrorDialog(lessonActivity);
-                    return;
+                StreamInfo[] streamInfos = lessonActivity.app.parseJsonValue(response, new TypeToken<StreamInfo[]>() {
+                });
+                if (streamInfos != null && streamInfos.length > 0) {
+                    normalCallback.success(streamInfos);
+                } else {
+                    normalCallback.success(null);
                 }
-                callback.success(lessonItem);
             }
-        }, null);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String s = new String(error.networkResponse.data);
+                Log.d(TAG, "onErrorResponse: " + s);
+            }
+        });
     }
 
     private void showErrorDialog(Activity activity) {
@@ -163,6 +199,48 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
 
                 }
             });
+        } else if (v.getId() == tvSDVideo.getId()) {
+            recordCurrentPosition();
+            mCurMediaSource = tvSDVideo.getTag().toString();
+            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
+        } else if (v.getId() == tvHDVideo.getId()) {
+            recordCurrentPosition();
+            mCurMediaSource = tvHDVideo.getTag().toString();
+            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
+            recordCurrentPosition();
+        } else if (v.getId() == tvSHDVideo.getId()) {
+            mCurMediaSource = tvSHDVideo.getTag().toString();
+            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
+        }
+    }
+
+    public void setStreamTypeBtnStatus() {
+        Iterator<StreamInfo> iterator = streamInfoLists.iterator();
+        while (iterator.hasNext()) {
+            StreamInfo streamInfo = iterator.next();
+            if (SD.equals(streamInfo.name.toUpperCase())) {
+                tvSDVideo.setVisibility(View.VISIBLE);
+                tvSDVideo.setTag(streamInfo.src);
+                tvSDVideo.setOnClickListener(this);
+            } else if (HD.equals(streamInfo.name.toUpperCase())) {
+                tvHDVideo.setVisibility(View.VISIBLE);
+                tvHDVideo.setTag(streamInfo.src);
+                tvHDVideo.setOnClickListener(this);
+            } else if (SHD.equals(streamInfo.name.toUpperCase())) {
+                tvSHDVideo.setVisibility(View.VISIBLE);
+                tvSHDVideo.setTag(streamInfo.src);
+                tvSHDVideo.setOnClickListener(this);
+            }
+        }
+    }
+
+    private void setCurMediaSource() {
+        if (tvSDVideo.getTag() != null) {
+            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
+        } else if (tvHDVideo.getTag() != null) {
+            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
+        } else if (tvSHDVideo.getTag() != null) {
+            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
         }
     }
 }

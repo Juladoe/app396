@@ -60,15 +60,31 @@
             android:id="@+id/tv_sd_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/tv_learned"
-            android:text="标清" />
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tv_hd_video"
+            android:text="标清"
+            android:textColor="@android:color/white"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/tv_hd_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/tv_shd_video"
+            android:text="高清"
+            android:textColor="@android:color/white"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/tv_shd_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/tv_learned"
-            android:text="高清" />
+            android:text="超清"
+            android:textColor="@android:color/white"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/tv_learned"

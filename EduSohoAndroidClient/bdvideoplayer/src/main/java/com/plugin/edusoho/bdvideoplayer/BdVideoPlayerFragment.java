@@ -52,6 +52,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private String AK = "6ZB2kShzunG7baVCPLWe7Ebc";
     private String SK = "wt18pcUSSryXdl09jFvGvsuNHhGCZTvF";
 
+    protected String mCurMediaSource = null;
     protected String mVideoSource = null;
     protected String mVideoHead = null;
 
@@ -70,18 +71,19 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected TextView tvVideoTitle;
     protected CheckBox chkLearned;
     protected ImageView ivShare;
-    protected Reviewable reviewable;
+    protected InitMediaSource initMediaSource;
     protected TextView tvSDVideo;
     protected TextView tvHDVideo;
+    protected TextView tvSHDVideo;
 
     private SeekBar mProgress = null;
     private TextView mDuration = null;
     private TextView mCurrPosition = null;
 
-    private boolean mIsHwDecode = false;
-    private boolean mIsPlayEnd;
+    protected boolean mIsHwDecode = false;
+    protected boolean mIsPlayEnd;
     protected boolean isCacheVideo;
-    private int mDecodeMode;
+    protected int mDecodeMode;
 
     protected EventHandler mEventHandler;
     protected HandlerThread mHandlerThread;
@@ -127,6 +129,32 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private PLAYER_HEAD_STATUS mPlayHeadStatus;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "bd fragment create");
+        mContext = getActivity();
+
+        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
+        mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
+        initSoLib();
+        setMediaSource();
+        autoHideTimer = new Timer();
+        mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_IDLE;
+        mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
+    public void setMediaSource() {
+        Bundle bundle = getArguments();
+        mIsHwDecode = bundle.getBoolean("isHW", false);
+        isCacheVideo = bundle.getBoolean("from_cache", false);
+        //mVideoSource = getUrlPath(bundle.getString("mediaUrl"));
+        mVideoSource = "http://wuqian.test.edusoho.cn/hls/551/playlist/HwmEYXE692uq0Zdwd4ke5SZZN5rPDvwZ.m3u8?format=json&hideBeginning=1&line=";
+        int decodeMode = TextUtils.isEmpty(mVideoSource) || mVideoSource.contains("Lesson/getLocalVideo") ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
+        mDecodeMode = bundle.getInt("decode", decodeMode);
+        mVideoHead = getUrlPath(bundle.getString("headUrl"));
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.controllerplaying, container, false);
         initView(view);
@@ -139,32 +167,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mHandlerThread.start();
         mEventHandler = new EventHandler(mHandlerThread.getLooper());
         return view;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG, "bd fragment create");
-        mContext = getActivity();
-
-        PowerManager pm = (PowerManager) mContext.getSystemService(Context.POWER_SERVICE);
-        mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
-
-        Bundle bundle = getArguments();
-        mIsHwDecode = bundle.getBoolean("isHW", false);
-        isCacheVideo = bundle.getBoolean("from_cache", false);
-        Log.d(TAG, "isCacheVideo " + isCacheVideo);
-
-        initSoLib();
-        mVideoSource = getUrlPath(bundle.getString("mediaUrl"));
-
-        int decodeMode = TextUtils.isEmpty(mVideoSource) || mVideoSource.contains("Lesson/getLocalVideo") ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
-        mDecodeMode = bundle.getInt("decode", decodeMode);
-        mVideoHead = getUrlPath(bundle.getString("headUrl"));
-        autoHideTimer = new Timer();
-
-        mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_IDLE;
-        mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     @Override
@@ -223,6 +225,12 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
     }
 
+    protected void recordCurrentPosition() {
+        if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
+            mLastPos = mVV.getCurrentPosition();
+        }
+    }
+
     /**
      * 初始化界面
      */
@@ -241,6 +249,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         ivShare = (ImageView) view.findViewById(R.id.iv_share);
         tvSDVideo = (TextView) view.findViewById(R.id.tv_sd_video);
         tvHDVideo = (TextView) view.findViewById(R.id.tv_hd_video);
+        tvSHDVideo = (TextView) view.findViewById(R.id.tv_shd_video);
 
         registerCallbackForControl();
         /**
@@ -380,7 +389,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     // region player action
 
     private void playVideo() {
-        Log.v(TAG, "playVideo " + mVideoSource);
         /**
          * 如果已经播放了，等待上一次播放结束
          */
@@ -390,7 +398,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     SYNC_Playing.wait();
                     Log.v(TAG, "wait player status to idle");
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -399,7 +406,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         /**
          * 设置播放url
          */
-        mVV.setVideoPath(mVideoSource);
+        mVV.setVideoPath(mCurMediaSource);
 
         /**
          * 续播，如果需要如此
@@ -591,10 +598,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             }
         }
         return playUrl;
-    }
-
-    private void setReviewable(Reviewable reviewable) {
-        this.reviewable = reviewable;
     }
 
     @Override
@@ -793,8 +796,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mDurationCount = mVV.getDuration();
     }
 
-    public interface Reviewable {
-        void review();
+    public interface InitMediaSource {
+        void init();
     }
 
 }
