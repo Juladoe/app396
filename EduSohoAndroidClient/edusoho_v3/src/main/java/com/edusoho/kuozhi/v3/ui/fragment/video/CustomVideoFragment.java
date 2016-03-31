@@ -89,7 +89,6 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
     private void reloadNewApiLessonMediaUrl(final NormalCallback<LessonItem> callback) {
         final LessonActivity lessonActivity = (LessonActivity) getActivity();
         RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.COURSELESSON, true);
-
         requestUrl.setParams(new String[]{
                 "courseId", String.valueOf(lessonActivity.getCourseId()),
                 "lessonId", String.valueOf(lessonActivity.getLessonId())
@@ -166,6 +165,5 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
             });
         }
     }
-
-
 }
+
