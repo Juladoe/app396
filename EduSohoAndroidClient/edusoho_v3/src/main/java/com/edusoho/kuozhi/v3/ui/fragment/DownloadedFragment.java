@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.DownloadingAdapter;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
@@ -169,15 +169,10 @@ public class DownloadedFragment extends BaseFragment {
 
     private void showBtnLayout() {
         mToolsLayout.setVisibility(View.VISIBLE);
-//        mToolsLayout.measure(0, 0);
-//        AppUtil.animForHeight(
-//                new EduSohoAnimWrap(mToolsLayout), 0, mToolsLayout.getMeasuredHeight(), 320);
     }
 
     private void hideBtnLayout() {
         mToolsLayout.setVisibility(View.GONE);
-//        AppUtil.animForHeight(
-//                new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
     }
 
     @Override
