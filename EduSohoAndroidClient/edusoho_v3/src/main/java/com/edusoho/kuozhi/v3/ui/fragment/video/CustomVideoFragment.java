@@ -9,7 +9,6 @@ import android.widget.CompoundButton;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.entity.lesson.StreamInfo;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
@@ -91,34 +90,14 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
 //                            mEventHandler.sendEmptyMessage(EVENT_START);
 //                        }
                         mEventHandler.sendEmptyMessage(EVENT_START);
+                    } else {
+                        showErrorDialog(lessonActivity);
                     }
                 }
             });
         } else {
             mEventHandler.sendEmptyMessage(EVENT_START);
         }
-    }
-
-    private void reloadLessonMediaUrl(final NormalCallback<LessonItem> callback) {
-        RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.COURSELESSON, true);
-        requestUrl.setParams(new String[]{
-                "courseId", String.valueOf(lessonActivity.getCourseId()),
-                "lessonId", String.valueOf(lessonActivity.getLessonId())
-        });
-
-        lessonActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                LessonItem lessonItem = lessonActivity.parseJsonValue(
-                        response, new TypeToken<LessonItem<String>>() {
-                        });
-                if (lessonItem == null) {
-                    showErrorDialog(lessonActivity);
-                    return;
-                }
-                callback.success(lessonItem);
-            }
-        }, null);
     }
 
     private void getVideoStream(String url, final NormalCallback<StreamInfo[]> normalCallback) {

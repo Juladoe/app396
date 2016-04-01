@@ -147,8 +147,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         Bundle bundle = getArguments();
         mIsHwDecode = bundle.getBoolean("isHW", false);
         isCacheVideo = bundle.getBoolean("from_cache", false);
-        //mVideoSource = getUrlPath(bundle.getString("mediaUrl"));
-        mVideoSource = "http://wuqian.test.edusoho.cn/hls/551/playlist/HwmEYXE692uq0Zdwd4ke5SZZN5rPDvwZ.m3u8?format=json&hideBeginning=1&line=";
+        mVideoSource = getUrlPath(bundle.getString("mediaUrl"));
         int decodeMode = TextUtils.isEmpty(mVideoSource) || mVideoSource.contains("Lesson/getLocalVideo") ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
         mDecodeMode = bundle.getInt("decode", decodeMode);
         mVideoHead = getUrlPath(bundle.getString("headUrl"));
