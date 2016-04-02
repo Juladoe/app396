@@ -13,13 +13,13 @@ import java.util.LinkedHashMap;
  */
 public class RequestUtil {
 
-    public static String handleRquestError(String jsonStr) {
+    public static String handleRequestError(String jsonStr) {
         LinkedHashMap errorResult = null;
         try {
             errorResult = new Gson().fromJson(jsonStr, LinkedHashMap.class);
         } catch (Exception e) {
         }
-            if (errorResult == null) {
+        if (errorResult == null) {
             return jsonStr;
         }
         if (errorResult.containsKey("error")) {
@@ -47,10 +47,10 @@ public class RequestUtil {
         return jsonStr;
     }
 
-    public static String handleRquestError(byte[] data) {
+    public static String handleRequestError(byte[] data) {
         String jsonStr = null;
         try {
-            jsonStr = handleRquestError(new String(data, "utf-8"));
+            jsonStr = handleRequestError(new String(data, "utf-8"));
         } catch (Exception e) {
         }
 
