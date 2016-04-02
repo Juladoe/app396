@@ -164,14 +164,9 @@ public class DownloadingFragment extends BaseFragment {
 
     private void showBtnLayout() {
         mToolsLayout.setVisibility(View.VISIBLE);
-//        mToolsLayout.measure(0, 0);
-//        AppUtil.animForHeight(
-//                new EduSohoAnimWrap(mToolsLayout), 0, mToolsLayout.getMeasuredHeight(), 320);
     }
 
     private void hideBtnLayout() {
         mToolsLayout.setVisibility(View.GONE);
-//        AppUtil.animForHeight(
-//                new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
     }
 }
