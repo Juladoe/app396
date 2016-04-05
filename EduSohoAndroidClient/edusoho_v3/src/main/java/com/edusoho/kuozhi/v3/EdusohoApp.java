@@ -181,9 +181,6 @@ public class EdusohoApp extends Application {
             @Override
             public void onResponse(String response) {
                 response = RequestUtil.handleRequestError(response);
-                if (TextUtils.isEmpty(response)) {
-                    return;
-                }
                 responseListener.onResponse(response);
             }
         }, new Response.ErrorListener() {
