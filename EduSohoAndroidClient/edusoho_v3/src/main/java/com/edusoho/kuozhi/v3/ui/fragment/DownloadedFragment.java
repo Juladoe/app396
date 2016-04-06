@@ -95,7 +95,7 @@ public class DownloadedFragment extends BaseFragment {
         mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                if (mToolsLayout.getHeight() == 0) {
+                if (mToolsLayout.getVisibility() == View.GONE) {
                     final LessonItem lessonItem = mDownloadedAdapter.getChild(groupPosition, childPosition);
                     app.mEngine.runNormalPlugin(
                             LessonActivity.TAG, mContext, new PluginRunCallback() {
@@ -126,7 +126,7 @@ public class DownloadedFragment extends BaseFragment {
         mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                if (v.getTag() instanceof DownloadingAdapter.GroupPanel) {
+                if (v.getTag() instanceof DownloadingAdapter.GroupPanel && mToolsLayout.getVisibility() == View.VISIBLE) {
                     DownloadingAdapter.GroupPanel gp = (DownloadingAdapter.GroupPanel) v.getTag();
                     if (parent.isGroupExpanded(groupPosition)) {
                         gp.ivIndicator.setText(getString(R.string.font_less));
