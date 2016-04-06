@@ -65,8 +65,6 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by JesseHuang on 15/4/26.
@@ -127,7 +125,6 @@ public class NewsFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         if (mParentActivity.getCurrentFragment().equals(getClass().getSimpleName())) {
-
             getRestCourse();
         } else {
             //延迟到fragment show去刷新数据
@@ -139,7 +136,6 @@ public class NewsFragment extends BaseFragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden && mIsNeedRefresh) {
-
             getRestCourse();
         }
     }
