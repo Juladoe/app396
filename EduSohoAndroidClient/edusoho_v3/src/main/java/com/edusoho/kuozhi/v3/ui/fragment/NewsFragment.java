@@ -65,8 +65,6 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Created by JesseHuang on 15/4/26.
@@ -91,11 +89,10 @@ public class NewsFragment extends BaseFragment {
     public static final int DISMISS = 61;
 
     private SwipeMenuListView lvNewsList;
+    private SwipeAdapter mSwipeAdapter;
     private View mEmptyView;
     private TextView tvEmptyText;
-    private SwipeAdapter mSwipeAdapter;
 
-    private ExecutorService mExecutorService;
     private LoadingHandler mLoadingHandler;
     private boolean mIsNeedRefresh;
 
@@ -110,7 +107,6 @@ public class NewsFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_news);
-        mExecutorService = Executors.newSingleThreadExecutor();
         mLoadingHandler = new LoadingHandler(this);
     }
 
@@ -129,7 +125,7 @@ public class NewsFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         if (mParentActivity.getCurrentFragment().equals(getClass().getSimpleName())) {
-            mExecutorService.execute(mGetRestCourse);
+            getRestCourse();
         } else {
             //延迟到fragment show去刷新数据
             mIsNeedRefresh = true;
@@ -140,7 +136,7 @@ public class NewsFragment extends BaseFragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden && mIsNeedRefresh) {
-            mExecutorService.execute(mGetRestCourse);
+            getRestCourse();
         }
     }
 
@@ -178,12 +174,11 @@ public class NewsFragment extends BaseFragment {
                 menu.addMenuItem(deleteItem);
             }
         };
-        mSwipeAdapter = new SwipeAdapter(mContext, R.layout.news_item, new ArrayList<New>());
+        mSwipeAdapter = new SwipeAdapter(mContext, R.layout.news_item);
         lvNewsList.setAdapter(mSwipeAdapter);
         lvNewsList.setMenuCreator(creator);
         lvNewsList.setOnMenuItemClickListener(mMenuItemClickListener);
         lvNewsList.setOnItemClickListener(mItemClickListener);
-        initData();
         if (NotificationUtil.mMessage != null) {
             JSONObject jsonObject;
             WrapperXGPushTextMessage message = NotificationUtil.mMessage;
@@ -222,8 +217,7 @@ public class NewsFragment extends BaseFragment {
     private void initData() {
         if (app.loginUser != null) {
             NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-            List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
-            mSwipeAdapter.update(news);
+            mSwipeAdapter.update(newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + ""));
             setListVisibility(mSwipeAdapter.getCount() == 0);
         }
     }
@@ -789,6 +783,34 @@ public class NewsFragment extends BaseFragment {
         }
     };
 
+    private void getRestCourse() {
+        try {
+            mIsNeedRefresh = false;
+            mLoadingHandler.sendEmptyMessage(SHOW);
+            getLearnCourses(new NormalCallback<CourseResult>() {
+                @Override
+                public void success(final CourseResult learnCourses) {
+                    if (PushUtil.ChatUserType.TEACHER.equals(app.getCurrentUserRole())) {
+                        getTeachingCourses(new NormalCallback<CourseResult>() {
+                            @Override
+                            public void success(CourseResult teachingCourses) {
+                                Course[] courses = CommonUtil.concatArray(learnCourses.resources, teachingCourses.resources);
+                                filterMyCourses(courses);
+
+                            }
+                        });
+                    } else {
+                        filterMyCourses(learnCourses.resources);
+                    }
+                    mLoadingHandler.sendEmptyMessage(DISMISS);
+                }
+            });
+        } catch (Exception ex) {
+            mLoadingHandler.sendEmptyMessage(DISMISS);
+            Log.e(TAG, ex.getMessage());
+        }
+    }
+
     private void filterMyCourses(Course[] courses) {
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> newList = newDataSource.getNews("WHERE TYPE = ? AND BELONGID = ? ORDER BY FROMID ", PushUtil.CourseType.TYPE, app.loginUser.id + "");
@@ -824,7 +846,6 @@ public class NewsFragment extends BaseFragment {
 
         //如果有新增学习，则添加到本地
         if (newCourseIds1.size() > 0) {
-            List<New> addItemList = new ArrayList<>();
             for (Course course : courses) {
                 if (newCourseIds1.contains(course.id)) {
                     New newModel = new New();
@@ -838,11 +859,10 @@ public class NewsFragment extends BaseFragment {
                     newModel.belongId = app.loginUser.id;
                     newModel.parentId = course.parentId;
                     newDataSource.create(newModel);
-                    addItemList.add(newModel);
                 }
             }
-            mSwipeAdapter.addItems(addItemList);
         }
+        initData();
     }
 
     private String composeIds(List<Integer> list) {

@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.DownloadingAdapter;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
@@ -95,7 +95,7 @@ public class DownloadedFragment extends BaseFragment {
         mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                if (mToolsLayout.getHeight() == 0) {
+                if (mToolsLayout.getVisibility() == View.GONE) {
                     final LessonItem lessonItem = mDownloadedAdapter.getChild(groupPosition, childPosition);
                     app.mEngine.runNormalPlugin(
                             LessonActivity.TAG, mContext, new PluginRunCallback() {
@@ -126,7 +126,7 @@ public class DownloadedFragment extends BaseFragment {
         mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                if (v.getTag() instanceof DownloadingAdapter.GroupPanel) {
+                if (v.getTag() instanceof DownloadingAdapter.GroupPanel && mToolsLayout.getVisibility() == View.VISIBLE) {
                     DownloadingAdapter.GroupPanel gp = (DownloadingAdapter.GroupPanel) v.getTag();
                     if (parent.isGroupExpanded(groupPosition)) {
                         gp.ivIndicator.setText(getString(R.string.font_less));
@@ -169,15 +169,10 @@ public class DownloadedFragment extends BaseFragment {
 
     private void showBtnLayout() {
         mToolsLayout.setVisibility(View.VISIBLE);
-//        mToolsLayout.measure(0, 0);
-//        AppUtil.animForHeight(
-//                new EduSohoAnimWrap(mToolsLayout), 0, mToolsLayout.getMeasuredHeight(), 320);
     }
 
     private void hideBtnLayout() {
         mToolsLayout.setVisibility(View.GONE);
-//        AppUtil.animForHeight(
-//                new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
     }
 
     @Override

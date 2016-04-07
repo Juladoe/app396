@@ -16,6 +16,7 @@ import android.widget.RelativeLayout;
 
 import com.edusoho.kuozhi.v3.adapter.SchoolBannerAdapter;
 import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.photo.HackyViewPager;
 
 import java.util.List;
@@ -81,6 +82,7 @@ public class EduSohoBanner extends RelativeLayout {
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mPointLayout.getLayoutParams();
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        layoutParams.setMargins(0, 0, 0, AppUtil.dp2px(mContext, 8));
         mPointLayout.setLayoutParams(layoutParams);
     }
 

@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.view.EduBadgeView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,10 +37,10 @@ public class SwipeAdapter extends BaseAdapter {
     private DisplayImageOptions mOptions;
     private int mTitleRestWidth;
 
-    public SwipeAdapter(Context ctx, int id, List<New> list) {
+    public SwipeAdapter(Context ctx, int id) {
         mContext = ctx;
         mLayoutId = id;
-        mList = list;
+        mList = new ArrayList<>();
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
     }
 
@@ -58,8 +59,10 @@ public class SwipeAdapter extends BaseAdapter {
         }
         return total;
     }
+
     public void update(List<New> list) {
-        mList = list;
+        mList.clear();
+        mList.addAll(list);
         notifyDataSetChanged();
     }
 
@@ -74,11 +77,6 @@ public class SwipeAdapter extends BaseAdapter {
 
     public void addItem(New newModel) {
         mList.add(0, newModel);
-        notifyDataSetChanged();
-    }
-
-    public void addItems(List<New> list) {
-        mList.addAll(0, list);
         notifyDataSetChanged();
     }
 
@@ -152,7 +150,7 @@ public class SwipeAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
