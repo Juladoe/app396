@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval">
 
     <size
         android:width="6dp"
         android:height="6dp" />
-    <stroke
-        android:width="1px"
-        android:color="@color/audio_thum_nomal_stroke" />
     <!-- shape的颜色，支持渐变 -->
-    <gradient
-        android:angle="270"
-        android:centerColor="@color/card_bg_gradient"
-        android:centerY="0.45"
-        android:endColor="@color/card_bg_gradient"
-        android:startColor="@color/card_bg_gradient" />
-
+    <solid android:color="@color/view_pager_point_bg_normal" />
 </shape>

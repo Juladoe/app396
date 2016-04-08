@@ -20,7 +20,8 @@
         app:iconSizeScale="1.9"
         app:image="@string/font_news"
         app:size="@dimen/nav_layout_btn_size"
-        app:text="@string/down_tab_news" />
+        app:text="@string/down_tab_news"
+        app:text_size="@dimen/nav_layout_btn_text_size" />
 
     <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
         android:id="@+id/nav_tab_find"
@@ -32,7 +33,8 @@
         app:iconSizeScale="1.9"
         app:image="@string/font_find"
         app:size="@dimen/nav_layout_btn_size"
-        app:text="@string/down_tab_find" />
+        app:text="@string/down_tab_find"
+        app:text_size="@dimen/nav_layout_btn_text_size" />
 
     <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
         android:id="@+id/nav_tab_friends"
@@ -44,7 +46,8 @@
         app:iconSizeScale="1.9"
         app:image="@string/font_friends"
         app:size="@dimen/nav_layout_btn_size"
-        app:text="@string/down_tab_friends" />
+        app:text="@string/down_tab_friends"
+        app:text_size="@dimen/nav_layout_btn_text_size" />
 
     <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
         android:id="@+id/nav_tab_mine"
@@ -56,5 +59,6 @@
         app:iconSizeScale="1.9"
         app:image="@string/font_mine"
         app:size="@dimen/nav_layout_btn_size"
-        app:text="@string/down_tab_mine" />
+        app:text="@string/down_tab_mine"
+        app:text_size="@dimen/nav_layout_btn_text_size" />
 </LinearLayout>

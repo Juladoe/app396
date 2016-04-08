@@ -23,6 +23,7 @@ import android.view.WindowManager;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -179,19 +180,20 @@ public class EdusohoApp extends Application {
         return new StringVolleyRequest(method, requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                response = RequestUtil.handleRquestError(response);
-                if (TextUtils.isEmpty(response)) {
-                    return;
-                }
+                response = RequestUtil.handleRequestError(response);
                 responseListener.onResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                if (error instanceof NoConnectionError) {
+                    errorListener.onErrorResponse(error);
+                    return;
+                }
                 if (error.networkResponse == null) {
                     return;
                 }
-                if (TextUtils.isEmpty(RequestUtil.handleRquestError(error.networkResponse.data))) {
+                if (TextUtils.isEmpty(RequestUtil.handleRequestError(error.networkResponse.data))) {
                     return;
                 }
                 if (errorListener == null) {

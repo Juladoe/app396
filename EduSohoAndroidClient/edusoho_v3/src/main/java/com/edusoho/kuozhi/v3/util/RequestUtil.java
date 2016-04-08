@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.util;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.google.gson.Gson;
 
@@ -13,13 +14,13 @@ import java.util.LinkedHashMap;
  */
 public class RequestUtil {
 
-    public static String handleRquestError(String jsonStr) {
+    public static String handleRequestError(String jsonStr) {
         LinkedHashMap errorResult = null;
         try {
             errorResult = new Gson().fromJson(jsonStr, LinkedHashMap.class);
         } catch (Exception e) {
         }
-            if (errorResult == null) {
+        if (errorResult == null) {
             return jsonStr;
         }
         if (errorResult.containsKey("error")) {
@@ -28,9 +29,6 @@ public class RequestUtil {
             if ("not_login".equals(errorMap.get("name"))) {
                 MessageEngine.getInstance().sendMsg(Const.TOKEN_LOSE, new Bundle());
                 return null;
-            }
-            if (errorMap.containsKey("message")) {
-                return errorMap.get("message");
             }
         }
 
@@ -47,10 +45,10 @@ public class RequestUtil {
         return jsonStr;
     }
 
-    public static String handleRquestError(byte[] data) {
+    public static String handleRequestError(byte[] data) {
         String jsonStr = null;
         try {
-            jsonStr = handleRquestError(new String(data, "utf-8"));
+            jsonStr = handleRequestError(new String(data, "utf-8"));
         } catch (Exception e) {
         }
 

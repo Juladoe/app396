@@ -1,48 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     android:background="@color/system_bg"
     android:gravity="center_horizontal"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
+
+    <LinearLayout
+
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:background="@color/material_green"
+        android:orientation="horizontal">
+        <!--android:background="#eb4f38"-->
+
+
+        <com.edusoho.kuozhi.v3.view.EdusohoAutoCompleteTextView
+            android:id="@+id/school_url_edit"
+            android:layout_width="300dp"
+            android:layout_height="28dp"
+            android:layout_marginBottom="7dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="7dp"
+            android:layout_weight="1"
+            android:background="@drawable/search_friend_bg"
+            android:drawableLeft="@drawable/icon_edittext_search"
+            android:drawablePadding="11dp"
+            android:gravity="center_vertical"
+            android:hint="输入网校地址"
+            android:imeOptions="actionSearch"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:singleLine="true"
+            android:textColor="#CCCCCC"
+            android:textSize="14sp" />
+
+
+        <Button
+            android:id="@+id/net_school_cancel_search_btn"
+            android:layout_width="28dp"
+            android:layout_height="14dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="14dp"
+            android:layout_marginTop="8dp"
+            android:background="#00000000"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:text="取消"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp" />
+    </LinearLayout>
+
 
     <TextView
-        android:gravity="center_vertical"
-        android:padding="6dp"
-        android:textSize="@dimen/qr_layout_label_text"
-        android:textColor="@color/qr_logo_text"
-        android:background="@color/qr_layout_label"
-        android:text="其他方式进入"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:id="@+id/net_school_tv"
+        android:layout_width="103dp"
+        android:layout_height="17dp"
+        android:layout_gravity="left"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:includeFontPadding="false"
+        android:text="近期登录网校"
+        android:textColor="#000000"
+        android:textSize="17sp" />
 
-    <com.edusoho.kuozhi.v3.view.EdusohoAutoCompleteTextView
-        android:singleLine="true"
-        android:layout_margin="24dp"
-        android:id="@+id/school_url_edit"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="#efeff4"></View>
+
+    <ListView
+        android:id="@+id/net_school_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:hint="输入网校域名 例如(www.name.com)"
-        android:textColorHint="@color/qr_school_url_input_text"
-        android:textColor="@color/qr_school_url_input_text"
-        android:background="@drawable/login_edt_bg_sel"
-        android:clickable="true"
-        android:textSize="@dimen/normal_btn" />
-
-    <Button
-        android:layout_centerHorizontal="true"
-        android:layout_marginRight="32dp"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="8dp"
-        android:id="@+id/normal_search_btn"
-        android:padding="10dp"
-        android:textSize="@dimen/base_x_large_size"
-        android:textColor="@color/qr_school_url_btn_text"
-        android:text="搜索"
-        android:background="@drawable/qr_shcool_url_btn_sel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/qr_logo_layout" />
+        android:divider="#00000000"
+        android:verticalSpacing="16dp"></ListView>
 
 </LinearLayout>

@@ -15,17 +15,15 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.DownloadingAdapter;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
-import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 
 /**
  * Created by JesseHuang on 15/6/22.
@@ -55,9 +53,6 @@ public class DownloadedFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-//        if (mActivityContainer != null) {
-//            app.startPlayCacheServer(mActivityContainer);
-//        }
     }
 
     @Override
@@ -100,7 +95,7 @@ public class DownloadedFragment extends BaseFragment {
         mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                if (mToolsLayout.getHeight() == 0) {
+                if (mToolsLayout.getVisibility() == View.GONE) {
                     final LessonItem lessonItem = mDownloadedAdapter.getChild(groupPosition, childPosition);
                     app.mEngine.runNormalPlugin(
                             LessonActivity.TAG, mContext, new PluginRunCallback() {
@@ -131,7 +126,7 @@ public class DownloadedFragment extends BaseFragment {
         mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                if (v.getTag() instanceof DownloadingAdapter.GroupPanel) {
+                if (v.getTag() instanceof DownloadingAdapter.GroupPanel && mToolsLayout.getVisibility() == View.VISIBLE) {
                     DownloadingAdapter.GroupPanel gp = (DownloadingAdapter.GroupPanel) v.getTag();
                     if (parent.isGroupExpanded(groupPosition)) {
                         gp.ivIndicator.setText(getString(R.string.font_less));
@@ -173,14 +168,11 @@ public class DownloadedFragment extends BaseFragment {
     }
 
     private void showBtnLayout() {
-        mToolsLayout.measure(0, 0);
-        AppUtil.animForHeight(
-                new EduSohoAnimWrap(mToolsLayout), 0, mToolsLayout.getMeasuredHeight(), 320);
+        mToolsLayout.setVisibility(View.VISIBLE);
     }
 
     private void hideBtnLayout() {
-        AppUtil.animForHeight(
-                new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
+        mToolsLayout.setVisibility(View.GONE);
     }
 
     @Override

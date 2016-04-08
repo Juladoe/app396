@@ -9,8 +9,13 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -36,8 +41,17 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -45,25 +59,42 @@ import java.util.Map;
  */
 public class NetSchoolActivity extends ActionBarBaseActivity implements Response.ErrorListener {
     private static final String SEARCH_HISTORY = "search_history";
+    private static final String EnterSchool = "enter_school";
     private static final int REQUEST_QR = 001;
     private static final int RESULT_QR = 002;
     private EdusohoAutoCompleteTextView mSearchEdt;
-    private View mSearchBtn;
     protected LoadDialog mLoading;
     private ArrayList<String> mSchoolList;
+    private ListView mListView;
+    private List<Map<String, Object>> mList;
+    private MyAdapter adapter;
+    private TextView mtv;
+    private Button mCancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_net_school);
-        setBackMode(BACK, "输入域名");
         app.addTask("NetSchoolActivity", this);
+        getSupportActionBar().hide();
         initView();
     }
 
     private void initView() {
-        mSearchBtn = findViewById(R.id.normal_search_btn);
+        mCancel = (Button) findViewById(R.id.net_school_cancel_search_btn);
+        mtv = (TextView) findViewById(R.id.net_school_tv);
         mSearchEdt = (EdusohoAutoCompleteTextView) findViewById(R.id.school_url_edit);
+        mListView = (ListView) this.findViewById(R.id.net_school_listview);
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        if (loadEnterSchool(EnterSchool).size() != 0) {
+            list = loadEnterSchool(EnterSchool);
+            Collections.reverse(list);
+        } else {
+            mtv.setVisibility(View.GONE);
+        }
+        mList = list;
+        adapter = new MyAdapter(this);
+        mListView.setAdapter(adapter);
         mSearchEdt.setKeyDownCallback(new EdusohoAutoCompleteTextView.KeyDownCallback() {
             @Override
             public void invoke(int length) {
@@ -87,6 +118,13 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
             }
         });
 
+        mCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
         mSearchEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -94,15 +132,6 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                 saveSearchHistory(searchStr);
                 searchSchool(searchStr);
                 return true;
-            }
-        });
-
-        mSearchBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String searchStr = mSearchEdt.getText().toString();
-                saveSearchHistory(searchStr);
-                searchSchool(searchStr);
             }
         });
 
@@ -130,6 +159,80 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         }
         editor.putString(text, "");
         editor.commit();
+    }
+
+    public void saveEnterSchool(String schoolname, String entertime, String loginname, String schoolhost) {
+        Map map = new HashMap();
+        String lable = new String();
+        lable = schoolname.substring(0, 2);
+        map.put("lable", lable);
+        map.put("schoolname", schoolname);
+        map.put("entertime", entertime);
+        map.put("loginname", loginname);
+        map.put("schoolhost", schoolhost);
+        List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        if (loadEnterSchool(EnterSchool) != null) {
+            list = loadEnterSchool(EnterSchool);
+        }
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).get("schoolhost").toString().equals(map.get("schoolhost"))) {
+                list.remove(i);
+                i--;
+            }
+        }
+        list.add(map);
+        if (list.size() > 4) {
+            list.remove(0);
+        }
+        JSONArray mJsonArray;
+        mJsonArray = new JSONArray();
+        for (int i = 0; i < list.size(); i++) {
+            Map<String, Object> itemMap = list.get(i);
+            Iterator<Map.Entry<String, Object>> iterator = itemMap.entrySet().iterator();
+
+            JSONObject object = new JSONObject();
+
+            while (iterator.hasNext()) {
+                Map.Entry<String, Object> entry = iterator.next();
+                try {
+                    object.put(entry.getKey(), entry.getValue());
+                } catch (JSONException e) {
+
+                }
+            }
+            mJsonArray.put(object);
+        }
+
+        SharedPreferences sp = getSharedPreferences("EnterSchool", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString(EnterSchool, mJsonArray.toString());
+        editor.commit();
+    }
+
+    private List<Map<String, Object>> loadEnterSchool(String fileName) {
+        List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
+        SharedPreferences sp = getSharedPreferences("EnterSchool", Context.MODE_PRIVATE);
+        String result = sp.getString(EnterSchool, "");
+        try {
+            JSONArray array = new JSONArray(result);
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject itemObject = array.getJSONObject(i);
+                Map<String, Object> itemMap = new HashMap<String, Object>();
+                JSONArray names = itemObject.names();
+                if (names != null) {
+                    for (int j = 0; j < names.length(); j++) {
+                        String name = names.getString(j);
+                        String value = itemObject.getString(name);
+                        itemMap.put(name, value);
+                    }
+                }
+                datas.add(itemMap);
+            }
+        } catch (JSONException e) {
+
+        }
+
+        return datas;
     }
 
     protected void setSearchEdtHistory(ArrayList<String> list) {
@@ -326,6 +429,10 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                         public void showSplash() {
                             mLoading.dismiss();
                             showSchSplash(site.name, site.splashs);
+                            SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
+                            Date date = new Date();
+                            String entertime = nowfmt.format(date);
+                            saveEnterSchool(site.name, entertime, "登录账号：未登录", app.domain);
                         }
                     });
                     app.pushRegister(bundle);
@@ -333,4 +440,90 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
             }
         }, this);
     }
+
+    private class MyAdapter extends BaseAdapter {
+        Context context;
+
+        public MyAdapter(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            // TODO Auto-generated method stub
+            return mList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            // TODO Auto-generated method stub
+            return mList.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            // TODO Auto-generated method stub
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            ViewHolder holder = null;
+            Map map = (Map) getItem(position);
+            if (convertView == null) {
+
+                holder = new ViewHolder();
+
+
+                convertView = LayoutInflater.from(context).inflate(R.layout.activity_net_school_listviewitem, null);
+                holder.enterbtn = (Button) convertView.findViewById(R.id.enter_btn);
+                holder.entertimetv = (TextView) convertView.findViewById(R.id.login_time);
+                holder.loginnametv = (TextView) convertView.findViewById(R.id.login_name);
+                holder.labletv = (TextView) convertView.findViewById(R.id.net_school_lable);
+                holder.schoolnametv = (TextView) convertView.findViewById(R.id.net_school_name);
+                convertView.setTag(holder);
+            } else {
+                holder = (ViewHolder) convertView.getTag();
+            }
+
+
+            holder.entertimetv.setText((String) mList.get(position).get("entertime"));
+            holder.labletv.setText((String) mList.get(position).get("lable"));
+            if (position == 0) {
+                holder.labletv.setBackgroundResource(R.drawable.round_blue_bg);
+            }
+            if (position == 1) {
+                holder.labletv.setBackgroundResource(R.drawable.round_green2_bg);
+            }
+            if (position == 2) {
+                holder.labletv.setBackgroundResource(R.drawable.round_orange_bg);
+            }
+            if (position == 3) {
+                holder.labletv.setBackgroundResource(R.drawable.round_blue2_bg);
+            }
+
+            holder.loginnametv.setText((String) mList.get(position).get("loginname"));
+            holder.schoolnametv.setText((String) mList.get(position).get("schoolname"));
+            holder.enterbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    HashMap map = (HashMap) mList.get(position);
+                    String schoolhost = map.get("schoolhost").toString();
+                    searchSchool(schoolhost);
+                }
+            });
+            return convertView;
+        }
+    }
+
+    private final class ViewHolder {
+        public TextView labletv;
+        public TextView schoolnametv;
+        public TextView entertimetv;
+        public TextView loginnametv;
+        public Button enterbtn;
+    }
+
+
 }
+

@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,27 +8,37 @@ import android.widget.BaseAdapter;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.view.FindCardView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * Created by su on 2016/2/24.
  */
 public class FindListAdapter extends BaseAdapter {
 
     private Context mContext;
-    private SparseArray<DiscoveryColumn> mList;
+    private List<DiscoveryColumn> mList;
 
-    public FindListAdapter(Context context, SparseArray<DiscoveryColumn> list) {
+    public FindListAdapter(Context context) {
         mContext = context;
-        mList = list;
+        mList = new ArrayList<>();
     }
 
-    public FindListAdapter(Context mContext) {
-        this.mContext = mContext;
-        mList = new SparseArray<>();
-    }
-
-    public void addData(int position, DiscoveryColumn findCardEntity) {
-        mList.append(position, findCardEntity);
+    public void addData(DiscoveryColumn findCardEntity) {
+        mList.add(findCardEntity);
+        Collections.sort(mList, new Comparator<DiscoveryColumn>() {
+            @Override
+            public int compare(DiscoveryColumn lhs, DiscoveryColumn rhs) {
+                return lhs.seq.compareTo(rhs.seq);
+            }
+        });
         notifyDataSetChanged();
+    }
+
+    public void clear() {
+        mList.clear();
     }
 
     @Override
@@ -55,9 +64,6 @@ public class FindListAdapter extends BaseAdapter {
         }
 
         DiscoveryColumn discoveryColumn = mList.get(position);
-        if (discoveryColumn == null) {
-            return convertView;
-        }
         FindCardView findCardView = (FindCardView) convertView;
         findCardView.setDiscoveryCardEntity(discoveryColumn);
         findCardView.setMoreClickListener(discoveryColumn.type);

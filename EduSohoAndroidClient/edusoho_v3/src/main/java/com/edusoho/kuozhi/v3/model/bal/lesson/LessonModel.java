@@ -26,10 +26,10 @@ public class LessonModel {
             public void onResponse(String response) {
                 ApiResponse<Lesson> apiResponse = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<Lesson>>() {
                 });
-                if (apiResponse.resources != null && apiResponse.resources.size() > 0) {
+                if (apiResponse.resources != null) {
                     callbackListener.onSuccess(apiResponse.resources);
                 } else if (apiResponse.error != null) {
-                    callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                    callbackListener.onFailure(apiResponse.error.code, apiResponse.error.message);
                 }
             }
         }, new Response.ErrorListener() {

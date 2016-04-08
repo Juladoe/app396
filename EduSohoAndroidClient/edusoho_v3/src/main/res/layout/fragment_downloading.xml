@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ExpandableListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:id="@+id/el_downloading"
-        android:layout_gravity="center_horizontal"
-        android:groupIndicator="@null"
-        android:dividerHeight="0dp"
-        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_above="@+id/download_tools_layout"
+        android:layout_alignParentTop="true"
+        android:layout_gravity="center_horizontal"
         android:background="@android:color/white"
-        android:childDivider="@android:color/white" />
+        android:childDivider="@android:color/white"
+        android:dividerHeight="0dp"
+        android:groupIndicator="@null" />
 
     <LinearLayout
+        android:id="@+id/download_tools_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="vertical"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@android:color/white"
-        android:id="@+id/download_tools_layout">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="match_parent"
@@ -32,37 +33,36 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@android:color/white">
+            android:background="@android:color/white"
+            android:orientation="horizontal">
 
             <TextView
+                android:id="@+id/tv_select_all"
                 android:layout_width="wrap_content"
                 android:layout_height="49dp"
                 android:layout_weight="1"
-                android:text="@string/select_all"
-                android:gravity="center"
-                android:textColor="@color/green_alpha"
                 android:clickable="true"
-                android:textSize="@dimen/medium_font_size"
-                android:id="@+id/tv_select_all" />
+                android:gravity="center"
+                android:text="@string/select_all"
+                android:textColor="@color/green_alpha"
+                android:textSize="@dimen/medium_font_size" />
 
             <ImageView
                 android:layout_width="2px"
                 android:layout_height="16dp"
-                android:src="@drawable/login_line_bg"
-                android:layout_gravity="center_vertical" />
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/login_line_bg" />
 
             <TextView
+                android:id="@+id/tv_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="49dp"
                 android:layout_weight="1"
-                android:text="删除"
-                android:gravity="center"
-                android:textColor="@color/green_alpha"
                 android:clickable="true"
-                android:textSize="@dimen/medium_font_size"
-                android:id="@+id/tv_delete" />
+                android:gravity="center"
+                android:text="删除"
+                android:textColor="@color/green_alpha"
+                android:textSize="@dimen/medium_font_size" />
         </LinearLayout>
     </LinearLayout>
-
 </RelativeLayout>

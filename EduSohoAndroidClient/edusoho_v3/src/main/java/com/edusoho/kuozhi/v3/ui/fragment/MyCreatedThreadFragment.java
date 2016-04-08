@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.MyThreadAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -87,7 +89,7 @@ public class MyCreatedThreadFragment extends BaseFragment {
             }
         });
 
-        mAdapter = new MyThreadAdapter(mContext, app);
+        mAdapter = new MyThreadAdapter(mContext, app, MyThreadAdapter.CREAT_THREAD);
         mRecyclerView.setAdapter(mAdapter);
     }
 

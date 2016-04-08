@@ -17,10 +17,8 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
-import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 
 /**
  * Created by JesseHuang on 15/6/22.
@@ -165,13 +163,10 @@ public class DownloadingFragment extends BaseFragment {
     }
 
     private void showBtnLayout() {
-        mToolsLayout.measure(0, 0);
-        AppUtil.animForHeight(
-                new EduSohoAnimWrap(mToolsLayout), 0, mToolsLayout.getMeasuredHeight(), 320);
+        mToolsLayout.setVisibility(View.VISIBLE);
     }
 
     private void hideBtnLayout() {
-        AppUtil.animForHeight(
-                new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
+        mToolsLayout.setVisibility(View.GONE);
     }
 }

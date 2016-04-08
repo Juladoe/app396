@@ -1,26 +1,21 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.model.sys.*;
-import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.RequestUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
 
-import com.edusoho.kuozhi.v3.model.sys.Error;
+import java.lang.reflect.Field;
 
 
 /**
@@ -32,8 +27,7 @@ public abstract class ModelProvider {
     protected Gson mGson;
     private static final String TAG = "ModelProvider";
 
-    public ModelProvider(Context context)
-    {
+    public ModelProvider(Context context) {
         this.mGson = new Gson();
         this.mVolley = VolleySingleton.getInstance(context);
     }
@@ -79,8 +73,7 @@ public abstract class ModelProvider {
         private ProviderListener<T> mProviderListener;
         private BaseVolleyRequest mRquest;
 
-        public RequestOption(BaseVolleyRequest request, ProviderListener<T> providerListener)
-        {
+        public RequestOption(BaseVolleyRequest request, ProviderListener<T> providerListener) {
             this.mRquest = request;
             this.mProviderListener = providerListener;
         }
@@ -103,14 +96,21 @@ public abstract class ModelProvider {
                 method, requestUrl, responseListener, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (TextUtils.isEmpty(RequestUtil.handleRquestError(error.networkResponse.data))) {
-                    errorListener.onErrorResponse(error);
+                if (error.networkResponse == null) {
+                    return;
                 }
+                if (TextUtils.isEmpty(RequestUtil.handleRequestError(error.networkResponse.data))) {
+                    return;
+                }
+                if (errorListener != null) {
+                    return;
+                }
+                errorListener.onErrorResponse(error);
             }
         }) {
             @Override
             protected T getResponseData(NetworkResponse response) {
-                String jsonStr = RequestUtil.handleRquestError(response.data);
+                String jsonStr = RequestUtil.handleRequestError(response.data);
                 try {
                     return mGson.fromJson(jsonStr, typeToken.getType());
                 } catch (Exception e) {

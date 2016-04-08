@@ -18,8 +18,7 @@ import com.edusoho.test.base.BaseFragmentTestCase;
 
 public class FindFragmentTest extends BaseFragmentTestCase<FindFragment> {
 
-    public FindFragmentTest()
-    {
+    public FindFragmentTest() {
         super(FindFragment.class);
     }
 
@@ -36,6 +35,7 @@ public class FindFragmentTest extends BaseFragmentTestCase<FindFragment> {
 
         assertEquals("main", webView.getAppCode());
         assertNotNull(webView.getWebView());
+    }
 
 
     private ESWebView getWebView(Fragment mFragment) {
