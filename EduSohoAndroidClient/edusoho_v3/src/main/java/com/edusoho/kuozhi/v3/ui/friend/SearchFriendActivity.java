@@ -104,7 +104,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
     ;
 
     public RequestUrl setRelationParams(ArrayList<Friend> list) {
-        RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
+        RequestUrl requestUrl = app.bindNewUrl(Const.USERS, true);
         StringBuffer sb = new StringBuffer(requestUrl.url.toString());
         sb.append(app.loginUser.id + "/" + "friendship?toIds=");
         for (Friend friend : list) {
@@ -117,7 +117,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
     }
 
     public void loadResultFriends() {
-        RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
+        RequestUrl requestUrl = app.bindNewUrl(Const.USERS, true);
         requestUrl.setGetParams(new String[]{"q", name});
         ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
@@ -253,7 +253,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
             holder.state.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    RequestUrl requestUrl = app.bindNewUrl(Const.USERS, false);
+                    RequestUrl requestUrl = app.bindNewUrl(Const.USERS, true);
                     StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
                     stringBuffer.append(friend.id + "/followers");
                     requestUrl.url = stringBuffer.toString();
