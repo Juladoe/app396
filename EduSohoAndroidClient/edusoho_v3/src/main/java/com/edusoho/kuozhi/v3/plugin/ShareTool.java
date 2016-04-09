@@ -47,6 +47,7 @@ public class ShareTool {
     private String mTitle = "";
     private String mAbout = "";
     private String mPic = "";
+    private int mDialogType = 1;
 
     public ShareTool(Context ctx, String url, String title, String about, String pic) {
         mContext = ctx;
@@ -54,6 +55,15 @@ public class ShareTool {
         mTitle = title;
         mAbout = about;
         mPic = pic;
+    }
+
+    public ShareTool(Context ctx, String url, String title, String about, String pic, int type) {
+        mContext = ctx;
+        mUrl = url;
+        mTitle = title;
+        mAbout = about;
+        mPic = pic;
+        mDialogType = type;
     }
 
     public void shardCourse() {
@@ -82,6 +92,7 @@ public class ShareTool {
                 AppUtil.coverCourseAbout(mAbout),
                 file,
                 EdusohoApp.app.host
+                , mDialogType
         );
         shareUtil.show(getShareHandler());
     }

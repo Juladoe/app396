@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.shard;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -20,12 +21,22 @@ public class ShardDialog extends Dialog {
 
     private Context mContext;
     private GridView mGridView;
-    private View mCancelView;
+    private TextView mCancelView;
+    public static final int DIALOG_TYPE_NORMAL = 1;
+    public static final int DIALOG_TYPE_VIDEO = 2;
+    private int mStyleType = 1;
 
-    public ShardDialog(Context context)
-    {
+    public ShardDialog(Context context) {
         super(context, R.style.FullDialogTheme);
         mContext = context;
+        initView();
+        initWindow();
+    }
+
+    public ShardDialog(Context context, int type) {
+        super(context, R.style.FullDialogTheme);
+        mContext = context;
+        mStyleType = type;
         initView();
         initWindow();
     }
@@ -33,13 +44,18 @@ public class ShardDialog extends Dialog {
     private void initView() {
         setContentView(R.layout.shard_content_layout);
         mGridView = (GridView) findViewById(R.id.shard_gridview);
-        mCancelView = findViewById(R.id.shard_cancelBtn);
+        mCancelView = (TextView) findViewById(R.id.shard_cancelBtn);
         mCancelView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dismiss();
             }
         });
+        if (mStyleType == DIALOG_TYPE_VIDEO) {
+            mGridView.setBackgroundColor(Color.BLACK);
+            mCancelView.setBackgroundColor(Color.BLACK);
+            mCancelView.setTextColor(Color.WHITE);
+        }
     }
 
     private void initWindow() {

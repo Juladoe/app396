@@ -36,7 +36,7 @@
         android:layout_alignParentBottom="true"
         android:padding="8dp"
         android:id="@+id/audio_playbtn"
-        android:src="@drawable/video_play"
+        android:src="@drawable/icon_video_play"
         android:layout_width="48dp"
         android:layout_height="48dp" />
 

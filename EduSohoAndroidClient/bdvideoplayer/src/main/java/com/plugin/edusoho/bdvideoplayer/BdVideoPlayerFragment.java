@@ -69,7 +69,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected RelativeLayout rlayoutTitleStatus;
     protected ImageView ivBack;
     protected TextView tvVideoTitle;
-    protected CheckBox chkLearned;
     protected ImageView ivShare;
     protected InitMediaSource initMediaSource;
     protected TextView tvSDVideo;
@@ -192,7 +191,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
 
         ivVideoReplay.setVisibility(View.GONE);
-        resumePlay();
+        //resumePlay();
     }
 
     @Override
@@ -244,11 +243,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         rlayoutTitleStatus = (RelativeLayout) view.findViewById(R.id.rlayout_title_status);
         ivBack = (ImageView) view.findViewById(R.id.iv_back);
         tvVideoTitle = (TextView) view.findViewById(R.id.tv_video_title);
-        chkLearned = (CheckBox) view.findViewById(R.id.chk_learned);
         ivShare = (ImageView) view.findViewById(R.id.iv_share);
-        tvSDVideo = (TextView) view.findViewById(R.id.tv_sd_video);
-        tvHDVideo = (TextView) view.findViewById(R.id.tv_hd_video);
-        tvSHDVideo = (TextView) view.findViewById(R.id.tv_shd_video);
 
         registerCallbackForControl();
         /**
@@ -330,17 +325,17 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     break;
                 case UI_EVENT_FINISH:
                     ivVideoReplay.setVisibility(View.VISIBLE);
-                    ivVideoPlay.setImageResource(R.drawable.video_play);
+                    ivVideoPlay.setImageResource(R.drawable.icon_video_play);
                     break;
                 case HIDE:
                     hideController();
                     break;
                 case UI_EVENT_PAUSE:
                     Log.d(TAG, "UI_EVENT_PAUSE");
-                    ivVideoPlay.setImageResource(R.drawable.video_play);
+                    ivVideoPlay.setImageResource(R.drawable.icon_video_play);
                     break;
                 case UI_EVENT_PLAY:
-                    ivVideoPlay.setImageResource(R.drawable.video_pause);
+                    ivVideoPlay.setImageResource(R.drawable.icon_video_pause);
                     break;
                 default:
                     break;
@@ -688,14 +683,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             public void onClick(View v) {
                 if (mVV.isPlaying()) {
                     mIsPlayEnd = true;
-                    ivVideoPlay.setImageResource(R.drawable.video_play);
+                    ivVideoPlay.setImageResource(R.drawable.icon_video_play);
                     /**
                      * 暂停播放
                      */
                     mVV.pause();
                 } else {
                     mIsPlayEnd = false;
-                    ivVideoPlay.setImageResource(R.drawable.video_pause);
+                    ivVideoPlay.setImageResource(R.drawable.icon_video_pause);
                     if (mPlayerStatus == PLAYER_STATUS.PLAYER_IDLE) {
                         ivVideoReplay.setVisibility(View.GONE);
                         resumePlay();

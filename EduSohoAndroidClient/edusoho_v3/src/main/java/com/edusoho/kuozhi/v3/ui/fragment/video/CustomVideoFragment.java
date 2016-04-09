@@ -42,11 +42,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
     protected void initView(View view) {
         super.initView(view);
         ivBack.setOnClickListener(this);
-        chkLearned.setOnCheckedChangeListener(this);
         ivShare.setOnClickListener(this);
-        tvSDVideo.setOnClickListener(this);
-        tvHDVideo.setOnClickListener(this);
-        tvSHDVideo.setOnClickListener(this);
     }
 
     @Override
@@ -101,14 +97,20 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
     }
 
     private void getVideoStream(String url, final NormalCallback<StreamInfo[]> normalCallback) {
-        RequestUrl requestUrl = lessonActivity.app.bindNewApiUrl(url, false);
-        requestUrl.setHeads(new String[]{"x-auth-token", "tbxll7dnspc8o8oss4o4ss4408kk8os"});
+        RequestUrl requestUrl = lessonActivity.app.bindNewApiUrl(url, true);
         requestUrl.url = url;
         lessonActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                StreamInfo[] streamInfos = lessonActivity.app.parseJsonValue(response, new TypeToken<StreamInfo[]>() {
-                });
+//                StreamInfo[] streamInfos = lessonActivity.app.parseJsonValue(response, new TypeToken<StreamInfo[]>() {
+//                });
+                StreamInfo streamInfo1 = new StreamInfo();
+                streamInfo1.level = "SD";
+                streamInfo1.src = "http://trymob.edusoho.cn/hls/9/stream/sd/Wmikm1H2aAZBbJbpd4AskRbCl0xuBUPY.m3u8?hideBeginning=1";
+                StreamInfo streamInfo2 = new StreamInfo();
+                streamInfo2.src = "http://trymob.edusoho.cn/hls/9/stream/hd/ifmOXfZor7T2exuK6d3GHtyzK2svfqaG.m3u8?hideBeginning=1";
+                streamInfo2.level = "HD";
+                StreamInfo[] streamInfos = new StreamInfo[]{streamInfo1, streamInfo2};
                 if (streamInfos != null && streamInfos.length > 0) {
                     normalCallback.success(streamInfos);
                 } else {
@@ -163,7 +165,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                         String about = course.about;
                         String pic = course.middlePicture;
                         String url = lessonActivity.app.host + "/course/" + lessonActivity.getCourseId();
-                        final ShareTool shareTool = new ShareTool(lessonActivity, url, title, about, pic);
+                        final ShareTool shareTool = new ShareTool(lessonActivity, url, title, about, pic, 2);
                         new Handler((lessonActivity.getMainLooper())).post(new Runnable() {
                             @Override
                             public void run() {
@@ -198,29 +200,29 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         while (iterator.hasNext()) {
             StreamInfo streamInfo = iterator.next();
             if (SD.equals(streamInfo.name.toUpperCase())) {
-                tvSDVideo.setVisibility(View.VISIBLE);
-                tvSDVideo.setTag(streamInfo.src);
-                tvSDVideo.setOnClickListener(this);
+//                tvSDVideo.setVisibility(View.VISIBLE);
+//                tvSDVideo.setTag(streamInfo.src);
+//                tvSDVideo.setOnClickListener(this);
             } else if (HD.equals(streamInfo.name.toUpperCase())) {
-                tvHDVideo.setVisibility(View.VISIBLE);
-                tvHDVideo.setTag(streamInfo.src);
-                tvHDVideo.setOnClickListener(this);
+//                tvHDVideo.setVisibility(View.VISIBLE);
+//                tvHDVideo.setTag(streamInfo.src);
+//                tvHDVideo.setOnClickListener(this);
             } else if (SHD.equals(streamInfo.name.toUpperCase())) {
-                tvSHDVideo.setVisibility(View.VISIBLE);
-                tvSHDVideo.setTag(streamInfo.src);
-                tvSHDVideo.setOnClickListener(this);
+//                tvSHDVideo.setVisibility(View.VISIBLE);
+//                tvSHDVideo.setTag(streamInfo.src);
+//                tvSHDVideo.setOnClickListener(this);
             }
         }
     }
 
     private void setCurMediaSource() {
-        if (tvSDVideo.getTag() != null) {
-            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
-        } else if (tvHDVideo.getTag() != null) {
-            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
-        } else if (tvSHDVideo.getTag() != null) {
-            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
-        }
+//        if (tvSDVideo.getTag() != null) {
+//            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
+//        } else if (tvHDVideo.getTag() != null) {
+//            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
+//        } else if (tvSHDVideo.getTag() != null) {
+//            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
+//        }
     }
 }
 

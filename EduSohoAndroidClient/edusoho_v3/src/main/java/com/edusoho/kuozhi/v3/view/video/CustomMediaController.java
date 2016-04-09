@@ -173,7 +173,7 @@ public class CustomMediaController extends RelativeLayout {
 
     public void play(int pos) {
         Log.d(null, "pos->" + pos);
-        playBtn.setImageResource(R.drawable.video_pause);
+        playBtn.setImageResource(R.drawable.icon_video_pause);
 
         mVideoView.start();
         if (pos > 0) {
@@ -188,14 +188,14 @@ public class CustomMediaController extends RelativeLayout {
     }
 
     public void pause() {
-        playBtn.setImageResource(R.drawable.video_play);
+        playBtn.setImageResource(R.drawable.icon_video_play);
         mVideoView.pause();
     }
 
     public void stop(MediaPlayer mediaPlayer) {
         mIsStop = true;
         mVideoView.pause();
-        playBtn.setImageResource(R.drawable.video_play);
+        playBtn.setImageResource(R.drawable.icon_video_play);
     }
 
     /**
