@@ -17,9 +17,9 @@ tasks.withType(JavaCompile) {
     compileTask -> compileTask.dependsOn copyNativeLibs
 }
 clean.dependsOn 'cleanCopyNativeLibs'
-tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
-    pkgTask.jniFolders = [new File(buildDir, 'lib')]
-}
+//tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
+//    pkgTask.jniFolders = [new File(buildDir, 'lib')]
+//}
 
 dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
