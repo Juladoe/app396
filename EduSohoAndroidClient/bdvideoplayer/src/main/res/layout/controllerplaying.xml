@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentTop="true"
-        android:background="@color/bg_video_player_title_status"
+        android:background="@color/black_80"
         android:gravity="center_vertical">
 
         <ImageView
@@ -109,7 +109,7 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/black"
+            android:background="@color/black_80"
             android:gravity="center_vertical">
 
             <ImageView

@@ -7,6 +7,7 @@
     <color name="video_thum_gradient_pressed">#9938bf6c</color>
     <color name="white">#ffffff</color>
     <color name="bg_video_player_title_status">#dd000000</color>
+    <color name="black_80">#bb000000</color>
 
     <color name="set_check_bg_stroke">#cccccc</color>
     <color name="set_check_bg_sel_gradient">#cccccc</color>

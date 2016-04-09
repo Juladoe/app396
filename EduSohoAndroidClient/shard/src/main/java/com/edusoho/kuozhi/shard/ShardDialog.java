@@ -74,8 +74,14 @@ public class ShardDialog extends Dialog {
     }
 
     public void setShardDatas(ArrayList<ListData> list) {
-        ShardListAdapter adapter = new ShardListAdapter(mContext, list, R.layout.shard_list_item);
-        mGridView.setAdapter(adapter);
+        ShardListAdapter adapter;
+        if (mStyleType == DIALOG_TYPE_VIDEO) {
+            adapter = new ShardListAdapter(mContext, list, R.layout.shard_video_list_item);
+            mGridView.setAdapter(adapter);
+        } else if (mStyleType == DIALOG_TYPE_NORMAL) {
+            adapter = new ShardListAdapter(mContext, list, R.layout.shard_video_list_item);
+            mGridView.setAdapter(adapter);
+        }
     }
 
     public void setShardItemClick(AdapterView.OnItemClickListener onItemClickListener) {
