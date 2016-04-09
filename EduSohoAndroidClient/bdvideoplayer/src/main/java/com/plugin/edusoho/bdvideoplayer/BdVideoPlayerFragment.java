@@ -27,6 +27,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -61,10 +62,10 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     private LinearLayout llayoutPlayerControlPanel;
     private ImageView ivVideoPlay = null;
-    private ImageView ivVideoBack = null;
-    private ImageView ivVideoForward = null;
     private ImageView ivVideoReplay = null;
     private CheckBox chkFullScreen = null;
+    private View popupView;
+    private PopupWindow popupWindow;
 
     protected RelativeLayout rlayoutTitleStatus;
     protected ImageView ivBack;
@@ -74,6 +75,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected TextView tvSDVideo;
     protected TextView tvHDVideo;
     protected TextView tvSHDVideo;
+    protected TextView tvStreamType;
+    protected ImageView ivQuestion;
+    protected ImageView ivNote;
 
     private SeekBar mProgress = null;
     private TextView mDuration = null;
@@ -244,6 +248,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         ivBack = (ImageView) view.findViewById(R.id.iv_back);
         tvVideoTitle = (TextView) view.findViewById(R.id.tv_video_title);
         ivShare = (ImageView) view.findViewById(R.id.iv_share);
+        ivQuestion = (ImageView) view.findViewById(R.id.iv_question);
+        ivNote = (ImageView) view.findViewById(R.id.iv_note);
+        tvStreamType = (TextView) view.findViewById(R.id.tv_stream);
 
         registerCallbackForControl();
         /**
@@ -794,5 +801,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         void init();
     }
 
+    protected void showPopupWindows() {
+        if (popupWindow == null) {
+            View popupView = LayoutInflater.from(mContext).inflate(R.layout.popup_stream_windows, null);
+            popupWindow = new PopupWindow(popupView);
+            popupWindow.setContentView(popupView);
+            popupWindow.setOutsideTouchable(true);
+        }
+        popupWindow.showAsDropDown(tvStreamType, 0, 200);
+    }
 }
 

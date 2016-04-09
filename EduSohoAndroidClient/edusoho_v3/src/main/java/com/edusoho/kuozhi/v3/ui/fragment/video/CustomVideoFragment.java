@@ -43,6 +43,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         super.initView(view);
         ivBack.setOnClickListener(this);
         ivShare.setOnClickListener(this);
+        tvStreamType.setOnClickListener(this);
     }
 
     @Override
@@ -180,18 +181,21 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
 
                 }
             });
-        } else if (v.getId() == tvSDVideo.getId()) {
-            recordCurrentPosition();
-            mCurMediaSource = tvSDVideo.getTag().toString();
-            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
-        } else if (v.getId() == tvHDVideo.getId()) {
-            recordCurrentPosition();
-            mCurMediaSource = tvHDVideo.getTag().toString();
-            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
-            recordCurrentPosition();
-        } else if (v.getId() == tvSHDVideo.getId()) {
-            mCurMediaSource = tvSHDVideo.getTag().toString();
-            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
+//        } else if (v.getId() == tvSDVideo.getId()) {
+//            recordCurrentPosition();
+//            mCurMediaSource = tvSDVideo.getTag().toString();
+//            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
+//        } else if (v.getId() == tvHDVideo.getId()) {
+//            recordCurrentPosition();
+//            mCurMediaSource = tvHDVideo.getTag().toString();
+//            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
+//            recordCurrentPosition();
+//        } else if (v.getId() == tvSHDVideo.getId()) {
+//
+//            mCurMediaSource = tvSHDVideo.getTag().toString();
+//            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
+        } else if (v.getId() == tvStreamType.getId()) {
+            showPopupWindows();
         }
     }
 
