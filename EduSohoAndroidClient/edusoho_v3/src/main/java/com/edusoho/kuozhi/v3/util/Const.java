@@ -361,7 +361,8 @@ public class Const {
     public static final String LESSON_ID = "lessonId";
     public static final String LESSON_NAME = "lesson_name";
     public static final String QUESTION_TYPE = "question_type";
-    public static final String MEDIA_URL = "mediaUrl";
+    public static final String STREAM_URL = "mediaUrl";
+    public static final String MEDIA_URL = "streamUrls";
     public static final String HEAD_URL = "headUrl";
     public static final String MEDIA_ID = "mediaId";
     public static final String STATUS = "status";

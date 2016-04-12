@@ -6,6 +6,8 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -141,6 +143,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
         initSoLib();
         setMediaSource();
+        initPopupWindows();
         autoHideTimer = new Timer();
         mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_IDLE;
         mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -805,10 +808,27 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         if (popupWindow == null) {
             View popupView = LayoutInflater.from(mContext).inflate(R.layout.popup_stream_windows, null);
             popupWindow = new PopupWindow(popupView);
-            popupWindow.setContentView(popupView);
+            popupWindow.setHeight(250);
+            popupWindow.setWidth(300);
+            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(50, 52, 53, 55)));
             popupWindow.setOutsideTouchable(true);
+            popupWindow.setFocusable(true);
+            popupWindow.setContentView(popupView);
         }
         popupWindow.showAsDropDown(tvStreamType, 0, 200);
+    }
+
+    private void initPopupWindows() {
+        if (popupWindow == null) {
+            View popupView = LayoutInflater.from(mContext).inflate(R.layout.popup_stream_windows, null);
+            popupWindow = new PopupWindow(popupView);
+            popupWindow.setHeight(250);
+            popupWindow.setWidth(300);
+            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(127, 52, 53, 55)));
+            popupWindow.setOutsideTouchable(true);
+            popupWindow.setFocusable(true);
+            popupWindow.setContentView(popupView);
+        }
     }
 }
 

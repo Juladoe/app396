@@ -25,7 +25,8 @@
         android:background="@android:color/transparent"
         android:gravity="center"
         android:text="@string/stream_hd"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/font_size_s" />
 
     <TextView
         android:id="@+id/tv_shd"

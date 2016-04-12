@@ -41,6 +41,7 @@ import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
+import com.plugin.edusoho.bdvideoplayer.StreamInfo;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -73,6 +74,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String mTitle;
     private int[] mLessonIds;
     private LessonStatus mLessonStatus;
+    private StreamInfo[] streamInfos;
     private Bundle fragmentData;
     private boolean mFromCache;
     private MsgHandler msgHandler;
@@ -483,6 +485,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(Const.ACTIONBAR_TITLE, testpaperLesson.title);
                 return testpaperLesson;
             case VIDEO:
+                fragmentData.putSerializable(Const.STREAM_URL, streamInfos);
             case AUDIO:
             case TEXT:
             default:

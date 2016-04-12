@@ -1,10 +1,9 @@
-package com.edusoho.kuozhi.v3.entity.lesson;
+package com.plugin.edusoho.bdvideoplayer;
 
 import java.io.Serializable;
 
 /**
- * Created by JesseHuang on 16/3/31.
- * 解析 LessonItem 中 mediaUri 的信息
+ * Created by JesseHuang on 16/4/11.
  */
 public class StreamInfo implements Serializable {
     public String level;

@@ -3,13 +3,11 @@ package com.edusoho.kuozhi.v3.ui.fragment.video;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.v3.entity.lesson.StreamInfo;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
@@ -20,11 +18,13 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment;
+import com.plugin.edusoho.bdvideoplayer.StreamInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
 
 /**
  * Created by howzhi on 14-10-25.
@@ -103,15 +103,8 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         lessonActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-//                StreamInfo[] streamInfos = lessonActivity.app.parseJsonValue(response, new TypeToken<StreamInfo[]>() {
-//                });
-                StreamInfo streamInfo1 = new StreamInfo();
-                streamInfo1.level = "SD";
-                streamInfo1.src = "http://trymob.edusoho.cn/hls/9/stream/sd/Wmikm1H2aAZBbJbpd4AskRbCl0xuBUPY.m3u8?hideBeginning=1";
-                StreamInfo streamInfo2 = new StreamInfo();
-                streamInfo2.src = "http://trymob.edusoho.cn/hls/9/stream/hd/ifmOXfZor7T2exuK6d3GHtyzK2svfqaG.m3u8?hideBeginning=1";
-                streamInfo2.level = "HD";
-                StreamInfo[] streamInfos = new StreamInfo[]{streamInfo1, streamInfo2};
+                StreamInfo[] streamInfos = lessonActivity.app.parseJsonValue(response, new TypeToken<StreamInfo[]>() {
+                });
                 if (streamInfos != null && streamInfos.length > 0) {
                     normalCallback.success(streamInfos);
                 } else {
@@ -121,8 +114,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String s = new String(error.networkResponse.data);
-                Log.d(TAG, "onErrorResponse: " + s);
+                normalCallback.success(null);
             }
         });
     }
