@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
     <ImageView
         android:layout_width="match_parent"
@@ -19,35 +19,35 @@
             android:id="@+id/button1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="欢迎登陆"
-            android:textSize="@dimen/login_text_size"
-            android:textColor="#777"
-            android:background="@color/transparent"
-            android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="@dimen/login_btn_space" />
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="@dimen/login_btn_space"
+            android:background="@color/transparent"
+            android:text="欢迎登陆"
+            android:textColor="#777"
+            android:textSize="@dimen/login_text_size" />
 
         <Button
             android:id="@+id/qr_search_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="扫一扫登录"
-            android:textSize="@dimen/login_text_size"
-            android:textColor="#777"
-            android:drawableRight="@drawable/iconfont_saoma"
-            android:background="@color/transparent"
-            android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="10dp" />
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
+            android:background="@color/transparent"
+            android:drawableRight="@drawable/iconfont_saoma"
+            android:text="扫一扫登录"
+            android:textColor="#777"
+            android:textSize="@dimen/login_text_size" />
 
     </RelativeLayout>
 
     <LinearLayout
-        android:layout_marginTop="1dp"
-        android:orientation="vertical"
         android:id="@+id/input_email_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:orientation="vertical"
         android:paddingLeft="10dp"
         android:paddingRight="10dp">
 
@@ -55,70 +55,70 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/login_edittext_bg"
             android:layout_marginBottom="@dimen/login_widget_margin_bottom"
+            android:background="@drawable/login_edittext_bg"
             android:padding="@dimen/btn_loading_padding">
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:id="@+id/iv_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/font_login_username"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:text="@string/font_login_username"
                 android:textColor="@color/grey_main"
-                android:id="@+id/iv_username"
-                android:textSize="@dimen/x_large_font_size"
-                android:layout_marginRight="15dp" />
+                android:textSize="@dimen/x_large_font_size" />
 
             <EditText
-                style="@style/edittext_style"
                 android:id="@+id/et_username"
-                android:hint="@string/login_username_hint"
-                android:layout_toRightOf="@+id/iv_username"
+                style="@style/edittext_style"
+                android:layout_alignBaseline="@+id/iv_username"
                 android:layout_toEndOf="@+id/iv_username"
-                android:layout_alignBaseline="@+id/iv_username" />
+                android:layout_toRightOf="@+id/iv_username"
+                android:hint="@string/login_username_hint" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/login_edittext_bg"
             android:layout_marginBottom="@dimen/login_widget_margin_bottom"
+            android:background="@drawable/login_edittext_bg"
             android:padding="@dimen/btn_loading_padding">
 
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
+                android:id="@+id/iv_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/font_login_password"
-                android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:text="@string/font_login_password"
                 android:textColor="@color/grey_main"
-                android:id="@+id/iv_password"
-                android:textSize="@dimen/x_large_font_size"
-                android:layout_marginRight="15dp" />
+                android:textSize="@dimen/x_large_font_size" />
 
             <EditText
-                style="@style/edittext_style"
                 android:id="@+id/et_password"
-                android:hint="@string/login_password_hint"
-                android:gravity="center_vertical"
-                android:inputType="textPassword"
-                android:layout_toRightOf="@+id/iv_password"
+                style="@style/edittext_style"
+                android:layout_alignBaseline="@+id/iv_password"
                 android:layout_toEndOf="@+id/iv_password"
-                android:layout_alignBaseline="@+id/iv_password" />
+                android:layout_toRightOf="@+id/iv_password"
+                android:gravity="center_vertical"
+                android:hint="@string/login_password_hint"
+                android:inputType="textPassword" />
         </RelativeLayout>
 
         <com.edusoho.kuozhi.v3.view.EduSohoLoadingButton
+            android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/login_widget_margin_bottom"
-            android:id="@+id/btn_login"
-            app:init_text="@string/login"
-            app:loading_text="@string/login_loading"
-            app:success_text="@string/login_success"
             app:init_background="@drawable/login_btn_normal"
-            app:loading_background="@drawable/login_btn_press" />
+            app:init_text="@string/login"
+            app:loading_background="@drawable/login_btn_press"
+            app:loading_text="@string/login_loading"
+            app:success_text="@string/login_success" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -128,26 +128,26 @@
             <ImageView
                 android:layout_width="2px"
                 android:layout_height="10dp"
-                android:layout_toLeftOf="@+id/tv_line_text"
                 android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/tv_line_text"
                 android:src="@drawable/login_line_bg" />
 
             <TextView
+                android:id="@+id/tv_line_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/login_line_text"
-                android:textColor="@color/base_black_54"
-                android:id="@+id/tv_line_text"
+                android:layout_centerInParent="true"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:textSize="@dimen/small_font_size"
-                android:layout_centerInParent="true" />
+                android:text="@string/login_line_text"
+                android:textColor="@color/base_black_54"
+                android:textSize="@dimen/small_font_size" />
 
             <ImageView
                 android:layout_width="2px"
                 android:layout_height="10dp"
-                android:layout_toRightOf="@+id/tv_line_text"
                 android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/tv_line_text"
                 android:src="@drawable/login_line_bg" />
 
         </RelativeLayout>
@@ -155,36 +155,47 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/iv_qq"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_marginRight="20dp"
-                android:id="@+id/iv_qq"
                 android:scaleType="fitXY"
                 android:src="@drawable/qq" />
 
             <ImageView
+                android:id="@+id/iv_weibo"
                 android:layout_width="62dp"
                 android:layout_height="62dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:id="@+id/iv_weibo"
                 android:scaleType="fitXY"
                 android:src="@drawable/weibo" />
 
             <ImageView
+                android:id="@+id/iv_weixin"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_marginLeft="20dp"
-                android:id="@+id/iv_weixin"
                 android:scaleType="fitXY"
                 android:src="@drawable/weixin" />
 
         </LinearLayout>
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="130dp"
+        android:padding="10dp"
+        android:text="@string/login_more"
+        android:textColor="@drawable/login_more_bg"
+        android:textSize="@dimen/medium_font_size" />
 
 </LinearLayout>

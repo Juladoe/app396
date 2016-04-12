@@ -6,6 +6,7 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
+
     <LinearLayout
         android:id="@+id/input_email_layout"
         android:layout_width="match_parent"
@@ -118,48 +119,48 @@
         </RelativeLayout>
 
         <LinearLayout
-            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
-                android:visibility="gone"
-                android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
+                android:id="@+id/iv_qq"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:id="@+id/iv_qq"
-                android:scaleType="fitXY"
-                android:src="@drawable/qq" />
-
-            <ImageView
-                android:visibility="gone"
                 android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_margin="8dp"
+                android:layout_marginTop="4dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/qq"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_weibo"
                 android:layout_width="62dp"
                 android:layout_height="62dp"
-                android:id="@+id/iv_weibo"
-                android:scaleType="fitXY"
-                android:src="@drawable/weibo" />
-
-            <ImageView
-                android:visibility="gone"
+                android:layout_margin="8dp"
                 android:layout_marginBottom="4dp"
-                android:layout_marginTop="4dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
+                android:layout_marginTop="4dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/weibo"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_weixin"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:id="@+id/iv_weixin"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="4dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/weixin" />
+                android:src="@drawable/weixin"
+                android:visibility="gone" />
 
         </LinearLayout>
 

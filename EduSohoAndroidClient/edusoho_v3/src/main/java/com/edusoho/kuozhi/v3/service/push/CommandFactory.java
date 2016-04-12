@@ -91,10 +91,10 @@ public class CommandFactory {
                 pushCommand = new PushQuestionCreatedCommand(pusher);
                 break;
             case PushUtil.CourseType.LESSON_FINISH:
-                pushCommand = new PushLessonFinishedCommand(pusher);
+//                pushCommand = new PushLessonFinishedCommand(pusher);
                 break;
             case PushUtil.CourseType.LESSON_START:
-                pushCommand = new PushLessonStartCommand(pusher);
+//                pushCommand = new PushLessonStartCommand(pusher);
                 break;
         }
         return pushCommand;

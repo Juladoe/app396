@@ -8,15 +8,22 @@ android {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
-        manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+        manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi", startActivity:"com.edusoho.kuozhi.KuozhiActivity"]
     }
 
     //签名
     signingConfigs {
         debugConfig {
-            storeFile file("key/com.edusoho.kaoshi60.jks")
+            storeFile file("key/edusoho.howzhi.jks")
             storePassword "10001000"
-            keyAlias "cn"
+            keyAlias "ch"
+            keyPassword "10001000"
+        }
+
+        howzhi {
+            storeFile file("key/edusoho.howzhi.jks")
+            storePassword "10001000"
+            keyAlias "ch"
             keyPassword "10001000"
         }
 
@@ -25,11 +32,10 @@ android {
 
     productFlavors {
 
-        kaoshi60 {
-            signingConfig signingConfigs.debugConfig
-
-            applicationId "com.edusoho.kaoshi60"
-            manifestPlaceholders = [wxpkg: "com.edusoho.kaoshi60", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+        howzhi {
+            signingConfig signingConfigs.howzhi
+            applicationId "com.howzhi"
+            manifestPlaceholders = [wxpkg: "com.howzhi.wxapi", startActivity:"com.edusoho.kuozhi.KuozhiActivity"]
 
         }
     }
@@ -37,10 +43,10 @@ android {
     sourceSets {
 
 
-        kaoshi60 {
-            java.srcDirs = ['src/kaoshi60/java']
-            res.srcDirs = ['src/kaoshi60/res']
-            assets.srcDirs = ['src/kaoshi60/assets']
+        howzhi {
+            java.srcDirs = ['src/howzhi/java']
+            res.srcDirs = ['src/howzhi/res']
+            assets.srcDirs = ['src/howzhi/assets']
 
         }
     }
