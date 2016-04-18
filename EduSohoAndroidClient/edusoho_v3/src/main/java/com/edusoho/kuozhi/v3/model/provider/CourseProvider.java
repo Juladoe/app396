@@ -23,20 +23,25 @@ public class CourseProvider extends ModelProvider {
         super(context);
     }
 
-    public ProviderListener createThread(int courseId, String type, String title,String content) {
+    public ProviderListener createThread(int targetId, String targetType, String threadType, String type, String title, String content) {
         School school = SchoolUtil.getDefaultSchool(mContext);
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
         String token = tokenMap.get("token").toString();
         RequestUrl requestUrl = new RequestUrl(school.host + Const.CREATE_THREAD);
         requestUrl.heads.put("X-Auth-Token", token);
         requestUrl.setParams(new String[] {
-                "courseId", String.valueOf(courseId),
-                "threadType", "course",
+                "threadType", threadType,
                 "type" , type,
                 "title" , title,
                 "content", content
         });
 
+        if ("course".equals(threadType)) {
+            requestUrl.getParams().put("courseId", String.valueOf(targetId));
+        } else if ("common".equals(threadType)) {
+            requestUrl.getParams().put("targetId", String.valueOf(targetId));
+            requestUrl.getParams().put("targetType", targetType);
+        }
         RequestOption requestOption = buildSimplePostRequest(
                 requestUrl, new TypeToken<LinkedHashMap>(){});
 
@@ -49,5 +54,18 @@ public class CourseProvider extends ModelProvider {
 
         requestOption.getRequest().setCacheUseMode(BaseVolleyRequest.ALWAYS_USE_CACHE);
         return requestOption.build();
+    }
+
+    public ProviderListener getCourse(int courseId) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
+        String token = tokenMap.get("token").toString();
+
+        RequestUrl requestUrl = null;
+        requestUrl = new RequestUrl(school.url + String.format("/" +
+                "%s?courseId=%d", Const.COURSE, courseId));
+        requestUrl.heads.put("token", token);
+
+        return getCourse(requestUrl);
     }
 }

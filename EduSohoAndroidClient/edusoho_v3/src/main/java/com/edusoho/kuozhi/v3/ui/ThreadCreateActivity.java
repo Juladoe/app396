@@ -18,25 +18,30 @@ import cn.trinea.android.common.util.ToastUtils;
  */
 public class ThreadCreateActivity extends ActionBarBaseActivity {
 
-    public static final String COURSE_ID = "course_id";
-    public static final String LESSON_ID = "lesson_id";
+    public static final String TARGET_ID = "targetId";
+    public static final String TARGET_TYPE = "targetType";
+    public static final String THREAD_TYPE = "threadType";
     public static final String TYPE = "type";
 
-    private int mCourseId;
+    private int mTargetId;
     private String mCreateType;
+    private String mTargetType;
+    private String mThreadType;
     private EditText mTitleEdt;
     private EditText mContenteEdt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCourseId = getIntent().getIntExtra(COURSE_ID, 0);
+        mTargetId = getIntent().getIntExtra(TARGET_ID, 0);
         mCreateType = getIntent().getStringExtra(TYPE);
+        mTargetType = getIntent().getStringExtra(TARGET_TYPE);
+        mThreadType = getIntent().getStringExtra(THREAD_TYPE);
         if (TextUtils.isEmpty(mCreateType)) {
             mCreateType = "question";
         }
 
-        setBackMode(BACK, "question".equals(mCreateType) ? "提问提" : "发话题");
+        setBackMode(BACK, "question".equals(mCreateType) ? "提问题" : "发话题");
         setContentView(R.layout.activity_thread_create_layout);
         mTitleEdt = (EditText) findViewById(R.id.tc_title);
         mContenteEdt = (EditText) findViewById(R.id.tc_conten);
@@ -52,13 +57,14 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
             return;
         }
         CourseProvider courseProvider = new CourseProvider(getBaseContext());
-        courseProvider.createThread(mCourseId, mCreateType, title, content).success(new NormalCallback<LinkedHashMap>() {
-            @Override
-            public void success(LinkedHashMap result) {
-                if (result != null && result.containsKey("threadId")) {
-                    createSuccess();
-                }
-            }
+        courseProvider.createThread(mTargetId, mTargetType, mThreadType, mCreateType, title, content)
+                .success(new NormalCallback<LinkedHashMap>() {
+                    @Override
+                    public void success(LinkedHashMap result) {
+                        if (result != null && result.containsKey("threadId")) {
+                            createSuccess();
+                        }
+                    }
         });
     }
 
@@ -66,7 +72,7 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
         ToastUtils.show(getBaseContext(), "发表成功!");
         finish();
         Bundle bundle = new Bundle();
-        bundle.putString("event", "courseDiscussRefresh");
+        bundle.putString("event", "createThreadEvent");
         MessageEngine.getInstance().sendMsg(WebViewActivity.SEND_EVENT, bundle);
     }
 

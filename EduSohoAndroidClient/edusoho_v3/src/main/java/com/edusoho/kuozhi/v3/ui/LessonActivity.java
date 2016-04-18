@@ -261,7 +261,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 app.mEngine.runNormalPlugin("ThreadDiscussActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, mCourseId);
+                        startIntent.putExtra(ThreadDiscussActivity.TARGET_ID, mCourseId);
+                        startIntent.putExtra(ThreadDiscussActivity.TARGET_TYPE, "course");
                         startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, mLessonId);
                         startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
                     }

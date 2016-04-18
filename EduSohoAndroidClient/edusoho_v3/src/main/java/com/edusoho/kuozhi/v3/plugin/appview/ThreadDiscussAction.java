@@ -25,8 +25,8 @@ public class ThreadDiscussAction {
         mActivity.app.mEngine.runNormalPlugin("ThreadDiscussActivity", mActivity.getBaseContext(), new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, AppUtil.parseInt(bundle.getString("courseId")));
-                startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, AppUtil.parseInt(bundle.getString("lessonId")));
+                startIntent.putExtra(ThreadDiscussActivity.TARGET_ID, AppUtil.parseInt(bundle.getString("targetId")));
+                startIntent.putExtra(ThreadDiscussActivity.TARGET_TYPE, bundle.getString("targetType"));
                 startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, AppUtil.parseInt(bundle.getString("threadId")));
                 startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
             }

@@ -23,8 +23,9 @@ public class ThreadCreateAction {
         mActivity.app.mEngine.runNormalPlugin("ThreadCreateActivity", mActivity.getBaseContext(), new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ThreadCreateActivity.COURSE_ID, AppUtil.parseInt(bundle.getString("courseId")));
-                startIntent.putExtra(ThreadCreateActivity.LESSON_ID, AppUtil.parseInt(bundle.getString("lessonId")));
+                startIntent.putExtra(ThreadCreateActivity.TARGET_ID, AppUtil.parseInt(bundle.getString("targetId")));
+                startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, bundle.getString("targetType"));
+                startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, bundle.getString("threadType"));
                 startIntent.putExtra(ThreadCreateActivity.TYPE, bundle.getString("type"));
             }
         });
