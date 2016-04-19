@@ -1,5 +1,9 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
@@ -7,6 +11,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AnimationSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,7 +34,6 @@ import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.PostThreadResult;
-import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.provider.ThreadProvider;
 import com.edusoho.kuozhi.v3.model.sys.AudioCacheEntity;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -44,13 +50,12 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.CourseThreadDataSource;
 import com.edusoho.kuozhi.v3.util.sql.CourseThreadPostDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
+import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import org.json.JSONObject;
 import java.io.File;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
@@ -98,58 +103,94 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     private CourseThreadPostDataSource mCourseThreadPostDataSource;
     private ThreadDiscussAdapter mAdapter;
     private LoadDialog mLoadDialog;
+    private View mHeaderView;
+    private LinearLayout mContentLayout;
 
     protected ThreadProvider mThreadProvider;
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
-        View headerView = LayoutInflater.from(mContext).inflate(R.layout.activity_thread_dicuss_head_layout, null);
+        mHeaderView= LayoutInflater.from(mContext).inflate(R.layout.activity_thread_dicuss_head_layout, null);
         View rootView = LayoutInflater.from(mContext).inflate(layoutResID, null);
-        LinearLayout contentLayout = new LinearLayout(mContext);
-        contentLayout.setOrientation(LinearLayout.VERTICAL);
+        mContentLayout = new LinearLayout(mContext);
+        mContentLayout.setOrientation(LinearLayout.VERTICAL);
 
-        contentLayout.addView(headerView);
-        contentLayout.addView(rootView);
+        mContentLayout.addView(mHeaderView);
+        mContentLayout.addView(rootView);
 
-        setContentView(contentLayout);
+        setContentView(mContentLayout);
     }
 
-    protected void setThreadCourse() {
-        mThreadProvider.getThreadInfo(mThreadId, mTargetId).success(new NormalCallback<LinkedHashMap>() {
+    protected void setThreadInfo() {
+        if (TextUtils.isEmpty(mTargetType)) {
+            return;
+        }
+
+        if ("course".equals(mTargetType)) {
+            fillThreadInfoByCourse();
+            return;
+        }
+
+        if ("classroom".equals(mTargetType)) {
+            fillThreadInfoByClassRoom();
+            return;
+        }
+    }
+
+    protected void fillThreadInfoByClassRoom() {
+        mThreadProvider.getClassRoomThreadInfo(mThreadId).success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap threadInfo) {
-                if (threadInfo == null || !threadInfo.containsKey("course")) {
+                if (threadInfo == null) {
+                    return;
+                }
+                fillThreaLabelData(threadInfo);
+                LinkedHashMap<String, String> course = (LinkedHashMap<String, String>) threadInfo.get("target");
+                TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
+                fromCourseView.setText(String.format("来自班级:《%s》", course.get("title")));
+            }
+        });
+    }
+
+    private void fillThreaLabelData(LinkedHashMap threadInfo) {
+        String type = threadInfo.get("type").toString();
+        TextView labelView = (TextView) findViewById(R.id.tdh_label);
+        if ("question".equals(type)) {
+            labelView.setText("问答");
+            labelView.setTextColor(getResources().getColor(R.color.thread_type_question));
+            labelView.setBackgroundResource(R.drawable.thread_type_question_label);
+        } else {
+            labelView.setText("话题");
+            labelView.setTextColor(getResources().getColor(R.color.thread_type_discuss));
+            labelView.setBackgroundResource(R.drawable.thread_type_discuss_label);
+        }
+        TextView titleView = (TextView) findViewById(R.id.tdh_title);
+        titleView.setText(threadInfo.get("title").toString());
+        TextView timeView = (TextView) findViewById(R.id.tdh_time);
+        timeView.setText(getFromInfoTime(threadInfo.get("createdTime").toString()));
+
+        TextView contentView = (TextView) findViewById(R.id.tdh_content);
+        contentView.setText(AppUtil.coverCourseAbout(threadInfo.get("content").toString()));
+
+        LinkedHashMap<String, String> user = (LinkedHashMap<String, String>) threadInfo.get("user");
+        TextView nicknameView = (TextView) findViewById(R.id.tdh_nickname);
+        nicknameView.setText(user.get("nickname"));
+        ImageView userAvatar = (ImageView) findViewById(R.id.tdh_avatar);
+        ImageLoader.getInstance().displayImage(user.get("avatar"), userAvatar);
+    }
+
+    protected void fillThreadInfoByCourse() {
+        mThreadProvider.getCourseThreadInfo(mThreadId, mTargetId).success(new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap threadInfo) {
+                if (threadInfo == null) {
                     return;
                 }
 
-                String type = threadInfo.get("type").toString();
-                TextView labelView = (TextView) findViewById(R.id.tdh_label);
-                if ("question".equals(type)) {
-                    labelView.setText("问答");
-                    labelView.setTextColor(getResources().getColor(R.color.thread_type_question));
-                    labelView.setBackgroundResource(R.drawable.thread_type_question_label);
-                } else {
-                    labelView.setText("话题");
-                    labelView.setTextColor(getResources().getColor(R.color.thread_type_discuss));
-                    labelView.setBackgroundResource(R.drawable.thread_type_discuss_label);
-                }
-                TextView titleView = (TextView) findViewById(R.id.tdh_title);
-                titleView.setText(threadInfo.get("title").toString());
-                TextView timeView = (TextView) findViewById(R.id.tdh_time);
-                timeView.setText(getFromInfoTime(threadInfo.get("createdTime").toString()));
-
-                TextView contentView = (TextView) findViewById(R.id.tdh_content);
-                contentView.setText(AppUtil.coverCourseAbout(threadInfo.get("content").toString()));
-
+                fillThreaLabelData(threadInfo);
                 LinkedHashMap<String, String> course = (LinkedHashMap<String, String>) threadInfo.get("course");
                 TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
                 fromCourseView.setText(String.format("来自课程:《%s》", course.get("title")));
-
-                LinkedHashMap<String, String> user = (LinkedHashMap<String, String>) threadInfo.get("user");
-                TextView nicknameView = (TextView) findViewById(R.id.tdh_nickname);
-                nicknameView.setText(user.get("nickname"));
-                ImageView userAvatar = (ImageView) findViewById(R.id.tdh_avatar);
-                ImageLoader.getInstance().displayImage(user.get("avatar"), userAvatar);
             }
         });
     }
@@ -209,7 +250,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         }
 
         mThreadProvider = new ThreadProvider(mContext);
-        setThreadCourse();
+        setThreadInfo();
         mCourseThreadDataSource = new CourseThreadDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         if (PushUtil.ThreadMsgType.THREAD_POST.equals(mActivityType)) {
@@ -722,5 +763,39 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         }
     }
 
-    // endregion
+    private void hideHeaderLayout() {
+        int headerViewHeight = mHeaderView.getHeight();
+        PropertyValuesHolder heightPVH = PropertyValuesHolder.ofInt("height", headerViewHeight, 0);
+        ObjectAnimator.ofPropertyValuesHolder(new EduSohoAnimWrap(mHeaderView), heightPVH)
+                .setDuration(360).start();
+    }
+
+    private void showHeaderLayout() {
+        mHeaderView.measure(0, 0);
+        int headerViewHeight = mHeaderView.getMeasuredHeight();
+        PropertyValuesHolder heightPVH = PropertyValuesHolder.ofInt("height", 0, headerViewHeight);
+        PropertyValuesHolder translationYPVH = PropertyValuesHolder.ofFloat("translationY", -headerViewHeight, 0);
+        ObjectAnimator.ofPropertyValuesHolder(new EduSohoAnimWrap(mHeaderView), heightPVH, translationYPVH)
+                .setDuration(360).start();
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mContentLayout.addOnLayoutChangeListener(getOnLayoutChangeListener());
+    }
+
+    protected View.OnLayoutChangeListener getOnLayoutChangeListener() {
+        return new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                int  keyHeight = getWindowManager().getDefaultDisplay().getHeight() / 3;
+                if(oldBottom != 0 && bottom != 0 &&(oldBottom - bottom > keyHeight)){
+                    hideHeaderLayout();
+                }else if(oldBottom != 0 && bottom != 0 &&(bottom - oldBottom > keyHeight)){
+                    showHeaderLayout();
+                }
+            }
+        };
+    }
 }

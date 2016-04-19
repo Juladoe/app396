@@ -24,7 +24,7 @@ public class ThreadProvider extends ModelProvider {
         super(context);
     }
 
-    public ProviderListener getThreadInfo(int threadId, int courseId) {
+    public ProviderListener getCourseThreadInfo(int threadId, int courseId) {
         School school = SchoolUtil.getDefaultSchool(mContext);
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
         String token = tokenMap.get("token").toString();
@@ -32,6 +32,21 @@ public class ThreadProvider extends ModelProvider {
         RequestUrl requestUrl = null;
         RequestOption requestOption = null;
         requestUrl = new RequestUrl(String.format("%s/api/courses/%d/threads/%d", school.host, courseId, threadId));
+        requestUrl.heads.put("X-Auth-Token", token);
+        requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
+    }
+
+    public ProviderListener getClassRoomThreadInfo(int threadId) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
+        String token = tokenMap.get("token").toString();
+
+        RequestUrl requestUrl = null;
+        RequestOption requestOption = null;
+        requestUrl = new RequestUrl(school.host + String.format(Const.CLASSROOM_THREAD, threadId));
         requestUrl.heads.put("X-Auth-Token", token);
         requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<LinkedHashMap>(){});
