@@ -10,16 +10,16 @@ android {
     }
 }
 
-task copyNativeLibs(type: Copy) {
-    from fileTree(dir: 'libs', include: 'armeabi/*.so') into 'build/lib'
-}
-tasks.withType(JavaCompile) {
-    compileTask -> compileTask.dependsOn copyNativeLibs
-}
-clean.dependsOn 'cleanCopyNativeLibs'
-tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
-    pkgTask.jniFolders = [new File(buildDir, 'lib')]
-}
+//task copyNativeLibs(type: Copy) {
+//    from fileTree(dir: 'libs', include: 'armeabi/*.so') into 'build/lib'
+//}
+//tasks.withType(JavaCompile) {
+//    compileTask -> compileTask.dependsOn copyNativeLibs
+//}
+//clean.dependsOn 'cleanCopyNativeLibs'
+//tasks.withType(com.android.build.gradle.tasks.PackageApplication) { pkgTask ->
+//    pkgTask.jniFolders = [new File(buildDir, 'lib')]
+//}
 
 dependencies {
     compile 'com.android.support:appcompat-v7:22.2.1'
