@@ -34,6 +34,7 @@
     <string name="setting_new_msg_notify">新消息提醒</string>
     <string name="setting_online_duration">在线时段</string>
     <string name="setting_wifi_download">非wifi下视频可以播放/下载</string>
+    <string name="setting_mediacodec_download">默认视频解码方式:[%s]</string>
     <string name="setting_clean_cache">清理缓存</string>
     <string name="setting_about">关于</string>
     <string name="msg_reminder_new_msg">接收新消息通知</string>
