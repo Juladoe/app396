@@ -42,7 +42,11 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
@@ -444,6 +448,25 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         mActivity.supportInvalidateOptionsMenu();
     }
 
+    private String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface
+                    .getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf
+                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        return inetAddress.getHostAddress().toString();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        return "localhost";
+    }
+
     private LessonItem getLessonResultType(String object) {
         LessonItem lessonItem = handleJsonValue(
                 object, new TypeToken<LessonItem>() {
@@ -500,7 +523,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                             return null;
                         }
                     } else {
-                        normalLesson.mediaUri = "http://localhost:8800/playlist/" + mLessonId;
+                        String ip = getLocalIpAddress();
+                        normalLesson.mediaUri = String.format("http://%s:8800/playlist/%d.m3u8", "localhost", mLessonId);
                     }
                 }
                 fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());

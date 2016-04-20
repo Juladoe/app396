@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.*;
 import android.provider.Settings;
@@ -72,7 +73,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private boolean mIsHwDecode = false;
     private boolean mIsPlayEnd;
     protected boolean isCacheVideo;
-    private int mDecodeMode;
+    protected int mDecodeMode;
 
     protected EventHandler mEventHandler;
     protected HandlerThread mHandlerThread;
@@ -539,10 +540,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         });
 
         /**
-         *关联BMediaController
-         */
-        //mVV.setMediaController(mVVCtl);
-        /**
          *设置解码模式
          */
 
@@ -825,7 +822,22 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mUIHandler.sendEmptyMessage(UI_EVENT_PLAY);
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
         mDurationCount = mVV.getDuration();
+        setVideoViewHeight();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setVideoViewHeight();
+    }
+
+    private void setVideoViewHeight() {
+        int screenWidth = mContext.getWindowManager().getDefaultDisplay().getWidth();
+
+        int videoViewHeight = (int) ( screenWidth / ( 16/9.0f ) );
+        ViewGroup.LayoutParams lp = mVV.getLayoutParams();
+        lp.height = videoViewHeight;
+        mVV.setLayoutParams(lp);
+    }
 }
 

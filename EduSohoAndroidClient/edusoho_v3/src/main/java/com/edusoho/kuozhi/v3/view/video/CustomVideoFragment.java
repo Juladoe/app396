@@ -1,9 +1,13 @@
 package com.edusoho.kuozhi.v3.view.video;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.android.volley.Response;
+import com.baidu.cyberplayer.core.BVideoView;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -17,6 +21,17 @@ import com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment;
  * Created by howzhi on 14-10-25.
  */
 public class CustomVideoFragment extends BdVideoPlayerFragment {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mDecodeMode = getMediaCoderType() == 0 ? BVideoView.DECODE_SW : BVideoView.DECODE_HW;
+    }
+
+    protected int getMediaCoderType() {
+        SharedPreferences sp = getActivity().getSharedPreferences("mediaCoder", Context.MODE_PRIVATE);
+        return sp.getInt("type", 0);
+    }
 
     @Override
     protected void resumePlay() {

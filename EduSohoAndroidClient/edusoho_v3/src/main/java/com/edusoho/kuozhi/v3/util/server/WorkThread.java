@@ -33,6 +33,7 @@ public class WorkThread extends Thread {
         } catch (ConnectionClosedException ex) {
             System.err.println("Client closed connection");
         } catch (IOException ex) {
+            ex.printStackTrace();
             System.err.println("I/O error: " + ex.getMessage());
         } catch (HttpException ex) {
             System.err.println("Unrecoverable HTTP protocol violation: " + ex.getMessage());
