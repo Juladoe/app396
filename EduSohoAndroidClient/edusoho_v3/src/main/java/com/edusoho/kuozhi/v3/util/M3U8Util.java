@@ -505,7 +505,7 @@ public class M3U8Util {
         } catch (Exception e) {
             //超时处理
             int count = mTimeOutList.get(key);
-            if (count < 3) {
+            if (count < 30) {
                 Log.d(TAG, "timeout count " + count);
                 downloadSingleFile(url);
                 mTimeOutList.put(key, ++count);
@@ -660,6 +660,9 @@ public class M3U8Util {
                 try {
                     Log.d(TAG, "download " + url);
                     HttpResponse response = mHttpClient.execute(httpGet);
+                    if (response == null || response.getEntity() == null) {
+                        throw new RuntimeException("down error");
+                    }
                     if (type == KEY) {
                         ContentValues cv = new ContentValues();
                         cv.put("type", Const.CACHE_KEY_TYPE);
@@ -673,10 +676,13 @@ public class M3U8Util {
                             return;
                         }
 
-                        FileUtils.writeFile(
+                        boolean isSave = FileUtils.writeFile(
                                 file,
                                 new DigestInputStream(response.getEntity().getContent(), mTargetHost)
                         );
+                        if (! isSave) {
+                            throw new RuntimeException("down error");
+                        }
                     }
 
                     updateDownloadStatus(url, mLessonId, 1);
@@ -690,7 +696,7 @@ public class M3U8Util {
                 } catch (Exception e) {
                     //超时处理
                     int count = mTimeOutList.get(key);
-                    if (count < 10) {
+                    if (count < 30) {
                         Log.d(TAG, "timeiout count " + count);
                         getResourceFromNet(url, type);
                         mTimeOutList.put(key, ++count);

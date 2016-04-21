@@ -17,6 +17,7 @@ import com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment;
  */
 public class CustomVideoFragment extends BdVideoPlayerFragment {
 
+    private static final int NO_LESSON = 10001;
     @Override
     protected void resumePlay() {
         /**
@@ -58,7 +59,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment {
                         response, new TypeToken<LessonItem<String>>() {
                         });
                 if (lessonItem == null) {
-                    showErrorDialog(lessonActivity);
+                    showErrorDialog(NO_LESSON, 0);
                     return;
                 }
                 callback.success(lessonItem);
@@ -66,10 +67,24 @@ public class CustomVideoFragment extends BdVideoPlayerFragment {
         }, null);
     }
 
-    private void showErrorDialog(Activity activity)
+    /**
+     * 100
+     * @param what
+     * @param extra
+     */
+    @Override
+    protected void showErrorDialog(int what, int extra)
     {
+        Log.d(getClass().getSimpleName(), String.format("what：%d, extra：%d", what, extra));
+        String content = "该视频播放出现了问题！请联系网站管理员!";
+        if (what == NO_LESSON) {
+            content = "课时不存在!";
+        }
+        if (what == 100) {
+            return;
+        }
         PopupDialog popupDialog = PopupDialog.createNormal(
-                activity, "播放提示", "该视频播放出现了问题！请联系网站管理员!");
+                getActivity(), "播放提示", content);
         popupDialog.setOkListener(new PopupDialog.PopupClickListener() {
             @Override
             public void onClick(int button) {

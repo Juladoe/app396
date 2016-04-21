@@ -55,7 +55,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected String mVideoSource = null;
     protected String mVideoHead = null;
 
-    private BVideoView mVV = null;
+    protected BVideoView mVV = null;
     private Activity mContext = null;
 
     private ImageView mPlaybtn = null;
@@ -136,7 +136,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     mUIHandler.sendEmptyMessageDelayed(UI_EVENT_UPDATE_CURRPOSITION, 200);
                     break;
                 case UI_EVENT_ERROR:
-                    showErrorDialog();
+                    showErrorDialog(msg.arg1, msg.arg2);
                     break;
                 case UI_EVENT_FINISH:
                     mReplayBtn.setVisibility(View.VISIBLE);
@@ -659,14 +659,15 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
      */
     @Override
     public boolean onError(int what, int extra) {
-        Log.v(TAG, "onError what:" + what + " extra:" + extra);
+        mLastPos = mCurrentPos > 0 ? mCurrentPos + 16 : 0;
+        Log.v(TAG, "onError what:" + what + " mCurrentPos:" + extra);
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
         }
 
         mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
-        mUIHandler.sendEmptyMessage(UI_EVENT_ERROR);
+        mUIHandler.obtainMessage(UI_EVENT_ERROR, what, extra).sendToTarget();
         return true;
     }
 
@@ -677,7 +678,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mEventHandler.sendEmptyMessage(EVENT_START);
     }
 
-    private void showErrorDialog() {
+    protected void showErrorDialog(int what, int extra) {
         Activity activity = getActivity();
         if (activity == null) {
             return;

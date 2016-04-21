@@ -147,6 +147,14 @@ public class M3U8DownService extends Service {
         });
     }
 
+    public boolean hasTaskByLessonId(int lessonId) {
+        if (mM3U8UitlList == null || mM3U8UitlList.size() == 0) {
+            return false;
+        }
+
+        return mM3U8UitlList.indexOfKey(lessonId)  != -1;
+    }
+
     private void createNotification(int lessonId, String title) {
         notificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);

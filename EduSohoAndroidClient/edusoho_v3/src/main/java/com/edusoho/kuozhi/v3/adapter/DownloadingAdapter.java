@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,6 +36,11 @@ import cn.trinea.android.common.util.ToastUtils;
  * Created by JesseHuang on 15/6/16.
  */
 public class DownloadingAdapter extends BaseExpandableListAdapter {
+
+    private static final int DOWNING = 0;
+    private static final int DOWNED = 1;
+    private static final int NONE = 2;
+
     private Context mContex;
     private BaseActivity mActivity;
     private SparseArray<M3U8DbModel> m3u8ModelList;
@@ -144,8 +150,9 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         public void onClick(View v) {
             M3U8DownService service = M3U8DownService.getService();
             try {
-                if (mChildPanel.ivDownloadSign.getText().equals(mContex.getString(R.string.font_downloading))) {
-                    mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_stop_downloading));
+                if (mChildPanel.ivDownloadSign.getText().equals(mContex.getResources().getString(R.string.font_stop_downloading))) {
+                    Log.d(getClass().getSimpleName(), "cancel download");
+                    mChildPanel.ivDownloadSign.setText(mContex.getResources().getString(R.string.font_downloading));
                     if (service != null) {
                         service.cancelDownloadTask(mLessonItem.id);
                     }
@@ -163,7 +170,8 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
                         showAlertDialog("当前设置视频课时观看、下载为WiFi模式!\n模式可以在设置里修改。");
                         return;
                     }
-                    mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_downloading));
+                    Log.d(getClass().getSimpleName(), "continue download");
+                    mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_stop_downloading));
                     M3U8DownService.startDown(
                             mActivity, mLessonItem.id, mLessonItem.courseId, mLessonItem.title);
                 }
@@ -191,6 +199,10 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
             final M3U8DbModel model = m3u8ModelList.get(lessonItem.id);
             childPanel.ivDownloadSign.setOnClickListener(new DownloadSignClick(childPanel, lessonItem));
             childPanel.tvProgress.setText((int) (model.downloadNum / (float) model.totalNum * 100) + "%");
+
+            int downStatus = getDownloadStatus(lessonItem.id);
+            int downStatusIconRes = downStatus == DOWNED ? R.string.font_stop_downloading : R.string.font_downloading;
+            childPanel.ivDownloadSign.setText(mContex.getResources().getString(downStatusIconRes));
         }
         //选择框是否显示
         if (mSelectedShow) {
@@ -217,6 +229,14 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         }
 
         return convertView;
+    }
+
+    protected int getDownloadStatus(int lessonId) {
+        M3U8DownService service = M3U8DownService.getService();
+        if (service == null) {
+            return NONE;
+        }
+        return service.hasTaskByLessonId(lessonId) ? DOWNING : NONE;
     }
 
     public void setItemDownloadStatus(int groupPosition, int childPosition) {
@@ -318,7 +338,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
                     @Override
                     public void onClick(int button) {
                         if (button == PopupDialog.OK) {
-                            ExitCoursePopupDialog.createNormal(
+                            ExitCoursePopupDialog dialog = ExitCoursePopupDialog.createNormal(
                                     mActivity, "视频课时下载播放", new ExitCoursePopupDialog.PopupClickListener() {
                                         @Override
                                         public void onClick(int button, int position, String selStr) {
@@ -331,7 +351,9 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
                                             app.saveConfig();
                                         }
                                     }
-                            ).show();
+                            );
+                            dialog.setStringArray(R.array.offline_array);
+                            dialog.show();
                         }
                     }
                 });

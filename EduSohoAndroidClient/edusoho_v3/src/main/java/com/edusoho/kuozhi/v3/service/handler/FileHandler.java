@@ -70,7 +70,7 @@ public class FileHandler implements HttpRequestHandler {
         Uri queryUri = Uri.parse(url);
 
         String queryName = queryUri.toString();
-        Log.d(null, "queryName->" + queryName);
+        Log.d(getClass().getSimpleName(), "queryName->" + queryName);
 
         if (queryName.startsWith("playlist")) {
             int lessonId = CommonUtil.parseInt(queryName.substring("playlist/".length(), queryName.length() - ".m3u8".length()));
