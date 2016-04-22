@@ -21,9 +21,11 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
     public static final String TARGET_ID = "targetId";
     public static final String TARGET_TYPE = "targetType";
     public static final String THREAD_TYPE = "threadType";
+    public static final String LESSON_ID = "lessonId";
     public static final String TYPE = "type";
 
     private int mTargetId;
+    private int mLessonId;
     private String mCreateType;
     private String mTargetType;
     private String mThreadType;
@@ -34,6 +36,7 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mTargetId = getIntent().getIntExtra(TARGET_ID, 0);
+        mLessonId = getIntent().getIntExtra(LESSON_ID, 0);
         mCreateType = getIntent().getStringExtra(TYPE);
         mTargetType = getIntent().getStringExtra(TARGET_TYPE);
         mThreadType = getIntent().getStringExtra(THREAD_TYPE);
@@ -57,7 +60,7 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
             return;
         }
         CourseProvider courseProvider = new CourseProvider(getBaseContext());
-        courseProvider.createThread(mTargetId, mTargetType, mThreadType, mCreateType, title, content)
+        courseProvider.createThread(mTargetId, mLessonId, mTargetType, mThreadType, mCreateType, title, content)
                 .success(new NormalCallback<LinkedHashMap>() {
                     @Override
                     public void success(LinkedHashMap result) {

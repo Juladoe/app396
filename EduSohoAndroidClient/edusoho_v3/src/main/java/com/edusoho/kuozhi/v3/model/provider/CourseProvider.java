@@ -23,7 +23,8 @@ public class CourseProvider extends ModelProvider {
         super(context);
     }
 
-    public ProviderListener createThread(int targetId, String targetType, String threadType, String type, String title, String content) {
+    public ProviderListener createThread(
+            int targetId, int lessonId, String targetType, String threadType, String type, String title, String content) {
         School school = SchoolUtil.getDefaultSchool(mContext);
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
         String token = tokenMap.get("token").toString();
@@ -38,6 +39,9 @@ public class CourseProvider extends ModelProvider {
 
         if ("course".equals(threadType)) {
             requestUrl.getParams().put("courseId", String.valueOf(targetId));
+            if (lessonId != 0) {
+                requestUrl.getParams().put("lessonId", String.valueOf(lessonId));
+            }
         } else if ("common".equals(threadType)) {
             requestUrl.getParams().put("targetId", String.valueOf(targetId));
             requestUrl.getParams().put("targetType", targetType);
