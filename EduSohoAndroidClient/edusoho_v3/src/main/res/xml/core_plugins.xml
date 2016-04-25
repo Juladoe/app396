@@ -62,7 +62,7 @@
 
     <plugin
         name="ChatActivity"
-        package="com.edusoho.kuozhi.v3.ui.ChatActivity"
+        package="com.edusoho.kuozhi.v3.ui.ImChatActivity"
         version="1.0" />
 
     <plugin

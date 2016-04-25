@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.ChatActivity;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
+import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
@@ -36,28 +37,34 @@ public class NotificationUtil {
     public static WrapperXGPushTextMessage mMessage = null;
     public static final int DISCOUNT_ID = -1;
 
-    public static void showMsgNotification(Context context, WrapperXGPushTextMessage xgMessage) {
+    public static void showMsgNotification(Context context, V2CustomContent v2CustomContent) {
         try {
-            Chat chat = new Chat(xgMessage);
-            New newModel = new New(xgMessage);
+            Chat chat = new Chat(v2CustomContent);
+            New newModel = new New(v2CustomContent);
+
+            String content = "";
+            String title = "";
             switch (chat.type) {
                 case PushUtil.ChatMsgType.IMAGE:
-                    xgMessage.content = String.format("[%s]", Const.MEDIA_IMAGE);
+                    content = String.format("[%s]", Const.MEDIA_IMAGE);
                     break;
                 case PushUtil.ChatMsgType.AUDIO:
-                    xgMessage.content = String.format("[%s]", Const.MEDIA_AUDIO);
+                    content = String.format("[%s]", Const.MEDIA_AUDIO);
                     break;
                 case PushUtil.ChatMsgType.MULTI:
-                    RedirectBody redirectBody = new Gson().fromJson(xgMessage.content, RedirectBody.class);
-                    xgMessage.content = redirectBody.content;
+                    RedirectBody redirectBody = new Gson().fromJson(content, RedirectBody.class);
+                    content = redirectBody.content;
                     break;
+                default:
+                    title = "你有一条新消息";
+                    content = String.format("%s:%s", v2CustomContent.getFrom().getNickname(), v2CustomContent.getBody().getContent());
             }
 
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
                             .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle(xgMessage.title)
-                            .setContentText(xgMessage.content).setAutoCancel(true);
+                            .setContentTitle(title)
+                            .setContentText(content).setAutoCancel(true);
 
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -66,19 +73,17 @@ public class NotificationUtil {
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notifyIntent.putExtra(ChatActivity.FROM_ID, chat.fromId);
             notifyIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, chat.headImgUrl);
-            notifyIntent.putExtra(Const.ACTIONBAR_TITLE, xgMessage.title);
+            notifyIntent.putExtra(Const.ACTIONBAR_TITLE, v2CustomContent.getFrom().getNickname());
             notifyIntent.putExtra(Const.NEWS_TYPE, newModel.type);
-            notifyIntent.putExtra(Const.INTENT_TARGET, ChatActivity.class);
-            if (isAppExit(context)) {
-                mMessage = xgMessage;
-            }
+            notifyIntent.putExtra(Const.INTENT_TARGET, ImChatActivity.class);
+
             PendingIntent pendIntent = PendingIntent.getActivity(context, chat.fromId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);
             mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
             mNotificationManager.notify(chat.fromId, mBuilder.build());
         } catch (Exception ex) {
-            Log.d("showMsgNotification-->", ex.getMessage());
+            ex.printStackTrace();
         }
     }
 
@@ -313,30 +318,33 @@ public class NotificationUtil {
         }
     }
 
-    public static void showCourseDiscuss(Context context, WrapperXGPushTextMessage xgMessage) {
+    public static void showCourseDiscuss(Context context, V2CustomContent v2CustomContent) {
         try {
-            V2CustomContent model = xgMessage.getV2CustomContent();
-            switch (model.getBody().getType()) {
+            String content = null;
+            String title = v2CustomContent.getBody().getTitle();
+            switch (v2CustomContent.getBody().getType()) {
                 case PushUtil.ChatMsgType.IMAGE:
-                    xgMessage.content = String.format("[%s]", Const.MEDIA_IMAGE);
+                    content = String.format("[%s]", Const.MEDIA_IMAGE);
                     break;
                 case PushUtil.ChatMsgType.AUDIO:
-                    xgMessage.content = String.format("[%s]", Const.MEDIA_AUDIO);
+                    content = String.format("[%s]", Const.MEDIA_AUDIO);
                     break;
                 case PushUtil.ChatMsgType.MULTI:
-                    RedirectBody redirectBody = new Gson().fromJson(xgMessage.content, RedirectBody.class);
-                    xgMessage.content = redirectBody.content;
+                    RedirectBody redirectBody = new Gson().fromJson(v2CustomContent.getBody().getContent(), RedirectBody.class);
+                    content = redirectBody.content;
                     break;
+                default:
+                    content = v2CustomContent.getBody().getContent();
             }
 
 
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context).setWhen(System.currentTimeMillis())
                             .setSmallIcon(R.mipmap.ic_launcher)
-                            .setContentTitle(xgMessage.title)
-                            .setContentText(model.getFrom().getNickname() + ": " + xgMessage.content).setAutoCancel(true);
+                            .setContentTitle(title)
+                            .setContentText(v2CustomContent.getFrom().getNickname() + ": " + content).setAutoCancel(true);
 
-            int fromId = model.getTo().getId();
+            int fromId = v2CustomContent.getTo().getId();
 
             NotificationManager mNotificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -344,15 +352,12 @@ public class NotificationUtil {
             notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             New newModel = new New();
-            newModel.title = xgMessage.title;
-            newModel.fromId = model.getTo().getId();
-            newModel.type = model.getTo().getType();
-            newModel.imgUrl = model.getTo().getImage();
+            newModel.title = title;
+            newModel.fromId = v2CustomContent.getTo().getId();
+            newModel.type = v2CustomContent.getTo().getType();
+            newModel.imgUrl = v2CustomContent.getTo().getImage();
             notifyIntent.putExtra(Const.NEW_ITEM_INFO, newModel);
             notifyIntent.putExtra(Const.INTENT_TARGET, NewsCourseActivity.class);
-            if (isAppExit(context)) {
-                mMessage = xgMessage;
-            }
             PendingIntent pendIntent = PendingIntent.getActivity(context, fromId,
                     notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(pendIntent);

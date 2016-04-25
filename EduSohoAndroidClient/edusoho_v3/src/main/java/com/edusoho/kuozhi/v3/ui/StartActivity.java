@@ -48,8 +48,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         app.registMsgSource(this);
         startSplash();
         registDevice();
-
-        ESCordovaWebViewFactory.init(mActivity);
     }
 
     private void initAssets() {

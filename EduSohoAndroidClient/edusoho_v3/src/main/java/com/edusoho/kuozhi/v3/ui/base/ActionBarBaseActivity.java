@@ -44,8 +44,6 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     private CircleImageView civBadgeView;
     private Queue<WidgetMessage> mUIMessageQueue;
 
-    protected XGPushClickedResult mXGClick;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,8 +60,6 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         super.onResume();
         mRunStatus = MSG_RESUME;
         MobclickAgent.onResume(mContext);
-        mXGClick = XGPushManager.onActivityStarted(this);
-        Log.d("TPush", "onResumeXGPushClickedResult:" + mXGClick);
     }
 
     @Override
@@ -71,9 +67,6 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         super.onPause();
         mRunStatus = MSG_PAUSE;
         MobclickAgent.onPause(mContext);
-        Log.d("MainActivity-->", "onPause");
-        XGPushManager.onActivityStoped(this);
-        mXGClick = null;
     }
 
     @Override

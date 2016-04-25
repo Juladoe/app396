@@ -196,11 +196,11 @@ public class EdusohoMainService extends Service {
                     break;
                 case Const.ADD_MSG:
                     //普通消息
-                    Chat chatModel = new Chat(xgMessage);
+                    Chat chatModel = new Chat(xgMessage.getV2CustomContent());
                     ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
                     chatDataSource.create(chatModel);
                     if (!xgMessage.isForeground || (xgMessage.isForeground && ChatActivity.CurrentFromId != chatModel.fromId)) {
-                        NotificationUtil.showMsgNotification(EdusohoApp.app.mContext, xgMessage);
+                        NotificationUtil.showMsgNotification(EdusohoApp.app.mContext, xgMessage.getV2CustomContent());
                     }
                     break;
                 case Const.ADD_BULLETIN_MSG:
@@ -244,7 +244,7 @@ public class EdusohoMainService extends Service {
                     CourseDiscussDataSource courseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
                     courseDiscussDataSource.create(courseDiscussEntity);
                     if (!xgMessage.isForeground || NewsCourseActivity.CurrentCourseId != courseDiscussEntity.courseId) {
-                        NotificationUtil.showCourseDiscuss(EdusohoApp.app.mContext, xgMessage);
+                        NotificationUtil.showCourseDiscuss(EdusohoApp.app.mContext, xgMessage.getV2CustomContent());
                     }
                     break;
                 case Const.ADD_THREAD_POST:

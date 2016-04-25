@@ -19,7 +19,6 @@ public class BaseMsgEntity implements Serializable {
     public HashMap<String, String> headers;
 
     public BaseMsgEntity() {
-
     }
 
     public BaseMsgEntity(int id, String content, String headImgUrl, int delivery, String type, int createdTime) {

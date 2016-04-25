@@ -1,17 +1,19 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
-
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by howzhi on 15/9/24.
@@ -38,11 +40,17 @@ public class SystemProvider extends ModelProvider {
         return responseListener;
     }
 
-    public ProviderListener getImServerHosts(RequestUrl requestUrl) {
+    public ProviderListener getImServerHosts() {
+        Map<String,String> tokenMap = ApiTokenUtil.getToken(mContext);
+        String token = tokenMap.get("token");
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        RequestUrl requestUrl = new RequestUrl(school.host + "/api/im/me/login");
+        requestUrl.getHeads().put("Auth-Token", token);
+
         final ProviderListener<ArrayList<String>> stringResponseListener = new ProviderListener<ArrayList<String>>(){};
         ProviderListener<LinkedHashMap> responseListener = new ProviderListener<LinkedHashMap>(){
         };
-        addRequest(requestUrl, new TypeToken<LinkedHashMap>() {
+        addPostRequest(requestUrl, new TypeToken<LinkedHashMap>() {
         }, responseListener, responseListener);
         responseListener.success(new NormalCallback<LinkedHashMap>() {
             @Override

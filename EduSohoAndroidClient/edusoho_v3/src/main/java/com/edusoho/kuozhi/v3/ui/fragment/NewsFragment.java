@@ -187,7 +187,7 @@ public class NewsFragment extends BaseFragment {
                 if (jsonObject.has("typeBusiness")) {
                     String type = jsonObject.getString("typeBusiness");
                     if (PushUtil.ChatUserType.FRIEND.equals(type) || PushUtil.ChatUserType.TEACHER.equals(type)) {
-                        getNewChatMsg(HANDLE_RECEIVE_CHAT_MSG, NotificationUtil.mMessage);
+                        getNewChatMsg(HANDLE_RECEIVE_CHAT_MSG, null);
                     } else {
                         handleBulletinMsg(message);
                     }
@@ -198,7 +198,7 @@ public class NewsFragment extends BaseFragment {
                         case PushUtil.ChatUserType.USER:
                         case PushUtil.ChatUserType.FRIEND:
                         case PushUtil.ChatUserType.TEACHER:
-                            getNewChatMsg(HANDLE_RECEIVE_CHAT_MSG, message);
+                            getNewChatMsg(HANDLE_RECEIVE_CHAT_MSG, v2CustomContent);
                             break;
                         case PushUtil.CourseType.LESSON_PUBLISH:
                             handlerReceiveCourse(message);
@@ -347,12 +347,13 @@ public class NewsFragment extends BaseFragment {
                 return;
             }
             int fromId = message.data.getInt(Const.FROM_ID, 0);
+            V2CustomContent v2CustomContent = null;
             NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
             switch (messageType.code) {
                 case Const.ADD_MSG:
                     int chatHandleType = message.data.getInt(Const.ADD_CHAT_MSG_DESTINATION, 0);
-                    WrapperXGPushTextMessage chatMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-                    getNewChatMsg(chatHandleType, chatMessage);
+                    v2CustomContent = (V2CustomContent) message.data.get(Const.GET_PUSH_DATA);
+                    getNewChatMsg(chatHandleType, v2CustomContent);
                     break;
                 case Const.ADD_COURSE_MSG:
                     WrapperXGPushTextMessage newsCourseMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
@@ -397,14 +398,14 @@ public class NewsFragment extends BaseFragment {
                     break;
                 case Const.ADD_CLASSROOM_MSG:
                 case Const.ADD_COURSE_DISCUSS_MSG:
-                    WrapperXGPushTextMessage discussMsg = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+                    v2CustomContent = (V2CustomContent) message.data.get(Const.GET_PUSH_DATA);
                     int classroomHandleType = message.data.getInt(Const.ADD_DISCUSS_MSG_DESTINATION, 0);
-                    getNewChatMsg(classroomHandleType, discussMsg);
+                    getNewChatMsg(classroomHandleType, v2CustomContent);
                     break;
                 case Const.ADD_THREAD_POST:
-                    WrapperXGPushTextMessage threadMgs = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
+                    v2CustomContent = (V2CustomContent) message.data.get(Const.GET_PUSH_DATA);
                     int threadHandleType = message.data.getInt(Const.ADD_THREAD_POST_DESTINATION, 0);
-                    getNewChatMsg(threadHandleType, threadMgs);
+                    getNewChatMsg(threadHandleType, v2CustomContent);
                     break;
                 case Const.REFRESH_LIST:
                     List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
@@ -419,28 +420,27 @@ public class NewsFragment extends BaseFragment {
      * 添加一条新消息
      *
      * @param chatType          消息处理方式：1发送，2接收
-     * @param xgPushTextMessage 消息结构
      */
-    private void getNewChatMsg(int chatType, WrapperXGPushTextMessage xgPushTextMessage) {
+    private void getNewChatMsg(int chatType, V2CustomContent v2CustomContent) {
         switch (chatType) {
             case HANDLE_RECEIVE_CHAT_MSG:
-                handleReceiveChatMsg(xgPushTextMessage);
+                handleReceiveChatMsg(v2CustomContent);
                 break;
             case HANDLE_SEND_CHAT_MSG:
-                handleSendChatMsg(xgPushTextMessage);
+                handleSendChatMsg(v2CustomContent);
                 break;
             case HANDLE_RECEIVE_CLASSROOM_DISCUSS_MSG:
             case HANDLE_RECEIVE_COURSE_DISCUSS_MSG:
-                handleDiscussReceiveMsg(xgPushTextMessage);
+                handleDiscussReceiveMsg(v2CustomContent);
                 break;
             case HANDLE_SEND_COURSE_DISCUSS_MSG:
             case HANDLE_SEND_CLASSROOM_DISCUSS_MSG:
-                handleDiscussSendMsg(xgPushTextMessage);
+                handleDiscussSendMsg(v2CustomContent);
                 break;
             case HANDLE_SEND_THREAD_POST:
                 break;
             case HANDLE_RECEIVE_THREAD_POST:
-                handleReceiveThreadPost(xgPushTextMessage);
+                handleReceiveThreadPost(v2CustomContent);
                 break;
         }
     }
@@ -540,8 +540,8 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
-    private void handleReceiveChatMsg(WrapperXGPushTextMessage wrapperMessage) {
-        New newModel = new New(wrapperMessage);
+    private void handleReceiveChatMsg(V2CustomContent v2CustomContent) {
+        New newModel = new New(v2CustomContent);
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
                 newModel.fromId + "", newModel.type, app.loginUser.id + "");
@@ -550,17 +550,17 @@ public class NewsFragment extends BaseFragment {
             newDataSource.create(newModel);
             insertNew(newModel);
         } else {
-            newModel.unread = (wrapperMessage.isForeground && ChatActivity.CurrentFromId == newModel.fromId) ? 0 : news.get(0).unread + 1;
+            newModel.unread = (ChatActivity.CurrentFromId == newModel.fromId) ? 0 : news.get(0).unread + 1;
             newDataSource.update(newModel);
             setItemToTop(newModel);
         }
     }
 
-    private void handleDiscussReceiveMsg(WrapperXGPushTextMessage message) {
+    private void handleDiscussReceiveMsg(V2CustomContent v2CustomContent) {
         New model = new New();
-        V2CustomContent v2CustomContent = message.getV2CustomContent();
+
         model.fromId = v2CustomContent.getTo().getId();
-        model.title = message.getTitle();
+        model.title = v2CustomContent.getBody().getTitle();
         switch (v2CustomContent.getBody().getType()) {
             case PushUtil.ChatMsgType.AUDIO:
                 model.content = String.format("[%s]", Const.MEDIA_AUDIO);
@@ -569,12 +569,12 @@ public class NewsFragment extends BaseFragment {
                 model.content = String.format("[%s]", Const.MEDIA_IMAGE);
                 break;
             case PushUtil.ChatMsgType.MULTI:
-                RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
+                RedirectBody body = EdusohoApp.app.parseJsonValue(v2CustomContent.getBody().getContent(), new TypeToken<RedirectBody>() {
                 });
                 model.content = body.content;
                 break;
             default:
-                model.content = message.getContent();
+                model.content = v2CustomContent.getBody().getContent();
         }
         model.content = v2CustomContent.getFrom().getNickname() + ": " + model.content;
         model.createdTime = v2CustomContent.getCreatedTime();
@@ -584,22 +584,22 @@ public class NewsFragment extends BaseFragment {
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
                 model.fromId + "", model.type, app.loginUser.id + "");
-        New localNewModel = news.get(0);
         if (news.size() == 0) {
             model.unread = 1;
             model.id = (int) newDataSource.create(model);
             insertNew(model);
         } else {
+            New localNewModel = news.get(0);
             boolean isCurActivity = ClassroomDiscussActivity.CurrentClassroomId == model.fromId || NewsCourseActivity.CurrentCourseId == model.fromId;
-            model.unread = (message.isForeground && isCurActivity) ? 0 : localNewModel.unread + 1;
+            model.unread = (isCurActivity) ? 0 : localNewModel.unread + 1;
             model.parentId = localNewModel.parentId;
             newDataSource.update(model);
             setItemToTop(model);
         }
     }
 
-    private void handleSendChatMsg(WrapperXGPushTextMessage wrapperMessage) {
-        New newModel = new New(wrapperMessage);
+    private void handleSendChatMsg(V2CustomContent v2CustomContent) {
+        New newModel = new New(v2CustomContent);
         NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         List<New> news = newDataSource.getNews("WHERE FROMID = ? AND TYPE = ? AND BELONGID = ?",
                 newModel.fromId + "", newModel.type, app.loginUser.id + "");
@@ -608,17 +608,17 @@ public class NewsFragment extends BaseFragment {
             newModel.id = (int) newDataSource.create(newModel);
             insertNew(newModel);
         } else {
-            newModel.unread = (wrapperMessage.isForeground && ChatActivity.CurrentFromId == newModel.fromId) ? 0 : news.get(0).unread + 1;
+            newModel.unread = (ChatActivity.CurrentFromId == newModel.fromId) ? 0 : news.get(0).unread + 1;
             newDataSource.update(newModel);
             setItemToTop(newModel);
         }
     }
 
-    private void handleDiscussSendMsg(WrapperXGPushTextMessage message) {
+    private void handleDiscussSendMsg(V2CustomContent v2CustomContent) {
         New model = new New();
-        V2CustomContent v2CustomContent = message.getV2CustomContent();
+
         model.fromId = v2CustomContent.getTo().getId();
-        model.title = message.getTitle();
+        model.title = v2CustomContent.getBody().getTitle();
         switch (v2CustomContent.getBody().getType()) {
             case PushUtil.ChatMsgType.AUDIO:
                 model.content = String.format("[%s]", Const.MEDIA_AUDIO);
@@ -627,12 +627,12 @@ public class NewsFragment extends BaseFragment {
                 model.content = String.format("[%s]", Const.MEDIA_IMAGE);
                 break;
             case PushUtil.ChatMsgType.MULTI:
-                RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
+                RedirectBody body = EdusohoApp.app.parseJsonValue(v2CustomContent.getBody().getContent(), new TypeToken<RedirectBody>() {
                 });
                 model.content = body.content;
                 break;
             default:
-                model.content = message.getContent();
+                model.content = v2CustomContent.getBody().getContent();
         }
         model.createdTime = v2CustomContent.getCreatedTime();
         model.imgUrl = v2CustomContent.getTo().getImage();
@@ -648,18 +648,18 @@ public class NewsFragment extends BaseFragment {
         } else {
             New localNewModel = news.get(0);
             boolean isCurrentId = DiscussFragment.CurrentCourseId == model.fromId || ClassroomDiscussActivity.CurrentClassroomId == model.fromId;
-            model.unread = (message.isForeground && isCurrentId) ? 0 : localNewModel.unread + 1;
+            model.unread = (isCurrentId) ? 0 : localNewModel.unread + 1;
             model.parentId = localNewModel.parentId;
             newDataSource.update(model);
             setItemToTop(model);
         }
     }
 
-    private void handleReceiveThreadPost(WrapperXGPushTextMessage message) {
+    private void handleReceiveThreadPost(V2CustomContent v2CustomContent) {
         New model = new New();
-        V2CustomContent v2CustomContent = message.getV2CustomContent();
+
         model.fromId = v2CustomContent.getBody().getCourseId();
-        model.title = message.getTitle();
+        model.title = v2CustomContent.getBody().getTitle();
         model.content = String.format("问题【%s】得到一个回复", model.title);
         model.createdTime = v2CustomContent.getCreatedTime();
         model.imgUrl = v2CustomContent.getTo().getImage();
@@ -673,7 +673,7 @@ public class NewsFragment extends BaseFragment {
             model.id = (int) newDataSource.create(model);
             insertNew(model);
         } else {
-            model.unread = (message.isForeground && ThreadDiscussActivity.CurrentThreadId == v2CustomContent.getBody().getThreadId()) ? 0 : news.get(0).unread + 1;
+            model.unread = (ThreadDiscussActivity.CurrentThreadId == v2CustomContent.getBody().getThreadId()) ? 0 : news.get(0).unread + 1;
             newDataSource.update(model);
             setItemToTop(model);
         }

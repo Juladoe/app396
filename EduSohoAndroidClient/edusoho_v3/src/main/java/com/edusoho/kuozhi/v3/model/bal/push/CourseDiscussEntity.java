@@ -32,14 +32,17 @@ public class CourseDiscussEntity extends BaseMsgEntity {
     }
 
     public CourseDiscussEntity(WrapperXGPushTextMessage xgMessage) {
-        super(xgMessage.getV2CustomContent().getMsgId(),
-                xgMessage.getV2CustomContent().getBody().getContent(),
-                xgMessage.getV2CustomContent().getFrom().getImage(),
-                PushUtil.MsgDeliveryType.UPLOADING,
-                xgMessage.getV2CustomContent().getBody().getType(),
-                xgMessage.getV2CustomContent().getCreatedTime());
+        this(xgMessage.getV2CustomContent());
+    }
 
-        V2CustomContent v2CustomContent = xgMessage.getV2CustomContent();
+    public CourseDiscussEntity(V2CustomContent v2CustomContent) {
+        super(v2CustomContent.getMsgId(),
+                v2CustomContent.getBody().getContent(),
+                v2CustomContent.getFrom().getImage(),
+                PushUtil.MsgDeliveryType.UPLOADING,
+                v2CustomContent.getBody().getType(),
+                v2CustomContent.getCreatedTime());
+
         courseId = v2CustomContent.getTo().getId();
         fromId = v2CustomContent.getFrom().getId();
         nickname = v2CustomContent.getFrom().getNickname();

@@ -279,12 +279,6 @@
                 <action android:name="com.tencent.android.tpush.action.FEEDBACK" />
             </intent-filter>
         </receiver>
-
-        <receiver android:name=".v3.broadcast.ImServerReceiver">
-            <intent-filter>
-                <action android:name="com.edusoho.kuozhi.push.action.IM_MESSAGE" />
-            </intent-filter>
-        </receiver>
         
         <service
             android:name="com.tencent.android.tpush.service.XGPushService"

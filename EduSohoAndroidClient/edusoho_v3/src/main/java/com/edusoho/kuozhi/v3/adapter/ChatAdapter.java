@@ -299,7 +299,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
         }
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.pbLoading.setVisibility(View.GONE);

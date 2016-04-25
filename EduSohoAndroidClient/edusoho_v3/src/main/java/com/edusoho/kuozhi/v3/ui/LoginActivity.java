@@ -21,6 +21,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -154,7 +155,8 @@ public class LoginActivity extends ActionBarBaseActivity {
                         app.sendMessage(Const.LOGIN_SUCCESS, null);
                         Bundle bundle = new Bundle();
                         bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
-                        app.pushRegister(bundle);
+                        //app.pushRegister(bundle);
+                        new IMServiceProvider(getBaseContext()).bindServer();
                         mBtnLogin.setSuccessState();
                         mBtnLogin.postDelayed(new Runnable() {
                             @Override
@@ -200,7 +202,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                 app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                 Bundle bundle = new Bundle();
                 bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUser.id));
-                app.pushRegister(bundle);
+                //app.pushRegister(bundle);
                 mActivity.finish();
             }
         }, null);

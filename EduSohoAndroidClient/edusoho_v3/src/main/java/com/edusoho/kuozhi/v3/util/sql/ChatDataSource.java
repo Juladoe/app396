@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 
 import java.util.ArrayList;
@@ -52,14 +55,20 @@ public class ChatDataSource {
             Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, "CHATID DESC",
                     String.format("%d, %d", start, limit));
             while (cursor.moveToNext()) {
-                list.add(cursorToComment(cursor));
+                Chat chat = cursorToComment(cursor);
+                chat.direct = Chat.Direct.getDirect(chat.fromId == getAppSettingProvider().getCurrentUser().id);
+                list.add(chat);
             }
             cursor.close();
         } catch (Exception ex) {
-            Log.d("-->", ex.getMessage());
+            ex.printStackTrace();
         }
         this.close();
         return list;
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 
     public Chat getChat(int id) {

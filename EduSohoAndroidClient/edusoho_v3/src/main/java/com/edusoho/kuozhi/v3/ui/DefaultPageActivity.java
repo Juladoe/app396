@@ -20,6 +20,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.ImService;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -142,7 +143,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             @Override
             public void success(Boolean isLogin) {
                 if (isLogin) {
-                    bindImServerHost();
                     selectDownTab(R.id.nav_tab_news);
                 } else {
                     selectDownTab(R.id.nav_tab_find);
@@ -154,19 +154,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         if (app.config.newVerifiedNotify){
             mDownTabFriends.setBageIcon(true);
         }
-    }
-
-    private void bindImServerHost() {
-        RequestUrl requestUrl = app.bindNewUrl("/api/me/im/login", true);
-        mSystemProvider.getImServerHosts(requestUrl).success(new NormalCallback<ArrayList<String>>() {
-            @Override
-            public void success(ArrayList<String> hostList) {
-                Intent intent = new Intent("com.edusoho.kuozhi.imserver.IImServerAidlInterface");
-                intent.setPackage(getPackageName());
-                intent.putStringArrayListExtra(ImService.HOST, hostList);
-                startService(intent);
-            }
-        });
     }
 
     @Override
@@ -445,7 +432,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private void isLoginWithToken(final NormalCallback<Boolean> callback) {
         if (TextUtils.isEmpty(app.token)) {
             callback.success(false);
-            app.pushRegister(null);
+            //app.pushRegister(null);
             return;
         }
 
@@ -480,7 +467,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                             app.removeToken();
                             callback.success(false);
                         }
-                        app.pushRegister(bundle);
+                        //app.pushRegister(bundle);
 
                     } catch (Exception e) {
                         Log.d(TAG, e.getMessage());

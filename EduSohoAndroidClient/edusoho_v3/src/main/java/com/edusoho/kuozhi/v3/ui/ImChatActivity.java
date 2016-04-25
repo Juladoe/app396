@@ -1,25 +1,33 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.UtilFactory;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
+import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
+import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseChatActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
@@ -29,8 +37,10 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
@@ -40,8 +50,7 @@ import in.srain.cube.views.ptr.PtrHandler;
  */
 public class ImChatActivity extends BaseChatActivity{
 
-    private ServiceConnection mServiceConnection;
-    private IImServerAidlInterface mImBinder;
+    private IMMessageReceiver mIMMessageReceiver;
 
     public static final String TAG = "ChatActivity";
     public static final String FROM_ID = "from_id";
@@ -55,6 +64,7 @@ public class ImChatActivity extends BaseChatActivity{
     private User mFromUserInfo;
     private int mFromId;
     private int mToId;
+    private String mConversationNo;
 
     /**
      * 对方的BusinessType,这里是Role
@@ -83,10 +93,13 @@ public class ImChatActivity extends BaseChatActivity{
             CommonUtil.longToast(mContext, "聊天记录读取错误");
             return;
         }
+
+        User user = getAppSettingProvider().getCurrentUser();
         if (TextUtils.isEmpty(mMyType)) {
-            String[] roles = new String[app.loginUser.roles.length];
-            for (int i = 0; i < app.loginUser.roles.length; i++) {
-                roles[i] = app.loginUser.roles[i].toString();
+            String[] roles = new String[user.roles == null ? 0 :user.roles.length];
+            Log.d("roles:", Arrays.toString(roles));
+            for (int i = 0; i < roles.length; i++) {
+                roles[i] = user.roles[i].toString();
             }
             if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
                 mMyType = PushUtil.ChatUserType.TEACHER;
@@ -97,7 +110,7 @@ public class ImChatActivity extends BaseChatActivity{
 
         mFromId = intent.getIntExtra(FROM_ID, mFromId);
         mType = intent.getStringExtra(Const.NEWS_TYPE);
-        mToId = app.loginUser.id;
+        mToId = user.id;
         mFromUserInfo = new User();
         mFromUserInfo.id = mFromId;
         mFromUserInfo.mediumAvatar = intent.getStringExtra(HEAD_IMAGE_URL);
@@ -112,7 +125,6 @@ public class ImChatActivity extends BaseChatActivity{
         getFriendUserInfo();
 
         mAdapter = new ChatAdapter<>(mContext, getChatList(0), mFromUserInfo);
-        //mAdapter.setSendImageClickListener(this);
         lvMessage.setAdapter(mAdapter);
         mStart = mAdapter.getCount();
         lvMessage.postDelayed(mListViewSelectRunnable, 500);
@@ -135,8 +147,7 @@ public class ImChatActivity extends BaseChatActivity{
                 return count > 0 && canDoRefresh;
             }
         });
-
-        //mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
+        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
     /**
@@ -207,55 +218,145 @@ public class ImChatActivity extends BaseChatActivity{
     @Override
     protected void onResume() {
         super.onResume();
-        if (mServiceConnection != null) {
-            return;
+        if (mIMMessageReceiver == null) {
+            createChatConvNo();
+            mIMMessageReceiver = getIMMessageListener();
         }
-        mServiceConnection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                mImBinder = IImServerAidlInterface.Stub.asInterface(service);
-                try {
-                    mImBinder.joinConversation("", "","b6565ecacef7fd0f3ea1fab66e7b3a49");
-                } catch (Exception e) {
-                }
-                Log.d(getClass().getSimpleName(), "----" + service);
-            }
 
+        IMClient.getClient().addMessageReceiver(mIMMessageReceiver);
+    }
+
+    protected IMMessageReceiver getIMMessageListener() {
+        return new IMMessageReceiver() {
             @Override
-            public void onServiceDisconnected(ComponentName name) {
-                Log.d(getClass().getSimpleName(), name.toString());
+            public boolean onReceiver(String msg) {
+                handleMessage(msg);
+                return true;
             }
         };
-        boolean result = bindService(
-                new Intent("com.edusoho.kuozhi.imserver.IImServerAidlInterface"),
-                mServiceConnection,
-                Context.BIND_AUTO_CREATE
-        );
-        Log.d(getClass().getSimpleName(), "" + result);
+    }
+
+    protected void handleMessage(String msg) {
+        V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(msg, V2CustomContent.class);
+        Chat chat = new Chat(v2CustomContent);
+        if (mFromUserInfo != null) {
+            chat.headImgUrl = mFromUserInfo.mediumAvatar;
+        }
+        mAdapter.addItem(chat);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mServiceConnection != null) {
-            unbindService(mServiceConnection);
+    protected void onStop() {
+        super.onStop();
+        if (mIMMessageReceiver != null) {
+            IMClient.getClient().removeReceiver(mIMMessageReceiver);
         }
     }
 
     @Override
     public void sendMsg(String content) {
         super.sendMsg(content);
+
+        mSendTime = (int) (System.currentTimeMillis() / 1000);
+        Chat chat = new Chat(mToId, mFromId, app.loginUser.nickname,app.loginUser.mediumAvatar,
+                etSend.getText().toString(), PushUtil.ChatMsgType.TEXT, mSendTime);
+
+        addSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, chat);
+        etSend.setText("");
+        etSend.requestFocus();
+
+        V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, chat.content);
         try {
-            mImBinder.send(content);
+            String message = getUtilFactory().getJsonParser().jsonToString(v2CustomContent);
+            IMClient.getClient().getChatRoom(mConversationNo).send(message);
         } catch (Exception e) {
         }
 
-        mSendTime = (int) (System.currentTimeMillis() / 1000);
-        Chat chat = new Chat(mFromId, mToId, "suju3", "",
-                etSend.getText().toString(), PushUtil.ChatMsgType.TEXT, mSendTime);
-        addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
-        etSend.setText("");
-        etSend.requestFocus();
+        notifyNewListView2Update(getNotifyV2CustomContent(PushUtil.ChatMsgType.TEXT, chat.content));
+    }
+
+    private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            Bundle bundle = new Bundle();
+            bundle.putInt(Const.FROM_ID, mFromId);
+            bundle.putString(Const.NEWS_TYPE, mType);
+            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
+        }
+    };
+
+    public void notifyNewListView2Update(V2CustomContent v2CustomContent) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Const.GET_PUSH_DATA, v2CustomContent);
+        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CHAT_MSG);
+        app.sendMsgToTarget(Const.ADD_MSG, bundle, NewsFragment.class);
+    }
+
+    private V2CustomContent getNotifyV2CustomContent(String type, String content) {
+        V2CustomContent v2CustomContent = new V2CustomContent();
+        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
+        fromEntity.setNickname(mFromUserInfo.nickname);
+        fromEntity.setId(mFromId);
+        fromEntity.setType(mType);
+        fromEntity.setImage(mFromUserInfo.mediumAvatar);
+        v2CustomContent.setFrom(fromEntity);
+        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
+        toEntity.setId(mToId);
+        toEntity.setType(PushUtil.ChatUserType.USER);
+        v2CustomContent.setTo(toEntity);
+        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
+        bodyEntity.setType(type);
+        bodyEntity.setContent(content);
+        v2CustomContent.setBody(bodyEntity);
+        v2CustomContent.setV(2);
+        v2CustomContent.setCreatedTime(mSendTime);
+        return v2CustomContent;
+    }
+
+    private V2CustomContent getV2CustomContent(String type, String content) {
+        V2CustomContent v2CustomContent = new V2CustomContent();
+        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
+        fromEntity.setNickname(app.loginUser.nickname);
+        fromEntity.setId(mToId);
+        fromEntity.setType(mType);
+        fromEntity.setImage(app.loginUser.mediumAvatar);
+        v2CustomContent.setFrom(fromEntity);
+        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
+        toEntity.setId(mFromId);
+        toEntity.setType(PushUtil.ChatUserType.USER);
+        v2CustomContent.setTo(toEntity);
+        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
+        bodyEntity.setType(type);
+        bodyEntity.setContent(content);
+        v2CustomContent.setBody(bodyEntity);
+        v2CustomContent.setV(2);
+        v2CustomContent.setCreatedTime(mSendTime);
+        return v2CustomContent;
+    }
+
+    protected void createChatConvNo() {
+        new UserProvider(mContext).createConvNo(mFromId)
+        .success(new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap linkedHashMap) {
+                String conversationNo = null;
+                if (linkedHashMap == null
+                        || (conversationNo = linkedHashMap.get("conversationNo").toString()) == null) {
+                    return;
+                }
+
+                mConversationNo = conversationNo;
+                Log.d(TAG, conversationNo);
+            }
+        });
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    protected UtilFactory getUtilFactory() {
+        return FactoryManager.getInstance().create(UtilFactory.class);
     }
 
     private void addSendMsgToListView(int delivery, Chat chat) {

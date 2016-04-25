@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
-
 import com.edusoho.kuozhi.v3.model.bal.FollowerNotificationResult;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.SearchFriendResult;
@@ -9,7 +8,6 @@ import com.edusoho.kuozhi.v3.model.result.FollowResult;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.List;
 
 /**

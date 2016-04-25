@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.UtilFactory;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.google.gson.reflect.TypeToken;
@@ -149,7 +151,7 @@ public class New implements Serializable {
                 break;
         }
 
-        belongId = EdusohoApp.app.loginUser.id;
+        belongId = v2CustomContent.getTo().getId();
     }
 
     public New(Chat chat) {
@@ -157,8 +159,11 @@ public class New implements Serializable {
         title = chat.nickname;
         createdTime = chat.createdTime;
         imgUrl = chat.headImgUrl;
-        CustomContent customContent = chat.getCustomContent();
-        type = chat.getCustomContent().getTypeBusiness();
+
+        CustomContent customContent = getUtilFactory().getJsonParser().fromJson(
+                chat.custom, CustomContent.class
+        );
+        type = customContent.getTypeBusiness();
         if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.TEXT)) {
             content = chat.content;
         } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.IMAGE)) {
@@ -166,55 +171,40 @@ public class New implements Serializable {
         } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.AUDIO)) {
             content = String.format("[%s]", Const.MEDIA_AUDIO);
         }
-        belongId = EdusohoApp.app.loginUser.id;
+        belongId = chat.toId;
     }
 
-    public New(WrapperXGPushTextMessage message) {
-        V2CustomContent v2CustomContent = message.getV2CustomContent();
-        if (v2CustomContent.getFrom() != null) {
-            //新格式
-            fromId = v2CustomContent.getFrom().getId();
-            title = message.getTitle();
-            switch (v2CustomContent.getBody().getType()) {
-                case PushUtil.ChatMsgType.AUDIO:
-                    content = String.format("[%s]", Const.MEDIA_AUDIO);
-                    break;
-                case PushUtil.ChatMsgType.IMAGE:
-                    content = String.format("[%s]", Const.MEDIA_IMAGE);
-                    break;
-                case PushUtil.ChatMsgType.MULTI:
-                    RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
-                    });
-                    content = body.content;
-                    break;
-                default:
-                    content = message.getContent();
-            }
-            createdTime = v2CustomContent.getCreatedTime();
-            imgUrl = v2CustomContent.getFrom().getImage();
-            type = v2CustomContent.getFrom().getType();
-            belongId = EdusohoApp.app.loginUser.id;
-        } else {
-            CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
-            });
-            fromId = customContent.getFromId();
-            title = message.getTitle();
-            if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.IMAGE)) {
-                content = String.format("[%s]", Const.MEDIA_IMAGE);
-            } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.AUDIO)) {
+    protected UtilFactory getUtilFactory() {
+        return FactoryManager.getInstance().create(UtilFactory.class);
+    }
+
+    public New(WrapperXGPushTextMessage message)
+    {
+        this(message.getV2CustomContent());
+    }
+
+    public New(V2CustomContent v2CustomContent) {
+        //新格式
+        fromId = v2CustomContent.getFrom().getId();
+        title = v2CustomContent.getFrom().getNickname();
+        switch (v2CustomContent.getBody().getType()) {
+            case PushUtil.ChatMsgType.AUDIO:
                 content = String.format("[%s]", Const.MEDIA_AUDIO);
-            } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.MULTI)) {
-                RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
+                break;
+            case PushUtil.ChatMsgType.IMAGE:
+                content = String.format("[%s]", Const.MEDIA_IMAGE);
+                break;
+            case PushUtil.ChatMsgType.MULTI:
+                RedirectBody body = EdusohoApp.app.parseJsonValue(v2CustomContent.getBody().getContent(), new TypeToken<RedirectBody>() {
                 });
                 content = body.content;
-            } else {
-                content = message.getContent();
-            }
-            createdTime = customContent.getCreatedTime();
-            imgUrl = customContent.getImgUrl();
-            //newModel.setUnread();
-            type = customContent.getTypeBusiness();
-            belongId = EdusohoApp.app.loginUser.id;
+                break;
+            default:
+                content = v2CustomContent.getBody().getContent();
         }
+        createdTime = v2CustomContent.getCreatedTime();
+        imgUrl = v2CustomContent.getFrom().getImage();
+        type = v2CustomContent.getFrom().getType();
+        belongId = v2CustomContent.getTo().getId();
     }
 }

@@ -499,7 +499,7 @@ public class ChatActivity extends BaseChatActivity implements ChatAdapter.ImageE
             switch (messageType.code) {
                 case Const.ADD_MSG:
                     if (mFromId == v2CustomContent.getFrom().getId()) {
-                        Chat chat = new Chat(wrapperMessage);
+                        Chat chat = new Chat(wrapperMessage.getV2CustomContent());
                         if (mFromUserInfo != null) {
                             chat.headImgUrl = mFromUserInfo.mediumAvatar;
                         }

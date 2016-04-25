@@ -13,6 +13,8 @@ import android.widget.RadioGroup;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -85,7 +87,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         mCourseId = mNewItemInfo.fromId;
         mCreatedTime = mNewItemInfo.createdTime;
         mFragmentType = getFragmentType();
-        getRoleInCourse(mCourseId, app.loginUser.id, new NormalCallback<String>() {
+        getRoleInCourse(mCourseId, getAppSettingProvider().getCurrentUser().id, new NormalCallback<String>() {
             @Override
             public void success(String role) {
                 mUserTypeInCourse = role;
@@ -220,12 +222,16 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private String getFragmentType() {
         CourseDiscussDataSource mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
         CourseDiscussEntity courseDiscussEntity = mCourseDiscussDataSource.get(" BELONGID = ? AND COURSEID = ? ORDER BY CREATEDTIME DESC LIMIT 0, 1",
-                new String[]{app.loginUser.id + "", mCourseId + ""});
+                new String[]{getAppSettingProvider().getCurrentUser().id + "", mCourseId + ""});
         if (courseDiscussEntity != null && courseDiscussEntity.createdTime == mCreatedTime) {
             return mEntranceType[0];
         } else {
             return mEntranceType[1];
         }
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 
     private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {

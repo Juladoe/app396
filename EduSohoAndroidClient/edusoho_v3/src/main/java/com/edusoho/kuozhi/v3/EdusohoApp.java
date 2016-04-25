@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -31,6 +32,7 @@ import com.edusoho.kuozhi.BuildConfig;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -38,6 +40,7 @@ import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
 import com.edusoho.kuozhi.v3.listener.SwitchNetSchoolListener;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
@@ -73,12 +76,11 @@ import com.tencent.android.tpush.XGIOperateCallback;
 import com.tencent.android.tpush.XGPushConfig;
 import com.tencent.android.tpush.XGPushManager;
 import com.tencent.android.tpush.common.Constants;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -301,6 +303,43 @@ public class EdusohoApp extends Application {
         setHost(getString(R.string.app_host));
         notifyMap = new HashMap<>();
         initApp();
+
+        if (!TextUtils.isEmpty(app.token)) {
+            bindImServerHost();
+        }
+
+        FactoryManager.getInstance().initContext(getBaseContext());
+    }
+
+    private void bindImServerHost() {
+        int pid = android.os.Process.myPid();
+        String processAppName = getAppName(pid);
+
+        if (processAppName == null ||!processAppName.equalsIgnoreCase(getPackageName())) {
+            Log.e(TAG, "enter the service process!");
+            return;
+        }
+        new IMServiceProvider(getBaseContext()).bindServer();
+    }
+
+    private String getAppName(int pID) {
+        String processName = null;
+        ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
+        List l = am.getRunningAppProcesses();
+        Iterator i = l.iterator();
+        PackageManager pm = this.getPackageManager();
+        while (i.hasNext()) {
+            ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo) (i.next());
+            try {
+                if (info.pid == pID) {
+                    processName = info.processName;
+                    return processName;
+                }
+            } catch (Exception e) {
+                // Log.d("Process", "Error>> :"+ e.toString());
+            }
+        }
+        return processName;
     }
 
     private String getDomain() {

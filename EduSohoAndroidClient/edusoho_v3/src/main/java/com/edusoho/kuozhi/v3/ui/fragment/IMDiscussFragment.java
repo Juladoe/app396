@@ -33,14 +33,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.adapter.CourseDiscussAdapter;
 import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
-import com.edusoho.kuozhi.v3.broadcast.ImServerReceiver;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.UtilFactory;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
@@ -59,6 +61,7 @@ import com.edusoho.kuozhi.v3.util.ChatAudioRecord;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
@@ -82,7 +85,7 @@ import jazzyviewpager.Util;
  * Created by JesseHuang on 15/12/14.
  */
 public class IMDiscussFragment extends BaseFragment implements
-        View.OnClickListener, View.OnTouchListener, View.OnFocusChangeListener, ChatAdapter.ImageErrorClick, ImServerReceiver.ReceiveCallback {
+        View.OnClickListener, View.OnTouchListener, View.OnFocusChangeListener, ChatAdapter.ImageErrorClick {
     private static final String TAG = "DiscussFragment";
     public static int CurrentCourseId = 0;
 
@@ -92,6 +95,7 @@ public class IMDiscussFragment extends BaseFragment implements
     private int mCourseId;
     private New mNewItemInfo;
 
+    private IMMessageReceiver mIMMessageReceiver;
     private CourseDiscussDataSource mCourseDiscussDataSource;
     private CourseDiscussAdapter<CourseDiscussEntity> mAdapter;
 
@@ -131,10 +135,7 @@ public class IMDiscussFragment extends BaseFragment implements
     protected File mCameraFile;
 
     private boolean initFlags = true;
-    private ServiceConnection mServiceConnection;
-    private IImServerAidlInterface mImBinder;
     private String mConversationId;
-    private ImServerReceiver mImServerReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -149,69 +150,68 @@ public class IMDiscussFragment extends BaseFragment implements
         intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
         mActivity.registerReceiver(mAudioDownloadReceiver, intentFilter);
 
-        if (TextUtils.isEmpty(mConversationId)) {
-            CourseProvider courseProvider = new CourseProvider(mContext);
-            RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("courseId", mCourseId + "");
-            courseProvider.getCourse(requestUrl).success(new NormalCallback<CourseDetailsResult>() {
-                @Override
-                public void success(CourseDetailsResult courseDetailsResult) {
-                    mConversationId = courseDetailsResult.course.conversationId;
-                    registImService();
+        getConvNo().then(new PromiseCallback<String>() {
+            @Override
+            public Promise invoke(String convNo) {
+                if (! TextUtils.isEmpty(mConversationId)) {
+                    registIMMessageReceiver();
                 }
-            });
-        } else {
-            registImService();
-        }
-
-        if (mImServerReceiver == null) {
-            registImServerReceiver();
-        }
+                return null;
+            }
+        });
     }
 
-    private void registImServerReceiver() {
-        mImServerReceiver = new ImServerReceiver(this);
-        IntentFilter filter = new IntentFilter("com.edusoho.kuozhi.push.action.IM_MESSAGE");
-        filter.setPriority(1000);
-        mContext.registerReceiver(mImServerReceiver, filter);
+    private Promise getConvNo() {
+        final Promise promise = new Promise();
+        if (! TextUtils.isEmpty(mConversationId)) {
+            promise.resolve(mConversationId);
+            return promise;
+        }
+        CourseProvider courseProvider = new CourseProvider(mContext);
+        RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("courseId", String.valueOf(mCourseId));
+        courseProvider.getCourse(requestUrl).success(new NormalCallback<CourseDetailsResult>() {
+            @Override
+            public void success(CourseDetailsResult courseDetailsResult) {
+                mConversationId = courseDetailsResult.course.conversationId;
+                promise.resolve(mConversationId);
+            }
+        });
+
+        return promise;
     }
 
     @Override
-    public boolean onReceive(String msg) {
-        WrapperXGPushTextMessage wrapperMessage = new WrapperXGPushTextMessage();
-        wrapperMessage.content = msg;
-        CourseDiscussEntity model = new CourseDiscussEntity(wrapperMessage);
-        mAdapter.addItem(model);
-
-        return true;
+    public void onStop() {
+        super.onStop();
+        if (mIMMessageReceiver != null) {
+            IMClient.getClient().removeReceiver(mIMMessageReceiver);
+        }
     }
 
-    private void registImService() {
-        if (mServiceConnection != null) {
-            return;
-        }
-        mServiceConnection = new ServiceConnection() {
+    protected IMMessageReceiver getIMMessageListener() {
+        return new IMMessageReceiver() {
             @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                mImBinder = IImServerAidlInterface.Stub.asInterface(service);
-                try {
-                    mImBinder.joinConversation("" + app.loginUser.id, app.loginUser.nickname, mConversationId);
-                } catch (Exception e) {
-                }
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-                Log.d(getClass().getSimpleName(), name.toString());
+            public boolean onReceiver(String msg) {
+                handleMessage(msg);
+                return true;
             }
         };
-        boolean result = mContext.bindService(
-                new Intent("com.edusoho.kuozhi.imserver.IImServerAidlInterface").setPackage(mContext.getPackageName()),
-                mServiceConnection,
-                Context.BIND_AUTO_CREATE
-        );
-        Log.d(getClass().getSimpleName(), "" + result);
+    }
+
+    protected void handleMessage(String msg) {
+        V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(msg, V2CustomContent.class);
+        CourseDiscussEntity model = new CourseDiscussEntity(v2CustomContent);
+        mAdapter.addItem(model);
+    }
+
+    private void registIMMessageReceiver() {
+        if (mIMMessageReceiver == null) {
+            mIMMessageReceiver = getIMMessageListener();
+        }
+
+        IMClient.getClient().addMessageReceiver(mIMMessageReceiver);
     }
 
     @Override
@@ -347,22 +347,17 @@ public class IMDiscussFragment extends BaseFragment implements
         final CourseDiscussEntity model = new CourseDiscussEntity(0, mCourseId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
                 etSend.getText().toString(), app.loginUser.id, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
 
-        addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
+        addSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, model);
 
         etSend.setText("");
         etSend.requestFocus();
 
         try {
-            WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-            message.setTitle(mCourseName);
-            message.setContent(model.content);
             V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content);
-            String v2CustomContentJson = mActivity.gson.toJson(v2CustomContent);
-            message.setCustomContentJson(v2CustomContentJson);
-            message.isForeground = true;
-            notifyNewFragmentListView2Update(message);
+            notifyNewListView2Update(v2CustomContent);
 
-            mImBinder.send(getUtilFactory().getJsonParser().jsonToString(message));
+            String msg = getUtilFactory().getJsonParser().jsonToString(v2CustomContent);
+            IMClient.getClient().getChatRoom(mConversationId).send(msg);
         } catch (Exception e) {
         }
     }
@@ -434,7 +429,7 @@ public class IMDiscussFragment extends BaseFragment implements
             V2CustomContent v2CustomContent = getV2CustomContent(type, message.getContent());
             message.setCustomContentJson(mActivity.gson.toJson(v2CustomContent));
             message.isForeground = true;
-            notifyNewFragmentListView2Update(message);
+            //notifyNewFragmentListView2Update(message);
 
             addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
 
@@ -561,9 +556,9 @@ public class IMDiscussFragment extends BaseFragment implements
         mStart = mStart + 1;
     }
 
-    public void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
+    public void notifyNewListView2Update(V2CustomContent v2CustomContent) {
         Bundle bundle = new Bundle();
-        bundle.putSerializable(Const.GET_PUSH_DATA, message);
+        bundle.putSerializable(Const.GET_PUSH_DATA, v2CustomContent);
         bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_SEND_COURSE_DISCUSS_MSG);
         app.sendMsgToTarget(Const.ADD_COURSE_DISCUSS_MSG, bundle, NewsFragment.class);
     }
@@ -852,14 +847,6 @@ public class IMDiscussFragment extends BaseFragment implements
         }
     }
 
-    //endregion
-
-    /**
-     * 存本地的Custom信息
-     *
-     * @return V2CustomContent
-     */
-
     private V2CustomContent getV2CustomContent(String type, String content) {
         V2CustomContent v2CustomContent = new V2CustomContent();
         V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
@@ -877,6 +864,7 @@ public class IMDiscussFragment extends BaseFragment implements
         V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
         bodyEntity.setType(type);
         bodyEntity.setContent(content);
+        bodyEntity.setTitle(mCourseName);
         v2CustomContent.setBody(bodyEntity);
         v2CustomContent.setV(Const.PUSH_VERSION);
         v2CustomContent.setCreatedTime(mSendTime);
@@ -971,14 +959,6 @@ public class IMDiscussFragment extends BaseFragment implements
         mActivity.unregisterReceiver(mAudioDownloadReceiver);
         if (mCourseDiscussDataSource != null) {
             mCourseDiscussDataSource.close();
-        }
-
-        if (mServiceConnection != null) {
-            mContext.unbindService(mServiceConnection);
-        }
-
-        if (mImServerReceiver != null) {
-            mContext.unregisterReceiver(mImServerReceiver);
         }
     }
 
