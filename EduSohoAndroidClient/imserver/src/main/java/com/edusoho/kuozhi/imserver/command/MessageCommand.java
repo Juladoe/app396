@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.imserver.command;
 
 import com.edusoho.kuozhi.imserver.ImServer;
-
 import org.json.JSONObject;
 
 /**

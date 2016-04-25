@@ -3,7 +3,7 @@ package com.edusoho.kuozhi.imserver.listener;
 /**
  * Created by su on 2016/3/22.
  */
-public interface ImReceiver {
+public interface IMMessageReceiver {
 
-    public void onReceiver(String msg);
+    boolean onReceiver(String msg);
 }

@@ -5,7 +5,7 @@ package com.edusoho.kuozhi.imserver;
 
 interface IImServerAidlInterface {
 
-    void send(String message);
+    void send(String convNo, String message);
 
     void joinConversation(String clientId, String nickname, String convNo);
 }

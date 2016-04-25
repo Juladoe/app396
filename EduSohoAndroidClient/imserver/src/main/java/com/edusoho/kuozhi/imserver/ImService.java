@@ -2,10 +2,15 @@ package com.edusoho.kuozhi.imserver;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.IBinder;
-import android.text.TextUtils;
 import android.util.Log;
-import com.edusoho.kuozhi.imserver.listener.ImReceiver;
+
+import com.edusoho.kuozhi.imserver.broadcast.NetWorkStatusBroadcastReceiver;
+import com.edusoho.kuozhi.imserver.util.NetTypeConst;
+
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -14,7 +19,11 @@ import java.util.List;
 public class ImService extends Service {
 
     public static final String HOST = "host";
+    public static final String CLIENT_NAME = "clientName";
+    public static final String ACTION = "action";
+    public static final int ACTION_INIT = 0011;
 
+    private NetWorkStatusBroadcastReceiver mReceiver;
     private ImServer mImServer;
     private ImBinder mImBinder;
 
@@ -22,31 +31,79 @@ public class ImService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(getClass().getSimpleName(), "onCreate");
-        mImServer = new ImServer();
+        mImServer = new ImServer(getBaseContext());
         mImBinder = new ImBinder();
-        mImServer.setReceiver(new ImServer.Receiver() {
+
+        registNetWorkStatusBroadcastReceiver();
+    }
+
+    private void registNetWorkStatusBroadcastReceiver() {
+        mReceiver = new NetWorkStatusBroadcastReceiver(getNetWorkStatusCallback());
+        registerReceiver(mReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+    }
+
+    protected NetWorkStatusBroadcastReceiver.NetWorkStatusCallback getNetWorkStatusCallback() {
+
+        return new NetWorkStatusBroadcastReceiver.NetWorkStatusCallback() {
             @Override
-            public void onReceive(String msg) {
-                Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
-                intent.putExtra("message", msg);
-                sendBroadcast(intent);
+            public void onStatusChange(int netType, boolean isConnected) {
+                if (! mImServer.isReady()) {
+                    return;
+                }
+                if (isConnected && !mImServer.isConnected()) {
+                    mImServer.start();
+                }
+                switch (netType) {
+                    case NetTypeConst.WIFI:
+                        mImServer.getHeartManager().switchPingType(NetTypeConst.WIFI);
+                        break;
+                    case NetTypeConst.NONE:
+                        mImServer.stop();
+                        break;
+                    case NetTypeConst.WCDMA:
+                        mImServer.getHeartManager().switchPingType(NetTypeConst.WCDMA);
+                        break;
+                }
             }
-        });
+        };
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        List<String> hostList = intent.getStringArrayListExtra(HOST);
-        if (hostList != null && ! hostList.isEmpty()) {
-            mImServer.clear();
-            mImServer.initWithHost(hostList);
+        Log.d(getClass().getSimpleName(), "onStartCommand" + intent);
+        if (intent == null) {
+            return 0;
         }
+        int action = intent.getIntExtra(ACTION, 0);
+
+        if (action == ACTION_INIT) {
+            Log.d(getClass().getSimpleName(), "init");
+            List<String> hostList = intent.getStringArrayListExtra(HOST);
+            String clientName = intent.getStringExtra(CLIENT_NAME);
+            initServerHost(clientName, hostList);
+            return super.onStartCommand(intent, flags, startId);
+        }
+
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void initServerHost(String clientName, List<String> hostList) {
+        if (hostList == null || hostList.isEmpty()) {
+            Log.d(getClass().getSimpleName(), "no server host");
+            return;
+        }
+
+        Log.d(getClass().getSimpleName(), Arrays.toString(hostList.toArray()));
+        mImServer.initWithHost(clientName, hostList);
+        mImServer.start();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (mReceiver != null) {
+            unregisterReceiver(mReceiver);
+        }
         Log.d(getClass().getSimpleName(), "onDestroy");
     }
 
@@ -58,14 +115,12 @@ public class ImService extends Service {
 
     public class ImBinder extends IImServerAidlInterface.Stub
     {
-        private ImReceiver mImReceiver;
-
-        public void send(String message) {
-            mImServer.sendMessage(message);
+        public void send(String convNo, String message) {
+            mImServer.sendMessage(convNo, message);
         }
 
         public void joinConversation(String clientId, String nickname, String convNo) {
-            mImServer.joinConversation(clientId, nickname, convNo);
+
         }
     }
 }

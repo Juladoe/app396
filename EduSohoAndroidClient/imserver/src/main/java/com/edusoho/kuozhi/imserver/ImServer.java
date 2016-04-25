@@ -1,23 +1,21 @@
 package com.edusoho.kuozhi.imserver;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import com.edusoho.kuozhi.imserver.command.CommandFactory;
-import com.koushikdutta.async.callback.CompletedCallback;
-import com.koushikdutta.async.callback.WritableCallback;
-import com.koushikdutta.async.future.Future;
-import com.koushikdutta.async.http.AsyncHttpClient;
-import com.koushikdutta.async.http.AsyncHttpGet;
-import com.koushikdutta.async.http.AsyncHttpRequest;
-import com.koushikdutta.async.http.AsyncHttpResponse;
-import com.koushikdutta.async.http.WebSocket;
-import org.json.JSONArray;
+import com.edusoho.kuozhi.imserver.listener.IChannelReceiveListener;
+import com.edusoho.kuozhi.imserver.listener.IConnectStatusListener;
+import com.edusoho.kuozhi.imserver.listener.IHeartStatusListener;
+import com.edusoho.kuozhi.imserver.service.IConnectionManager;
+import com.edusoho.kuozhi.imserver.service.IHeartManager;
+import com.edusoho.kuozhi.imserver.service.IMsgManager;
+import com.edusoho.kuozhi.imserver.service.Impl.ConnectionManager;
+import com.edusoho.kuozhi.imserver.service.Impl.HeartManagerImpl;
+import com.edusoho.kuozhi.imserver.service.Impl.MsgManager;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.List;
-
-import cn.trinea.android.common.util.DigestUtils;
-
 
 /**
  * Created by su on 2016/3/17.
@@ -35,70 +33,120 @@ public class ImServer {
             "toId"
     };
 
-    private List<String> mHostList;
-    private int mCurrentHostIndex;
-    private String mToken;
-    private String mConvNo;
+    private Context mContext;
     private String mClientName;
-    private String mClientId;
-    private PingManager mPingManager;
-    private Future<WebSocket> mWebSocketFuture;
-    private Receiver mReceiver;
-    private AsyncHttpClient.WebSocketConnectCallback mWebSocketConnectCallback;
+    private List<String> mHostList;
 
-    private PingManager.PingCallback mPingCallback = new PingManager.PingCallback() {
-        @Override
-        public void onPing() {
-            Log.d(TAG, "onPing");
-            ping();
-        }
-    };
+    private IConnectionManager mIConnectionManager;
+    private IHeartManager mIHeartManager;
+    private IMsgManager mIMsgManager;
 
-    public ImServer() {
-        this.mPingManager = new PingManager();
-        this.mPingManager.setPingCallback(mPingCallback);
-        //this.mConvNo = "b6565ecacef7fd0f3ea1fab66e7b3a49";
+    public ImServer(Context context) {
+        this.mContext = context;
+        initHeartManager();
+        initMsgManager();
     }
 
-    public List<String> getHost() {
-        return mHostList;
+    private void initMsgManager() {
+        this.mIMsgManager = new MsgManager();
     }
 
-    public void setReceiver(Receiver receiver) {
-        this.mReceiver = receiver;
+    private void initHeartManager() {
+        this.mIHeartManager = new HeartManagerImpl();
+        this.mIHeartManager.addHeartStatusListener(new IHeartStatusListener() {
+            @Override
+            public void onPing() {
+                Log.d(TAG, "onPing");
+                ping();
+            }
+
+            @Override
+            public void onPong(int status) {
+                Log.d(TAG, "status:" + status);
+                if (status == IHeartStatusListener.TIMEOUT) {
+                    mIConnectionManager.accept();
+                }
+            }
+        });
     }
 
-    public void clear() {
-        mPingManager.stop();
+    private void initConnectManager(String clientName, List<String> host) {
+        this.mIConnectionManager = new ConnectionManager(clientName);
+        this.mIConnectionManager.setServerHostList(host);
+
+        this.mIConnectionManager.addIChannelReceiveListener(new IChannelReceiveListener() {
+            @Override
+            public void onReceiver(String content) {
+                handleCmd(content);
+            }
+        });
+
+        this.mIConnectionManager.addIConnectStatusListener(new IConnectStatusListener() {
+            @Override
+            public void onStatusChange(int status, String error) {
+                Log.d(TAG, "IConnectStatusListener status:" + status);
+                switch (status) {
+                    case IConnectStatusListener.OPEN:
+                        mIHeartManager.start();
+                        break;
+                    case IConnectStatusListener.CLOSE:
+                    case IConnectStatusListener.END:
+                    case IConnectStatusListener.ERROR:
+                        mIHeartManager.stop();
+                }
+            }
+        });
+
+        this.mIConnectionManager.accept();
     }
 
-    public void initWithHost(List<String> host) {
+    public void initWithHost(String clientName, List<String> host) {
+        this.mClientName = clientName;
         this.mHostList = host;
-        this.mCurrentHostIndex = 0;
-        loginImServer();
     }
 
-    public PingManager getPingManager() {
-        return mPingManager;
+    public boolean isConnected() {
+        return mIConnectionManager.isConnected();
     }
 
-    public void sendMessage(String msg) {
+    public boolean isReady() {
+        return mIHeartManager != null && mIConnectionManager != null;
+    }
+
+    public void stop() {
+        if (this.mIHeartManager != null) {
+            this.mIHeartManager.stop();
+        }
+        if (this.mIConnectionManager != null) {
+            this.mIConnectionManager.close();
+        }
+    }
+
+    public void start() {
+        stop();
+        initConnectManager(mClientName, mHostList);
+    }
+
+    public IHeartManager getHeartManager() {
+        return mIHeartManager;
+    }
+
+    public void sendMessage(String convNo, String msg) {
         send(new String[] {
                 "cmd" , "send",
                 "toId" , "all",
-                "convNo" , mConvNo,
+                "convNo" , convNo,
                 "msg", msg
         });
     }
 
     public void onReceiveMessage(String msg) {
-        if (mReceiver == null) {
-            return;
-        }
-        mReceiver.onReceive(msg);
+        Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
+        intent.putExtra("message", msg);
+        mContext.sendBroadcast(intent);
     }
 
-    public void ping() {
+    private void ping() {
         send(pingCmd);
     }
 
@@ -108,56 +156,10 @@ public class ImServer {
             for (int i = 0; i < params.length; i = i + 2) {
                 msgObj.put(params[i], params[i + 1]);
             }
-            mWebSocketFuture.tryGet().send(msgObj.toString());
+            this.mIConnectionManager.send(msgObj.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private AsyncHttpClient.WebSocketConnectCallback getWebSocketConnectCallback() {
-        return new AsyncHttpClient.WebSocketConnectCallback() {
-            @Override
-            public void onCompleted(Exception ex, WebSocket webSocket) {
-                if (ex != null) {
-                    ex.printStackTrace();
-                }
-                Log.d(TAG, "onCompleted:" + webSocket);
-                webSocket.setEndCallback(new CompletedCallback() {
-                    @Override
-                    public void onCompleted(Exception e) {
-                        e.printStackTrace();
-                    }
-                });
-                webSocket.setStringCallback(new WebSocket.StringCallback() {
-                    @Override
-                    public void onStringAvailable(String s) {
-                        Log.d(TAG, "re:" + s);
-                        handleCmd(s);
-                    }
-                });
-
-                webSocket.setClosedCallback(new CompletedCallback() {
-                    @Override
-                    public void onCompleted(Exception e) {
-                        Log.d(TAG, "close");
-                    }
-                });
-
-                webSocket.setWriteableCallback(new WritableCallback() {
-                    @Override
-                    public void onWriteable() {
-                        Log.d(TAG, "onWriteable");
-                    }
-                });
-                webSocket.setPongCallback(new WebSocket.PongCallback() {
-                    @Override
-                    public void onPongReceived(String s) {
-                        Log.d(TAG, "pone " + s);
-                    }
-                });
-                mPingManager.start();
-            }
-        };
     }
 
     private void handleCmd(String cmdStr) {
@@ -168,59 +170,5 @@ public class ImServer {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    private void createJoinToken(String userId, String clientId) {
-        int time = (int) System.currentTimeMillis();
-
-        String token = String.format("%s:%s:%s:%d:%s:%s", userId, clientId, clientId, time, clientId);
-    }
-
-    private void getJoinToken() {
-    }
-
-    public void joinConversation(String clientId, String nickname, final String convNo) {
-        this.mClientName = nickname;
-        this.mConvNo = convNo;
-
-        String url = String.format("http://im-rpc.han.dev.qiqiuyun.cn:8081/tmp.php?act=getJoinToken&clientId=%s&no=%s", clientId, convNo);
-        AsyncHttpClient.getDefaultInstance().executeString(new AsyncHttpGet(url), new AsyncHttpClient.StringCallback() {
-            @Override
-            public void onCompleted(Exception e, AsyncHttpResponse asyncHttpResponse, String s) {
-                mToken = s.substring(1, s.length() - 1);
-
-                send(new String[] {
-                        "cmd", "add",
-                        "convNo", convNo,
-                        "token", mToken
-                });
-            }
-        });
-    }
-
-    private void loginImServer() {
-        if (mCurrentHostIndex > mHostList.size()) {
-            return;
-        }
-        String host = mHostList.get(mCurrentHostIndex++);
-        connectWebsocket(host);
-    }
-
-    private void connectWebsocket(String host) {
-        Log.d(TAG, host);
-        mWebSocketFuture =  AsyncHttpClient.getDefaultInstance().websocket(
-                host  + "&clientName=" + mClientName,
-                null,
-                getWebSocketConnectCallback()
-        );
-    }
-
-    public Future<WebSocket> getSocket() {
-        return mWebSocketFuture;
-    }
-
-    public static interface Receiver
-    {
-        public void onReceive(String msg);
     }
 }
