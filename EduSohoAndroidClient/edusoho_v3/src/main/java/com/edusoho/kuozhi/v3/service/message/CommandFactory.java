@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.service.message;
 
 import android.content.Context;
+import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 
@@ -9,7 +10,7 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
  */
 public class CommandFactory {
 
-    public static AbstractCommand create(Context context, V2CustomContent v2CustomContent) {
+    public static AbstractCommand create(Context context, IMMessageReceiver receiver, V2CustomContent v2CustomContent) {
 
         String toType = v2CustomContent.getTo().getType();
         String bodyType = v2CustomContent.getBody().getType();
@@ -22,9 +23,9 @@ public class CommandFactory {
                 if (PushUtil.ChatUserType.CLASSROOM.equals(toType)) {
                     return null;
                 } else if (PushUtil.ChatUserType.USER.equals(toType)) {
-                    return new MessageCommand(context, v2CustomContent);
+                    return new MessageCommand(context, receiver, v2CustomContent);
                 } else if (PushUtil.ChatUserType.COURSE.equals(toType)) {
-                    return new DiscussMsgCommand(context, v2CustomContent);
+                    return new DiscussMsgCommand(context, receiver, v2CustomContent);
                 }
                 break;
         }

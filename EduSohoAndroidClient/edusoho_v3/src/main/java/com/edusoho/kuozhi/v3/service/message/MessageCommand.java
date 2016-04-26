@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.v3.service.message;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
@@ -18,14 +20,16 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
  */
 public class MessageCommand extends AbstractCommand {
 
-    public MessageCommand(Context context, V2CustomContent v2CustomContent)
+    public MessageCommand(Context context, IMMessageReceiver receiver, V2CustomContent v2CustomContent)
     {
-        super(context, v2CustomContent);
+        super(context, receiver, v2CustomContent);
     }
 
     @Override
     public void invoke() {
-        NotificationUtil.showMsgNotification(mContext, mV2CustomContent);
+        if (! IMClient.getClient().isHandleMessageInFront("chat", mV2CustomContent.getFrom().getId())) {
+            NotificationUtil.showMsgNotification(mContext, mV2CustomContent);
+        }
 
         Bundle bundle = new Bundle();
         bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_RECEIVE_CHAT_MSG);

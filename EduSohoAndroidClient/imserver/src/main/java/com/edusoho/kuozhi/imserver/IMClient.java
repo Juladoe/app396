@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
+import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 
 import java.util.ArrayDeque;
@@ -26,6 +27,7 @@ public class IMClient {
 
     private Context mContext;
     private IImServerAidlInterface mImBinder;
+    private IMMessageReceiver mLaterIMMessageReceiver;
     private List<IMMessageReceiver> mMessageReceiverList;
 
     private IMClient() {
@@ -86,10 +88,20 @@ public class IMClient {
         int count = mMessageReceiverList.size();
         for (int i = count - 1; i >= 0; i--) {
             IMMessageReceiver receiver = mMessageReceiverList.get(i);
-            if (receiver.onReceiver(message)) {
-                return;
-            }
+            receiver.getType().isProcessed = receiver.onReceiver(message);
+            this.mLaterIMMessageReceiver = receiver;
         }
+
+        this.mLaterIMMessageReceiver = null;
+    }
+
+    public boolean isHandleMessageInFront(String msgType, int msgId) {
+        ReceiverInfo receiverInfo = null;
+        if (mLaterIMMessageReceiver == null || (receiverInfo = mLaterIMMessageReceiver.getType()) == null) {
+            return false;
+        }
+
+        return msgType.equals(receiverInfo.msgType) && msgId == receiverInfo.msgId;
     }
 
     private String getRandomClientName(Context context) {

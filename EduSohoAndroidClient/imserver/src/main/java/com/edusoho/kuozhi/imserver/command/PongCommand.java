@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.imserver.command;
 
 import com.edusoho.kuozhi.imserver.ImServer;
-import com.edusoho.kuozhi.imserver.PingManager;
 import com.edusoho.kuozhi.imserver.service.IHeartManager;
 
 import org.json.JSONObject;

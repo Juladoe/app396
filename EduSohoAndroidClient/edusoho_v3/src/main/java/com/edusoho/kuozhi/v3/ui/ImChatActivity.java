@@ -11,6 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
@@ -195,26 +196,6 @@ public class ImChatActivity extends BaseChatActivity{
         }
     }
 
-    public void onReceiver(String msg) {
-        Log.d("onReceiver", msg);
-        final Chat chat = new Chat();
-        chat.fromId = mFromId;
-        chat.toId = mToId;
-        chat.nickname = "suju3";
-        chat.content = msg;
-        chat.headImgUrl = "";
-        chat.type = "text";
-        chat.createdTime = 0;
-        chat.direct = Chat.Direct.getDirect(false);
-
-        new Handler(getMainLooper()).post(new Runnable() {
-            @Override
-            public void run() {
-                mAdapter.addItem(chat);
-            }
-        });
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -230,14 +211,22 @@ public class ImChatActivity extends BaseChatActivity{
         return new IMMessageReceiver() {
             @Override
             public boolean onReceiver(String msg) {
-                handleMessage(msg);
+                handleMessage(this, msg);
                 return true;
+            }
+
+            @Override
+            public ReceiverInfo getType() {
+                return new ReceiverInfo("chat", mFromId);
             }
         };
     }
 
-    protected void handleMessage(String msg) {
+    protected void handleMessage(IMMessageReceiver receiver, String msg) {
         V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(msg, V2CustomContent.class);
+        if (v2CustomContent.getFrom().getId() != receiver.getType().msgId) {
+            return;
+        }
         Chat chat = new Chat(v2CustomContent);
         if (mFromUserInfo != null) {
             chat.headImgUrl = mFromUserInfo.mediumAvatar;

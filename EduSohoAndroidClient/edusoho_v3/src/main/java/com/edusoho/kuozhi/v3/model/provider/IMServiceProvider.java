@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.model.provider;
 import android.content.Context;
 import android.util.Log;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.UtilFactory;
@@ -33,17 +34,22 @@ public class IMServiceProvider extends ModelProvider {
                 IMClient.getClient().addMessageReceiver(new IMMessageReceiver() {
                     @Override
                     public boolean onReceiver(String msg) {
-                        handlerMessage(msg);
+                        handlerMessage(this, msg);
                         return false;
+                    }
+
+                    @Override
+                    public ReceiverInfo getType() {
+                        return new ReceiverInfo("global", 1);
                     }
                 });
             }
         });
     }
 
-    private void handlerMessage(String msg) {
+    private void handlerMessage(IMMessageReceiver receiver, String msg) {
         V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(msg, V2CustomContent.class);
-        CommandFactory.create(mContext, v2CustomContent).invoke();
+        CommandFactory.create(mContext, receiver, v2CustomContent).invoke();
     }
 
     protected UtilFactory getUtilFactory() {

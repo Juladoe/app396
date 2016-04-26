@@ -34,6 +34,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
@@ -196,6 +197,11 @@ public class IMDiscussFragment extends BaseFragment implements
             public boolean onReceiver(String msg) {
                 handleMessage(msg);
                 return true;
+            }
+
+            @Override
+            public ReceiverInfo getType() {
+                return new ReceiverInfo("course_discuss", mCourseId);
             }
         };
     }

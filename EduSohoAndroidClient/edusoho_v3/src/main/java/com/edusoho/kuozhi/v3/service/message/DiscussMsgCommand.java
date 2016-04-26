@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.v3.service.message;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
@@ -18,14 +20,16 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
  */
 public class DiscussMsgCommand extends AbstractCommand {
 
-    public DiscussMsgCommand(Context context, V2CustomContent v2CustomContent)
+    public DiscussMsgCommand(Context context, IMMessageReceiver receiver, V2CustomContent v2CustomContent)
     {
-        super(context, v2CustomContent);
+        super(context, receiver, v2CustomContent);
     }
 
     @Override
     public void invoke() {
-        NotificationUtil.showCourseDiscuss(mContext, mV2CustomContent);
+        if (! IMClient.getClient().isHandleMessageInFront("course_discuss", mV2CustomContent.getTo().getId())) {
+            NotificationUtil.showCourseDiscuss(mContext, mV2CustomContent);
+        }
 
         Bundle bundle = new Bundle();
         bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_RECEIVE_COURSE_DISCUSS_MSG);
