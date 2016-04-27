@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
+import android.util.Log;
+
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -47,7 +49,7 @@ public class SystemProvider extends ModelProvider {
         RequestUrl requestUrl = new RequestUrl(school.host + "/api/im/me/login");
         requestUrl.getHeads().put("Auth-Token", token);
 
-        final ProviderListener<ArrayList<String>> stringResponseListener = new ProviderListener<ArrayList<String>>(){};
+        final ProviderListener<LinkedHashMap> stringResponseListener = new ProviderListener<LinkedHashMap>(){};
         ProviderListener<LinkedHashMap> responseListener = new ProviderListener<LinkedHashMap>(){
         };
         addPostRequest(requestUrl, new TypeToken<LinkedHashMap>() {
@@ -58,7 +60,7 @@ public class SystemProvider extends ModelProvider {
                 if (hashMap == null || !hashMap.containsKey("servers")) {
                     return;
                 }
-                ArrayList<String> hostList = (ArrayList<String>) hashMap.get("servers");
+                LinkedHashMap hostList = (LinkedHashMap) hashMap.get("servers");
                 stringResponseListener.onResponse(hostList);
             }
         });

@@ -12,6 +12,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.service.message.CommandFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 
 /**
  * Created by 菊 on 2016/4/25.
@@ -24,12 +25,12 @@ public class IMServiceProvider extends ModelProvider {
     }
 
     public void bindServer() {
-        new SystemProvider(mContext).getImServerHosts().success(new NormalCallback<ArrayList<String>>() {
+        new SystemProvider(mContext).getImServerHosts().success(new NormalCallback<LinkedHashMap>() {
             @Override
-            public void success(ArrayList<String> hostList) {
-                Log.d("IMServiceProvider", "init im service" + Arrays.toString(hostList.toArray()));
+            public void success(LinkedHashMap hostMap) {
+                Log.d("IMServiceProvider", "init im service" + hostMap.size());
                 IMClient.getClient().init(mContext);
-                IMClient.getClient().start(hostList);
+                IMClient.getClient().start(hostMap);
 
                 IMClient.getClient().addMessageReceiver(new IMMessageReceiver() {
                     @Override

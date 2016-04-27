@@ -565,7 +565,7 @@ public class IMDiscussFragment extends BaseFragment implements
     public void notifyNewListView2Update(V2CustomContent v2CustomContent) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, v2CustomContent);
-        bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_SEND_COURSE_DISCUSS_MSG);
+        bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_RECEIVE_COURSE_DISCUSS_MSG);
         app.sendMsgToTarget(Const.ADD_COURSE_DISCUSS_MSG, bundle, NewsFragment.class);
     }
 

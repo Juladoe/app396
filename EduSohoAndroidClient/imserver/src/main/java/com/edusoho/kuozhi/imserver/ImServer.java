@@ -36,6 +36,7 @@ public class ImServer {
     private Context mContext;
     private String mClientName;
     private List<String> mHostList;
+    private List<String> mIgnoreNosList;
 
     private IConnectionManager mIConnectionManager;
     private IHeartManager mIHeartManager;
@@ -100,7 +101,8 @@ public class ImServer {
         this.mIConnectionManager.accept();
     }
 
-    public void initWithHost(String clientName, List<String> host) {
+    public void initWithHost(String clientName, List<String> host, List<String> ignoreNosList) {
+        this.mIgnoreNosList = ignoreNosList;
         this.mClientName = clientName;
         this.mHostList = host;
     }

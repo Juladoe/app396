@@ -32,7 +32,7 @@ public class DiscussMsgCommand extends AbstractCommand {
         }
 
         Bundle bundle = new Bundle();
-        bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_RECEIVE_COURSE_DISCUSS_MSG);
+        bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_SEND_COURSE_DISCUSS_MSG);
         bundle.putSerializable(Const.GET_PUSH_DATA, mV2CustomContent);
         MessageEngine.getInstance().sendMsgToTaget(Const.ADD_COURSE_DISCUSS_MSG, bundle, NewsFragment.class);
 

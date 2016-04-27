@@ -7,8 +7,11 @@ import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+
+import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
@@ -22,9 +25,11 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
+import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
@@ -277,7 +282,7 @@ public class ImChatActivity extends BaseChatActivity{
     public void notifyNewListView2Update(V2CustomContent v2CustomContent) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.GET_PUSH_DATA, v2CustomContent);
-        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CHAT_MSG);
+        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_RECEIVE_CHAT_MSG);
         app.sendMsgToTarget(Const.ADD_MSG, bundle, NewsFragment.class);
     }
 
@@ -367,6 +372,82 @@ public class ImChatActivity extends BaseChatActivity{
      * @param file upload file
      */
     public void uploadMedia(final File file, final String type, String strType) {
+        if (file == null || !file.exists()) {
+            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
+            return;
+        }
+        try {
+            mSendTime = (int) (System.currentTimeMillis() / 1000);
+            final Chat chat = new Chat(app.loginUser.id, mFromId, app.loginUser.nickname, app.loginUser.mediumAvatar,
+                    file.getPath(), type, mSendTime);
 
+            //生成New页面的消息并通知更改
+            V2CustomContent v2CustomContent = getV2CustomContent(type, String.format("[%s]", strType));
+            notifyNewListView2Update(v2CustomContent);
+            addSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, chat);
+
+            getUpYunUploadInfo(file, mFromId, new NormalCallback<UpYunUploadResult>() {
+                @Override
+                public void success(final UpYunUploadResult result) {
+                    if (result != null) {
+                        chat.upyunMediaPutUrl = result.putUrl;
+                        chat.upyunMediaGetUrl = result.getUrl;
+                        chat.headers = result.getHeaders();
+                        uploadUnYunMedia(file, chat, type);
+                        saveUploadResult(result.putUrl, result.getUrl, mFromId);
+                    } else {
+                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, chat);
+                    }
+                }
+            });
+            viewMediaLayout.setVisibility(View.GONE);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
+    /**
+     * 更新一行聊天记录，并更新对应的Item
+     *
+     * @param delivery 是否送达
+     * @param chat     一行聊天记录
+     */
+    private void updateSendMsgToListView(int delivery, Chat chat) {
+        chat.delivery = delivery;
+        mChatDataSource.update(chat);
+        mAdapter.updateItemByChatId(chat);
+    }
+
+    private void uploadUnYunMedia(final File file, final Chat chat, final String type) {
+        RequestUrl putUrl = new RequestUrl(chat.upyunMediaPutUrl);
+        putUrl.setHeads(chat.headers);
+        putUrl.setMuiltParams(new Object[]{"file", file});
+        ajaxPostMultiUrl(putUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "success");
+                sendMediaMsg(chat, type);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, chat);
+                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
+                Log.d(TAG, "upload media res to upyun failed");
+            }
+        }, Request.Method.PUT);
+    }
+
+    private void sendMediaMsg(final Chat chat, String type) {
+        V2CustomContent v2CustomContent = getV2CustomContent(type, chat.upyunMediaGetUrl);
+        v2CustomContent.getFrom().setId(app.loginUser.id);
+        v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
+        v2CustomContent.getFrom().setType(mMyType);
+
+        try {
+            String message = getUtilFactory().getJsonParser().jsonToString(v2CustomContent);
+            IMClient.getClient().getChatRoom(mConversationNo).send(message);
+        } catch (Exception e) {
+        }
     }
 }

@@ -19,6 +19,7 @@ import java.util.List;
 public class ImService extends Service {
 
     public static final String HOST = "host";
+    public static final String IGNORE_NOS = "ignoreNos";
     public static final String CLIENT_NAME = "clientName";
     public static final String ACTION = "action";
     public static final int ACTION_INIT = 0011;
@@ -79,22 +80,23 @@ public class ImService extends Service {
         if (action == ACTION_INIT) {
             Log.d(getClass().getSimpleName(), "init");
             List<String> hostList = intent.getStringArrayListExtra(HOST);
+            List<String> ignoreNosList = intent.getStringArrayListExtra(IGNORE_NOS);
             String clientName = intent.getStringExtra(CLIENT_NAME);
-            initServerHost(clientName, hostList);
+            initServerHost(clientName, hostList, ignoreNosList);
             return super.onStartCommand(intent, flags, startId);
         }
 
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void initServerHost(String clientName, List<String> hostList) {
+    private void initServerHost(String clientName, List<String> hostList, List<String> ignoreNosList) {
         if (hostList == null || hostList.isEmpty()) {
             Log.d(getClass().getSimpleName(), "no server host");
             return;
         }
 
         Log.d(getClass().getSimpleName(), Arrays.toString(hostList.toArray()));
-        mImServer.initWithHost(clientName, hostList);
+        mImServer.initWithHost(clientName, hostList, ignoreNosList);
         mImServer.start();
     }
 

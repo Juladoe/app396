@@ -14,6 +14,9 @@ import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -38,11 +41,18 @@ public class IMClient {
         this.mContext = context;
     }
 
-    public void start(ArrayList<String> hostList) {
+    public void start(LinkedHashMap<String, String> hostMap) {
         Intent intent = new Intent("com.edusoho.kuozhi.imserver.IImServerAidlInterface");
         intent.setPackage(mContext.getPackageName());
 
+        ArrayList<String> hostList = new ArrayList<String>();
+        hostList.addAll(hostMap.values());
+
+        ArrayList<String> ignoreNosList = new ArrayList<String>();
+        ignoreNosList.addAll(hostMap.keySet());
+
         intent.putStringArrayListExtra(ImService.HOST, hostList);
+        intent.putStringArrayListExtra(ImService.IGNORE_NOS, ignoreNosList);
         intent.putExtra(ImService.CLIENT_NAME, getRandomClientName(mContext));
         intent.putExtra(ImService.ACTION, ImService.ACTION_INIT);
         mContext.startService(intent);

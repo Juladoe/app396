@@ -32,7 +32,7 @@ public class MessageCommand extends AbstractCommand {
         }
 
         Bundle bundle = new Bundle();
-        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_RECEIVE_CHAT_MSG);
+        bundle.putInt(Const.ADD_CHAT_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CHAT_MSG);
         bundle.putSerializable(Const.GET_PUSH_DATA, mV2CustomContent);
         MessageEngine.getInstance().sendMsgToTaget(Const.ADD_MSG, bundle, NewsFragment.class);
         Chat chatModel = new Chat(mV2CustomContent);
