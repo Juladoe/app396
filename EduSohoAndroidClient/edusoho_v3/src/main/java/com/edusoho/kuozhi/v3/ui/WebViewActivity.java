@@ -7,14 +7,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebViewFactory;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
@@ -27,6 +25,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
     private final static String TAG = "WebViewActivity";
     public final static int CLOSE = 0x01;
     public final static int BACK = 0x02;
+    public final static String SEND_EVENT = "send_event";
 
     private String url = "";
     private ESWebView mWebView;
@@ -67,11 +66,18 @@ public class WebViewActivity extends ActionBarBaseActivity {
         processMessage(message);
         MessageType messageType = message.type;
 
+        if (SEND_EVENT.equals(messageType.type)) {
+            Bundle bundle = message.data;
+            String eventName = bundle.getString("event");
+            mWebView.getWebView().execJsScript(String.format("jsBridgeAdapter.sendEvent('%s')", eventName));
+            return;
+        }
         if (Const.THIRD_PARTY_LOGIN_SUCCESS.equals(messageType.type) || Const.LOGIN_SUCCESS.equals(messageType.type)) {
             if (getRunStatus() == MSG_PAUSE) {
                 saveMessage(message);
                 return;
             }
+
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -123,6 +129,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
                 new MessageType(Const.TOKEN_LOSE),
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS),
+                new MessageType(SEND_EVENT),
         };
         return messageTypes;
     }

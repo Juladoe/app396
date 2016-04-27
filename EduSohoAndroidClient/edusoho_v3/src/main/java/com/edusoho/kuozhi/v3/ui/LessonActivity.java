@@ -258,12 +258,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         mThreadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                app.mEngine.runNormalPlugin("ThreadDiscussActivity", mActivity, new PluginRunCallback() {
+                app.mEngine.runNormalPlugin("ThreadCreateActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, mCourseId);
-                        startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, mLessonId);
-                        startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
+                        startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mCourseId);
+                        startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, "course");
+                        startIntent.putExtra(ThreadCreateActivity.LESSON_ID, mLessonId);
+                        startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, "course");
                     }
                 });
             }

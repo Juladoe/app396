@@ -130,7 +130,8 @@ public class NotificationUtil {
         notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         notifyIntent.putExtra(ThreadDiscussActivity.THREAD_ID, model.getBody().getThreadId());
-        notifyIntent.putExtra(ThreadDiscussActivity.COURSE_ID, model.getBody().getCourseId());
+        notifyIntent.putExtra(ThreadDiscussActivity.TARGET_ID, model.getBody().getCourseId());
+        notifyIntent.putExtra(ThreadDiscussActivity.TARGET_TYPE, "course");
         notifyIntent.putExtra(ThreadDiscussActivity.LESSON_ID, model.getBody().getLessonId());
         notifyIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
         notifyIntent.putExtra(Const.INTENT_TARGET, ThreadDiscussActivity.class);
@@ -157,7 +158,8 @@ public class NotificationUtil {
         notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         notifyIntent.putExtra(ThreadDiscussActivity.THREAD_ID, model.getBody().getThreadId());
-        notifyIntent.putExtra(ThreadDiscussActivity.COURSE_ID, model.getBody().getCourseId());
+        notifyIntent.putExtra(ThreadDiscussActivity.TARGET_ID, model.getBody().getCourseId());
+        notifyIntent.putExtra(ThreadDiscussActivity.TARGET_TYPE, "course");
         notifyIntent.putExtra(ThreadDiscussActivity.LESSON_ID, model.getBody().getLessonId());
         notifyIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
         notifyIntent.putExtra(Const.INTENT_TARGET, ThreadDiscussActivity.class);
@@ -380,7 +382,8 @@ public class NotificationUtil {
             notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
             notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notifyIntent.putExtra(ThreadDiscussActivity.THREAD_ID, model.getBody().getThreadId());
-            notifyIntent.putExtra(ThreadDiscussActivity.COURSE_ID, model.getBody().getCourseId());
+            notifyIntent.putExtra(ThreadDiscussActivity.TARGET_ID, model.getBody().getCourseId());
+            notifyIntent.putExtra(ThreadDiscussActivity.TARGET_TYPE, "course");
             notifyIntent.putExtra(ThreadDiscussActivity.LESSON_ID, model.getBody().getLessonId());
             notifyIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, model.getType());
             notifyIntent.putExtra(Const.INTENT_TARGET, ThreadDiscussActivity.class);
