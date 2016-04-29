@@ -1,7 +1,7 @@
 package com.edusoho.kuozhi.imserver.service;
 
 import com.edusoho.kuozhi.imserver.listener.IChannelReceiveListener;
-import com.edusoho.kuozhi.imserver.listener.IConnectStatusListener;
+import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import java.util.List;
 
 /**
@@ -11,7 +11,7 @@ public interface IConnectionManager {
 
     void setServerHostList(List<String> hostList);
 
-    void addIConnectStatusListener(IConnectStatusListener iConnectStatusListener);
+    void addIConnectStatusListener(IConnectManagerListener iConnectStatusListener);
 
     void addIChannelReceiveListener(IChannelReceiveListener listener);
 

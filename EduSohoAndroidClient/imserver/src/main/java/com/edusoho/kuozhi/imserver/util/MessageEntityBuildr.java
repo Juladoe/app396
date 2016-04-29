@@ -48,6 +48,11 @@ public class MessageEntityBuildr {
         return this;
     }
 
+    public MessageEntityBuildr addMsgNo(String msgNo) {
+        messageEntity.setMsgNo(msgNo);
+        return this;
+    }
+
     public MessageEntityBuildr addTime(String time) {
         messageEntity.setTime(time);
         return this;

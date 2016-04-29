@@ -5,24 +5,34 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
-
 import com.edusoho.kuozhi.imserver.IMClient;
-import com.edusoho.kuozhi.imserver.ImService;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 
 /**
  * Created by su on 2016/3/22.
  */
 public class IMBroadcastReceiver extends BroadcastReceiver {
 
+    public static final String ACTION = "action";
+    public static final int RECEIVER = 0;
+    public static final int STATUS_CHANGE = 1;
+
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(Context context, final Intent intent) {
         Log.d(getClass().getSimpleName(), "onReceive");
-        final MessageEntity message = intent.getParcelableExtra("message");
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                IMClient.getClient().invokeReceiver(message);
+                int action = intent.getIntExtra(ACTION, RECEIVER);
+                if (action == RECEIVER) {
+                    MessageEntity message = intent.getParcelableExtra("message");
+                    IMClient.getClient().invokeReceiver(message);
+                } else if (action == STATUS_CHANGE) {
+                    int status = intent.getIntExtra("status", IConnectManagerListener.OPEN);
+                    boolean isConnected = intent.getBooleanExtra("isConnected", false);
+                    IMClient.getClient().invokeConnectReceiver(status, isConnected);
+                }
             }
         });
     }

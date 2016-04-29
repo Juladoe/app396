@@ -358,6 +358,7 @@ public class NotificationUtil {
             newModel.fromId = v2CustomContent.getTo().getId();
             newModel.type = v2CustomContent.getTo().getType();
             newModel.imgUrl = v2CustomContent.getTo().getImage();
+            newModel.createdTime = v2CustomContent.getCreatedTime();
             notifyIntent.putExtra(Const.NEW_ITEM_INFO, newModel);
             notifyIntent.putExtra(Const.INTENT_TARGET, NewsCourseActivity.class);
             PendingIntent pendIntent = PendingIntent.getActivity(context, fromId,

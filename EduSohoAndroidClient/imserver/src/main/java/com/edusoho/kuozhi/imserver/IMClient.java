@@ -3,20 +3,19 @@ package com.edusoho.kuozhi.imserver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
+import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
+import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
-
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,9 +32,11 @@ public class IMClient {
     private IImServerAidlInterface mImBinder;
     private IMMessageReceiver mLaterIMMessageReceiver;
     private List<IMMessageReceiver> mMessageReceiverList;
+    private List<IMConnectStatusListener> mIMConnectStatusListenerList;
 
     private IMClient() {
         mMessageReceiverList = new LinkedList<>();
+        mIMConnectStatusListenerList = new LinkedList<>();
     }
 
     public void init(Context context) {
@@ -58,7 +59,12 @@ public class IMClient {
         intent.putExtra(ImService.ACTION, ImService.ACTION_INIT);
         mContext.startService(intent);
 
-        connectService();
+        new Handler(Looper.getMainLooper()).postAtTime(new Runnable() {
+            @Override
+            public void run() {
+                connectService();
+            }
+        }, SystemClock.uptimeMillis() + 300);
     }
 
     private void connectService() {
@@ -87,12 +93,38 @@ public class IMClient {
         return new IMChatRoom(convNo, mImBinder);
     }
 
+    public void addConnectStatusListener(IMConnectStatusListener listener) {
+        this.mIMConnectStatusListenerList.add(listener);
+    }
+
     public void addMessageReceiver(IMMessageReceiver receiver) {
         this.mMessageReceiverList.add(receiver);
     }
 
     public void removeReceiver(IMMessageReceiver receiver) {
         this.mMessageReceiverList.remove(receiver);
+    }
+
+    public void invokeConnectReceiver(int status, boolean isConnected) {
+        Log.d("IMClient", "invokeConnectReceiver:" + status);
+        int count = mIMConnectStatusListenerList.size();
+        for (int i = count - 1; i >= 0; i--) {
+            IMConnectStatusListener receiver = mIMConnectStatusListenerList.get(i);
+            switch (status) {
+                case IConnectManagerListener.OPEN:
+                    receiver.onOpen();
+                    break;
+                case IConnectManagerListener.CLOSE:
+                case IConnectManagerListener.END:
+                    receiver.onClose();
+                    break;
+                case IConnectManagerListener.CONNECTING:
+                    receiver.onConnect();
+                    break;
+                case IConnectManagerListener.ERROR:
+                    receiver.onError();
+            }
+        }
     }
 
     public void invokeReceiver(MessageEntity messageEntity) {

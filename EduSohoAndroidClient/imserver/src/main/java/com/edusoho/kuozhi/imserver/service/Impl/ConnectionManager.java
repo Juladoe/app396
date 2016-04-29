@@ -3,7 +3,7 @@ package com.edusoho.kuozhi.imserver.service.Impl;
 import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.listener.IChannelReceiveListener;
-import com.edusoho.kuozhi.imserver.listener.IConnectStatusListener;
+import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import com.edusoho.kuozhi.imserver.service.IConnectionManager;
 import com.koushikdutta.async.ByteBufferList;
 import com.koushikdutta.async.DataEmitter;
@@ -27,7 +27,7 @@ public class ConnectionManager implements IConnectionManager {
     protected List<String> mHostList;
 
     private Future<WebSocket> mWebSocketFuture;
-    private IConnectStatusListener mIConnectStatusListener;
+    private IConnectManagerListener mIConnectStatusListener;
     private IChannelReceiveListener mIChannelReceiveListener;
     private String mClientName;
 
@@ -53,7 +53,7 @@ public class ConnectionManager implements IConnectionManager {
     }
 
     @Override
-    public void addIConnectStatusListener(IConnectStatusListener iConnectStatusListener) {
+    public void addIConnectStatusListener(IConnectManagerListener iConnectStatusListener) {
         this.mIConnectStatusListener = iConnectStatusListener;
     }
 
@@ -91,12 +91,13 @@ public class ConnectionManager implements IConnectionManager {
                 null,
                 getWebSocketConnectCallback()
         );
+        mIConnectStatusListener.onStatusChange(IConnectManagerListener.CONNECTING, "connect...");
     }
 
     protected void switchHostConnect() {
         if (mCurrentHostIndex > mHostList.size()) {
             if (mIConnectStatusListener != null) {
-                mIConnectStatusListener.onStatusChange(IConnectStatusListener.ERROR, "error");
+                mIConnectStatusListener.onStatusChange(IConnectManagerListener.ERROR, "error");
             }
             return;
         }
@@ -115,7 +116,7 @@ public class ConnectionManager implements IConnectionManager {
                 }
                 Log.d(TAG, "onCompleted:" + webSocket);
                 if (webSocket.isOpen() && mIConnectStatusListener != null) {
-                    mIConnectStatusListener.onStatusChange(IConnectStatusListener.OPEN, "open");
+                    mIConnectStatusListener.onStatusChange(IConnectManagerListener.OPEN, "open");
                 }
 
                 webSocket.setEndCallback(new CompletedCallback() {
@@ -123,7 +124,7 @@ public class ConnectionManager implements IConnectionManager {
                     public void onCompleted(Exception e) {
                         e.printStackTrace();
                         if (mIConnectStatusListener != null) {
-                            mIConnectStatusListener.onStatusChange(IConnectStatusListener.END, e.getMessage());
+                            mIConnectStatusListener.onStatusChange(IConnectManagerListener.END, e.getMessage());
                         }
                     }
                 });
@@ -133,7 +134,7 @@ public class ConnectionManager implements IConnectionManager {
                     public void onCompleted(Exception e) {
                         Log.d(TAG, "close");
                         if (mIConnectStatusListener != null) {
-                            mIConnectStatusListener.onStatusChange(IConnectStatusListener.CLOSE, e.getMessage());
+                            mIConnectStatusListener.onStatusChange(IConnectManagerListener.CLOSE, e.getMessage());
                         }
                     }
                 });

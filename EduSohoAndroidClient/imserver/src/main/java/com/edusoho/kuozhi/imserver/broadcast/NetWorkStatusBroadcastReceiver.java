@@ -47,7 +47,7 @@ public class NetWorkStatusBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    public static interface NetWorkStatusCallback
+    public interface NetWorkStatusCallback
     {
         void onStatusChange(int netType, boolean isConnected);
     }

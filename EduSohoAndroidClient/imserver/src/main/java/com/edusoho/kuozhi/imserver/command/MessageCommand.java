@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.imserver.command;
 
+import android.util.Log;
+
 import com.edusoho.kuozhi.imserver.ImServer;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
@@ -36,7 +38,12 @@ public class MessageCommand extends BaseCommand {
         String msg = params.optString("msg");
         String convNo = params.optString("convNo");
         String time = params.optString("time");
+        String msgNo = params.optString("msgNo");
 
+        if (mImServer.getMsgDbHelper().hasMessageByNo(msgNo)) {
+            Log.d("MessageCommand", "hasMessageByNo");
+            return;
+        }
         MessageEntity messageEntity = MessageEntityBuildr.getBuilder()
                 .addToId(toId)
                 .addToName(toName)
@@ -45,6 +52,7 @@ public class MessageCommand extends BaseCommand {
                 .addMsg(msg)
                 .addConvNo(convNo)
                 .addTime(time)
+                .addMsgNo(msgNo)
                 .builder();
         mImServer.onReceiveMessage(messageEntity);
         mImServer.ack(params.optString("msgNo"));

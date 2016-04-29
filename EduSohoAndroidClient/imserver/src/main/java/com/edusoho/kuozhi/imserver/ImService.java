@@ -28,6 +28,8 @@ import java.util.Set;
  */
 public class ImService extends Service {
 
+    private static final String TAG = "ImService";
+
     public static final String HOST = "host";
     public static final String IGNORE_NOS = "ignoreNos";
     public static final String CLIENT_NAME = "clientName";
@@ -41,7 +43,7 @@ public class ImService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(getClass().getSimpleName(), "onCreate");
+        Log.d(TAG, "onCreate");
         mImServer = new ImServer(getBaseContext());
         mImBinder = new ImBinder();
 
@@ -58,6 +60,7 @@ public class ImService extends Service {
         return new NetWorkStatusBroadcastReceiver.NetWorkStatusCallback() {
             @Override
             public void onStatusChange(int netType, boolean isConnected) {
+                Log.d(TAG, String.format("onStatusChange netType:%d isConnected:%b", netType, isConnected));
                 if (! mImServer.isReady()) {
                     return;
                 }
@@ -81,7 +84,7 @@ public class ImService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(getClass().getSimpleName(), "onStartCommand" + intent);
+        Log.d(TAG, "onStartCommand" + intent);
         if (intent == null) {
             initServerHostFromLater();
             return super.onStartCommand(intent, flags, startId);
@@ -89,7 +92,7 @@ public class ImService extends Service {
         int action = intent.getIntExtra(ACTION, 0);
 
         if (action == ACTION_INIT) {
-            Log.d(getClass().getSimpleName(), "init");
+            Log.d(TAG, "init");
             List<String> hostList = intent.getStringArrayListExtra(HOST);
             List<String> ignoreNosList = intent.getStringArrayListExtra(IGNORE_NOS);
             String clientName = intent.getStringExtra(CLIENT_NAME);
@@ -111,7 +114,7 @@ public class ImService extends Service {
             return;
         }
 
-        Log.d(getClass().getSimpleName(), "initServerHostFromLater");
+        Log.d(TAG, "initServerHostFromLater");
         initServerHost(clientName, new ArrayList<String>(ignoreNosSet), new ArrayList<String>(hostSet));
     }
 
@@ -125,7 +128,7 @@ public class ImService extends Service {
 
     private void initServerHost(String clientName, List<String> hostList, List<String> ignoreNosList) {
         if (hostList == null || hostList.isEmpty()) {
-            Log.d(getClass().getSimpleName(), "no server host");
+            Log.d(TAG, "no server host");
             return;
         }
 
@@ -150,12 +153,12 @@ public class ImService extends Service {
             unregisterReceiver(mReceiver);
         }
         sendWakeUpAlert();
-        Log.d(getClass().getSimpleName(), "onDestroy");
+        Log.d(TAG, "onDestroy");
     }
 
     @Override
     public IBinder onBind(Intent intent) {
-        Log.d(getClass().getSimpleName(), "onBind");
+        Log.d(TAG, "onBind");
         return mImBinder;
     }
 

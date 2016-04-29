@@ -19,6 +19,8 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -92,6 +94,7 @@ public class NewsFragment extends BaseFragment {
     private SwipeAdapter mSwipeAdapter;
     private View mEmptyView;
     private TextView tvEmptyText;
+    private TextView mHeaderView;
 
     private LoadingHandler mLoadingHandler;
     private boolean mIsNeedRefresh;
@@ -114,6 +117,7 @@ public class NewsFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
+        IMClient.getClient().addConnectStatusListener(getIMConnectStatusListener());
     }
 
     @Override
@@ -130,6 +134,30 @@ public class NewsFragment extends BaseFragment {
             //延迟到fragment show去刷新数据
             mIsNeedRefresh = true;
         }
+    }
+
+    private IMConnectStatusListener getIMConnectStatusListener() {
+        return new IMConnectStatusListener() {
+            @Override
+            public void onError() {
+                updateNetWorkStatusHeader("当前网络不可用，请检查你的网络设置");
+            }
+
+            @Override
+            public void onClose() {
+                updateNetWorkStatusHeader("当前网络不可用，请检查你的网络设置");
+            }
+
+            @Override
+            public void onConnect() {
+                updateNetWorkStatusHeader("正在连接...");
+            }
+
+            @Override
+            public void onOpen() {
+                hideNetWorkStatusHeader();
+            }
+        };
     }
 
     @Override
@@ -708,6 +736,27 @@ public class NewsFragment extends BaseFragment {
     private void setListVisibility(boolean visibility) {
         lvNewsList.setVisibility(visibility ? View.GONE : View.VISIBLE);
         mEmptyView.setVisibility(visibility ? View.VISIBLE : View.GONE);
+    }
+
+    private void hideNetWorkStatusHeader() {
+        if (mHeaderView == null) {
+            return;
+        }
+
+        lvNewsList.removeHeaderView(mHeaderView);
+        mHeaderView = null;
+    }
+
+    public void updateNetWorkStatusHeader(String statusText) {
+        if (mHeaderView == null) {
+            mHeaderView = new TextView(mContext);
+            mHeaderView.setPadding(16, 16, 16, 16);
+            mHeaderView.setBackgroundResource(R.color.update_color);
+            mHeaderView.setText(statusText);
+            lvNewsList.addHeaderView(mHeaderView);
+        }
+
+        mHeaderView.setText(statusText);
     }
 
     private void getLearnCourses(final NormalCallback<CourseResult> normalCallback) {
