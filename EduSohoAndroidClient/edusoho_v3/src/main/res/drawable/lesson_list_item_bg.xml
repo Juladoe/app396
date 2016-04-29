@@ -15,7 +15,7 @@
                     <solid android:color="@color/shallow_found_bg" />
                 </shape>
             </item>
-            <item android:left="1dp" android:bottom="1dp">
+            <item android:bottom="1dp" android:left="1dp">
                 <shape>
                     <solid android:color="@color/base_black_12" />
                 </shape>
@@ -36,7 +36,7 @@
                     <solid android:color="@color/shallow_found_bg" />
                 </shape>
             </item>
-            <item android:left="1dp" android:bottom="1dp">
+            <item android:bottom="1dp" android:left="1dp">
                 <shape>
                     <solid android:color="@color/white" />
                 </shape>

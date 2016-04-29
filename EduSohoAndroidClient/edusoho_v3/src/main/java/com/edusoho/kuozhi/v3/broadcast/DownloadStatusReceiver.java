@@ -37,6 +37,6 @@ public class DownloadStatusReceiver extends BroadcastReceiver {
     }
 
     public interface StatusCallback {
-        public void invoke(Intent intent);
+        void invoke(Intent intent);
     }
 }

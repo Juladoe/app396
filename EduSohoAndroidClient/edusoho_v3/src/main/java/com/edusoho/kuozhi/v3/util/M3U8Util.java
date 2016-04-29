@@ -67,7 +67,7 @@ public class M3U8Util {
     public static final int START = -1;
     public static final int KEY = 0;
     public static final int URL = 1;
-    private static final String TAG = "M3U8Uitl";
+    private static final String TAG = "M3U8Util";
     private static Pattern M3U8_STREAM_PAT = Pattern.compile(
             "#EXT-X-STREAM-INF:PROGRAM-ID=(\\d+),BANDWIDTH=(\\d+)", Pattern.DOTALL);
     private static Pattern M3U8_EXTINF_PAT = Pattern.compile(
@@ -554,7 +554,7 @@ public class M3U8Util {
         mSqliteUtil.insert("data_m3u8_url", cv);
     }
 
-    private void updateDownloadStatus(String url, int lessonId,  int finish) {
+    private void updateDownloadStatus(String url, int lessonId, int finish) {
         int isFinished = mSqliteUtil.query(
                 Integer.class,
                 "finish",
@@ -878,7 +878,7 @@ public class M3U8Util {
         public int read() throws IOException {
             int length = mTargetInputStream.read();
             byte[] buffer = new byte[1];
-            buffer[0] = (byte)length;
+            buffer[0] = (byte) length;
             processorByteArray(1, buffer);
             return buffer[0];
         }
@@ -892,7 +892,7 @@ public class M3U8Util {
 
         @Override
         public int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
-            int length =  mTargetInputStream.read(buffer, byteOffset, byteCount);
+            int length = mTargetInputStream.read(buffer, byteOffset, byteCount);
             processorByteArray(length, buffer);
 
             return length;

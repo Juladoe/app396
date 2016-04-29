@@ -831,7 +831,7 @@ public class EdusohoApp extends Application {
                         }, new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                             Log.d(TAG, error.toString());
+                                Log.d(TAG, error.toString());
                             }
                         });
                     }
