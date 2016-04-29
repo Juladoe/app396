@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import com.edusoho.kuozhi.imserver.command.CommandFactory;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.listener.IChannelReceiveListener;
 import com.edusoho.kuozhi.imserver.listener.IConnectStatusListener;
 import com.edusoho.kuozhi.imserver.listener.IHeartStatusListener;
@@ -13,6 +14,7 @@ import com.edusoho.kuozhi.imserver.service.IMsgManager;
 import com.edusoho.kuozhi.imserver.service.Impl.ConnectionManager;
 import com.edusoho.kuozhi.imserver.service.Impl.HeartManagerImpl;
 import com.edusoho.kuozhi.imserver.service.Impl.MsgManager;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.List;
@@ -26,11 +28,6 @@ public class ImServer {
 
     private String[] pingCmd = {
             "cmd" , "ping"
-    };
-
-    private String[] addCmd = {
-            "cmd" , "ping",
-            "toId"
     };
 
     private Context mContext;
@@ -133,18 +130,27 @@ public class ImServer {
         return mIHeartManager;
     }
 
-    public void sendMessage(String convNo, String msg) {
+    public void ack(String msgNo) {
+        Log.d(TAG, "ack:" + msgNo);
         send(new String[] {
-                "cmd" , "send",
-                "toId" , "all",
-                "convNo" , convNo,
-                "msg", msg
+                "cmd", "ack",
+                "msgNo", msgNo
         });
     }
 
-    public void onReceiveMessage(String msg) {
+    public void sendMessage(SendEntity sendEntity) {
+        send(new String[] {
+                "cmd" , "send",
+                "toId" , sendEntity.getToId(),
+                "convNo" , sendEntity.getConvNo(),
+                "msg", sendEntity.getMsg(),
+                "extr", sendEntity.getMsg()
+        });
+    }
+
+    public void onReceiveMessage(MessageEntity messageEntity) {
         Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
-        intent.putExtra("message", msg);
+        intent.putExtra("message", messageEntity);
         mContext.sendBroadcast(intent);
     }
 

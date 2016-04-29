@@ -23,7 +23,6 @@ import java.lang.reflect.Field;
  */
 public abstract class ModelProvider {
 
-    protected Context mContext;
     protected VolleySingleton mVolley;
     protected Gson mGson;
     protected Context mContext;

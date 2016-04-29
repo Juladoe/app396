@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 
@@ -94,11 +95,15 @@ public class IMClient {
         this.mMessageReceiverList.remove(receiver);
     }
 
-    public void invokeReceiver(String message) {
+    public void invokeReceiver(MessageEntity messageEntity) {
         int count = mMessageReceiverList.size();
         for (int i = count - 1; i >= 0; i--) {
             IMMessageReceiver receiver = mMessageReceiverList.get(i);
-            receiver.getType().isProcessed = receiver.onReceiver(message);
+            if ("success".equals(messageEntity.getCmd())) {
+                receiver.onSuccess(messageEntity.getMsg());
+                continue;
+            }
+            receiver.getType().isProcessed = receiver.onReceiver(messageEntity);
             this.mLaterIMMessageReceiver = receiver;
         }
 

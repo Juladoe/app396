@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.model.provider;
 import android.content.Context;
 import android.util.Log;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
@@ -34,9 +35,14 @@ public class IMServiceProvider extends ModelProvider {
 
                 IMClient.getClient().addMessageReceiver(new IMMessageReceiver() {
                     @Override
-                    public boolean onReceiver(String msg) {
+                    public boolean onReceiver(MessageEntity msg) {
                         handlerMessage(this, msg);
                         return false;
+                    }
+
+                    @Override
+                    public void onSuccess(String extr) {
+                        Log.d(getClass().getSimpleName(), "onSuccess:" + extr);
                     }
 
                     @Override
@@ -48,8 +54,11 @@ public class IMServiceProvider extends ModelProvider {
         });
     }
 
-    private void handlerMessage(IMMessageReceiver receiver, String msg) {
-        V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(msg, V2CustomContent.class);
+    private void handlerMessage(IMMessageReceiver receiver, MessageEntity messageEntity) {
+        V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(messageEntity.getMsg(), V2CustomContent.class);
+        if (v2CustomContent == null) {
+            return;
+        }
         CommandFactory.create(mContext, receiver, v2CustomContent).invoke();
     }
 

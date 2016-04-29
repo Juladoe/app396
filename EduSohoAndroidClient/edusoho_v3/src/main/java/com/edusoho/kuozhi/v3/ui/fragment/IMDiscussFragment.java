@@ -34,8 +34,11 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.SendEntity;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
+import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.adapter.CourseDiscussAdapter;
@@ -194,9 +197,18 @@ public class IMDiscussFragment extends BaseFragment implements
     protected IMMessageReceiver getIMMessageListener() {
         return new IMMessageReceiver() {
             @Override
-            public boolean onReceiver(String msg) {
+            public boolean onReceiver(MessageEntity msg) {
                 handleMessage(msg);
                 return true;
+            }
+
+            @Override
+            public void onSuccess(String extr) {
+                V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(extr, V2CustomContent.class);
+                if (v2CustomContent == null) {
+                    return;
+                }
+                updateMessageSendStatus(v2CustomContent);
             }
 
             @Override
@@ -206,8 +218,13 @@ public class IMDiscussFragment extends BaseFragment implements
         };
     }
 
-    protected void handleMessage(String msg) {
-        V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(msg, V2CustomContent.class);
+    protected void updateMessageSendStatus(V2CustomContent v2CustomContent) {
+        CourseDiscussEntity courseDiscussEntity = new CourseDiscussEntity(v2CustomContent);
+        updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, courseDiscussEntity);
+    }
+
+    protected void handleMessage(MessageEntity messageEntity) {
+        V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(messageEntity.getMsg(), V2CustomContent.class);
         CourseDiscussEntity model = new CourseDiscussEntity(v2CustomContent);
         mAdapter.addItem(model);
     }
@@ -353,17 +370,25 @@ public class IMDiscussFragment extends BaseFragment implements
         final CourseDiscussEntity model = new CourseDiscussEntity(0, mCourseId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
                 etSend.getText().toString(), app.loginUser.id, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
 
-        addSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, model);
+        addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
 
         etSend.setText("");
         etSend.requestFocus();
 
-        try {
-            V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content);
-            notifyNewListView2Update(v2CustomContent);
+        V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content);
+        v2CustomContent.setMsgId(model.discussId);
+        sendMessageToServer(v2CustomContent);
+        notifyNewListView2Update(v2CustomContent);
+    }
 
-            String msg = getUtilFactory().getJsonParser().jsonToString(v2CustomContent);
-            IMClient.getClient().getChatRoom(mConversationId).send(msg);
+    protected void sendMessageToServer(V2CustomContent v2CustomContent) {
+        try {
+            String message = getUtilFactory().getJsonParser().jsonToString(v2CustomContent);
+            SendEntity sendEntity = SendEntityBuildr.getBuilder()
+                    .addToId("all")
+                    .addMsg(message)
+                    .builder();
+            IMClient.getClient().getChatRoom(mConversationId).send(sendEntity);
         } catch (Exception e) {
         }
     }

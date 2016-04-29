@@ -48,5 +48,6 @@ public class CourseDiscussEntity extends BaseMsgEntity {
         nickname = v2CustomContent.getFrom().getNickname();
         belongId = EdusohoApp.app.loginUser.id;
         type = v2CustomContent.getBody().getType();
+        discussId = v2CustomContent.getMsgId();
     }
 }

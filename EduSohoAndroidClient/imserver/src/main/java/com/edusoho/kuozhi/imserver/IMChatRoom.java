@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.imserver;
 
+import android.os.Bundle;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -16,9 +18,10 @@ public class IMChatRoom {
         this.mImBinderRef = new WeakReference<IImServerAidlInterface>(imBinder);
     }
 
-    public void send(String message) {
+    public void send(SendEntity sendEntity) {
         try {
-            mImBinderRef.get().send(mConvNo, message);
+            sendEntity.setConvNo(mConvNo);
+            mImBinderRef.get().send(sendEntity);
         } catch (Exception e) {
         }
     }

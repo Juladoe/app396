@@ -8,9 +8,9 @@ import org.json.JSONObject;
 /**
  * Created by su on 2016/3/18.
  */
-public class PongCommand extends BaseCommand {
+public class AckCommand extends BaseCommand {
 
-    public PongCommand(ImServer imServer)
+    public AckCommand(ImServer imServer)
     {
         super(imServer);
     }

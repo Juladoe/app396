@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.ImService;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 
 /**
  * Created by su on 2016/3/22.
@@ -17,7 +18,7 @@ public class IMBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.d(getClass().getSimpleName(), "onReceive");
-        final String message = intent.getStringExtra("message");
+        final MessageEntity message = intent.getParcelableExtra("message");
         new Handler().post(new Runnable() {
             @Override
             public void run() {

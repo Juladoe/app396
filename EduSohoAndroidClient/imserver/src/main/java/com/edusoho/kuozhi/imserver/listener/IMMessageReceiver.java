@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.imserver.listener;
 
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 
 /**
@@ -7,7 +8,9 @@ import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
  */
 public interface IMMessageReceiver {
 
-    boolean onReceiver(String msg);
+    boolean onReceiver(MessageEntity msg);
+
+    void onSuccess(String extr);
 
     ReceiverInfo getType();
 }

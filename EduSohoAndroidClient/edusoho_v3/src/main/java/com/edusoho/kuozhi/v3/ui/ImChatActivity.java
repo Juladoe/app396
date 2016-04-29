@@ -1,21 +1,20 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.SendEntity;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
+import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
@@ -25,15 +24,13 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
-import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
-import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
@@ -215,9 +212,18 @@ public class ImChatActivity extends BaseChatActivity{
     protected IMMessageReceiver getIMMessageListener() {
         return new IMMessageReceiver() {
             @Override
-            public boolean onReceiver(String msg) {
+            public boolean onReceiver(MessageEntity msg) {
                 handleMessage(this, msg);
                 return true;
+            }
+
+            @Override
+            public void onSuccess(String extr) {
+                V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(extr, V2CustomContent.class);
+                if (v2CustomContent == null) {
+                    return;
+                }
+                updateMessageSendStatus(v2CustomContent);
             }
 
             @Override
@@ -227,8 +233,13 @@ public class ImChatActivity extends BaseChatActivity{
         };
     }
 
-    protected void handleMessage(IMMessageReceiver receiver, String msg) {
-        V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(msg, V2CustomContent.class);
+    protected void updateMessageSendStatus(V2CustomContent v2CustomContent) {
+        Chat chat = new Chat(v2CustomContent);
+        updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, chat);
+    }
+
+    protected void handleMessage(IMMessageReceiver receiver, MessageEntity messageEntity) {
+        V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(messageEntity.getMsg(), V2CustomContent.class);
         if (v2CustomContent.getFrom().getId() != receiver.getType().msgId) {
             return;
         }
@@ -260,13 +271,20 @@ public class ImChatActivity extends BaseChatActivity{
         etSend.requestFocus();
 
         V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, chat.content);
+        sendMessageToServer(v2CustomContent);
+        notifyNewListView2Update(getNotifyV2CustomContent(PushUtil.ChatMsgType.TEXT, chat.content));
+    }
+
+    protected void sendMessageToServer(V2CustomContent v2CustomContent) {
         try {
             String message = getUtilFactory().getJsonParser().jsonToString(v2CustomContent);
-            IMClient.getClient().getChatRoom(mConversationNo).send(message);
+            SendEntity sendEntity = SendEntityBuildr.getBuilder()
+                    .addToId(String.valueOf(v2CustomContent.getTo().getId()))
+                    .addMsg(message)
+                    .builder();
+            IMClient.getClient().getChatRoom(mConversationNo).send(sendEntity);
         } catch (Exception e) {
         }
-
-        notifyNewListView2Update(getNotifyV2CustomContent(PushUtil.ChatMsgType.TEXT, chat.content));
     }
 
     private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {
@@ -444,10 +462,6 @@ public class ImChatActivity extends BaseChatActivity{
         v2CustomContent.getFrom().setImage(app.loginUser.mediumAvatar);
         v2CustomContent.getFrom().setType(mMyType);
 
-        try {
-            String message = getUtilFactory().getJsonParser().jsonToString(v2CustomContent);
-            IMClient.getClient().getChatRoom(mConversationNo).send(message);
-        } catch (Exception e) {
-        }
+        sendMessageToServer(v2CustomContent);
     }
 }
