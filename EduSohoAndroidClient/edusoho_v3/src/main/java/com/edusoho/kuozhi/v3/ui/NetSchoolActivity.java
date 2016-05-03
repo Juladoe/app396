@@ -435,7 +435,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                             saveEnterSchool(site.name, entertime, "登录账号：未登录", app.domain);
                         }
                     });
-                    app.pushRegister(bundle);
+                    //app.pushRegister(bundle);
                 }
             }
         }, this);

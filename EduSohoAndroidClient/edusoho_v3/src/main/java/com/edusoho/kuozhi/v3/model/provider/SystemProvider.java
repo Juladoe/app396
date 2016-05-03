@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.model.provider;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -52,8 +53,7 @@ public class SystemProvider extends ModelProvider {
         final ProviderListener<LinkedHashMap> stringResponseListener = new ProviderListener<LinkedHashMap>(){};
         ProviderListener<LinkedHashMap> responseListener = new ProviderListener<LinkedHashMap>(){
         };
-        addPostRequest(requestUrl, new TypeToken<LinkedHashMap>() {
-        }, responseListener, responseListener);
+
         responseListener.success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap hashMap) {
@@ -63,7 +63,15 @@ public class SystemProvider extends ModelProvider {
                 LinkedHashMap hostList = (LinkedHashMap) hashMap.get("servers");
                 stringResponseListener.onResponse(hostList);
             }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                stringResponseListener.onErrorResponse(obj);
+            }
         });
+
+        addPostRequest(requestUrl, new TypeToken<LinkedHashMap>() {
+        }, responseListener, responseListener);
         return stringResponseListener;
     }
 }

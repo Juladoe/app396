@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
 import android.util.Log;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
@@ -11,9 +12,10 @@ import com.edusoho.kuozhi.v3.factory.UtilFactory;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.service.message.CommandFactory;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
+
 
 /**
  * Created by 菊 on 2016/4/25.
@@ -31,7 +33,10 @@ public class IMServiceProvider extends ModelProvider {
             public void success(LinkedHashMap hostMap) {
                 Log.d("IMServiceProvider", "init im service" + hostMap.size());
                 IMClient.getClient().init(mContext);
-                IMClient.getClient().start(hostMap);
+                IMClient.getClient().start(
+                        new ArrayList<String>(hostMap.keySet()),
+                        new ArrayList<String>(hostMap.values())
+                );
 
                 IMClient.getClient().addMessageReceiver(new IMMessageReceiver() {
                     @Override
@@ -50,6 +55,13 @@ public class IMServiceProvider extends ModelProvider {
                         return new ReceiverInfo("global", 1);
                     }
                 });
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                Log.d("IMServiceProvider", "bindServer error");
+                IMClient.getClient().init(mContext);
+                IMClient.getClient().start(null, null);
             }
         });
     }

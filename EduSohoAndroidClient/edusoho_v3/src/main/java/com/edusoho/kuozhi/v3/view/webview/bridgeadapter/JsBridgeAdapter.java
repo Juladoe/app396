@@ -1,9 +1,7 @@
 package com.edusoho.kuozhi.v3.view.webview.bridgeadapter;
 
-import android.content.Context;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-
 import com.edusoho.kuozhi.v3.plugin.JsNativeAppPlugin;
 import com.edusoho.kuozhi.v3.plugin.MenuClickPlugin;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.IBridgePlugin;
@@ -41,7 +39,7 @@ public class JsBridgeAdapter {
         return instance;
     }
 
-    public void init(Context context) {
+    public void init() {
         mPluginList = new ArrayList<>();
         mPluginList.add(MenuClickPlugin.class);
         mPluginList.add(JsNativeAppPlugin.class);

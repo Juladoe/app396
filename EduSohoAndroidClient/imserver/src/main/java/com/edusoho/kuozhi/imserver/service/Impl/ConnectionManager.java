@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.imserver.service.Impl;
 
 import android.util.Log;
-
 import com.edusoho.kuozhi.imserver.listener.IChannelReceiveListener;
 import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import com.edusoho.kuozhi.imserver.service.IConnectionManager;
@@ -13,7 +12,6 @@ import com.koushikdutta.async.callback.WritableCallback;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
-
 import java.util.List;
 
 /**

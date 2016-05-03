@@ -9,5 +9,7 @@ interface IImServerAidlInterface {
 
     void send(in SendEntity sendEntity);
 
+    int getIMStatus();
+
     void joinConversation(String clientId, String nickname, String convNo);
 }

@@ -323,7 +323,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         mActivity.app.sendMessage(Const.LOGIN_SUCCESS, null);
         Bundle bundle = new Bundle();
         bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
-        mActivity.app.pushRegister(bundle);
+        //mActivity.app.pushRegister(bundle);
     }
 
     @JsAnnotation

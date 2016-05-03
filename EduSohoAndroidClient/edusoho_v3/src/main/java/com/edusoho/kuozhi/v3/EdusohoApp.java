@@ -293,7 +293,6 @@ public class EdusohoApp extends Application {
         }
 
         SqliteUtil.getUtil(this).close();
-        ESCordovaWebViewFactory.getFactory().destory();
     }
 
     private void init() {
@@ -305,6 +304,7 @@ public class EdusohoApp extends Application {
         initApp();
 
         if (!TextUtils.isEmpty(app.token)) {
+            Log.d(TAG, "bindImServerHost");
             bindImServerHost();
         }
 

@@ -9,16 +9,15 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.edusoho.kuozhi.imserver.broadcast.NetWorkStatusBroadcastReceiver;
+import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.imserver.util.NetTypeConst;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -96,6 +95,9 @@ public class ImService extends Service {
             List<String> hostList = intent.getStringArrayListExtra(HOST);
             List<String> ignoreNosList = intent.getStringArrayListExtra(IGNORE_NOS);
             String clientName = intent.getStringExtra(CLIENT_NAME);
+            if (TextUtils.isEmpty(clientName) || hostList == null || ignoreNosList == null) {
+                return super.onStartCommand(intent, flags, startId);
+            }
             initServerHost(clientName, hostList, ignoreNosList);
             saveLaterHost(clientName, ignoreNosList, hostList);
             return Service.START_STICKY;
@@ -166,6 +168,14 @@ public class ImService extends Service {
     {
         public void send(SendEntity sendEntity) {
             mImServer.sendMessage(sendEntity);
+        }
+
+        @Override
+        public int getIMStatus() throws RemoteException {
+            if (! mImServer.isReady()) {
+                return IMConnectStatus.NO_READY;
+            }
+            return mImServer.isConnected() ? IMConnectStatus.OPEN : IMConnectStatus.CLOSE;
         }
 
         public void joinConversation(String clientId, String nickname, String convNo) {

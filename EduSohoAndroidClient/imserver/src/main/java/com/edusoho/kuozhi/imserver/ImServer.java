@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.imserver;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.util.Log;
 import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.command.CommandFactory;
@@ -135,6 +136,9 @@ public class ImServer {
 
     public void start() {
         stop();
+        if (TextUtils.isEmpty(mClientName) || mHostList == null || mHostList.isEmpty()) {
+            return;
+        }
         initConnectManager(mClientName, mHostList);
     }
 

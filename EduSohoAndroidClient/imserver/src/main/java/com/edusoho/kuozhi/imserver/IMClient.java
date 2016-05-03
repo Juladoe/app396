@@ -7,6 +7,7 @@ import android.content.ServiceConnection;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.RemoteException;
 import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -15,6 +16,8 @@ import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
+import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -43,15 +46,9 @@ public class IMClient {
         this.mContext = context;
     }
 
-    public void start(LinkedHashMap<String, String> hostMap) {
+    public void start(ArrayList<String> ignoreNosList, ArrayList<String> hostList ) {
         Intent intent = new Intent("com.edusoho.kuozhi.imserver.IImServerAidlInterface");
         intent.setPackage(mContext.getPackageName());
-
-        ArrayList<String> hostList = new ArrayList<String>();
-        hostList.addAll(hostMap.values());
-
-        ArrayList<String> ignoreNosList = new ArrayList<String>();
-        ignoreNosList.addAll(hostMap.keySet());
 
         intent.putStringArrayListExtra(ImService.HOST, hostList);
         intent.putStringArrayListExtra(ImService.IGNORE_NOS, ignoreNosList);
@@ -103,6 +100,14 @@ public class IMClient {
 
     public void removeReceiver(IMMessageReceiver receiver) {
         this.mMessageReceiverList.remove(receiver);
+    }
+
+    public int getIMConnectStatus() {
+        try {
+            return mImBinder.getIMStatus();
+        } catch (RemoteException e) {
+            return IMConnectStatus.ERROR;
+        }
     }
 
     public void invokeConnectReceiver(int status, boolean isConnected) {

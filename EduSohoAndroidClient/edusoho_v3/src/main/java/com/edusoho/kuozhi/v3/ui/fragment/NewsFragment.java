@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
+import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -136,21 +137,38 @@ public class NewsFragment extends BaseFragment {
         }
     }
 
+    private void updateIMConnectStatus(int status) {
+        switch (status) {
+            case IMConnectStatus.CLOSE:
+            case IMConnectStatus.END:
+            case IMConnectStatus.ERROR:
+                updateNetWorkStatusHeader("当前网络不可用，请检查你的网络设置");
+                break;
+            case IMConnectStatus.CONNECTING:
+                updateNetWorkStatusHeader("正在连接...");
+                break;
+            case IMConnectStatus.NO_READY:
+                updateNetWorkStatusHeader("服务器连接失败，请重试");
+                break;
+            case IMConnectStatus.OPEN:
+        }
+    }
+
     private IMConnectStatusListener getIMConnectStatusListener() {
         return new IMConnectStatusListener() {
             @Override
             public void onError() {
-                updateNetWorkStatusHeader("当前网络不可用，请检查你的网络设置");
+                updateIMConnectStatus(IMConnectStatus.ERROR);
             }
 
             @Override
             public void onClose() {
-                updateNetWorkStatusHeader("当前网络不可用，请检查你的网络设置");
+                updateIMConnectStatus(IMConnectStatus.CLOSE);
             }
 
             @Override
             public void onConnect() {
-                updateNetWorkStatusHeader("正在连接...");
+                updateIMConnectStatus(IMConnectStatus.CONNECTING);
             }
 
             @Override
@@ -203,6 +221,8 @@ public class NewsFragment extends BaseFragment {
             }
         };
         mSwipeAdapter = new SwipeAdapter(mContext, R.layout.news_item);
+
+        updateIMConnectStatus(IMClient.getClient().getIMConnectStatus());
         lvNewsList.setAdapter(mSwipeAdapter);
         lvNewsList.setMenuCreator(creator);
         lvNewsList.setOnMenuItemClickListener(mMenuItemClickListener);

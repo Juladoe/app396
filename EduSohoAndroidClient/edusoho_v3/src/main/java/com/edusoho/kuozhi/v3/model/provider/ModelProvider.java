@@ -98,6 +98,7 @@ public abstract class ModelProvider {
                 method, requestUrl, responseListener, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                errorListener.onErrorResponse(error);
                 if (error.networkResponse == null) {
                     return;
                 }
@@ -107,7 +108,6 @@ public abstract class ModelProvider {
                 if (errorListener != null) {
                     return;
                 }
-                errorListener.onErrorResponse(error);
             }
         }) {
             @Override

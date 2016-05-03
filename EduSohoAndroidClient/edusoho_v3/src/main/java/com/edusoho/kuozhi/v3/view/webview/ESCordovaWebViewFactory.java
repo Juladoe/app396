@@ -15,32 +15,24 @@ import java.util.Queue;
 public class ESCordovaWebViewFactory {
 
     private static final String TAG = "ESCordovaWebViewFactory";
-    private Queue<AbstractJsBridgeAdapterWebView> mCacheQueue;
     private static ESCordovaWebViewFactory factory;
 
     private ESCordovaWebViewFactory() {
-        mCacheQueue = new ArrayDeque<AbstractJsBridgeAdapterWebView>();
     }
 
-    public static void init(BaseActivity activity) {
-        JsBridgeAdapter.getInstance().init(activity.getBaseContext());
+    public static void init() {
+        JsBridgeAdapter.getInstance().init();
         factory = new ESCordovaWebViewFactory();
     }
 
     public static ESCordovaWebViewFactory getFactory() {
         if (factory == null) {
-            init(null);
+            init();
         }
         return factory;
     }
 
     public void destory() {
-        AbstractJsBridgeAdapterWebView webView;
-        while ( (webView = mCacheQueue.poll()) != null) {
-            Log.d(TAG, "mCacheQueue destory");
-            webView.handleDestroy();
-            webView.destroy();
-        }
         factory = null;
     }
 

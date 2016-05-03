@@ -94,7 +94,7 @@ public class EdusohoMainService extends Service {
     private void loginWithToken() {
         final EdusohoApp app = getEduSohoApp();
         if (TextUtils.isEmpty(app.token)) {
-            app.pushRegister(null);
+            //app.pushRegister(null);
             return;
         }
         synchronized (this) {
@@ -126,7 +126,7 @@ public class EdusohoMainService extends Service {
                             app.removeToken();
                             app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
                         }
-                        app.pushRegister(bundle);
+                        //app.pushRegister(bundle);
 
                     } catch (Exception e) {
                         Log.d(TAG, e.getMessage());

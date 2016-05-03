@@ -149,7 +149,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                                 startSchoolActivity(site);
                             }
                         });
-                        mApp.pushRegister(bundle);
+                        //mApp.pushRegister(bundle);
                         if (userResult.user == null) {
                             startSchoolActivity(site);
                         }

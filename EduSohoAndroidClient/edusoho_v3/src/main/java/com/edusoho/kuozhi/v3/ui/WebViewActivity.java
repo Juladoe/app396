@@ -13,7 +13,6 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebViewFactory;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
 
@@ -35,7 +34,6 @@ public class WebViewActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ESCordovaWebViewFactory.init(mActivity);
         hideActionBar();
         setBackMode(super.BACK, "标题");
         setContentView(R.layout.webview_activity);
