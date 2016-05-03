@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
@@ -23,13 +22,11 @@ import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.edusoho.kuozhi.v3.view.dialog.ExitCoursePopupDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import cn.trinea.android.common.util.ToastUtils;
 
 /**
@@ -148,36 +145,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
 
         @Override
         public void onClick(View v) {
-            M3U8DownService service = M3U8DownService.getService();
-            try {
-                if (mChildPanel.ivDownloadSign.getText().equals(mContex.getResources().getString(R.string.font_stop_downloading))) {
-                    Log.d(getClass().getSimpleName(), "cancel download");
-                    mChildPanel.ivDownloadSign.setText(mContex.getResources().getString(R.string.font_downloading));
-                    if (service != null) {
-                        service.cancelDownloadTask(mLessonItem.id);
-                    }
-                } else {
-                    if (!mActivity.app.getNetIsConnect()) {
-                        ToastUtils.show(mActivity, "当前无网络连接!");
-                        return;
-                    }
-                    int offlineType = mActivity.app.config.offlineType;
-                    if (offlineType == Const.NET_NONE) {
-                        showAlertDialog("当前设置视频课时观看、下载为禁止模式!\n模式可以在设置里修改。");
-                        return;
-                    }
-                    if (offlineType == Const.NET_WIFI && !mActivity.app.getNetIsWiFi()) {
-                        showAlertDialog("当前设置视频课时观看、下载为WiFi模式!\n模式可以在设置里修改。");
-                        return;
-                    }
-                    Log.d(getClass().getSimpleName(), "continue download");
-                    mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_stop_downloading));
-                    M3U8DownService.startDown(
-                            mActivity, mLessonItem.id, mLessonItem.courseId, mLessonItem.title);
-                }
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
+
         }
     }
 
@@ -196,12 +164,11 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         if (mType == DownloadType.DOWNLOADED) {
             childPanel.tvVideoLength.setText(AppUtil.convertCNTime(lessonItem.length));
         } else {
-            final M3U8DbModel model = m3u8ModelList.get(lessonItem.id);
-            childPanel.ivDownloadSign.setOnClickListener(new DownloadSignClick(childPanel, lessonItem));
+            M3U8DbModel model = m3u8ModelList.get(lessonItem.id);
             childPanel.tvProgress.setText((int) (model.downloadNum / (float) model.totalNum * 100) + "%");
 
             int downStatus = getDownloadStatus(lessonItem.id);
-            int downStatusIconRes = downStatus == DOWNED ? R.string.font_stop_downloading : R.string.font_downloading;
+            int downStatusIconRes = downStatus == DOWNING ? R.string.font_downloading : R.string.font_stop_downloading;
             childPanel.ivDownloadSign.setText(mContex.getResources().getString(downStatusIconRes));
         }
         //选择框是否显示
@@ -225,7 +192,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
                 }
             });
         } else {
-            childPanel.ivDownloadSelected.setVisibility(View.INVISIBLE);
+            childPanel.ivDownloadSelected.setVisibility(View.GONE);
         }
 
         return convertView;
@@ -243,6 +210,10 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         LessonItem lessonItem = mChildItems.get(groupPosition).get(childPosition);
         lessonItem.isSelected = !lessonItem.isSelected;
         notifyDataSetChanged();
+    }
+
+    public boolean isSelectedShow() {
+        return this.mSelectedShow;
     }
 
     public void setSelectShow(boolean b) {
@@ -301,7 +272,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         public EduSohoIconView ivDownloadSelected;
         public TextView tvLessonTitle;
         public View viewDownloadProgress;
-        public EduSohoIconView ivDownloadSign;
+        public TextView ivDownloadSign;
         public TextView tvProgress;
         public TextView tvVideoLength;
 
@@ -309,7 +280,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
             ivDownloadSelected = (EduSohoIconView) view.findViewById(R.id.iv_download_selected);
             tvLessonTitle = (TextView) view.findViewById(R.id.tv_lesson_content);
             viewDownloadProgress = view.findViewById(R.id.rl_progress);
-            ivDownloadSign = (EduSohoIconView) view.findViewById(R.id.iv_download_sign);
+            ivDownloadSign = (TextView) view.findViewById(R.id.iv_download_sign);
             tvProgress = (TextView) view.findViewById(R.id.tv_progress);
             tvVideoLength = (TextView) view.findViewById(R.id.tv_video_length);
 
@@ -327,37 +298,5 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
 
     public enum DownloadType {
         DOWNLOADING, DOWNLOADED
-    }
-
-    private void showAlertDialog(String content) {
-        PopupDialog popupDialog = PopupDialog.createMuilt(
-                mActivity,
-                "播放提示",
-                content,
-                new PopupDialog.PopupClickListener() {
-                    @Override
-                    public void onClick(int button) {
-                        if (button == PopupDialog.OK) {
-                            ExitCoursePopupDialog dialog = ExitCoursePopupDialog.createNormal(
-                                    mActivity, "视频课时下载播放", new ExitCoursePopupDialog.PopupClickListener() {
-                                        @Override
-                                        public void onClick(int button, int position, String selStr) {
-                                            if (button == ExitCoursePopupDialog.CANCEL) {
-                                                return;
-                                            }
-
-                                            EdusohoApp app = EdusohoApp.app;
-                                            app.config.offlineType = position;
-                                            app.saveConfig();
-                                        }
-                                    }
-                            );
-                            dialog.setStringArray(R.array.offline_array);
-                            dialog.show();
-                        }
-                    }
-                });
-        popupDialog.setOkText("去设置");
-        popupDialog.show();
     }
 }

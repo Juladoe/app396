@@ -823,7 +823,13 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mUIHandler.sendEmptyMessage(UI_EVENT_PLAY);
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
         mDurationCount = mVV.getDuration();
-        setVideoViewHeight();
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                setVideoViewHeight();
+            }
+        });
     }
 
     @Override

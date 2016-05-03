@@ -75,13 +75,14 @@ public class M3U8DownService extends Service {
     }
 
     public void cancelDownloadTask(int lessonId) {
-        M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
-        if (m3U8Util != null) {
-            m3U8Util.cancelDownload();
-            mM3U8UitlList.remove(lessonId);
-            notificationList.remove(lessonId);
-            notificationManager.cancel(lessonId);
+        if (mM3U8UitlList.indexOfKey(lessonId) < 0) {
+            return;
         }
+        M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
+        m3U8Util.cancelDownload();
+        mM3U8UitlList.remove(lessonId);
+        notificationList.remove(lessonId);
+        notificationManager.cancel(lessonId);
     }
 
     public void cancelAllDownloadTask() {
@@ -152,7 +153,7 @@ public class M3U8DownService extends Service {
             return false;
         }
 
-        return mM3U8UitlList.indexOfKey(lessonId)  != -1;
+        return mM3U8UitlList.indexOfKey(lessonId) >= 0;
     }
 
     private void createNotification(int lessonId, String title) {

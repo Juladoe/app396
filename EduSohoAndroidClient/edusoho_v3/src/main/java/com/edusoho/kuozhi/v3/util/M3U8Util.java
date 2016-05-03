@@ -680,6 +680,8 @@ public class M3U8Util {
                                 file,
                                 new DigestInputStream(response.getEntity().getContent(), mTargetHost)
                         );
+
+                        Log.d(TAG, "isSave " + isSave);
                         if (! isSave) {
                             throw new RuntimeException("down error");
                         }
@@ -693,20 +695,25 @@ public class M3U8Util {
                     intent.putExtra(Const.COURSE_ID, mCourseId);
                     intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
                     mContext.sendBroadcast(intent);
+                } catch (RuntimeException re) {
+                    processTimeout(type, key ,url);
                 } catch (Exception e) {
-                    //超时处理
-                    int count = mTimeOutList.get(key);
-                    if (count < 30) {
-                        Log.d(TAG, "timeiout count " + count);
-                        getResourceFromNet(url, type);
-                        mTimeOutList.put(key, ++count);
-                    }
-                    e.printStackTrace();
+                    processTimeout(type, key ,url);
                 } finally {
                     httpGet.abort();
                 }
             }
         }, 1, TimeUnit.MILLISECONDS);
+    }
+
+    private void processTimeout(int type, String key, String url) {
+        //超时处理
+        int count = mTimeOutList.containsKey(key) ? mTimeOutList.get(key) : 0;
+        Log.d(TAG, "timeiout count " + count);
+        if (count < 30) {
+            getResourceFromNet(url, type);
+            mTimeOutList.put(key, ++count);
+        }
     }
 
     /*
