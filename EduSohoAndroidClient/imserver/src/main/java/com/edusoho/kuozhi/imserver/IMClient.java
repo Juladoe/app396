@@ -1,9 +1,11 @@
 package com.edusoho.kuozhi.imserver;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -19,6 +21,7 @@ import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,6 +50,13 @@ public class IMClient {
     }
 
     public void start(ArrayList<String> ignoreNosList, ArrayList<String> hostList ) {
+        int pid = android.os.Process.myPid();
+        String processAppName = getAppName(pid);
+        if (processAppName == null ||!processAppName.equalsIgnoreCase(mContext.getPackageName())) {
+            Log.e("IMClient", "enter the service process!");
+            return;
+        }
+
         Intent intent = new Intent("com.edusoho.kuozhi.imserver.IImServerAidlInterface");
         intent.setPackage(mContext.getPackageName());
 
@@ -62,6 +72,26 @@ public class IMClient {
                 connectService();
             }
         }, SystemClock.uptimeMillis() + 300);
+    }
+
+
+    private String getAppName(int pID) {
+        String processName = null;
+        ActivityManager am = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+        List l = am.getRunningAppProcesses();
+        Iterator i = l.iterator();
+        while (i.hasNext()) {
+            ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo) (i.next());
+            try {
+                if (info.pid == pID) {
+                    processName = info.processName;
+                    return processName;
+                }
+            } catch (Exception e) {
+                // Log.d("Process", "Error>> :"+ e.toString());
+            }
+        }
+        return processName;
     }
 
     private void connectService() {

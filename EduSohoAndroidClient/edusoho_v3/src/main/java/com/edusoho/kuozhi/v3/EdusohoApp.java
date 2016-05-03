@@ -312,34 +312,7 @@ public class EdusohoApp extends Application {
     }
 
     private void bindImServerHost() {
-        int pid = android.os.Process.myPid();
-        String processAppName = getAppName(pid);
-
-        if (processAppName == null ||!processAppName.equalsIgnoreCase(getPackageName())) {
-            Log.e(TAG, "enter the service process!");
-            return;
-        }
         new IMServiceProvider(getBaseContext()).bindServer();
-    }
-
-    private String getAppName(int pID) {
-        String processName = null;
-        ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
-        List l = am.getRunningAppProcesses();
-        Iterator i = l.iterator();
-        PackageManager pm = this.getPackageManager();
-        while (i.hasNext()) {
-            ActivityManager.RunningAppProcessInfo info = (ActivityManager.RunningAppProcessInfo) (i.next());
-            try {
-                if (info.pid == pID) {
-                    processName = info.processName;
-                    return processName;
-                }
-            } catch (Exception e) {
-                // Log.d("Process", "Error>> :"+ e.toString());
-            }
-        }
-        return processName;
     }
 
     private String getDomain() {
