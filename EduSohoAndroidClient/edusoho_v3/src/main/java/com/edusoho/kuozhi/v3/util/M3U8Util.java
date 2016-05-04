@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -20,7 +19,6 @@ import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8ListItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -35,7 +33,6 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -43,15 +40,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.lang.ref.WeakReference;
 import java.net.URLConnection;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Queue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 import cn.trinea.android.common.util.ToastUtils;
@@ -89,6 +88,7 @@ public class M3U8Util {
     private Hashtable<String, Integer> mTimeOutList;
     private ArrayList<HttpGet> mFutures;
     private ScheduledThreadPoolExecutor mThreadPoolExecutor;
+    private Queue<DownloadItem> mDownloadQueue;
 
     public M3U8Util(Context context) {
         this.mContext = context;
@@ -102,8 +102,9 @@ public class M3U8Util {
 
         mFutures = new ArrayList<>();
         mTimeOutList = new Hashtable<>();
-        mThreadPoolExecutor = new ScheduledThreadPoolExecutor(3);
-        mThreadPoolExecutor.setMaximumPoolSize(4);
+        mDownloadQueue = new ArrayDeque<>();
+        mThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
+        mThreadPoolExecutor.setMaximumPoolSize(1);
         mSqliteUtil = SqliteUtil.getUtil(mContext);
     }
 
@@ -247,18 +248,6 @@ public class M3U8Util {
         return mLessonTitle;
     }
 
-    private String readStringFromNet(String url) {
-        HttpClient client = new DefaultHttpClient();
-        HttpGet httpGet = new HttpGet(url);
-        try {
-            HttpResponse response = client.execute(httpGet);
-            return EntityUtils.toString(response.getEntity());
-        } catch (Exception e) {
-
-        }
-        return null;
-    }
-
     private InputStream readStreamFromNet(String url) {
         HttpClient client = new DefaultHttpClient();
         HttpGet httpGet = new HttpGet(url);
@@ -335,6 +324,7 @@ public class M3U8Util {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                ToastUtils.show(mContext, "下载视频失败,请重新尝试下载!");
             }
         });
     }
@@ -617,7 +607,10 @@ public class M3U8Util {
         }
         mHttpClient = null;
         mThreadPoolExecutor = null;
+        mDownloadQueue.clear();
         mTimeOutList.clear();
+
+        mDownloadQueue = null;
         mTimeOutList = null;
     }
 
@@ -647,63 +640,11 @@ public class M3U8Util {
         return stringBuffer.toString();
     }
 
-    private void getResourceFromNet(final String url, final int type) {
-        mThreadPoolExecutor.schedule(new Runnable() {
-            @Override
-            public void run() {
-                if (isCancel) {
-                    return;
-                }
-
-                String key = DigestUtils.md5(url);
-                HttpGet httpGet = new HttpGet(url);
-                try {
-                    Log.d(TAG, "download " + url);
-                    HttpResponse response = mHttpClient.execute(httpGet);
-                    if (response == null || response.getEntity() == null) {
-                        throw new RuntimeException("down error");
-                    }
-                    if (type == KEY) {
-                        ContentValues cv = new ContentValues();
-                        cv.put("type", Const.CACHE_KEY_TYPE);
-                        cv.put("key", "ext_x_key/" + key);
-                        cv.put("value", EntityUtils.toString(response.getEntity()));
-                        mSqliteUtil.insert("data_cache", cv);
-                    } else {
-                        File file = createLocalM3U8SourceFile(key);
-                        if (file == null) {
-                            Log.d(TAG, "file download error" + url);
-                            return;
-                        }
-
-                        boolean isSave = FileUtils.writeFile(
-                                file,
-                                new DigestInputStream(response.getEntity().getContent(), mTargetHost)
-                        );
-
-                        Log.d(TAG, "isSave " + isSave);
-                        if (! isSave) {
-                            throw new RuntimeException("down error");
-                        }
-                    }
-
-                    updateDownloadStatus(url, mLessonId, 1);
-
-                    //发送下载广播
-                    Intent intent = new Intent(DownloadStatusReceiver.ACTION);
-                    intent.putExtra(Const.LESSON_ID, mLessonId);
-                    intent.putExtra(Const.COURSE_ID, mCourseId);
-                    intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
-                    mContext.sendBroadcast(intent);
-                } catch (RuntimeException re) {
-                    processTimeout(type, key ,url);
-                } catch (Exception e) {
-                    processTimeout(type, key ,url);
-                } finally {
-                    httpGet.abort();
-                }
-            }
-        }, 1, TimeUnit.MILLISECONDS);
+    private void getResourceFromNet(String url, int type) {
+        if (isCancel) {
+            return;
+        }
+        mThreadPoolExecutor.schedule(new DownloadRunnable(type, url), 1, TimeUnit.MILLISECONDS);
     }
 
     private void processTimeout(int type, String key, String url) {
@@ -735,12 +676,23 @@ public class M3U8Util {
         mHttpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params, schReg), params);
 
         for (String url : keyList) {
-            getResourceFromNet(url, KEY);
+            mDownloadQueue.add(new DownloadItem(KEY, url));
         }
 
         for (String url : urlList) {
-            getResourceFromNet(url, URL);
+            mDownloadQueue.add(new DownloadItem(URL, url));
         }
+
+        prepareDownload();
+    }
+
+    private void prepareDownload() {
+        if (mDownloadQueue.isEmpty()) {
+            return;
+        }
+
+        DownloadItem downloadItem = mDownloadQueue.poll();
+        getResourceFromNet(downloadItem.url, downloadItem.type);
     }
 
     private File getLocalM3U8Dir() {
@@ -928,6 +880,92 @@ public class M3U8Util {
                 mCurrentDigestIndex = mCurrentDigestIndex > keyLength ? 0 : mCurrentDigestIndex;
                 b = (byte) (b ^ mDigestKey[mCurrentDigestIndex++]);
                 buffer[i] = b;
+            }
+        }
+    }
+
+    class DownloadItem {
+        public String url;
+        public int type;
+
+        public DownloadItem(int type, String url)
+        {
+            this.type = type;
+            this.url = url;
+        }
+    }
+
+    class DownloadRunnable implements Runnable
+    {
+        public String url;
+        public int type;
+
+        public DownloadRunnable(int type, String url)
+        {
+            this.type = type;
+            this.url = url;
+        }
+
+        private void saveKey(String key, HttpResponse response) throws IOException {
+            ContentValues cv = new ContentValues();
+            cv.put("type", Const.CACHE_KEY_TYPE);
+            cv.put("key", "ext_x_key/" + key);
+            cv.put("value", EntityUtils.toString(response.getEntity()));
+            mSqliteUtil.insert("data_cache", cv);
+        }
+
+        private void saveFile(String key, HttpResponse response) throws IOException {
+            File file = createLocalM3U8SourceFile(key);
+            if (file == null) {
+                Log.d(TAG, "file download error" + url);
+                return;
+            }
+
+            boolean isSave = FileUtils.writeFile(
+                    file,
+                    new DigestInputStream(response.getEntity().getContent(), mTargetHost)
+            );
+
+            Log.d(TAG, "isSave " + isSave);
+            if (! isSave) {
+                throw new RuntimeException("down error");
+            }
+        }
+
+        private void sendSuccessBroadcast() {
+            //发送下载广播
+            Intent intent = new Intent(DownloadStatusReceiver.ACTION);
+            intent.putExtra(Const.LESSON_ID, mLessonId);
+            intent.putExtra(Const.COURSE_ID, mCourseId);
+            intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
+            mContext.sendBroadcast(intent);
+        }
+        @Override
+        public void run() {
+            String key = DigestUtils.md5(url);
+            HttpGet httpGet = new HttpGet(url);
+            mFutures.add(httpGet);
+            try {
+                Log.d(TAG, "download " + url);
+                HttpResponse response = mHttpClient.execute(httpGet);
+                if (response == null || response.getEntity() == null) {
+                    throw new RuntimeException("down error");
+                }
+                if (type == KEY) {
+                    saveKey(key, response);
+                } else {
+                    saveFile(key, response);
+                }
+                updateDownloadStatus(url, mLessonId, 1);
+                sendSuccessBroadcast();
+                prepareDownload();
+            } catch (RuntimeException re) {
+                processTimeout(type, key ,url);
+            } catch (Exception e) {
+                processTimeout(type, key ,url);
+            } finally {
+                httpGet.abort();
+                mFutures.remove(httpGet);
             }
         }
     }
