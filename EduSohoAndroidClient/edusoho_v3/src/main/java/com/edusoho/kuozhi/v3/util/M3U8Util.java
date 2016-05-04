@@ -568,9 +568,7 @@ public class M3U8Util {
         Log.d(TAG, "update m3u8 src result " + result);
         if (result > 0) {
             //更新总计数器
-            String updateSql = "update data_m3u8 set download_num=download_num+1 where userId=%d and host='%s' and lessonId=%d";
-            mSqliteUtil.execSQL(String.format(updateSql, mUserId, mTargetHost, mLessonId));
-            M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, mUserId, mLessonId, mTargetHost, ALL);
+            M3U8DbModel m3U8DbModel = updateM3U8DownloadNum();
 
             if (m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
                 String playListStr = createLocalM3U8File(m3U8DbModel);
@@ -589,6 +587,31 @@ public class M3U8Util {
             }
         }
         Log.d(TAG, "update m3u8 src status " + url);
+    }
+
+    private M3U8DbModel updateM3U8DownloadNum() {
+        //更新总计数器
+        M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, mUserId, mLessonId, mTargetHost, UN_FINISH);
+        if (m3U8DbModel == null) {
+            return null;
+        }
+        ContentValues cv = new ContentValues();
+        cv.put("download_num", m3U8DbModel.downloadNum + 1);
+        int result = mSqliteUtil.update(
+                "data_m3u8",
+                cv,
+                "host=? and lessonId=? and userId=?",
+                new String[]{
+                        mTargetHost,
+                        String.valueOf(mLessonId),
+                        String.valueOf(mUserId)
+                }
+        );
+
+        if (result > 0) {
+            m3U8DbModel.downloadNum = m3U8DbModel.downloadNum + 1;
+        }
+        return m3U8DbModel;
     }
 
     public void cancelDownload() {
