@@ -25,7 +25,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class CacheServer extends Thread {
+public class
+CacheServer extends Thread {
 
     public static final String TAG = "CacheServer";
     private int port = Const.CACHE_PROT;

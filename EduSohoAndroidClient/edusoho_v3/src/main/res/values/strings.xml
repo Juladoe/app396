@@ -34,6 +34,7 @@
     <string name="setting_new_msg_notify">新消息提醒</string>
     <string name="setting_online_duration">在线时段</string>
     <string name="setting_wifi_download">非wifi下视频可以播放/下载</string>
+    <string name="setting_mediacodec_type">默认视频解码方式:[%s]</string>
     <string name="setting_clean_cache">清理缓存</string>
     <string name="setting_about">关于</string>
     <string name="msg_reminder_new_msg">接收新消息通知</string>
@@ -110,9 +111,9 @@
     <string name="font_mine_pressed">&#xe64b;</string>
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
-    <string name="font_downloading">&#xe612;</string>
-    <string name="font_stop_downloading">&#xe614;</string>
-    <string name="font_wait_downloading">&#xe60f;</string>
+    <string name="font_downloading">下载中</string>
+    <string name="font_stop_downloading">已暂停</string>
+    <string name="font_wait_downloading">等待中</string>
     <string name="font_download_select">&#xe610;</string>
     <string name="font_download_unselect">&#xe613;</string>
     <string name="font_less">&#xe625;</string>
@@ -195,6 +196,11 @@
         <item>仅wifi</item>
         <item>仅wifi,3G/4G</item>
         <item>从不</item>
+    </string-array>
+
+    <string-array name="mediacoder_array">
+        <item>硬件解码</item>
+        <item>软件解码</item>
     </string-array>
 
     <string name="mine_items_learn">我的学习</string>

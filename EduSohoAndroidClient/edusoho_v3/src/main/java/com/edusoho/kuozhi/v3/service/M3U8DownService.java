@@ -12,7 +12,6 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.widget.RemoteViews;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
@@ -24,7 +23,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
@@ -35,8 +33,6 @@ public class M3U8DownService extends Service {
 
     private Context mContext;
 
-    public static final int UPDATE = 0001;
-
     private NotificationManager notificationManager;
     private SparseArray<Notification> notificationList;
     private SparseArray<M3U8Util> mM3U8UitlList = new SparseArray<M3U8Util>();
@@ -46,6 +42,7 @@ public class M3U8DownService extends Service {
     private static M3U8DownService mService;
 
     private static final String TAG = "M3U8DownService";
+    private Object mLock = new Object();
 
     @Override
     public void onDestroy() {
@@ -62,8 +59,8 @@ public class M3U8DownService extends Service {
         mContext = this;
 
         notificationList = new SparseArray<>();
-        mThreadPoolExecutor = new ScheduledThreadPoolExecutor(3);
-        mThreadPoolExecutor.setMaximumPoolSize(4);
+        mThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
+        mThreadPoolExecutor.setMaximumPoolSize(1);
         notificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
         mDownLoadStatusReceiver = new DownloadStatusReceiver(mStatusCallback);
@@ -75,13 +72,14 @@ public class M3U8DownService extends Service {
     }
 
     public void cancelDownloadTask(int lessonId) {
-        M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
-        if (m3U8Util != null) {
-            m3U8Util.cancelDownload();
-            mM3U8UitlList.remove(lessonId);
-            notificationList.remove(lessonId);
-            notificationManager.cancel(lessonId);
+        if (mM3U8UitlList.indexOfKey(lessonId) < 0) {
+            return;
         }
+        M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
+        m3U8Util.cancelDownload();
+        mM3U8UitlList.remove(lessonId);
+        notificationList.remove(lessonId);
+        notificationManager.cancel(lessonId);
     }
 
     public void cancelAllDownloadTask() {
@@ -134,9 +132,11 @@ public class M3U8DownService extends Service {
                     return;
                 }
                 Log.d(TAG, "m3u8 download_service onStartCommand");
-                if (mM3U8UitlList.size() > 2) {
-                    Log.d(TAG, "mM3U8UtilList list is full " + mM3U8UitlList.size());
-                    return;
+                synchronized (mLock) {
+                    if (mM3U8UitlList.size() > 0) {
+                        Log.d(TAG, "mM3U8UtilList list is full");
+                        return;
+                    }
                 }
 
                 M3U8Util m3U8Util = new M3U8Util(mContext);
@@ -145,6 +145,14 @@ public class M3U8DownService extends Service {
                 m3U8Util.download(lessonId, courseId, EdusohoApp.app.loginUser.id);
             }
         });
+    }
+
+    public boolean hasTaskByLessonId(int lessonId) {
+        if (mM3U8UitlList == null || mM3U8UitlList.size() == 0) {
+            return false;
+        }
+
+        return mM3U8UitlList.indexOfKey(lessonId) >= 0;
     }
 
     private void createNotification(int lessonId, String title) {
