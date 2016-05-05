@@ -17,8 +17,8 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.model.bal.register.PhoneCode;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
-import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -26,9 +26,6 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -121,41 +118,39 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 CommonUtil.longToast(mContext, String.format("请输入%s", "手机号"));
                 return;
             }
-
-
             RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
-
             HashMap<String, String> params = requestUrl.getParams();
             params.put("phoneNumber", String.valueOf(phoneNumber));
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
+                        PhoneCode codeResult = parseJsonValue(response, new TypeToken<PhoneCode>() {
                         });
-                        if (result != null && result.error != null) {
-                            CommonUtil.longToast(mActivity, result.error.message);
-                            return;
+                        if (codeResult != null) {
+                            if (codeResult.code.equals("200")) {
+                                btnSendCode.setEnabled(false);
+                                btnSendCode.setBackgroundColor(getResources().getColor(R.color.grey_main));
+                                mClockTime = 120;
+                                mTimer = new Timer();
+                                mTimer.schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        Message message = mSmsCodeHandler.obtainMessage();
+                                        message.what = 0;
+                                        mSmsCodeHandler.sendMessage(message);
+                                    }
+                                }, 0, 1000);
+                                CommonUtil.longToast(mContext, codeResult.msg);
+                            }
+                        } else {
+                            if (!TextUtils.isEmpty(response)) {
+                                CommonUtil.longToast(mContext, response);
+                            } else {
+                                CommonUtil.longToast(mContext, getResources().getString(R.string.phone_code_error));
+                            }
                         }
-
-                        JSONObject jsonObject = new JSONObject(response);
-                        if (jsonObject.getString("code").equals("200")) {
-                            btnSendCode.setEnabled(false);
-                            btnSendCode.setBackgroundColor(getResources().getColor(R.color.grey_main));
-                            mClockTime = 120;
-                            mTimer = new Timer();
-                            mTimer.schedule(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    Message message = mSmsCodeHandler.obtainMessage();
-                                    message.what = 0;
-                                    mSmsCodeHandler.sendMessage(message);
-
-                                }
-                            }, 0, 1000);
-                            CommonUtil.longToast(mContext, jsonObject.getString("msg"));
-                        }
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         Log.d(TAG, "phone reg error");
                     }
                 }
@@ -259,26 +254,27 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
-                        });
-                        if (result != null && result.error != null) {
-                            btnMailReg.setInitState();
-                            CommonUtil.longToast(mActivity, result.error.message);
-                            return;
-                        }
-
                         UserResult userResult = mActivity.parseJsonValue(
                                 response, new TypeToken<UserResult>() {
                                 });
-                        app.saveToken(userResult);
-                        btnMailReg.setSuccessState();
-                        btnMailReg.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                app.sendMessage(Const.LOGIN_SUCCESS, null);
+                        if (userResult != null && userResult.user != null) {
+                            app.saveToken(userResult);
+                            btnMailReg.setSuccessState();
+                            btnMailReg.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
+                                }
+                            }, 500);
+                        } else {
+                            if (!TextUtils.isEmpty(response)) {
+                                CommonUtil.longToast(mContext, response);
+                            } else {
+                                CommonUtil.longToast(mContext, getResources().getString(R.string.mail_reg_failed));
                             }
-                        }, 500);
+                            btnMailReg.setInitState();
+                        }
                     } catch (Exception e) {
                         btnMailReg.setInitState();
                         e.printStackTrace();

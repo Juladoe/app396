@@ -9,14 +9,14 @@
         android:layout_height="match_parent"
         android:descendantFocusability="afterDescendants"
         android:gravity="center_horizontal"
-        android:padding="16dp">
+        android:padding="15dp"
+        >
 
 
         <TextView
             android:id="@+id/net_school_lable"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginLeft="15dp"
             android:gravity="center"
             android:textColor="#FFFFFF"
             android:textSize="17sp" />
@@ -27,12 +27,11 @@
             android:layout_height="26dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="15dp"
             android:background="@drawable/netschool_enter_btn"
             android:gravity="center"
             android:text="进入"
             android:textColor="#46C37B"
-            android:textSize="14sp" />
+            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="match_parent"

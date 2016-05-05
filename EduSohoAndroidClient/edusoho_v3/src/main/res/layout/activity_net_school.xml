@@ -24,7 +24,7 @@
             android:layout_marginRight="16dp"
             android:layout_marginTop="7dp"
             android:layout_weight="1"
-            android:background="@drawable/search_friend_bg"
+            android:background="@drawable/search_school_history_bg"
             android:drawableLeft="@drawable/icon_edittext_search"
             android:drawablePadding="11dp"
             android:gravity="center_vertical"
