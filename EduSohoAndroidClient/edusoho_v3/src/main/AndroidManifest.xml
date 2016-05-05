@@ -214,8 +214,14 @@
             android:name=".v3.ui.WebViewActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".v3.ui.MyThreadActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".v3.ui.ThreadCreateActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
 

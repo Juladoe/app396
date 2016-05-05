@@ -82,7 +82,8 @@ public class MyThreadAdapter extends RecyclerView.Adapter {
                     mApp.mEngine.runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, course.id);
+                            startIntent.putExtra(ThreadDiscussActivity.TARGET_ID, course.id);
+                            startIntent.putExtra(ThreadDiscussActivity.TARGET_TYPE, "course");
                             startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, threadId);
                             startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
                         }

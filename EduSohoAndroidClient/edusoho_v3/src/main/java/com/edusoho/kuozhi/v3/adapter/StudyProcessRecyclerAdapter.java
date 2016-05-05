@@ -222,7 +222,8 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                         mApp.mEngine.runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, entity.getCourseId());
+                                startIntent.putExtra(ThreadDiscussActivity.TARGET_ID, entity.getCourseId());
+                                startIntent.putExtra(ThreadDiscussActivity.TARGET_TYPE, "course");
                                 startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, entity.getThreadId());
                                 startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
                             }

@@ -153,6 +153,18 @@ public class WebVideoLessonFragment extends BaseFragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        mWebView.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mWebView.onResume();
+    }
+
+    @Override
     protected void initView(View view) {
         super.initView(view);
         mWebView = (WebView) view.findViewById(R.id.webvideo_webview);
@@ -242,14 +254,16 @@ public class WebVideoLessonFragment extends BaseFragment {
             return;
         }
 
+        ViewGroup viewGroup = (ViewGroup) mView.getParent();
+        if (viewGroup != null) {
+            viewGroup.removeView(mView);
+            viewGroup.addView(mWebView);
+        }
+
         if (mCustomViewCallback != null) {
             mCustomViewCallback.onCustomViewHidden();
             mCustomViewCallback = null;
         }
-
-        ViewGroup viewGroup = (ViewGroup) mView.getParent();
-        viewGroup.removeView(mView);
-        viewGroup.addView(mWebView);
 
         mView = null;
     }

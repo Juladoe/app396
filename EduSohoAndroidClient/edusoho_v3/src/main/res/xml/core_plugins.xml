@@ -375,4 +375,8 @@
         package="com.edusoho.kuozhi.v3.ui.MyThreadActivity"
         version="1.0" />
 
+    <plugin
+        name="ThreadCreateActivity"
+        package="com.edusoho.kuozhi.v3.ui.ThreadCreateActivity"
+        version="1.0" />
 </plugins>
