@@ -53,7 +53,7 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
     private void createThread() {
 
         String title = mTitleEdt.getText().toString();
-        String content = mTitleEdt.getText().toString();
+        String content = mContenteEdt.getText().toString();
 
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(content)) {
             ToastUtils.show(getBaseContext(), "问答标题或内容不能为空!!");
