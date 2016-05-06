@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -149,6 +150,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         autoHideTimer = new Timer();
         mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_IDLE;
         mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        this.getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     public void setMediaSource() {
