@@ -390,12 +390,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private void loadLessonFromNet() {
         final LoadDialog loadDialog = LoadDialog.create(this);
         loadDialog.show();
-        RequestUrl requestUrl = EdusohoApp.app.bindUrl(Const.COURSELESSON, true);
-        requestUrl.setParams(new String[]{
-                "courseId", String.valueOf(mCourseId),
-                "lessonId", String.valueOf(mLessonId)
-        });
-        ajaxPost(requestUrl, new Response.Listener<String>() {
+        RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(String.format(Const.LESSON, mLessonId), true);
+        ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 loadDialog.dismiss();

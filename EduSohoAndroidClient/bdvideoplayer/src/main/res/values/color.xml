@@ -18,5 +18,6 @@
     <color name="set_check_bg_gradient_pressed">#ffffff</color>
 
     <color name="base_color_normal">#2ec368</color>
+    <color name="video_checked">#46C37B</color>
     <color name="base_list_background_color">#e5e5e5</color>
 </resources>

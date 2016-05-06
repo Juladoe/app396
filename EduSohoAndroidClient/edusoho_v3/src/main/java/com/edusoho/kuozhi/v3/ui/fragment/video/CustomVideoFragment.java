@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui.fragment.video;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -32,9 +33,9 @@ import java.util.List;
 public class CustomVideoFragment extends BdVideoPlayerFragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
     LessonActivity lessonActivity = null;
-    static final String SD = "SD";
-    static final String HD = "HD";
-    static final String SHD = "SHD";
+    private static final String SD = "SD";
+    private static final String HD = "HD";
+    private static final String SHD = "SHD";
 
     List<StreamInfo> streamInfoLists = new ArrayList<>();
 
@@ -52,6 +53,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         if (getActivity() instanceof LessonActivity) {
             lessonActivity = (LessonActivity) getActivity();
         }
+
     }
 
     @Override
@@ -64,16 +66,41 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
             return;
         }
 
-        if (mVideoSource != null && streamInfoLists.size() == 0) {
-            getVideoStream(mVideoSource, new NormalCallback<StreamInfo[]>() {
-                @Override
-                public void success(StreamInfo[] streamInfos) {
-                    if (streamInfos != null) {
-                        for (StreamInfo streamInfo : streamInfos) {
-                            streamInfoLists.add(streamInfo);
+        Log.d(TAG, "resumePlay: " + mCurMediaSource);
+        if (mCurMediaSource != null) {
+            mEventHandler.sendEmptyMessage(EVENT_START);
+        } else {
+            if (mVideoSource != null) {
+                getVideoStream(mVideoSource, new NormalCallback<StreamInfo[]>() {
+                    @Override
+                    public void success(StreamInfo[] streamInfos) {
+                        if (streamInfos != null) {
+                            for (StreamInfo streamInfo : streamInfos) {
+                                streamInfoLists.add(streamInfo);
+                            }
+                            initPopupWindows(streamInfoLists);
+                            mCurMediaSource = streamInfoLists.get(0).src;
+                            mEventHandler.sendEmptyMessage(EVENT_START);
+                        } else {
+                            showErrorDialog(lessonActivity);
                         }
-                        setStreamTypeBtnStatus();
-                        setCurMediaSource();
+                    }
+                });
+            } else {
+                showErrorDialog(lessonActivity);
+            }
+        }
+//
+//        if (mVideoSource != null && streamInfoLists.size() == 0) {
+//            getVideoStream(mVideoSource, new NormalCallback<StreamInfo[]>() {
+//                @Override
+//                public void success(StreamInfo[] streamInfos) {
+//                    if (streamInfos != null) {
+//                        for (StreamInfo streamInfo : streamInfos) {
+//                            streamInfoLists.add(streamInfo);
+//                        }
+//                        setStreamTypeBtnStatus();
+//                        setCurMediaSource();
 //                        if (mLastPos > 0) {
 //                            reloadLessonMediaUrl(new NormalCallback<LessonItem>() {
 //                                @Override
@@ -86,15 +113,15 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
 //                        } else {
 //                            mEventHandler.sendEmptyMessage(EVENT_START);
 //                        }
-                        mEventHandler.sendEmptyMessage(EVENT_START);
-                    } else {
-                        showErrorDialog(lessonActivity);
-                    }
-                }
-            });
-        } else {
-            mEventHandler.sendEmptyMessage(EVENT_START);
-        }
+//
+//                    } else {
+//                        showErrorDialog(lessonActivity);
+//                    }
+//                }
+//            });
+//        } else {
+//            mEventHandler.sendEmptyMessage(EVENT_START);
+//        }
     }
 
     private void getVideoStream(String url, final NormalCallback<StreamInfo[]> normalCallback) {
@@ -195,19 +222,19 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         Iterator<StreamInfo> iterator = streamInfoLists.iterator();
         while (iterator.hasNext()) {
             StreamInfo streamInfo = iterator.next();
-            if (SD.equals(streamInfo.name.toUpperCase())) {
+//            if (SD.equals(streamInfo.name.toUpperCase())) {
 //                tvSDVideo.setVisibility(View.VISIBLE);
 //                tvSDVideo.setTag(streamInfo.src);
 //                tvSDVideo.setOnClickListener(this);
-            } else if (HD.equals(streamInfo.name.toUpperCase())) {
+//            } else if (HD.equals(streamInfo.name.toUpperCase())) {
 //                tvHDVideo.setVisibility(View.VISIBLE);
 //                tvHDVideo.setTag(streamInfo.src);
 //                tvHDVideo.setOnClickListener(this);
-            } else if (SHD.equals(streamInfo.name.toUpperCase())) {
+//            } else if (SHD.equals(streamInfo.name.toUpperCase())) {
 //                tvSHDVideo.setVisibility(View.VISIBLE);
 //                tvSHDVideo.setTag(streamInfo.src);
 //                tvSHDVideo.setOnClickListener(this);
-            }
+//            }
         }
     }
 
@@ -215,9 +242,9 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
 //        if (tvSDVideo.getTag() != null) {
 //            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
 //        } else if (tvHDVideo.getTag() != null) {
-//            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
+//            mCurMediaSource = String.valueOf(tvHDVideo.getTag());
 //        } else if (tvSHDVideo.getTag() != null) {
-//            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
+//            mCurMediaSource = String.valueOf(tvSHDVideo.getTag());
 //        }
     }
 }

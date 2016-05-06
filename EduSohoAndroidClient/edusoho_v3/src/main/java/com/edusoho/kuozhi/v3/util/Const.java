@@ -267,7 +267,6 @@ public class Const {
     public static final String REVIEWS = "Course/getReviews";
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";
-    public static final String LESSON = "Lesson/getLesson";
     public static final String SEARCH_COURSE = "Course/searchCourse";
     public static final String TEACHER_COURSES = "Course/getTeacherCourses";
     public static final String COURSE_NOTICE = "Course/getCourseNotice";
@@ -506,6 +505,8 @@ public class Const {
 
     public static final String MY_CREATED_THREADS = "/api/chaos_threads/getThreads";
     public static final String MY_POSTED_THREADS = "/api/chaos_threads_posts/getThreadPosts";
+
+    public static final String LESSON = "/api/lessons/%d";
 
     /*
      * intent action

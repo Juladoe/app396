@@ -21,6 +21,8 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -33,6 +35,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.baidu.cyberplayer.core.BVideoView;
 import com.baidu.cyberplayer.core.BVideoView.OnCompletionListener;
@@ -42,6 +45,7 @@ import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 
 import java.io.File;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -73,7 +77,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected ImageView ivBack;
     protected TextView tvVideoTitle;
     protected ImageView ivShare;
-    protected InitMediaSource initMediaSource;
     protected TextView tvSDVideo;
     protected TextView tvHDVideo;
     protected TextView tvSHDVideo;
@@ -143,7 +146,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
         initSoLib();
         setMediaSource();
-        initPopupWindows();
         autoHideTimer = new Timer();
         mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_IDLE;
         mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -153,7 +155,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         Bundle bundle = getArguments();
         mIsHwDecode = bundle.getBoolean("isHW", false);
         isCacheVideo = bundle.getBoolean("from_cache", false);
-        mVideoSource = getUrlPath(bundle.getString("mediaUrl"));
+        mVideoSource = getUrlPath(bundle.getString("streamUrls"));
         int decodeMode = TextUtils.isEmpty(mVideoSource) || mVideoSource.contains("Lesson/getLocalVideo") ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
         mDecodeMode = bundle.getInt("decode", decodeMode);
         mVideoHead = getUrlPath(bundle.getString("headUrl"));
@@ -198,7 +200,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
 
         ivVideoReplay.setVisibility(View.GONE);
-        //resumePlay();
+        resumePlay();
     }
 
     @Override
@@ -254,7 +256,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         ivQuestion = (ImageView) view.findViewById(R.id.iv_question);
         ivNote = (ImageView) view.findViewById(R.id.iv_note);
         tvStreamType = (TextView) view.findViewById(R.id.tv_stream);
-
         registerCallbackForControl();
         /**
          * 设置ak及sk的前16位
@@ -800,35 +801,102 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mDurationCount = mVV.getDuration();
     }
 
-    public interface InitMediaSource {
-        void init();
-    }
-
     protected void showPopupWindows() {
-        if (popupWindow == null) {
-            View popupView = LayoutInflater.from(mContext).inflate(R.layout.popup_stream_windows, null);
-            popupWindow = new PopupWindow(popupView);
-            popupWindow.setHeight(250);
-            popupWindow.setWidth(300);
-            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(50, 52, 53, 55)));
-            popupWindow.setOutsideTouchable(true);
-            popupWindow.setFocusable(true);
-            popupWindow.setContentView(popupView);
+        if (popupWindow != null) {
+            popupWindow.showAsDropDown(tvStreamType, dip2px(mContext, 60) / -4, mProgress.getHeight() + 10);
+        } else {
+            Toast.makeText(mContext, "视频信息获取失败", Toast.LENGTH_LONG).show();
         }
-        popupWindow.showAsDropDown(tvStreamType, 0, 200);
     }
 
-    private void initPopupWindows() {
+    protected void initPopupWindows(List<StreamInfo> streamInfoLists) {
         if (popupWindow == null) {
-            View popupView = LayoutInflater.from(mContext).inflate(R.layout.popup_stream_windows, null);
-            popupWindow = new PopupWindow(popupView);
-            popupWindow.setHeight(250);
-            popupWindow.setWidth(300);
+            LinearLayout popupView = (LinearLayout) LayoutInflater.from(mContext).inflate(R.layout.popup_stream_windows, null);
+            createMediaTypeTextViews(popupView, streamInfoLists);
+            popupWindow = new PopupWindow(mContext);
+            popupWindow.setHeight(dip2px(mContext, 15 * 2 + 30 * (streamInfoLists.size() - 1)) + sp2px(mContext, 14 * streamInfoLists.size()) + dip2px(mContext, 15));
+            popupWindow.setWidth(dip2px(mContext, 60));
             popupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(127, 52, 53, 55)));
             popupWindow.setOutsideTouchable(true);
             popupWindow.setFocusable(true);
             popupWindow.setContentView(popupView);
         }
+    }
+
+    private void createMediaTypeTextViews(final LinearLayout parentView, List<StreamInfo> streamInfoLists) {
+        int TopBottomMargin = dip2px(mContext, 15);
+        int middleMargin = dip2px(mContext, 30);
+        for (int i = 0; i < streamInfoLists.size(); i++) {
+            TextView tv = new TextView(mContext);
+            final StreamInfo streamInfo = streamInfoLists.get(i);
+            if (i == 0) {
+                tv.setTextColor(getResources().getColor(R.color.video_checked));
+            } else {
+                tv.setTextColor(getResources().getColor(android.R.color.white));
+            }
+            tv.setText(convertSourceName(streamInfo.name));
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_size_x_s));
+            tv.setGravity(Gravity.CENTER);
+            tv.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+            tv.setTag(streamInfo);
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    StreamInfo si = (StreamInfo) v.getTag();
+                    mCurMediaSource = si.src;
+                    mLastPos = mVV.getCurrentPosition();
+                    tvStreamType.setText(((TextView) v).getText());
+                    initMediaSourceTextViewColor(parentView, si.name);
+                    mEventHandler.sendEmptyMessage(EVENT_REPLAY);
+                }
+            });
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            if (i == streamInfoLists.size() - 1 && streamInfoLists.size() == 1) {
+                params.setMargins(0, TopBottomMargin, 0, TopBottomMargin);
+            } else {
+                if (i == 0) {
+                    params.setMargins(0, TopBottomMargin, 0, 0);
+                } else if (i == streamInfoLists.size() - 1) {
+                    params.setMargins(0, middleMargin, 0, TopBottomMargin);
+                } else {
+                    params.setMargins(0, middleMargin, 0, 0);
+                }
+            }
+            parentView.addView(tv, params);
+        }
+    }
+
+    private void initMediaSourceTextViewColor(LinearLayout parentView, String name) {
+        int size = parentView.getChildCount();
+        for (int i = 0; i < size; i++) {
+            TextView tv = (TextView) parentView.getChildAt(i);
+            StreamInfo streamInfo = (StreamInfo) tv.getTag();
+            if (name.equals(streamInfo.name)) {
+                tv.setTextColor(getResources().getColor(R.color.video_checked));
+            } else {
+                tv.setTextColor(getResources().getColor(android.R.color.white));
+            }
+        }
+    }
+
+    public String convertSourceName(String name) {
+        if ("SD".equals(name)) {
+            return "标清";
+        } else if ("HD".equals(name)) {
+            return "高清";
+        } else {
+            return "超清";
+        }
+    }
+
+    public int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
+
+    public int sp2px(Context context, float spValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (spValue * scale + 0.5f);
     }
 }
 
