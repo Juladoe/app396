@@ -90,7 +90,6 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                 showErrorDialog(lessonActivity);
             }
         }
-//
 //        if (mVideoSource != null && streamInfoLists.size() == 0) {
 //            getVideoStream(mVideoSource, new NormalCallback<StreamInfo[]>() {
 //                @Override

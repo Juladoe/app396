@@ -830,6 +830,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             TextView tv = new TextView(mContext);
             final StreamInfo streamInfo = streamInfoLists.get(i);
             if (i == 0) {
+                tvStreamType.setText(convertSourceName(streamInfo.name));
                 tv.setTextColor(getResources().getColor(R.color.video_checked));
             } else {
                 tv.setTextColor(getResources().getColor(android.R.color.white));
@@ -844,6 +845,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 public void onClick(View v) {
                     StreamInfo si = (StreamInfo) v.getTag();
                     mCurMediaSource = si.src;
+                    mVV.setVideoPath(mCurMediaSource);
                     mLastPos = mVV.getCurrentPosition();
                     tvStreamType.setText(((TextView) v).getText());
                     initMediaSourceTextViewColor(parentView, si.name);
