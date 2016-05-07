@@ -130,6 +130,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected int mLastPos = 0;
     protected int mCurrentPos = 0;
     protected int mDurationCount = 0;
+
+    boolean isSwitched;
     private PLAYER_HEAD_STATUS mPlayHeadStatus;
 
     @Override
@@ -332,7 +334,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     showErrorDialog();
                     break;
                 case UI_EVENT_FINISH:
-                    ivVideoReplay.setVisibility(View.VISIBLE);
+                    //ivVideoReplay.setVisibility(View.VISIBLE);
                     ivVideoPlay.setImageResource(R.drawable.icon_video_play);
                     break;
                 case HIDE:
@@ -783,7 +785,12 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
 
         mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
-        mUIHandler.sendEmptyMessage(UI_EVENT_FINISH);
+        if (isSwitched) {
+            mEventHandler.sendEmptyMessage(EVENT_START);
+            isSwitched = false;
+        } else {
+            mUIHandler.sendEmptyMessage(UI_EVENT_FINISH);
+        }
     }
 
     /**
@@ -842,12 +849,12 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 public void onClick(View v) {
                     StreamInfo si = (StreamInfo) v.getTag();
                     mCurMediaSource = si.src;
-                    onCompletion();
-                    mVV.setVideoPath(mCurMediaSource);
                     mLastPos = mVV.getCurrentPosition();
                     tvStreamType.setText(((TextView) v).getText());
                     initMediaSourceTextViewColor(parentView, si.name);
-                    mEventHandler.sendEmptyMessage(EVENT_START);
+                    mVV.setVideoPath(mCurMediaSource);
+                    mVV.seekTo(mVV.getDuration());
+                    isSwitched = true;
                 }
             });
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
