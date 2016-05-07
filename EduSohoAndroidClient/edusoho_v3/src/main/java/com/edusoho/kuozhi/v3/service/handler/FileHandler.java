@@ -70,10 +70,10 @@ public class FileHandler implements HttpRequestHandler {
         Uri queryUri = Uri.parse(url);
 
         String queryName = queryUri.toString();
-        Log.d(null, "queryName->" + queryName);
+        Log.d(getClass().getSimpleName(), "queryName->" + queryName);
 
         if (queryName.startsWith("playlist")) {
-            int lessonId = CommonUtil.parseInt(queryName.substring("playlist/".length(), queryName.length()));
+            int lessonId = CommonUtil.parseInt(queryName.substring("playlist/".length(), queryName.length() - ".m3u8".length()));
             User loginUser = mActivity.app.loginUser;
             if (loginUser == null) {
                 return;
@@ -81,7 +81,10 @@ public class FileHandler implements HttpRequestHandler {
             M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
                     mActivity, loginUser.id, lessonId, this.mTargetHost, M3U8Util.ALL);
             if (m3U8DbModel != null) {
-                httpResponse.setEntity(new StringEntity(m3U8DbModel.playList));
+                StringEntity entity = new StringEntity(m3U8DbModel.playList, "utf-8");
+                entity.setContentType("application/vnd.apple.mpegurl");
+                entity.setContentEncoding("utf-8");
+                httpResponse.setEntity(entity);
                 return;
             }
         }

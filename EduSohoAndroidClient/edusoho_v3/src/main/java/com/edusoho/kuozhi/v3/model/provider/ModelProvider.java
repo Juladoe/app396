@@ -23,11 +23,13 @@ import java.lang.reflect.Field;
  */
 public abstract class ModelProvider {
 
+    protected Context mContext;
     protected VolleySingleton mVolley;
     protected Gson mGson;
     private static final String TAG = "ModelProvider";
 
     public ModelProvider(Context context) {
+        this.mContext = context;
         this.mGson = new Gson();
         this.mVolley = VolleySingleton.getInstance(context);
     }

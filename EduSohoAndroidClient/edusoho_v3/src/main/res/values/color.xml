@@ -439,4 +439,7 @@
     <color name="process_question_bg">#d6e7f9</color>
     <color name="process_testpaper">#37b97d</color>
     <color name="process_testpaper_bg">#cfefe2</color>
+
+    <color name="thread_type_question">#FF8A0C</color>
+    <color name="thread_type_discuss">#2DB7F5</color>
 </resources>

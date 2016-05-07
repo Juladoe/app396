@@ -283,7 +283,11 @@ public class FindCardItemAdapter extends BaseAdapter {
         switch (type) {
             case "normal":
             case "live":
-                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.MOBILE_WEB_COURSE, id));
+                url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        String.format(Const.MOBILE_WEB_COURSE, id)
+                );
                 break;
             case "classroom":
             default:

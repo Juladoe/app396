@@ -440,9 +440,9 @@ public class Const {
     public static final String MY_FAVORITE = "main#/myfavorite";
     public static final String USER_PROFILE = "main#/userinfo/%d";
     public static final String MOBILE_WEB_COURSE = "main#/course/%d";
-    public static final String MOBILE_WEB_CLASSROOMS = "main#/classroomlist/";
-    public static final String MOBILE_WEB_COURSES = "main#/courselist/normal/";
-    public static final String MOBILE_WEB_LIVE_COURSES = "main#/courselist/live/";
+    public static final String MOBILE_WEB_CLASSROOMS = "main#/classroomlist/?categoryId=%d&orderType=%s";
+    public static final String MOBILE_WEB_COURSES = "main#/courselist/normal/?categoryId=%d&orderType=%s";
+    public static final String MOBILE_WEB_LIVE_COURSES = "main#/courselist/live/?categoryId=%d&orderType=%s";
     public static final String MOBILE_SEARCH = "main#/search";
     public static final String ANNOUNCEMENT = "main#/coursenotice/course/%d";
     public static final String ARTICLE_CONTENT = "%smobile/main#/article/%d";
@@ -501,6 +501,8 @@ public class Const {
     public static final String COURSE_LEARNING_DYNAMICS = "/api/course/%d/status";
 
     public static final String CREATE_THREAD = "/api/chaos_threads";
+    public static final String THREAD_POSTS = "/api/thread/%d/posts?type=%s";
+    public static final String CLASSROOM_THREAD = "/api/classroom/thread/%d";
     public static final String POST_THREAD = "/api/chaos_threads_posts";
 
     public static final String MY_CREATED_THREADS = "/api/chaos_threads/getThreads";

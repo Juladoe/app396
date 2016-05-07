@@ -44,7 +44,11 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 
 import cn.trinea.android.common.util.DigestUtils;
@@ -261,12 +265,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         mThreadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                app.mEngine.runNormalPlugin("ThreadDiscussActivity", mActivity, new PluginRunCallback() {
+                app.mEngine.runNormalPlugin("ThreadCreateActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, mCourseId);
-                        startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, mLessonId);
-                        startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
+                        startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mCourseId);
+                        startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, "course");
+                        startIntent.putExtra(ThreadCreateActivity.LESSON_ID, mLessonId);
+                        startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, "course");
                     }
                 });
             }
@@ -447,6 +452,25 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         mActivity.supportInvalidateOptionsMenu();
     }
 
+    private String getLocalIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface
+                    .getNetworkInterfaces(); en.hasMoreElements();) {
+                NetworkInterface intf = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = intf
+                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        return inetAddress.getHostAddress().toString();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        return "localhost";
+    }
+
     private LessonItem getLessonResultType(String object) {
         LessonItem lessonItem = handleJsonValue(
                 object, new TypeToken<LessonItem>() {
@@ -503,7 +527,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                             return null;
                         }
                     } else {
-                        normalLesson.mediaUri = "http://localhost:8800/playlist/" + mLessonId;
+                        String ip = getLocalIpAddress();
+                        normalLesson.mediaUri = String.format("http://%s:8800/playlist/%d.m3u8", "localhost", mLessonId);
                     }
                 }
                 fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());

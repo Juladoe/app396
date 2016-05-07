@@ -37,6 +37,7 @@ public class ExitCoursePopupDialog extends Dialog {
     }
 
     public void setStringArray(int arrayId) {
+        popup_select.removeAllViews();
         mArray = mContext.getResources().getStringArray(arrayId);
         int index = 0;
         for (String text : mArray) {

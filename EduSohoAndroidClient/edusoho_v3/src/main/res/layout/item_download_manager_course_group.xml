@@ -40,6 +40,8 @@
                     android:layout_marginLeft="12dp"
                     android:layout_marginRight="12dp"
                     android:layout_toLeftOf="@+id/iv_indicator"
+                    android:ellipsize="end"
+                    android:maxLines="2"
                     android:text="title"
                     android:textColor="@color/grey"
                     android:textSize="@dimen/medium_font_size" />

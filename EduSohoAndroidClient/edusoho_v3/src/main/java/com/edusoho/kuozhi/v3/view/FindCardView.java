@@ -70,18 +70,30 @@ public class FindCardView extends LinearLayout {
         setData(discoveryColumn.data);
     }
 
-    public void setMoreClickListener(String type) {
+    public void setMoreClickListener(String orderType, String type, int categoryId) {
         final String url;
         switch (type) {
             case "course":
-                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, Const.MOBILE_WEB_COURSES);
+                url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        String.format(Const.MOBILE_WEB_COURSES, categoryId, orderType)
+                );
                 break;
             case "live":
-                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, Const.MOBILE_WEB_LIVE_COURSES);
+                url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        String.format(Const.MOBILE_WEB_LIVE_COURSES, categoryId, orderType)
+                );
                 break;
             case "classroom":
             default:
-                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, Const.MOBILE_WEB_CLASSROOMS);
+                url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        String.format(Const.MOBILE_WEB_CLASSROOMS, categoryId, orderType)
+                );
         }
 
         tvMore.setOnClickListener(new View.OnClickListener() {

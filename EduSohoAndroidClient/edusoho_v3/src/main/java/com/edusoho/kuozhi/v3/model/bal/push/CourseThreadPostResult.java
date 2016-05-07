@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -14,5 +13,5 @@ public class CourseThreadPostResult implements Serializable {
     public int limit;
     public int total;
 
-    public List<CourseThreadPostEntity> data;
+    public List<CourseThreadPostEntity> resources;
 }
