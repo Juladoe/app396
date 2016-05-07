@@ -63,6 +63,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected String mCurMediaSource = null;
     protected String mVideoSource = null;
     protected String mVideoHead = null;
+    protected boolean mLearnStatus;
     private Activity mContext = null;
     private BVideoView mVV = null;
 
@@ -74,6 +75,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     protected RelativeLayout rlayoutTitleStatus;
     protected ImageView ivBack;
+    protected ImageView ivLearnStatus;
+    protected TextView tvLearn;
     protected TextView tvVideoTitle;
     protected ImageView ivShare;
     protected TextView tvStreamType;
@@ -84,6 +87,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private TextView mDuration = null;
     private TextView mCurrPosition = null;
 
+    protected int mCourseId;
+    protected int mLessonId;
     protected boolean mIsHwDecode = false;
     protected boolean mIsPlayEnd;
     protected boolean isCacheVideo;
@@ -158,6 +163,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         int decodeMode = TextUtils.isEmpty(mVideoSource) || mVideoSource.contains("Lesson/getLocalVideo") ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
         mDecodeMode = bundle.getInt("decode", decodeMode);
         mVideoHead = getUrlPath(bundle.getString("headUrl"));
+        mCourseId = bundle.getInt("courseId");
+        mLessonId = bundle.getInt("lessonId");
+
     }
 
     @Override
@@ -250,6 +258,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mCurrPosition = (TextView) view.findViewById(R.id.time_current);
         rlayoutTitleStatus = (RelativeLayout) view.findViewById(R.id.rlayout_title_status);
         ivBack = (ImageView) view.findViewById(R.id.iv_back);
+        ivLearnStatus = (ImageView) view.findViewById(R.id.iv_learn_status);
+        tvLearn = (TextView) view.findViewById(R.id.tv_learned);
         tvVideoTitle = (TextView) view.findViewById(R.id.tv_video_title);
         ivShare = (ImageView) view.findViewById(R.id.iv_share);
         ivQuestion = (ImageView) view.findViewById(R.id.iv_question);
@@ -264,7 +274,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             BVideoView.setNativeLibsDirectory(mSoLibDir);
         }
         mVV = (BVideoView) view.findViewById(R.id.video_view);
-
         /**
          *注册listener
          */

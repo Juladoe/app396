@@ -402,7 +402,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 }
                 mLessonType = mLessonItem.type;
                 setBackMode(BACK, mLessonItem.title);
-                if (!mLessonType.equals("testpaper")) {
+                if (!mLessonType.equals("testpaper") && !mLessonType.equals("video")) {
                     loadLessonStatus();
                     bindListener();
                 }

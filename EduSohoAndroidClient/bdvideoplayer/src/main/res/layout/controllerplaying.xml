@@ -46,18 +46,18 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
-            android:layout_toLeftOf="@+id/iv_learn_state"
+            android:layout_toLeftOf="@+id/iv_learn_status"
             android:layout_toRightOf="@+id/iv_back"
             android:text="控件位于最高层"
             android:textColor="@android:color/white"
             android:textSize="@dimen/font_size_s" />
 
         <ImageView
-            android:id="@+id/iv_learn_state"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/iv_learn_status"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
             android:layout_toLeftOf="@+id/tv_learned"
             android:src="@drawable/icon_unlearn" />
 
@@ -69,7 +69,7 @@
             android:layout_marginRight="30dp"
             android:layout_toLeftOf="@+id/iv_share"
             android:text="学过了"
-            android:textColor="@android:color/white"
+            android:textColor="@color/unlearn"
             android:textSize="@dimen/font_size_x_s" />
 
         <ImageView

@@ -429,6 +429,7 @@
     <color name="font_2">#666666</color>
     <color name="font_3">#999999</color>
     <color name="font_4">#bbbbbb</color>
+    <color name="unlearn">#bbbbbb</color>
     <color name="grounding">#f7f7f7</color>
     <color name="grounding_operation">#fafafa</color>
     <color name="feedback">#f0f0f0</color>

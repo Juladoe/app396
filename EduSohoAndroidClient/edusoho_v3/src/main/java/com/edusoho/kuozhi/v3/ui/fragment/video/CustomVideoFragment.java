@@ -9,7 +9,10 @@ import android.widget.CompoundButton;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -23,7 +26,6 @@ import com.plugin.edusoho.bdvideoplayer.StreamInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 
@@ -45,6 +47,40 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         ivBack.setOnClickListener(this);
         ivShare.setOnClickListener(this);
         tvStreamType.setOnClickListener(this);
+        ivLearnStatus.setOnClickListener(this);
+        tvLearn.setOnClickListener(this);
+
+        RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.LESSON_STATUS, true);
+        requestUrl.setParams(new String[]{
+                "courseId", mCourseId + "",
+                "lessonId", mLessonId + ""
+        });
+
+        lessonActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                LessonStatus mLessonStatus = lessonActivity.parseJsonValue(
+                        response, new TypeToken<LessonStatus>() {
+                        });
+                if (mLessonStatus != null && mLessonStatus.learnStatus == LearnStatus.finished) {
+                    mLearnStatus = true;
+                } else {
+                    mLearnStatus = false;
+                }
+                if (mLearnStatus) {
+                    ivLearnStatus.setImageResource(R.drawable.icon_learn);
+                    tvLearn.setTextColor(getResources().getColor(android.R.color.white));
+                } else {
+                    ivLearnStatus.setImageResource(R.drawable.icon_unlearn);
+                    tvLearn.setTextColor(getResources().getColor(R.color.unlearn));
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mLearnStatus = false;
+            }
+        });
     }
 
     @Override
@@ -53,7 +89,6 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         if (getActivity() instanceof LessonActivity) {
             lessonActivity = (LessonActivity) getActivity();
         }
-
     }
 
     @Override
@@ -90,37 +125,6 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                 showErrorDialog(lessonActivity);
             }
         }
-//        if (mVideoSource != null && streamInfoLists.size() == 0) {
-//            getVideoStream(mVideoSource, new NormalCallback<StreamInfo[]>() {
-//                @Override
-//                public void success(StreamInfo[] streamInfos) {
-//                    if (streamInfos != null) {
-//                        for (StreamInfo streamInfo : streamInfos) {
-//                            streamInfoLists.add(streamInfo);
-//                        }
-//                        setStreamTypeBtnStatus();
-//                        setCurMediaSource();
-//                        if (mLastPos > 0) {
-//                            reloadLessonMediaUrl(new NormalCallback<LessonItem>() {
-//                                @Override
-//                                public void success(LessonItem lessonItem) {
-//                                    mVideoHead = lessonItem.headUrl;
-//                                    mVideoSource = lessonItem.mediaUri;
-//                                    mEventHandler.sendEmptyMessage(EVENT_START);
-//                                }
-//                            });
-//                        } else {
-//                            mEventHandler.sendEmptyMessage(EVENT_START);
-//                        }
-//
-//                    } else {
-//                        showErrorDialog(lessonActivity);
-//                    }
-//                }
-//            });
-//        } else {
-//            mEventHandler.sendEmptyMessage(EVENT_START);
-//        }
     }
 
     private void getVideoStream(String url, final NormalCallback<StreamInfo[]> normalCallback) {
@@ -199,52 +203,34 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
 
                 }
             });
-//        } else if (v.getId() == tvSDVideo.getId()) {
-//            recordCurrentPosition();
-//            mCurMediaSource = tvSDVideo.getTag().toString();
-//            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
-//        } else if (v.getId() == tvHDVideo.getId()) {
-//            recordCurrentPosition();
-//            mCurMediaSource = tvHDVideo.getTag().toString();
-//            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
-//            recordCurrentPosition();
-//        } else if (v.getId() == tvSHDVideo.getId()) {
-//
-//            mCurMediaSource = tvSHDVideo.getTag().toString();
-//            mEventHandler.sendEmptyMessage(EVENT_REPLAY);
         } else if (v.getId() == tvStreamType.getId()) {
             showPopupWindows();
-        }
-    }
+        } else if ((v.getId() == ivLearnStatus.getId() || v.getId() == tvLearn.getId()) && !mLearnStatus) {
+            RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.LEARN_LESSON, true);
+            requestUrl.setParams(new String[]{
+                    Const.COURSE_ID, mCourseId + "",
+                    Const.LESSON_ID, mLessonId + ""
+            });
 
-    public void setStreamTypeBtnStatus() {
-        Iterator<StreamInfo> iterator = streamInfoLists.iterator();
-        while (iterator.hasNext()) {
-            StreamInfo streamInfo = iterator.next();
-//            if (SD.equals(streamInfo.name.toUpperCase())) {
-//                tvSDVideo.setVisibility(View.VISIBLE);
-//                tvSDVideo.setTag(streamInfo.src);
-//                tvSDVideo.setOnClickListener(this);
-//            } else if (HD.equals(streamInfo.name.toUpperCase())) {
-//                tvHDVideo.setVisibility(View.VISIBLE);
-//                tvHDVideo.setTag(streamInfo.src);
-//                tvHDVideo.setOnClickListener(this);
-//            } else if (SHD.equals(streamInfo.name.toUpperCase())) {
-//                tvSHDVideo.setVisibility(View.VISIBLE);
-//                tvSHDVideo.setTag(streamInfo.src);
-//                tvSHDVideo.setOnClickListener(this);
-//            }
+            lessonActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    LearnStatus result = lessonActivity.parseJsonValue(response, new TypeToken<LearnStatus>() {
+                    });
+                    if (result == null) {
+                        return;
+                    }
+                    ivLearnStatus.setImageResource(R.drawable.icon_learn);
+                    tvLearn.setTextColor(getResources().getColor(android.R.color.white));
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    ivLearnStatus.setImageResource(R.drawable.icon_unlearn);
+                    tvLearn.setTextColor(getResources().getColor(R.color.unlearn));
+                }
+            });
         }
-    }
-
-    private void setCurMediaSource() {
-//        if (tvSDVideo.getTag() != null) {
-//            mCurMediaSource = String.valueOf(tvSDVideo.getTag());
-//        } else if (tvHDVideo.getTag() != null) {
-//            mCurMediaSource = String.valueOf(tvHDVideo.getTag());
-//        } else if (tvSHDVideo.getTag() != null) {
-//            mCurMediaSource = String.valueOf(tvSHDVideo.getTag());
-//        }
     }
 }
 
