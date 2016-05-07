@@ -63,7 +63,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected String mCurMediaSource = null;
     protected String mVideoSource = null;
     protected String mVideoHead = null;
-
     private Activity mContext = null;
     private BVideoView mVV = null;
 
@@ -71,16 +70,12 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private ImageView ivVideoPlay = null;
     private ImageView ivVideoReplay = null;
     private CheckBox chkFullScreen = null;
-    private View popupView;
     private PopupWindow popupWindow;
 
     protected RelativeLayout rlayoutTitleStatus;
     protected ImageView ivBack;
     protected TextView tvVideoTitle;
     protected ImageView ivShare;
-    protected TextView tvSDVideo;
-    protected TextView tvHDVideo;
-    protected TextView tvSHDVideo;
     protected TextView tvStreamType;
     protected ImageView ivQuestion;
     protected ImageView ivNote;
@@ -757,7 +752,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         int hh = second / 3600;
         int mm = second % 3600 / 60;
         int ss = second % 60;
-        String strTemp = null;
+        String strTemp;
         if (0 != hh) {
             strTemp = String.format("%02d:%02d:%02d", hh, mm, ss);
         } else {
@@ -847,11 +842,12 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 public void onClick(View v) {
                     StreamInfo si = (StreamInfo) v.getTag();
                     mCurMediaSource = si.src;
+                    onCompletion();
                     mVV.setVideoPath(mCurMediaSource);
                     mLastPos = mVV.getCurrentPosition();
                     tvStreamType.setText(((TextView) v).getText());
                     initMediaSourceTextViewColor(parentView, si.name);
-                    mEventHandler.sendEmptyMessage(EVENT_REPLAY);
+                    mEventHandler.sendEmptyMessage(EVENT_START);
                 }
             });
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);

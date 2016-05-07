@@ -97,12 +97,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:background="@drawable/video_seekbar_bg"
             android:indeterminate="false"
             android:maxHeight="3dp"
             android:minHeight="3dp"
             android:paddingLeft="1dp"
             android:paddingRight="1dp"
-            android:progress="5"
+            android:progress="0"
             android:progressDrawable="@drawable/video_seekbar"
             android:thumb="@drawable/video_thum_sel" />
 
