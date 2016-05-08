@@ -47,8 +47,6 @@ import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 
 import java.io.File;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 /**
  * Created by howzhi on 14-8-5.
@@ -152,7 +150,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mWakeLock = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, POWER_LOCK);
         initSoLib();
         setMediaSource();
-        autoHideTimer = new Timer();
         mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_IDLE;
         mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         this.getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -228,10 +225,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
-        if (autoHideTimer != null) {
-            autoHideTimer.cancel();
-            autoHideTimer = null;
         }
     }
 
@@ -322,7 +315,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 return false;
             }
         });
-        autoHideTimer.schedule(autoHideTimerTask, 1000, 1000);
+        //autoHideTimer.schedule(autoHideTimerTask, 1000, 1000);
     }
 
     // region handler
@@ -575,22 +568,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
         }.execute(0);
     }
-
-    private Timer autoHideTimer;
-    private TimerTask autoHideTimerTask = new TimerTask() {
-        @Override
-        public void run() {
-            if (!mIsShowController) {
-                return;
-            }
-            if (mIsShowController && mIsShowControllerCount > 5) {
-                mIsShowControllerCount = 0;
-                mUIHandler.obtainMessage(HIDE).sendToTarget();
-                return;
-            }
-            mIsShowControllerCount++;
-        }
-    };
 
     private boolean mIsShowController = true;
     private int mIsShowControllerCount;
