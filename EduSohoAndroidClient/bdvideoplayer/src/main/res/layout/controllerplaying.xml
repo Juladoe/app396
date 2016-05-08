@@ -69,7 +69,7 @@
             android:layout_marginRight="30dp"
             android:layout_toLeftOf="@+id/iv_share"
             android:text="学过了"
-            android:textColor="@color/unlearn"
+            android:textColor="@color/grey"
             android:textSize="@dimen/font_size_x_s" />
 
         <ImageView
@@ -177,7 +177,7 @@
                 android:layout_marginRight="30dp"
                 android:layout_toLeftOf="@+id/full_btn"
                 android:gravity="center_vertical"
-                android:text="高清"
+                android:text="标清"
                 android:textColor="@android:color/white" />
 
             <CheckBox

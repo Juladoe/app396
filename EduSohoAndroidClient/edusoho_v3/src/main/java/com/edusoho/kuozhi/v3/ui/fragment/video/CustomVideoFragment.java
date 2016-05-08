@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui.fragment.video;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -72,7 +73,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                     tvLearn.setTextColor(getResources().getColor(android.R.color.white));
                 } else {
                     ivLearnStatus.setImageResource(R.drawable.icon_unlearn);
-                    tvLearn.setTextColor(getResources().getColor(R.color.unlearn));
+                    tvLearn.setTextColor(getResources().getColor(R.color.grey));
                 }
             }
         }, new Response.ErrorListener() {
@@ -105,17 +106,29 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         if (mCurMediaSource != null) {
             mEventHandler.sendEmptyMessage(EVENT_START);
         } else {
-            if (mVideoSource != null) {
-                getVideoStream(mVideoSource, new NormalCallback<StreamInfo[]>() {
+            if (!TextUtils.isEmpty(mVideoHead)) {
+                getVideoHeadStream(mVideoHead, new NormalCallback<StreamInfo>() {
                     @Override
-                    public void success(StreamInfo[] streamInfos) {
-                        if (streamInfos != null) {
-                            for (StreamInfo streamInfo : streamInfos) {
-                                streamInfoLists.add(streamInfo);
-                            }
-                            initPopupWindows(streamInfoLists);
-                            mCurMediaSource = streamInfoLists.get(0).src;
-                            mEventHandler.sendEmptyMessage(EVENT_START);
+                    public void success(StreamInfo headStream) {
+                        if (headStream != null) {
+                            mCurMediaHeadSource = headStream.src;
+                        }
+                        if (!TextUtils.isEmpty(mVideoSource)) {
+                            getVideoStream(mVideoSource, new NormalCallback<StreamInfo[]>() {
+                                @Override
+                                public void success(StreamInfo[] streamInfos) {
+                                    if (streamInfos != null) {
+                                        for (StreamInfo streamInfo : streamInfos) {
+                                            streamInfoLists.add(streamInfo);
+                                        }
+                                        initPopupWindows(streamInfoLists);
+                                        mCurMediaSource = streamInfoLists.get(0).src;
+                                        mEventHandler.sendEmptyMessage(EVENT_START);
+                                    } else {
+                                        showErrorDialog(lessonActivity);
+                                    }
+                                }
+                            });
                         } else {
                             showErrorDialog(lessonActivity);
                         }
@@ -125,6 +138,28 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                 showErrorDialog(lessonActivity);
             }
         }
+    }
+
+    private void getVideoHeadStream(String url, final NormalCallback<StreamInfo> normalCallback) {
+        RequestUrl requestUrl = lessonActivity.app.bindNewApiUrl(url, true);
+        requestUrl.url = url;
+        lessonActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                StreamInfo[] streamInfos = lessonActivity.app.parseJsonValue(response, new TypeToken<StreamInfo[]>() {
+                });
+                if (streamInfos != null && streamInfos.length > 0) {
+                    normalCallback.success(streamInfos[0]);
+                } else {
+                    normalCallback.success(null);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                normalCallback.success(null);
+            }
+        });
     }
 
     private void getVideoStream(String url, final NormalCallback<StreamInfo[]> normalCallback) {
@@ -227,7 +262,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     ivLearnStatus.setImageResource(R.drawable.icon_unlearn);
-                    tvLearn.setTextColor(getResources().getColor(R.color.unlearn));
+                    tvLearn.setTextColor(getResources().getColor(R.color.grey));
                 }
             });
         }

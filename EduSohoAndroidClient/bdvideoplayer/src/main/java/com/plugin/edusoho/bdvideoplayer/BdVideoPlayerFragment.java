@@ -61,6 +61,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private String SK = "wt18pcUSSryXdl09jFvGvsuNHhGCZTvF";
 
     protected String mCurMediaSource = null;
+    protected String mCurMediaHeadSource = null;
     protected String mVideoSource = null;
     protected String mVideoHead = null;
     protected boolean mLearnStatus;
@@ -111,6 +112,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private final int UI_EVENT_PAUSE = 3;
     private final int UI_EVENT_PLAY = 4;
     private final int UI_EVENT_FINISH = 6;
+    private final int UI_HEAD_PLAY = 7;
+    private final int UI_HEAD_FINISHED = 8;
     private static final int HIDE = 2;
 
     protected PowerManager.WakeLock mWakeLock = null;
@@ -356,6 +359,12 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 case UI_EVENT_PLAY:
                     ivVideoPlay.setImageResource(R.drawable.icon_video_pause);
                     break;
+                case UI_HEAD_PLAY:
+                    tvStreamType.setVisibility(View.INVISIBLE);
+                    break;
+                case UI_HEAD_FINISHED:
+                    tvStreamType.setVisibility(View.VISIBLE);
+                    break;
                 default:
                     break;
             }
@@ -372,9 +381,11 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             switch (msg.what) {
                 case EVENT_START:
                     Log.d(TAG, "EVENT_START");
-                    if (isCacheVideo || mVideoHead == null || mPlayHeadStatus == PLAYER_HEAD_STATUS.PLAYER_END) {
+                    if (isCacheVideo || mCurMediaHeadSource == null || mPlayHeadStatus == PLAYER_HEAD_STATUS.PLAYER_END) {
+                        mUIHandler.sendEmptyMessage(UI_HEAD_FINISHED);
                         playVideo();
                     } else {
+                        mUIHandler.sendEmptyMessage(UI_HEAD_PLAY);
                         playHeadUrl();
                     }
                     break;
@@ -443,8 +454,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     }
 
     private void playHeadUrl() {
-        Log.v(TAG, "playHeadUrl " + mVideoHead);
-        mVV.setVideoPath(mVideoHead);
+        Log.v(TAG, "playHeadUrl " + mCurMediaHeadSource);
+        mVV.setVideoPath(mCurMediaHeadSource);
         /**
          * 显示或者隐藏缓冲提示
          */
