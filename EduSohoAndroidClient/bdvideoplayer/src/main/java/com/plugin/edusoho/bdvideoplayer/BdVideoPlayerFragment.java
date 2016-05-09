@@ -207,7 +207,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
 
         ivVideoReplay.setVisibility(View.GONE);
-        resumePlay();
+        //resumePlay();
     }
 
     @Override
@@ -676,13 +676,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         chkFullScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                //水平
-                int screenOrientation = mContext.getRequestedOrientation();
-                if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
-                    mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                } else {
-                    mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                }
+                getActivity().onBackPressed();
             }
         });
 

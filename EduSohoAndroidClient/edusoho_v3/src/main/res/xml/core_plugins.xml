@@ -71,6 +71,11 @@
         version="1.0" />
 
     <plugin
+        name="ThreadActivity"
+        package="com.edusoho.kuozhi.v3.ui.ThreadActivity"
+        version="1.0" />
+
+    <plugin
         name="ClassroomDiscussActivity"
         package="com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity"
         version="1.0" />

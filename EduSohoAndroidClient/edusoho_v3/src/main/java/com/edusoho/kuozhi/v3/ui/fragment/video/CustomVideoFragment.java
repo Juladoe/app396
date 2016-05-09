@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment.video;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -19,6 +20,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
+import com.edusoho.kuozhi.v3.ui.ThreadActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
@@ -50,6 +52,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         tvStreamType.setOnClickListener(this);
         ivLearnStatus.setOnClickListener(this);
         tvLearn.setOnClickListener(this);
+        ivQuestion.setOnClickListener(this);
 
         RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.LESSON_STATUS, true);
         requestUrl.setParams(new String[]{
@@ -265,6 +268,20 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                     tvLearn.setTextColor(getResources().getColor(R.color.grey));
                 }
             });
+        } else if (v.getId() == ivQuestion.getId()) {
+            Intent intent = new Intent();
+            intent.setClass(lessonActivity, ThreadActivity.class);
+            intent.putExtra(Const.LESSON_ID, mLessonId);
+            intent.putExtra(Const.COURSE_ID, mCourseId);
+            startActivity(intent);
+            lessonActivity.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+//            lessonActivity.app.mEngine.runNormalPlugin("ThreadActivity", lessonActivity, new PluginRunCallback() {
+//                @Override
+//                public void setIntentDate(Intent startIntent) {
+//                    startIntent.putExtra(Const.LESSON_ID, mLessonId);
+//                    startIntent.putExtra(Const.COURSE_ID, mCourseId);
+//                }
+//            });
         }
     }
 }
