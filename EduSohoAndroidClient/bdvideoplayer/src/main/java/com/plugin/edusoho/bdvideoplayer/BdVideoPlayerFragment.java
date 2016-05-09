@@ -207,7 +207,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
 
         ivVideoReplay.setVisibility(View.GONE);
-        //resumePlay();
+        iresumePlay();
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
+import com.edusoho.kuozhi.v3.ui.NoteActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
@@ -53,6 +54,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         ivLearnStatus.setOnClickListener(this);
         tvLearn.setOnClickListener(this);
         ivQuestion.setOnClickListener(this);
+        ivNote.setOnClickListener(this);
 
         RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.LESSON_STATUS, true);
         requestUrl.setParams(new String[]{
@@ -271,6 +273,13 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         } else if (v.getId() == ivQuestion.getId()) {
             Intent intent = new Intent();
             intent.setClass(lessonActivity, ThreadActivity.class);
+            intent.putExtra(Const.LESSON_ID, mLessonId);
+            intent.putExtra(Const.COURSE_ID, mCourseId);
+            startActivity(intent);
+            lessonActivity.overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.slide_out_to_up);
+        } else if (v.getId() == ivNote.getId()) {
+            Intent intent = new Intent();
+            intent.setClass(lessonActivity, NoteActivity.class);
             intent.putExtra(Const.LESSON_ID, mLessonId);
             intent.putExtra(Const.COURSE_ID, mCourseId);
             startActivity(intent);

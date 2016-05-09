@@ -311,11 +311,6 @@ public class Const {
      */
     public static final String COURSE_CODE = "Course/coupon";
 
-    //笔记列表
-    public static final String USER_NOTES = "Course/getNoteList";
-    public static final String COURSE_NOTES = "Course/getCourseNotes";
-    public static final String ONE_NOTE = "Course/getOneNote";
-
     //笔记编辑
     public static final String ADD_NOTE = "Course/AddNote";
     public static final String GET_LESSON_NOTE = "Course/getLessonNote";
@@ -478,6 +473,8 @@ public class Const {
     public static final String CLASSROOM_MEMBERS = "/api/classrooms/%d/members";
     public static final String COURSE_MEMBERS = "/api/courses/%d/members";
     public static final String ROLE_IN_COURSE = "/api/courses/%d/membership/%d";
+
+    public static final String LESSON_NOTE = "/api/notes";
 
     public static final String BIND_LOGIN = "/api/users/bind_login";
 

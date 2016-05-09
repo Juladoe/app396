@@ -76,6 +76,11 @@
         version="1.0" />
 
     <plugin
+        name="NoteActivity"
+        package="com.edusoho.kuozhi.v3.ui.NoteActivity"
+        version="1.0" />
+
+    <plugin
         name="ClassroomDiscussActivity"
         package="com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity"
         version="1.0" />
