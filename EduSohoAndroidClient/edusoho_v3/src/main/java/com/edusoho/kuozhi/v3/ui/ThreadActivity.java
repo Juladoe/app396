@@ -65,8 +65,7 @@ public class ThreadActivity extends ActionBarBaseActivity implements View.OnClic
     @Override
     public void onClick(View v) {
         if (v.getId() == tvCancel.getId()) {
-            onBackPressed();
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            finish();
         } else if (v.getId() == tvPost.getId()) {
             RequestUrl requestUrl = app.bindNewApiUrl(Const.CREATE_THREAD, true);
             HashMap<String, String> params = requestUrl.getParams();
@@ -84,7 +83,6 @@ public class ThreadActivity extends ActionBarBaseActivity implements View.OnClic
                     if (response.contains("threadId")) {
                         CommonUtil.longToast(mContext, "问题提交成功");
                         finish();
-                        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
                     }
                 }
             }, new Response.ErrorListener() {

@@ -274,14 +274,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
             intent.putExtra(Const.LESSON_ID, mLessonId);
             intent.putExtra(Const.COURSE_ID, mCourseId);
             startActivity(intent);
-            lessonActivity.overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-//            lessonActivity.app.mEngine.runNormalPlugin("ThreadActivity", lessonActivity, new PluginRunCallback() {
-//                @Override
-//                public void setIntentDate(Intent startIntent) {
-//                    startIntent.putExtra(Const.LESSON_ID, mLessonId);
-//                    startIntent.putExtra(Const.COURSE_ID, mCourseId);
-//                }
-//            });
+            lessonActivity.overridePendingTransition(R.anim.slide_in_from_bottom, R.anim.slide_out_to_up);
         }
     }
 }
