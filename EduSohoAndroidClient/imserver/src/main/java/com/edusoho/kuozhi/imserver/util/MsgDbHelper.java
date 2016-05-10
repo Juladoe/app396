@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.imserver.util;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.util.ArrayMap;
 
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 
@@ -34,6 +35,11 @@ public class MsgDbHelper {
         mDbHelper.query("im_message", "msgNo=?", new String[] { msgNo });
     }
 
+    public String getLaterNo() {
+        ArrayMap arrayMap = mDbHelper.querySingleBySort("im_message", null, null, "time desc");
+        return arrayMap == null ? "" : arrayMap.get("msgNo").toString();
+    }
+
     public boolean hasMessageByNo(String msgNo) {
         return mDbHelper.querySingle("im_message", "msgNo=?", new String[] { msgNo }) != null;
     }
@@ -48,6 +54,6 @@ public class MsgDbHelper {
         cv.put("msg", messageEntity.getMsg());
         cv.put("msgNo", messageEntity.getMsgNo());
         cv.put("time", messageEntity.getTime());
-        mDbHelper.insert("", cv);
+        mDbHelper.insert("im_message", cv);
     }
 }

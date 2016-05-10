@@ -22,4 +22,6 @@ public interface IConnectionManager {
     void send(String content);
 
     boolean isConnected();
+
+    int getStatus();
 }

@@ -63,7 +63,7 @@ public class ImService extends Service {
                 if (! mImServer.isReady()) {
                     return;
                 }
-                if (isConnected && !mImServer.isConnected()) {
+                if (isConnected && mImServer.isCancel()) {
                     mImServer.start();
                 }
                 switch (netType) {

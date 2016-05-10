@@ -24,6 +24,7 @@ public class CommandFactory {
         mCommandMap.put("add", AddCommand.class);
         mCommandMap.put("success", SuccessCommand.class);
         mCommandMap.put("message", MessageCommand.class);
+        mCommandMap.put("offlineMsg", OfflineMsgCommand.class);
     }
 
     public static synchronized CommandFactory getInstance() {

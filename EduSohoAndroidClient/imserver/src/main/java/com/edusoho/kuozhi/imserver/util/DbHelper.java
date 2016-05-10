@@ -47,9 +47,9 @@ public class DbHelper extends SQLiteOpenHelper {
         return resultList;
     }
 
-    public ArrayMap querySingle(String table, String selection, String[] selectionArgs) {
+    public ArrayMap querySingleBySort(String table, String selection, String[] selectionArgs, String order) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(table, null, selection, selectionArgs, null, null, null);
+        Cursor cursor = db.query(table, null, selection, selectionArgs, null, null, order);
 
         ArrayMap result = null;
         if (cursor.moveToNext()) {
@@ -62,6 +62,10 @@ public class DbHelper extends SQLiteOpenHelper {
 
         cursor.close();
         return result;
+    }
+
+    public ArrayMap querySingle(String table, String selection, String[] selectionArgs) {
+        return querySingleBySort(table, selection, selectionArgs, null);
     }
 
     public long insert(String table, ContentValues cv) {

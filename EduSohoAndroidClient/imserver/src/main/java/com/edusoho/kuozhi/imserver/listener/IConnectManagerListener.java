@@ -10,6 +10,7 @@ public interface IConnectManagerListener {
     int END = 0x03;
     int ERROR = 0x04;
     int CONNECTING = 0x05;
+    int NONE = 0x06;
 
     void onStatusChange(int status, String error);
 }

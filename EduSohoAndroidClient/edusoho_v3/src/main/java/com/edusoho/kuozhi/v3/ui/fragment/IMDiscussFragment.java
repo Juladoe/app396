@@ -79,6 +79,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -200,6 +202,11 @@ public class IMDiscussFragment extends BaseFragment implements
             public boolean onReceiver(MessageEntity msg) {
                 handleMessage(msg);
                 return true;
+            }
+
+            @Override
+            public boolean onOfflineMsgReceiver(List<MessageEntity> messageEntities) {
+                return false;
             }
 
             @Override

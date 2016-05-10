@@ -22,6 +22,7 @@ public class ConnectionManager implements IConnectionManager {
     public static final String TAG = "ConnectionManager";
 
     protected int mCurrentHostIndex;
+    protected int mStatus;
     protected List<String> mHostList;
 
     private Future<WebSocket> mWebSocketFuture;
@@ -32,6 +33,7 @@ public class ConnectionManager implements IConnectionManager {
     public ConnectionManager(String clientName)
     {
         this.mClientName = clientName;
+        this.mStatus = IConnectManagerListener.NONE;
     }
 
     @Override
@@ -58,6 +60,11 @@ public class ConnectionManager implements IConnectionManager {
     @Override
     public void send(String content) {
         mWebSocketFuture.tryGet().send(content);
+    }
+
+    @Override
+    public int getStatus() {
+        return 0;
     }
 
     @Override
@@ -89,12 +96,14 @@ public class ConnectionManager implements IConnectionManager {
                 null,
                 getWebSocketConnectCallback()
         );
+        this.mStatus = IConnectManagerListener.CONNECTING;
         mIConnectStatusListener.onStatusChange(IConnectManagerListener.CONNECTING, "connect...");
     }
 
     protected void switchHostConnect() {
         if (mCurrentHostIndex > mHostList.size()) {
             if (mIConnectStatusListener != null) {
+                this.mStatus = IConnectManagerListener.ERROR;
                 mIConnectStatusListener.onStatusChange(IConnectManagerListener.ERROR, "error");
             }
             return;
@@ -114,6 +123,7 @@ public class ConnectionManager implements IConnectionManager {
                 }
                 Log.d(TAG, "onCompleted:" + webSocket);
                 if (webSocket.isOpen() && mIConnectStatusListener != null) {
+                    mStatus = IConnectManagerListener.OPEN;
                     mIConnectStatusListener.onStatusChange(IConnectManagerListener.OPEN, "open");
                 }
 
@@ -122,6 +132,7 @@ public class ConnectionManager implements IConnectionManager {
                     public void onCompleted(Exception e) {
                         e.printStackTrace();
                         if (mIConnectStatusListener != null) {
+                            mStatus = IConnectManagerListener.END;
                             mIConnectStatusListener.onStatusChange(IConnectManagerListener.END, e.getMessage());
                         }
                     }
@@ -132,6 +143,7 @@ public class ConnectionManager implements IConnectionManager {
                     public void onCompleted(Exception e) {
                         Log.d(TAG, "close");
                         if (mIConnectStatusListener != null) {
+                            mStatus = IConnectManagerListener.CLOSE;
                             mIConnectStatusListener.onStatusChange(IConnectManagerListener.CLOSE, e.getMessage());
                         }
                     }

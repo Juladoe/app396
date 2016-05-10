@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.v3.service.message.CommandFactory;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 
 /**
@@ -48,6 +49,11 @@ public class IMServiceProvider extends ModelProvider {
                     @Override
                     public void onSuccess(String extr) {
                         Log.d(getClass().getSimpleName(), "onSuccess:" + extr);
+                    }
+
+                    @Override
+                    public boolean onOfflineMsgReceiver(List<MessageEntity> messageEntities) {
+                        return false;
                     }
 
                     @Override

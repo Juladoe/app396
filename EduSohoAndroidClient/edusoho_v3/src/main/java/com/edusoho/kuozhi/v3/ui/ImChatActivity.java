@@ -44,6 +44,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
@@ -215,6 +217,11 @@ public class ImChatActivity extends BaseChatActivity{
             public boolean onReceiver(MessageEntity msg) {
                 handleMessage(this, msg);
                 return true;
+            }
+
+            @Override
+            public boolean onOfflineMsgReceiver(List<MessageEntity> messageEntities) {
+                return false;
             }
 
             @Override

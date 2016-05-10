@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.imserver.service.Impl.MsgManager;
 import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,6 +31,11 @@ public class ImServer {
 
     private String[] pingCmd = {
             "cmd" , "ping"
+    };
+
+    private String[] offlineMsgCmd = {
+            "cmd" , "offlineMsg",
+            "lastMsgNo", ""
     };
 
     private MsgDbHelper mMsgDbHelper;
@@ -91,6 +97,7 @@ public class ImServer {
                 switch (status) {
                     case IConnectManagerListener.OPEN:
                         mIHeartManager.start();
+                        requestOfflineMsg();
                         break;
                     case IConnectManagerListener.CLOSE:
                     case IConnectManagerListener.END:
@@ -101,6 +108,11 @@ public class ImServer {
         });
 
         this.mIConnectionManager.accept();
+    }
+
+    private void requestOfflineMsg() {
+        offlineMsgCmd[3] = mMsgDbHelper.getLaterNo();
+        send(offlineMsgCmd);
     }
 
     private void sendConnectStatusBroadcast(int status) {
@@ -134,6 +146,13 @@ public class ImServer {
         }
     }
 
+    public boolean isCancel() {
+        int status = mIConnectionManager.getStatus();
+        return status == IConnectManagerListener.ERROR
+                || status == IConnectManagerListener.CLOSE
+                || status == IConnectManagerListener.END;
+    }
+
     public void start() {
         stop();
         if (TextUtils.isEmpty(mClientName) || mHostList == null || mHostList.isEmpty()) {
@@ -164,11 +183,19 @@ public class ImServer {
         });
     }
 
+    public void onReceiveOfflineMsg(ArrayList<MessageEntity> messageEntities) {
+        Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
+        intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.RECEIVER);
+        intent.putExtra("message", messageEntities);
+        mContext.sendBroadcast(intent);
+    }
+
     public void onReceiveMessage(MessageEntity messageEntity) {
         Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
         intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.RECEIVER);
         intent.putExtra("message", messageEntity);
         mContext.sendBroadcast(intent);
+        mMsgDbHelper.save(messageEntity);
     }
 
     public MsgDbHelper getMsgDbHelper() {

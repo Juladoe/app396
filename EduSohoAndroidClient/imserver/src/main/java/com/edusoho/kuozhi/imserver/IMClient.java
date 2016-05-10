@@ -162,6 +162,17 @@ public class IMClient {
         }
     }
 
+    public void invokeOfflineMsgReceiver(List<MessageEntity> messageEntities) {
+        int count = mMessageReceiverList.size();
+        for (int i = count - 1; i >= 0; i--) {
+            IMMessageReceiver receiver = mMessageReceiverList.get(i);
+            receiver.getType().isProcessed = receiver.onOfflineMsgReceiver(messageEntities);
+            this.mLaterIMMessageReceiver = receiver;
+        }
+
+        this.mLaterIMMessageReceiver = null;
+    }
+
     public void invokeReceiver(MessageEntity messageEntity) {
         int count = mMessageReceiverList.size();
         for (int i = count - 1; i >= 0; i--) {
