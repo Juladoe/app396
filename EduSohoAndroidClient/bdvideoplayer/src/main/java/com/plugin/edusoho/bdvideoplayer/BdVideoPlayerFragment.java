@@ -333,9 +333,13 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     break;
                 case UI_HEAD_PLAY:
                     tvStreamType.setVisibility(View.INVISIBLE);
+                    ivNote.setVisibility(View.INVISIBLE);
+                    ivQuestion.setVisibility(View.INVISIBLE);
                     break;
                 case UI_HEAD_FINISHED:
                     tvStreamType.setVisibility(View.VISIBLE);
+                    ivNote.setVisibility(View.VISIBLE);
+                    ivQuestion.setVisibility(View.VISIBLE);
                     break;
                 default:
                     break;

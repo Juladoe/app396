@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.view.video;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,9 +8,8 @@ import android.util.Log;
 import com.android.volley.Response;
 import com.baidu.cyberplayer.core.BVideoView;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -89,12 +87,12 @@ public class CustomVideoFragment extends BdVideoPlayerFragment {
 
     /**
      * 100
+     *
      * @param what
      * @param extra
      */
     @Override
-    protected void showErrorDialog(int what, int extra)
-    {
+    protected void showErrorDialog(int what, int extra) {
         Log.d(getClass().getSimpleName(), String.format("what：%d, extra：%d", what, extra));
         if (what == NO_LESSON) {
             PopupDialog popupDialog = PopupDialog.createNormal(
