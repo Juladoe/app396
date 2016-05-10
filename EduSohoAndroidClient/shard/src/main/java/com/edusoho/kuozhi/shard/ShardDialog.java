@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.shard;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
@@ -52,9 +51,8 @@ public class ShardDialog extends Dialog {
             }
         });
         if (mStyleType == DIALOG_TYPE_VIDEO) {
-            mGridView.setBackgroundColor(Color.BLACK);
-            mCancelView.setBackgroundColor(Color.BLACK);
-            mCancelView.setTextColor(Color.WHITE);
+            mGridView.setBackgroundColor(getContext().getResources().getColor(R.color.base_black_87));
+            mCancelView.setVisibility(View.GONE);
         }
     }
 
