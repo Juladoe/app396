@@ -2,16 +2,14 @@
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:id="@android:id/background">
+    <item android:id="@android:id/background">
         <shape>
             <gradient
-                android:startColor="@color/white"
+                android:angle="270"
                 android:centerColor="@color/white"
                 android:centerY="0.75"
                 android:endColor="@color/white"
-                android:angle="270"
-                />
+                android:startColor="@color/white" />
         </shape>
     </item>
 
@@ -19,12 +17,11 @@
         <clip>
             <shape>
                 <gradient
-                    android:startColor="@color/video_sk_bg_2_gradient"
+                    android:angle="270"
                     android:centerColor="@color/video_sk_bg_2_gradient"
                     android:centerY="0.75"
                     android:endColor="@color/video_sk_bg_2_gradient"
-                    android:angle="270"
-                    />
+                    android:startColor="@color/video_sk_bg_2_gradient" />
             </shape>
         </clip>
     </item>
@@ -33,12 +30,11 @@
         <clip>
             <shape>
                 <gradient
-                    android:startColor="@color/video_sk_gradient"
+                    android:angle="270"
                     android:centerColor="@color/video_sk_gradient"
                     android:centerY="0.75"
                     android:endColor="@color/video_sk_gradient"
-                    android:angle="270"
-                    />
+                    android:startColor="@color/video_sk_gradient" />
             </shape>
         </clip>
     </item>

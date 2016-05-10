@@ -15,8 +15,8 @@ import android.widget.VideoView;
 
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -42,30 +42,6 @@ public class VideoLessonFragment extends BaseFragment {
     public static final int HIDE_LOADING = 0001;
 
     @Override
-    public String getTitle() {
-        return "视频课时";
-    }
-
-    private Handler workHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case HIDE_LOADING:
-                    mLoadView.setVisibility(View.GONE);
-                    break;
-            }
-        }
-    };
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        hideLoadTimer = new Timer();
-        setContainerView(R.layout.video_lesson_fragment_layout);
-    }
-
-    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Bundle bundle = getArguments();
@@ -77,6 +53,13 @@ public class VideoLessonFragment extends BaseFragment {
         }
         Log.d(null, "uri->" + mUri);
         autoHideTimer = new Timer();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        hideLoadTimer = new Timer();
+        setContainerView(R.layout.video_lesson_fragment_layout);
     }
 
     @Override
@@ -134,6 +117,23 @@ public class VideoLessonFragment extends BaseFragment {
             }
         });
     }
+
+    @Override
+    public String getTitle() {
+        return "视频课时";
+    }
+
+    private Handler workHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case HIDE_LOADING:
+                    mLoadView.setVisibility(View.GONE);
+                    break;
+            }
+        }
+    };
 
     private void changeBDPlayFragment(final LessonItem lessonItem) {
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
@@ -233,7 +233,7 @@ public class VideoLessonFragment extends BaseFragment {
         if (autoHideTimer != null) {
             autoHideTimer.cancel();
         }
-        mMediaController.destory();
+        mMediaController.destroy();
         if (mMediaPlayer != null) {
             mMediaPlayer.release();
         }

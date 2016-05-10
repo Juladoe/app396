@@ -34,13 +34,13 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
-import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
+import com.plugin.edusoho.bdvideoplayer.StreamInfo;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -77,6 +77,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String mTitle;
     private int[] mLessonIds;
     private LessonStatus mLessonStatus;
+    private StreamInfo[] streamInfos;
     private Bundle fragmentData;
     private boolean mFromCache;
     private MsgHandler msgHandler;
@@ -204,7 +205,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }, null);
     }
 
-    private void changeLessonStatus(boolean isLearn) {
+    public void changeLessonStatus(boolean isLearn) {
         mLearnBtn.setEnabled(false);
         RequestUrl requestUrl = app.bindUrl(
                 isLearn ? Const.LEARN_LESSON : Const.UNLEARN_LESSON, true);
@@ -393,12 +394,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private void loadLessonFromNet() {
         final LoadDialog loadDialog = LoadDialog.create(this);
         loadDialog.show();
-        RequestUrl requestUrl = EdusohoApp.app.bindUrl(Const.COURSELESSON, true);
-        requestUrl.setParams(new String[]{
-                "courseId", String.valueOf(mCourseId),
-                "lessonId", String.valueOf(mLessonId)
-        });
-        ajaxPost(requestUrl, new Response.Listener<String>() {
+        RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(String.format(Const.LESSON, mLessonId), true);
+        ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 loadDialog.dismiss();
@@ -409,7 +406,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 }
                 mLessonType = mLessonItem.type;
                 setBackMode(BACK, mLessonItem.title);
-                if (!mLessonType.equals("testpaper")) {
+                if (!mLessonType.equals("testpaper") && !mLessonType.equals("video")) {
                     loadLessonStatus();
                     bindListener();
                 }
@@ -455,10 +452,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String getLocalIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface
-                    .getNetworkInterfaces(); en.hasMoreElements();) {
+                    .getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface intf = en.nextElement();
                 for (Enumeration<InetAddress> enumIpAddr = intf
-                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                        .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
                         return inetAddress.getHostAddress().toString();
@@ -507,6 +504,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(Const.ACTIONBAR_TITLE, testpaperLesson.title);
                 return testpaperLesson;
             case VIDEO:
+                fragmentData.putSerializable(Const.STREAM_URL, streamInfos);
             case AUDIO:
             case TEXT:
             default:
@@ -642,11 +640,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void showToolsByAnim() {
-        mToolsLayout.measure(0, 0);
-        int height = mToolsLayout.getMeasuredHeight();
-        Log.d(null, "height->" + height);
-        AppUtil.animForHeight(
-                new EduSohoAnimWrap(mToolsLayout), 0, height, 480);
+        if (!"video".equals(mLessonType)) {
+            mToolsLayout.measure(0, 0);
+            int height = mToolsLayout.getMeasuredHeight();
+            AppUtil.animForHeight(
+                    new EduSohoAnimWrap(mToolsLayout), 0, height, 480);
+        }
     }
 
     private void hieToolsByAnim() {

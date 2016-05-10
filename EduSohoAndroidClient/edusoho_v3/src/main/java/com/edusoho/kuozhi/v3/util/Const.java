@@ -267,7 +267,6 @@ public class Const {
     public static final String REVIEWS = "Course/getReviews";
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";
-    public static final String LESSON = "Lesson/getLesson";
     public static final String SEARCH_COURSE = "Course/searchCourse";
     public static final String TEACHER_COURSES = "Course/getTeacherCourses";
     public static final String COURSE_NOTICE = "Course/getCourseNotice";
@@ -311,11 +310,6 @@ public class Const {
      * 获取考试课程详情
      */
     public static final String COURSE_CODE = "Course/coupon";
-
-    //笔记列表
-    public static final String USER_NOTES = "Course/getNoteList";
-    public static final String COURSE_NOTES = "Course/getCourseNotes";
-    public static final String ONE_NOTE = "Course/getOneNote";
 
     //笔记编辑
     public static final String ADD_NOTE = "Course/AddNote";
@@ -361,7 +355,8 @@ public class Const {
     public static final String LESSON_ID = "lessonId";
     public static final String LESSON_NAME = "lesson_name";
     public static final String QUESTION_TYPE = "question_type";
-    public static final String MEDIA_URL = "mediaUrl";
+    public static final String STREAM_URL = "mediaUrl";
+    public static final String MEDIA_URL = "streamUrls";
     public static final String HEAD_URL = "headUrl";
     public static final String MEDIA_ID = "mediaId";
     public static final String STATUS = "status";
@@ -479,6 +474,8 @@ public class Const {
     public static final String COURSE_MEMBERS = "/api/courses/%d/members";
     public static final String ROLE_IN_COURSE = "/api/courses/%d/membership/%d";
 
+    public static final String LESSON_NOTE = "/api/notes";
+
     public static final String BIND_LOGIN = "/api/users/bind_login";
 
     public static final String HOMEWORK_CONTENT = "/api/homework/%d";
@@ -507,6 +504,8 @@ public class Const {
 
     public static final String MY_CREATED_THREADS = "/api/chaos_threads/getThreads";
     public static final String MY_POSTED_THREADS = "/api/chaos_threads_posts/getThreadPosts";
+
+    public static final String LESSON = "/api/lessons/%d";
 
     /*
      * intent action

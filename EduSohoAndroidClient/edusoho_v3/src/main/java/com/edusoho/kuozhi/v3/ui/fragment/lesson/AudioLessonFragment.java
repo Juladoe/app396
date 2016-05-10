@@ -162,11 +162,11 @@ public class AudioLessonFragment extends BaseFragment {
                 if (audioMediaPlayer.isPlaying()) {
                     updateAudioCoverViewStatus(false);
                     audioMediaPlayer.pause();
-                    mPlayBtn.setImageResource(R.drawable.video_play);
+                    mPlayBtn.setImageResource(R.drawable.icon_video_play);
                 } else {
                     updateAudioCoverViewStatus(true);
                     audioMediaPlayer.start();
-                    mPlayBtn.setImageResource(R.drawable.video_pause);
+                    mPlayBtn.setImageResource(R.drawable.icon_video_pause);
                 }
             }
         };
@@ -177,7 +177,7 @@ public class AudioLessonFragment extends BaseFragment {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
                 mediaPlayer.start();
-                mPlayBtn.setImageResource(R.drawable.video_pause);
+                mPlayBtn.setImageResource(R.drawable.icon_video_pause);
                 updateAudioCoverViewStatus(true);
                 updateTimer.schedule(new TimerTask() {
                     @Override
@@ -201,7 +201,7 @@ public class AudioLessonFragment extends BaseFragment {
             public void onCompletion(MediaPlayer mediaPlayer) {
                 updateAudioCoverViewStatus(false);
                 audioMediaPlayer.seekTo(0);
-                mPlayBtn.setImageResource(R.drawable.video_play);
+                mPlayBtn.setImageResource(R.drawable.icon_video_play);
             }
         });
 
