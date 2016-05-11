@@ -199,8 +199,8 @@
     </string-array>
 
     <string-array name="mediacoder_array">
-        <item>硬件解码</item>
         <item>软件解码</item>
+        <item>硬件解码</item>
     </string-array>
 
     <string name="mine_items_learn">我的学习</string>

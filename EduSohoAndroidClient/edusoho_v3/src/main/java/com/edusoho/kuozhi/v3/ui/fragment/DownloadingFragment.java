@@ -123,6 +123,30 @@ public class DownloadingFragment extends BaseFragment {
         }
     }
 
+    private void continueDonwloadTask() {
+        M3U8DownService service = M3U8DownService.getService();
+        if (service != null && service.isRunDownloadTask()) {
+            return;
+        }
+
+        LessonItem lessonItem = mDownloadingAdapter.getChild(0, 0);
+        if (lessonItem == null) {
+            return;
+        }
+
+        if (!app.getNetIsConnect()) {
+            ToastUtils.show(mActivity, "当前无网络连接!");
+            return;
+        }
+        int offlineType = app.config.offlineType;
+        if (offlineType == Const.NET_NONE || (offlineType == Const.NET_WIFI && !app.getNetIsWiFi()) ) {
+            return;
+        }
+
+        M3U8DownService.startDown(
+                mActivity, lessonItem.id, lessonItem.courseId, lessonItem.title);
+    }
+
     private void processdownloadItemClick(View view, int groupPosition, int childPosition) {
         if (mDownloadingAdapter.isSelectedShow()) {
             return;
@@ -152,7 +176,7 @@ public class DownloadingFragment extends BaseFragment {
 
             ivDownloadSign.setText(getString(R.string.font_stop_downloading));
             M3U8DownService.startDown(
-                    mActivity, lessonItem.id, lessonItem.courseId, lessonItem.title);
+                    mActivity.getBaseContext(), lessonItem.id, lessonItem.courseId, lessonItem.title);
         }
     }
 
@@ -241,6 +265,12 @@ public class DownloadingFragment extends BaseFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        continueDonwloadTask();
     }
 
     private void showBtnLayout() {

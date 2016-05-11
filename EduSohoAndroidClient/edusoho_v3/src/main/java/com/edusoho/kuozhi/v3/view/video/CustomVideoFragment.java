@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.android.volley.Response;
 import com.baidu.cyberplayer.core.BVideoView;
@@ -87,6 +89,10 @@ public class CustomVideoFragment extends BdVideoPlayerFragment {
         }, null);
     }
 
+    protected View createNetErrorView() {
+        return LayoutInflater.from(getActivity().getBaseContext()).inflate(R.layout.view_net_error_layout, null);
+    }
+
     /**
      * 100
      * @param what
@@ -96,6 +102,10 @@ public class CustomVideoFragment extends BdVideoPlayerFragment {
     protected void showErrorDialog(int what, int extra)
     {
         Log.d(getClass().getSimpleName(), String.format("what：%d, extra：%d", what, extra));
+        if (! isCacheVideo) {
+            mViewContainerView.addView(createNetErrorView());
+            return;
+        }
         if (what == NO_LESSON) {
             PopupDialog popupDialog = PopupDialog.createNormal(
                     getActivity(), "播放提示", "课时不存在");

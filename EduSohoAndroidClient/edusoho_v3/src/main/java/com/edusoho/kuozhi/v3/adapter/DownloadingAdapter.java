@@ -23,10 +23,13 @@ import com.edusoho.kuozhi.v3.view.dialog.ExitCoursePopupDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import cn.trinea.android.common.util.ToastUtils;
 
 /**
@@ -55,11 +58,8 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         mGroupItems = groupItems;
 
         List<List<LessonItem>> lessonItems = new ArrayList<>();
-        Iterator iterator = mLocalLessons.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            ArrayList<LessonItem> itemList = (ArrayList<LessonItem>) entry.getValue();
-            lessonItems.add(itemList);
+        for (Course course : groupItems) {
+            lessonItems.add(mLocalLessons.get(course.id));
         }
         mChildItems = lessonItems;
         mType = type;
@@ -69,11 +69,8 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
     public void updateLocalData(List<Course> groupItems, HashMap<Integer, ArrayList<LessonItem>> mLocalLessons) {
         mGroupItems = groupItems;
         List<List<LessonItem>> lessonItems = new ArrayList<>();
-        Iterator iterator = mLocalLessons.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            ArrayList<LessonItem> itemList = (ArrayList<LessonItem>) entry.getValue();
-            lessonItems.add(itemList);
+        for (Course course : groupItems) {
+            lessonItems.add(mLocalLessons.get(course.id));
         }
         mChildItems = lessonItems;
         notifyDataSetChanged();
@@ -101,7 +98,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
 
     @Override
     public LessonItem getChild(int groupPosition, int childPosition) {
-        return mChildItems.get(groupPosition).get(childPosition);
+        return mChildItems.isEmpty() ? null : mChildItems.get(groupPosition).get(childPosition);
     }
 
     @Override

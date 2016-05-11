@@ -9,7 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.*;
-import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -22,7 +21,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import com.baidu.cyberplayer.core.BVideoView;
@@ -31,9 +29,6 @@ import com.baidu.cyberplayer.core.BVideoView.OnErrorListener;
 import com.baidu.cyberplayer.core.BVideoView.OnInfoListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
-
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Timer;
@@ -69,6 +64,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private SeekBar mProgress = null;
     private TextView mDuration = null;
     private TextView mCurrPostion = null;
+    protected ViewGroup mViewContainerView = null;
 
     private boolean mIsHwDecode = false;
     private boolean mIsPlayEnd;
@@ -493,6 +489,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mPlaybtn = (ImageView) view.findViewById(R.id.play_btn);
         mFullBtn = (CheckBox) view.findViewById(R.id.full_btn);
         mReplayBtn = (ImageView) view.findViewById(R.id.video_replay);
+        mViewContainerView = (ViewGroup) view.findViewById(R.id.video_container);
 
         mProgress = (SeekBar) view.findViewById(R.id.media_progress);
         mDuration = (TextView) view.findViewById(R.id.time_total);

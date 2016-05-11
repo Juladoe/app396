@@ -301,10 +301,14 @@ public class M3U8Util {
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                final LessonItem lessonItem = app.gson.fromJson(
-                        response, new TypeToken<LessonItem>() {
-                        }.getType()
-                );
+                LessonItem lessonItem = null;
+                try {
+                    lessonItem = app.gson.fromJson(
+                            response, new TypeToken<LessonItem>() {
+                            }.getType()
+                    );
+                } catch (Exception e) {
+                }
                 if (lessonItem == null) {
                     return;
                 }
@@ -951,6 +955,7 @@ public class M3U8Util {
 
             Log.d(TAG, "isSave " + isSave);
             if (! isSave) {
+                file.delete();
                 throw new RuntimeException("down error");
             }
         }
