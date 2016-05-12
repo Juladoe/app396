@@ -53,6 +53,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         tvLearn.setOnClickListener(this);
         ivQuestion.setOnClickListener(this);
         ivNote.setOnClickListener(this);
+        tvVideoTitle.setText(mLessonName);
 
         RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.LESSON_STATUS, true);
         requestUrl.setParams(new String[]{

@@ -539,6 +539,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     fragmentData.putString(Const.MEDIA_SOURCE, normalLesson.mediaSource);
                     fragmentData.putInt(Const.LESSON_ID, normalLesson.id);
                     fragmentData.putInt(Const.COURSE_ID, normalLesson.courseId);
+                    fragmentData.putString(Const.LESSON_NAME, normalLesson.title);
                 }
                 return normalLesson;
         }

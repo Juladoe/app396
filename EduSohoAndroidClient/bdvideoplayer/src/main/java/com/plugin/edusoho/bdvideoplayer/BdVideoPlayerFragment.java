@@ -91,6 +91,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     protected int mCourseId;
     protected int mLessonId;
+    protected String mLessonName;
     protected boolean mIsHwDecode = false;
     protected boolean mIsPlayEnd;
     protected boolean isCacheVideo;
@@ -168,7 +169,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mVideoHead = getUrlPath(bundle.getString("headUrl"));
         mCourseId = bundle.getInt("courseId");
         mLessonId = bundle.getInt("lessonId");
-
+        mLessonName = bundle.getString("lesson_name");
     }
 
     @Override
