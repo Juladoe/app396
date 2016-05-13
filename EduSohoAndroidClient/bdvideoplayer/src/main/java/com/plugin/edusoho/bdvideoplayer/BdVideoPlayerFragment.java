@@ -97,6 +97,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected boolean isCacheVideo;
     protected int mDecodeMode;
 
+    protected LessonLearnStatus mLearnStatusChanged;
     protected EventHandler mEventHandler;
     protected HandlerThread mHandlerThread;
     private String mSoLibDir;
@@ -141,7 +142,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected int mCurrentPos = 0;
     protected int mDurationCount = 0;
 
-    boolean isSwitched;
+    protected boolean isSwitched;
+    protected boolean isBackPressed;
     private PLAYER_HEAD_STATUS mPlayHeadStatus;
 
     @Override
@@ -686,6 +688,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 getActivity().onBackPressed();
+                isBackPressed = true;
             }
         });
 
@@ -790,6 +793,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             isSwitched = false;
         } else {
             mUIHandler.sendEmptyMessage(UI_EVENT_FINISH);
+        }
+        if (!isBackPressed && mLearnStatusChanged != null) {
+            mLearnStatusChanged.setLearnStatus();
         }
     }
 
@@ -925,6 +931,10 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     public int sp2px(Context context, float spValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (spValue * scale + 0.5f);
+    }
+
+    public interface LessonLearnStatus {
+        void setLearnStatus();
     }
 }
 
