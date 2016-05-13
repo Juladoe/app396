@@ -148,7 +148,7 @@ public class OpenLoginUtil {
                 if (action == Platform.ACTION_USER_INFOR) {
                     try {
                         if (!res.containsKey("id")) {
-                            res.put("id", platform.getDb().getToken());
+                            res.put("id", platform.getDb().getUserId());
                         }
                         String[] params = bindByPlatform(type, res);
                         mPromise.resolve(params);
