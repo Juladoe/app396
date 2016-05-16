@@ -29,7 +29,7 @@ public class RequestUtil {
                 MessageEngine.getInstance().sendMsg(Const.TOKEN_LOSE, new Bundle());
                 return null;
             }
-            if (errorMap.containsKey("message") && errorMap.containsValue("name")) {
+            if (errorMap.containsKey("message") && errorMap.containsKey("name")) {
                 return errorMap.get("message");
             }
         }
