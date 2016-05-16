@@ -74,10 +74,8 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                 }
                 if (mLearnStatus) {
                     ivLearnStatus.setImageResource(R.drawable.icon_learn);
-                    tvLearn.setTextColor(getResources().getColor(android.R.color.white));
                 } else {
                     ivLearnStatus.setImageResource(R.drawable.icon_unlearn);
-                    tvLearn.setTextColor(getResources().getColor(R.color.grey));
                 }
             }
         }, new Response.ErrorListener() {

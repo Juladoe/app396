@@ -71,7 +71,7 @@
             android:layout_marginRight="30dp"
             android:layout_toLeftOf="@+id/iv_share"
             android:text="学过了"
-            android:textColor="@color/grey"
+            android:textColor="@color/white"
             android:textSize="@dimen/font_size_x_s" />
 
         <ImageView
