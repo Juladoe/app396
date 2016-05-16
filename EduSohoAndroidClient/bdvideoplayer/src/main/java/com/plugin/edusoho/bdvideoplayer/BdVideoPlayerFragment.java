@@ -210,7 +210,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
 
         ivVideoReplay.setVisibility(View.GONE);
-        resumePlay();
+        //resumePlay();
     }
 
     private void initSoLib() {
@@ -576,9 +576,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     }
 
     protected void resumePlay() {
-        /**
-         *发 一   任务,   不一    发
-         */
         if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED
                 || mPlayerStatus == PLAYER_STATUS.PLAYER_PAUSE) {
             mEventHandler.sendEmptyMessage(EVENT_REPLAY);

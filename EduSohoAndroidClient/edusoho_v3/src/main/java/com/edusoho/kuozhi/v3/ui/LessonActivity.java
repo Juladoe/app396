@@ -475,6 +475,18 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (lessonItem == null) {
             return null;
         }
+
+//        ApiResponse<LessonItem> apiResponse = ModelDecor.getInstance().decor(object, new TypeToken<ApiResponse<LessonItem>>() {
+//        });
+//        LessonItem lessonItem = null;
+//        if (apiResponse.data != null) {
+//            lessonItem = apiResponse.data;
+//        } else if (apiResponse.error != null) {
+//            CommonUtil.longToast(mContext, apiResponse.error.message);
+//            return null;
+//        } else {
+//            return null;
+//        }
         CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
         switch (courseLessonType) {
             case LIVE:
