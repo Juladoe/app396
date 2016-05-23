@@ -499,9 +499,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(LiveLessonFragment.REPLAYSTATUS, lessonItem.replayStatus);
                 return lessonItem;
             case PPT:
-                LessonItem<ArrayList<String>> pptLesson = lessonItem;
+                LessonItem<LinkedHashMap<String, ArrayList<String>>> pptLesson = lessonItem;
                 fragmentData.putString(Const.LESSON_TYPE, "ppt");
-                fragmentData.putStringArrayList(CONTENT, pptLesson.content);
+                ArrayList<String> pptContent = pptLesson.content.get("resource");
+                fragmentData.putStringArrayList(CONTENT, pptContent);
                 return pptLesson;
             case TESTPAPER:
                 LessonItem<LinkedHashMap> testpaperLesson = lessonItem;
