@@ -516,6 +516,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putInt(Const.LESSON_ID, testpaperLesson.id);
                 fragmentData.putString(Const.ACTIONBAR_TITLE, testpaperLesson.title);
                 return testpaperLesson;
+            case DOCUMENT:
+                LessonItem<LinkedHashMap<String, String>> documentLessonItem = lessonItem;
+                fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());
+                fragmentData.putString(CONTENT, documentLessonItem.content.get("previewUrl"));
+                return documentLessonItem;
             case VIDEO:
                 fragmentData.putSerializable(Const.STREAM_URL, streamInfos);
             case AUDIO:
