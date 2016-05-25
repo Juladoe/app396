@@ -20,7 +20,7 @@ import java.util.List;
 public class NoteModel {
 
     public void getNote(int courseId, int lessonId, int userId, final ResponseCallbackListener<List<Note>> callbackListener) {
-        String url = Const.LESSON_NOTE + String.format("?courseId=%d&lessonId=%d&userId=%d", courseId, lessonId, userId);
+        String url = String.format(Const.GET_LESSON_NOTE, courseId) + "?lessonId=" + lessonId;
         RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
@@ -42,9 +42,8 @@ public class NoteModel {
     }
 
     public void postNote(int courseId, int lessonId, int status, String content, final ResponseCallbackListener<Note> callbackListener) {
-        RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(Const.LESSON_NOTE, true);
+        RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(String.format(Const.LESSON_NOTE, courseId), true);
         HashMap<String, String> params = requestUrl.getParams();
-        params.put("courseId", courseId + "");
         params.put("lessonId", lessonId + "");
         params.put("status", status + "");
         params.put("content", content);
