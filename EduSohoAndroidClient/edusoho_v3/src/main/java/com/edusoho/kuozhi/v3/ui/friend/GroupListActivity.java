@@ -52,7 +52,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setBackMode(BACK, "讨论组");
+        setBackMode(BACK, "班级群");
         setContentView(R.layout.group_list_layout);
         mListView = (ListView) findViewById(R.id.group_listview);
         mSidebar = (SideBar) findViewById(R.id.group_list_sidebar);

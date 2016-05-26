@@ -67,7 +67,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/discussion_group_icon"
-            android:text="讨论组"
+            android:text="班级群"
             android:textColor="@color/grey"
             android:textSize="16sp" />
 
@@ -107,7 +107,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@id/service_icon"
-            android:text="服务号"
+            android:text="云知光"
             android:textColor="@color/grey"
             android:textSize="16sp" />
 

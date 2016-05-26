@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="24dp"
-            android:text="正在加载讨论组..."
+            android:text="正在加载班级群..."
             android:textSize="@dimen/large_font_size" />
 
     </FrameLayout>
@@ -65,7 +65,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="您还没有加入任何讨论组"
+            android:text="您还没有加入任何班级群"
             android:textSize="@dimen/large_font_size" />
 
     </FrameLayout>

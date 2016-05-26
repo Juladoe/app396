@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
@@ -23,6 +24,7 @@ import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setBackMode(BACK, "服务号");
+        setBackMode(BACK, "云知光");
         setContentView(R.layout.service_list_layout);
         serviceList = (ListView) findViewById(R.id.service_list);
         mLoading = (FrameLayout) findViewById(R.id.service_list_loading);
@@ -78,7 +80,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
                         Bundle bundle = new Bundle();
                         bundle.putString(ServiceProviderActivity.SERVICE_TYPE, PushUtil.ArticleType.TYPE);
                         bundle.putInt(ServiceProviderActivity.SERVICE_ID, schoolApp.id);
-                        bundle.putString(Const.ACTIONBAR_TITLE, "资讯");
+                        bundle.putString(Const.ACTIONBAR_TITLE, "学院服务");
                         app.mEngine.runNormalPluginWithBundle("ServiceProviderActivity", mActivity, bundle);
                         break;
                 }
@@ -155,7 +157,13 @@ public class ServiceListActivity extends ActionBarBaseActivity {
             final SchoolApp schoolApp = mServiceList.get(position);
 
             ImageLoader.getInstance().displayImage(schoolApp.avatar, schoolAppHolder.schoolAppAvatar, app.mOptions);
-            schoolAppHolder.SchoolAppName.setText(schoolApp.name);
+            if (schoolApp.id == 1) {
+                schoolAppHolder.SchoolAppName.setText("学院公告");
+            } else if (schoolApp.id == 2) {
+                schoolAppHolder.SchoolAppName.setText("学院服务");
+            } else {
+                schoolAppHolder.SchoolAppName.setText(schoolApp.name);
+            }
             if (position != mServiceList.size() - 1) {
                 schoolAppHolder.dividerLine.setVisibility(View.VISIBLE);
             } else {

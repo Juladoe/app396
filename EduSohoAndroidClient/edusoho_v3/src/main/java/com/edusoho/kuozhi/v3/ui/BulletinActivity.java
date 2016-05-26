@@ -78,7 +78,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     }
 
     private void initData() {
-        setBackMode(BACK, "网校公告");
+        setBackMode(BACK, "学院公告");
         if (TextUtils.isEmpty(mArticleAvatar)) {
             NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
             List<New> bulletins = newDataSource.getNews("WHERE TYPE = ? ORDER BY CREATEDTIME DESC", TypeBusinessEnum.BULLETIN.getName());
