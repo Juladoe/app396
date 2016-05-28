@@ -12,14 +12,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoCompoundButton;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import com.tencent.android.tpush.XGPushClickedResult;
-import com.tencent.android.tpush.XGPushManager;
 import com.umeng.analytics.MobclickAgent;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -180,7 +179,8 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     protected void handleTokenLostMsg() {
         Bundle bundle = new Bundle();
         bundle.putString(Const.BIND_USER_ID, "");
-        app.pushUnregister(bundle);
+
+        new IMServiceProvider(getBaseContext()).unBindServer();
         app.removeToken();
         MessageEngine.getInstance().sendMsg(Const.LOGOUT_SUCCESS, null);
         MessageEngine.getInstance().sendMsgToTaget(Const.SWITCH_TAB, null, DefaultPageActivity.class);

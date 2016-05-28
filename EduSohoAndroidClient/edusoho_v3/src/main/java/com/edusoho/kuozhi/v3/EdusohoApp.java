@@ -30,18 +30,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.BuildConfig;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
-import com.edusoho.kuozhi.v3.listener.SwitchNetSchoolListener;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
-import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -64,7 +64,6 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.server.CacheServer;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
-import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebViewFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -72,15 +71,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.tencent.android.tpush.XGIOperateCallback;
-import com.tencent.android.tpush.XGPushConfig;
-import com.tencent.android.tpush.XGPushManager;
-import com.tencent.android.tpush.common.Constants;
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.io.File;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -303,16 +295,20 @@ public class EdusohoApp extends Application {
         notifyMap = new HashMap<>();
         initApp();
 
+        IMClient.getClient().init(this);
         if (!TextUtils.isEmpty(app.token)) {
             Log.d(TAG, "bindImServerHost");
             bindImServerHost();
         }
+    }
 
-        FactoryManager.getInstance().initContext(getBaseContext());
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 
     private void bindImServerHost() {
-        new IMServiceProvider(getBaseContext()).bindServer();
+        User user = getAppSettingProvider().getCurrentUser();
+        new IMServiceProvider(getBaseContext()).bindServer(user == null ? "" :user.nickname);
     }
 
     private String getDomain() {
@@ -332,6 +328,7 @@ public class EdusohoApp extends Application {
         mEngine = CoreEngine.create(this);
         installPlugin();
         startMainService();
+        FactoryManager.getInstance().initContext(getBaseContext());
     }
 
     public void startMainService() {
@@ -519,6 +516,7 @@ public class EdusohoApp extends Application {
             loginUser = userResult.user;
             SqliteUtil.saveUser(loginUser);
         }
+        getAppSettingProvider().setUser(userResult.user);
     }
 
     public void removeToken() {
@@ -796,102 +794,6 @@ public class EdusohoApp extends Application {
         return mPlayCacheServer;
     }
 
-    /**
-     * 注册到xg、教育云
-     *
-     * @param bundle
-     */
-    public void pushRegister(final Bundle bundle) {
-        XGPushConfig.enableDebug(this, false);
-        XGPushManager.registerPush(mContext, new XGIOperateCallback() {
-            @Override
-            public void onSuccess(final Object data, int flag) {
-                Log.w(Constants.LogTag, "+++ register push success. token:" + data);
-                final boolean isBind = (bundle != null && CommonUtil.bundleHasKey(bundle, Const.BIND_USER_ID));
-                String bindUrl = isBind ? Const.BIND : Const.ANONYMOUS_BIND;
-                NormalCallback<RequestUrl> normalCallback = new NormalCallback<RequestUrl>() {
-                    @Override
-                    public void success(RequestUrl requestUrl) {
-                        HashMap<String, String> params = requestUrl.getParams();
-                        params.put("appToken", data.toString());
-                        if (isBind) {
-                            params.put("studentId", bundle.getString(Const.BIND_USER_ID));
-                        }
-                        params.put("euqip", Const.EQUIP_TYPE);
-
-                        app.postUrl(requestUrl, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject resultObject = new JSONObject(response);
-                                    if (isBind) {
-                                        getService().getOfflineMsgs();
-                                    }
-                                    String result = resultObject.getString("result");
-                                    if (result.equals("success")) {
-                                        Log.d(TAG, "cloud register success");
-                                    }
-                                    if (bundle != null && CommonUtil.bundleHasKey(bundle, Const.SHOW_SCH_SPLASH)) {
-                                        SwitchNetSchoolListener listener = (SwitchNetSchoolListener) bundle.getSerializable(Const.SHOW_SCH_SPLASH);
-                                        listener.showSplash();
-                                    }
-                                } catch (JSONException e) {
-                                    Log.d(TAG, "cloud register failed");
-                                    e.printStackTrace();
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                             Log.d(TAG, error.toString());
-                            }
-                        });
-                    }
-                };
-                app.bindPushUrl(bindUrl, normalCallback);
-            }
-
-            @Override
-            public void onFail(Object data, int errCode, String msg) {
-                Log.w(Constants.LogTag, "+++ register push fail. token:" + data + ", errCode:" + errCode + ",msg:" + msg);
-            }
-        });
-    }
-
-    /**
-     * 注销到xg、教育云
-     *
-     * @param bundle
-     */
-    public void pushUnregister(final Bundle bundle) {
-        XGPushManager.unregisterPush(mContext, new XGIOperateCallback() {
-            @Override
-            public void onSuccess(Object data, int i) {
-                RequestUrl requestUrl = bindPushUrl(Const.UNBIND);
-                HashMap<String, String> hashMap = requestUrl.getParams();
-                hashMap.put("studentId", bundle.getString(Const.BIND_USER_ID));
-                postUrl(requestUrl, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        CloudResult pushResult = app.parseJsonValue(response, new TypeToken<CloudResult>() {
-                        });
-                        if (pushResult != null && pushResult.result.equals("success")) {
-                            Log.d(TAG, "cloud logout success");
-                        } else {
-                            Log.d(TAG, "cloud logout failed");
-                        }
-                    }
-                }, null);
-            }
-
-            @Override
-            public void onFail(Object data, int i, String s) {
-                Log.w(Constants.LogTag, "+++ unregister push fail. token:" + data + ", errCode:" + i + ",msg:" + s);
-            }
-        });
-    }
-
-
     public <T> T parseJsonValue(String json, TypeToken<T> typeToken) {
         T value;
         try {
@@ -935,5 +837,4 @@ public class EdusohoApp extends Application {
         }
         return loginUser.role;
     }
-
 }

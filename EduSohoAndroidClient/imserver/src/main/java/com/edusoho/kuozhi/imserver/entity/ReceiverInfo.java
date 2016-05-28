@@ -5,15 +5,15 @@ package com.edusoho.kuozhi.imserver.entity;
  */
 public class ReceiverInfo {
 
-    public int msgId;
+    public String convNo;
 
     public String msgType;
 
     public boolean isProcessed;
 
-    public ReceiverInfo(String msgType, int msgId)
+    public ReceiverInfo(String msgType, String convNo)
     {
-        this.msgId = msgId;
+        this.convNo = convNo;
         this.msgType = msgType;
     }
 }

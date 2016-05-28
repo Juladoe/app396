@@ -720,7 +720,7 @@ public class CommonUtil {
     }
 
     /**
-     * 去掉字符串中的\n\t
+     * 去掉字符串中的\n\type
      *
      * @param content
      * @return
@@ -978,7 +978,7 @@ public class CommonUtil {
     }
 
     /**
-     * 去掉'\n','\t'
+     * 去掉'\n','\type'
      *
      * @return
      */

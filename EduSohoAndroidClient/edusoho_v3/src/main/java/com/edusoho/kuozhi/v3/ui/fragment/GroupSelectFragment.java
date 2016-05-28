@@ -71,6 +71,6 @@ public class GroupSelectFragment extends FriendSelectFragment {
                 mActivity.setResult(ChatSendHandler.RESULT_SELECT_FRIEND_OK);
             }
         });
-        chatSendHandler.handleClick(discussionGroup.getId(), discussionGroup.getNickname(), discussionGroup.getMediumAvatar());
+        //chatSendHandler.handleClick(discussionGroup.getId(), discussionGroup.getNickname(), discussionGroup.getMediumAvatar());
     }
 }

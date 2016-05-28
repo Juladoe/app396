@@ -52,7 +52,7 @@ public class CourseProvider extends ModelProvider {
         return requestOption.build();
     }
 
-    public ProviderListener getCourse(RequestUrl requestUrl) {
+    public ProviderListener<CourseDetailsResult> getCourse(RequestUrl requestUrl) {
         RequestOption requestOption = buildSimplePostRequest(
                 requestUrl, new TypeToken<CourseDetailsResult>(){});
 
@@ -60,7 +60,7 @@ public class CourseProvider extends ModelProvider {
         return requestOption.build();
     }
 
-    public ProviderListener getCourse(int courseId) {
+    public ProviderListener<CourseDetailsResult> getCourse(int courseId) {
         School school = SchoolUtil.getDefaultSchool(mContext);
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
         String token = tokenMap.get("token").toString();

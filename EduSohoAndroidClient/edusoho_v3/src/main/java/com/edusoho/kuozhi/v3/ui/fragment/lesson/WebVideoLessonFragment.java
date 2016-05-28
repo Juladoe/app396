@@ -44,7 +44,7 @@ public class WebVideoLessonFragment extends BaseFragment {
     private NormalCallback mNormalCallback;
     private WebVideoWebChromClient mWebVideoWebChromClient;
     protected WebView mWebView;
-    private static final String ADD_FULLSCREEN_CLICK = "javascript:var divs = document.getElementsByTagName('b');" +
+    private static final String ADD_FULLSCREEN_CLICK = "javascript:var divs = document.getElementsByTagName('body');" +
             "for(var i=0; i < divs.length; i++){" +
             "if (divs[i].className == 'x-zoomin'){" +
             "window.obj.addFullScreenEvent();" +

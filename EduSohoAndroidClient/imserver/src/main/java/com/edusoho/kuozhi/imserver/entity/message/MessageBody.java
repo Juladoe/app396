@@ -1,0 +1,173 @@
+package com.edusoho.kuozhi.imserver.entity.message;
+
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+/**
+ * Created by 菊 on 2016/5/13.
+ * version | version | | type | type | | body | body | | d | destination | | i | id |
+ */
+public class MessageBody {
+
+    private String uid;
+
+    private String msgNo;
+
+    private String convNo;
+
+    public int version;
+
+    /**
+     * text,image,audio,video,multi,push
+     */
+    public String type;
+
+    public String body;
+
+    public Destination destination;
+
+    public Source sourse;
+
+    public long createdTime;
+
+    public MessageBody(String jsonStr)
+    {
+        JSONObject body = null;
+        try {
+            body = new JSONObject(jsonStr);
+        } catch (Exception e) {
+            body = new JSONObject();
+        }
+        init(body);
+    }
+
+    private void init(JSONObject body) {
+        this.version = body.optInt("v");
+        this.body = body.optString("b");
+        this.type = body.optString("t");
+        this.createdTime = body.optLong("c");
+        this.uid = body.optString("i");
+
+        JSONObject destinationBody = body.optJSONObject("d");
+        this.destination = destinationBody == null ? null : new Destination(
+                destinationBody.optInt("id"), destinationBody.optString("type"));
+
+        JSONObject sourceBody = body.optJSONObject("s");
+        this.sourse =  sourceBody == null ? null : new Source(
+                sourceBody.optInt("id"), sourceBody.optString("type"));
+    }
+
+    public MessageBody(MessageEntity messageEntity)
+    {
+        this(messageEntity.getMsg());
+        this.getSource().setNickname(messageEntity.getFromName());
+        this.getDestination().setNickname(messageEntity.getToName());
+        this.setMsgNo(messageEntity.getMsgNo());
+        this.setConvNo(messageEntity.getConvNo());
+        this.setMessageId(messageEntity.getUid());
+    }
+
+    public MessageBody(int version, String type, String body) {
+        this.version = version;
+        this.type = type;
+        this.body = body;
+    }
+
+    public String getConvNo() {
+        return convNo;
+    }
+
+    public void setConvNo(String convNo) {
+        this.convNo = convNo;
+    }
+
+    public String getMsgNo() {
+        return msgNo;
+    }
+
+    public void setMsgNo(String msgNo) {
+        this.msgNo = msgNo;
+    }
+
+    public String getMessageId() {
+        return uid;
+    }
+
+    public void setMessageId(String uid) {
+        this.uid = uid;
+    }
+
+    public Source getSource() {
+        return sourse;
+    }
+
+    public void setSource(Source source) {
+        this.sourse = source;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
+    public Destination getDestination() {
+        return destination;
+    }
+
+    public void setDestination(Destination destination) {
+        this.destination = destination;
+    }
+
+    public long getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(long createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public String toJson() {
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject();
+            jsonObject.put("v", version);
+            jsonObject.put("t", type);
+            jsonObject.put("b", body);
+            jsonObject.put("c", createdTime);
+            jsonObject.put("i", uid);
+
+            JSONObject destinationObj = new JSONObject();
+            destinationObj.put("id", destination.getId());
+            destinationObj.put("type", destination.getType());
+            jsonObject.put("d", destinationObj);
+
+            JSONObject sourceObj = new JSONObject();
+            sourceObj.put("id", sourse.getId());
+            sourceObj.put("type", sourse.getType());
+            jsonObject.put("s", sourceObj);
+        } catch (JSONException e) {
+            return "";
+        }
+        return jsonObject.toString();
+    }
+}

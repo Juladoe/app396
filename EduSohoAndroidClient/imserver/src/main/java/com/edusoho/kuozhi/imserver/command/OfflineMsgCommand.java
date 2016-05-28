@@ -42,7 +42,7 @@ public class OfflineMsgCommand extends BaseCommand {
         String fromName = params.optString("fromName");
         String msg = params.optString("msg");
         String convNo = params.optString("convNo");
-        String time = params.optString("time");
+        int time = params.optInt("time");
         String msgNo = params.optString("msgNo");
 
         return MessageEntityBuildr.getBuilder()

@@ -1,8 +1,5 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +13,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListView;
@@ -24,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -32,11 +29,12 @@ import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
 import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
@@ -45,7 +43,6 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.SideBar;
 
 import java.lang.reflect.Field;
@@ -116,14 +113,14 @@ public class FriendFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Friend friend = (Friend) parent.getAdapter().getItem(position);
-                app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
+                app.mEngine.runNormalPlugin("ImChatActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
+                        startIntent.putExtra(ImChatActivity.FROM_ID, friend.id);
                         startIntent.putExtra(Const.ACTIONBAR_TITLE, friend.nickname);
                         startIntent.putExtra(Const.NEWS_TYPE, CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), friend.roles) ?
                                 PushUtil.ChatUserType.TEACHER : PushUtil.ChatUserType.FRIEND);
-                        startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, friend.mediumAvatar);
+                        startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, friend.mediumAvatar);
                     }
                 });
             }
@@ -220,6 +217,7 @@ public class FriendFragment extends BaseFragment {
                             Collections.sort(list, friendComparator);
                             mFriendAdapter.clearList();
                             mFriendAdapter.addFriendList(list);
+                            new IMProvider(mContext).updateRoles(Destination.USER, list);
                         }
                         setFriendsCount(friendResult.data.length + "");
                         promise.resolve(friendResult);

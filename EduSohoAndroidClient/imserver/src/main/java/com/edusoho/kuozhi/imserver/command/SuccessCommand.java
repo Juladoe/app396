@@ -4,6 +4,7 @@ import com.edusoho.kuozhi.imserver.ImServer;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -24,6 +25,22 @@ public class SuccessCommand extends BaseCommand {
                 .addCmd("success")
                 .addMsg(msg)
                 .builder();
+
+        try {
+            updateMessageStatus(msg);
+        } catch (JSONException e) {
+        }
         mImServer.onReceiveMessage(messageEntity);
+    }
+
+    private void updateMessageStatus(String msg) throws JSONException {
+        JSONObject jsonObject = new JSONObject(msg);
+        MessageEntity messageEntity = mImServer.getMsgDbHelper().getMessageByUID(jsonObject.optString("uid"));
+        if (messageEntity == null) {
+            return;
+        }
+
+        messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
+        mImServer.getMsgDbHelper().update(messageEntity);
     }
 }

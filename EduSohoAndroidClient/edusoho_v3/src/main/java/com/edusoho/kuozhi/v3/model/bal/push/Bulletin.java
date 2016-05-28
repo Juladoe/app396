@@ -16,12 +16,4 @@ public class Bulletin {
 
     }
 
-    public Bulletin(WrapperXGPushTextMessage message) {
-        CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
-        });
-        id = customContent.getId();
-        content = message.getContent();
-        createdTime = customContent.getCreatedTime();
-        schoolDomain = EdusohoApp.app.domain;
-    }
 }

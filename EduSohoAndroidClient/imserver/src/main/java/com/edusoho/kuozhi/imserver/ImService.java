@@ -166,8 +166,21 @@ public class ImService extends Service {
 
     public class ImBinder extends IImServerAidlInterface.Stub
     {
+        public void requestConnect() {
+            mImServer.requestConnect();
+        }
+
+        public void requestOfflineMsg() {
+            mImServer.requestOfflineMsg();
+        }
+
         public void send(SendEntity sendEntity) {
             mImServer.sendMessage(sendEntity);
+        }
+
+        @Override
+        public void closeIMServer() throws RemoteException {
+            mImServer.stop();
         }
 
         @Override
@@ -179,7 +192,7 @@ public class ImService extends Service {
         }
 
         public void joinConversation(String clientId, String nickname, String convNo) {
-
+            //nothing
         }
     }
 }

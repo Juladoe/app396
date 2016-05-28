@@ -6,17 +6,14 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
-import com.edusoho.kuozhi.v3.factory.FactoryManager;
-import com.edusoho.kuozhi.v3.factory.UtilFactory;
+import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.service.message.CommandFactory;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-
 
 /**
  * Created by 菊 on 2016/4/25.
@@ -28,18 +25,37 @@ public class IMServiceProvider extends ModelProvider {
         super(context);
     }
 
-    public void bindServer() {
+    public void unBindServer() {
+        IMClient.getClient().destory();
+    }
+
+    public void reConnectServer(String clientName) {
+        int status = IMClient.getClient().getIMConnectStatus();
+        if (status != IMConnectStatus.CONNECTING && status != IMConnectStatus.OPEN) {
+            IMClient.getClient().removeGlobalIMMessageReceiver();
+            bindServer(clientName);
+            return;
+        }
+
+        if (status == IMConnectStatus.OPEN) {
+            IMClient.getClient().sendCmd("requestOfflineMsg");
+        }
+    }
+
+    public synchronized void bindServer(final String clientName) {
+        IMClient.getClient().setIMConnectStatus(IMConnectStatus.CONNECTING);
         new SystemProvider(mContext).getImServerHosts().success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap hostMap) {
                 Log.d("IMServiceProvider", "init im service" + hostMap.size());
-                IMClient.getClient().init(mContext);
+                IMClient.getClient().init(mContext.getApplicationContext());
                 IMClient.getClient().start(
+                        clientName,
                         new ArrayList<String>(hostMap.keySet()),
                         new ArrayList<String>(hostMap.values())
                 );
 
-                IMClient.getClient().addMessageReceiver(new IMMessageReceiver() {
+                IMClient.getClient().addGlobalIMMessageReceiver(new IMMessageReceiver() {
                     @Override
                     public boolean onReceiver(MessageEntity msg) {
                         handlerMessage(this, msg);
@@ -58,7 +74,7 @@ public class IMServiceProvider extends ModelProvider {
 
                     @Override
                     public ReceiverInfo getType() {
-                        return new ReceiverInfo("global", 1);
+                        return new ReceiverInfo("global", "1");
                     }
                 });
             }
@@ -66,21 +82,18 @@ public class IMServiceProvider extends ModelProvider {
             @Override
             public void success(VolleyError obj) {
                 Log.d("IMServiceProvider", "bindServer error");
-                IMClient.getClient().init(mContext);
-                IMClient.getClient().start(null, null);
+                IMClient.getClient().setIMConnectStatus(IMConnectStatus.NO_READY);
+                IMClient.getClient().init(mContext.getApplicationContext());
+                IMClient.getClient().start(null, null, null);
             }
         });
     }
 
     private void handlerMessage(IMMessageReceiver receiver, MessageEntity messageEntity) {
-        V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(messageEntity.getMsg(), V2CustomContent.class);
-        if (v2CustomContent == null) {
+        MessageBody messageBody = new MessageBody(messageEntity);
+        if (messageBody == null) {
             return;
         }
-        CommandFactory.create(mContext, receiver, v2CustomContent).invoke();
-    }
-
-    protected UtilFactory getUtilFactory() {
-        return FactoryManager.getInstance().create(UtilFactory.class);
+        CommandFactory.create(mContext, receiver, messageBody).invoke();
     }
 }

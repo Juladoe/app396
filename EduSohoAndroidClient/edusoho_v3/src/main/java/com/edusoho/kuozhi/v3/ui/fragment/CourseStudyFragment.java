@@ -24,12 +24,10 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.courseDynamics.CourseDynamicsItem;
 import com.edusoho.kuozhi.v3.model.bal.courseDynamics.DynamicsProvider;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ThreadCreateActivity;
-import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -127,7 +125,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
     public void initData() {
         mBundle = getArguments();
-        mCourseId = mBundle.getInt("course_id");
+        mCourseId = mBundle.getInt(Const.COURSE_ID);
         dataList = new ArrayList<NewsCourseEntity>();
         totalListMap = new LinkedHashMap<>();
 
@@ -477,14 +475,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void invoke(WidgetMessage message) {
-        MessageType messageType = message.type;
-        if (Const.ADD_COURSE_MSG == messageType.code) {
-            WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-            NewsCourseEntity entity = new NewsCourseEntity(wrapperMessage);
-            dataList.add(entity);
-            filterData();
-            mAdapter.notifyItemRangeChanged(0, mAdapter.getItemCount());
-        }
+
     }
 
     private static class RecyclerLinearLayoutManager extends LinearLayoutManager {

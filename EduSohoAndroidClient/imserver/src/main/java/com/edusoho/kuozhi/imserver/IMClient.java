@@ -5,7 +5,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -18,11 +17,13 @@ import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
+import com.edusoho.kuozhi.imserver.managar.IMChatRoom;
+import com.edusoho.kuozhi.imserver.managar.IMConvManager;
+import com.edusoho.kuozhi.imserver.managar.IMMessageManager;
+import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
-
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,13 +35,17 @@ public class IMClient {
     private static Object mLock = new Object();
     private static IMClient client = null;
 
+    private int mIMConnectStatus;
     private Context mContext;
     private IImServerAidlInterface mImBinder;
+    private ServiceConnection mServiceConnection;
     private IMMessageReceiver mLaterIMMessageReceiver;
     private List<IMMessageReceiver> mMessageReceiverList;
     private List<IMConnectStatusListener> mIMConnectStatusListenerList;
+    private IMMessageReceiver mGlobalIMMessageReceiver;
 
     private IMClient() {
+        this.mIMConnectStatus = IMConnectStatus.NO_READY;
         mMessageReceiverList = new LinkedList<>();
         mIMConnectStatusListenerList = new LinkedList<>();
     }
@@ -49,7 +54,7 @@ public class IMClient {
         this.mContext = context;
     }
 
-    public void start(ArrayList<String> ignoreNosList, ArrayList<String> hostList ) {
+    public void start(String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
         int pid = android.os.Process.myPid();
         String processAppName = getAppName(pid);
         if (processAppName == null ||!processAppName.equalsIgnoreCase(mContext.getPackageName())) {
@@ -62,18 +67,33 @@ public class IMClient {
 
         intent.putStringArrayListExtra(ImService.HOST, hostList);
         intent.putStringArrayListExtra(ImService.IGNORE_NOS, ignoreNosList);
-        intent.putExtra(ImService.CLIENT_NAME, getRandomClientName(mContext));
+        intent.putExtra(ImService.CLIENT_NAME, clientName);
         intent.putExtra(ImService.ACTION, ImService.ACTION_INIT);
         mContext.startService(intent);
 
         new Handler(Looper.getMainLooper()).postAtTime(new Runnable() {
             @Override
             public void run() {
-                connectService();
+                if (mImBinder == null) {
+                    connectService();
+                }
             }
         }, SystemClock.uptimeMillis() + 300);
     }
 
+    public void destory() {
+        if (mImBinder != null) {
+            try {
+                mImBinder.closeIMServer();
+            } catch (RemoteException e) {
+                Log.e(getClass().getSimpleName(), "closeIMServer error");
+            }
+        }
+        if (mServiceConnection != null) {
+            mContext.unbindService(mServiceConnection);
+        }
+        mImBinder = null;
+    }
 
     private String getAppName(int pID) {
         String processName = null;
@@ -95,7 +115,7 @@ public class IMClient {
     }
 
     private void connectService() {
-        ServiceConnection mServiceConnection = new ServiceConnection() {
+        mServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 mImBinder = IImServerAidlInterface.Stub.asInterface(service);
@@ -117,7 +137,7 @@ public class IMClient {
     }
 
     public IMChatRoom getChatRoom(String convNo) {
-        return new IMChatRoom(convNo, mImBinder);
+        return new IMChatRoom(mContext, convNo, mImBinder);
     }
 
     public void addConnectStatusListener(IMConnectStatusListener listener) {
@@ -128,13 +148,37 @@ public class IMClient {
         this.mMessageReceiverList.add(receiver);
     }
 
+    public void removeGlobalIMMessageReceiver() {
+        removeReceiver(mGlobalIMMessageReceiver);
+        this.mGlobalIMMessageReceiver = null;
+    }
+
+    public void addGlobalIMMessageReceiver(IMMessageReceiver receiver) {
+        this.mGlobalIMMessageReceiver = receiver;
+        addMessageReceiver(receiver);
+    }
+
     public void removeReceiver(IMMessageReceiver receiver) {
         this.mMessageReceiverList.remove(receiver);
     }
 
+    public void sendCmd(String cmd) {
+        try {
+            switch (cmd) {
+                case "requestOfflineMsg":
+                    mImBinder.requestOfflineMsg();
+            }
+        } catch (RemoteException e) {
+        }
+    }
+
+    public void setIMConnectStatus(int status) {
+        this.mIMConnectStatus = status;
+    }
+
     public int getIMConnectStatus() {
         try {
-            return mImBinder.getIMStatus();
+            return mImBinder == null ? mIMConnectStatus :  mImBinder.getIMStatus();
         } catch (RemoteException e) {
             return IMConnectStatus.ERROR;
         }
@@ -188,13 +232,25 @@ public class IMClient {
         this.mLaterIMMessageReceiver = null;
     }
 
-    public boolean isHandleMessageInFront(String msgType, int msgId) {
+    public IMConvManager getConvManager() {
+        return new IMConvManager(mContext);
+    }
+
+    public IMMessageManager getMessageManager() {
+        return new IMMessageManager(mContext);
+    }
+
+    public IMRoleManager getRoleManager() {
+        return new IMRoleManager(mContext);
+    }
+
+    public boolean isHandleMessageInFront(String msgType, String convNo) {
         ReceiverInfo receiverInfo = null;
         if (mLaterIMMessageReceiver == null || (receiverInfo = mLaterIMMessageReceiver.getType()) == null) {
             return false;
         }
 
-        return msgType.equals(receiverInfo.msgType) && msgId == receiverInfo.msgId;
+        return msgType.equals(receiverInfo.msgType) && convNo.equals(receiverInfo.convNo);
     }
 
     private String getRandomClientName(Context context) {

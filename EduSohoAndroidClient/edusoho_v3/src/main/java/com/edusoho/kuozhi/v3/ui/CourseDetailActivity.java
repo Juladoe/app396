@@ -18,7 +18,6 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMemberResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -114,7 +113,6 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                     if (button == PopupDialog.OK) {
                         CourseDiscussDataSource courseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
                         courseDiscussDataSource.delete(mFromId, app.loginUser.id);
-                        app.sendMsgToTarget(Const.CLEAN_RECORD, new Bundle(), DiscussFragment.class);
                     }
                 }
             });

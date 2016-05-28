@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui.friend;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -10,12 +9,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.provider.DiscussionGroupProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.result.DiscussionGroupResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
@@ -79,7 +80,6 @@ public class GroupListActivity extends ActionBarBaseActivity {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, Integer.valueOf(discussionGroup.id));
-                        startIntent.putExtra(ClassroomDiscussActivity.CLASSROOM_IMAGE, discussionGroup.picture);
                         startIntent.putExtra(Const.ACTIONBAR_TITLE, discussionGroup.title);
                     }
                 });
@@ -125,6 +125,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
                     setSortChar(groupsList);
                     Collections.sort(groupsList, groupComparator);
                     mAdapter.addFriendList(groupsList);
+                    new IMProvider(mContext).updateRoles(Destination.CLASSROOM, groupsList);
                 } else {
                     mEmptyNotice.setVisibility(View.VISIBLE);
                 }
@@ -136,6 +137,8 @@ public class GroupListActivity extends ActionBarBaseActivity {
 
     public void setSortChar(List<DiscussionGroup> groupList) {
         for (DiscussionGroup discussionGroup : groupList) {
+            discussionGroup.nickname = discussionGroup.title;
+            discussionGroup.mediumAvatar = discussionGroup.picture;
             String pinyin = characterParser.getSelling(discussionGroup.title);
             String sortString = pinyin.substring(0, 1).toUpperCase();
             if (sortString.matches("[A-Z]")) {

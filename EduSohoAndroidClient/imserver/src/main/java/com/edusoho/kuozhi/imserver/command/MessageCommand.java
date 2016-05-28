@@ -37,13 +37,10 @@ public class MessageCommand extends BaseCommand {
         String fromName = params.optString("fromName");
         String msg = params.optString("msg");
         String convNo = params.optString("convNo");
-        String time = params.optString("time");
+        int time = params.optInt("time");
         String msgNo = params.optString("msgNo");
+        String cmd = params.optString("cmd");
 
-        if (mImServer.getMsgDbHelper().hasMessageByNo(msgNo)) {
-            Log.d("MessageCommand", "hasMessageByNo");
-            return;
-        }
         MessageEntity messageEntity = MessageEntityBuildr.getBuilder()
                 .addToId(toId)
                 .addToName(toName)
@@ -53,6 +50,7 @@ public class MessageCommand extends BaseCommand {
                 .addConvNo(convNo)
                 .addTime(time)
                 .addMsgNo(msgNo)
+                .addCmd(cmd)
                 .builder();
         mImServer.onReceiveMessage(messageEntity);
         mImServer.ack(params.optString("msgNo"));

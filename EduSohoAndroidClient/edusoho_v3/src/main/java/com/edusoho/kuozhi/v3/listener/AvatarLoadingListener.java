@@ -48,6 +48,10 @@ public class AvatarLoadingListener implements ImageLoadingListener {
     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
         ImageView imageView = (ImageView) view;
         if (TextUtils.isEmpty(imageUri)) {
+            if (mType == null) {
+                imageView.setImageResource(R.drawable.default_avatar);
+                return;
+            }
             switch (mType) {
                 case PushUtil.ChatUserType.FRIEND:
                 case PushUtil.ChatUserType.TEACHER:

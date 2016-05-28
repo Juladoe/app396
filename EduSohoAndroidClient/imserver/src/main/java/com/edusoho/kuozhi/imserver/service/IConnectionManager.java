@@ -17,11 +17,13 @@ public interface IConnectionManager {
 
     void accept();
 
-    void close();
+    void stop();
 
     void send(String content);
 
     boolean isConnected();
+
+    void switchConnect();
 
     int getStatus();
 }

@@ -30,7 +30,6 @@ import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
 import com.edusoho.kuozhi.v3.model.bal.article.MenuItem;
 import com.edusoho.kuozhi.v3.model.bal.push.ServiceProviderModel;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.provider.ArticleProvider;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -441,15 +440,7 @@ public class ArticleFragment extends BaseFragment {
 
             return;
         }
-        switch (messageType.code) {
-            case Const.ADD_ARTICLE_CREATE_MAG:
-                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-                ArticleModel articleModel = new ArticleModel(wrapperMessage);
-                mMessageListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
-                mArticleAdapter.addArticleChat(articleModel);
-                expandArticle();
-                break;
-        }
+
     }
 
     @Override

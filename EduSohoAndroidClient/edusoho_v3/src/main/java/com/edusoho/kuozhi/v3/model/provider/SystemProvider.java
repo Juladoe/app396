@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
-import android.util.Log;
-
+import android.os.Build;
+import android.telephony.TelephonyManager;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
@@ -13,7 +15,7 @@ import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,9 @@ public class SystemProvider extends ModelProvider {
         String token = tokenMap.get("token");
         School school = SchoolUtil.getDefaultSchool(mContext);
         RequestUrl requestUrl = new RequestUrl(school.host + "/api/im/me/login");
+        HashMap<String, String> params = getPlatformInfo();
+        params.put("tag", "mobile");
+        requestUrl.setParams(params);
         requestUrl.getHeads().put("Auth-Token", token);
 
         final ProviderListener<LinkedHashMap> stringResponseListener = new ProviderListener<LinkedHashMap>(){};
@@ -73,5 +78,21 @@ public class SystemProvider extends ModelProvider {
         addPostRequest(requestUrl, new TypeToken<LinkedHashMap>() {
         }, responseListener, responseListener);
         return stringResponseListener;
+    }
+
+    public HashMap<String, String> getPlatformInfo() {
+        HashMap<String, String> params = new HashMap<String, String>();
+        TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
+
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
+        windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+
+        params.put("deviceToken", telephonyManager.getDeviceId());
+        params.put("desiceName", "Android " + Build.MODEL);
+        params.put("deviceVersion", Build.VERSION.SDK);
+        params.put("deviceKernel", Build.VERSION.RELEASE);
+
+        return params;
     }
 }

@@ -11,6 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -134,7 +135,8 @@ public class SettingActivity extends ActionBarBaseActivity {
                     public void onResponse(String response) {
                         Bundle bundle = new Bundle();
                         bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
-                        app.pushUnregister(bundle);
+
+                        new IMServiceProvider(getBaseContext()).unBindServer();
                         app.removeToken();
                         btnLogout.setVisibility(View.INVISIBLE);
                         app.sendMessage(Const.LOGOUT_SUCCESS, null);

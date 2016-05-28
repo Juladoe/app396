@@ -38,6 +38,11 @@ public class MessageEntityBuildr {
         return this;
     }
 
+    public MessageEntityBuildr addUID(String uid) {
+        messageEntity.setUid(uid);
+        return this;
+    }
+
     public MessageEntityBuildr addToId(String toId) {
         messageEntity.setToId(toId);
         return this;
@@ -53,13 +58,23 @@ public class MessageEntityBuildr {
         return this;
     }
 
-    public MessageEntityBuildr addTime(String time) {
+    public MessageEntityBuildr addTime(int time) {
         messageEntity.setTime(time);
+        return this;
+    }
+
+    public MessageEntityBuildr addId(int id) {
+        messageEntity.setId(id);
         return this;
     }
 
     public MessageEntityBuildr addCmd(String cmd) {
         messageEntity.setCmd(cmd);
+        return this;
+    }
+
+    public MessageEntityBuildr addStatus(int status) {
+        messageEntity.setStatus(status);
         return this;
     }
 

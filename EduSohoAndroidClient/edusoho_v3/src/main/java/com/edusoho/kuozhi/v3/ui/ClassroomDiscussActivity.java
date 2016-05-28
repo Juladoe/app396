@@ -1,455 +1,56 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
-import com.edusoho.kuozhi.v3.adapter.ClassroomDiscussAdapter;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.UserRole;
-import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.ClassroomDiscussEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
-import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
-import com.edusoho.kuozhi.v3.model.result.CloudResult;
-import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.base.BaseChatActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.NotificationUtil;
-import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.util.sql.ClassroomDiscussDataSource;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
-import com.google.gson.reflect.TypeToken;
-
-import java.io.File;
+import com.edusoho.kuozhi.v3.model.bal.Classroom;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-
-import in.srain.cube.views.ptr.PtrDefaultHandler;
-import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.PtrHandler;
+import cn.trinea.android.common.util.ToastUtils;
 
 /**
  * Created by JesseHuang on 15/10/16.
  */
-public class ClassroomDiscussActivity extends BaseChatActivity implements ChatAdapter.ImageErrorClick {
-
-    public static final String FROM_ID = "from_id";
-    public static final String CLASSROOM_IMAGE = "classroom_image";
-    public static int CurrentClassroomId = 0;
-
-    private String mClassroomName;
-    private String mClassroomImage;
-    private int mFromClassroomId;
-    private String mRoleType;
-    private ClassroomDiscussDataSource mClassroomDiscussDataSource;
-    private ClassroomDiscussAdapter<ClassroomDiscussEntity> mAdapter;
+public class ClassroomDiscussActivity extends ImChatActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected String getTargetType() {
+        return Destination.CLASSROOM;
     }
 
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        mStart = 0;
-        if (getList(0).size() == 0) {
-            mAdapter.clear();
-        }
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        initData();
-        mAdapter.clear();
-        mAdapter.addItems(getList(0));
-        mStart = mAdapter.getCount();
-        lvMessage.postDelayed(mListViewSelectRunnable, 500);
-        mAdapter.setSendImageClickListener(this);
-        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
-    }
-
-    @Override
-    public void initData() {
-        Intent intent = getIntent();
-        if (intent == null) {
-            CommonUtil.longToast(mContext, "聊天记录读取错误");
-            return;
-        }
-        mClassroomImage = intent.getStringExtra(CLASSROOM_IMAGE);
-        mClassroomName = intent.getStringExtra(Const.ACTIONBAR_TITLE);
-        setBackMode(BACK, mClassroomName);
-        mFromClassroomId = intent.getIntExtra(FROM_ID, mFromClassroomId);
-        if (TextUtils.isEmpty(mRoleType)) {
-            String[] roles = new String[app.loginUser.roles.length];
-            for (int i = 0; i < app.loginUser.roles.length; i++) {
-                roles[i] = app.loginUser.roles[i].toString();
-            }
-            if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
-                mRoleType = PushUtil.ChatUserType.TEACHER;
-            } else {
-                mRoleType = PushUtil.ChatUserType.FRIEND;
-            }
-        }
-        CurrentClassroomId = mFromClassroomId;
-        NotificationUtil.cancelById(mFromClassroomId);
-        if (mClassroomDiscussDataSource == null) {
-            mClassroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        }
-
-        mAdapter = new ClassroomDiscussAdapter<>(getList(0), mContext);
-        mAdapter.setSendImageClickListener(this);
-        lvMessage.setAdapter(mAdapter);
-        mStart = mAdapter.getCount();
-        lvMessage.postDelayed(mListViewSelectRunnable, 500);
-
-        mAudioDownloadReceiver.setAdapter(mAdapter);
-
-        mPtrFrame.setLastUpdateTimeRelateObject(this);
-        mPtrFrame.setPtrHandler(new PtrHandler() {
+    protected void createChatConvNo() {
+        final LoadDialog loadDialog = LoadDialog.create(this);
+        loadDialog.show();
+        new ClassRoomProvider(mContext).getClassRoom(mFromId)
+        .success(new NormalCallback<Classroom>() {
             @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
-                mAdapter.addItems(getList(mStart));
-                mStart = mAdapter.getCount();
-                mPtrFrame.refreshComplete();
-                lvMessage.postDelayed(mListViewSelectRunnable, 100);
-            }
-
-            @Override
-            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                int count = getList(mStart).size();
-                return count > 0 && canDoRefresh;
-            }
-        });
-        initCacheFolder();
-        mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
-    }
-
-    protected Runnable mListViewSelectRunnable = new Runnable() {
-        @Override
-        public void run() {
-            lvMessage.setSelection(mStart);
-        }
-    };
-
-    private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {
-        @Override
-        public void run() {
-            Bundle bundle = new Bundle();
-            bundle.putInt(Const.FROM_ID, mFromClassroomId);
-            bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.CLASSROOM);
-            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
-        }
-    };
-
-    private ArrayList<ClassroomDiscussEntity> getList(int start) {
-        ArrayList<ClassroomDiscussEntity> list = mClassroomDiscussDataSource.getLists(mFromClassroomId, app.loginUser.id, start, Const.NEWS_LIMIT);
-        Collections.reverse(list);
-        return list;
-    }
-
-    @Override
-    public void sendMsg(String content) {
-        mSendTime = (int) (System.currentTimeMillis() / 1000);
-        final ClassroomDiscussEntity model = new ClassroomDiscussEntity(0, mFromClassroomId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                etSend.getText().toString(), app.loginUser.id, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
-
-        addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
-
-        etSend.setText("");
-        etSend.requestFocus();
-
-        WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-        message.setTitle(mClassroomName);
-        message.setContent(model.content);
-        V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content);
-        String v2CustomContentJson = gson.toJson(v2CustomContent);
-        message.setCustomContentJson(v2CustomContentJson);
-        message.isForeground = true;
-        notifyNewFragmentListView2Update(message);
-
-        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", mClassroomName);
-        params.put("content", content);
-        params.put("custom", v2CustomContentJson);
-
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                CloudResult result = parseJsonValue(response, new TypeToken<CloudResult>() {
-                });
-                if (result != null && result.getResult()) {
-                    model.id = result.id;
-                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, model);
+            public void success(Classroom classroom) {
+                if (classroom == null || TextUtils.isEmpty(classroom.conversationId)) {
+                    ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
+                    return;
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, model);
-                CommonUtil.longToast(mActivity, "网络连接不可用请稍后再试");
-            }
-        });
-    }
 
-    @Override
-    public void sendMsgAgain(final BaseMsgEntity model) {
-        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUser.nickname);
-        params.put("content", model.content);
-        params.put("custom", gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                CloudResult result = parseJsonValue(response, new TypeToken<CloudResult>() {
-                });
-                if (result != null && result.getResult()) {
-                    model.id = result.id;
-                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, (ClassroomDiscussEntity) model);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "发送信息失败");
-            }
-        });
-    }
-
-    public void sendMediaMsg(final ClassroomDiscussEntity model, String type) {
-        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", mClassroomName);
-        params.put("content", PushUtil.getNotificationContent(type));
-        params.put("custom", gson.toJson(getV2CustomContent(type, model.upyunMediaGetUrl)));
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                CloudResult result = parseJsonValue(response, new TypeToken<CloudResult>() {
-                });
-                if (result != null && result.getResult()) {
-                    model.id = result.id;
-                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, model);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "发送信息失败");
-            }
-        });
-    }
-
-    public void uploadMedia(final File file, final String type, String strType) {
-        if (file == null || !file.exists()) {
-            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
-            return;
-        }
-        try {
-            mSendTime = (int) (System.currentTimeMillis() / 1000);
-            final ClassroomDiscussEntity model = new ClassroomDiscussEntity(0, mFromClassroomId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                    file.getPath(), app.loginUser.id, type, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
-
-            //生成New页面的消息并通知更改
-            WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-            message.setTitle(mClassroomName);
-            message.setContent(String.format("[%s]", strType));
-            V2CustomContent v2CustomContent = getV2CustomContent(type, message.getContent());
-            message.setCustomContentJson(gson.toJson(v2CustomContent));
-            message.isForeground = true;
-            notifyNewFragmentListView2Update(message);
-
-            addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
-
-            super.getUpYunUploadInfo(file, mFromClassroomId, new NormalCallback<UpYunUploadResult>() {
-                @Override
-                public void success(final UpYunUploadResult result) {
-                    if (result != null) {
-                        model.upyunMediaPutUrl = result.putUrl;
-                        model.upyunMediaGetUrl = result.getUrl;
-                        model.headers = result.getHeaders();
-                        uploadUnYunMedia(file, model, type);
-                        ClassroomDiscussActivity.super.saveUploadResult(result.putUrl, result.getUrl, mFromClassroomId);
-                    } else {
-                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, model);
+                mConversationNo = classroom.conversationId;
+                new IMProvider(mContext).createConvInfoByClassRoom(mConversationNo, classroom)
+                .success(new NormalCallback<ConvEntity>() {
+                    @Override
+                    public void success(ConvEntity convEntity) {
+                        loadDialog.dismiss();
+                        setTitle(convEntity.getTargetName());
+                        initAdapter();
                     }
-                }
-            });
-            viewMediaLayout.setVisibility(View.GONE);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
-    }
-
-    public void uploadUnYunMedia(final File file, final ClassroomDiscussEntity model, final String type) {
-        RequestUrl putUrl = new RequestUrl(model.upyunMediaPutUrl);
-        putUrl.setHeads(model.headers);
-        putUrl.setMuiltParams(new Object[]{"file", file});
-        ajaxPostMultiUrl(putUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, "success");
-                sendMediaMsg(model, type);
+                });
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, model);
-                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
-                Log.d(TAG, "upload media res to upyun failed");
-            }
-        }, Request.Method.PUT);
-    }
-
-    @Override
-    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
-        final ClassroomDiscussEntity discussModel = (ClassroomDiscussEntity) model;
-        if (file == null || !file.exists()) {
-            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
-            return;
-        }
-
-        if (TextUtils.isEmpty(model.upyunMediaPutUrl)) {
-            getUpYunUploadInfo(file, discussModel.fromId, new NormalCallback<UpYunUploadResult>() {
-                @Override
-                public void success(final UpYunUploadResult result) {
-                    if (result != null) {
-                        model.upyunMediaPutUrl = result.putUrl;
-                        model.upyunMediaGetUrl = result.getUrl;
-                        model.headers = result.getHeaders();
-                        uploadUnYunMedia(file, discussModel, type);
-                        saveUploadResult(result.putUrl, result.getUrl, discussModel.fromId);
-                    } else {
-                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, discussModel);
-                    }
-                }
-            });
-        } else {
-            uploadUnYunMedia(file, discussModel, type);
-        }
-    }
-
-    public void addSendMsgToListView(int delivery, ClassroomDiscussEntity model) {
-        model.delivery = delivery;
-        long discussId = mClassroomDiscussDataSource.create(model);
-        model.discussId = (int) discussId;
-        mAdapter.addItem(model);
-        mStart = mStart + 1;
-    }
-
-    @Override
-    public void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Const.GET_PUSH_DATA, message);
-        bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_SEND_CLASSROOM_DISCUSS_MSG);
-        app.sendMsgToTarget(Const.ADD_CLASSROOM_MSG, bundle, NewsFragment.class);
-    }
-
-    public void updateSendMsgToListView(int type, ClassroomDiscussEntity model) {
-        model.delivery = type;
-        mClassroomDiscussDataSource.update(model);
-        mAdapter.updateItemByChatId(model);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.group_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.group_profile) {
-            mActivity.app.mEngine.runNormalPlugin("ClassroomDetailActivity", mContext, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(Const.ACTIONBAR_TITLE, mClassroomName);
-                    startIntent.putExtra(Const.FROM_ID, mFromClassroomId);
-                }
-            });
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void invoke(WidgetMessage message) {
-        MessageType messageType = message.type;
-        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-        V2CustomContent v2CustomContent = parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<V2CustomContent>() {
         });
-        switch (messageType.code) {
-            case Const.ADD_CLASSROOM_MSG:
-                if (mFromClassroomId == v2CustomContent.getTo().getId()) {
-                    ClassroomDiscussEntity model = new ClassroomDiscussEntity(wrapperMessage);
-                    mAdapter.addItem(model);
-                }
-                break;
-        }
     }
 
     @Override
-    public MessageType[] getMsgTypes() {
-        String source = this.getClass().getSimpleName();
-        return new MessageType[]{
-                new MessageType(Const.ADD_CLASSROOM_MSG, source),
-        };
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mClassroomDiscussDataSource != null) {
-            mClassroomDiscussDataSource.close();
-        }
-    }
-
-    /**
-     * 存本地的Custom信息
-     *
-     * @return V2CustomContent
-     */
-    private V2CustomContent getV2CustomContent(String type, String content) {
-        V2CustomContent v2CustomContent = new V2CustomContent();
-        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setId(app.loginUser.id);
-        fromEntity.setImage(app.loginUser.mediumAvatar);
-        fromEntity.setNickname(app.loginUser.nickname);
-        fromEntity.setType(mRoleType);
-        v2CustomContent.setFrom(fromEntity);
-        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
-        toEntity.setId(mFromClassroomId);
-        toEntity.setImage(mClassroomImage);
-
-        toEntity.setType(PushUtil.ChatUserType.CLASSROOM);
-        v2CustomContent.setTo(toEntity);
-        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
-        bodyEntity.setType(type);
-        bodyEntity.setContent(content);
-        v2CustomContent.setBody(bodyEntity);
-        v2CustomContent.setV(Const.PUSH_VERSION);
-        v2CustomContent.setCreatedTime(mSendTime);
-        return v2CustomContent;
+    protected ArrayList<Chat> getChatList(int start) {
+        return super.getChatList(start);
     }
 }

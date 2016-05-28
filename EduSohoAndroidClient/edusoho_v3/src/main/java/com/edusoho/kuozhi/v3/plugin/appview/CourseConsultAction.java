@@ -6,7 +6,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -38,10 +38,10 @@ public class CourseConsultAction {
                 });
                 if (user != null) {
                     bundle.putString(Const.ACTIONBAR_TITLE, user.nickname);
-                    bundle.putInt(ChatActivity.FROM_ID, user.id);
-                    bundle.putString(ChatActivity.HEAD_IMAGE_URL, user.mediumAvatar);
+                    bundle.putInt(ImChatActivity.FROM_ID, user.id);
+                    bundle.putString(ImChatActivity.HEAD_IMAGE_URL, user.mediumAvatar);
                     bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.TEACHER);
-                    mActivity.app.mEngine.runNormalPluginWithBundle("ChatActivity", mActivity, bundle);
+                    mActivity.app.mEngine.runNormalPluginWithBundle("ImChatActivity", mActivity, bundle);
                 }
             }
         }, new Response.ErrorListener() {

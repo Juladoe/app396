@@ -20,12 +20,14 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.imserver.IMClient;
-import com.edusoho.kuozhi.imserver.ImService;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
-import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
+import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.provider.SystemProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
@@ -42,8 +44,6 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 
 /**
@@ -432,7 +432,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private void isLoginWithToken(final NormalCallback<Boolean> callback) {
         if (TextUtils.isEmpty(app.token)) {
             callback.success(false);
-            //app.pushRegister(null);
             return;
         }
 
@@ -457,17 +456,14 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                         UserResult result = app.gson.fromJson(response, new TypeToken<UserResult>() {
                         }.getType());
 
-                        Bundle bundle = new Bundle();
                         if (result != null && result.user != null && (!TextUtils.isEmpty(result.token))) {
                             app.saveToken(result);
-                            bundle.putString(Const.BIND_USER_ID, result.user.id + "");
+                            new IMProvider(mContext).updateRoleByUser(result.user);
                             callback.success(true);
                         } else {
-                            bundle.putString(Const.BIND_USER_ID, "");
                             app.removeToken();
                             callback.success(false);
                         }
-                        //app.pushRegister(bundle);
 
                     } catch (Exception e) {
                         Log.d(TAG, e.getMessage());
@@ -476,7 +472,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
                 }
             });
 
@@ -495,5 +490,19 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        User user = getAppSettingProvider().getCurrentUser();
+        if (user == null) {
+            return;
+        }
+        new IMServiceProvider(getBaseContext()).reConnectServer(user.nickname);
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 }

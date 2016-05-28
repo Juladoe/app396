@@ -110,7 +110,7 @@ public class FriendSelectFragment extends BaseFragment implements AdapterView.On
                 mActivity.setResult(ChatSendHandler.RESULT_SELECT_FRIEND_OK);
             }
         });
-        chatSendHandler.handleClick(friend.id, friend.nickname, friend.mediumAvatar);
+        //chatSendHandler.handleClick(friend.id, friend.nickname, friend.mediumAvatar);
     }
 
     protected void initFriendListData() {

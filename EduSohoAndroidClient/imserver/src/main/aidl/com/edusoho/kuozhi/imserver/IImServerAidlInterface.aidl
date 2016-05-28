@@ -11,5 +11,11 @@ interface IImServerAidlInterface {
 
     int getIMStatus();
 
+    void closeIMServer();
+
     void joinConversation(String clientId, String nickname, String convNo);
+
+    void requestConnect();
+
+    void requestOfflineMsg();
 }

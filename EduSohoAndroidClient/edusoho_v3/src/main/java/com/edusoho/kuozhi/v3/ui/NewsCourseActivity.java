@@ -17,41 +17,39 @@ import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.New;
-import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
-import com.google.gson.reflect.TypeToken;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
+import cn.trinea.android.common.util.ToastUtils;
 
 /**
  * Created by JesseHuang on 15/9/16.
  */
 public class NewsCourseActivity extends ActionBarBaseActivity {
-    public static int CurrentCourseId = 0;
     public static final String COURSE_ID = "course_id";
+    public static final String SHOW_TYPE = "show_type";
+
+    public static final int DISCUSS_TYPE = 0;
+    public static final int LEARN_TYPE = 1;
+
     private static final String mFragmentTags[] = {"DiscussFragment", "CourseStudyFragment", "TeachFragment"};
     private static final String mEntranceType[] = {"Discuss", "StudyOrTeacher"};
     private static final String mRadioButtonTitle[] = {"学习", "教学"};
+
     private int mCourseId;
-    private String mCourseTitle;
     private String mFragmentType;
-    private int mCreatedTime;
     private String mCurrentFragmentTag;
-    private New mNewItemInfo;
     private String mUserTypeInCourse;
 
     private Handler mHandler;
@@ -71,21 +69,37 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     }
 
     private void initData() {
+        mHandler = new Handler();
         Intent intent = getIntent();
         if (intent == null) {
             return;
         }
-        mNewItemInfo = (New) intent.getSerializableExtra(Const.NEW_ITEM_INFO);
-        if (mNewItemInfo == null || mNewItemInfo.fromId == 0) {
-            CommonUtil.longToast(getApplicationContext(), getString(R.string.course_params_error));
+        mCourseId = intent.getIntExtra(COURSE_ID, 0);
+        if (mCourseId == 0) {
+            ToastUtils.show(mContext, "课程信息不存在!");
             return;
         }
-        mHandler = new Handler();
-        mCourseTitle = mNewItemInfo.title;
-        mCourseId = mNewItemInfo.fromId;
-        mCreatedTime = mNewItemInfo.createdTime;
-        mFragmentType = getFragmentType();
-        getRoleInCourse(mCourseId, getAppSettingProvider().getCurrentUser().id, new NormalCallback<String>() {
+        mFragmentType = getFragmentType(intent.getIntExtra(SHOW_TYPE, LEARN_TYPE));
+
+        final LoadDialog loadDialog = LoadDialog.create(this);
+        loadDialog.show();
+        new CourseProvider(mContext).getCourse(mCourseId)
+        .success(new NormalCallback<CourseDetailsResult>() {
+            @Override
+            public void success(CourseDetailsResult courseDetailsResult) {
+                loadDialog.dismiss();
+                if (courseDetailsResult == null || courseDetailsResult.course == null) {
+                    ToastUtils.show(mContext, "课程信息不存在!");
+                    return;
+                }
+                int userId = getAppSettingProvider().getCurrentUser().id;
+                checkUserRole(userId);
+            }
+        });
+    }
+
+    private void checkUserRole(int userId) {
+        getRoleInCourse(mCourseId, userId, new NormalCallback<String>() {
             @Override
             public void success(String role) {
                 mUserTypeInCourse = role;
@@ -99,13 +113,8 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                     CommonUtil.longToast(mContext, "您不是该课程的学生");
                     finish();
                 }
-                CurrentCourseId = mCourseId;
             }
         });
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
     }
 
     private void showFragment(String tag) {
@@ -120,7 +129,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             fragmentTransaction.show(fragment);
         } else {
             if (tag.equals(mFragmentTags[0])) {
-                fragment = app.mEngine.runPluginWithFragment(tag, mActivity, null);
+                fragment = app.mEngine.runPluginWithFragment(tag, mActivity, mStudyPluginFragmentCallback);
             } else if (tag.equals(mFragmentTags[1])) {
                 fragment = app.mEngine.runPluginWithFragment(tag, mActivity, mStudyPluginFragmentCallback);
             } else if (tag.equals(mFragmentTags[2])) {
@@ -161,8 +170,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private PluginFragmentCallback mStudyPluginFragmentCallback = new PluginFragmentCallback() {
         @Override
         public void setArguments(Bundle bundle) {
-            bundle.putSerializable(Const.NEW_ITEM_INFO, mNewItemInfo);
-            bundle.putInt("course_id", mCourseId);
+            bundle.putInt(Const.COURSE_ID, mCourseId);
         }
     };
 
@@ -180,7 +188,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
-                    startIntent.putExtra(Const.ACTIONBAR_TITLE, mCourseTitle);
+                    //startIntent.putExtra(Const.ACTIONBAR_TITLE, mCourseTitle);
                 }
             });
         }
@@ -203,29 +211,17 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         MessageType messageType = message.type;
         switch (messageType.code) {
             case Const.ADD_COURSE_DISCUSS_MSG:
-                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-                V2CustomContent v2CustomContent = parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<V2CustomContent>() {
-                });
-                if (mCurrentFragmentTag.equals(mFragmentTags[0]) && v2CustomContent.getTo().getId() == mNewItemInfo.fromId) {
-                    app.sendMsgToTarget(Const.ADD_COURSE_DISCUSS_MSG, message.data, DiscussFragment.class);
-                }
-                if (!mCurrentFragmentTag.equals(mFragmentTags[0])) {
-                    setSwitchBadgeViewVisible(View.VISIBLE);
-                }
-                break;
+
             default:
         }
     }
 
-    private String getFragmentType() {
-        CourseDiscussDataSource mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        CourseDiscussEntity courseDiscussEntity = mCourseDiscussDataSource.get(" BELONGID = ? AND COURSEID = ? ORDER BY CREATEDTIME DESC LIMIT 0, 1",
-                new String[]{getAppSettingProvider().getCurrentUser().id + "", mCourseId + ""});
-        if (courseDiscussEntity != null && courseDiscussEntity.createdTime == mCreatedTime) {
-            return mEntranceType[0];
-        } else {
+    private String getFragmentType(int showType) {
+        if (showType == LEARN_TYPE) {
             return mEntranceType[1];
         }
+
+        return mEntranceType[0];
     }
 
     protected AppSettingProvider getAppSettingProvider() {

@@ -11,12 +11,15 @@ public class MessageEntity implements Parcelable {
     private String fromId;
     private String fromName;
     private String toName;
-    private String time;
+    private int time;
     private String msgNo;
     private String toId;
     private String convNo;
     private String msg;
     private String cmd;
+    private int status;
+    private int id;
+    private String uid;
 
     public MessageEntity() {
     }
@@ -26,12 +29,36 @@ public class MessageEntity implements Parcelable {
         this.fromId = in.readString();
         this.fromName = in.readString();
         this.toName = in.readString();
-        this.time = in.readString();
+        this.time = in.readInt();
         this.msgNo = in.readString();
         this.toId = in.readString();
         this.convNo = in.readString();
         this.msg = in.readString();
         this.cmd = in.readString();
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public String getToId() {
@@ -82,11 +109,11 @@ public class MessageEntity implements Parcelable {
         this.toName = toName;
     }
 
-    public String getTime() {
+    public int getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(int time) {
         this.time = time;
     }
 
@@ -111,7 +138,7 @@ public class MessageEntity implements Parcelable {
         dest.writeString(fromId);
         dest.writeString(fromName);
         dest.writeString(toName);
-        dest.writeString(time);
+        dest.writeInt(time);
         dest.writeString(msgNo);
         dest.writeString(toId);
         dest.writeString(convNo);
@@ -134,4 +161,10 @@ public class MessageEntity implements Parcelable {
             return new MessageEntity[size];
         }
     };
+
+    public static class StatusType {
+        public static final int SUCCESS = 1;
+        public static final int FAILED = 0;
+        public static final int UPLOADING = 2;
+    }
 }

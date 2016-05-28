@@ -11,6 +11,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
@@ -92,7 +93,8 @@ public class OpenLoginUtil {
                 activity.app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                 Bundle bundle = new Bundle();
                 bundle.putString(Const.BIND_USER_ID, String.valueOf(activity.app.loginUser.id));
-                //activity.app.pushRegister(bundle);
+
+                new IMServiceProvider(activity.getBaseContext()).bindServer(activity.app.loginUser.nickname);
                 mLoginhandler.success(userResult);
                 SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();

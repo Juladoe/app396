@@ -121,7 +121,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     private View.OnClickListener mLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String username = etUsername.getText().toString().trim();
+            final String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
             if (TextUtils.isEmpty(username)) {
                 CommonUtil.longToast(mContext, "请输入用户名");
@@ -146,17 +146,14 @@ public class LoginActivity extends ActionBarBaseActivity {
                     UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
                     });
                     if (userResult != null && userResult.user != null) {
-                        mActivity.app.saveToken(userResult);
-                        mActivity.setResult(LoginActivity.OK);
+                        app.saveToken(userResult);
+                        setResult(LoginActivity.OK);
                         SimpleDateFormat nowfmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                         Date date = new Date();
                         String entertime = nowfmt.format(date);
-                        saveEnterSchool(mActivity.app.defaultSchool.name, entertime, "登录账号：" + mActivity.app.loginUser.nickname, mActivity.app.domain);
+                        saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
                         app.sendMessage(Const.LOGIN_SUCCESS, null);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
-                        //app.pushRegister(bundle);
-                        new IMServiceProvider(getBaseContext()).bindServer();
+                        new IMServiceProvider(getBaseContext()).bindServer(userResult.user.nickname);
                         mBtnLogin.setSuccessState();
                         mBtnLogin.postDelayed(new Runnable() {
                             @Override
@@ -182,31 +179,6 @@ public class LoginActivity extends ActionBarBaseActivity {
             });
         }
     };
-
-    private void bindOpenUser(String type, String id, String name, String avatar) {
-        RequestUrl requestUrl = app.bindNewUrl(Const.BIND_LOGIN, false);
-        requestUrl.setParams(new String[]{
-                "type", type,
-                "id", id,
-                "name", name,
-                "avatar", avatar
-        });
-        ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, response);
-                UserResult userResult = mActivity.parseJsonValue(
-                        response, new TypeToken<UserResult>() {
-                        });
-                app.saveToken(userResult);
-                app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                Bundle bundle = new Bundle();
-                bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUser.id));
-                //app.pushRegister(bundle);
-                mActivity.finish();
-            }
-        }, null);
-    }
 
     private void loginByPlatform(String type) {
         final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);

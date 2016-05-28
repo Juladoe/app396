@@ -16,13 +16,15 @@ import java.util.TimerTask;
 public class HeartManagerImpl implements IHeartManager {
 
     private static final String TAG = "HeartManager";
+    private static final int MAX_PING_COUNT = 6;
 
     private int pingType;
-    private int pingSpeed;
+    private int pingSpeedType;
     private int pingSuccessCount;
     private int pingFailCount;
     private long lasterPingTime;
     private int pingTotalCount;
+    private int currentPongStatus;
 
     private IHeartStatusListener mIHeartStatusListener;
     private Thread mPingThread;
@@ -40,50 +42,49 @@ public class HeartManagerImpl implements IHeartManager {
     }
 
     private void upgradePingSpeed() {
-        if (pingSpeed == PING_FAST) {
+        if (pingSpeedType == PING_FAST) {
             return;
         }
-        pingSpeed ++;
+        pingSpeedType++;
     }
 
     public void switchPingType(int type) {
         this.pingType = type;
         switch (type) {
             case NetTypeConst.WCDMA:
-                pingSpeed = PING_NORMAL;
+                pingSpeedType = PING_NORMAL;
                 break;
             case NetTypeConst.GSM:
-                pingSpeed = PING_FAST;
+                pingSpeedType = PING_FAST;
                 break;
             case NetTypeConst.LTE:
             case NetTypeConst.WIFI:
-                pingSpeed = PING_SLOW;
+                pingSpeedType = PING_SLOW;
                 break;
         }
     }
 
     private int getPingTime() {
-        switch (pingSpeed) {
+        float pingSpeed = 0;
+        if (pingFailCount == 0) {
+            pingSpeed = pingSuccessCount > MAX_PING_COUNT ? MAX_PING_COUNT : pingSuccessCount;
+        } else {
+            pingSpeed = (MAX_PING_COUNT - pingFailCount) / (float) MAX_PING_COUNT;
+        }
+
+        switch (pingSpeedType) {
             case PING_FAST:
-                return 6000;
+                return (int) (6000 * pingSpeed);
             case PING_NORMAL:
-                return 6000 * 10;
+                return (int) (6000 * 3 * pingSpeed);
             case PING_SLOW:
-                return 6000 * 30;
+                return (int) (6000 * 6 * pingSpeed);
         }
         return 6000;
     }
 
     private int getPingMaxCount() {
-        switch (pingSpeed) {
-            case PING_FAST:
-                return 6;
-            case PING_NORMAL:
-                return 6 * 5;
-            case PING_SLOW:
-                return 6 * 10;
-        }
-        return 6;
+        return MAX_PING_COUNT;
     }
 
     @Override
@@ -96,11 +97,15 @@ public class HeartManagerImpl implements IHeartManager {
         return new TimerTask() {
             @Override
             public void run() {
+                if (currentPongStatus == PONG_TIMEOUT) {
+                    setPongResult(PONG_FAIL);
+                }
                 lasterPingTime = SystemClock.currentThreadTimeMillis();
                 pingTotalCount ++;
                 Log.d(TAG, "lasterPingTime:" + pingTotalCount);
-                Log.d(TAG, "current PingSpeed:" + pingSpeed);
-                if (pingFailCount >= 10) {
+                Log.d(TAG, "current PingSpeed:" + pingSpeedType);
+                if (pingFailCount >= MAX_PING_COUNT) {
+                    Log.d(TAG, "ping timeout");
                     stop();
                     mIHeartStatusListener.onPong(IHeartStatusListener.TIMEOUT);
                     return;
@@ -110,6 +115,8 @@ public class HeartManagerImpl implements IHeartManager {
                     upgradePingSpeed();
                 }
                 mIHeartStatusListener.onPing();
+                currentPongStatus = PONG_TIMEOUT;
+
                 mPingTimer.schedule(getPingTimerTask(), getPingTime());
             }
         };
@@ -119,10 +126,14 @@ public class HeartManagerImpl implements IHeartManager {
         switch (pongType) {
             case PONG_SUCCESS:
                 pingSuccessCount ++;
+                pingFailCount = 0;
+                currentPongStatus = PONG_SUCCESS;
                 break;
             case PONG_FAIL:
-                Log.d(TAG, "pingFail:" + pingFailCount);
+                currentPongStatus = PONG_FAIL;
                 pingFailCount ++;
+                pingSuccessCount = 0;
+                Log.d(TAG, "pingFail:" + pingFailCount);
                 break;
         }
     }

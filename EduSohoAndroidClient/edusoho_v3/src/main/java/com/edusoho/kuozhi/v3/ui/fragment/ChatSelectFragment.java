@@ -66,10 +66,10 @@ public class ChatSelectFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 New item = (New)parent.getItemAtPosition(position);
                 if (PushUtil.ChatUserType.CLASSROOM.equals(item.type)) {
-                    new ClassRoomChatSendHandler(mActivity, mRedirectBody).handleClick(item.fromId, item.title, item.imgUrl);
+                    //new ClassRoomChatSendHandler(mActivity, mRedirectBody).handleClick(item.fromId, item.title, item.imgUrl);
                     return;
                 }
-                new ChatSendHandler(mActivity, mRedirectBody).handleClick(item.fromId, item.title, item.imgUrl);
+                //new ChatSendHandler(mActivity, mRedirectBody).handleClick(item.fromId, item.title, item.imgUrl);
             }
         });
 

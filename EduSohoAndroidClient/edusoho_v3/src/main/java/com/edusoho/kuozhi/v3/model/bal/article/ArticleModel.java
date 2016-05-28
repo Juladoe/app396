@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.model.bal.article;
 
 import com.edusoho.kuozhi.v3.model.bal.push.ServiceProviderModel;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
@@ -72,12 +71,5 @@ public class ArticleModel extends ServiceProviderModel {
         }
 
         return arrayList;
-    }
-
-    public ArticleModel(WrapperXGPushTextMessage message)
-    {
-        super(message);
-        ArrayList<Article> arrayList = parseChatBody(this.body);
-        this.articleList = arrayList;
     }
 }

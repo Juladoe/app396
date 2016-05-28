@@ -1,8 +1,9 @@
 package com.edusoho.kuozhi.v3.service.message;
 
 import android.content.Context;
+
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
-import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 
 /**
@@ -10,10 +11,10 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
  */
 public class CommandFactory {
 
-    public static AbstractCommand create(Context context, IMMessageReceiver receiver, V2CustomContent v2CustomContent) {
+    public static AbstractCommand create(Context context, IMMessageReceiver receiver, MessageBody messageBody) {
 
-        String toType = v2CustomContent.getTo().getType();
-        String bodyType = v2CustomContent.getBody().getType();
+        String toType = messageBody.getDestination().getType();
+        String bodyType = messageBody.getType();
 
         switch (bodyType) {
             case PushUtil.ChatMsgType.AUDIO:
@@ -21,14 +22,26 @@ public class CommandFactory {
             case PushUtil.ChatMsgType.TEXT:
             case PushUtil.ChatMsgType.MULTI:
                 if (PushUtil.ChatUserType.CLASSROOM.equals(toType)) {
-                    return null;
+                    return new DiscussMsgCommand(context, receiver, messageBody);
                 } else if (PushUtil.ChatUserType.USER.equals(toType)) {
-                    return new MessageCommand(context, receiver, v2CustomContent);
+                    return new MessageCommand(context, receiver, messageBody);
                 } else if (PushUtil.ChatUserType.COURSE.equals(toType)) {
-                    return new DiscussMsgCommand(context, receiver, v2CustomContent);
+                    return new DiscussMsgCommand(context, receiver, messageBody);
                 }
                 break;
         }
-        return null;
+        return new EmptyCommand(context, receiver, messageBody);
+    }
+
+    private static class EmptyCommand extends AbstractCommand
+    {
+        public EmptyCommand(Context context, IMMessageReceiver receiver, MessageBody messageBody)
+        {
+            super(context, receiver, messageBody);
+        }
+
+        @Override
+        public void invoke() {
+        }
     }
 }

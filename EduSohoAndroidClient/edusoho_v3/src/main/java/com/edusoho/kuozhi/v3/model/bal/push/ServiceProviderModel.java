@@ -19,18 +19,4 @@ public class ServiceProviderModel {
 
     public ServiceProviderModel(){
     }
-
-    public ServiceProviderModel(WrapperXGPushTextMessage xgMessage)
-    {
-        V2CustomContent v2CustomContent = xgMessage.getV2CustomContent();
-        V2CustomContent.BodyEntity bodyEntity = v2CustomContent.getBody();
-        this.id = v2CustomContent.getMsgId();
-        this.spId = v2CustomContent.getFrom().getId();
-        this.toId = EdusohoApp.app.loginUser.id;
-        this.title = xgMessage.getTitle();
-        this.content = xgMessage.getContent();
-        this.type = bodyEntity.getType();
-        this.body = new Gson().toJson(bodyEntity);
-        this.createdTime = v2CustomContent.getCreatedTime();
-    }
 }

@@ -18,7 +18,6 @@ import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.TypeBusinessEnum;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -158,9 +157,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
         MessageType messageType = message.type;
         switch (messageType.code) {
             case Const.ADD_BULLETIN_MSG:
-                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-                Bulletin bulletin = new Bulletin(wrapperMessage);
-                mBulletinAdapter.addItem(bulletin);
+
                 break;
         }
         setListVisibility(mBulletinAdapter.getCount() == 0);

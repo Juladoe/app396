@@ -1,9 +1,10 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
-
+import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.result.DiscussionGroupResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -23,4 +24,5 @@ public class DiscussionGroupProvider extends ModelProvider {
         return providerListener;
 
     }
+
 }

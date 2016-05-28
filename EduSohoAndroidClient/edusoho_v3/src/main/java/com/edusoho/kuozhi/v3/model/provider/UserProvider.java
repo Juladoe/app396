@@ -4,9 +4,11 @@ import android.content.Context;
 
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
@@ -24,16 +26,41 @@ public class UserProvider extends ModelProvider {
         super(context);
     }
 
-    public ProviderListener createConvNo(int toUserId) {
-        Map<String,String> tokenMap = ApiTokenUtil.getToken(mContext);
-        String token = tokenMap.get("token");
+    private String coverIdsToString(int[] userIds) {
+        int index = 0;
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int userId : userIds) {
+            index ++;
+            stringBuffer.append(userId).append(",");
+        }
+        if (index > 0) {
+            stringBuffer.deleteCharAt(stringBuffer.length() - 1);
+        }
 
-        School school = SchoolUtil.getDefaultSchool(mContext);
+        return stringBuffer.toString();
+    }
 
-        RequestUrl requestUrl = new RequestUrl(school.host + "/api/im/me/conversations/" + toUserId);
-        requestUrl.getHeads().put("Auth-Token", token);
+    public ProviderListener createConvNo(int[] userIds) {
+        RequestUrl requestUrl = new RequestUrl(getHost() + "/api/im/conversations");
+        requestUrl.getHeads().put("Auth-Token", getToken());
+        requestUrl.setParams(new String[] {
+                "memberIds", coverIdsToString(userIds)
+        });
         RequestOption requestOption = buildSimplePostRequest(
                 requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        requestOption.getRequest().setCacheUseMode(BaseVolleyRequest.ALWAYS_USE_CACHE);
+        return requestOption.build();
+    }
+
+    public ProviderListener<User> getUserInfo(int userId) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/%s", school.url, Const.USERINFO));
+        requestUrl.setParams(new String[] {
+                "userId", String.valueOf(userId)
+        });
+        RequestOption requestOption = buildSimplePostRequest(
+                requestUrl, new TypeToken<User>(){});
 
         requestOption.getRequest().setCacheUseMode(BaseVolleyRequest.ALWAYS_USE_CACHE);
         return requestOption.build();

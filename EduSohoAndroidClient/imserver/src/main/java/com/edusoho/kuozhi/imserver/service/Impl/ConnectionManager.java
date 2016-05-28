@@ -37,13 +37,16 @@ public class ConnectionManager implements IConnectionManager {
     }
 
     @Override
-    public void close() {
+    public void stop() {
+        close();
         this.mIChannelReceiveListener = null;
         this.mIConnectStatusListener = null;
-        try {
-            mWebSocketFuture.get().close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    }
+
+    private void close() {
+        WebSocket webSocket = mWebSocketFuture.tryGet();
+        if (webSocket != null) {
+            webSocket.close();
         }
     }
 
@@ -100,7 +103,10 @@ public class ConnectionManager implements IConnectionManager {
         mIConnectStatusListener.onStatusChange(IConnectManagerListener.CONNECTING, "connect...");
     }
 
-    protected void switchHostConnect() {
+    @Override
+    public void switchConnect() {
+        close();
+        mCurrentHostIndex++;
         if (mCurrentHostIndex > mHostList.size()) {
             if (mIConnectStatusListener != null) {
                 this.mStatus = IConnectManagerListener.ERROR;
@@ -108,7 +114,6 @@ public class ConnectionManager implements IConnectionManager {
             }
             return;
         }
-        mCurrentHostIndex++;
         connectWebsocket();
     }
 
@@ -118,15 +123,11 @@ public class ConnectionManager implements IConnectionManager {
             public void onCompleted(Exception ex, WebSocket webSocket) {
                 if (ex != null) {
                     ex.printStackTrace();
-                    switchHostConnect();
+                    switchConnect();
                     return;
                 }
                 Log.d(TAG, "onCompleted:" + webSocket);
-                if (webSocket.isOpen() && mIConnectStatusListener != null) {
-                    mStatus = IConnectManagerListener.OPEN;
-                    mIConnectStatusListener.onStatusChange(IConnectManagerListener.OPEN, "open");
-                }
-
+                initOnReceiveCallback(webSocket);
                 webSocket.setEndCallback(new CompletedCallback() {
                     @Override
                     public void onCompleted(Exception e) {
@@ -155,8 +156,10 @@ public class ConnectionManager implements IConnectionManager {
                         Log.d(TAG, "onWriteable");
                     }
                 });
-
-                initOnReceiveCallback(webSocket);
+                if (webSocket.isOpen() && mIConnectStatusListener != null) {
+                    mStatus = IConnectManagerListener.OPEN;
+                    mIConnectStatusListener.onStatusChange(IConnectManagerListener.OPEN, "open");
+                }
             }
         };
     }

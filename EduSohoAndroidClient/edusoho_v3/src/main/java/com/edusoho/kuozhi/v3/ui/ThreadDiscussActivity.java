@@ -1,9 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
@@ -11,9 +9,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnimationSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,10 +22,10 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseThreadPostResult;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
 import com.edusoho.kuozhi.v3.model.bal.thread.PostThreadResult;
@@ -304,7 +299,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     }
 
     @Override
-    public void sendMsgAgain(final BaseMsgEntity model) {
+    public void sendMsgAgain(final Chat model) {
         final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
         mAdapter.updateItemState(model.id, PushUtil.MsgDeliveryType.UPLOADING);
         handleSendPost(postModel);
@@ -369,7 +364,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     }
 
     @Override
-    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
+    public void uploadMediaAgain(final File file, final Chat model, final String type, String strType) {
         try {
             final CourseThreadPostEntity postModel = mCourseThreadPostDataSource.getPost(model.id);
             getUpYunUploadInfo(file, app.loginUser.id, new NormalCallback<UpYunUploadResult>() {
@@ -737,30 +732,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
     @Override
     public void invoke(WidgetMessage message) {
-        MessageType messageType = message.type;
-        WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-        V2CustomContent v2CustomContent = parseJsonValue(wrapperMessage.getCustomContentJson(), new TypeToken<V2CustomContent>() {
-        });
-        switch (messageType.code) {
-            case Const.ADD_THREAD_POST:
-                if (CurrentThreadId == v2CustomContent.getBody().getThreadId()) {
-                    CourseThreadPostEntity postModel = new CourseThreadPostEntity();
-                    postModel.postId = v2CustomContent.getBody().getPostId();
-                    postModel.threadId = v2CustomContent.getBody().getThreadId();
-                    postModel.courseId = mTargetId;
-                    postModel.lessonId = mLessonId;
-                    postModel.content = wrapperMessage.getContent();
-                    postModel.user.id = v2CustomContent.getFrom().getId();
-                    postModel.user.nickname = v2CustomContent.getFrom().getNickname();
-                    postModel.user.mediumAvatar = v2CustomContent.getFrom().getImage();
-                    postModel.createdTime = AppUtil.converMillisecond2TimeZone(v2CustomContent.getCreatedTime());
-                    postModel.delivery = 2;
-                    postModel.type = v2CustomContent.getBody().getType();
-                    postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
-                    mAdapter.addItem(convertThreadDiscuss(postModel));
-                }
-                break;
-        }
+
     }
 
     private void hideHeaderLayout() {

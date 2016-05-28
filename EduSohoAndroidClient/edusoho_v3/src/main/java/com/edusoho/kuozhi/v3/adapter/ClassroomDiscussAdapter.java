@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.AvatarClickListener;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.ClassroomDiscussEntity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -30,7 +31,7 @@ import java.util.HashMap;
 /**
  * Created by JesseHuang on 15/10/16.
  */
-public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapter<T> {
+public class ClassroomDiscussAdapter<T extends Chat> extends ChatAdapter<T> {
     private ClassroomDiscussDataSource mClassroomDiscussDataSource;
 
     public ClassroomDiscussAdapter(ArrayList<T> list, Context context) {
@@ -66,7 +67,7 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
 
     @Override
     public int getItemViewType(int position) {
-        ClassroomDiscussEntity model = (ClassroomDiscussEntity) mList.get(position);
+        Chat model =  mList.get(position);
         int type = -1;
         if (model.fromId == EdusohoApp.app.loginUser.id) {
             switch (model.type) {
@@ -151,7 +152,7 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
     }
 
     protected void handleReceiveMsgText(DiscussViewHolder holder, int position) {
-        final ClassroomDiscussEntity model = (ClassroomDiscussEntity) mList.get(position);
+        final Chat model = mList.get(position);
         holder.tvSendTime.setVisibility(View.GONE);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
@@ -170,13 +171,13 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
     }
 
     protected void handlerReceiveImage(final DiscussViewHolder holder, int position) {
-        final ClassroomDiscussEntity model = (ClassroomDiscussEntity) mList.get(position);
+        final Chat model =  mList.get(position);
         final MyImageLoadingListener mMyImageLoadingListener = new MyImageLoadingListener(holder) {
             @Override
             public void onLoadingComplete(String s, View view, Bitmap bitmap) {
                 super.onLoadingComplete(s, view, bitmap);
                 model.delivery = PushUtil.MsgDeliveryType.SUCCESS;
-                mClassroomDiscussDataSource.update(model);
+               // mClassroomDiscussDataSource.update(model);
             }
         };
         if (position > 0) {
@@ -217,7 +218,7 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
     }
 
     protected void handlerReceiveAudio(final DiscussViewHolder holder, int position) {
-        final ClassroomDiscussEntity model = (ClassroomDiscussEntity) mList.get(position);
+        final Chat model = mList.get(position);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
@@ -277,10 +278,10 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
 
     @Override
     public void updateVoiceDownloadStatus(long downId) {
-        ClassroomDiscussEntity model = null;
+        Chat model = null;
         try {
             for (T tmp : mList) {
-                ClassroomDiscussEntity tmpModel = (ClassroomDiscussEntity) tmp;
+                Chat tmpModel =  tmp;
                 if (mDownloadList.get(downId).equals(tmpModel.id)) {
                     model = tmpModel;
                     break;
@@ -302,7 +303,7 @@ public class ClassroomDiscussAdapter<T extends BaseMsgEntity> extends ChatAdapte
                     c.close();
                 }
             }
-            mClassroomDiscussDataSource.update(model);
+            //mClassroomDiscussDataSource.update(model);
             mDownloadList.remove(downId);
             notifyDataSetChanged();
         } catch (Exception ex) {

@@ -1,19 +1,15 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.app.Activity;
 import android.app.DownloadManager;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -32,30 +28,34 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.SendEntity;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
+import com.edusoho.kuozhi.imserver.entity.Role;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
+import com.edusoho.kuozhi.imserver.managar.IMConvManager;
+import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.adapter.CourseDiscussAdapter;
 import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.factory.UtilFactory;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.listener.PromiseCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
-import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.New;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
-import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
-import com.edusoho.kuozhi.v3.model.result.CloudResult;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -64,12 +64,9 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ChatAudioRecord;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.NotificationUtil;
-import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -80,12 +77,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-
+import java.util.UUID;
+import cn.trinea.android.common.util.ToastUtils;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
-import jazzyviewpager.Util;
+import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 /**
  * Created by JesseHuang on 15/12/14.
@@ -93,17 +91,12 @@ import jazzyviewpager.Util;
 public class IMDiscussFragment extends BaseFragment implements
         View.OnClickListener, View.OnTouchListener, View.OnFocusChangeListener, ChatAdapter.ImageErrorClick {
     private static final String TAG = "DiscussFragment";
-    public static int CurrentCourseId = 0;
 
-    private String mCourseName;
-    private String mCourseImage;
-    private String mUserType;
+    private int mToId;
     private int mCourseId;
-    private New mNewItemInfo;
 
     private IMMessageReceiver mIMMessageReceiver;
-    private CourseDiscussDataSource mCourseDiscussDataSource;
-    private CourseDiscussAdapter<CourseDiscussEntity> mAdapter;
+    private ChatAdapter<Chat> mAdapter;
 
     protected EduSohoIconView btnVoice;
     protected EduSohoIconView btnKeyBoard;
@@ -136,12 +129,10 @@ public class IMDiscussFragment extends BaseFragment implements
     private static final int SEND_IMAGE = 1;
     private static final int SEND_CAMERA = 2;
 
-    protected int mSendTime;
+    protected long mSendTime;
     protected int mStart = 0;
-    protected File mCameraFile;
-
-    private boolean initFlags = true;
-    private String mConversationId;
+    private String mConversationNo;
+    private Role mTargetRole;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -152,40 +143,16 @@ public class IMDiscussFragment extends BaseFragment implements
     @Override
     public void onResume() {
         super.onResume();
+        if (mIMMessageReceiver == null) {
+            mIMMessageReceiver = getIMMessageListener();
+        }
+
+        IMClient.getClient().addMessageReceiver(mIMMessageReceiver);
+        IMClient.getClient().getConvManager().clearReadCount(mConversationNo);
+
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        mActivity.registerReceiver(mAudioDownloadReceiver, intentFilter);
-
-        getConvNo().then(new PromiseCallback<String>() {
-            @Override
-            public Promise invoke(String convNo) {
-                if (! TextUtils.isEmpty(mConversationId)) {
-                    registIMMessageReceiver();
-                }
-                return null;
-            }
-        });
-    }
-
-    private Promise getConvNo() {
-        final Promise promise = new Promise();
-        if (! TextUtils.isEmpty(mConversationId)) {
-            promise.resolve(mConversationId);
-            return promise;
-        }
-        CourseProvider courseProvider = new CourseProvider(mContext);
-        RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("courseId", String.valueOf(mCourseId));
-        courseProvider.getCourse(requestUrl).success(new NormalCallback<CourseDetailsResult>() {
-            @Override
-            public void success(CourseDetailsResult courseDetailsResult) {
-                mConversationId = courseDetailsResult.course.conversationId;
-                promise.resolve(mConversationId);
-            }
-        });
-
-        return promise;
+        mContext.registerReceiver(mAudioDownloadReceiver, intentFilter);
     }
 
     @Override
@@ -206,42 +173,70 @@ public class IMDiscussFragment extends BaseFragment implements
 
             @Override
             public boolean onOfflineMsgReceiver(List<MessageEntity> messageEntities) {
+                handleOfflineMessage(messageEntities);
                 return false;
             }
 
             @Override
             public void onSuccess(String extr) {
-                V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(extr, V2CustomContent.class);
-                if (v2CustomContent == null) {
+                MessageBody messageBody = new MessageBody(extr);
+                if (messageBody == null) {
                     return;
                 }
-                updateMessageSendStatus(v2CustomContent);
+                messageBody.setConvNo(mConversationNo);
+                updateMessageSendStatus(messageBody);
             }
 
             @Override
             public ReceiverInfo getType() {
-                return new ReceiverInfo("course_discuss", mCourseId);
+                return new ReceiverInfo(Destination.COURSE, mConversationNo);
             }
         };
     }
 
-    protected void updateMessageSendStatus(V2CustomContent v2CustomContent) {
-        CourseDiscussEntity courseDiscussEntity = new CourseDiscussEntity(v2CustomContent);
-        updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, courseDiscussEntity);
+    protected void updateMessageSendStatus(MessageBody messageBody) {
+        Chat chat = new Chat(messageBody);
+        updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, chat);
+        MessageEntity messageEntity = createMessageEntityByBody(messageBody);
+        messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
+        messageBody.setMessageId(messageBody.getMessageId());
+        IMClient.getClient().getMessageManager().updateMessage(messageEntity);
+    }
+
+    private MessageEntity createMessageEntityByBody(MessageBody messageBody) {
+        return new MessageEntityBuildr()
+                .addUID(messageBody.getMessageId())
+                .addConvNo(messageBody.getConvNo())
+                .addToId(String.valueOf(messageBody.getDestination().getId()))
+                .addToName(messageBody.getDestination().getNickname())
+                .addFromId(String.valueOf(messageBody.getSource().getId()))
+                .addFromName(messageBody.getSource().getNickname())
+                .addCmd("message")
+                .addMsg(messageBody.toJson())
+                .addTime((int)messageBody.getCreatedTime() / 1000)
+                .builder();
+    }
+
+    protected void handleOfflineMessage(List<MessageEntity> messageEntityList) {
+        ArrayList<Chat> chatList = new ArrayList<>();
+        for (MessageEntity messageEntity : messageEntityList) {
+            MessageBody messageBody = new MessageBody(messageEntity);
+            Chat chat = new Chat(messageBody);
+            if (mTargetRole != null) {
+                chat.headImgUrl = mTargetRole.getAvatar();
+            }
+            chatList.add(chat);
+        }
+
+        mAdapter.addItems(chatList);
     }
 
     protected void handleMessage(MessageEntity messageEntity) {
-        V2CustomContent v2CustomContent = getUtilFactory().getJsonParser().fromJson(messageEntity.getMsg(), V2CustomContent.class);
-        CourseDiscussEntity model = new CourseDiscussEntity(v2CustomContent);
-        mAdapter.addItem(model);
-    }
-
-    private void registIMMessageReceiver() {
-        if (mIMMessageReceiver == null) {
-            mIMMessageReceiver = getIMMessageListener();
-        }
-
-        IMClient.getClient().addMessageReceiver(mIMMessageReceiver);
+        MessageBody messageBody = new MessageBody(messageEntity);
+        Chat chat = new Chat(messageBody);
+        Role role = IMClient.getClient().getRoleManager().getRole(Destination.USER, chat.fromId);
+        chat.headImgUrl = role.getAvatar();
+        mAdapter.addItem(chat);
     }
 
     @Override
@@ -297,62 +292,123 @@ public class IMDiscussFragment extends BaseFragment implements
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
     }
 
+    protected String getTargetType() {
+        return Destination.COURSE;
+    }
+
+    private void initConvNoInfo() {
+        IMConvManager imConvManager = IMClient.getClient().getConvManager();
+        ConvEntity convEntity = imConvManager.getConvByTypeAndId(getTargetType(), mCourseId);
+        if (convEntity != null) {
+            mConversationNo = convEntity.getConvNo();
+        }
+        mTargetRole = IMClient.getClient().getRoleManager().getRole(getTargetType(), mCourseId);
+    }
+
     protected void initData() {
-        Intent intent = mActivity.getIntent();
-        mNewItemInfo = (New) intent.getSerializableExtra(Const.NEW_ITEM_INFO);
-        if (mNewItemInfo == null) {
+        mCourseId = getArguments().getInt(Const.COURSE_ID, 0);
+        if (mCourseId == 0) {
             CommonUtil.longToast(mContext, "聊天记录读取错误");
             return;
         }
-        mCourseImage = mNewItemInfo.imgUrl;
-        mCourseName = mNewItemInfo.title;
-        mCourseId = mNewItemInfo.fromId;
-        mUserType = mActivity.app.getCurrentUserRole();
-        CurrentCourseId = mCourseId;
-        NotificationUtil.cancelById(mCourseId);
-        if (mCourseDiscussDataSource == null) {
-            mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        }
-        initCacheFolder();
-        try {
-            mAdapter = new CourseDiscussAdapter<>(getList(0), mContext);
-            mAdapter.setSendImageClickListener(this);
-            lvMessage.setAdapter(mAdapter);
-            mAudioDownloadReceiver.setAdapter(mAdapter);
-            mStart = mAdapter.getCount();
-            lvMessage.postDelayed(mListViewSelectRunnable, 500);
-            mPtrFrame.setLastUpdateTimeRelateObject(this);
-            mPtrFrame.setPtrHandler(new PtrHandler() {
-                @Override
-                public void onRefreshBegin(PtrFrameLayout frame) {
-                    mAdapter.addItems(getList(mStart));
-                    mStart = mAdapter.getCount();
-                    mPtrFrame.refreshComplete();
-                    lvMessage.postDelayed(mListViewSelectRunnable, 100);
-                }
 
-                @Override
-                public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                    boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                    int count = getList(mStart).size();
-                    return count > 0 && canDoRefresh;
-                }
-            });
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        User user = getAppSettingProvider().getCurrentUser();
+        mToId = user.id;
+        initCacheFolder();
+        initConvNoInfo();
+
+        if (convNoIsEmpty(mConversationNo)) {
+            createChatConvNo();
+            return;
+        }
+
+        initAdapter();
+        if (! convNoIsEmpty(mConversationNo)) {
+            getNotificationProvider().cancelNotification(mConversationNo.hashCode());
         }
     }
 
-    private ArrayList<CourseDiscussEntity> getList(int start) {
-        ArrayList<CourseDiscussEntity> list = mCourseDiscussDataSource.getLists(mCourseId, app.loginUser.id, start, Const.NEWS_LIMIT);
-        Collections.reverse(list);
-        return list;
+    protected boolean convNoIsEmpty(String convNo) {
+        return TextUtils.isEmpty(convNo) || "0".equals(convNo);
+    }
+
+    protected void createChatConvNo() {
+        final LoadDialog loadDialog = LoadDialog.create(getActivity());
+        loadDialog.show();
+        new CourseProvider(mContext).getCourse(mCourseId)
+        .success(new NormalCallback<CourseDetailsResult>() {
+            @Override
+            public void success(CourseDetailsResult courseDetailsResult) {
+                String conversationNo = null;
+                if (courseDetailsResult == null
+                        || courseDetailsResult.course == null
+                        || convNoIsEmpty(courseDetailsResult.course.conversationId)
+                        ) {
+                    ToastUtils.show(mContext, "创建聊天失败!");
+                    return;
+                }
+
+                mConversationNo = conversationNo;
+                new IMProvider(mContext).createConvInfoByCourse(mConversationNo, courseDetailsResult.course)
+                        .success(new NormalCallback<ConvEntity>() {
+                            @Override
+                            public void success(ConvEntity convEntity) {
+                                loadDialog.dismiss();
+                                getActivity().setTitle(convEntity.getTargetName());
+                                initAdapter();
+                            }
+                        });
+            }
+        });
+    }
+
+    private void initAdapter() {
+        mAdapter = new ChatAdapter(mContext, getList(0));
+        mAdapter.setSendImageClickListener(this);
+        lvMessage.setAdapter(mAdapter);
+        mAudioDownloadReceiver.setAdapter(mAdapter);
+        mStart = mAdapter.getCount();
+        lvMessage.postDelayed(mListViewSelectRunnable, 500);
+        mPtrFrame.setLastUpdateTimeRelateObject(this);
+        mPtrFrame.setPtrHandler(new PtrHandler() {
+            @Override
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                mAdapter.addItems(getList(mStart));
+                mStart = mAdapter.getCount();
+                mPtrFrame.refreshComplete();
+                lvMessage.postDelayed(mListViewSelectRunnable, 100);
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
+                int count = getList(mStart).size();
+                return count > 0 && canDoRefresh;
+            }
+        });
+    }
+
+    private ArrayList<Chat> getList(int start) {
+        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConversationNo).getMessageList(start);
+        ArrayList<Chat> chats = new ArrayList<>();
+        User currentUser = getAppSettingProvider().getCurrentUser();
+        for (MessageEntity messageEntity : messageEntityList) {
+            MessageBody messageBody = new MessageBody(messageEntity);
+            Chat chat = new Chat(messageBody);
+            chat.id = messageEntity.getId();
+            Role role = IMClient.getClient().getRoleManager().getRole(messageBody.getSource().getType(), chat.fromId);
+            chat.setDirect(chat.fromId == currentUser.id ? Chat.Direct.SEND : Chat.Direct.RECEIVE);
+            chat.headImgUrl = role.getAvatar();
+            chat.delivery = messageEntity.getStatus();
+            chats.add(chat);
+        }
+        Collections.reverse(chats);
+        return chats;
     }
 
     protected TextWatcher msgTextWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
         }
 
         @Override
@@ -368,86 +424,86 @@ public class IMDiscussFragment extends BaseFragment implements
 
         @Override
         public void afterTextChanged(Editable s) {
-
         }
     };
 
     private void sendMsg(String content) {
-        mSendTime = (int) (System.currentTimeMillis() / 1000);
-        final CourseDiscussEntity model = new CourseDiscussEntity(0, mCourseId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                etSend.getText().toString(), app.loginUser.id, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
-
-        addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
-
+        MessageBody messageBody = saveMessageToLoacl(content, PushUtil.ChatMsgType.TEXT);
         etSend.setText("");
         etSend.requestFocus();
-
-        V2CustomContent v2CustomContent = getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content);
-        v2CustomContent.setMsgId(model.discussId);
-        sendMessageToServer(v2CustomContent);
-        notifyNewListView2Update(v2CustomContent);
+        sendMessageToServer(messageBody);
     }
 
-    protected void sendMessageToServer(V2CustomContent v2CustomContent) {
+    protected MessageBody createSendMessageBody(String content, String type) {
+        User currentUser = getAppSettingProvider().getCurrentUser();
+        MessageBody messageBody = new MessageBody(1, type, content);
+        messageBody.setCreatedTime(System.currentTimeMillis());
+        messageBody.setDestination(new Destination(mCourseId, getTargetType()));
+        messageBody.getDestination().setNickname(currentUser.nickname);
+        messageBody.setSource(new Source(mToId, Destination.USER));
+        messageBody.getSource().setNickname(mTargetRole.getNickname());
+        messageBody.setConvNo(mConversationNo);
+        messageBody.setMessageId(UUID.randomUUID().toString());
+
+        return messageBody;
+    }
+
+    protected MessageBody saveMessageToLoacl(String content, String type) {
+        MessageBody messageBody = createSendMessageBody(content, type);
+        mSendTime = messageBody.getCreatedTime();
+
+        MessageEntity messageEntity = createMessageEntityByBody(messageBody);
+        IMClient.getClient().getMessageManager().createMessage(messageEntity);
+
+        User currentUser = getAppSettingProvider().getCurrentUser();
+        Chat chat = new Chat.Builder()
+                .addToId(mToId)
+                .addFromId(mCourseId)
+                .addAvatar(currentUser.mediumAvatar)
+                .addContent(messageBody.getBody())
+                .addNickname(currentUser.nickname)
+                .addType(messageBody.getType())
+                .addMessageId(messageBody.getMessageId())
+                .addCreatedTime(mSendTime).builder();
+        addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
+
+        return messageBody;
+    }
+
+    protected void sendMessageToServer(MessageBody messageBody) {
         try {
-            String message = getUtilFactory().getJsonParser().jsonToString(v2CustomContent);
+            String toId = "";
+            switch (messageBody.getDestination().getType()) {
+                case Destination.CLASSROOM:
+                case Destination.COURSE:
+                    toId = "all";
+                    break;
+                case Destination.USER:
+                    toId = String.valueOf(messageBody.getDestination().getId());
+            }
             SendEntity sendEntity = SendEntityBuildr.getBuilder()
-                    .addToId("all")
-                    .addMsg(message)
+                    .addToId(toId)
+                    .addMsg(messageBody.toJson())
                     .builder();
-            IMClient.getClient().getChatRoom(mConversationId).send(sendEntity);
+            IMClient.getClient().getChatRoom(mConversationNo).send(sendEntity);
         } catch (Exception e) {
         }
     }
 
     @Override
-    public void sendMsgAgain(final BaseMsgEntity model) {
-        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", app.loginUser.nickname);
-        params.put("content", model.content);
-        params.put("custom", mActivity.gson.toJson(getV2CustomContent(PushUtil.ChatMsgType.TEXT, model.content)));
+    public void sendMsgAgain(Chat chat) {
+        MessageBody messageBody = new MessageBody(1, chat.type, chat.content);
+        messageBody.setConvNo(mConversationNo);
+        messageBody.setMessageId(chat.mid);
+        messageBody.setCreatedTime(chat.createdTime);
+        messageBody.setDestination(new Destination(chat.fromId, Destination.USER));
+        messageBody.setSource(new Source(chat.toId, Destination.USER));
 
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                CloudResult result = mActivity.parseJsonValue(response, new TypeToken<CloudResult>() {
-                });
-                if (result != null && result.getResult()) {
-                    model.id = result.id;
-                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, (CourseDiscussEntity) model);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "发送信息失败");
-            }
-        });
+        updateSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
+        sendMessageToServer(messageBody);
     }
 
-    public void sendMediaMsg(final CourseDiscussEntity model, String type) {
-        RequestUrl requestUrl = app.bindPushUrl(Const.SEND);
-        HashMap<String, String> params = requestUrl.getParams();
-        params.put("title", mCourseName);
-        params.put("content", PushUtil.getNotificationContent(type));
-        params.put("custom", mActivity.gson.toJson(getV2CustomContent(type, model.upyunMediaGetUrl)));
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                CloudResult result = mActivity.parseJsonValue(response, new TypeToken<CloudResult>() {
-                });
-                if (result != null && result.getResult()) {
-                    model.id = result.id;
-                    updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, model);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "发送信息失败");
-            }
-        });
+    public void sendMediaMsg(final Chat model, String type) {
     }
 
     private void uploadMedia(final File file, final String type, String strType) {
@@ -456,35 +512,9 @@ public class IMDiscussFragment extends BaseFragment implements
             return;
         }
         try {
-            mSendTime = (int) (System.currentTimeMillis() / 1000);
-            final CourseDiscussEntity model = new CourseDiscussEntity(0, mCourseId, app.loginUser.id, app.loginUser.nickname, app.loginUser.mediumAvatar,
-                    file.getPath(), app.loginUser.id, type, PushUtil.MsgDeliveryType.UPLOADING, mSendTime);
-
-            //生成New页面的消息并通知更改
-            WrapperXGPushTextMessage message = new WrapperXGPushTextMessage();
-            message.setTitle(mCourseName);
-            message.setContent(String.format("[%s]", strType));
-            V2CustomContent v2CustomContent = getV2CustomContent(type, message.getContent());
-            message.setCustomContentJson(mActivity.gson.toJson(v2CustomContent));
-            message.isForeground = true;
-            //notifyNewFragmentListView2Update(message);
-
-            addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, model);
-
-            getUpYunUploadInfo(file, mCourseId, new NormalCallback<UpYunUploadResult>() {
-                @Override
-                public void success(final UpYunUploadResult result) {
-                    if (result != null) {
-                        model.upyunMediaPutUrl = result.putUrl;
-                        model.upyunMediaGetUrl = result.getUrl;
-                        model.headers = result.getHeaders();
-                        uploadUnYunMedia(file, model, type);
-                        saveUploadResult(result.putUrl, result.getUrl, mCourseId);
-                    } else {
-                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, model);
-                    }
-                }
-            });
+            mSendTime = System.currentTimeMillis();
+            final MessageBody messageBody = saveMessageToLoacl(file.getAbsolutePath(), type);
+            getUpYunUploadInfo(file, mCourseId, new UpYunUploadCallback(messageBody, file));
             viewMediaLayout.setVisibility(View.GONE);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
@@ -511,21 +541,20 @@ public class IMDiscussFragment extends BaseFragment implements
         });
     }
 
-    public void uploadUnYunMedia(final File file, final CourseDiscussEntity model, final String type) {
-        RequestUrl putUrl = new RequestUrl(model.upyunMediaPutUrl);
-        putUrl.setHeads(model.headers);
+    private void uploadUnYunMedia(String uploadUrl, final File file, HashMap<String, String> headers, final MessageBody messageBody) {
+        RequestUrl putUrl = new RequestUrl(uploadUrl);
+        putUrl.setHeads(headers);
         putUrl.setMuiltParams(new Object[]{"file", file});
         mActivity.ajaxPostMultiUrl(putUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d(TAG, "success");
-                sendMediaMsg(model, type);
+                sendMessageToServer(messageBody);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, model);
-                CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
+                CommonUtil.longToast(mContext, getString(R.string.request_fail_text));
                 Log.d(TAG, "upload media res to upyun failed");
             }
         }, Request.Method.PUT);
@@ -558,68 +587,40 @@ public class IMDiscussFragment extends BaseFragment implements
     }
 
     @Override
-    public void uploadMediaAgain(final File file, final BaseMsgEntity model, final String type, String strType) {
-        final CourseDiscussEntity courseDiscussModel = (CourseDiscussEntity) model;
-        if (file == null || !file.exists()) {
-            CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
-            return;
-        }
+    public void uploadMediaAgain(File file, Chat chat, String type, String strType) {
+        MessageBody messageBody = new MessageBody(1, chat.type, chat.content);
+        messageBody.setConvNo(mConversationNo);
+        messageBody.setMessageId(chat.mid);
+        messageBody.setCreatedTime(chat.createdTime);
+        messageBody.setDestination(new Destination(chat.fromId, Destination.USER));
+        messageBody.setSource(new Source(chat.toId, Destination.USER));
 
-        if (TextUtils.isEmpty(model.upyunMediaPutUrl)) {
-            getUpYunUploadInfo(file, mCourseId, new NormalCallback<UpYunUploadResult>() {
-                @Override
-                public void success(final UpYunUploadResult result) {
-                    if (result != null) {
-                        model.upyunMediaPutUrl = result.putUrl;
-                        model.upyunMediaGetUrl = result.getUrl;
-                        model.headers = result.getHeaders();
-                        uploadUnYunMedia(file, courseDiscussModel, type);
-                        saveUploadResult(result.putUrl, result.getUrl, mCourseId);
-                    } else {
-                        updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, courseDiscussModel);
-                    }
-                }
-            });
-        } else {
-            uploadUnYunMedia(file, courseDiscussModel, type);
-        }
+        updateSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
+        getUpYunUploadInfo(file, mCourseId, new UpYunUploadCallback(messageBody, file));
     }
 
-    // region 数据库操作
-    public void addSendMsgToListView(int delivery, CourseDiscussEntity model) {
-        model.delivery = delivery;
-        long discussId = mCourseDiscussDataSource.create(model);
-        model.discussId = (int) discussId;
-        mAdapter.addItem(model);
+    public void addSendMsgToListView(int delivery, Chat chat) {
+        chat.direct = Chat.Direct.SEND;
+        chat.delivery = delivery;
+        User currentUser = getAppSettingProvider().getCurrentUser();
+        chat.headImgUrl = currentUser.mediumAvatar;
+        mAdapter.addItem(chat);
         mStart = mStart + 1;
     }
 
-    public void notifyNewListView2Update(V2CustomContent v2CustomContent) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Const.GET_PUSH_DATA, v2CustomContent);
-        bundle.putInt(Const.ADD_DISCUSS_MSG_DESTINATION, NewsFragment.HANDLE_RECEIVE_COURSE_DISCUSS_MSG);
-        app.sendMsgToTarget(Const.ADD_COURSE_DISCUSS_MSG, bundle, NewsFragment.class);
+    public void updateSendMsgToListView(int delivery, Chat chat) {
+        chat.delivery = delivery;
+        mAdapter.updateItemByMsgId(chat);
     }
-
-    public void updateSendMsgToListView(int type, CourseDiscussEntity model) {
-        model.delivery = type;
-        mCourseDiscussDataSource.update(model);
-        mAdapter.updateItemByChatId(model);
-    }
-
-    // endregion
 
     /**
      * 从图库获取图片
      */
     protected void openPictureFromLocal() {
-        Intent intent;
-        if (Build.VERSION.SDK_INT < 19) {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-        } else {
-            intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        }
+        Intent intent = new Intent(mContext, MultiImageSelectorActivity.class);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 5);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
         startActivityForResult(intent, SEND_IMAGE);
     }
 
@@ -637,8 +638,6 @@ public class IMDiscussFragment extends BaseFragment implements
             audioFolder.mkdirs();
         }
     }
-
-    // region events
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -742,24 +741,17 @@ public class IMDiscussFragment extends BaseFragment implements
             //选择图片
             openPictureFromLocal();
         } else if (v.getId() == R.id.iv_camera) {
-            try {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                mCameraFile = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
-                if (mCameraFile.createNewFile()) {
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
-                    startActivityForResult(intent, SEND_CAMERA);
-                } else {
-                    CommonUtil.shortToast(mContext, "照片生成失败");
-                }
-            } catch (Exception ex) {
-                Log.e(TAG, ex.getMessage());
-            }
+            openPictureFromCamera();
         }
     }
 
-    // endregion
-
-    //region InnerClass
+    protected void openPictureFromCamera() {
+        Intent intent = new Intent(mContext, MultiImageSelectorActivity.class);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_TAKE_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
+        startActivityForResult(intent, SEND_IMAGE);
+    }
 
     public class MediaRecorderTask extends AsyncTask<Void, Integer, Boolean> {
         private ChatAudioRecord mAudioRecord;
@@ -885,48 +877,20 @@ public class IMDiscussFragment extends BaseFragment implements
         }
     }
 
-    private V2CustomContent getV2CustomContent(String type, String content) {
-        V2CustomContent v2CustomContent = new V2CustomContent();
-        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setId(app.loginUser.id);
-        fromEntity.setImage(app.loginUser.mediumAvatar);
-        fromEntity.setNickname(app.loginUser.nickname);
-        fromEntity.setType(mUserType);
-        v2CustomContent.setFrom(fromEntity);
-        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
-        toEntity.setId(mCourseId);
-        toEntity.setImage(mCourseImage);
-
-        toEntity.setType(PushUtil.ChatUserType.COURSE);
-        v2CustomContent.setTo(toEntity);
-        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
-        bodyEntity.setType(type);
-        bodyEntity.setContent(content);
-        bodyEntity.setTitle(mCourseName);
-        v2CustomContent.setBody(bodyEntity);
-        v2CustomContent.setV(Const.PUSH_VERSION);
-        v2CustomContent.setCreatedTime(mSendTime);
-        return v2CustomContent;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case SEND_IMAGE:
-                if (data != null) {
-                    Uri selectedImage = data.getData();
-                    if (selectedImage != null) {
-                        File file = selectPicture(selectedImage);
-                        uploadMedia(file, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
-                    }
-                }
-                break;
-            case SEND_CAMERA:
-                File compressedCameraFile = compressImage(mCameraFile.getAbsolutePath());
-                if (compressedCameraFile != null && compressedCameraFile.exists()) {
-                    uploadMedia(compressedCameraFile, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
-                }
-                break;
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if(requestCode == SEND_IMAGE){
+            List<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+            if (pathList == null || pathList.isEmpty()) {
+                return;
+            }
+
+            for (String path : pathList) {
+                uploadMedia(compressImage(path), PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
+            }
         }
     }
 
@@ -994,10 +958,7 @@ public class IMDiscussFragment extends BaseFragment implements
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mActivity.unregisterReceiver(mAudioDownloadReceiver);
-        if (mCourseDiscussDataSource != null) {
-            mCourseDiscussDataSource.close();
-        }
+        mContext.unregisterReceiver(mAudioDownloadReceiver);
     }
 
     @Override
@@ -1008,28 +969,45 @@ public class IMDiscussFragment extends BaseFragment implements
 
     @Override
     public void invoke(WidgetMessage message) {
-        try {
-            MessageType messageType = message.type;
-            if (message.data == null) {
-                return;
-            }
-            WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-            switch (messageType.code) {
-                case Const.ADD_COURSE_DISCUSS_MSG:
-                    CourseDiscussEntity model = new CourseDiscussEntity(wrapperMessage);
-                    mAdapter.addItem(model);
-                    break;
-                case Const.CLEAN_RECORD:
-                    mAdapter.clear();
-                    break;
-                default:
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+
     }
 
     protected UtilFactory getUtilFactory() {
         return FactoryManager.getInstance().create(UtilFactory.class);
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    private class UpYunUploadCallback implements NormalCallback<UpYunUploadResult>
+    {
+        private MessageBody messageBody;
+        private File file;
+
+        public UpYunUploadCallback(MessageBody messageBody, File file)
+        {
+            this.file = file;
+            this.messageBody = messageBody;
+        }
+
+        @Override
+        public void success(UpYunUploadResult result) {
+            final Chat chat = new Chat(messageBody);
+            if (result != null) {
+                IMClient.getClient().getMessageManager().saveUploadEntity(
+                        messageBody.getMessageId(), messageBody.getType(), file.getPath()
+                );
+                messageBody.setBody(result.getUrl);
+                uploadUnYunMedia(result.putUrl, file, result.getHeaders(), messageBody);
+                saveUploadResult(result.putUrl, result.getUrl, mCourseId);
+            } else {
+                updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, chat);
+            }
+        }
+    }
+
+    protected NotificationProvider getNotificationProvider() {
+        return FactoryManager.getInstance().create(NotificationProvider.class);
     }
 }

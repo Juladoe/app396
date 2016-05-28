@@ -9,13 +9,17 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.RequestUtil;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 
 /**
@@ -32,6 +36,16 @@ public abstract class ModelProvider {
         this.mContext = context;
         this.mGson = new Gson();
         this.mVolley = VolleySingleton.getInstance(context);
+    }
+
+    protected String getToken() {
+        Map<String,String> tokenMap = ApiTokenUtil.getToken(mContext);
+        return tokenMap.containsKey("token") ? tokenMap.get("token") : "";
+    }
+
+    protected String getHost() {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        return school == null ? "" : school.host;
     }
 
     public static <T> T initProvider(Context context, Class<T> targetClass) {

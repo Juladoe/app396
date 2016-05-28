@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.app.DownloadManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -18,8 +19,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.ChatDownloadListener;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -31,30 +33,29 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import cn.trinea.android.common.util.DigestUtils;
+import cn.trinea.android.common.util.FileUtils;
+
 /**
  * Created by JesseHuang on 15/6/3.
  * Chat ListView Adapter
  */
-public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements ChatDownloadListener {
+public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDownloadListener {
 
     protected Context mContext;
     protected ArrayList<T> mList;
     protected HashMap<Long, Integer> mDownloadList;
     protected MediaPlayer mMediaPlayer;
-    private ChatDataSource mChatDataSource;
     protected ImageView mPrevSpeakImageView;
     protected int mPrevImageViewBg;
     protected ImageErrorClick mImageErrorClick;
@@ -65,9 +66,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     protected String mCurrentAudioPath;
     protected AnimationDrawable mAnimDrawable;
 
-    private User mChatOpposite;
-
-    protected static long TIME_INTERVAL = 60 * 5;
+    protected static long TIME_INTERVAL = 60 * 5 * 1000;
     protected static final int TYPE_COUNT = 8;
     protected static final int MSG_SEND_TEXT = 0;
     protected static final int MSG_RECEIVE_TEXT = 1;
@@ -88,18 +87,15 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     }
 
     public ChatAdapter() {
-
     }
 
-    public ChatAdapter(Context ctx, ArrayList<T> list, User user) {
+    public ChatAdapter(Context ctx, ArrayList<T> list) {
         mContext = ctx;
         mList = list;
         mDownloadList = new HashMap<>();
-        mChatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
                 showImageForEmptyUri(R.drawable.default_avatar).
                 showImageOnFail(R.drawable.default_avatar).build();
-        mChatOpposite = user;
     }
 
     public void addItem(T chat) {
@@ -107,17 +103,19 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
         notifyDataSetChanged();
     }
 
-    public void updateItemByChatId(Chat chat) {
+    public void updateItemByMsgId(Chat chat) {
         try {
-            for (BaseMsgEntity tmpChat : mList) {
-                if (((Chat) tmpChat).chatId == chat.chatId) {
+            Chat tmpChat = null;
+            for (BaseMsgEntity entity : mList) {
+                tmpChat = (Chat) entity;
+                if (tmpChat.mid != null && tmpChat.mid.equals(chat.mid)) {
                     tmpChat.delivery = chat.delivery;
                     notifyDataSetChanged();
-                    break;
+                    return;
                 }
             }
         } catch (Exception e) {
-            Log.e("updateItemByChatId", e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -235,11 +233,11 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
-                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
         }
 
         final RedirectBody body = EdusohoApp.app.parseJsonValue(model.content, new TypeToken<RedirectBody>() {
@@ -263,17 +261,17 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     }
 
     protected void handleSendMsgMulti(ViewHolder holder, int position) {
-        final BaseMsgEntity model = mList.get(position);
+        final Chat model = mList.get(position);
         switch (model.delivery) {
-            case PushUtil.MsgDeliveryType.SUCCESS:
+            case MessageEntity.StatusType.SUCCESS:
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.ivStateError.setVisibility(View.GONE);
                 break;
-            case PushUtil.MsgDeliveryType.UPLOADING:
+            case MessageEntity.StatusType.UPLOADING:
                 holder.pbLoading.setVisibility(View.VISIBLE);
                 holder.ivStateError.setVisibility(View.GONE);
                 break;
-            case PushUtil.MsgDeliveryType.FAILED:
+            case MessageEntity.StatusType.FAILED:
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.ivStateError.setVisibility(View.VISIBLE);
                 holder.ivStateError.setOnClickListener(new View.OnClickListener() {
@@ -287,16 +285,16 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     }
 
     protected void handleSendMsgText(ViewHolder holder, int position) {
-        final BaseMsgEntity model = mList.get(position);
+        final Chat model = mList.get(position);
         holder.tvSendTime.setVisibility(View.GONE);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
-                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
         }
         holder.tvSendContent.setText(model.content);
         ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
@@ -328,29 +326,29 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
-                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+                holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
         }
         holder.tvSendContent.setText(model.content);
-        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
     }
 
 
     protected void handlerSendImage(final ViewHolder holder, int position) {
-        final BaseMsgEntity model = mList.get(position);
+        final Chat model = mList.get(position);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
-                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
             } else {
                 holder.tvSendTime.setVisibility(View.GONE);
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
         }
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
@@ -384,7 +382,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
         }
         holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
         ImageLoader.getInstance().displayImage("file://" + getThumbFromOriginalImagePath(model.content), holder.ivMsgImage, EdusohoApp.app.mOptions);
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
     }
 
     protected void handlerReceiveImage(final ViewHolder holder, int position) {
@@ -394,19 +392,18 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             public void onLoadingComplete(String s, View view, Bitmap bitmap) {
                 super.onLoadingComplete(s, view, bitmap);
                 model.delivery = PushUtil.MsgDeliveryType.SUCCESS;
-                mChatDataSource.update((Chat) model);
             }
         };
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
-                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
             } else {
                 holder.tvSendTime.setVisibility(View.GONE);
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
         }
         holder.ivStateError.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -414,7 +411,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                 ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
             }
         });
-        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
 
         File receiveImage = ImageLoader.getInstance().getDiskCache().get(model.content);
         holder.ivMsgImage.setOnClickListener(new ImageMsgClick(model.content));
@@ -433,19 +430,19 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     }
 
     protected void handlerSendAudio(final ViewHolder holder, int position) {
-        final BaseMsgEntity model = mList.get(position);
+        final Chat model = mList.get(position);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
-                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
             } else {
                 holder.tvSendTime.setVisibility(View.GONE);
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
         }
-        ImageLoader.getInstance().displayImage(EdusohoApp.app.loginUser.mediumAvatar, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
@@ -493,26 +490,26 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     }
 
     protected void handlerReceiveAudio(final ViewHolder holder, int position) {
-        final Chat model = (Chat) mList.get(position);
+        final Chat model = mList.get(position);
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
-                holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
             } else {
                 holder.tvSendTime.setVisibility(View.GONE);
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date(((long) model.createdTime) * 1000));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
         }
-        ImageLoader.getInstance().displayImage(mChatOpposite != null ? mChatOpposite.mediumAvatar : model.headImgUrl, holder.ivAvatar, mOptions);
+        ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.VISIBLE);
-                String audioFileName = EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" +
-                        model.content.substring(model.content.lastIndexOf('/') + 1);
+                String audioFileName = AppUtil.getAppCacheDir() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" +
+                        DigestUtils.md5(model.content);
                 try {
                     int duration = getAmrDuration(audioFileName);
                     holder.tvAudioLength.setText(duration + "\"");
@@ -555,12 +552,12 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             mDownloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         }
         Uri uri = Uri.parse(url);
-        String filename = uri.getPath().substring(uri.getPath().lastIndexOf('/') + 1);
+        String filename = DigestUtils.md5(url) + ".amr";
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
         request.setVisibleInDownloadsUi(false);
-        request.setDestinationUri(Uri.fromFile(new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE + "/", filename)));
+        //request.setDestinationUri(Uri.fromFile(new File(AppUtil.getAppCacheDir() + Const.UPLOAD_AUDIO_CACHE_FILE + "/", filename)));
         long downloadId = mDownloadManager.enqueue(request);
         mDownloadList.put(downloadId, id);
     }
@@ -574,6 +571,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     protected int getAmrDuration(String filePath) {
         mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(filePath));
         int duration = mMediaPlayer.getDuration();
+        mMediaPlayer.reset();
         return (int) Math.ceil(Float.valueOf(duration) / 1000);
     }
 
@@ -736,7 +734,7 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
             }
             File receiveFile = ImageLoader.getInstance().getDiskCache().get(s);
             try {
-                AppUtil.convertBitmap2File(bitmap, EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + receiveFile.getName());
+                AppUtil.convertBitmap2File(bitmap, AppUtil.getAppStorage() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + receiveFile.getName());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -847,9 +845,9 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
     }
 
     public interface ImageErrorClick {
-        void uploadMediaAgain(File file, BaseMsgEntity model, String type, String strType);
+        void uploadMediaAgain(File file, Chat chat, String type, String strType);
 
-        void sendMsgAgain(BaseMsgEntity model);
+        void sendMsgAgain(Chat chat);
     }
 
     @Override
@@ -877,22 +875,34 @@ public class ChatAdapter<T extends BaseMsgEntity> extends BaseAdapter implements
                 int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
                 if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex)) {
                     String fileUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
-                    downloadChat.delivery = (TextUtils.isEmpty(fileUri) ? PushUtil.MsgDeliveryType.FAILED : PushUtil.MsgDeliveryType.SUCCESS);
                     c.close();
+                    if (moveDownloadToCache(fileUri, downloadChat.content)) {
+                        downloadChat.delivery = (TextUtils.isEmpty(fileUri) ? MessageEntity.StatusType.FAILED : MessageEntity.StatusType.SUCCESS);
+                    }
                 } else if (DownloadManager.STATUS_FAILED == c.getInt(columnIndex)) {
-                    downloadChat.delivery = PushUtil.MsgDeliveryType.FAILED;
+                    downloadChat.delivery = MessageEntity.StatusType.FAILED;
                     c.close();
                 }
             }
-            mChatDataSource.update(downloadChat);
+
+            ContentValues cv = new ContentValues();
+            cv.put("status", downloadChat.delivery);
+            IMClient.getClient().getMessageManager().updateMessageField(downloadChat.msgNo, cv);
             mDownloadList.remove(downId);
             notifyDataSetChanged();
         } catch (Exception ex) {
             Log.d("downloader", ex.toString());
             if (downloadChat != null) {
-                downloadChat.delivery = PushUtil.MsgDeliveryType.FAILED;
+                downloadChat.delivery = MessageEntity.StatusType.FAILED;
                 notifyDataSetChanged();
             }
         }
+    }
+
+    private boolean moveDownloadToCache(String downloadFileUri, String fileUrl) {
+        String filePath = AppUtil.getPath(mContext, Uri.parse(downloadFileUri));
+        String destFilePath = AppUtil.getAppCacheDir() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" +
+                DigestUtils.md5(fileUrl);
+        return FileUtils.copyFile(filePath, destFilePath);
     }
 }

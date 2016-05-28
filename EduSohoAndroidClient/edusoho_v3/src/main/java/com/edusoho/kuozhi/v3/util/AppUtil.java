@@ -459,7 +459,7 @@ public class AppUtil {
     }
 
     /**
-     * 去掉字符串中的\n\t
+     * 去掉字符串中的\n\type
      *
      * @param content
      * @return
@@ -767,6 +767,9 @@ public class AppUtil {
 
     public static String convertMills2Date(long millis) {
         String result = "";
+        if (millis <= 0) {
+            return "";
+        }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm");
             String nowTime = sdf.format(System.currentTimeMillis());

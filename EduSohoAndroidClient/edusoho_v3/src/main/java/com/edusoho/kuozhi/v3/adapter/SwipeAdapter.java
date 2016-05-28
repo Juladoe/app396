@@ -41,7 +41,8 @@ public class SwipeAdapter extends BaseAdapter {
         mContext = ctx;
         mLayoutId = id;
         mList = new ArrayList<>();
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.user_avatar).
+                showImageOnFail(R.drawable.user_avatar).build();
     }
 
     @Override
@@ -190,7 +191,7 @@ public class SwipeAdapter extends BaseAdapter {
         viewHolder.tvParent.setVisibility(item.parentId == 0 ? View.GONE : View.VISIBLE);
         viewHolder.tvTitle.setText(item.title);
         viewHolder.tvContent.setText(item.content);
-        viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime * 1000L));
+        viewHolder.tvPostTime.setText(AppUtil.convertMills2Date(item.createdTime));
         return convertView;
     }
 
