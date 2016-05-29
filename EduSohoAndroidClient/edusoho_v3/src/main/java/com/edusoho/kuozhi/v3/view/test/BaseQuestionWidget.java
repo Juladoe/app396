@@ -17,11 +17,14 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.model.bal.Answer;
+import com.edusoho.kuozhi.v3.model.bal.test.MaterialQuestionTypeSeq;
 import com.edusoho.kuozhi.v3.model.bal.test.Question;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionType;
 import com.edusoho.kuozhi.v3.model.bal.test.QuestionTypeSeq;
 import com.edusoho.kuozhi.v3.model.bal.test.TestResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.test.TestpaperActivity;
 import com.edusoho.kuozhi.v3.ui.test.TestpaperParseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -77,7 +80,25 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
         SpannableStringBuilder spanned = (SpannableStringBuilder) getQuestionStem();
         spanned = EduHtml.addImageClickListener(spanned, stemView, mContext);
         stemView.setText(spanned);
+
+        TestpaperActivity testpaperActivity = TestpaperActivity.getInstance();
+        if (testpaperActivity == null) {
+            return;
+        }
+        QuestionType questionType = null;
+        if (mQuestionSeq instanceof MaterialQuestionTypeSeq) {
+            questionType = QuestionType.material;
+        } else {
+            questionType = mQuestionSeq.questionType;
+        }
+        ArrayList<Answer> answerArrayList = testpaperActivity.getAnswer().get(questionType);
+        Answer answer = answerArrayList.get(mIndex - 1);
+        if (answer != null && answer.data != null) {
+            restoreResult(answer.data);
+        }
     }
+
+    protected abstract void restoreResult(ArrayList resultData);
 
     @Override
     public void setData(QuestionTypeSeq questionSeq, int index) {
