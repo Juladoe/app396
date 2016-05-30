@@ -11,5 +11,5 @@ public class Api {
     public static final String DISCOVERY_CLASSROOMS_COLUMNS = "/api/classrooms/discovery/columns?orderType=%s&categoryId=%s&showCount=%s";
     public static final String DISCOVERY_COLUMNS = "/api/discovery_columns";
 
-    public static final String LESSONS = "/api/course/%d/lessons";
+    public static final String LESSONS = "/api/lessons?courseId=%d";
 }
