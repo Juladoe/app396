@@ -262,7 +262,7 @@ public class EdusohoMainService extends Service {
 
     public void getOfflineMsgs() {
         final EdusohoApp app = getEduSohoApp();
-        if (app == null) {
+        if (app == null || app.loginUser == null) {
             return;
         }
         final ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(EdusohoMainService.this, app.domain));
