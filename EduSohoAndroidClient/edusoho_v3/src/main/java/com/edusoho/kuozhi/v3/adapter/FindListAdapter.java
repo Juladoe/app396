@@ -66,7 +66,7 @@ public class FindListAdapter extends BaseAdapter {
         DiscoveryColumn discoveryColumn = mList.get(position);
         FindCardView findCardView = (FindCardView) convertView;
         findCardView.setDiscoveryCardEntity(discoveryColumn);
-        findCardView.setMoreClickListener(discoveryColumn.orderType, discoveryColumn.type, discoveryColumn.categoryId);
+        findCardView.setMoreClickListener(discoveryColumn.orderType == null ? "recommend" : discoveryColumn.orderType, discoveryColumn.type, discoveryColumn.categoryId);
         return convertView;
     }
 }

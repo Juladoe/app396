@@ -475,6 +475,18 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (lessonItem == null) {
             return null;
         }
+
+//        ApiResponse<LessonItem> apiResponse = ModelDecor.getInstance().decor(object, new TypeToken<ApiResponse<LessonItem>>() {
+//        });
+//        LessonItem lessonItem = null;
+//        if (apiResponse.data != null) {
+//            lessonItem = apiResponse.data;
+//        } else if (apiResponse.error != null) {
+//            CommonUtil.longToast(mContext, apiResponse.error.message);
+//            return null;
+//        } else {
+//            return null;
+//        }
         CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
         switch (courseLessonType) {
             case LIVE:
@@ -487,9 +499,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(LiveLessonFragment.REPLAYSTATUS, lessonItem.replayStatus);
                 return lessonItem;
             case PPT:
-                LessonItem<ArrayList<String>> pptLesson = lessonItem;
+                LessonItem<LinkedHashMap<String, ArrayList<String>>> pptLesson = lessonItem;
                 fragmentData.putString(Const.LESSON_TYPE, "ppt");
-                fragmentData.putStringArrayList(CONTENT, pptLesson.content);
+                ArrayList<String> pptContent = pptLesson.content.get("resource");
+                fragmentData.putStringArrayList(CONTENT, pptContent);
                 return pptLesson;
             case TESTPAPER:
                 LessonItem<LinkedHashMap> testpaperLesson = lessonItem;
@@ -503,6 +516,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putInt(Const.LESSON_ID, testpaperLesson.id);
                 fragmentData.putString(Const.ACTIONBAR_TITLE, testpaperLesson.title);
                 return testpaperLesson;
+            case DOCUMENT:
+                LessonItem<LinkedHashMap<String, String>> documentLessonItem = lessonItem;
+                fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());
+                fragmentData.putString(CONTENT, documentLessonItem.content.get("previewUrl"));
+                return documentLessonItem;
             case VIDEO:
                 fragmentData.putSerializable(Const.STREAM_URL, streamInfos);
             case AUDIO:
@@ -539,6 +557,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     fragmentData.putString(Const.MEDIA_SOURCE, normalLesson.mediaSource);
                     fragmentData.putInt(Const.LESSON_ID, normalLesson.id);
                     fragmentData.putInt(Const.COURSE_ID, normalLesson.courseId);
+                    fragmentData.putString(Const.LESSON_NAME, normalLesson.title);
                 }
                 return normalLesson;
         }

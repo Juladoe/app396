@@ -41,7 +41,11 @@ public class ShardDialog extends Dialog {
     }
 
     private void initView() {
-        setContentView(R.layout.shard_content_layout);
+        if (mStyleType == DIALOG_TYPE_VIDEO) {
+            setContentView(R.layout.shard_video_content_layout);
+        } else {
+            setContentView(R.layout.shard_content_layout);
+        }
         mGridView = (GridView) findViewById(R.id.shard_gridview);
         mCancelView = (TextView) findViewById(R.id.shard_cancelBtn);
         mCancelView.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +55,6 @@ public class ShardDialog extends Dialog {
             }
         });
         if (mStyleType == DIALOG_TYPE_VIDEO) {
-            mGridView.setBackgroundColor(getContext().getResources().getColor(R.color.base_black_87));
             mCancelView.setVisibility(View.GONE);
         }
     }
@@ -77,7 +80,7 @@ public class ShardDialog extends Dialog {
             adapter = new ShardListAdapter(mContext, list, R.layout.shard_video_list_item);
             mGridView.setAdapter(adapter);
         } else if (mStyleType == DIALOG_TYPE_NORMAL) {
-            adapter = new ShardListAdapter(mContext, list, R.layout.shard_video_list_item);
+            adapter = new ShardListAdapter(mContext, list, R.layout.shard_list_item);
             mGridView.setAdapter(adapter);
         }
     }

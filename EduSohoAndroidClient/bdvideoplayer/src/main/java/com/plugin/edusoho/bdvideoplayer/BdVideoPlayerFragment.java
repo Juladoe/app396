@@ -91,11 +91,13 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     protected int mCourseId;
     protected int mLessonId;
+    protected String mLessonName;
     protected boolean mIsHwDecode = false;
     protected boolean mIsPlayEnd;
     protected boolean isCacheVideo;
     protected int mDecodeMode;
 
+    protected LessonLearnStatus mLearnStatusChanged;
     protected EventHandler mEventHandler;
     protected HandlerThread mHandlerThread;
     private String mSoLibDir;
@@ -140,7 +142,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected int mCurrentPos = 0;
     protected int mDurationCount = 0;
 
-    boolean isSwitched;
+    protected boolean isSwitched;
+    protected boolean isBackPressed;
     private PLAYER_HEAD_STATUS mPlayHeadStatus;
 
     @Override
@@ -168,7 +171,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mVideoHead = getUrlPath(bundle.getString("headUrl"));
         mCourseId = bundle.getInt("courseId");
         mLessonId = bundle.getInt("lessonId");
-
+        mLessonName = bundle.getString("lesson_name");
     }
 
     @Override
@@ -573,9 +576,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     }
 
     protected void resumePlay() {
-        /**
-         *发 一   任务,   不一    发
-         */
         if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED
                 || mPlayerStatus == PLAYER_STATUS.PLAYER_PAUSE) {
             mEventHandler.sendEmptyMessage(EVENT_REPLAY);
@@ -685,6 +685,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 getActivity().onBackPressed();
+                isBackPressed = true;
             }
         });
 
@@ -789,6 +790,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             isSwitched = false;
         } else {
             mUIHandler.sendEmptyMessage(UI_EVENT_FINISH);
+        }
+        if (!isBackPressed && mLearnStatusChanged != null) {
+            mLearnStatusChanged.setLearnStatus();
         }
     }
 
@@ -924,6 +928,10 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     public int sp2px(Context context, float spValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (spValue * scale + 0.5f);
+    }
+
+    public interface LessonLearnStatus {
+        void setLearnStatus();
     }
 }
 

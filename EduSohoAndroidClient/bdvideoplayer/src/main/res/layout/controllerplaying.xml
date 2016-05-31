@@ -71,7 +71,7 @@
             android:layout_marginRight="30dp"
             android:layout_toLeftOf="@+id/iv_share"
             android:text="学过了"
-            android:textColor="@color/grey"
+            android:textColor="@color/white"
             android:textSize="@dimen/font_size_x_s" />
 
         <ImageView
@@ -101,10 +101,10 @@
             android:layout_gravity="center"
             android:background="@drawable/video_seekbar_bg"
             android:indeterminate="false"
-            android:maxHeight="3dp"
-            android:minHeight="3dp"
-            android:paddingLeft="1dp"
-            android:paddingRight="1dp"
+            android:maxHeight="4dp"
+            android:minHeight="4dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
             android:progress="0"
             android:progressDrawable="@drawable/video_seekbar"
             android:thumb="@drawable/video_thum_sel" />

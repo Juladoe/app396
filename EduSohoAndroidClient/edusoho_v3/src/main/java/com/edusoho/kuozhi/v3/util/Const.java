@@ -311,10 +311,6 @@ public class Const {
      */
     public static final String COURSE_CODE = "Course/coupon";
 
-    //笔记编辑
-    public static final String ADD_NOTE = "Course/AddNote";
-    public static final String GET_LESSON_NOTE = "Course/getLessonNote";
-
     //意见反馈
     public static final String SUGGESTION = "School/sendSuggestion";
     public static final String SCHOOL_APP = "School/getSchoolApps";
@@ -474,7 +470,8 @@ public class Const {
     public static final String COURSE_MEMBERS = "/api/courses/%d/members";
     public static final String ROLE_IN_COURSE = "/api/courses/%d/membership/%d";
 
-    public static final String LESSON_NOTE = "/api/notes";
+    public static final String LESSON_NOTE = "/api/courses/%d/notes";
+    public static final String GET_LESSON_NOTE = "/api/courses/%d/notes";
 
     public static final String BIND_LOGIN = "/api/users/bind_login";
 
