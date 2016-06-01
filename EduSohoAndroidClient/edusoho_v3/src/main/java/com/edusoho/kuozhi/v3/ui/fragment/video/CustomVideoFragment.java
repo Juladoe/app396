@@ -137,8 +137,24 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                         }
                     }
                 });
+            } else if (!TextUtils.isEmpty(mVideoSource)) {
+                getVideoStream(mVideoSource, new NormalCallback<StreamInfo[]>() {
+                    @Override
+                    public void success(StreamInfo[] streamInfos) {
+                        if (streamInfos != null) {
+                            for (StreamInfo streamInfo : streamInfos) {
+                                streamInfoLists.add(streamInfo);
+                            }
+                            initPopupWindows(streamInfoLists);
+                            mCurMediaSource = streamInfoLists.get(0).src;
+                            mEventHandler.sendEmptyMessage(EVENT_START);
+                        } else {
+                            showErrorDialog(NO_LESSON, 0);
+                        }
+                    }
+                });
             } else {
-                showErrorDialog(HEAD_ERROR, 0);
+                showErrorDialog(NO_LESSON, 0);
             }
         }
     }
