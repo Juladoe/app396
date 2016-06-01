@@ -12,6 +12,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
@@ -22,6 +23,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -124,6 +126,7 @@ public class AudioLessonFragment extends BaseFragment {
         mTotalTime = (TextView) view.findViewById(R.id.audio_totalTime);
         mCurrentTime = (TextView) view.findViewById(R.id.audio_currentTime);
         mPlayBtn = (ImageView) view.findViewById(R.id.audio_playbtn);
+        mPlayBtn.setEnabled(false);
         mAudioCoverView = (ImageView) view.findViewById(R.id.audio_play_cover);
         mAudioCoverLayout = view.findViewById(R.id.audio_play_cover_layout);
         mAudioProgress = (SeekBar) view.findViewById(R.id.audio_progress);
@@ -176,6 +179,7 @@ public class AudioLessonFragment extends BaseFragment {
         audioMediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(MediaPlayer mediaPlayer) {
+                mPlayBtn.setEnabled(true);
                 mediaPlayer.start();
                 mPlayBtn.setImageResource(R.drawable.icon_video_pause);
                 updateAudioCoverViewStatus(true);
