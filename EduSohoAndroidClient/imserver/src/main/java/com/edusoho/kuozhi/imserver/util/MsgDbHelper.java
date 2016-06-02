@@ -24,7 +24,7 @@ public class MsgDbHelper {
 
     public List<MessageEntity> getMessageList(String convNo, int start) {
         List<MessageEntity> entityList = new ArrayList<>();
-        ArrayList<HashMap> arrayList = mDbHelper.queryBySortAndLimit(TABLE, "convNo=?", new String[] { convNo }, "time asc", String.format("%d, 15", start));
+        ArrayList<HashMap> arrayList = mDbHelper.queryBySortAndLimit(TABLE, "convNo=?", new String[] { convNo }, "time desc", String.format("%d, 10", start));
         if (arrayList == null) {
             return entityList;
         }

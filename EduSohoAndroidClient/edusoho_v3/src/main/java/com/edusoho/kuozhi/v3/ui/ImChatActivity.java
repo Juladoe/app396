@@ -40,7 +40,6 @@ import com.edusoho.kuozhi.v3.ui.base.BaseChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import java.io.File;
@@ -180,12 +179,19 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         sendMessageToServer(messageBody);
     }
 
+    /**
+     * 逆序显示
+     * @param start
+     * @return
+     */
     protected ArrayList<Chat> getChatList(int start) {
         List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConversationNo).getMessageList(start);
         ArrayList<Chat> chats = new ArrayList<>();
 
         User currentUser = getAppSettingProvider().getCurrentUser();
-        for (MessageEntity messageEntity : messageEntityList) {
+        MessageEntity messageEntity = null;
+        for (int i = messageEntityList.size() - 1; i >= 0; i--) {
+            messageEntity = messageEntityList.get(i);
             MessageBody messageBody = new MessageBody(messageEntity);
             Chat chat = new Chat(messageBody);
             chat.id = messageEntity.getId();
@@ -295,7 +301,6 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         etSend.setText("");
         etSend.requestFocus();
         sendMessageToServer(messageBody);
-        //notifyNewListView2Update(getNotifyV2CustomContent(PushUtil.ChatMsgType.TEXT, chat.content));
     }
 
     private MessageEntity createMessageEntityByBody(MessageBody messageBody) {

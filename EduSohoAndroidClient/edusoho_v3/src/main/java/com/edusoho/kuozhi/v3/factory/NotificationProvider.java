@@ -73,7 +73,7 @@ public class NotificationProvider extends AbstractProvider {
                 notifyIntent.putExtra(Const.INTENT_TARGET, ImChatActivity.class);
                 break;
             case Destination.CLASSROOM:
-                notifyIntent.putExtra(ImChatActivity.FROM_ID, messageBody.getSource().getId());
+                notifyIntent.putExtra(ImChatActivity.FROM_ID, messageBody.getDestination().getId());
                 notifyIntent.putExtra(Const.INTENT_TARGET, ClassroomDiscussActivity.class);
                 break;
             case Destination.COURSE:

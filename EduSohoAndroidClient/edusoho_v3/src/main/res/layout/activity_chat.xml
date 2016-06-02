@@ -284,15 +284,16 @@
             <ListView
                 android:id="@+id/lv_messages"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:background="@color/background"
                 android:clickable="true"
                 android:divider="@null"
                 android:fadingEdge="none"
                 android:fastScrollEnabled="false"
                 android:scrollbars="none"
-                android:smoothScrollbar="true"
-                android:transcriptMode="normal" />
+                android:transcriptMode="alwaysScroll"
+                android:stackFromBottom="true"
+                android:smoothScrollbar="true" />
 
         </in.srain.cube.views.ptr.PtrClassicFrameLayout>
     </RelativeLayout>

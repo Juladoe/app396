@@ -213,7 +213,7 @@ public class IMDiscussFragment extends BaseFragment implements
                 .addFromName(messageBody.getSource().getNickname())
                 .addCmd("message")
                 .addMsg(messageBody.toJson())
-                .addTime((int)messageBody.getCreatedTime() / 1000)
+                .addTime((int)(messageBody.getCreatedTime() / 1000))
                 .builder();
     }
 
@@ -376,7 +376,7 @@ public class IMDiscussFragment extends BaseFragment implements
                 mAdapter.addItems(getList(mStart));
                 mStart = mAdapter.getCount();
                 mPtrFrame.refreshComplete();
-                lvMessage.postDelayed(mListViewSelectRunnable, 100);
+                //lvMessage.postDelayed(mListViewSelectRunnable, 100);
             }
 
             @Override

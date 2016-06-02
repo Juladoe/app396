@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
-
 import cn.trinea.android.common.util.DigestUtils;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
