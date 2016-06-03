@@ -39,7 +39,11 @@ public class SchoolBannerAdapter extends PagerAdapter {
 
     @Override
     public int getCount() {
-        return mSchoolBanners.size();
+        if (mSchoolBanners != null) {
+            return mSchoolBanners.size();
+        } else {
+            return 0;
+        }
     }
 
     public void setItems(List<SchoolBanner> schoolBanners) {
