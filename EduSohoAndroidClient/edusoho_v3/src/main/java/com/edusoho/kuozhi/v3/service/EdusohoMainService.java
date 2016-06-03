@@ -269,43 +269,45 @@ public class EdusohoMainService extends Service {
         final NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(EdusohoMainService.this, app.domain));
         final int id = (int) chatDataSource.getMaxId();
         String path = id == 0 ? Const.GET_LATEST_OFFLINE_MSG : Const.GET_LATEST_OFFLINE_MSG + "?lastMaxId=" + id;
-        RequestUrl url = app.bindPushUrl(String.format(path, app.loginUser.id));
-        app.getUrl(url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                ArrayList<OffLineMsgEntity> latestChat = app.parseJsonValue(response, new TypeToken<ArrayList<OffLineMsgEntity>>() {
-                });
-                if (latestChat.size() > 0 && latestChat.get(0).getCustom().getV() >= 2) {
-                    //Collections.reverse(latestChat);
-                    HashMap<Integer, ArrayList<OffLineMsgEntity>> latestHashMap = filterLatestChats(latestChat);
-                    Iterator<Map.Entry<Integer, ArrayList<OffLineMsgEntity>>> iterators = latestHashMap.entrySet().iterator();
-                    ArrayList<New> newArrayList = new ArrayList<>();
-                    while (iterators.hasNext()) {
-                        Map.Entry<Integer, ArrayList<OffLineMsgEntity>> iterator = iterators.next();
-                        save2DB(iterator.getValue());
-                        OffLineMsgEntity offlineMsgModel = iterator.getValue().get(iterator.getValue().size() - 1); //最新一个消息
-                        New newModel = new New(offlineMsgModel);
-                        List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", offlineMsgModel.getCustom().getFrom().getId() + "", EdusohoApp.app.loginUser.id + "");
-                        if (news.size() == 0) {
-                            newModel.unread = iterator.getValue().size();
-                            newDataSource.create(newModel);
-                        } else {
-                            newModel.unread = news.get(0).unread + iterator.getValue().size();
-                            newDataSource.update(newModel);
+        if (app.loginUser != null) {
+            RequestUrl url = app.bindPushUrl(String.format(path, app.loginUser.id));
+            app.getUrl(url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    ArrayList<OffLineMsgEntity> latestChat = app.parseJsonValue(response, new TypeToken<ArrayList<OffLineMsgEntity>>() {
+                    });
+                    if (latestChat.size() > 0 && latestChat.get(0).getCustom().getV() >= 2) {
+                        //Collections.reverse(latestChat);
+                        HashMap<Integer, ArrayList<OffLineMsgEntity>> latestHashMap = filterLatestChats(latestChat);
+                        Iterator<Map.Entry<Integer, ArrayList<OffLineMsgEntity>>> iterators = latestHashMap.entrySet().iterator();
+                        ArrayList<New> newArrayList = new ArrayList<>();
+                        while (iterators.hasNext()) {
+                            Map.Entry<Integer, ArrayList<OffLineMsgEntity>> iterator = iterators.next();
+                            save2DB(iterator.getValue());
+                            OffLineMsgEntity offlineMsgModel = iterator.getValue().get(iterator.getValue().size() - 1); //最新一个消息
+                            New newModel = new New(offlineMsgModel);
+                            List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", offlineMsgModel.getCustom().getFrom().getId() + "", EdusohoApp.app.loginUser.id + "");
+                            if (news.size() == 0) {
+                                newModel.unread = iterator.getValue().size();
+                                newDataSource.create(newModel);
+                            } else {
+                                newModel.unread = news.get(0).unread + iterator.getValue().size();
+                                newDataSource.update(newModel);
+                            }
+                            newArrayList.add(newModel);
                         }
-                        newArrayList.add(newModel);
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable(Const.GET_PUSH_DATA, newArrayList);
+                        EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSGS, bundle, NewsFragment.class);
                     }
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable(Const.GET_PUSH_DATA, newArrayList);
-                    EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSGS, bundle, NewsFragment.class);
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d(TAG, "error");
-            }
-        });
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "error");
+                }
+            });
+        }
     }
 
     public ArrayList<Chat> save2DB(ArrayList<OffLineMsgEntity> offLineMsgEntityArrayList) {
