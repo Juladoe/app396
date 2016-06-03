@@ -187,7 +187,7 @@ public class ESWebViewRequestManager extends RequestManager {
 
     @Override
     public <T> T blockGet(Request request, RequestCallback<T> callback) {
-        Response response = new Response();
+        Response<T> response = new Response<>();
         handleRequest(request, response);
 
         return callback.onResponse(response);
