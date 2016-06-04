@@ -43,6 +43,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +120,7 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
     private void prevSelectImage(String url) {
         Bundle bundle = new Bundle();
         bundle.putInt("index", 0);
-        String[] imgPaths = new String[] {
+        String[] imgPaths = new String[]{
                 url
         };
         bundle.putStringArray("images", imgPaths);
@@ -239,10 +240,10 @@ public class EssayHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
         ArrayList<String> data = new ArrayList<String>();
         data.add(answerStr);
         bundle.putStringArrayList("data", data);
-        if (HomeworkSummaryActivity.HOMEWORK.equals(mType)){
+        if (HomeworkSummaryActivity.HOMEWORK.equals(mType)) {
             MessageEngine.getInstance().sendMsgToTaget(
                     HomeworkActivity.CHANGE_ANSWER, bundle, HomeworkActivity.class);
-        }else {
+        } else {
             MessageEngine.getInstance().sendMsgToTaget(
                     ExerciseActivity.CHANGE_ANSWER, bundle, ExerciseActivity.class);
         }

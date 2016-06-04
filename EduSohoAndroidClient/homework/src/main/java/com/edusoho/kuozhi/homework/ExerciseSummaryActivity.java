@@ -3,9 +3,9 @@ package com.edusoho.kuozhi.homework;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+
 import com.edusoho.kuozhi.homework.model.ExerciseProvider;
 import com.edusoho.kuozhi.homework.model.HomeWorkModel;
 import com.edusoho.kuozhi.homework.model.HomeworkProvider;
@@ -36,8 +36,8 @@ public class ExerciseSummaryActivity extends HomeworkSummaryActivity {
         }
         int exerciseId = data.getIntExtra(ExerciseActivity.EXERCISE_ID, 0);
         Bundle bundle = new Bundle();
-        bundle.putInt(ExerciseParseActivity.EXERCISE_ID,exerciseId);
-        app.mEngine.runNormalPluginWithBundle("ExerciseParseActivity",mContext,bundle);
+        bundle.putInt(ExerciseParseActivity.EXERCISE_ID, exerciseId);
+        app.mEngine.runNormalPluginWithBundle("ExerciseParseActivity", mContext, bundle);
     }
 
     @Override
@@ -49,14 +49,12 @@ public class ExerciseSummaryActivity extends HomeworkSummaryActivity {
     private void renderExerciseView() {
         String fragmentName = "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkSummaryFragment";
         Bundle bundle = getIntent().getExtras();
-        bundle.putString(TYPE,"exercise");
+        bundle.putString(TYPE, "exercise");
         loadFragment(bundle, fragmentName);
     }
 
-    public static class Callback extends BaseLessonPluginCallback
-    {
-        public Callback(Context context)
-        {
+    public static class Callback extends BaseLessonPluginCallback {
+        public Callback(Context context) {
             super(context);
         }
 

@@ -22,7 +22,6 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 /**
  * Created by Melomelon on 2015/10/13.
@@ -78,8 +77,8 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         try {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
             Fragment fragment = Fragment.instantiate(getBaseContext(), fragmentName);
-            if (bundle.getString(TYPE) == null){
-                bundle.putString(TYPE,"homework");
+            if (bundle.getString(TYPE) == null) {
+                bundle.putString(TYPE, "homework");
             }
             fragment.setArguments(bundle);
             fragmentTransaction.replace(android.R.id.content, fragment);
@@ -120,10 +119,8 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         }
     }
 
-    public static class Callback extends BaseLessonPluginCallback
-    {
-        public Callback(Context context)
-        {
+    public static class Callback extends BaseLessonPluginCallback {
+        public Callback(Context context) {
             super(context);
         }
 
