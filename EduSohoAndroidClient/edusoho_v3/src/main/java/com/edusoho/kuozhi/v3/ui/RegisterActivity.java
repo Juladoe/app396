@@ -237,7 +237,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
 
             String strMail = etMail.getText().toString().trim();
             if (TextUtils.isEmpty(strMail)) {
-                CommonUtil.longToast(mContext, String.format("请输入邮箱地址"));
+                CommonUtil.longToast(mContext, "请输入邮箱地址");
                 return;
             }
             params.put("email", strMail);
