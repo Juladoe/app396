@@ -525,7 +525,7 @@ public class AppUtil {
         ConnectivityManager connManager = (ConnectivityManager)
                 context.getSystemService(context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        return networkInfo != null && networkInfo.isAvailable();
+        return networkInfo != null && "WIFI".equalsIgnoreCase(networkInfo.getTypeName());
     }
 
     public static boolean saveStreamToFile(
