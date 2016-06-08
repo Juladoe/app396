@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,78 +9,79 @@
         android:layout_centerInParent="true">
 
         <com.baidu.cyberplayer.core.BVideoView
-            android:background="#dd000000"
             android:id="@+id/video_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="#dd000000" />
+
         <ImageView
             android:id="@+id/video_replay"
-            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/icon_video_large_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:visibility="gone" />
     </FrameLayout>
 
     <LinearLayout
-        android:gravity="center"
-        android:layout_alignParentBottom="true"
         android:id="@+id/video_controller"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <ImageView
-            android:padding="8dp"
-            android:layout_alignParentBottom="true"
             android:id="@+id/play_btn"
-            android:src="@drawable/video_play"
             android:layout_width="48dp"
-            android:layout_height="48dp" />
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:padding="8dp"
+            android:src="@drawable/video_play" />
 
         <TextView
-            android:textColor="@color/white"
-            android:gravity="left|center_vertical"
-            android:layout_weight="0"
             android:id="@+id/time_current"
-            android:text="00:00"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:gravity="left|center_vertical"
+            android:text="00:00"
+            android:textColor="@color/white" />
 
         <SeekBar
+            android:id="@+id/media_progress"
+            android:layout_width="match_parent"
+            android:layout_height="16dp"
+            android:layout_gravity="center"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_weight="1"
-            android:progressDrawable="@drawable/video_seekbar"
+            android:indeterminate="false"
+            android:maxHeight="3dp"
             android:paddingLeft="0dip"
             android:paddingRight="0dip"
             android:progress="2"
-            android:layout_gravity="center"
-            android:layout_height="16dp"
-            android:maxHeight="3dp"
-            android:id="@+id/media_progress"
-            android:thumb="@drawable/video_thum_sel"
-            android:layout_width="match_parent"
-            android:indeterminate="false" />
+            android:progressDrawable="@drawable/video_seekbar"
+            android:thumb="@drawable/video_thum_sel" />
 
         <TextView
-            android:textColor="@color/white"
             android:id="@+id/time_total"
-            android:gravity="right|center_vertical"
-            android:layout_weight="0"
-            android:text="00:00"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:gravity="right|center_vertical"
+            android:text="00:00"
+            android:textColor="@color/white" />
 
         <CheckBox
-            android:paddingRight="16dp"
-            android:drawableRight="@drawable/screen_btn_sel"
-            android:layout_alignParentBottom="true"
             android:id="@+id/full_btn"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:button="@null" />
+            android:button="@null"
+            android:drawableRight="@drawable/screen_btn_sel"
+            android:paddingRight="16dp" />
     </LinearLayout>
 
 </RelativeLayout>
