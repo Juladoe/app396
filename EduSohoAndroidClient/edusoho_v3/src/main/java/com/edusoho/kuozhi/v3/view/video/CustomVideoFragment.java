@@ -30,7 +30,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         lessonActivity = (LessonActivity) getActivity();
-        if (AppUtil.isWiFiConnect(getActivity()) && lessonActivity.app.config.offlineType == 0) {
+        if (!AppUtil.isWiFiConnect(getActivity()) && lessonActivity.app.config.offlineType == 0) {
             PopupDialog popupDialog = PopupDialog.createMuilt(lessonActivity,
                     lessonActivity.getString(R.string.notification),
                     lessonActivity.getString(R.string.player_4g_info), new PopupDialog.PopupClickListener() {
