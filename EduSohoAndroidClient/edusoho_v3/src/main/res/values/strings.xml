@@ -62,6 +62,10 @@
     <string name="course_announcement">课程公告</string>
     <string name="entry_course">进入课程</string>
     <string name="login_more">更多</string>
+    <string name="player_4g_info">您正在使用4G网络观看视频，该操作会消耗较多流量，确认要开启吗？</string>
+    <string name="notification">提示</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>

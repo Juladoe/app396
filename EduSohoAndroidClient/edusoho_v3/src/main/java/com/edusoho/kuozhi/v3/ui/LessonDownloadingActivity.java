@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -9,6 +10,7 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,20 +22,22 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
-import com.edusoho.kuozhi.v3.model.bal.DownloadStatus;
 import com.edusoho.kuozhi.v3.entity.lesson.DownLessonItem;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.model.bal.DownloadStatus;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -234,11 +238,39 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 return;
             }
 
-            for (LessonItem item : mLessonList) {
-                if (item.isSelected) {
-                    downloadLesson(item);
-                    item.isSelected = false;
-                }
+            if (!AppUtil.isWiFiConnect(mActivity) && mActivity.app.config.offlineType == 0) {
+                PopupDialog popupDialog = PopupDialog.createMuilt(mActivity,
+                        mActivity.getString(R.string.notification),
+                        mActivity.getString(R.string.player_4g_info), new PopupDialog.PopupClickListener() {
+                            @Override
+                            public void onClick(int button) {
+                                if (button == PopupDialog.CANCEL) {
+                                    mActivity.finish();
+                                } else {
+                                    mActivity.app.config.offlineType = 1;
+                                    mActivity.app.saveConfig();
+                                    for (LessonItem item : mLessonList) {
+                                        if (item.isSelected) {
+                                            downloadLesson(item);
+                                            item.isSelected = false;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                popupDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                    @Override
+                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                        if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            mActivity.finish();
+                        }
+                        return false;
+                    }
+                });
+                popupDialog.setOkText(mActivity.getString(R.string.yes));
+                popupDialog.setCancelText(mActivity.getString(R.string.no));
+                popupDialog.setCanceledOnTouchOutside(false);
+                popupDialog.show();
             }
         }
     };
