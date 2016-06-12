@@ -6,4 +6,5 @@
     <color name="video_thum_gradient">#38bf6c</color>
     <color name="video_thum_gradient_pressed">#9938bf6c</color>
     <color name="white">#ffffff</color>
+    <color name="player_progressbar">#EEEEEE</color>
 </resources>
