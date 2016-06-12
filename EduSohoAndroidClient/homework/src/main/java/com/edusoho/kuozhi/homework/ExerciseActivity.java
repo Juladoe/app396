@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.homework;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,7 +26,6 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -52,6 +50,7 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
     protected ExerciseProvider mExerciseProvider;
 
     private FrameLayout mLoading;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,7 +118,7 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
         try {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
             Fragment fragment = Fragment.instantiate(getBaseContext(), "com.edusoho.kuozhi.homework.ui.fragment.HomeWorkQuestionFragment");
-            bundle.putString(HomeworkSummaryActivity.TYPE,mType);
+            bundle.putString(HomeworkSummaryActivity.TYPE, mType);
             fragment.setArguments(bundle);
             fragmentTransaction.replace(android.R.id.content, fragment);
             fragmentTransaction.commit();
@@ -138,7 +137,7 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
             if (answers == null) {
                 continue;
             }
-            params.put(String.format("data[%d][questionId]", question.getId()),question.getId()+"");
+            params.put(String.format("data[%d][questionId]", question.getId()), question.getId() + "");
             for (String answer : answers) {
                 params.put(String.format("data[%d][answer][]", question.getId()), answer);
             }
@@ -153,8 +152,8 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
                             return;
                         }
                         Intent intent = new Intent();
-                        intent.putExtra(EXERCISE_ID,mExerciseId);
-                        setResult(RESULT_DO,intent);
+                        intent.putExtra(EXERCISE_ID, mExerciseId);
+                        setResult(RESULT_DO, intent);
                         finish();
                     }
                 }).fail(this);
@@ -209,7 +208,7 @@ public class ExerciseActivity extends ActionBarBaseActivity implements IHomework
         HomeWorkCardFragment cardFragment = new HomeWorkCardFragment();
         cardFragment.setTitle("答题卡");
         Bundle args = new Bundle();
-        args.putString("type",mType);
+        args.putString("type", mType);
         cardFragment.setArguments(args);
         cardFragment.show(mFragmentManager, "cardDialog");
     }
