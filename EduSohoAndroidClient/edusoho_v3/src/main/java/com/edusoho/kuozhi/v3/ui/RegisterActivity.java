@@ -205,15 +205,24 @@ public class RegisterActivity extends ActionBarBaseActivity {
                         UserResult userResult = mActivity.parseJsonValue(
                                 response, new TypeToken<UserResult>() {
                                 });
-                        app.saveToken(userResult);
-                        btnPhoneReg.setSuccessState();
-                        btnPhoneReg.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mActivity.finish();
-                                app.sendMessage(Const.LOGIN_SUCCESS, null);
+                        if (userResult != null && userResult.user != null) {
+                            app.saveToken(userResult);
+                            btnPhoneReg.setSuccessState();
+                            btnPhoneReg.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mActivity.finish();
+                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
+                                }
+                            }, 500);
+                        } else {
+                            btnMailReg.setInitState();
+                            if (!TextUtils.isEmpty(response)) {
+                                CommonUtil.longToast(mContext, response);
+                            } else {
+                                CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
                             }
-                        }, 500);
+                        }
                     } catch (Exception e) {
                         btnPhoneReg.setInitState();
                         e.printStackTrace();
@@ -259,26 +268,28 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
-                        });
-                        if (result != null && result.error != null) {
-                            btnMailReg.setInitState();
-                            CommonUtil.longToast(mActivity, result.error.message);
-                            return;
-                        }
-
                         UserResult userResult = mActivity.parseJsonValue(
                                 response, new TypeToken<UserResult>() {
                                 });
-                        app.saveToken(userResult);
-                        btnMailReg.setSuccessState();
-                        btnMailReg.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                app.sendMessage(Const.LOGIN_SUCCESS, null);
+                        if (userResult != null && userResult.user != null) {
+                            btnMailReg.setInitState();
+                            app.saveToken(userResult);
+                            btnMailReg.setSuccessState();
+                            btnMailReg.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
+                                }
+                            }, 500);
+                        } else {
+                            btnMailReg.setInitState();
+                            if (!TextUtils.isEmpty(response)) {
+                                CommonUtil.longToast(mContext, response);
+                            } else {
+                                CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
                             }
-                        }, 500);
+                        }
                     } catch (Exception e) {
                         btnMailReg.setInitState();
                         e.printStackTrace();
