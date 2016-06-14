@@ -71,7 +71,7 @@ public class ExerciseSummaryActivity extends HomeworkSummaryActivity {
         @Override
         public boolean click(AdapterView<?> parent, View view, int position) {
             if (!view.isEnabled()) {
-                ToastUtil.getInstance(mContext).makeText("课程暂无作业", Toast.LENGTH_SHORT).show();
+                ToastUtil.getInstance(mContext).makeText("课程暂无练习", Toast.LENGTH_SHORT).show();
                 return true;
             }
             return false;
