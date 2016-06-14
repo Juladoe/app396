@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -10,7 +9,6 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -244,9 +242,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                         mActivity.getString(R.string.player_4g_info), new PopupDialog.PopupClickListener() {
                             @Override
                             public void onClick(int button) {
-                                if (button == PopupDialog.CANCEL) {
-                                    mActivity.finish();
-                                } else {
+                                if (button == PopupDialog.OK) {
                                     mActivity.app.config.offlineType = 1;
                                     mActivity.app.saveConfig();
                                     for (LessonItem item : mLessonList) {
@@ -258,19 +254,17 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                                 }
                             }
                         });
-                popupDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
-                    @Override
-                    public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                        if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            mActivity.finish();
-                        }
-                        return false;
-                    }
-                });
                 popupDialog.setOkText(mActivity.getString(R.string.yes));
                 popupDialog.setCancelText(mActivity.getString(R.string.no));
                 popupDialog.setCanceledOnTouchOutside(false);
                 popupDialog.show();
+            } else {
+                for (LessonItem item : mLessonList) {
+                    if (item.isSelected) {
+                        downloadLesson(item);
+                        item.isSelected = false;
+                    }
+                }
             }
         }
     };
