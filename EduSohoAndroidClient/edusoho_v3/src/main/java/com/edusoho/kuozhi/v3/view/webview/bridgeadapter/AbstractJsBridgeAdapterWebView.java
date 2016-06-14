@@ -120,7 +120,11 @@ public abstract class AbstractJsBridgeAdapterWebView<T extends Activity> extends
     }
 
     public void invokeCallback(String callbackId, String type, String args) {
-        execJsScript(String.format("javascript:jsBridgeAdapter.invokeCallback('%s','%s', %s)", callbackId, type, args));
+        execJsScript(String.format("javascript:jsBridgeAdapter.invokeCallback('%s','%s', %s)", callbackId, type, formatString(args)));
+    }
+
+    private String formatString(String input) {
+        return input.replaceAll("\\\\r", "").replaceAll("\\\\n", "");
     }
 
     public T getActitiy() {
