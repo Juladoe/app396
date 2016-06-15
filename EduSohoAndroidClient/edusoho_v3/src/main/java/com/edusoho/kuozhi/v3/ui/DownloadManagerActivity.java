@@ -56,7 +56,7 @@ import extensions.PagerSlidingTabStrip;
  */
 public class DownloadManagerActivity extends ActionBarBaseActivity {
     public static final String[] DOWNLOAD_FRAGMENTS = {"DownloadedFragment", "DownloadingFragment"};
-    public static final String[] DOWNLOAD_TITLES = {"已下载", "下载中"};
+    public static final String[] DOWNLOAD_TITLES = {"已缓存", "缓存中"};
 
     private PagerSlidingTabStrip mPagerTab;
     private ViewPager mViewPagers;
@@ -108,7 +108,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     };
 
     private void initView() {
-        setBackMode(BACK, "我的下载");
+        setBackMode(BACK, getResources().getString(R.string.mine_items_download));
         mPagerTab = (PagerSlidingTabStrip) findViewById(R.id.tab_download);
         pbDownloadDeviceInfo = (ProgressBar) findViewById(R.id.pb_download_device_info);
         mViewPagers = (ViewPager) findViewById(R.id.viewpager_download);

@@ -33,7 +33,7 @@
     <string name="setting_scan_second">扫描进入网校</string>
     <string name="setting_new_msg_notify">新消息提醒</string>
     <string name="setting_online_duration">在线时段</string>
-    <string name="setting_wifi_download">允许使用4G网络观看或下载视频</string>
+    <string name="setting_wifi_download">允许使用4G网络观看或缓存视频</string>
     <string name="setting_clean_cache">清理缓存</string>
     <string name="setting_about">关于</string>
     <string name="msg_reminder_new_msg">接收新消息通知</string>
@@ -156,8 +156,8 @@
     <string name="select_all">全选</string>
     <string name="select_all_cancel">取消</string>
     <string name="download_finish">已缓存</string>
-    <string name="downloading">正在下载</string>
-    <string name="wait_download">等待下载</string>
+    <string name="downloading">正在缓存</string>
+    <string name="wait_download">等待缓存</string>
 
     <string name="app_exit_msg">再按一次退出应用</string>
     <string name="hand_press_and_speak">按住说话</string>
@@ -200,7 +200,7 @@
     </string-array>
 
     <string name="mine_items_learn">我的学习</string>
-    <string name="mine_items_download">我的下载</string>
+    <string name="mine_items_download">我的缓存</string>
     <string name="mine_items_buy_vip">开通会员</string>
     <string name="mine_items_collection">我的收藏</string>
     <string name="mine_items_setting">我的设置</string>

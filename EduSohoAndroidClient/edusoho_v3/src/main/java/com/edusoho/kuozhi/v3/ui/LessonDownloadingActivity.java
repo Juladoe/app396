@@ -71,7 +71,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lesson_downloading);
-        setBackMode(BACK, "下载列表");
+        setBackMode(BACK, getResources().getString(R.string.mine_items_download));
         mContext = this;
         initView();
     }
@@ -232,7 +232,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             if (getDeviceFreeSize() < (1024 * 1024 * 50)) {
-                CommonUtil.longToast(mContext, "手机可用空间不足,不能下载!");
+                CommonUtil.longToast(mContext, "手机可用空间不足,不能缓存!");
                 return;
             }
 
@@ -404,7 +404,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 if (listItem.uploadFile == null) {
                     Pattern urlPattern = Pattern.compile("courses/[\\d]+/lessons/[\\d]+/media", Pattern.DOTALL);
                     if (urlPattern.matcher(lessonItem.mediaUri).find()) {
-                        CommonUtil.longToast(mContext, "暂不支持本地视频下载!");
+                        CommonUtil.longToast(mContext, "暂不支持本地视频缓存!");
                         return;
                     }
                 }
