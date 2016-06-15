@@ -14,7 +14,6 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
 
