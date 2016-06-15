@@ -64,6 +64,15 @@ public class WebViewActivity extends ActionBarBaseActivity {
         processMessage(message);
         MessageType messageType = message.type;
 
+        if (ESWebView.MAIN_UPDATE.equals(messageType.type)) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mWebView.reload();
+                }
+            });
+            return;
+        }
         if (Const.THIRD_PARTY_LOGIN_SUCCESS.equals(messageType.type) || Const.LOGIN_SUCCESS.equals(messageType.type)) {
             if (getRunStatus() == MSG_PAUSE) {
                 saveMessage(message);
@@ -120,6 +129,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
                 new MessageType(Const.TOKEN_LOSE),
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS),
+                new MessageType(ESWebView.MAIN_UPDATE),
         };
         return messageTypes;
     }
