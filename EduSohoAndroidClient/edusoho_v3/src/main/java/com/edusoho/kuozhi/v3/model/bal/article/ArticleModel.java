@@ -66,7 +66,7 @@ public class ArticleModel extends ServiceProviderModel {
             Article article = new Article();
             article.body = bodyEntity.getContent();
             article.title = bodyEntity.getTitle();
-            article.picture = bodyEntity.getImage();
+            article.thumb = bodyEntity.getImage();
             article.id = bodyEntity.getId();
             arrayList.add(article);
         }
