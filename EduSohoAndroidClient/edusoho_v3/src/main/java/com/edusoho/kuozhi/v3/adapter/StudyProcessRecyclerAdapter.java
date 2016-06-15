@@ -130,16 +130,6 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
                             startIntent.putExtra(Const.WEB_URL, url);
                         }
                     });
-
-//                    mApp.mEngine.runNormalPlugin(
-//                            LessonActivity.TAG, mContext, new PluginRunCallback() {
-//                                @Override
-//                                public void setIntentDate(Intent startIntent) {
-//                                    startIntent.putExtra(Const.COURSE_ID, entity.getCourseId());
-//                                    startIntent.putExtra(Const.LESSON_ID, entity.getLessonId());
-//                                }
-//                            }
-//                    );
                 }
             });
 
