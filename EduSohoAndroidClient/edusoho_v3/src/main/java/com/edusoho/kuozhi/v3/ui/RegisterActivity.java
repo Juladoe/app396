@@ -17,8 +17,8 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.entity.register.MsgCode;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
-import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -26,9 +26,6 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -122,7 +119,6 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 return;
             }
 
-
             RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
 
             HashMap<String, String> params = requestUrl.getParams();
@@ -131,15 +127,9 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        ErrorResult result = parseJsonValue(response, new TypeToken<ErrorResult>() {
+                        MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>() {
                         });
-                        if (result != null && result.error != null) {
-                            CommonUtil.longToast(mActivity, result.error.message);
-                            return;
-                        }
-
-                        JSONObject jsonObject = new JSONObject(response);
-                        if (jsonObject.getString("code").equals("200")) {
+                        if (result != null && result.code == 200) {
                             btnSendCode.setEnabled(false);
                             btnSendCode.setBackgroundColor(getResources().getColor(R.color.grey_main));
                             mClockTime = 120;
@@ -153,9 +143,12 @@ public class RegisterActivity extends ActionBarBaseActivity {
 
                                 }
                             }, 0, 1000);
-                            CommonUtil.longToast(mContext, jsonObject.getString("msg"));
+                            CommonUtil.longToast(mContext, result.msg);
+
+                        } else {
+                            CommonUtil.longToast(mContext, response);
                         }
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         Log.d(TAG, "phone reg error");
                     }
                 }
@@ -211,7 +204,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                             btnPhoneReg.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mActivity.finish();
+                                    app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     app.sendMessage(Const.LOGIN_SUCCESS, null);
                                 }
                             }, 500);
@@ -231,6 +224,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data).toString());
                     btnPhoneReg.setInitState();
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
