@@ -278,7 +278,7 @@ public class SearchDialogFragment extends DialogFragment {
 
     public Promise loadSearchResult() {
         final Promise promise = new Promise();
-        RequestUrl requestUrl = mApp.bindNewUrl(Const.USERS, false);
+        RequestUrl requestUrl = mApp.bindNewUrl(Const.USERS, true);
         requestUrl.setGetParams(new String[]{"q", URLEncoder.encode(searchStr)});
         mFriendProvider.getSearchFriend(requestUrl).success(new NormalCallback<SearchFriendResult>() {
             @Override

@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -37,7 +36,6 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -148,10 +146,13 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             }
         }
 
-        mListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+        mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
-            public void onGroupExpand(int groupPosition) {
-                Log.d(TAG, groupPosition + "");
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                LessonItem lessonItem = mAdapter.getChild(groupPosition, childPosition);
+                lessonItem.isSelected = ! lessonItem.isSelected;
+                mAdapter.notifyDataSetChanged();
+                return false;
             }
         });
 
@@ -493,7 +494,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         }
 
         @Override
-        public Object getChild(int groupPosition, int childPosition) {
+        public LessonItem getChild(int groupPosition, int childPosition) {
             return mChildItems.get(groupPosition).get(childPosition);
         }
 
@@ -575,25 +576,13 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 childPanel.tvUnitTitle.setText(item.title);
                 childPanel.viewLessonInfo.setVisibility(View.GONE);
             }
-            childPanel.ivDownloadSelected.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (childPanel.ivDownloadSelected.getText().equals(getString(R.string.font_download_select))) {
-                        childPanel.ivDownloadSelected.setText(getString(R.string.font_download_unselect));
-                        item.isSelected = false;
-                    } else {
-                        childPanel.ivDownloadSelected.setText(getString(R.string.font_download_select));
-                        item.isSelected = true;
-                    }
-                }
-            });
 
             return convertView;
         }
 
         @Override
         public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return false;
+            return true;
         }
     }
 

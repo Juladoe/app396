@@ -1,11 +1,14 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -20,7 +23,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-
 import java.io.File;
 
 /**
@@ -32,8 +34,10 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View tvAbout;
     private View viewClearCache;
     private TextView tvCache;
+    private TextView mediaCodecView;
     private Button btnLogout;
     private CheckBox cbOfflineType;
+    private CheckBox cbMediaCoderType;
 
     @Override
 
@@ -51,6 +55,9 @@ public class SettingActivity extends ActionBarBaseActivity {
         tvMsgNotify = findViewById(R.id.rl_msg_notify);
         tvMsgNotify.setOnClickListener(msgClickListener);
         tvAbout = findViewById(R.id.rl_about);
+        cbMediaCoderType = (CheckBox) findViewById(R.id.cb_mediacodec_type);
+        mediaCodecView = (TextView) findViewById(R.id.cb_mediacodec_txt);
+
         tvAbout.setOnClickListener(aboutClickListener);
         cbOfflineType = (CheckBox) findViewById(R.id.cb_offline_type);
         cbOfflineType.setOnClickListener(setOfflineTypeListener);
@@ -65,6 +72,35 @@ public class SettingActivity extends ActionBarBaseActivity {
         } else {
             btnLogout.setVisibility(View.INVISIBLE);
         }
+
+        cbMediaCoderType.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                saveMediaCoderType(isChecked ? 0 : 1);
+                setMediaCoderText(isChecked ? 0 : 1);
+            }
+        });
+        initMediaCoder();
+    }
+
+    private void initMediaCoder() {
+        int type = getMediaCoderType();
+        setMediaCoderText(type);
+        cbMediaCoderType.setChecked(type == 0);
+    }
+
+    private void setMediaCoderText(int type) {
+        mediaCodecView.setText(String.format(getResources().getString(R.string.setting_mediacodec_type), type == 0 ? "软解" : "硬解"));
+    }
+
+    protected void saveMediaCoderType(int type) {
+        SharedPreferences sp = getSharedPreferences("mediaCoder", Context.MODE_PRIVATE);
+        sp.edit().putInt("type", type).commit();
+    }
+
+    protected int getMediaCoderType() {
+        SharedPreferences sp = getSharedPreferences("mediaCoder", Context.MODE_PRIVATE);
+        return sp.getInt("type", 0);
     }
 
     private void initData() {

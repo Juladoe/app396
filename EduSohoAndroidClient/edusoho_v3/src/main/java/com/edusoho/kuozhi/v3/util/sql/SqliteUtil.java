@@ -214,7 +214,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
     public int update(String table, ContentValues cv, String where, String[] args) {
         SQLiteDatabase db = getWritableDatabase();
         int result = db.update(table, cv, where, args);
-        Log.d("m3u8_sql", "update " + table + " ->" + where);
+        Log.d("m3u8_sql", "update " + table + " ->" + result);
         return result;
     }
 

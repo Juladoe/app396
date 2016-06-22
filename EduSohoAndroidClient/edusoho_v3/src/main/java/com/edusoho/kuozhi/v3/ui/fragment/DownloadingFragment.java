@@ -3,22 +3,30 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.DownloadingAdapter;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
+import com.edusoho.kuozhi.v3.view.dialog.ExitCoursePopupDialog;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+
+import cn.trinea.android.common.util.ToastUtils;
 
 /**
  * Created by JesseHuang on 15/6/22.
@@ -87,6 +95,14 @@ public class DownloadingFragment extends BaseFragment {
             }
         });
 
+        mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                processdownloadItemClick(v, groupPosition, childPosition);
+                return false;
+            }
+        });
+
         mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
@@ -105,6 +121,95 @@ public class DownloadingFragment extends BaseFragment {
         for (int i = 0; i < mDownloadingAdapter.getGroupCount(); i++) {
             mListView.expandGroup(i);
         }
+    }
+
+    private void continueDonwloadTask() {
+        M3U8DownService service = M3U8DownService.getService();
+        if (service != null && service.isRunDownloadTask()) {
+            return;
+        }
+
+        LessonItem lessonItem = mDownloadingAdapter.getChild(0, 0);
+        if (lessonItem == null) {
+            return;
+        }
+
+        if (!app.getNetIsConnect()) {
+            ToastUtils.show(mActivity, "当前无网络连接!");
+            return;
+        }
+        int offlineType = app.config.offlineType;
+        if (offlineType == Const.NET_NONE || (offlineType == Const.NET_WIFI && !app.getNetIsWiFi()) ) {
+            return;
+        }
+
+        M3U8DownService.startDown(
+                mActivity, lessonItem.id, lessonItem.courseId, lessonItem.title);
+    }
+
+    private void processdownloadItemClick(View view, int groupPosition, int childPosition) {
+        if (mDownloadingAdapter.isSelectedShow()) {
+            return;
+        }
+        LessonItem lessonItem = mDownloadingAdapter.getChild(groupPosition, childPosition);
+        M3U8DownService service = M3U8DownService.getService();
+        TextView ivDownloadSign = (TextView) view.findViewById(R.id.iv_download_sign);
+        if (ivDownloadSign.getText().equals(getResources().getString(R.string.font_downloading))) {
+           ivDownloadSign.setText(getResources().getString(R.string.font_stop_downloading));
+            if (service != null) {
+                service.cancelDownloadTask(lessonItem.id);
+            }
+        } else {
+            if (!app.getNetIsConnect()) {
+                ToastUtils.show(mActivity, "当前无网络连接!");
+                return;
+            }
+            int offlineType = app.config.offlineType;
+            if (offlineType == Const.NET_NONE) {
+                showAlertDialog("当前设置视频课时观看、下载为禁止模式!\n模式可以在设置里修改。");
+                return;
+            }
+            if (offlineType == Const.NET_WIFI && !app.getNetIsWiFi()) {
+                showAlertDialog("当前设置视频课时观看、下载为WiFi模式!\n模式可以在设置里修改。");
+                return;
+            }
+
+            ivDownloadSign.setText(getString(R.string.font_stop_downloading));
+            M3U8DownService.startDown(
+                    mActivity.getBaseContext(), lessonItem.id, lessonItem.courseId, lessonItem.title);
+        }
+    }
+
+    private void showAlertDialog(String content) {
+        PopupDialog popupDialog = PopupDialog.createMuilt(
+                mActivity,
+                "播放提示",
+                content,
+                new PopupDialog.PopupClickListener() {
+                    @Override
+                    public void onClick(int button) {
+                        if (button == PopupDialog.OK) {
+                            ExitCoursePopupDialog dialog = ExitCoursePopupDialog.createNormal(
+                                    mActivity, "视频课时下载播放", new ExitCoursePopupDialog.PopupClickListener() {
+                                        @Override
+                                        public void onClick(int button, int position, String selStr) {
+                                            if (button == ExitCoursePopupDialog.CANCEL) {
+                                                return;
+                                            }
+
+                                            EdusohoApp app = EdusohoApp.app;
+                                            app.config.offlineType = position;
+                                            app.saveConfig();
+                                        }
+                                    }
+                            );
+                            dialog.setStringArray(R.array.offline_array);
+                            dialog.show();
+                        }
+                    }
+                });
+        popupDialog.setOkText("去设置");
+        popupDialog.show();
     }
 
     @Override
@@ -160,6 +265,12 @@ public class DownloadingFragment extends BaseFragment {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        continueDonwloadTask();
     }
 
     private void showBtnLayout() {

@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -58,7 +59,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected String mVideoSource = null;
     protected String mVideoHead = null;
 
-    private BVideoView mVV = null;
+    protected BVideoView mVV = null;
     private Activity mContext = null;
 
     private ImageView mPlaybtn = null;
@@ -72,11 +73,12 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private SeekBar mProgress = null;
     private TextView mDuration = null;
     private TextView mCurrPostion = null;
+    protected ViewGroup mViewContainerView = null;
 
     private boolean mIsHwDecode = false;
     private boolean mIsPlayEnd;
     protected boolean isCacheVideo;
-    private int mDecodeMode;
+    protected int mDecodeMode;
 
     protected EventHandler mEventHandler;
     protected HandlerThread mHandlerThread;
@@ -139,7 +141,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     mUIHandler.sendEmptyMessageDelayed(UI_EVENT_UPDATE_CURRPOSITION, 200);
                     break;
                 case UI_EVENT_ERROR:
-                    showErrorDialog();
+                    showErrorDialog(msg.arg1, msg.arg2);
                     break;
                 case UI_EVENT_FINISH:
                     mReplayBtn.setVisibility(View.VISIBLE);
@@ -496,6 +498,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mPlaybtn = (ImageView) view.findViewById(R.id.play_btn);
         mFullBtn = (CheckBox) view.findViewById(R.id.full_btn);
         mReplayBtn = (ImageView) view.findViewById(R.id.video_replay);
+        mViewContainerView = (ViewGroup) view.findViewById(R.id.video_container);
 
         mProgress = (SeekBar) view.findViewById(R.id.media_progress);
         mDuration = (TextView) view.findViewById(R.id.time_total);
@@ -542,10 +545,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             }
         });
 
-        /**
-         *关联BMediaController
-         */
-        //mVV.setMediaController(mVVCtl);
         /**
          *设置解码模式
          */
@@ -666,14 +665,15 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
      */
     @Override
     public boolean onError(int what, int extra) {
-        Log.v(TAG, "onError what:" + what + " extra:" + extra);
+        mLastPos = mCurrentPos > 0 ? mCurrentPos + 16 : 0;
+        Log.v(TAG, "onError what:" + what + " mCurrentPos:" + extra);
         synchronized (SYNC_Playing) {
             SYNC_Playing.notify();
         }
 
         mPlayerStatus = PLAYER_STATUS.PLAYER_IDLE;
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
-        mUIHandler.sendEmptyMessage(UI_EVENT_ERROR);
+        mUIHandler.obtainMessage(UI_EVENT_ERROR, what, extra).sendToTarget();
         return true;
     }
 
@@ -684,7 +684,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mEventHandler.sendEmptyMessage(EVENT_START);
     }
 
-    private void showErrorDialog() {
+    protected void showErrorDialog(int what, int extra) {
         Activity activity = getActivity();
         if (activity == null) {
             return;
@@ -829,7 +829,28 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mUIHandler.sendEmptyMessage(UI_EVENT_PLAY);
         mUIHandler.sendEmptyMessage(UI_EVENT_UPDATE_CURRPOSITION);
         mDurationCount = mVV.getDuration();
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                setVideoViewHeight();
+            }
+        });
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        setVideoViewHeight();
+    }
+
+    private void setVideoViewHeight() {
+        int screenWidth = mContext.getWindowManager().getDefaultDisplay().getWidth();
+
+        int videoViewHeight = (int) (screenWidth / (16 / 9.0f));
+        ViewGroup.LayoutParams lp = mVV.getLayoutParams();
+        lp.height = videoViewHeight;
+        mVV.setLayoutParams(lp);
+    }
 }
 

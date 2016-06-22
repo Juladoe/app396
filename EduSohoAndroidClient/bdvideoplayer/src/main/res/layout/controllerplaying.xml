@@ -4,14 +4,17 @@
     android:layout_height="match_parent">
 
     <FrameLayout
+        android:id="@+id/video_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:background="#dd000000">
 
         <com.baidu.cyberplayer.core.BVideoView
             android:id="@+id/video_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:background="#dd000000" />
 
         <ImageView

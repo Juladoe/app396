@@ -13,7 +13,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tv_lesson_chapter"
-            android:text="第一节 Activity数据交换"
             android:textSize="@dimen/x_small_font_size"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
@@ -51,24 +50,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Activity数据交换"
                 android:textSize="@dimen/small_font_size"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/iv_download_finish"
                 android:layout_marginRight="10dp"
                 android:id="@+id/tv_lesson_name" />
-
-            <!--<com.edusoho.kuozhi.v3.view.EduSohoIconView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/iv_download"-->
-            <!--android:layout_centerVertical="true"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_marginRight="10dp"-->
-            <!--android:textColor="@color/green_alpha"-->
-            <!--android:text="@string/font_downloading"-->
-            <!--android:textSize="@dimen/large_font_size" />-->
 
             <TextView
                 android:layout_width="wrap_content"
@@ -93,7 +80,6 @@
             android:id="@+id/iv_download_selected"
             android:text="@string/font_download_unselect"
             android:textSize="@dimen/xx_large_font_size"
-            android:clickable="true"
             android:textColor="@color/green_alpha"
             android:background="@android:color/white"
             android:layout_marginLeft="22dp" />
