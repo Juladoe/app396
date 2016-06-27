@@ -93,6 +93,8 @@
     <string name="school_info_error">"无法获取网校信息"</string>
     <string name="lesson_default_title">课程简介</string>
     <string name="course_params_error">课程参数不正确</string>
+    <string name="player_exit_dialog_title">提醒</string>
+    <string name="player_exit_dialog_msg">是否退出播放</string>
 
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>

@@ -3,8 +3,10 @@ package com.edusoho.kuozhi.v3.ui.fragment.video;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 
@@ -38,10 +40,19 @@ import java.util.List;
 public class CustomVideoFragment extends BdVideoPlayerFragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, BdVideoPlayerFragment.LessonLearnStatus {
 
     LessonActivity lessonActivity = null;
+    PopupDialog backPopupDialog = null;
     private static final int NO_LESSON = 10001;
     private static final int HEAD_ERROR = 10002;
 
     List<StreamInfo> streamInfoLists = new ArrayList<>();
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getActivity() instanceof LessonActivity) {
+            lessonActivity = (LessonActivity) getActivity();
+        }
+    }
 
     @Override
     protected void initView(View view) {
@@ -85,13 +96,33 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
             }
         });
         mLearnStatusChanged = this;
+        backPopupDialog = PopupDialog.createMuilt(lessonActivity, getString(R.string.player_exit_dialog_title), getString(R.string.player_exit_dialog_msg), new PopupDialog.PopupClickListener() {
+            @Override
+            public void onClick(int button) {
+                if (button == PopupDialog.OK) {
+                    getActivity().onBackPressed();
+                    isBackPressed = true;
+                }
+            }
+        });
+        backPopupDialog.setOkText("退出");
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getActivity() instanceof LessonActivity) {
-            lessonActivity = (LessonActivity) getActivity();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        if (getView() != null) {
+            getView().setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        backPopupDialog.show();
+                    }
+                    return false;
+                }
+            });
         }
     }
 
@@ -241,8 +272,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
     @Override
     public void onClick(View v) {
         if (v.getId() == ivBack.getId()) {
-            getActivity().onBackPressed();
-            isBackPressed = true;
+            backPopupDialog.show();
         } else if (v.getId() == ivShare.getId()) {
             RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.COURSE, false);
             HashMap<String, String> params = requestUrl.getParams();
