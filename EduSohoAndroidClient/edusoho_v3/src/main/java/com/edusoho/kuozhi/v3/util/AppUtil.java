@@ -524,8 +524,8 @@ public class AppUtil {
     public static boolean isWiFiConnect(Context context) {
         ConnectivityManager connManager = (ConnectivityManager)
                 context.getSystemService(context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        return networkInfo != null && networkInfo.isAvailable();
+        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
     public static boolean saveStreamToFile(

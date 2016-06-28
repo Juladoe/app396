@@ -47,6 +47,7 @@ import com.baidu.cyberplayer.core.BVideoView.OnPlayingBufferCacheListener;
 import com.baidu.cyberplayer.core.BVideoView.OnPreparedListener;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -88,6 +89,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private SeekBar mProgress = null;
     private TextView mDuration = null;
     private TextView mCurrPosition = null;
+    protected ViewGroup mViewContainerView = null;
 
     protected int mCourseId;
     protected int mLessonId;
@@ -485,6 +487,20 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         alertDialog.show();
     }
 
+    private int getCpuBit() {
+        int cupBit;
+        try {
+            Field SUPPORTED_64_BIT_ABIS_FIELD = android.os.Build.class.getField("SUPPORTED_64_BIT_ABIS");
+            SUPPORTED_64_BIT_ABIS_FIELD.setAccessible(true);
+            String[] SUPPORTED_64_BIT_ABIS = (String[]) SUPPORTED_64_BIT_ABIS_FIELD.get(null);
+            cupBit = SUPPORTED_64_BIT_ABIS == null || SUPPORTED_64_BIT_ABIS.length == 0 ? 32 : 64;
+        } catch (Exception e) {
+            cupBit = 32;
+        }
+
+        return cupBit;
+    }
+
     private void checkVideoCanPlayer() {
         String CPU_ABI = getCpuType();
         if (CPU_ABI.contains("x86")) {
@@ -627,9 +643,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         return false;
     }
 
-    /**
-     * 前缓冲  分 ， 可以 合onInfo中    冲和结  冲    分 到
-     */
     @Override
     public void onPlayingBufferCache(int percent) {
     }

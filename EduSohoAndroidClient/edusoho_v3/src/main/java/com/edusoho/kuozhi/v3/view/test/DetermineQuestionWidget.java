@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 
@@ -35,8 +36,21 @@ public class DetermineQuestionWidget extends BaseQuestionWidget {
     }
 
     @Override
+    protected void restoreResult(ArrayList resultData) {
+        int count = radioGroup.getChildCount();
+        for (int i=0; i < count; i++) {
+            RadioButton child = (RadioButton) radioGroup.getChildAt(i);
+            for (Object answer : resultData) {
+                if (answer.equals(String.valueOf(i))) {
+                    child.setChecked(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
     protected void invalidateData() {
-        super.invalidateData();
         radioGroup = (RadioGroup) findViewById(R.id.question_result_radio);
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -76,6 +90,7 @@ public class DetermineQuestionWidget extends BaseQuestionWidget {
             });
             mAnalysisVS.inflate();
         }
+        super.invalidateData();
     }
 
     private void initQuestionResult()

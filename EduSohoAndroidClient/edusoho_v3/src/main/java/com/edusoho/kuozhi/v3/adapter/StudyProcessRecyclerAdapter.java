@@ -17,9 +17,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
-import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.CourseStudyFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.test.TestpaperResultFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -125,15 +123,13 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             ((LessonTitleViewHolder) holder).lessonTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mApp.mEngine.runNormalPlugin(
-                            LessonActivity.TAG, mContext, new PluginRunCallback() {
-                                @Override
-                                public void setIntentDate(Intent startIntent) {
-                                    startIntent.putExtra(Const.COURSE_ID, entity.getCourseId());
-                                    startIntent.putExtra(Const.LESSON_ID, entity.getLessonId());
-                                }
-                            }
-                    );
+                    mApp.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            String url = String.format(Const.MOBILE_APP_URL, mApp.schoolHost, String.format(Const.HTML5_LESSON, entity.getCourseId(), entity.getLessonId()));
+                            startIntent.putExtra(Const.WEB_URL, url);
+                        }
+                    });
                 }
             });
 

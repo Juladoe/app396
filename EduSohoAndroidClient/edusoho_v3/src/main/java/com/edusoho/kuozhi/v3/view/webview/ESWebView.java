@@ -19,34 +19,25 @@ import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.htmlapp.AppMeta;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.AbstractJsBridgeAdapterWebView;
 import com.google.gson.reflect.TypeToken;
 import cn.trinea.android.common.util.FileUtils;
-import cn.trinea.android.common.util.StringUtils;
 
 /**
  * Created by howzhi on 15/4/16.
@@ -56,6 +47,7 @@ public class ESWebView extends RelativeLayout {
     public static final int LOAD_FROM_CACHE = 0001;
     public static final int LOAD_FROM_NET = 0002;
     public static final int LOAD_AUTO = 0003;
+    public static final String MAIN_UPDATE = "html5_main_update";
 
     private int mLoadType;
     protected AbstractJsBridgeAdapterWebView mWebView;
@@ -181,30 +173,24 @@ public class ESWebView extends RelativeLayout {
         return mAppCode;
     }
 
-    public void updateApp(String appCode, boolean isLoadByDialog) {
+    public void updateApp(String appCode) {
         String projectCode = mContext.getString(R.string.app_code);
         RequestUrl appVersionUrl = mActivity.app.bindUrl(
                 String.format(Const.MOBILE_APP_VERSION, appCode, projectCode), true);
 
-        RequestCallback<Boolean> callback = null;
-        if (isLoadByDialog) {
-            final LoadDialog loadDialog = LoadDialog.create(mActivity);
-            loadDialog.show();
-            callback = new RequestCallback<Boolean>() {
-                @Override
-                public Boolean onResponse(Response response) {
-                    loadDialog.dismiss();
-                    new Handler(mActivity.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            mWebView.loadUrl(mUrl);
-                        }
-                    });
-                    return false;
-                }
-            };
-        }
-
+        RequestCallback<Boolean> callback = new RequestCallback<Boolean>() {
+            @Override
+            public Boolean onResponse(Response response) {
+                new Handler(mActivity.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, MAIN_UPDATE);
+                        MessageEngine.getInstance().sendMsg(MAIN_UPDATE, null);
+                    }
+                });
+                return false;
+            }
+        };
         mRequestManager.updateApp(appVersionUrl, callback);
     }
 
@@ -221,13 +207,11 @@ public class ESWebView extends RelativeLayout {
             return;
         }
 
+        updateApp(mAppCode);
         if (checkResourceIsExists()) {
             mWebView.loadUrl(mUrl);
-            updateApp(mAppCode, false);
             return;
         }
-
-        updateApp(mAppCode, true);
     }
 
     private boolean checkResourceIsExists() {

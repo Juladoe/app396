@@ -78,6 +78,12 @@ public class EssayQuestionWidget extends BaseQuestionWidget
     }
 
     @Override
+    protected void restoreResult(ArrayList resultData) {
+        String contentBodyText = resultData.get(0).toString();
+        contentEdt.setText(Html.fromHtml(contentBodyText, new NetImageGetter(contentEdt, contentBodyText), null));
+    }
+
+    @Override
     public void invoke(WidgetMessage message) {
         int type = message.type.code;
         switch (type) {
@@ -130,8 +136,6 @@ public class EssayQuestionWidget extends BaseQuestionWidget
 
     @Override
     protected void invalidateData() {
-        super.invalidateData();
-
         mToolsLayout = this.findViewById(R.id.essay_tools_layout);
         contentEdt = (EditText) this.findViewById(R.id.essay_content);
         mPhotoBtn = (ImageView) this.findViewById(R.id.essay_photo);
@@ -182,6 +186,7 @@ public class EssayQuestionWidget extends BaseQuestionWidget
             });
             mAnalysisVS.inflate();
         }
+        super.invalidateData();
     }
 
     @Override

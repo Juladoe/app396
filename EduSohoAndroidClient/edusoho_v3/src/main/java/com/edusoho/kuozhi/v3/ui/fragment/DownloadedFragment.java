@@ -12,7 +12,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.DownloadingAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;

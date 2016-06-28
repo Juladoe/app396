@@ -28,11 +28,13 @@ import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.util.ArrayList;
@@ -67,7 +69,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lesson_downloading);
-        setBackMode(BACK, "下载列表");
+        setBackMode(BACK, getResources().getString(R.string.mine_items_download));
         mContext = this;
         initView();
     }
@@ -231,14 +233,38 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             if (getDeviceFreeSize() < (1024 * 1024 * 50)) {
-                CommonUtil.longToast(mContext, "手机可用空间不足,不能下载!");
+                CommonUtil.longToast(mContext, "手机可用空间不足,不能缓存!");
                 return;
             }
 
-            for (LessonItem item : mLessonList) {
-                if (item.isSelected) {
-                    downloadLesson(item);
-                    item.isSelected = false;
+            if (!AppUtil.isWiFiConnect(mActivity) && mActivity.app.config.offlineType == 0) {
+                PopupDialog popupDialog = PopupDialog.createMuilt(mActivity,
+                        mActivity.getString(R.string.notification),
+                        mActivity.getString(R.string.player_4g_info), new PopupDialog.PopupClickListener() {
+                            @Override
+                            public void onClick(int button) {
+                                if (button == PopupDialog.OK) {
+                                    mActivity.app.config.offlineType = 1;
+                                    mActivity.app.saveConfig();
+                                    for (LessonItem item : mLessonList) {
+                                        if (item.isSelected) {
+                                            downloadLesson(item);
+                                            item.isSelected = false;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                popupDialog.setOkText(mActivity.getString(R.string.yes));
+                popupDialog.setCancelText(mActivity.getString(R.string.no));
+                popupDialog.setCanceledOnTouchOutside(false);
+                popupDialog.show();
+            } else {
+                for (LessonItem item : mLessonList) {
+                    if (item.isSelected) {
+                        downloadLesson(item);
+                        item.isSelected = false;
+                    }
                 }
             }
         }
@@ -379,7 +405,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 if (listItem.uploadFile == null) {
                     Pattern urlPattern = Pattern.compile("courses/[\\d]+/lessons/[\\d]+/media", Pattern.DOTALL);
                     if (urlPattern.matcher(lessonItem.mediaUri).find()) {
-                        CommonUtil.longToast(mContext, "暂不支持本地视频下载!");
+                        CommonUtil.longToast(mContext, "暂不支持本地视频缓存!");
                         return;
                     }
                 }

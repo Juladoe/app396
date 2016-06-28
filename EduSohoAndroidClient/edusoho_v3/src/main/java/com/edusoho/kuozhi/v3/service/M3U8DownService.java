@@ -147,6 +147,14 @@ public class M3U8DownService extends Service {
         });
     }
 
+    public boolean isRunDownloadTask() {
+        if (mM3U8UitlList == null) {
+            return false;
+        }
+
+        return mM3U8UitlList.size() > 0;
+    }
+
     public boolean hasTaskByLessonId(int lessonId) {
         if (mM3U8UitlList == null || mM3U8UitlList.size() == 0) {
             return false;

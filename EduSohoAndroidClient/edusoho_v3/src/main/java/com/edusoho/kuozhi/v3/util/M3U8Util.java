@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -19,6 +20,7 @@ import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8ListItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -33,6 +35,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,7 +43,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
-import java.lang.ref.WeakReference;
 import java.net.URLConnection;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -51,6 +53,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 import cn.trinea.android.common.util.ToastUtils;
@@ -301,10 +304,14 @@ public class M3U8Util {
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                final LessonItem lessonItem = app.gson.fromJson(
-                        response, new TypeToken<LessonItem>() {
-                        }.getType()
-                );
+                LessonItem lessonItem = null;
+                try {
+                    lessonItem = app.gson.fromJson(
+                            response, new TypeToken<LessonItem>() {
+                            }.getType()
+                    );
+                } catch (Exception e) {
+                }
                 if (lessonItem == null) {
                     return;
                 }
@@ -911,20 +918,17 @@ public class M3U8Util {
         public String url;
         public int type;
 
-        public DownloadItem(int type, String url)
-        {
+        public DownloadItem(int type, String url) {
             this.type = type;
             this.url = url;
         }
     }
 
-    class DownloadRunnable implements Runnable
-    {
+    class DownloadRunnable implements Runnable {
         public String url;
         public int type;
 
-        public DownloadRunnable(int type, String url)
-        {
+        public DownloadRunnable(int type, String url) {
             this.type = type;
             this.url = url;
         }
@@ -950,7 +954,8 @@ public class M3U8Util {
             );
 
             Log.d(TAG, "isSave " + isSave);
-            if (! isSave) {
+            if (!isSave) {
+                file.delete();
                 throw new RuntimeException("down error");
             }
         }
@@ -963,8 +968,12 @@ public class M3U8Util {
             intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
             mContext.sendBroadcast(intent);
         }
+
         @Override
         public void run() {
+            if (!AppUtil.isWiFiConnect(mContext) && EdusohoApp.app.config.offlineType == 0) {
+                return;
+            }
             String key = DigestUtils.md5(url);
             HttpGet httpGet = new HttpGet(url);
             mFutures.add(httpGet);
@@ -983,9 +992,9 @@ public class M3U8Util {
                 sendSuccessBroadcast();
                 prepareDownload();
             } catch (RuntimeException re) {
-                processTimeout(type, key ,url);
+                processTimeout(type, key, url);
             } catch (Exception e) {
-                processTimeout(type, key ,url);
+                processTimeout(type, key, url);
             } finally {
                 httpGet.abort();
                 mFutures.remove(httpGet);
