@@ -210,7 +210,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
 
         ivVideoReplay.setVisibility(View.GONE);
-        //resumePlay();
+        resumePlay();
     }
 
     private void initSoLib() {
