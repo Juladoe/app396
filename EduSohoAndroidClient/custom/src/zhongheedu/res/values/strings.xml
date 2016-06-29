@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">众合法考</string>
+
+    <string name="app_host">http://www.zhongheedu.com</string>
+    <string name="app_code">zhongheedu</string>
+    <string name="about_welcome">关于众合法考</string>
+    <string name="channel_name">zhongheedu</string>
+    <string name="splash_num">4</string>
+    <string name="splash_padding">0</string>
+    <string name="app_id">wxe6eaaee28c709eec</string>
+
+    <string-array
+        name="shard_filter"
+        >
+        <item>TencentWeibo</item>
+        <item>QZone</item>
+
+    </string-array>
+
+</resources>

@@ -14,7 +14,7 @@ android {
     //签名
     signingConfigs {
         debugConfig {
-            storeFile file("key/com.edusoho.kaoshi60.jks")
+            storeFile file("key/com.edusoho.zhongheedu.jks")
             storePassword "10001000"
             keyAlias "cn"
             keyPassword "10001000"
@@ -25,11 +25,11 @@ android {
 
     productFlavors {
 
-        kaoshi60 {
+        zhongheedu {
             signingConfig signingConfigs.debugConfig
 
-            applicationId "com.edusoho.kaoshi60"
-            manifestPlaceholders = [wxpkg: "com.edusoho.kaoshi60", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+            applicationId "com.edusoho.zhongheedu"
+            manifestPlaceholders = [wxpkg: "com.edusoho.zhongheedu", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
 
         }
     }
@@ -37,10 +37,10 @@ android {
     sourceSets {
 
 
-        kaoshi60 {
-            java.srcDirs = ['src/kaoshi60/java']
-            res.srcDirs = ['src/kaoshi60/res']
-            assets.srcDirs = ['src/kaoshi60/assets']
+        zhongheedu {
+            java.srcDirs = ['src/zhongheedu/java']
+            res.srcDirs = ['src/zhongheedu/res']
+            assets.srcDirs = ['src/zhongheedu/assets']
 
         }
     }
@@ -56,6 +56,7 @@ android {
 
 dependencies {
     compile project(':edusoho_v3')
+    compile project(':homework')
 }
 
 task newcustom (type: Copy) {
