@@ -128,7 +128,7 @@ public class M3U8Util {
      * 获取视频缓存
      */
     public static M3U8DbModel queryM3U8Model(
-            Context context, int userId, int id, String host, int isFinish) {
+            Context context, int userId, int lessonId, String host, int isFinish) {
         SqliteUtil.QueryParser<M3U8DbModel> queryCallBack =
                 new SqliteUtil.QueryParser<M3U8DbModel>() {
                     @Override
@@ -141,7 +141,7 @@ public class M3U8Util {
         return SqliteUtil.getUtil(context).query(
                 queryCallBack,
                 "select * from data_m3u8 where userId=? and host=? and lessonId=?" + finishQuery,
-                String.valueOf(userId), host, String.valueOf(id)
+                String.valueOf(userId), host, String.valueOf(lessonId)
         );
     }
 

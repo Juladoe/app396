@@ -168,6 +168,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mIsHwDecode = bundle.getBoolean("isHW", false);
         isCacheVideo = bundle.getBoolean("from_cache", false);
         mVideoSource = getUrlPath(bundle.getString("streamUrls"));
+        if (isCacheVideo) {
+            mCurMediaSource = mVideoSource;
+        }
         int decodeMode = TextUtils.isEmpty(mVideoSource) || mVideoSource.contains("Lesson/getLocalVideo") ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
         mDecodeMode = bundle.getInt("decode", decodeMode);
         mVideoHead = getUrlPath(bundle.getString("headUrl"));
@@ -394,9 +397,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     // region player action
 
     private void playVideo() {
-        /**
-         *       了，  上一
-         */
         if (mPlayerStatus != PLAYER_STATUS.PLAYER_IDLE) {
             synchronized (SYNC_Playing) {
                 try {
@@ -407,44 +407,20 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 }
             }
         }
-
-        /**
-         *     url
-         */
         mVV.setVideoPath(mCurMediaSource);
-
-        /**
-         *   ，
-         */
         if (mLastPos > 0) {
             mVV.seekTo(mLastPos);
             mLastPos = 0;
         }
-
-        /**
-         *        冲
-         */
         mVV.showCacheInfo(true);
-
-        /**
-         *
-         */
         startVideo();
-
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARING;
     }
 
     private void playHeadUrl() {
         Log.v(TAG, "playHeadUrl " + mCurMediaHeadSource);
         mVV.setVideoPath(mCurMediaHeadSource);
-        /**
-         *        冲
-         */
         mVV.showCacheInfo(true);
-        /**
-         *
-         */
-
         startVideo();
 
         mPlayerStatus = PLAYER_STATUS.PLAYER_PREPARING;
