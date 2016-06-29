@@ -202,7 +202,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
                 }
             }
-        }, null);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
     }
 
     public void changeLessonStatus(boolean isLearn) {

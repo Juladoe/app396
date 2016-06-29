@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -191,7 +192,7 @@ public class BaseActivity extends ActionBarActivity {
             public void onErrorResponse(VolleyError error) {
                 if (errorListener != null) {
                     errorListener.onErrorResponse(error);
-                } else {
+                } else if (error instanceof NoConnectionError) {
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
             }

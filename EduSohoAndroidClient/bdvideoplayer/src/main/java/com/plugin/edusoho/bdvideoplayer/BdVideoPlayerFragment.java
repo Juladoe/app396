@@ -585,10 +585,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     @Override
     public void onDestroy() {
         super.onDestroy();
-        /**
-         *   后台事件
-         */
-
         mHandlerThread.quit();
         Log.v(TAG, "onDestroy");
         if (mWakeLock != null) {
@@ -603,14 +599,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     @Override
     public boolean onInfo(int what, int extra) {
         switch (what) {
-            /**
-             *    冲
-             */
             case BVideoView.MEDIA_INFO_BUFFERING_START:
                 break;
-            /**
-             *    冲
-             */
             case BVideoView.MEDIA_INFO_BUFFERING_END:
                 break;
             default:
@@ -621,11 +611,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
 
     @Override
     public void onPlayingBufferCache(int percent) {
+
     }
 
-    /**
-     * 出
-     */
     @Override
     public boolean onError(int what, int extra) {
         mLastPos = mCurrentPos > 0 ? mCurrentPos + 16 : 0;
