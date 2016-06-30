@@ -34,7 +34,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:text="提问提"
+                android:text="提问题"
                 android:textColor="@color/system_text"
                 android:textSize="@dimen/font_size_s" />
 
