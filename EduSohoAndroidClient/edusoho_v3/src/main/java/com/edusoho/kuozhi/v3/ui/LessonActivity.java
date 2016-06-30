@@ -12,17 +12,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
-import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -40,6 +41,7 @@ import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -48,6 +50,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 
@@ -198,7 +201,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
                 }
             }
-        }, null);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
     }
 
     private void changeLessonStatus(boolean isLearn) {
@@ -339,10 +347,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem menuItem = menu.findItem(R.id.menu_homework);
-        if (mLessonType != null){
-            if (mLessonType.equals("testpaper")){
+        if (mLessonType != null) {
+            if (mLessonType.equals("testpaper")) {
                 menuItem.setVisible(false);
-            }else {
+            } else {
                 menuItem.setVisible(true);
             }
         }
@@ -451,10 +459,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String getLocalIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface
-                    .getNetworkInterfaces(); en.hasMoreElements();) {
+                    .getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface intf = en.nextElement();
                 for (Enumeration<InetAddress> enumIpAddr = intf
-                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                        .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
                         return inetAddress.getHostAddress().toString();
