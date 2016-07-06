@@ -3,17 +3,17 @@
 
     <ShareSDK AppKey="41f51eeb5d88" />
     <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
-    <!--
-    <Wechat Id="1" SortId="1" AppId="wxe6eaaee28c709eec"
-        AppSecret="9bd66f8d36cfceab0d18d14c6780f4ab" BypassApproval="false" Enable="true" />
 
-    <WechatMoments Id="2" SortId="2" AppId="wxe6eaaee28c709eec"
-        AppSecret="9bd66f8d36cfceab0d18d14c6780f4ab" BypassApproval="true" Enable="true" />
+    <Wechat Id="1" SortId="1" AppId="wx59160b842c21c01b"
+        AppSecret="f21e60e8f214d0dbc9db7afba90fb30c" BypassApproval="false" Enable="true" />
 
-    <WechatFavorite Id="3" SortId="3" AppId="wxe6eaaee28c709eec"
-        AppSecret="9bd66f8d36cfceab0d18d14c6780f4ab" Enable="true" />
-    -->
-    <!--demo站-->
+    <WechatMoments Id="2" SortId="2" AppId="wx59160b842c21c01b"
+        AppSecret="f21e60e8f214d0dbc9db7afba90fb30c" BypassApproval="true" Enable="true" />
+
+    <WechatFavorite Id="3" SortId="3" AppId="wx59160b842c21c01b"
+        AppSecret="f21e60e8f214d0dbc9db7afba90fb30c" Enable="true" />
+
+
     <SinaWeibo Id="4" SortId="4" AppKey="1616008853" AppSecret="5f3b8323e1345c96db571af523e62c4c"
         RedirectUrl="http://www.zhongheedu.com" ShareByAppClient="true" Enable="true" />
 
