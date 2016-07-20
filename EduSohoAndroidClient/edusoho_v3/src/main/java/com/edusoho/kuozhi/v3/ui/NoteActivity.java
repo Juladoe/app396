@@ -5,9 +5,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -23,14 +22,13 @@ import java.util.List;
 /**
  * Created by JesseHuang on 16/5/9.
  */
-public class NoteActivity extends ActionBarBaseActivity implements View.OnClickListener, CompoundButton.OnCheckedChangeListener {
+public class NoteActivity extends ActionBarBaseActivity implements View.OnClickListener {
 
     private Toolbar toolbar;
     private TextView tvCancel;
     private TextView tvPost;
-    private TextView tvShare;
     private EditText etNoteContent;
-    private CheckBox cbShare;
+    private Switch swShare;
 
     private int mCourseId;
     private int mLessonId;
@@ -49,10 +47,8 @@ public class NoteActivity extends ActionBarBaseActivity implements View.OnClickL
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         tvCancel = (TextView) findViewById(R.id.tv_cancel);
         tvPost = (TextView) findViewById(R.id.tv_post);
-        cbShare = (CheckBox) findViewById(R.id.cb_share);
-        tvShare = (TextView) findViewById(R.id.tv_share);
+        swShare = (Switch) findViewById(R.id.sw_share);
         etNoteContent = (EditText) findViewById(R.id.et_note_content);
-        cbShare.setOnCheckedChangeListener(this);
         tvCancel.setOnClickListener(this);
         tvPost.setOnClickListener(this);
     }
@@ -73,7 +69,7 @@ public class NoteActivity extends ActionBarBaseActivity implements View.OnClickL
                 if (data != null && data.size() > 0) {
                     Note note = data.get(0);
                     etNoteContent.setText(Html.fromHtml(note.content).toString());
-                    cbShare.setChecked(note.status == 1);
+                    swShare.setChecked(note.status == 1);
                 }
             }
 
@@ -89,7 +85,7 @@ public class NoteActivity extends ActionBarBaseActivity implements View.OnClickL
         if (v.getId() == tvCancel.getId()) {
             finish();
         } else if (v.getId() == tvPost.getId()) {
-            noteModel.postNote(mCourseId, mLessonId, cbShare.isChecked() ? 1 : 0, etNoteContent.getText().toString().trim(), new ResponseCallbackListener<Note>() {
+            noteModel.postNote(mCourseId, mLessonId, swShare.isChecked() ? 1 : 0, etNoteContent.getText().toString().trim(), new ResponseCallbackListener<Note>() {
                 @Override
                 public void onSuccess(Note data) {
                     if (data != null) {
@@ -103,15 +99,6 @@ public class NoteActivity extends ActionBarBaseActivity implements View.OnClickL
                     CommonUtil.longToast(mContext, "笔记保存失败");
                 }
             });
-        }
-    }
-
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (isChecked) {
-            tvShare.setTextColor(getResources().getColor(R.color.primary));
-        } else {
-            tvShare.setTextColor(getResources().getColor(R.color.grey_alpha));
         }
     }
 }

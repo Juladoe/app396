@@ -165,7 +165,7 @@
                 android:layout_marginRight="30dp"
                 android:layout_toLeftOf="@+id/iv_question"
                 android:src="@drawable/icon_note"
-                android:visibility="invisible" />
+                android:visibility="visible" />
 
             <ImageView
                 android:id="@+id/iv_question"
@@ -173,7 +173,7 @@
                 android:layout_height="match_parent"
                 android:layout_toLeftOf="@+id/tv_stream"
                 android:src="@drawable/icon_question"
-                android:visibility="invisible" />
+                android:visibility="visible" />
 
             <TextView
                 android:id="@+id/tv_stream"
