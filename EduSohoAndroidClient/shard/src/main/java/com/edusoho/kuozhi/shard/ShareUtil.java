@@ -34,6 +34,7 @@ public class ShareUtil {
     private ShareSDKUtil mShareSDKUtil;
     private List<ListData> mCustomList;
     private ArrayList<ListData> mList;
+    private ShardDialog.DismissEvent mDismissEvent;
 
     private ShareUtil(Context context) {
         //添加应用信息
@@ -78,6 +79,10 @@ public class ShareUtil {
         return this;
     }
 
+    public void setDismissEvent(ShardDialog.DismissEvent dismissEvent) {
+        mDismissEvent = dismissEvent;
+    }
+
     private boolean filterPlat(String name) {
         String[] filters = mContext.getResources().getStringArray(R.array.shard_filter);
         for (String filter : filters) {
@@ -114,6 +119,7 @@ public class ShareUtil {
 
     public void initDialog(int type) {
         mAlertDialog = new ShardDialog(mContext, type);
+        mAlertDialog.setDismissEvent(mDismissEvent);
         mAlertDialog.setShardDatas(mList);
         mAlertDialog.setShardItemClick(new AdapterView.OnItemClickListener() {
             @Override

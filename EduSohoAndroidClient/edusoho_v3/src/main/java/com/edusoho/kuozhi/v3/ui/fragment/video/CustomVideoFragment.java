@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.baidu.cyberplayer.core.BVideoView;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.shard.ShardDialog;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
@@ -385,6 +386,13 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                         String pic = course.middlePicture;
                         String url = lessonActivity.app.host + "/course/" + lessonActivity.getCourseId();
                         final ShareTool shareTool = new ShareTool(lessonActivity, url, title, about, pic, 2);
+                        CustomVideoFragment.this.pause();
+                        shareTool.setDismissEvent(new ShardDialog.DismissEvent() {
+                            @Override
+                            public void afterDismiss() {
+                                CustomVideoFragment.this.resume();
+                            }
+                        });
                         new Handler((lessonActivity.getMainLooper())).post(new Runnable() {
                             @Override
                             public void run() {

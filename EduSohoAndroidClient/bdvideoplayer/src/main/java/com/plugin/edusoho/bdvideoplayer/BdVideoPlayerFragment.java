@@ -213,7 +213,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         if (null != mWakeLock && (!mWakeLock.isHeld())) {
             mWakeLock.acquire();
         }
-
         ivVideoReplay.setVisibility(View.GONE);
         resumePlay();
     }
@@ -654,9 +653,29 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         alertDialog.show();
     }
 
-    /**
-     * 为 件 册    函
-     */
+    public void pause() {
+        if (mVV.isPlaying()) {
+            mIsPlayEnd = true;
+            ivVideoPlay.setImageResource(R.drawable.icon_video_play);
+            mVV.pause();
+        }
+        Log.d(TAG, "pauseVideo: ");
+    }
+
+    public void resume() {
+        if (!mVV.isPlaying()) {
+            mIsPlayEnd = false;
+            ivVideoPlay.setImageResource(R.drawable.icon_video_pause);
+            if (mPlayerStatus == PLAYER_STATUS.PLAYER_IDLE) {
+                ivVideoReplay.setVisibility(View.GONE);
+                resumePlay();
+                return;
+            }
+            mVV.resume();
+        }
+        Log.d(TAG, "resumeVideo: ");
+    }
+
     private void registerCallbackForControl() {
         chkFullScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

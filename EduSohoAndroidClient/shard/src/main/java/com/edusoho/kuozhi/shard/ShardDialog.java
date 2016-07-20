@@ -24,6 +24,7 @@ public class ShardDialog extends Dialog {
     public static final int DIALOG_TYPE_NORMAL = 1;
     public static final int DIALOG_TYPE_VIDEO = 2;
     private int mStyleType = 1;
+    private DismissEvent mDismissEvent;
 
     public ShardDialog(Context context) {
         super(context, R.style.FullDialogTheme);
@@ -38,6 +39,10 @@ public class ShardDialog extends Dialog {
         mStyleType = type;
         initView();
         initWindow();
+    }
+
+    public void setDismissEvent(DismissEvent dismissEvent) {
+        mDismissEvent = dismissEvent;
     }
 
     private void initView() {
@@ -87,5 +92,17 @@ public class ShardDialog extends Dialog {
 
     public void setShardItemClick(AdapterView.OnItemClickListener onItemClickListener) {
         mGridView.setOnItemClickListener(onItemClickListener);
+    }
+
+    @Override
+    public void dismiss() {
+        super.dismiss();
+        if (mDismissEvent != null) {
+            mDismissEvent.afterDismiss();
+        }
+    }
+
+    public interface DismissEvent {
+        void afterDismiss();
     }
 }

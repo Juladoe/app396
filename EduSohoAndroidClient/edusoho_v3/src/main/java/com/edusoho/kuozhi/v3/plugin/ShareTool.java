@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ListData;
+import com.edusoho.kuozhi.shard.ShardDialog;
 import com.edusoho.kuozhi.shard.ShareHandler;
 import com.edusoho.kuozhi.shard.ShareUtil;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -48,6 +49,7 @@ public class ShareTool {
     private String mAbout = "";
     private String mPic = "";
     private int mDialogType = 1;
+    private ShardDialog.DismissEvent mDismissEvent;
 
     public ShareTool(Context ctx, String url, String title, String about, String pic) {
         mContext = ctx;
@@ -66,6 +68,10 @@ public class ShareTool {
         mDialogType = type;
     }
 
+    public void setDismissEvent(ShardDialog.DismissEvent dismissEvent) {
+        mDismissEvent = dismissEvent;
+    }
+
     public void shardCourse() {
         ImageLoader.getInstance().loadImage(mPic, EdusohoApp.app.mOptions, new SimpleImageLoadingListener() {
             @Override
@@ -82,6 +88,7 @@ public class ShareTool {
 
     private void startShare(String imageUri) {
         ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
+        shareUtil.setDismissEvent(mDismissEvent);
         File file = ImageLoader.getInstance().getDiskCache().get(imageUri);
         List<ListData> listDatas = shareUtil.getDataList();
         listDatas.addAll(0, getCustomListData());
