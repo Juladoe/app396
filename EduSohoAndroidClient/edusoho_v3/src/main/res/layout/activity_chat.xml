@@ -23,7 +23,7 @@
             android:id="@+id/rl_bottom"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@android:color/white"
+            android:background="@color/chat_tool_background"
             android:orientation="horizontal"
             android:paddingLeft="2dp"
             android:paddingRight="2dp">
@@ -285,7 +285,7 @@
                 android:id="@+id/lv_messages"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/background"
+                android:background="@color/chat_background"
                 android:clickable="true"
                 android:divider="@null"
                 android:fadingEdge="none"
