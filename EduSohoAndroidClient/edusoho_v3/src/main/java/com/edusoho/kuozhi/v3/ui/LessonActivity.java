@@ -41,7 +41,6 @@ import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.plugin.edusoho.bdvideoplayer.StreamInfo;
-
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;

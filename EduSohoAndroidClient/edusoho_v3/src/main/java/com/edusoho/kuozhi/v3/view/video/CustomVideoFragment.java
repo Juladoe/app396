@@ -37,10 +37,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment {
         super.onCreate(savedInstanceState);
         lessonActivity = (LessonActivity) getActivity();
         mDecodeMode = getMediaCoderType() == 0 ? BVideoView.DECODE_SW : BVideoView.DECODE_HW;
-        if (isCacheVideo) {
-            return;
-        }
-        if (!AppUtil.isWiFiConnect(getActivity()) && lessonActivity.app.config.offlineType == 0) {
+        if (!isCacheVideo && !AppUtil.isWiFiConnect(getActivity()) && lessonActivity.app.config.offlineType == 0) {
             PopupDialog popupDialog = PopupDialog.createMuilt(lessonActivity,
                     lessonActivity.getString(R.string.notification),
                     lessonActivity.getString(R.string.player_4g_info), new PopupDialog.PopupClickListener() {
