@@ -307,7 +307,7 @@ public class Const {
     public static final String SHOW_TESTPAPER = "Testpaper/showTestpaper";
 
     /**
-     * 获取考试课程详情
+     * 检查优惠码
      */
     public static final String COURSE_CODE = "Course/coupon";
 
