@@ -10,8 +10,6 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
-
-import com.alibaba.fastjson.parser.Feature;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -27,15 +25,7 @@ import com.google.gson.reflect.TypeToken;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.conn.params.ConnManagerParams;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -87,7 +77,6 @@ public class M3U8Util {
     private EdusohoApp app;
     private SqliteUtil mSqliteUtil;
     private String mTargetHost;
-    private HttpClient mHttpClient;
     private boolean isCancel;
     private Hashtable<String, Integer> mTimeOutList;
     private ArrayList<Future> mFutures;
@@ -268,10 +257,10 @@ public class M3U8Util {
     public void download(int lessonId, int courseId, int userId) {
         mLessonId = lessonId;
         mCourseId = courseId;
-        M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, userId, lessonId, mTargetHost, ALL);
+        mUserId = userId;
 
-        if (m3U8DbModel != null && m3U8DbModel.finish == UN_FINISH) {
-            Log.d(TAG, "continue M3U8DbModle");
+        if (checkHasLocalM3U8Model(mLessonId, mUserId)) {
+            prepareDownload();
             LessonItem lessonItem = mSqliteUtil.queryForObj(
                     new TypeToken<LessonItem>() {
                     },
@@ -283,15 +272,24 @@ public class M3U8Util {
             if (lessonItem != null) {
                 mLessonTitle = lessonItem.title;
             }
-
-            M3U8File m3U8File = getM3U8FileFromModel(m3U8DbModel);
-            Log.d(TAG, "continue m3U8File " + m3U8File.urlList);
-            downloadM3U8SourceFile(m3U8File);
             return;
         }
 
         Log.d(TAG, "load lesson " + lessonId);
         loadLessonUrl(lessonId, courseId);
+    }
+
+    private boolean checkHasLocalM3U8Model(int lessonId, int userId) {
+        M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, userId, lessonId, mTargetHost, ALL);
+
+        if (m3U8DbModel != null && m3U8DbModel.finish == UN_FINISH) {
+            Log.d(TAG, "continue M3U8DbModle");
+            M3U8File m3U8File = getM3U8FileFromModel(m3U8DbModel);
+            addM3U8SourceToQueue(m3U8File);
+            return true;
+        }
+
+        return false;
     }
 
     private void loadLessonUrl(final int lessonId, int courseId) {
@@ -313,6 +311,7 @@ public class M3U8Util {
                 } catch (Exception e) {
                 }
                 if (lessonItem == null) {
+                    ToastUtils.show(mContext, "下载视频失败,请重新尝试下载!");
                     return;
                 }
                 mLessonMediaUrl = lessonItem.mediaUri;
@@ -473,43 +472,12 @@ public class M3U8Util {
                 return;
             }
             initM3U8DataToDb(m3U8File);
-            downloadM3U8SourceFile(m3U8File);
+            addM3U8SourceToQueue(m3U8File);
+            prepareDownload();
         }
     }
 
     private void downloadSingleFile(String url) {
-        HttpParams params = new BasicHttpParams();
-        ConnManagerParams.setMaxTotalConnections(params, 100);
-        //超时
-        HttpConnectionParams.setConnectionTimeout(params, 3000);
-        HttpConnectionParams.setSoTimeout(params, 3000);
-        SchemeRegistry schReg = new SchemeRegistry();
-        schReg.register(new Scheme("http", PlainSocketFactory
-                .getSocketFactory(), 80));
-        mHttpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(params, schReg), params);
-
-        String key = DigestUtils.md5(url);
-        HttpGet httpGet = new HttpGet(url);
-        try {
-            Log.d(TAG, "download " + url);
-            //发送下载广播
-            Intent intent = new Intent(DownloadStatusReceiver.ACTION);
-            intent.putExtra(Const.LESSON_ID, mLessonId);
-            intent.putExtra(Const.COURSE_ID, mCourseId);
-            intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
-            mContext.sendBroadcast(intent);
-        } catch (Exception e) {
-            //超时处理
-            int count = mTimeOutList.get(key);
-            if (count < 30) {
-                Log.d(TAG, "timeout count " + count);
-                downloadSingleFile(url);
-                mTimeOutList.put(key, ++count);
-            }
-            e.printStackTrace();
-        } finally {
-            httpGet.abort();
-        }
     }
 
     /*
@@ -750,8 +718,8 @@ public class M3U8Util {
     /*
         开始下载m3u8资源
     */
-    private void downloadM3U8SourceFile(M3U8File m3U8File) {
-        Log.d(TAG, "start downloadM3U8SourceFile");
+    private void addM3U8SourceToQueue(M3U8File m3U8File) {
+        Log.d(TAG, "start addM3U8SourceToQueue");
 
         ArrayList<String> keyList = m3U8File.keyList;
         ArrayList<String> urlList = m3U8File.urlList;
@@ -763,12 +731,10 @@ public class M3U8Util {
         for (String url : urlList) {
             mDownloadQueue.add(new DownloadItem(URL, url));
         }
-
-        prepareDownload();
     }
 
     private void prepareDownload() {
-        if (mDownloadQueue.isEmpty()) {
+        if (mDownloadQueue.isEmpty() && !checkHasLocalM3U8Model(mLessonId, mUserId)) {
             return;
         }
 
@@ -1016,6 +982,7 @@ public class M3U8Util {
 
             request.setDestinationInExternalFilesDir(mContext, Environment.DIRECTORY_DOWNLOADS, key);
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+            request.addRequestHeader("Android", "Android-kuozhi");
             if (EdusohoApp.app.config.offlineType == 1) {
                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
             } else {
