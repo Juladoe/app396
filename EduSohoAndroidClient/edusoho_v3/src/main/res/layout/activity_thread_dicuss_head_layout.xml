@@ -1,80 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:padding="16dp"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tdh_label"
-            android:gravity="center"
-            android:background="@drawable/thread_type_discuss_label"
-            android:textSize="@dimen/font_size_xx_s"
-            android:layout_width="20dp"
-            android:layout_height="16dp" />
-
-        <TextView
-            android:textSize="@dimen/font_size_s"
-            android:layout_marginLeft="8dp"
-            android:textColor="@color/base_black_87"
-            android:id="@+id/tdh_title"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tdh_label"
+                android:layout_width="30dp"
+                android:layout_height="16dp"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/thread_type_discuss_label"
+                android:gravity="center"
+                android:text="回答"
+                android:textSize="@dimen/font_size_xx_s" />
 
-    <LinearLayout
-        android:gravity="center_vertical"
-        android:layout_marginTop="8dp"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tdh_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="如何进行"
+                android:textColor="@color/base_black_87"
+                android:textSize="@dimen/font_size_s" />
 
-        <com.makeramen.roundedimageview.RoundedImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:id="@+id/tdh_avatar"
-            android:src="@drawable/default_avatar"
-            android:scaleType="centerCrop"
-            app:riv_oval="true"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/tdh_avatar"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/default_avatar"
+                app:riv_oval="true" />
+
+            <TextView
+                android:id="@+id/tdh_nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/base_black_54"
+                android:textSize="@dimen/font_size_x_s" />
+
+            <TextView
+                android:id="@+id/tdh_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:textColor="@color/base_black_54"
+                android:textSize="@dimen/font_size_x_s" />
+        </LinearLayout>
 
         <TextView
-            android:layout_marginLeft="8dp"
-            android:textSize="@dimen/font_size_x_s"
-            android:textColor="@color/base_black_54"
-            android:id="@+id/tdh_nickname"
+            android:id="@+id/tdh_content"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_marginLeft="8dp"
-            android:id="@+id/tdh_time"
-            android:textSize="@dimen/font_size_x_s"
-            android:textColor="@color/base_black_54"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/base_black_87"
+            android:textSize="@dimen/font_size_x_s" />
     </LinearLayout>
 
-    <TextView
-        android:textSize="@dimen/font_size_x_s"
-        android:textColor="@color/base_black_87"
-        android:id="@+id/tdh_content"
-        android:layout_marginTop="8dp"
+    <View
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="1px"
+        android:layout_below="@+id/rl_msg_notify"
+        android:layout_marginLeft="16dp"
+        android:background="@color/grey_dddddd" />
 
     <TextView
-        android:drawableRight="@drawable/discovery_more"
-        android:layout_marginTop="16dp"
-        android:textSize="@dimen/font_size_x_s"
-        android:textColor="@color/base_black_54"
         android:id="@+id/tdh_from_course"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:drawableRight="@drawable/discovery_more"
+        android:ellipsize="end"
+        android:padding="16dp"
+        android:singleLine="true"
+        android:textColor="@color/base_black_54"
+        android:textSize="@dimen/font_size_x_s" />
 </LinearLayout>
