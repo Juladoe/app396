@@ -587,7 +587,9 @@ public class M3U8Util {
                                 String.valueOf(mUserId)
                         }
                 );
-                return;
+
+                Log.d(TAG, "finish checkHasLocalM3U8Model");
+                checkHasLocalM3U8Model(mLessonId, mUserId);
             }
 
             prepareDownload();
@@ -734,7 +736,7 @@ public class M3U8Util {
     }
 
     private void prepareDownload() {
-        if (mDownloadQueue.isEmpty() && !checkHasLocalM3U8Model(mLessonId, mUserId)) {
+        if (mDownloadQueue.isEmpty()) {
             return;
         }
 
