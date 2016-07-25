@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+
 import java.io.File;
 
 /**
@@ -169,14 +170,10 @@ public class SettingActivity extends ActionBarBaseActivity {
                 mActivity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
-                        app.pushUnregister(bundle);
                         app.removeToken();
                         btnLogout.setVisibility(View.INVISIBLE);
                         app.sendMessage(Const.LOGOUT_SUCCESS, null);
                         app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
-
                         NotificationUtil.cancelAll();
                         finish();
                     }
@@ -186,7 +183,9 @@ public class SettingActivity extends ActionBarBaseActivity {
 
                     }
                 }, "");
-
+                Bundle bundle = new Bundle();
+                bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
+                app.pushUnregister(bundle);
             } else {
                 ThirdPartyLogin.getInstance(mContext).loginOut(app.loginUser.thirdParty);
                 app.removeToken();
