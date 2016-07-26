@@ -35,11 +35,11 @@
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
+            android:scaleType="centerInside"
             android:src="@drawable/icon_actionbar_back" />
 
         <TextView
@@ -57,30 +57,32 @@
         <ImageView
             android:id="@+id/iv_learn_status"
             android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_marginRight="8dp"
             android:layout_toLeftOf="@+id/tv_learned"
+            android:scaleType="centerInside"
             android:src="@drawable/icon_unlearn" />
 
         <TextView
             android:id="@+id/tv_learned"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:layout_marginRight="30dp"
+            android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/iv_share"
+            android:gravity="center"
             android:text="学过了"
             android:textColor="@color/white"
             android:textSize="@dimen/font_size_x_s" />
 
         <ImageView
             android:id="@+id/iv_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="20dp"
+            android:scaleType="centerInside"
             android:src="@drawable/icon_share_lesson" />
 
     </RelativeLayout>
@@ -118,12 +120,12 @@
             <ImageView
                 android:id="@+id/play_btn"
                 android:layout_width="16dp"
-                android:layout_height="20dp"
+                android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
-                android:scaleType="fitXY"
+                android:scaleType="centerInside"
                 android:src="@drawable/icon_video_play" />
 
             <TextView
