@@ -24,4 +24,8 @@ public class M3U8File {
         this.keyList = new ArrayList<>();
         this.urlList = new ArrayList<>();
     }
+
+    public boolean isEmpty() {
+        return urlList.isEmpty();
+    }
 }

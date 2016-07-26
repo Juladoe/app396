@@ -16,7 +16,7 @@ public class M3U8DbModel {
 
     @Override
     public String toString() {
-        return "M3U8DbModle{" +
+        return "M3U8DbModle {" +
                 "id=" + id +
                 ", finish=" + finish +
                 ", userId=" + userId +

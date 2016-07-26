@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,36 +9,23 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
-import com.edusoho.kuozhi.v3.view.dialog.ExitCoursePopupDialog;
-import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import cn.trinea.android.common.util.ToastUtils;
 
 /**
  * Created by JesseHuang on 15/6/16.
  */
 public class DownloadingAdapter extends BaseExpandableListAdapter {
-
-    private static final int DOWNING = 0;
-    private static final int DOWNED = 1;
-    private static final int NONE = 2;
 
     private Context mContex;
     private BaseActivity mActivity;
@@ -130,22 +116,6 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
-    public class DownloadSignClick implements View.OnClickListener {
-
-        private ChildPanel mChildPanel;
-        private LessonItem mLessonItem;
-
-        public DownloadSignClick(ChildPanel childPanel, LessonItem lessonItem) {
-            mChildPanel = childPanel;
-            mLessonItem = lessonItem;
-        }
-
-        @Override
-        public void onClick(View v) {
-
-        }
-    }
-
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final ChildPanel childPanel;
@@ -165,7 +135,10 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
             childPanel.tvProgress.setText((int) (model.downloadNum / (float) model.totalNum * 100) + "%");
 
             int downStatus = getDownloadStatus(lessonItem.id);
-            int downStatusIconRes = downStatus == DOWNING ? R.string.font_downloading : R.string.font_stop_downloading;
+            int downStatusIconRes = downStatus == M3U8Util.DOWNING ? R.string.font_downloading : R.string.font_stop_downloading;
+            if (model.finish == M3U8Util.DOWNLOAD_ERROR) {
+                childPanel.tvProgress.setText("下载失败");
+            }
             childPanel.ivDownloadSign.setText(mContex.getResources().getString(downStatusIconRes));
         }
         //选择框是否显示
@@ -198,9 +171,9 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
     protected int getDownloadStatus(int lessonId) {
         M3U8DownService service = M3U8DownService.getService();
         if (service == null) {
-            return NONE;
+            return M3U8Util.NONE;
         }
-        return service.hasTaskByLessonId(lessonId) ? DOWNING : NONE;
+        return service.getTaskStatus(lessonId);
     }
 
     public void setItemDownloadStatus(int groupPosition, int childPosition) {

@@ -54,10 +54,16 @@ import cn.trinea.android.common.util.ToastUtils;
  */
 public class M3U8Util {
 
+    public static final int DOWNING = 0;
+    public static final int NONE = 1;
+    public static final int ERROR = 2;
+
     public static final int FINISH = 1;
     public static final int UN_FINISH = 0;
     public static final int ALL = 2;
     public static final int START = -1;
+    public static final int DOWNLOAD_ERROR = 3;
+
     public static final int KEY = 0;
     public static final int URL = 1;
     private static final String TAG = "M3U8Util";
@@ -78,6 +84,7 @@ public class M3U8Util {
     private SqliteUtil mSqliteUtil;
     private String mTargetHost;
     private boolean isCancel;
+    private int mDownloadStatus;
     private Hashtable<String, Integer> mTimeOutList;
     private ArrayList<Future> mFutures;
     private ScheduledThreadPoolExecutor mThreadPoolExecutor;
@@ -87,6 +94,7 @@ public class M3U8Util {
         this.mContext = context;
         this.app = EdusohoApp.app;
         this.mUserId = app.loginUser.id;
+        this.mDownloadStatus = NONE;
 
         Uri hostUri = Uri.parse(app.host);
         if (hostUri != null) {
@@ -187,7 +195,7 @@ public class M3U8Util {
                     host
             );
         } else {
-            String finishQuery = isFinish == FINISH ? "finish=" + isFinish : "finish in (0, -1)";
+            String finishQuery = isFinish == FINISH ? "finish=" + isFinish : "finish in (0, -1, 3)";
             SqliteUtil.getUtil(context).query(
                     queryCallBack,
                     "select * from data_m3u8 where userId=? and host=? and " + finishQuery + " and lessonId in " + lessonIds,
@@ -211,6 +219,10 @@ public class M3U8Util {
                 "lessonId=?",
                 new String[]{String.valueOf(lessonId)}
         );
+    }
+
+    public boolean downloadQueueIsEmpty() {
+        return mDownloadQueue.isEmpty();
     }
 
     public static M3U8DbModel saveM3U8Model(
@@ -237,6 +249,10 @@ public class M3U8Util {
         return m3U8DbModel;
     }
 
+    public int getDownloadStatus() {
+        return mDownloadStatus;
+    }
+
     public String getLessonTitle() {
         return mLessonTitle;
     }
@@ -259,6 +275,11 @@ public class M3U8Util {
         mCourseId = courseId;
         mUserId = userId;
 
+        setDownloadStatus(DOWNING);
+        ContentValues cv = new ContentValues();
+        cv.put("finish", START);
+        updateM3U8Model(cv, mLessonId, mTargetHost);
+
         if (checkHasLocalM3U8Model(mLessonId, mUserId)) {
             prepareDownload();
             LessonItem lessonItem = mSqliteUtil.queryForObj(
@@ -277,6 +298,16 @@ public class M3U8Util {
 
         Log.d(TAG, "load lesson " + lessonId);
         loadLessonUrl(lessonId, courseId);
+    }
+
+    private void setDownloadStatus(int status) {
+        this.mDownloadStatus = status;
+        if (status == ERROR) {
+            ContentValues cv = new ContentValues();
+            cv.put("finish", DOWNLOAD_ERROR);
+            updateM3U8Model(cv, mLessonId, mTargetHost);
+        }
+        sendBroadcast(status);
     }
 
     private boolean checkHasLocalM3U8Model(int lessonId, int userId) {
@@ -311,9 +342,11 @@ public class M3U8Util {
                 } catch (Exception e) {
                 }
                 if (lessonItem == null) {
+                    setDownloadStatus(ERROR);
                     ToastUtils.show(mContext, "下载视频失败,请重新尝试下载!");
                     return;
                 }
+
                 mLessonMediaUrl = lessonItem.mediaUri;
                 mLessonTitle = lessonItem.title;
                 mThreadPoolExecutor.execute(new Runnable() {
@@ -322,7 +355,7 @@ public class M3U8Util {
                         if (mLessonMediaUrl != null && mLessonMediaUrl.contains("getLocalVideo")) {
                             downloadLocalVideos(mLessonMediaUrl);
                         } else {
-                            parseM3U8();
+                            parseM3U8(mLessonMediaUrl);
                         }
                     }
                 });
@@ -330,16 +363,18 @@ public class M3U8Util {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                setDownloadStatus(ERROR);
                 ToastUtils.show(mContext, "下载视频失败,请重新尝试下载!");
             }
         });
     }
 
-    private void sendBroadcast() {
+    private void sendBroadcast(int status) {
         Intent intent = new Intent(DownloadStatusReceiver.ACTION);
         intent.putExtra(Const.LESSON_ID, mLessonId);
         intent.putExtra(Const.COURSE_ID, mCourseId);
         intent.putExtra(Const.ACTIONBAR_TITLE, mLessonTitle);
+        intent.putExtra(Const.STATUS, status);
         mContext.sendBroadcast(intent);
     }
 
@@ -366,7 +401,7 @@ public class M3U8Util {
                         "lessonId=? and host=?",
                         new String[]{String.valueOf(mLessonId), mTargetHost}
                 );
-                sendBroadcast();
+                sendBroadcast(DOWNING);
 
                 String key = DigestUtils.md5(videoUrl);
                 File file = createLocalM3U8SourceFile(key);
@@ -386,7 +421,7 @@ public class M3U8Util {
                         String updateSql = "update data_m3u8 set download_num = %d where userId = %d and host = '%s' and lessonId = %d";
                         mSqliteUtil.execSQL(String.format(updateSql, downloadPercent, mUserId, mTargetHost, mLessonId));
                         downloadPercent = downloadPercent + 5;
-                        sendBroadcast();
+                        sendBroadcast(DOWNING);
                     }
                 }
                 fos.close();
@@ -395,7 +430,7 @@ public class M3U8Util {
                 mSqliteUtil.execSQL(String.format(updateSql, 100, 1, mUserId, mTargetHost, mLessonId));
                 String updateM3U8DataSql = "update data_m3u8_url set finish = %d and lessonId = %d";
                 mSqliteUtil.execSQL(String.format(updateM3U8DataSql, 1, mLessonId));
-                sendBroadcast();
+                sendBroadcast(DOWNING);
             }
         } catch (Exception ex) {
             throw new RuntimeException(ex);
@@ -431,14 +466,7 @@ public class M3U8Util {
      */
     private M3U8File getM3U8FileFromUrl(String url) {
         M3U8File m3U8File = null;
-        /*
-        if (url.startsWith("http://" + mTargetHost)) {
-            m3U8File = new M3U8File();
-            m3U8File.type = M3U8File.STREAM;
-            m3U8File.content = url;
-            return m3U8File;
-        }
-        */
+
         int type = M3U8File.STREAM_LIST;
         while (type == M3U8File.STREAM_LIST) {
             if (m3U8File != null) {
@@ -461,13 +489,15 @@ public class M3U8Util {
     /**
      * 解析m3u8
      */
-    private void parseM3U8() {
-        String url = mLessonMediaUrl;
+    private void parseM3U8(String url) {
         M3U8File m3U8File = getM3U8FileFromUrl(url);
 
         Log.d(TAG, "m3U8File " + m3U8File);
-        if (m3U8File != null) {
+        if (m3U8File == null || m3U8File.isEmpty()) {
+            setDownloadStatus(ERROR);
+        } else {
             if (m3U8File.type == M3U8File.STREAM) {
+                setDownloadStatus(ERROR);
                 ToastUtils.show(mContext, "视频格式不正确,不能下载!");
                 return;
             }
@@ -480,21 +510,25 @@ public class M3U8Util {
     private void downloadSingleFile(String url) {
     }
 
+
+    private int updateM3U8Model(ContentValues cv, int lessonId, String host) {
+        return mSqliteUtil.update(
+                "data_m3u8",
+                cv,
+                "lessonId=? and host=?",
+                new String[]{String.valueOf(lessonId), host}
+        );
+    }
     /*
         初始化需要下载的m3u8列表
     */
     private void initM3U8DataToDb(M3U8File m3U8File) {
         Log.d(TAG, "initM3U8DataToDb");
         ContentValues cv = new ContentValues();
-        cv.put("finish", 0);
+        cv.put("finish", UN_FINISH);
         cv.put("total_num", m3U8File.urlList.size() + m3U8File.keyList.size());
         cv.put("play_list", m3U8File.content);
-        mSqliteUtil.update(
-                "data_m3u8",
-                cv,
-                "lessonId=? and host=?",
-                new String[]{String.valueOf(mLessonId), mTargetHost}
-        );
+        updateM3U8Model(cv, mLessonId, mTargetHost);
 
         //插入需要下载的任务
         for (String key : m3U8File.keyList) {

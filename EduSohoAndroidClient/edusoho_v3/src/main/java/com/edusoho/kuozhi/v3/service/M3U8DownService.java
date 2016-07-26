@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.RemoteViews;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.DownloadModel;
@@ -46,7 +47,20 @@ public class M3U8DownService extends Service {
     private static final String TAG = "M3U8DownService";
     private Object mLock = new Object();
 
-    private BroadcastReceiver mDownLoadStatusReceiver = new BroadcastReceiver() {
+    protected DownloadStatusReceiver mDownLoadStatusReceiver = new DownloadStatusReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            super.onReceive(context, intent);
+            int status = intent.getIntExtra(Const.STATUS, M3U8Util.NONE);
+            int lessonId = intent.getIntExtra(Const.LESSON_ID, 0);
+            if (status == M3U8Util.ERROR) {
+                cancelDownloadTask(lessonId);
+            }
+        }
+    };
+
+    private BroadcastReceiver mDownLoadCompleteReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
@@ -85,6 +99,7 @@ public class M3U8DownService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mDownLoadCompleteReceiver);
         unregisterReceiver(mDownLoadStatusReceiver);
         Log.d(TAG, "m3u8 download_service destroy");
     }
@@ -102,7 +117,8 @@ public class M3U8DownService extends Service {
         notificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        registerReceiver(mDownLoadStatusReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        registerReceiver(mDownLoadCompleteReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        registerReceiver(mDownLoadStatusReceiver, new IntentFilter(DownloadStatusReceiver.ACTION));
     }
 
     public static M3U8DownService getService() {
@@ -161,8 +177,7 @@ public class M3U8DownService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void startTask(
-            final int lessonId, final int courseId, final String lessonTitle) {
+    private void startTask(int lessonId, int courseId, String lessonTitle) {
         if (EdusohoApp.app.loginUser == null) {
             return;
         }
@@ -188,12 +203,17 @@ public class M3U8DownService extends Service {
         return mM3U8UitlList.size() > 0;
     }
 
-    public boolean hasTaskByLessonId(int lessonId) {
+    public int getTaskStatus(int lessonId) {
         if (mM3U8UitlList == null || mM3U8UitlList.size() == 0) {
-            return false;
+            return M3U8Util.NONE;
         }
 
-        return mM3U8UitlList.indexOfKey(lessonId) >= 0;
+        M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
+        if (m3U8Util == null) {
+            return M3U8Util.NONE;
+        }
+
+        return m3U8Util.getDownloadStatus();
     }
 
     private void createNotification(int lessonId, String title) {
