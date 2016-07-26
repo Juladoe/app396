@@ -339,11 +339,17 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     ivVideoPlay.setImageResource(R.drawable.icon_video_pause);
                     break;
                 case UI_HEAD_PLAY:
+                    if (isCacheVideo) {
+                        return;
+                    }
                     tvStreamType.setVisibility(View.INVISIBLE);
                     ivNote.setVisibility(View.INVISIBLE);
                     ivQuestion.setVisibility(View.INVISIBLE);
                     break;
                 case UI_HEAD_FINISHED:
+                    if (isCacheVideo) {
+                        return;
+                    }
                     tvStreamType.setVisibility(View.VISIBLE);
                     ivNote.setVisibility(View.VISIBLE);
                     ivQuestion.setVisibility(View.VISIBLE);

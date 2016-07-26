@@ -100,6 +100,19 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         return sp.getInt("type", 0);
     }
 
+    private void setViewStatus(boolean isHidden) {
+        if (isHidden) {
+            ivLearnStatus.setVisibility(View.INVISIBLE);
+            ivShare.setVisibility(View.INVISIBLE);
+            ivQuestion.setVisibility(View.INVISIBLE);
+            ivNote.setVisibility(View.INVISIBLE);
+            tvLearn.setVisibility(View.INVISIBLE);
+            tvStreamType.setVisibility(View.VISIBLE);
+            tvStreamType.setEnabled(false);
+            tvStreamType.setText("离线");
+        }
+    }
+
     @Override
     protected void initView(View view) {
         super.initView(view);
@@ -112,6 +125,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         ivNote.setOnClickListener(this);
         tvVideoTitle.setText(mLessonName);
 
+        setViewStatus(isCacheVideo);
         RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.LESSON_STATUS, true);
         requestUrl.setParams(new String[]{
                 "courseId", mCourseId + "",
