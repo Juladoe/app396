@@ -173,6 +173,9 @@ public class RegisterActivity extends ActionBarBaseActivity {
             if (TextUtils.isEmpty(strPass)) {
                 CommonUtil.longToast(mContext, "请输入密码");
                 return;
+            } else if (strPass.length() > 20) {
+                CommonUtil.longToast(mContext, "密码的长度必须小于或等于20");
+                return;
             }
             params.put("password", strPass);
 
@@ -248,6 +251,9 @@ public class RegisterActivity extends ActionBarBaseActivity {
             String strPass = etMailPass.getText().toString();
             if (TextUtils.isEmpty(strPass)) {
                 CommonUtil.longToast(mContext, "请输入密码");
+                return;
+            } else if (strPass.length() > 20) {
+                CommonUtil.longToast(mContext, "密码的长度必须小于或等于20");
                 return;
             }
             if (strPass.length() < 5) {
