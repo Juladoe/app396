@@ -799,7 +799,7 @@ public class EdusohoApp extends Application {
             mPlayCacheServer = null;
         }
     }
-    
+
     public void bindApiToken(final UserResult userResult) {
         RequestUrl requestUrl = bindNewUrl(Const.GET_API_TOKEN, false);
         getUrl(requestUrl, new Response.Listener<String>() {
