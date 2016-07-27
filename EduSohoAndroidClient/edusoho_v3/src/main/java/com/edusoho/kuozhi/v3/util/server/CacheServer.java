@@ -31,6 +31,7 @@ CacheServer extends Thread {
     public static final String TAG = "CacheServer";
     private int port = Const.CACHE_PROT;
     private boolean isLoop;
+    private boolean isPause;
     private ActionBarBaseActivity mActivity;
     private ServerSocket mServerSocket;
     private HttpRequestHandlerRegistry mHttpRequestHandlerRegistry;
@@ -104,7 +105,10 @@ CacheServer extends Thread {
             isLoop = true;
             while (isLoop && !Thread.interrupted()) {
                 // 接收客户端套接字
-                Log.d(TAG, "serverSocket.accept");
+                Log.d(TAG, "serverSocket.accept pause:" + isPause);
+                if (isPause) {
+                    continue;
+                }
                 Socket socket = mServerSocket.accept();
                 // 绑定至服务器端HTTP连接
                 DefaultHttpServerConnection conn = new DefaultHttpServerConnection();
@@ -128,6 +132,14 @@ CacheServer extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void pause() {
+        isPause = true;
+    }
+
+    public void keepOn() {
+        isPause = false;
     }
 
     public void close() {

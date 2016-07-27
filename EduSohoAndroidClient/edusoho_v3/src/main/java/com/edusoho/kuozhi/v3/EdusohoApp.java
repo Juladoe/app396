@@ -280,10 +280,7 @@ public class EdusohoApp extends Application {
             mResouceCacheServer = null;
         }
 
-        if (mPlayCacheServer != null) {
-            mPlayCacheServer.close();
-            mPlayCacheServer = null;
-        }
+        stopPlayCacheServer();
 
         M3U8DownService m3U8DownService = M3U8DownService.getService();
         if (m3U8DownService != null) {
@@ -782,6 +779,25 @@ public class EdusohoApp extends Application {
         }
 
         return mPlayCacheServer;
+    }
+
+    public void pausePlayCacheServer() {
+        if (mPlayCacheServer != null) {
+            mPlayCacheServer.pause();
+        }
+    }
+
+    public void resumePlayCacheServer() {
+        if (mPlayCacheServer != null) {
+            mPlayCacheServer.keepOn();
+        }
+    }
+
+    public void stopPlayCacheServer() {
+        if (mPlayCacheServer != null) {
+            mPlayCacheServer.close();
+            mPlayCacheServer = null;
+        }
     }
 
     public void bindApiToken(final UserResult userResult) {

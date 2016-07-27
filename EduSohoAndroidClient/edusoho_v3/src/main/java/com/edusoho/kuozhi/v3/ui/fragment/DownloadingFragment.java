@@ -3,12 +3,10 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
@@ -25,7 +23,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.dialog.ExitCoursePopupDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-
 import cn.trinea.android.common.util.ToastUtils;
 
 /**
@@ -151,15 +148,11 @@ public class DownloadingFragment extends BaseFragment {
         if (mDownloadingAdapter.isSelectedShow()) {
             return;
         }
+
         LessonItem lessonItem = mDownloadingAdapter.getChild(groupPosition, childPosition);
-        M3U8DownService service = M3U8DownService.getService();
         TextView ivDownloadSign = (TextView) view.findViewById(R.id.iv_download_sign);
-        if (ivDownloadSign.getText().equals(getResources().getString(R.string.font_downloading))) {
-           ivDownloadSign.setText(getResources().getString(R.string.font_stop_downloading));
-            if (service != null) {
-                service.cancelDownloadTask(lessonItem.id);
-            }
-        } else {
+        M3U8DownService service = M3U8DownService.getService();
+        if (service == null || service.getTaskStatus(lessonItem.id) != M3U8Util.DOWNING) {
             if (!app.getNetIsConnect()) {
                 ToastUtils.show(mActivity, "当前无网络连接!");
                 return;
@@ -177,6 +170,9 @@ public class DownloadingFragment extends BaseFragment {
             ivDownloadSign.setText(getString(R.string.font_stop_downloading));
             M3U8DownService.startDown(
                     mActivity.getBaseContext(), lessonItem.id, lessonItem.courseId, lessonItem.title);
+        } else {
+            ivDownloadSign.setText(getResources().getString(R.string.font_stop_downloading));
+            service.cancelDownloadTask(lessonItem.id);
         }
     }
 
@@ -270,7 +266,6 @@ public class DownloadingFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        continueDonwloadTask();
     }
 
     private void showBtnLayout() {
