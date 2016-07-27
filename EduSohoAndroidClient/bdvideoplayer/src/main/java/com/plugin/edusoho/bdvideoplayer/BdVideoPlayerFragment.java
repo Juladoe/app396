@@ -260,7 +260,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
         mVV = (BVideoView) view.findViewById(R.id.video_view);
         /**
-         * 册listener
+         * regist listener
          */
         mVV.setOnPreparedListener(this);
         mVV.setOnCompletionListener(this);
@@ -281,14 +281,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 return false;
             }
         });
-
-        /**
-         *关联BMediaController
-         */
-        //mVV.setMediaController(mVVCtl);
-        /**
-         *
-         */
 
         mVV.setDecodeMode(mDecodeMode);
         if (mDecodeMode == BVideoView.DECODE_HW) {

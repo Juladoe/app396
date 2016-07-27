@@ -480,17 +480,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             return null;
         }
 
-//        ApiResponse<LessonItem> apiResponse = ModelDecor.getInstance().decor(object, new TypeToken<ApiResponse<LessonItem>>() {
-//        });
-//        LessonItem lessonItem = null;
-//        if (apiResponse.data != null) {
-//            lessonItem = apiResponse.data;
-//        } else if (apiResponse.error != null) {
-//            CommonUtil.longToast(mContext, apiResponse.error.message);
-//            return null;
-//        } else {
-//            return null;
-//        }
         CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
         switch (courseLessonType) {
             case LIVE:
@@ -630,6 +619,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        app.stopPlayCacheServer();
     }
 
     private boolean getM3U8Cache(int lessonId) {
@@ -682,5 +672,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (mPluginDialog != null && mPluginDialog.isShowing()) {
             mPluginDialog.dismiss();
         }
+        app.resumePlayCacheServer();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        app.pausePlayCacheServer();
     }
 }
