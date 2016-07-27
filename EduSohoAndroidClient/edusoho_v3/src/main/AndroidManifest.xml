@@ -234,7 +234,7 @@
 
         <activity
             android:name=".v3.ui.NoteActivity"
-            android:screenOrientation="portrait"
+            android:screenOrientation="landscape"
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
 

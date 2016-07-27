@@ -1,9 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.text.Html;
@@ -11,19 +9,19 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.AnimationSet;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
 import com.edusoho.kuozhi.v3.adapter.ThreadDiscussAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
@@ -54,7 +52,9 @@ import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import org.json.JSONObject;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -64,9 +64,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
+
 import static com.edusoho.kuozhi.v3.adapter.ThreadDiscussAdapter.ThreadDiscussEntity;
 
 /**
@@ -110,7 +112,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
-        mHeaderView= LayoutInflater.from(mContext).inflate(R.layout.activity_thread_dicuss_head_layout, null);
+        mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.activity_thread_dicuss_head_layout, null);
         View rootView = LayoutInflater.from(mContext).inflate(layoutResID, null);
         mContentLayout = new LinearLayout(mContext);
         mContentLayout.setOrientation(LinearLayout.VERTICAL);
@@ -148,6 +150,22 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 LinkedHashMap<String, String> course = (LinkedHashMap<String, String>) threadInfo.get("target");
                 TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
                 fromCourseView.setText(String.format("来自班级:《%s》", course.get("title")));
+                fromCourseView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final String url = String.format(
+                                Const.MOBILE_APP_URL,
+                                EdusohoApp.app.schoolHost,
+                                String.format(Const.MOBILE_WEB_COURSE, mTargetId)
+                        );
+                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.WEB_URL, url);
+                            }
+                        });
+                    }
+                });
             }
         });
     }
@@ -191,6 +209,22 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 LinkedHashMap<String, String> course = (LinkedHashMap<String, String>) threadInfo.get("course");
                 TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
                 fromCourseView.setText(String.format("来自课程:《%s》", course.get("title")));
+                fromCourseView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final String url = String.format(
+                                Const.MOBILE_APP_URL,
+                                EdusohoApp.app.schoolHost,
+                                String.format(Const.MOBILE_WEB_COURSE, mTargetId)
+                        );
+                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.WEB_URL, url);
+                            }
+                        });
+                    }
+                });
             }
         });
     }
@@ -528,11 +562,11 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             });
             mThreadProvider.getThread(threadId, "course".equals(mTargetType) ? "course" : "common")
                     .success(new NormalCallback<CourseThreadEntity>() {
-                @Override
-                public void success(CourseThreadEntity threadEntity) {
-                    promise.resolve(threadEntity);
-                }
-            });
+                        @Override
+                        public void success(CourseThreadEntity threadEntity) {
+                            promise.resolve(threadEntity);
+                        }
+                    });
         } else {
             mThreadModel = mCourseThreadDataSource.get(mThreadId);
             mPosts = mCourseThreadPostDataSource.getPosts(mThreadId);
@@ -789,10 +823,10 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
         return new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                int  keyHeight = getWindowManager().getDefaultDisplay().getHeight() / 3;
-                if(oldBottom != 0 && bottom != 0 &&(oldBottom - bottom > keyHeight)){
+                int keyHeight = getWindowManager().getDefaultDisplay().getHeight() / 3;
+                if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
                     hideHeaderLayout();
-                }else if(oldBottom != 0 && bottom != 0 &&(bottom - oldBottom > keyHeight)){
+                } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
                     showHeaderLayout();
                 }
             }

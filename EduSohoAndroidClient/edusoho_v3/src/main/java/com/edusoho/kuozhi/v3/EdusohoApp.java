@@ -35,9 +35,9 @@ import com.edusoho.kuozhi.v3.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
-import com.edusoho.kuozhi.v3.listener.SwitchNetSchoolListener;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
+import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.result.CloudResult;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
@@ -799,6 +799,28 @@ public class EdusohoApp extends Application {
             mPlayCacheServer = null;
         }
     }
+    
+    public void bindApiToken(final UserResult userResult) {
+        RequestUrl requestUrl = bindNewUrl(Const.GET_API_TOKEN, false);
+        getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Token token = ModelDecor.getInstance().decor(response, new TypeToken<Token>() {
+                });
+                if (token != null) {
+                    saveApiToken(token.token);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Const.BIND_USER_ID, userResult.user == null ? "" : userResult.user.id + "");
+                    pushRegister(bundle);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                CommonUtil.longToast(mActivity.getBaseContext(), "获取网校信息失败");
+            }
+        });
+    }
 
     /**
      * 注册到xg、教育云
@@ -834,10 +856,6 @@ public class EdusohoApp extends Application {
                                     String result = resultObject.getString("result");
                                     if (result.equals("success")) {
                                         Log.d(TAG, "cloud register success");
-                                    }
-                                    if (bundle != null && CommonUtil.bundleHasKey(bundle, Const.SHOW_SCH_SPLASH)) {
-                                        SwitchNetSchoolListener listener = (SwitchNetSchoolListener) bundle.getSerializable(Const.SHOW_SCH_SPLASH);
-                                        listener.showSplash();
                                     }
                                 } catch (JSONException e) {
                                     Log.d(TAG, "cloud register failed");
