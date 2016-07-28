@@ -117,9 +117,9 @@
     <string name="font_mine_pressed">&#xe64b;</string>
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
-    <string name="font_downloading">下载中</string>
-    <string name="font_stop_downloading">已暂停</string>
-    <string name="font_wait_downloading">等待中</string>
+    <string name="font_downloading">&#xe614;</string>
+    <string name="font_stop_downloading">&#xe612;</string>
+    <string name="font_wait_downloading">&#xe60f;</string>
     <string name="font_download_select">&#xe610;</string>
     <string name="font_download_unselect">&#xe613;</string>
     <string name="font_less">&#xe625;</string>

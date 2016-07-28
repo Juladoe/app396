@@ -260,7 +260,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
         mVV = (BVideoView) view.findViewById(R.id.video_view);
         /**
-         * 册listener
+         * regist listener
          */
         mVV.setOnPreparedListener(this);
         mVV.setOnCompletionListener(this);
@@ -281,14 +281,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 return false;
             }
         });
-
-        /**
-         *关联BMediaController
-         */
-        //mVV.setMediaController(mVVCtl);
-        /**
-         *
-         */
 
         mVV.setDecodeMode(mDecodeMode);
         if (mDecodeMode == BVideoView.DECODE_HW) {
@@ -339,11 +331,17 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     ivVideoPlay.setImageResource(R.drawable.icon_video_pause);
                     break;
                 case UI_HEAD_PLAY:
+                    if (isCacheVideo) {
+                        return;
+                    }
                     tvStreamType.setVisibility(View.INVISIBLE);
                     ivNote.setVisibility(View.INVISIBLE);
                     ivQuestion.setVisibility(View.INVISIBLE);
                     break;
                 case UI_HEAD_FINISHED:
+                    if (isCacheVideo) {
+                        return;
+                    }
                     tvStreamType.setVisibility(View.VISIBLE);
                     ivNote.setVisibility(View.VISIBLE);
                     ivQuestion.setVisibility(View.VISIBLE);
