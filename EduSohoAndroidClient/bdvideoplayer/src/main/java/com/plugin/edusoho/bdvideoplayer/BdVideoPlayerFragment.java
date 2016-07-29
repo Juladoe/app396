@@ -28,7 +28,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -145,7 +144,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected int mDurationCount = 0;
 
     protected boolean isSwitched;
-    protected boolean isBackPressed;
     private PLAYER_HEAD_STATUS mPlayHeadStatus;
 
     @Override
@@ -159,8 +157,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         initSoLib();
         setMediaSource();
         mPlayHeadStatus = PLAYER_HEAD_STATUS.PLAYER_IDLE;
-        mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        this.getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
     }
 
     public void setMediaSource() {
@@ -184,6 +180,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         View view = inflater.inflate(R.layout.controllerplaying, container, false);
         initView(view);
 
+        rlayoutTitleStatus.setVisibility(View.GONE);
+        setVideoViewHeight();
         /**
          *  启后台事件
          */
@@ -269,14 +267,16 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mVV.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                    mIsShowControllerCount = 0;
-                    if (mIsShowController) {
-                        hideController();
-                    } else {
-                        showController();
+                if (mContext.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                        mIsShowControllerCount = 0;
+                        if (mIsShowController) {
+                            hideController();
+                        } else {
+                            showController();
+                        }
+                        return true;
                     }
-                    return true;
                 }
                 return false;
             }
@@ -334,17 +334,13 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                     if (isCacheVideo) {
                         return;
                     }
-                    tvStreamType.setVisibility(View.INVISIBLE);
-                    ivNote.setVisibility(View.INVISIBLE);
-                    ivQuestion.setVisibility(View.INVISIBLE);
+                    setPlayerFunctionButton(View.INVISIBLE);
                     break;
                 case UI_HEAD_FINISHED:
                     if (isCacheVideo) {
                         return;
                     }
-                    tvStreamType.setVisibility(View.VISIBLE);
-                    ivNote.setVisibility(View.VISIBLE);
-                    ivQuestion.setVisibility(View.VISIBLE);
+                    setPlayerFunctionButton(View.VISIBLE);
                     break;
                 default:
                     break;
@@ -535,13 +531,13 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     private boolean mIsShowController = true;
     private int mIsShowControllerCount;
 
-    private void hideController() {
+    protected void hideController() {
         mIsShowController = false;
         llayoutPlayerControlPanel.setVisibility(View.GONE);
         rlayoutTitleStatus.setVisibility(View.GONE);
     }
 
-    private void showController() {
+    protected void showController() {
         mIsShowController = true;
         llayoutPlayerControlPanel.setVisibility(View.VISIBLE);
         rlayoutTitleStatus.setVisibility(View.VISIBLE);
@@ -678,8 +674,17 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         chkFullScreen.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                getActivity().onBackPressed();
-                isBackPressed = true;
+                if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    //切换到竖屏
+                    setFullScreen(false);
+                    rlayoutTitleStatus.setVisibility(View.VISIBLE);
+                } else {
+                    mContext.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    //切换到横屏
+                    setFullScreen(true);
+                    rlayoutTitleStatus.setVisibility(View.GONE);
+                }
             }
         });
 
@@ -785,7 +790,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         } else {
             mUIHandler.sendEmptyMessage(UI_EVENT_FINISH);
         }
-        if (!isBackPressed && mLearnStatusChanged != null) {
+        if (mLearnStatusChanged != null) {
             mLearnStatusChanged.setLearnStatus();
         }
     }
@@ -922,6 +927,23 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     public int sp2px(Context context, float spValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (spValue * scale + 0.5f);
+    }
+
+    protected void setFullScreen(boolean enable) {
+        if (getView() != null) {
+            if (enable) {
+                getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            } else {
+                getView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
+            }
+        }
+    }
+
+
+    protected void setPlayerFunctionButton(int visibility) {
+        tvStreamType.setVisibility(visibility);
+        ivNote.setVisibility(visibility);
+        ivQuestion.setVisibility(visibility);
     }
 
     public interface LessonLearnStatus {

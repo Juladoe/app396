@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -45,7 +46,8 @@ import java.util.List;
 /**
  * Created by howzhi on 14-10-25.
  */
-public class CustomVideoFragment extends BdVideoPlayerFragment implements CompoundButton.OnCheckedChangeListener, View.OnClickListener, BdVideoPlayerFragment.LessonLearnStatus {
+public class CustomVideoFragment extends BdVideoPlayerFragment implements CompoundButton.OnCheckedChangeListener,
+        View.OnClickListener, BdVideoPlayerFragment.LessonLearnStatus {
 
     LessonActivity lessonActivity = null;
     PopupDialog backPopupDialog = null;
@@ -161,7 +163,6 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
             public void onClick(int button) {
                 if (button == PopupDialog.OK) {
                     getActivity().onBackPressed();
-                    isBackPressed = true;
                 }
             }
         });
@@ -178,7 +179,9 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                 @Override
                 public boolean onKey(View v, int keyCode, KeyEvent event) {
                     if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        backPopupDialog.show();
+                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            backPopupDialog.show();
+                        }
                     }
                     return false;
                 }
@@ -380,10 +383,25 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         lessonActivity.changeLessonStatus(true);
     }
 
+    private void backActivity() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            backPopupDialog.show();
+        } else {
+            try {
+                if (lessonActivity != null) {
+                    lessonActivity.onBackPressed();
+                }
+            } catch (Exception ex) {
+                Log.d(TAG, "backActivity: " + ex.getMessage());
+            }
+
+        }
+    }
+
     @Override
     public void onClick(View v) {
         if (v.getId() == ivBack.getId()) {
-            backPopupDialog.show();
+            backActivity();
         } else if (v.getId() == ivShare.getId()) {
             RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.COURSE, false);
             HashMap<String, String> params = requestUrl.getParams();
@@ -461,13 +479,13 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                     return;
                 }
                 ivLearnStatus.setImageResource(R.drawable.icon_learn);
-                tvLearn.setTextColor(getResources().getColor(android.R.color.white));
+                tvLearn.setTextColor(lessonActivity.getResources().getColor(R.color.white));
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 ivLearnStatus.setImageResource(R.drawable.icon_unlearn);
-                tvLearn.setTextColor(getResources().getColor(R.color.grey));
+                tvLearn.setTextColor(lessonActivity.getResources().getColor(R.color.grey));
             }
         });
     }

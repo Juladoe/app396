@@ -41,6 +41,7 @@ import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.plugin.edusoho.bdvideoplayer.StreamInfo;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -410,7 +411,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 }
                 mLessonType = mLessonItem.type;
                 setBackMode(BACK, mLessonItem.title);
-                if (!mLessonType.equals("testpaper") && !mLessonType.equals("video")) {
+                if (!mLessonType.equals("testpaper")) {
                     loadLessonStatus();
                     bindListener();
                 }
@@ -653,12 +654,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void showToolsByAnim() {
-        if (!"video".equals(mLessonType)) {
-            mToolsLayout.measure(0, 0);
-            int height = mToolsLayout.getMeasuredHeight();
-            AppUtil.animForHeight(
-                    new EduSohoAnimWrap(mToolsLayout), 0, height, 480);
-        }
+        mToolsLayout.measure(0, 0);
+        int height = mToolsLayout.getMeasuredHeight();
+        AppUtil.animForHeight(
+                new EduSohoAnimWrap(mToolsLayout), 0, height, 480);
     }
 
     private void hieToolsByAnim() {
