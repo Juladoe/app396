@@ -63,6 +63,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected String mCurMediaHeadSource = null;
     protected String mVideoSource = null;
     protected String mVideoHead = null;
+    protected String mediaStorage = null;
 
     protected boolean mLearnStatus;
 
@@ -164,10 +165,11 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         mIsHwDecode = bundle.getBoolean("isHW", false);
         isCacheVideo = bundle.getBoolean("from_cache", false);
         mVideoSource = getUrlPath(bundle.getString("streamUrls"));
-        if (isCacheVideo) {
+        mediaStorage = bundle.getString("video_type");
+        if (isCacheVideo || "local".equals(mediaStorage)) {
             mCurMediaSource = mVideoSource;
         }
-        int decodeMode = TextUtils.isEmpty(mVideoSource) || mVideoSource.contains("Lesson/getLocalVideo") ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
+        int decodeMode = TextUtils.isEmpty(mVideoSource) || "local".equals(mediaStorage) ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
         mDecodeMode = bundle.getInt("decode", decodeMode);
         mVideoHead = getUrlPath(bundle.getString("headUrl"));
         mCourseId = bundle.getInt("courseId");

@@ -256,6 +256,14 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         }
     }
 
+    private void playLocalVideo() {
+
+    }
+
+    private void playCloudVideo() {
+
+    }
+
     private void getVideoHeadStream(String url, final NormalCallback<StreamInfo> normalCallback) {
         RequestUrl requestUrl = lessonActivity.app.bindNewApiUrl(url, true);
         requestUrl.url = url;
