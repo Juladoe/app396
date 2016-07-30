@@ -10,6 +10,10 @@ android {
         targetSdkVersion 21
         versionName "3.5.0"
         versionCode 36
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
     }
 
     productFlavors {
