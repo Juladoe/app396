@@ -29,6 +29,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -570,6 +571,7 @@ public class M3U8Util {
         Uri fileUri = null;
         if (cursor.moveToFirst()) {
             int localURIIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI);
+            Log.d(TAG, "COLUMN_LOCAL_FILENAME:" + cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_FILENAME)));
             fileUri = Uri.parse(cursor.getString(localURIIndex));
         }
         cursor.close();
@@ -596,24 +598,28 @@ public class M3U8Util {
         return status;
     }
 
+    /*
+    status STATUS_SUCCESSFUL, STATUS_FAILED
+     */
     public void updateDownloadStatus(DownloadModel downloadModel, int status) {
+        if (status == DownloadManager.STATUS_SUCCESSFUL) {
+            updateDownloadFinish(downloadModel);
+            return;
+        }
         mDownloadQueue.poll();
         prepareDownload();
         mDownloadQueue.add(new DownloadItem(downloadModel.url, downloadModel.type));
-        if (status == DownloadManager.STATUS_SUCCESSFUL) {
-            updateDownloadFinish(downloadModel);
-        }
     }
 
     private void updateDownloadFinish(DownloadModel downloadModel) {
-        int isFinished = mSqliteUtil.query(
-                Integer.class,
-                "finish",
-                "select * from data_m3u8_url where url=? and lessonId=?",
-                DigestUtils.md5(downloadModel.url),
-                String.valueOf(downloadModel.targetId)
-        );
-        Log.d("updateDownloadStatus:", downloadModel.url + "--" + isFinished);
+        try {
+            saveDownloadItem(downloadModel);
+        } catch (FileNotFoundException fnfe) {
+            Log.d(TAG, "copy file error:" + downloadModel.url);
+            prepareDownload();
+            return;
+        }
+        Log.d("updateDownloadStatus:", downloadModel.url + " finished");
         ContentValues cv = new ContentValues();
         cv.put("finish", FINISH);
         int result = mSqliteUtil.update(
@@ -622,10 +628,9 @@ public class M3U8Util {
                 "url=?",
                 new String[]{DigestUtils.md5(downloadModel.url)}
         );
-        Log.d(TAG, "update m3u8 src result " + result);
+
         if (result > 0) {
             mDownloadQueue.poll();
-            saveDownloadItem(downloadModel);
             sendSuccessBroadcast();
             //更新总计数器
             M3U8DbModel m3U8DbModel = updateM3U8DownloadNum();
@@ -661,9 +666,10 @@ public class M3U8Util {
         mSqliteUtil.insert("data_cache", cv);
     }
 
-    private void saveDownloadItem(DownloadModel downloadModel) {
+    private void saveDownloadItem(DownloadModel downloadModel) throws FileNotFoundException {
         String path = queryDownloadUriPath(downloadModel.reference);
         File targetFile = new File(path);
+        Log.d(TAG, "targetFile:" + targetFile.exists());
         if ("key".equals(downloadModel.type)) {
             StringBuilder stringBuilder = FileUtils.readFile(path, "utf-8");
             if (stringBuilder != null) {
@@ -672,11 +678,8 @@ public class M3U8Util {
             targetFile.delete();
             return;
         }
-        try {
-            copyFile(DigestUtils.md5(downloadModel.url), targetFile);
-            targetFile.delete();
-        } catch (IOException ioe) {
-        }
+        copyFile(DigestUtils.md5(downloadModel.url), targetFile);
+        targetFile.delete();
     }
 
     private void sendSuccessBroadcast() {
@@ -1006,7 +1009,7 @@ public class M3U8Util {
         }
     }
 
-    private void copyFile(String key, File targetFile) throws IOException {
+    private void copyFile(String key, File targetFile) throws FileNotFoundException {
         File file = createLocalM3U8SourceFile(key);
         if (file == null) {
             Log.d(TAG, "file download error" + key);
@@ -1054,15 +1057,16 @@ public class M3U8Util {
                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
             }
 
-            long reference = downloadManager.enqueue(request);
             removeRepeatTask(downloadManager, url, type);
+            long reference = downloadManager.enqueue(request);
             insertM3U8SourceDownloadId(reference, url, type, mLessonId);
         }
 
         private void removeRepeatTask(DownloadManager downloadManager, String url, String type) {
             DownloadModel downloadModel = getDownloadModel(url, type);
             if (downloadModel != null) {
-                downloadManager.remove(downloadModel.reference);
+                Log.d(TAG, "removeRepeatTask:" + url);
+                //downloadManager.remove(downloadModel.reference);
                 mSqliteUtil.delete("download_item", "url=? and type=?", new String[] { url, type } );
             }
         }
