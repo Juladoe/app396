@@ -45,6 +45,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
+import com.edusoho.kuozhi.v3.util.RequestUtil;
 import com.edusoho.kuozhi.v3.util.sql.CourseThreadDataSource;
 import com.edusoho.kuozhi.v3.util.sql.CourseThreadPostDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
@@ -325,16 +326,16 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
     @Override
     public void sendMsg(final String content) {
-        Log.d(TAG, content);
-        if (mAdapter.getCount() == 0) {
-            handleSendThread(content, PushUtil.ChatMsgType.TEXT);
-        } else if (mAdapter.getCount() > 0) {
-            final CourseThreadPostEntity postModel = createCoursePostThreadByCurrentUser(content, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING);
-            postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
-            final ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
-            addItem2ListView(discussModel);
-            handleSendPost(postModel);
-        }
+//        Log.d(TAG, content);
+//        if (mAdapter.getCount() == 0) {
+//            handleSendThread(content, PushUtil.ChatMsgType.TEXT);
+//        } else if (mAdapter.getCount() > 0) {
+        final CourseThreadPostEntity postModel = createCoursePostThreadByCurrentUser(content, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING);
+        postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
+        final ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
+        addItem2ListView(discussModel);
+        handleSendPost(postModel);
+//        }
     }
 
     @Override
@@ -501,8 +502,13 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override
-            public void success(VolleyError obj) {
-                handleNetError(getString(R.string.network_does_not_work));
+            public void success(VolleyError error) {
+                String errorMessage = RequestUtil.handleRequestHttpError(new String(error.networkResponse.data));
+                if (TextUtils.isEmpty(errorMessage)) {
+                    handleNetError(getString(R.string.network_does_not_work));
+                } else {
+                    handleNetError(errorMessage);
+                }
                 postModel.delivery = PushUtil.MsgDeliveryType.FAILED;
                 mCourseThreadPostDataSource.update(postModel);
                 mAdapter.updateItemState(postModel.pid, PushUtil.MsgDeliveryType.FAILED);

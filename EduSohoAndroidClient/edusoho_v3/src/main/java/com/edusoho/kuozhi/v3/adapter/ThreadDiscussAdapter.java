@@ -97,13 +97,11 @@ public class ThreadDiscussAdapter extends ChatAdapter {
 
     public void updateItemState(int id, int state) {
         try {
-            if (mList.size() > 1) {
-                for (ThreadDiscussEntity tmpModel : mList) {
-                    if (tmpModel.id == id) {
-                        tmpModel.delivery = state;
-                        notifyDataSetChanged();
-                        break;
-                    }
+            for (ThreadDiscussEntity tmpModel : mList) {
+                if (tmpModel.id == id) {
+                    tmpModel.delivery = state;
+                    notifyDataSetChanged();
+                    break;
                 }
             }
         } catch (Exception e) {

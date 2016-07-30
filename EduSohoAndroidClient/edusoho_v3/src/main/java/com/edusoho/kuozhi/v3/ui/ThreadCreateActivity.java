@@ -5,12 +5,15 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+
 import java.util.LinkedHashMap;
+
 import cn.trinea.android.common.util.ToastUtils;
 
 /**
@@ -56,7 +59,7 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
         String content = mContenteEdt.getText().toString();
 
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(content)) {
-            ToastUtils.show(getBaseContext(), "问答标题或内容不能为空!!");
+            ToastUtils.show(getBaseContext(), "问答标题或内容不能为空");
             return;
         }
         CourseProvider courseProvider = new CourseProvider(getBaseContext());
@@ -68,11 +71,11 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
                             createSuccess();
                         }
                     }
-        });
+                });
     }
 
     private void createSuccess() {
-        ToastUtils.show(getBaseContext(), "发表成功!");
+        ToastUtils.show(getBaseContext(), "发表成功");
         finish();
         Bundle bundle = new Bundle();
         bundle.putString("event", "createThreadEvent");
