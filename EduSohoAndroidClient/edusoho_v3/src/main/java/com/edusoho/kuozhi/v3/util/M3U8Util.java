@@ -547,12 +547,12 @@ public class M3U8Util {
     private void insertM3U8SourceToDb(int lessonId, String url) {
         ContentValues cv = new ContentValues();
         cv.put("lessonId", lessonId);
-        cv.put("finish", 0);
+        cv.put("finish", UN_FINISH);
         cv.put("url", DigestUtils.md5(url));
         mSqliteUtil.insert("data_m3u8_url", cv);
     }
 
-    private void updateM3U8SourceDownloadId(long reference, String url, String type, int lessonId) {
+    private void insertM3U8SourceDownloadId(long reference, String url, String type, int lessonId) {
         ContentValues cv = new ContentValues();
         cv.put("reference", reference);
         cv.put("targetId", lessonId);
@@ -580,7 +580,32 @@ public class M3U8Util {
         return fileUri.getPath();
     }
 
-    public void updateDownloadStatus(DownloadModel downloadModel, int finish) {
+    public int queryDownloadUriStatus(long reference) {
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterById(reference);
+
+        DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
+        Cursor cursor = downloadManager.query(query);
+        int status = DownloadManager.STATUS_RUNNING;
+        if (cursor.moveToFirst()) {
+            int localStatusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
+            status = cursor.getInt(localStatusIndex);
+        }
+        cursor.close();
+
+        return status;
+    }
+
+    public void updateDownloadStatus(DownloadModel downloadModel, int status) {
+        mDownloadQueue.poll();
+        prepareDownload();
+        mDownloadQueue.add(new DownloadItem(downloadModel.url, downloadModel.type));
+        if (status == DownloadManager.STATUS_SUCCESSFUL) {
+            updateDownloadFinish(downloadModel);
+        }
+    }
+
+    private void updateDownloadFinish(DownloadModel downloadModel) {
         int isFinished = mSqliteUtil.query(
                 Integer.class,
                 "finish",
@@ -589,12 +614,8 @@ public class M3U8Util {
                 String.valueOf(downloadModel.targetId)
         );
         Log.d("updateDownloadStatus:", downloadModel.url + "--" + isFinished);
-        if (isFinished == FINISH) {
-            return;
-        }
-
         ContentValues cv = new ContentValues();
-        cv.put("finish", finish);
+        cv.put("finish", FINISH);
         int result = mSqliteUtil.update(
                 "data_m3u8_url",
                 cv,
@@ -603,11 +624,12 @@ public class M3U8Util {
         );
         Log.d(TAG, "update m3u8 src result " + result);
         if (result > 0) {
+            mDownloadQueue.poll();
             saveDownloadItem(downloadModel);
             sendSuccessBroadcast();
             //更新总计数器
             M3U8DbModel m3U8DbModel = updateM3U8DownloadNum();
-            if (m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
+            if (m3U8DbModel != null && m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
                 String playListStr = createLocalM3U8File(m3U8DbModel);
                 Log.d(TAG, "m3U8DbModle-> finish");
                 cv.put("play_list", playListStr);
@@ -625,9 +647,9 @@ public class M3U8Util {
                 Log.d(TAG, "finish checkHasLocalM3U8Model");
                 checkHasLocalM3U8Model(mLessonId, mUserId);
             }
-
-            prepareDownload();
         }
+
+        prepareDownload();
         Log.d(TAG, "update m3u8 src status " + downloadModel.url);
     }
 
@@ -669,7 +691,7 @@ public class M3U8Util {
     private M3U8DbModel updateM3U8DownloadNum() {
         //更新总计数器
         M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, mUserId, mLessonId, mTargetHost, UN_FINISH);
-        if (m3U8DbModel == null) {
+        if (m3U8DbModel == null || m3U8DbModel.finish == FINISH) {
             return null;
         }
         ContentValues cv = new ContentValues();
@@ -733,7 +755,7 @@ public class M3U8Util {
         return stringBuffer.toString();
     }
 
-    private void getResourceFromNet(String url, int type) {
+    private void getResourceFromNet(String url, String type) {
         if (isCancel) {
             return;
         }
@@ -741,7 +763,7 @@ public class M3U8Util {
         mFutures.add(future);
     }
 
-    private void processTimeout(int type, String key, String url) {
+    private void processTimeout(String type, String key, String url) {
         //超时处理
         int count = mTimeOutList.containsKey(key) ? mTimeOutList.get(key) : 0;
         Log.d(TAG, "timeiout count " + count);
@@ -761,12 +783,16 @@ public class M3U8Util {
         ArrayList<String> urlList = m3U8File.urlList;
 
         for (String url : keyList) {
-            mDownloadQueue.add(new DownloadItem(KEY, url));
+            mDownloadQueue.add(new DownloadItem("key", url));
         }
 
         for (String url : urlList) {
-            mDownloadQueue.add(new DownloadItem(URL, url));
+            mDownloadQueue.add(new DownloadItem("url", url));
         }
+    }
+
+    private void pushTaskToQueue(String url, String type) {
+
     }
 
     private void prepareDownload() {
@@ -774,7 +800,10 @@ public class M3U8Util {
             return;
         }
 
-        DownloadItem downloadItem = mDownloadQueue.poll();
+        DownloadItem downloadItem = mDownloadQueue.peek();
+        if (downloadItem == null) {
+            return;
+        }
         getResourceFromNet(downloadItem.url, downloadItem.type);
     }
 
@@ -969,9 +998,9 @@ public class M3U8Util {
 
     class DownloadItem {
         public String url;
-        public int type;
+        public String type;
 
-        public DownloadItem(int type, String url) {
+        public DownloadItem(String type, String url) {
             this.type = type;
             this.url = url;
         }
@@ -998,9 +1027,9 @@ public class M3U8Util {
 
     class DownloadRunnable implements Runnable {
         public String url;
-        public int type;
+        public String type;
 
-        public DownloadRunnable(int type, String url) {
+        public DownloadRunnable(String type, String url) {
             this.type = type;
             this.url = url;
         }
@@ -1018,7 +1047,7 @@ public class M3U8Util {
 
             request.setDestinationInExternalFilesDir(mContext, Environment.DIRECTORY_DOWNLOADS, key);
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
-            request.addRequestHeader("Android", "Android-kuozhi");
+            request.addRequestHeader("Android", "Android-kuozhi v3");
             if (EdusohoApp.app.config.offlineType == 1) {
                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
             } else {
@@ -1026,7 +1055,38 @@ public class M3U8Util {
             }
 
             long reference = downloadManager.enqueue(request);
-            updateM3U8SourceDownloadId(reference, url, type == KEY ? "key" : "url", mLessonId);
+            removeRepeatTask(downloadManager, url, type);
+            insertM3U8SourceDownloadId(reference, url, type, mLessonId);
+        }
+
+        private void removeRepeatTask(DownloadManager downloadManager, String url, String type) {
+            DownloadModel downloadModel = getDownloadModel(url, type);
+            if (downloadModel != null) {
+                downloadManager.remove(downloadModel.reference);
+                mSqliteUtil.delete("download_item", "url=? and type=?", new String[] { url, type } );
+            }
+        }
+
+        private DownloadModel getDownloadModel(String url, String type) {
+            SqliteUtil.QueryParser<DownloadModel> queryCallBack =
+                    new SqliteUtil.QueryParser<DownloadModel>() {
+                        @Override
+                        public DownloadModel parse(Cursor cursor) {
+                            DownloadModel downloadModel = new DownloadModel();
+                            downloadModel.url = cursor.getString(cursor.getColumnIndex("url"));
+                            downloadModel.type = cursor.getString(cursor.getColumnIndex("type"));
+                            downloadModel.targetId = cursor.getInt(cursor.getColumnIndex("targetId"));
+                            downloadModel.reference = cursor.getInt(cursor.getColumnIndex("reference"));
+                            downloadModel.id = cursor.getInt(cursor.getColumnIndex("id"));
+                            return downloadModel;
+                        }};
+
+            return SqliteUtil.getUtil(mContext).query(
+                    queryCallBack,
+                    "select * from download_item where url=? and type=?",
+                    url,
+                    type
+            );
         }
     }
 }
