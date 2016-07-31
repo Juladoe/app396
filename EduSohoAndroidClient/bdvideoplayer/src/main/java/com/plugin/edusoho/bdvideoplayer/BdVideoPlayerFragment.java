@@ -146,6 +146,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected int mDurationCount = 0;
 
     protected boolean isSwitched;
+    protected boolean isHeadPlaying;
     private PLAYER_HEAD_STATUS mPlayHeadStatus;
 
     @Override
@@ -335,12 +336,13 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                         return;
                     }
                     setPlayerFunctionButton(View.INVISIBLE);
+                    isHeadPlaying = true;
                     break;
                 case UI_HEAD_FINISHED:
                     if (isCacheVideo) {
                         return;
                     }
-                    setPlayerFunctionButton(View.VISIBLE);
+                    isHeadPlaying = false;
                     break;
                 default:
                     break;
@@ -762,9 +764,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         view.setText(strTemp);
     }
 
-    /**
-     *
-     */
     @Override
     public void onCompletion() {
         Log.v(TAG, "onCompletion");
@@ -795,9 +794,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
     }
 
-    /**
-     * 准
-     */
     @Override
     public void onPrepared() {
         Log.v(TAG, "onPrepared" + mPlayerStatus);
@@ -818,6 +814,11 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         setVideoViewHeight();
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE && !isHeadPlaying) {
+            setPlayerFunctionButton(View.VISIBLE);
+        } else {
+            setPlayerFunctionButton(View.GONE);
+        }
     }
 
     private void setVideoViewHeight() {
