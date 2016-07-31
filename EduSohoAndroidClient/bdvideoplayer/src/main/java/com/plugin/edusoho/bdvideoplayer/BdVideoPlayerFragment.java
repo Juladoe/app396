@@ -141,6 +141,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
      * 位置
      */
     protected int mLastPos = 0;
+    protected int mSavePos = 0;
     protected int mCurrentPos = 0;
     protected int mDurationCount = 0;
 
@@ -224,12 +225,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
     }
 
-    protected void recordCurrentPosition() {
-        if (mPlayerStatus == PLAYER_STATUS.PLAYER_PREPARED) {
-            mLastPos = mVV.getCurrentPosition();
-        }
-    }
-
     /**
      * 初 化
      */
@@ -308,6 +303,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
             switch (msg.what) {
                 case UI_EVENT_UPDATE_CURRPOSITION:
                     mCurrentPos = mVV.getCurrentPosition();
+                    if (mCurrentPos != 0) {
+                        mSavePos = mCurrentPos;
+                    }
                     int duration = mVV.getDuration();
                     updateTextViewWithTimeFormat(mCurrPosition, mCurrentPos);
                     updateTextViewWithTimeFormat(mDuration, duration);
@@ -574,14 +572,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     @Override
     public void onStop() {
         super.onStop();
-        Log.v(TAG, "onStop");
+        Log.v(TAG, "onStop + position:" + mVV.getCurrentPosition());
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mHandlerThread.quit();
-        Log.v(TAG, "onDestroy");
+        Log.v(TAG, "onDestroy + position:" + mVV.getCurrentPosition());
         if (mWakeLock != null) {
             try {
                 mWakeLock.release();
@@ -941,6 +939,13 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         }
     }
 
+    protected int getCurrentPos() {
+        return mSavePos;
+    }
+
+    protected void setCurrentPos(int seek) {
+        mLastPos = seek;
+    }
 
     protected void setPlayerFunctionButton(int visibility) {
         tvStreamType.setVisibility(visibility);
