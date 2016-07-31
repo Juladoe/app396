@@ -205,7 +205,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });
     }
@@ -399,7 +398,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private void loadLessonFromNet() {
         final LoadDialog loadDialog = LoadDialog.create(this);
         loadDialog.show();
-        RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(String.format(Const.LESSON, mLessonId), true);
+        RequestUrl requestUrl = app.bindNewUrl(String.format(Const.LESSON, mLessonId), true);
         ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -622,11 +621,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     protected void onDestroy() {
         super.onDestroy();
         app.stopPlayCacheServer();
-    }
 
-    private boolean getM3U8Cache(int lessonId) {
-        M3U8DbModel model = M3U8Util.queryM3U8Model(mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.FINISH);
-        return model != null;
+        Bundle bundle = new Bundle();
+        bundle.putString("event", "lessonStatusRefresh");
+        MessageEngine.getInstance().sendMsg(WebViewActivity.SEND_EVENT, bundle);
     }
 
     public static class MsgHandler extends Handler {
