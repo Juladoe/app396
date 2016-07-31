@@ -115,7 +115,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
             tvLearn.setVisibility(View.INVISIBLE);
             tvStreamType.setVisibility(View.VISIBLE);
             tvStreamType.setEnabled(false);
-            tvStreamType.setText("离线");
+            tvStreamType.setText("本地");
         }
     }
 

@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -41,7 +40,6 @@ import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.plugin.edusoho.bdvideoplayer.StreamInfo;
-
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -50,7 +48,6 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
-
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 
@@ -536,7 +533,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                             return null;
                         }
                     } else {
-                        String ip = getLocalIpAddress();
                         normalLesson.mediaUri = String.format("http://%s:8800/playlist/%d.m3u8", "localhost", mLessonId);
                     }
                 }
