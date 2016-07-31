@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import cn.trinea.android.common.util.PreferencesUtils;
+
 
 /**
  * Created by howzhi on 14-10-25.
@@ -49,6 +51,7 @@ import java.util.List;
 public class CustomVideoFragment extends BdVideoPlayerFragment implements CompoundButton.OnCheckedChangeListener,
         View.OnClickListener, BdVideoPlayerFragment.LessonLearnStatus {
 
+    public static final String PLAYER_POSITION_PREF = "lesson_video_seek";
     LessonActivity lessonActivity = null;
     PopupDialog backPopupDialog = null;
     private static final int NO_LESSON = 10001;
@@ -95,6 +98,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
             popupDialog.show();
             isDialogShowed = true;
         }
+        setCurrentPos(PreferencesUtils.getInt(PLAYER_POSITION_PREF, lessonActivity, lessonActivity.app.loginUser.id + ":" + lessonActivity.app.domain + "/api/lessons/" + mLessonId, 0));
     }
 
     protected int getMediaCoderType() {
@@ -256,12 +260,10 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         }
     }
 
-    private void playLocalVideo() {
-
-    }
-
-    private void playCloudVideo() {
-
+    @Override
+    public void onCompletion() {
+        super.onCompletion();
+        PreferencesUtils.putInt(PLAYER_POSITION_PREF, lessonActivity, lessonActivity.app.loginUser.id + ":" + lessonActivity.app.domain + "/api/lessons/" + mLessonId, getCurrentPos());
     }
 
     private void getVideoHeadStream(String url, final NormalCallback<StreamInfo> normalCallback) {
