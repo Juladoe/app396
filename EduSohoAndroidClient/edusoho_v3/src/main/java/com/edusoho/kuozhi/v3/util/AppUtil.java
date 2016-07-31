@@ -81,6 +81,20 @@ public class AppUtil {
         return i;
     }
 
+    public static long parseLong(String value) {
+        long i = 0;
+        if (value == null) {
+            return i;
+        }
+        try {
+            i = Long.parseLong(value);
+        } catch (Exception e) {
+            i = 0;
+        }
+
+        return i;
+    }
+
     public static void initConfig(String[] config) {
         if (config == null || config.length == 0) {
             return;

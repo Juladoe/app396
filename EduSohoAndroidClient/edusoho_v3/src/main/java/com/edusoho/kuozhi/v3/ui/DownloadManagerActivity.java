@@ -402,6 +402,11 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
                 m3u8LessonIds.toString())
         );
 
+        sqliteUtil.execSQL(String.format(
+                "delete from data_m3u8_url where lessonId in %s",
+                m3u8LessonIds.toString())
+        );
+
         M3U8DownService service = M3U8DownService.getService();
         if (service != null) {
             service.cancelAllDownloadTask();

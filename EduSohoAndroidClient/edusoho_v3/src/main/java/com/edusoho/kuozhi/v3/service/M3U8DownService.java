@@ -9,7 +9,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.util.SparseArray;
@@ -23,6 +26,7 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.DownloadModel;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
@@ -47,6 +51,34 @@ public class M3U8DownService extends Service {
     private static final String TAG = "M3U8DownService";
     private Object mLock = new Object();
 
+    private Handler mContentObserverHandler = new Handler();
+
+    protected ContentObserver mDownloadContentObserver = new ContentObserver(mContentObserverHandler) {
+
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            super.onChange(selfChange, uri);
+            long reference = AppUtil.parseLong(uri.getLastPathSegment());
+            if (reference == 0) {
+                return;
+            }
+            DownloadModel downloadModel = getDownloadModel(reference);
+            if (downloadModel == null) {
+                return;
+            }
+
+            M3U8Util m3U8Util = mM3U8UitlList.get(downloadModel.targetId);
+            if (m3U8Util == null) {
+                return;
+            }
+            int status = m3U8Util.queryDownloadUriStatus(reference);
+            if (status == DownloadManager.STATUS_FAILED) {
+                Log.d(TAG, "onChange" + selfChange + " status fail:" + status);
+                m3U8Util.updateDownloadStatus(downloadModel, status);
+            }
+        }
+    };
+
     protected DownloadStatusReceiver mDownLoadStatusReceiver = new DownloadStatusReceiver() {
 
         @Override
@@ -67,40 +99,46 @@ public class M3U8DownService extends Service {
             if (reference == -1) {
                 return;
             }
-
-            SqliteUtil.QueryParser<DownloadModel> queryCallBack =
-                    new SqliteUtil.QueryParser<DownloadModel>() {
-                        @Override
-                        public DownloadModel parse(Cursor cursor) {
-                            DownloadModel downloadModel = new DownloadModel();
-                            downloadModel.url = cursor.getString(cursor.getColumnIndex("url"));
-                            downloadModel.type = cursor.getString(cursor.getColumnIndex("type"));
-                            downloadModel.targetId = cursor.getInt(cursor.getColumnIndex("targetId"));
-                            downloadModel.reference = cursor.getInt(cursor.getColumnIndex("reference"));
-                            downloadModel.id = cursor.getInt(cursor.getColumnIndex("id"));
-                            return downloadModel;
-                        }};
-
-            DownloadModel downloadModel = SqliteUtil.getUtil(mContext).query(
-                    queryCallBack,
-                    "select * from download_item where reference=?",
-                    String.valueOf(reference)
-            );
-
+            DownloadModel downloadModel = getDownloadModel(reference);
+            if (downloadModel == null) {
+                return;
+            }
             M3U8Util m3U8Util = mM3U8UitlList.get(downloadModel.targetId);
             if (m3U8Util == null) {
                 return;
             }
-            m3U8Util.updateDownloadStatus(downloadModel, 1);
+            m3U8Util.updateDownloadStatus(downloadModel, DownloadManager.STATUS_SUCCESSFUL);
             updateM3U8DownloadStatus(m3U8Util, downloadModel.targetId);
         }
     };
+
+    private DownloadModel getDownloadModel(long reference) {
+        SqliteUtil.QueryParser<DownloadModel> queryCallBack =
+                new SqliteUtil.QueryParser<DownloadModel>() {
+                    @Override
+                    public DownloadModel parse(Cursor cursor) {
+                        DownloadModel downloadModel = new DownloadModel();
+                        downloadModel.url = cursor.getString(cursor.getColumnIndex("url"));
+                        downloadModel.type = cursor.getString(cursor.getColumnIndex("type"));
+                        downloadModel.targetId = cursor.getInt(cursor.getColumnIndex("targetId"));
+                        downloadModel.reference = cursor.getInt(cursor.getColumnIndex("reference"));
+                        downloadModel.id = cursor.getInt(cursor.getColumnIndex("id"));
+                        return downloadModel;
+                    }};
+
+        return SqliteUtil.getUtil(mContext).query(
+                queryCallBack,
+                "select * from download_item where reference=?",
+                String.valueOf(reference)
+        );
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mDownLoadCompleteReceiver);
         unregisterReceiver(mDownLoadStatusReceiver);
+        getContentResolver().unregisterContentObserver(mDownloadContentObserver);
         Log.d(TAG, "m3u8 download_service destroy");
     }
 
@@ -119,6 +157,7 @@ public class M3U8DownService extends Service {
 
         registerReceiver(mDownLoadCompleteReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         registerReceiver(mDownLoadStatusReceiver, new IntentFilter(DownloadStatusReceiver.ACTION));
+        getContentResolver().registerContentObserver(Uri.parse("content://downloads/my_downloads"), true, mDownloadContentObserver);
     }
 
     public static M3U8DownService getService() {
