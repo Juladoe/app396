@@ -65,8 +65,6 @@ public class M3U8Util {
     public static final int START = -1;
     public static final int DOWNLOAD_ERROR = 3;
 
-    public static final int KEY = 0;
-    public static final int URL = 1;
     private static final String TAG = "M3U8Util";
     private static Pattern M3U8_STREAM_PAT = Pattern.compile(
             "#EXT-X-STREAM-INF:PROGRAM-ID=(\\d+),BANDWIDTH=(\\d+)", Pattern.DOTALL);
@@ -277,9 +275,6 @@ public class M3U8Util {
         mUserId = userId;
 
         setDownloadStatus(DOWNING);
-        ContentValues cv = new ContentValues();
-        cv.put("finish", START);
-        updateM3U8Model(cv, mLessonId, mTargetHost);
 
         if (checkHasLocalM3U8Model(mLessonId, mUserId)) {
             prepareDownload();
@@ -314,7 +309,7 @@ public class M3U8Util {
     private boolean checkHasLocalM3U8Model(int lessonId, int userId) {
         M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, userId, lessonId, mTargetHost, ALL);
 
-        if (m3U8DbModel != null && m3U8DbModel.finish == UN_FINISH) {
+        if (m3U8DbModel != null && m3U8DbModel.finish ==UN_FINISH) {
             Log.d(TAG, "continue M3U8DbModle");
             M3U8File m3U8File = getM3U8FileFromModel(m3U8DbModel);
             addM3U8SourceToQueue(m3U8File);
@@ -751,11 +746,13 @@ public class M3U8Util {
             }
         }
         matcher.appendTail(stringBuffer);
+        return stringBuffer.toString();
+    }
 
+    private void saveM3U8FileToStorage(String m3u8Str) {
         File dir = getLocalM3U8Dir();
         File m3u8File = new File(dir, "play.m3u8");
-        FileUtils.writeFile(m3u8File.getAbsolutePath(), stringBuffer.toString());
-        return stringBuffer.toString();
+        FileUtils.writeFile(m3u8File.getAbsolutePath(), m3u8Str);
     }
 
     private void getResourceFromNet(String url, String type) {

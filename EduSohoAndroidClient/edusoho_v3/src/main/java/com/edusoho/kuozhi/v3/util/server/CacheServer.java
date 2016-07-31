@@ -25,6 +25,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import cn.trinea.android.common.util.ToastUtils;
+
 public class
 CacheServer extends Thread {
 
@@ -38,6 +40,7 @@ CacheServer extends Thread {
     private ArrayList<Thread> mThreadList;
 
     public CacheServer(ActionBarBaseActivity activity) {
+        this.port = Const.CACHE_PROT;
         this.mActivity = activity;
         this.mThreadList = new ArrayList<>();
         // 创建HTTP请求执行器注册表
@@ -121,6 +124,7 @@ CacheServer extends Thread {
                 Log.d(TAG, "WorkThread Start");
             }
         } catch (IOException e) {
+            ToastUtils.show(mActivity.getBaseContext(), "离线缓存加载失败!");
             isLoop = false;
         } finally {
             try {

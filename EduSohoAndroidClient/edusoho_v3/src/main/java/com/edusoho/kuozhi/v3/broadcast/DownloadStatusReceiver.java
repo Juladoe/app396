@@ -26,7 +26,7 @@ public class DownloadStatusReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d("DownLoadStatusReceiver", "onReceive ");
+        Log.d("DownLoadStatusReceiver", "onReceive");
         if (mStatusCallback != null) {
             mStatusCallback.invoke(intent);
             return;
