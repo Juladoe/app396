@@ -955,7 +955,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         if ("cloud".equals(mediaStorage)) {
             tvStreamType.setVisibility(visibility);
         } else {
-            tvStreamType.setVisibility(View.GONE);
+            tvStreamType.setVisibility(View.INVISIBLE);
         }
         ivNote.setVisibility(visibility);
         ivQuestion.setVisibility(visibility);
