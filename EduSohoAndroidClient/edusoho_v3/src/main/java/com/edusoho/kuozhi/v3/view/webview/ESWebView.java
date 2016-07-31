@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
@@ -97,6 +98,10 @@ public class ESWebView extends RelativeLayout {
     }
 
     private void setupWebView() {
+        mWebView.setScrollBarSize(0);
+        mWebView.setVerticalScrollBarEnabled(false);
+        mWebView.setHorizontalScrollBarEnabled(false);
+        mWebView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
         mWebView.setWebViewClient(new ESWebViewClient());
         mWebView.setWebChromeClient(new ESWebChromeClient(mWebView));
     }
