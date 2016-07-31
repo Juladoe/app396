@@ -331,7 +331,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                     continue;
                 }
             }
-            if ("local".equals(lessonItem.uploadFile.storage)) {
+            if (lessonItem.uploadFile != null && "local".equals(lessonItem.uploadFile.storage)) {
                 lessonItemIterator.remove();
             }
         }

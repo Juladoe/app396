@@ -247,6 +247,9 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         ivNote = (ImageView) view.findViewById(R.id.iv_note);
         tvStreamType = (TextView) view.findViewById(R.id.tv_stream);
         registerCallbackForControl();
+        if ("local".equals(mediaStorage)) {
+            tvStreamType.setVisibility(View.GONE);
+        }
         /**
          *   ak及sk 前16位
          */
@@ -949,7 +952,11 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     }
 
     protected void setPlayerFunctionButton(int visibility) {
-        tvStreamType.setVisibility(visibility);
+        if ("cloud".equals(mediaStorage)) {
+            tvStreamType.setVisibility(visibility);
+        } else {
+            tvStreamType.setVisibility(View.GONE);
+        }
         ivNote.setVisibility(visibility);
         ivQuestion.setVisibility(visibility);
     }
