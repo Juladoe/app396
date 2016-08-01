@@ -351,6 +351,7 @@ public class Const {
     public static final String LESSON_ID = "lessonId";
     public static final String LESSON_NAME = "lesson_name";
     public static final String VIDEO_TYPE = "video_type";
+    public static final String CLOUD_VIDEO_CONVERT_STATUS = "cloud_video_convert_status";
     public static final String QUESTION_TYPE = "question_type";
     public static final String STREAM_URL = "mediaUrl";
     public static final String MEDIA_URL = "streamUrls";

@@ -64,6 +64,7 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     protected String mVideoSource = null;
     protected String mVideoHead = null;
     protected String mediaStorage = null;
+    protected String cloudVideoConvertStatus = null;
 
     protected boolean mLearnStatus;
 
@@ -168,7 +169,8 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
         isCacheVideo = bundle.getBoolean("from_cache", false);
         mVideoSource = getUrlPath(bundle.getString("streamUrls"));
         mediaStorage = bundle.getString("video_type");
-        if (isCacheVideo || "local".equals(mediaStorage)) {
+        cloudVideoConvertStatus = bundle.getString("cloud_video_convert_status");
+        if (isCacheVideo || "local".equals(mediaStorage) || !"success".equals(cloudVideoConvertStatus)) {
             mCurMediaSource = mVideoSource;
         }
         int decodeMode = TextUtils.isEmpty(mVideoSource) || "local".equals(mediaStorage) ? BVideoView.DECODE_HW : BVideoView.DECODE_SW;
@@ -952,10 +954,14 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
     }
 
     protected void setPlayerFunctionButton(int visibility) {
-        if ("cloud".equals(mediaStorage)) {
-            tvStreamType.setVisibility(visibility);
+        if (isCacheVideo) {
+            tvStreamType.setText("缓存");
         } else {
-            tvStreamType.setVisibility(View.INVISIBLE);
+            if ("local".equals(mediaStorage) || !"success".equals(cloudVideoConvertStatus)) {
+                tvStreamType.setVisibility(View.INVISIBLE);
+            } else {
+                tvStreamType.setVisibility(visibility);
+            }
         }
         ivNote.setVisibility(visibility);
         ivQuestion.setVisibility(visibility);
