@@ -12,6 +12,7 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
@@ -22,6 +23,7 @@ import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.managar.IMMessageManager;
 import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -57,7 +59,7 @@ public class IMClient {
     public void start(String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
         int pid = android.os.Process.myPid();
         String processAppName = getAppName(pid);
-        if (processAppName == null ||!processAppName.equalsIgnoreCase(mContext.getPackageName())) {
+        if (processAppName == null || !processAppName.equalsIgnoreCase(mContext.getPackageName())) {
             Log.e("IMClient", "enter the service process!");
             return;
         }
@@ -178,7 +180,7 @@ public class IMClient {
 
     public int getIMConnectStatus() {
         try {
-            return mImBinder == null ? mIMConnectStatus :  mImBinder.getIMStatus();
+            return mImBinder == null ? mIMConnectStatus : mImBinder.getIMStatus();
         } catch (RemoteException e) {
             return IMConnectStatus.ERROR;
         }

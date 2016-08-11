@@ -3,8 +3,6 @@ package com.edusoho.kuozhi;
 import com.edusoho.kuozhi.imserver.BuildConfig;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
-import com.edusoho.kuozhi.imserver.entity.Role;
-import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 
 import org.junit.Assert;
@@ -14,8 +12,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
-
-import java.util.Map;
 
 /**
  * Created by 菊 on 2016/5/18.
@@ -37,7 +33,7 @@ public class MessageManagerTest {
                 .addToId(toId)
                 .addMsg(msg)
                 .addConvNo("convNo1")
-                .addTime("1")
+                .addTime(1)
                 .addStatus(MessageEntity.StatusType.SUCCESS)
                 .addToName(toName)
                 .builder();

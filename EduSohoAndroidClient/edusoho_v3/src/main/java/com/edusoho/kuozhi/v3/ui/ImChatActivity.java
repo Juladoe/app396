@@ -6,22 +6,23 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.SendEntity;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
-import com.edusoho.kuozhi.imserver.managar.IMConvManager;
-import com.edusoho.kuozhi.imserver.SendEntity;
-import com.edusoho.kuozhi.imserver.entity.ConvEntity;
-import com.edusoho.kuozhi.imserver.entity.MessageEntity;
-import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
+import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
@@ -42,12 +43,14 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
+
 import cn.trinea.android.common.util.ToastUtils;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -117,7 +120,7 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         }
 
         initAdapter();
-        if (! convNoIsEmpty(mConversationNo)) {
+        if (!convNoIsEmpty(mConversationNo)) {
             getNotificationProvider().cancelNotification(mConversationNo.hashCode());
         }
     }
@@ -181,6 +184,7 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
 
     /**
      * 逆序显示
+     *
      * @param start
      * @return
      */
@@ -207,7 +211,7 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
     @Override
     protected void onResume() {
         super.onResume();
-        if (! TextUtils.isEmpty(mConversationNo)) {
+        if (!TextUtils.isEmpty(mConversationNo)) {
             registIMMessageReceiver();
         }
     }
@@ -313,7 +317,7 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
                 .addFromName(messageBody.getSource().getNickname())
                 .addCmd("message")
                 .addMsg(messageBody.toJson())
-                .addTime((int)(messageBody.getCreatedTime() / 1000))
+                .addTime((int) (messageBody.getCreatedTime() / 1000))
                 .builder();
     }
 
@@ -357,7 +361,6 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         messageBody.getSource().setNickname(mTargetRole.getNickname());
         messageBody.setConvNo(mConversationNo);
         messageBody.setMessageId(UUID.randomUUID().toString());
-
         return messageBody;
     }
 
@@ -397,28 +400,28 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         loadDialog.show();
 
         User currentUser = getAppSettingProvider().getCurrentUser();
-        new UserProvider(mContext).createConvNo(new int[] { currentUser.id, mFromId })
-        .success(new NormalCallback<LinkedHashMap>() {
-            @Override
-            public void success(LinkedHashMap linkedHashMap) {
-                String conversationNo = null;
-                if (linkedHashMap == null || (conversationNo = linkedHashMap.get("no").toString()) == null) {
-                    ToastUtils.show(getBaseContext(), "创建聊天失败!");
-                    return;
-                }
-
-                mConversationNo = conversationNo;
-                new IMProvider(mContext).createConvInfoByUser(mConversationNo, mFromId)
-                .success(new NormalCallback<ConvEntity>() {
+        new UserProvider(mContext).createConvNo(new int[]{currentUser.id, mFromId})
+                .success(new NormalCallback<LinkedHashMap>() {
                     @Override
-                    public void success(ConvEntity convEntity) {
-                        loadDialog.dismiss();
-                        setTitle(convEntity.getTargetName());
-                        initAdapter();
+                    public void success(LinkedHashMap linkedHashMap) {
+                        String conversationNo = null;
+                        if (linkedHashMap == null || (conversationNo = linkedHashMap.get("no").toString()) == null) {
+                            ToastUtils.show(getBaseContext(), "创建聊天失败!");
+                            return;
+                        }
+
+                        mConversationNo = conversationNo;
+                        new IMProvider(mContext).createConvInfoByUser(mConversationNo, mFromId)
+                                .success(new NormalCallback<ConvEntity>() {
+                                    @Override
+                                    public void success(ConvEntity convEntity) {
+                                        loadDialog.dismiss();
+                                        setTitle(convEntity.getTargetName());
+                                        initAdapter();
+                                    }
+                                });
                     }
                 });
-            }
-        });
     }
 
     protected AppSettingProvider getAppSettingProvider() {
@@ -493,12 +496,10 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         }, Request.Method.PUT);
     }
 
-    private class UpYunUploadCallback implements NormalCallback<UpYunUploadResult>
-    {
+    private class UpYunUploadCallback implements NormalCallback<UpYunUploadResult> {
         private MessageBody messageBody;
 
-        public UpYunUploadCallback(MessageBody messageBody)
-        {
+        public UpYunUploadCallback(MessageBody messageBody) {
             this.messageBody = messageBody;
         }
 

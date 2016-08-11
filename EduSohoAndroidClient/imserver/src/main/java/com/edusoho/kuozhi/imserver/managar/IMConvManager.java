@@ -2,8 +2,10 @@ package com.edusoho.kuozhi.imserver.managar;
 
 import android.content.ContentValues;
 import android.content.Context;
+
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.util.ConvDbHelper;
+
 import java.util.List;
 
 /**
@@ -13,8 +15,7 @@ public class IMConvManager {
 
     private Context mContext;
 
-    public IMConvManager(Context context)
-    {
+    public IMConvManager(Context context) {
         this.mContext = context;
     }
 
