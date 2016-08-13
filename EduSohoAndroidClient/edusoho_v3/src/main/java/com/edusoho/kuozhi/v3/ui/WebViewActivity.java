@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -68,6 +69,14 @@ public class WebViewActivity extends ActionBarBaseActivity {
             Bundle bundle = message.data;
             String eventName = bundle.getString("event");
             mWebView.getWebView().execJsScript(String.format("jsBridgeAdapter.sendEvent('%s')", eventName));
+        }
+        if (ESWebView.MAIN_UPDATE.equals(messageType.type)) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mWebView.reload();
+                }
+            });
             return;
         }
         if (Const.THIRD_PARTY_LOGIN_SUCCESS.equals(messageType.type) || Const.LOGIN_SUCCESS.equals(messageType.type)) {
@@ -116,7 +125,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
         destoryVideoResource();
-        destoryWebView();
+        mWebView = null;
     }
 
     @Override
@@ -128,6 +137,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS),
                 new MessageType(SEND_EVENT),
+                new MessageType(ESWebView.MAIN_UPDATE)
         };
         return messageTypes;
     }
@@ -136,12 +146,17 @@ public class WebViewActivity extends ActionBarBaseActivity {
     public void finish() {
         Log.d(TAG, "finish");
         super.finish();
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                destoryWebView();
+            }
+        });
     }
 
     private void destoryWebView() {
         if (mWebView != null) {
             mWebView.destroy();
-            mWebView = null;
         }
     }
 

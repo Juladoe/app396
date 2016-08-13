@@ -71,6 +71,16 @@
         version="1.0" />
 
     <plugin
+        name="ThreadActivity"
+        package="com.edusoho.kuozhi.v3.ui.ThreadActivity"
+        version="1.0" />
+
+    <plugin
+        name="NoteActivity"
+        package="com.edusoho.kuozhi.v3.ui.NoteActivity"
+        version="1.0" />
+
+    <plugin
         name="ClassroomDiscussActivity"
         package="com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity"
         version="1.0" />
@@ -173,7 +183,7 @@
 
     <plugin
         name="VideoLessonFragment"
-        package="com.edusoho.kuozhi.v3.view.video.CustomVideoFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.video.CustomVideoFragment"
         version="1.0" />
 
     <plugin
@@ -188,7 +198,7 @@
 
     <plugin
         name="CustomVideoFragment"
-        package="com.edusoho.kuozhi.v3.view.video.CustomVideoFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.video.CustomVideoFragment"
         version="1.0" />
 
     <plugin

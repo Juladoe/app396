@@ -10,17 +10,12 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import photoview.PhotoView;
 import photoview.PhotoViewAttacher;
 
@@ -94,10 +89,10 @@ public class ViewPagerActivity extends ActionBarBaseActivity {
         @Override
         public View instantiateItem(ViewGroup container, int position) {
             PhotoView photoView = new PhotoView(container.getContext());
-            if (mImages[position].contains(AppUtil.getAppStorage() + Const.UPLOAD_IMAGE_CACHE_FILE)) {
-                ImageLoader.getInstance().displayImage("file://" + mImages[position], photoView, EdusohoApp.app.mOptions);
-            } else {
+            if (mImages[position].contains("http://")) {
                 ImageLoader.getInstance().displayImage(mImages[position], photoView, EdusohoApp.app.mOptions);
+            } else {
+                ImageLoader.getInstance().displayImage("file://" + mImages[position], photoView, EdusohoApp.app.mOptions);
             }
             container.addView(photoView, LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             photoView.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {

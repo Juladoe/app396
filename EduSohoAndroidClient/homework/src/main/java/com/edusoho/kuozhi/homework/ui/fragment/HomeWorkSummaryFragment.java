@@ -131,7 +131,9 @@ public class HomeWorkSummaryFragment extends BaseFragment {
     private void renderHomeworkView(final HomeWorkModel homeWorkModel) {
         tvCourseTitle.setText(homeWorkModel.getCourseTitle());
         homeworkNameContent.setText(homeWorkModel.getLessonTitle());
-        homeworkInfoContent.setText(AppUtil.coverCourseAbout(homeWorkModel.getDescription()));
+        if (homeWorkModel.getDescription() != null) {
+            homeworkInfoContent.setText(AppUtil.coverCourseAbout(homeWorkModel.getDescription()));
+        }
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -146,7 +148,9 @@ public class HomeWorkSummaryFragment extends BaseFragment {
     private void renderExerciseView(final ExerciseModel exerciseModel){
         tvCourseTitle.setText(exerciseModel.getCourseTitle());
         homeworkNameContent.setText(exerciseModel.getLessonTitle());
-        homeworkInfoContent.setText(AppUtil.coverCourseAbout(exerciseModel.getDescription()));
+        if (exerciseModel.getDescription() != null) {
+            homeworkInfoContent.setText(AppUtil.coverCourseAbout(exerciseModel.getDescription()));
+        }
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

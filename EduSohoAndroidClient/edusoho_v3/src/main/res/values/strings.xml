@@ -5,8 +5,8 @@
     <string name="app_host"></string>
     <string name="app_name">阔知学堂</string>
     <string name="api_version">3.0.0</string>
-    <string name="apk_version">3.2.1</string>
-    <string name="apk_code">27</string>
+    <string name="apk_version">3.4.2</string>
+    <string name="apk_code">34</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
     <string name="image_cache_path">ImageLoaderCache</string>
@@ -33,7 +33,8 @@
     <string name="setting_scan_second">扫描进入网校</string>
     <string name="setting_new_msg_notify">新消息提醒</string>
     <string name="setting_online_duration">在线时段</string>
-    <string name="setting_wifi_download">非wifi下视频可以播放/下载</string>
+    <string name="setting_wifi_download">允许使用4G网络观看或缓存视频</string>
+    <string name="setting_mediacodec_type">默认视频解码方式:[%s]</string>
     <string name="setting_clean_cache">清理缓存</string>
     <string name="setting_about">关于</string>
     <string name="msg_reminder_new_msg">接收新消息通知</string>
@@ -62,6 +63,10 @@
     <string name="course_announcement">课程公告</string>
     <string name="entry_course">进入课程</string>
     <string name="login_more">更多</string>
+    <string name="player_4g_info">您正在使用4G网络观看视频，该操作会消耗较多流量，确认要开启吗？</string>
+    <string name="notification">提示</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
@@ -92,6 +97,8 @@
     <string name="school_info_error">"无法获取网校信息"</string>
     <string name="lesson_default_title">课程简介</string>
     <string name="course_params_error">课程参数不正确</string>
+    <string name="player_exit_dialog_title">提醒</string>
+    <string name="player_exit_dialog_msg">是否退出播放</string>
 
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>
@@ -110,8 +117,8 @@
     <string name="font_mine_pressed">&#xe64b;</string>
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
-    <string name="font_downloading">&#xe612;</string>
-    <string name="font_stop_downloading">&#xe614;</string>
+    <string name="font_downloading">&#xe614;</string>
+    <string name="font_stop_downloading">&#xe612;</string>
     <string name="font_wait_downloading">&#xe60f;</string>
     <string name="font_download_select">&#xe610;</string>
     <string name="font_download_unselect">&#xe613;</string>
@@ -154,8 +161,8 @@
     <string name="select_all">全选</string>
     <string name="select_all_cancel">取消</string>
     <string name="download_finish">已缓存</string>
-    <string name="downloading">正在下载</string>
-    <string name="wait_download">等待下载</string>
+    <string name="downloading">正在缓存</string>
+    <string name="wait_download">等待缓存</string>
 
     <string name="app_exit_msg">再按一次退出应用</string>
     <string name="hand_press_and_speak">按住说话</string>
@@ -197,8 +204,13 @@
         <item>从不</item>
     </string-array>
 
+    <string-array name="mediacoder_array">
+        <item>软件解码</item>
+        <item>硬件解码</item>
+    </string-array>
+
     <string name="mine_items_learn">我的学习</string>
-    <string name="mine_items_download">我的下载</string>
+    <string name="mine_items_download">我的缓存</string>
     <string name="mine_items_buy_vip">开通会员</string>
     <string name="mine_items_collection">我的收藏</string>
     <string name="mine_items_setting">我的设置</string>

@@ -121,12 +121,11 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                 });
             }
             SchoolSplashActivity.start(mActivity.getBaseContext(), schoolName, splashs);
-
             mActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             mActivity.finish();
         }
 
-        protected void startSchoolActivity(School site)  {
+        protected void startSchoolActivity(School site) {
             mLoading.dismiss();
             showSchSplash(site.name, site.splashs);
         }
@@ -200,7 +199,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         SqliteChatUtil.getSqliteChatUtil(mActivity.getBaseContext(), mApp.domain).close();
                         mApp.registDevice(null);
 
-                        bindApiToken(userResult);
+                        startSchoolActivity(site);
 
                     } catch (Exception e) {
                         mLoading.dismiss();

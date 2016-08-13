@@ -120,7 +120,7 @@ public abstract class ModelProvider {
                     return;
                 }
                 if (errorListener != null) {
-                    return;
+                    errorListener.onErrorResponse(error);
                 }
             }
         }) {

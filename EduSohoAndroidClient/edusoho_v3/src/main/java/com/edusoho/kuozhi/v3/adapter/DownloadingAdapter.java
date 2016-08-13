@@ -8,33 +8,25 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
-import com.edusoho.kuozhi.v3.view.dialog.ExitCoursePopupDialog;
-import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
-import cn.trinea.android.common.util.ToastUtils;
 
 /**
  * Created by JesseHuang on 15/6/16.
  */
 public class DownloadingAdapter extends BaseExpandableListAdapter {
+
     private Context mContex;
     private BaseActivity mActivity;
     private SparseArray<M3U8DbModel> m3u8ModelList;
@@ -52,11 +44,8 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         mGroupItems = groupItems;
 
         List<List<LessonItem>> lessonItems = new ArrayList<>();
-        Iterator iterator = mLocalLessons.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            ArrayList<LessonItem> itemList = (ArrayList<LessonItem>) entry.getValue();
-            lessonItems.add(itemList);
+        for (Course course : groupItems) {
+            lessonItems.add(mLocalLessons.get(course.id));
         }
         mChildItems = lessonItems;
         mType = type;
@@ -66,11 +55,8 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
     public void updateLocalData(List<Course> groupItems, HashMap<Integer, ArrayList<LessonItem>> mLocalLessons) {
         mGroupItems = groupItems;
         List<List<LessonItem>> lessonItems = new ArrayList<>();
-        Iterator iterator = mLocalLessons.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            ArrayList<LessonItem> itemList = (ArrayList<LessonItem>) entry.getValue();
-            lessonItems.add(itemList);
+        for (Course course : groupItems) {
+            lessonItems.add(mLocalLessons.get(course.id));
         }
         mChildItems = lessonItems;
         notifyDataSetChanged();
@@ -98,7 +84,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
 
     @Override
     public LessonItem getChild(int groupPosition, int childPosition) {
-        return mChildItems.get(groupPosition).get(childPosition);
+        return mChildItems.isEmpty() ? null : mChildItems.get(groupPosition).get(childPosition);
     }
 
     @Override
@@ -130,49 +116,6 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         return convertView;
     }
 
-    public class DownloadSignClick implements View.OnClickListener {
-
-        private ChildPanel mChildPanel;
-        private LessonItem mLessonItem;
-
-        public DownloadSignClick(ChildPanel childPanel, LessonItem lessonItem) {
-            mChildPanel = childPanel;
-            mLessonItem = lessonItem;
-        }
-
-        @Override
-        public void onClick(View v) {
-            M3U8DownService service = M3U8DownService.getService();
-            try {
-                if (mChildPanel.ivDownloadSign.getText().equals(mContex.getString(R.string.font_downloading))) {
-                    mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_stop_downloading));
-                    if (service != null) {
-                        service.cancelDownloadTask(mLessonItem.id);
-                    }
-                } else {
-                    if (!mActivity.app.getNetIsConnect()) {
-                        ToastUtils.show(mActivity, "当前无网络连接!");
-                        return;
-                    }
-                    int offlineType = mActivity.app.config.offlineType;
-                    if (offlineType == Const.NET_NONE) {
-                        showAlertDialog("当前设置视频课时观看、下载为禁止模式!\n模式可以在设置里修改。");
-                        return;
-                    }
-                    if (offlineType == Const.NET_WIFI && !mActivity.app.getNetIsWiFi()) {
-                        showAlertDialog("当前设置视频课时观看、下载为WiFi模式!\n模式可以在设置里修改。");
-                        return;
-                    }
-                    mChildPanel.ivDownloadSign.setText(mContex.getString(R.string.font_downloading));
-                    M3U8DownService.startDown(
-                            mActivity, mLessonItem.id, mLessonItem.courseId, mLessonItem.title);
-                }
-            } catch (Exception ex) {
-                throw new RuntimeException(ex);
-            }
-        }
-    }
-
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         final ChildPanel childPanel;
@@ -188,9 +131,15 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         if (mType == DownloadType.DOWNLOADED) {
             childPanel.tvVideoLength.setText(AppUtil.convertCNTime(lessonItem.length));
         } else {
-            final M3U8DbModel model = m3u8ModelList.get(lessonItem.id);
-            childPanel.ivDownloadSign.setOnClickListener(new DownloadSignClick(childPanel, lessonItem));
+            M3U8DbModel model = m3u8ModelList.get(lessonItem.id);
             childPanel.tvProgress.setText((int) (model.downloadNum / (float) model.totalNum * 100) + "%");
+
+            int downStatus = getDownloadStatus(lessonItem.id);
+            int downStatusIconRes = downStatus == M3U8Util.DOWNING ? R.string.font_downloading : R.string.font_stop_downloading;
+            if (model.finish == M3U8Util.DOWNLOAD_ERROR) {
+                childPanel.tvProgress.setText("下载失败");
+            }
+            childPanel.ivDownloadSign.setText(mContex.getResources().getString(downStatusIconRes));
         }
         //选择框是否显示
         if (mSelectedShow) {
@@ -213,16 +162,28 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
                 }
             });
         } else {
-            childPanel.ivDownloadSelected.setVisibility(View.INVISIBLE);
+            childPanel.ivDownloadSelected.setVisibility(View.GONE);
         }
 
         return convertView;
+    }
+
+    protected int getDownloadStatus(int lessonId) {
+        M3U8DownService service = M3U8DownService.getService();
+        if (service == null) {
+            return M3U8Util.NONE;
+        }
+        return service.getTaskStatus(lessonId);
     }
 
     public void setItemDownloadStatus(int groupPosition, int childPosition) {
         LessonItem lessonItem = mChildItems.get(groupPosition).get(childPosition);
         lessonItem.isSelected = !lessonItem.isSelected;
         notifyDataSetChanged();
+    }
+
+    public boolean isSelectedShow() {
+        return this.mSelectedShow;
     }
 
     public void setSelectShow(boolean b) {
@@ -281,7 +242,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         public EduSohoIconView ivDownloadSelected;
         public TextView tvLessonTitle;
         public View viewDownloadProgress;
-        public EduSohoIconView ivDownloadSign;
+        public TextView ivDownloadSign;
         public TextView tvProgress;
         public TextView tvVideoLength;
 
@@ -289,7 +250,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
             ivDownloadSelected = (EduSohoIconView) view.findViewById(R.id.iv_download_selected);
             tvLessonTitle = (TextView) view.findViewById(R.id.tv_lesson_content);
             viewDownloadProgress = view.findViewById(R.id.rl_progress);
-            ivDownloadSign = (EduSohoIconView) view.findViewById(R.id.iv_download_sign);
+            ivDownloadSign = (TextView) view.findViewById(R.id.iv_download_sign);
             tvProgress = (TextView) view.findViewById(R.id.tv_progress);
             tvVideoLength = (TextView) view.findViewById(R.id.tv_video_length);
 
@@ -307,35 +268,5 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
 
     public enum DownloadType {
         DOWNLOADING, DOWNLOADED
-    }
-
-    private void showAlertDialog(String content) {
-        PopupDialog popupDialog = PopupDialog.createMuilt(
-                mActivity,
-                "播放提示",
-                content,
-                new PopupDialog.PopupClickListener() {
-                    @Override
-                    public void onClick(int button) {
-                        if (button == PopupDialog.OK) {
-                            ExitCoursePopupDialog.createNormal(
-                                    mActivity, "视频课时下载播放", new ExitCoursePopupDialog.PopupClickListener() {
-                                        @Override
-                                        public void onClick(int button, int position, String selStr) {
-                                            if (button == ExitCoursePopupDialog.CANCEL) {
-                                                return;
-                                            }
-
-                                            EdusohoApp app = EdusohoApp.app;
-                                            app.config.offlineType = position;
-                                            app.saveConfig();
-                                        }
-                                    }
-                            ).show();
-                        }
-                    }
-                });
-        popupDialog.setOkText("去设置");
-        popupDialog.show();
     }
 }

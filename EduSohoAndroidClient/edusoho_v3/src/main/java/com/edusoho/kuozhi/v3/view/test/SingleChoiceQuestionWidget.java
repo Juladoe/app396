@@ -43,8 +43,21 @@ public class SingleChoiceQuestionWidget extends BaseQuestionWidget {
     }
 
     @Override
+    protected void restoreResult(ArrayList resultData) {
+        int count = radioGroup.getChildCount();
+        for (int i=0; i < count; i++) {
+            RadioButton child = (RadioButton) radioGroup.getChildAt(i);
+            for (Object answer : resultData) {
+                if (answer.equals(String.valueOf(i))) {
+                    child.setChecked(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
     protected void invalidateData() {
-        super.invalidateData();
         radioGroup = (RadioGroup) this.findViewById(R.id.quetion_choice_group);
 
         Question mQuestion = mQuestionSeq.question;
@@ -79,6 +92,7 @@ public class SingleChoiceQuestionWidget extends BaseQuestionWidget {
             });
             mAnalysisVS.inflate();
         }
+        super.invalidateData();
     }
 
     private void initQuestionResult() {

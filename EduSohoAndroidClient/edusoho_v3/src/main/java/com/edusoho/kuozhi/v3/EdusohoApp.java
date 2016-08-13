@@ -274,11 +274,6 @@ public class EdusohoApp extends Application {
             mResouceCacheServer = null;
         }
 
-        if (mPlayCacheServer != null) {
-            mPlayCacheServer.close();
-            mPlayCacheServer = null;
-        }
-
         M3U8DownService m3U8DownService = M3U8DownService.getService();
         if (m3U8DownService != null) {
             m3U8DownService.cancelAllDownloadTask();

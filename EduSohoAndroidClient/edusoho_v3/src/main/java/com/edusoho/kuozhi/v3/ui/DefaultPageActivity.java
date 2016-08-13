@@ -151,7 +151,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         });
 
         mDownTabNews.setUpdateIcon(0);
-        if (app.config.newVerifiedNotify){
+        if (app.config.newVerifiedNotify) {
             mDownTabFriends.setBageIcon(true);
         }
     }

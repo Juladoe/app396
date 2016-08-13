@@ -21,6 +21,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
@@ -39,7 +40,6 @@ import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.protocol.HttpRequestExecutor;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.http.util.EntityUtils;
-
 import cn.trinea.android.common.util.DigestUtils;
 
 /**
@@ -48,6 +48,7 @@ import cn.trinea.android.common.util.DigestUtils;
 public class FileHandler implements HttpRequestHandler {
 
     private static final String TAG = "FileHandler";
+    private static final String HOST_TAG = "localhost:8800";
 
     private String mTargetHost;
     private ActionBarBaseActivity mActivity;
@@ -65,15 +66,19 @@ public class FileHandler implements HttpRequestHandler {
             final HttpRequest httpRequest, final HttpResponse httpResponse, HttpContext httpContext)
             throws HttpException, IOException {
 
+        Header host = httpRequest.getFirstHeader("Host");
+        if (host == null || !HOST_TAG.equals(host.getValue())) {
+            return;
+        }
         String url = httpRequest.getRequestLine().getUri();
         url = url.substring(1, url.length());
         Uri queryUri = Uri.parse(url);
 
         String queryName = queryUri.toString();
-        Log.d(null, "queryName->" + queryName);
+        Log.d(getClass().getSimpleName(), "queryName->" + queryName);
 
         if (queryName.startsWith("playlist")) {
-            int lessonId = CommonUtil.parseInt(queryName.substring("playlist/".length(), queryName.length()));
+            int lessonId = CommonUtil.parseInt(queryName.substring("playlist/".length(), queryName.length() - ".m3u8".length()));
             User loginUser = mActivity.app.loginUser;
             if (loginUser == null) {
                 return;
@@ -81,7 +86,10 @@ public class FileHandler implements HttpRequestHandler {
             M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
                     mActivity, loginUser.id, lessonId, this.mTargetHost, M3U8Util.ALL);
             if (m3U8DbModel != null) {
-                httpResponse.setEntity(new StringEntity(m3U8DbModel.playList));
+                StringEntity entity = new StringEntity(m3U8DbModel.playList, "utf-8");
+                entity.setContentType("application/vnd.apple.mpegurl");
+                entity.setContentEncoding("utf-8");
+                httpResponse.setEntity(entity);
                 return;
             }
         }

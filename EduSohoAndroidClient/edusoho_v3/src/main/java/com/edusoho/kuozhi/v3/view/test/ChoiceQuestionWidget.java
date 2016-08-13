@@ -69,8 +69,21 @@ public class ChoiceQuestionWidget extends BaseQuestionWidget {
     }
 
     @Override
+    protected void restoreResult(ArrayList resultData) {
+        int count = radioGroup.getChildCount();
+        for (int i=0; i < count; i++) {
+            CheckBox child = (CheckBox) radioGroup.getChildAt(i);
+            for (Object result : resultData) {
+                if (result.equals(String.valueOf(i))) {
+                    child.setChecked(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
     protected void invalidateData() {
-        super.invalidateData();
         radioGroup = (RadioGroup) this.findViewById(R.id.quetion_choice_group);
 
         ArrayList<String> metas = mQuestion.metas;
@@ -95,6 +108,7 @@ public class ChoiceQuestionWidget extends BaseQuestionWidget {
             });
             mAnalysisVS.inflate();
         }
+        super.invalidateData();
     }
 
     private void initQuestionResult() {

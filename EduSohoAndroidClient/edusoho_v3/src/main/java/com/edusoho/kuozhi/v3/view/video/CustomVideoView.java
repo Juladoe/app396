@@ -11,7 +11,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.MediaController;
 
-public class CustomVideoView extends SurfaceView implements
+public class
+CustomVideoView extends SurfaceView implements
         MediaController.MediaPlayerControl {
 
     private boolean pause;

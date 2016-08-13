@@ -22,10 +22,10 @@ import java.util.ArrayList;
 
 public class SqliteUtil extends SQLiteOpenHelper {
 
-    private static final int dbVersion = 10;
-    private static final int oldVersion = 9;
+    private static final int dbVersion = 11;
+    private static final int oldVersion = 10;
     private static SqliteUtil instance;
-    private static String[] INIT_SQLS = {"db_init_m3u8.sql", "db_init_lesson_resource.sql", "db_init_chat.sql", "db_int_audio_cache.sql"};
+    private static String[] INIT_SQLS = {"db_init_m3u8.sql", "db_init_lesson_resource.sql", "db_init_chat.sql", "db_int_audio_cache.sql", "db_init_donwload_item.sql"};
     private Context mContext;
 
     private SqliteUtil(Context context, String name, CursorFactory factory) {
@@ -212,7 +212,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
     public int update(String table, ContentValues cv, String where, String[] args) {
         SQLiteDatabase db = getWritableDatabase();
         int result = db.update(table, cv, where, args);
-        Log.d("m3u8_sql", "update " + table + " ->" + where);
+        Log.d("m3u8_sql", "update " + table + " ->" + result);
         return result;
     }
 

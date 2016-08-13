@@ -156,7 +156,6 @@ public class EdusohoMainService extends Service {
     }
 
     public void getOfflineMsgs() {
-        //// TODO: 2016/5/14
     }
 
     public ArrayList<Chat> save2DB(ArrayList<OffLineMsgEntity> offLineMsgEntityArrayList) {

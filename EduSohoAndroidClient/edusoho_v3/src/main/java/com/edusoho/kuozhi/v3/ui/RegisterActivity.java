@@ -17,7 +17,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.register.PhoneCode;
+import com.edusoho.kuozhi.v3.entity.register.MsgCode;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -118,37 +118,35 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 CommonUtil.longToast(mContext, String.format("请输入%s", "手机号"));
                 return;
             }
+
             RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
+
             HashMap<String, String> params = requestUrl.getParams();
             params.put("phoneNumber", String.valueOf(phoneNumber));
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        PhoneCode codeResult = parseJsonValue(response, new TypeToken<PhoneCode>() {
+                        MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>() {
                         });
-                        if (codeResult != null) {
-                            if (codeResult.code.equals("200")) {
-                                btnSendCode.setEnabled(false);
-                                btnSendCode.setBackgroundColor(getResources().getColor(R.color.grey_main));
-                                mClockTime = 120;
-                                mTimer = new Timer();
-                                mTimer.schedule(new TimerTask() {
-                                    @Override
-                                    public void run() {
-                                        Message message = mSmsCodeHandler.obtainMessage();
-                                        message.what = 0;
-                                        mSmsCodeHandler.sendMessage(message);
-                                    }
-                                }, 0, 1000);
-                                CommonUtil.longToast(mContext, codeResult.msg);
-                            }
+                        if (result != null && result.code == 200) {
+                            btnSendCode.setEnabled(false);
+                            btnSendCode.setBackgroundColor(getResources().getColor(R.color.grey_main));
+                            mClockTime = 120;
+                            mTimer = new Timer();
+                            mTimer.schedule(new TimerTask() {
+                                @Override
+                                public void run() {
+                                    Message message = mSmsCodeHandler.obtainMessage();
+                                    message.what = 0;
+                                    mSmsCodeHandler.sendMessage(message);
+
+                                }
+                            }, 0, 1000);
+                            CommonUtil.longToast(mContext, result.msg);
+
                         } else {
-                            if (!TextUtils.isEmpty(response)) {
-                                CommonUtil.longToast(mContext, response);
-                            } else {
-                                CommonUtil.longToast(mContext, getResources().getString(R.string.phone_code_error));
-                            }
+                            CommonUtil.longToast(mContext, response);
                         }
                     } catch (Exception e) {
                         Log.d(TAG, "phone reg error");
@@ -175,6 +173,9 @@ public class RegisterActivity extends ActionBarBaseActivity {
             if (TextUtils.isEmpty(strPass)) {
                 CommonUtil.longToast(mContext, "请输入密码");
                 return;
+            } else if (strPass.length() > 20) {
+                CommonUtil.longToast(mContext, "密码的长度必须小于或等于20");
+                return;
             }
             params.put("password", strPass);
 
@@ -200,15 +201,24 @@ public class RegisterActivity extends ActionBarBaseActivity {
                         UserResult userResult = mActivity.parseJsonValue(
                                 response, new TypeToken<UserResult>() {
                                 });
-                        app.saveToken(userResult);
-                        btnPhoneReg.setSuccessState();
-                        btnPhoneReg.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mActivity.finish();
-                                app.sendMessage(Const.LOGIN_SUCCESS, null);
+                        if (userResult != null && userResult.user != null) {
+                            app.saveToken(userResult);
+                            btnPhoneReg.setSuccessState();
+                            btnPhoneReg.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
+                                }
+                            }, 500);
+                        } else {
+                            btnMailReg.setInitState();
+                            if (!TextUtils.isEmpty(response)) {
+                                CommonUtil.longToast(mContext, response);
+                            } else {
+                                CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
                             }
-                        }, 500);
+                        }
                     } catch (Exception e) {
                         btnPhoneReg.setInitState();
                         e.printStackTrace();
@@ -217,6 +227,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data).toString());
                     btnPhoneReg.setInitState();
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
@@ -232,7 +243,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
 
             String strMail = etMail.getText().toString().trim();
             if (TextUtils.isEmpty(strMail)) {
-                CommonUtil.longToast(mContext, String.format("请输入邮箱地址"));
+                CommonUtil.longToast(mContext, "请输入邮箱地址");
                 return;
             }
             params.put("email", strMail);
@@ -240,6 +251,9 @@ public class RegisterActivity extends ActionBarBaseActivity {
             String strPass = etMailPass.getText().toString();
             if (TextUtils.isEmpty(strPass)) {
                 CommonUtil.longToast(mContext, "请输入密码");
+                return;
+            } else if (strPass.length() > 20) {
+                CommonUtil.longToast(mContext, "密码的长度必须小于或等于20");
                 return;
             }
             if (strPass.length() < 5) {
@@ -258,6 +272,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                                 response, new TypeToken<UserResult>() {
                                 });
                         if (userResult != null && userResult.user != null) {
+                            btnMailReg.setInitState();
                             app.saveToken(userResult);
                             btnMailReg.setSuccessState();
                             btnMailReg.postDelayed(new Runnable() {
@@ -268,12 +283,12 @@ public class RegisterActivity extends ActionBarBaseActivity {
                                 }
                             }, 500);
                         } else {
+                            btnMailReg.setInitState();
                             if (!TextUtils.isEmpty(response)) {
                                 CommonUtil.longToast(mContext, response);
                             } else {
-                                CommonUtil.longToast(mContext, getResources().getString(R.string.mail_reg_failed));
+                                CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
                             }
-                            btnMailReg.setInitState();
                         }
                     } catch (Exception e) {
                         btnMailReg.setInitState();

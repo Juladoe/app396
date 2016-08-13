@@ -81,6 +81,20 @@ public class AppUtil {
         return i;
     }
 
+    public static long parseLong(String value) {
+        long i = 0;
+        if (value == null) {
+            return i;
+        }
+        try {
+            i = Long.parseLong(value);
+        } catch (Exception e) {
+            i = 0;
+        }
+
+        return i;
+    }
+
     public static void initConfig(String[] config) {
         if (config == null || config.length == 0) {
             return;
@@ -524,8 +538,8 @@ public class AppUtil {
     public static boolean isWiFiConnect(Context context) {
         ConnectivityManager connManager = (ConnectivityManager)
                 context.getSystemService(context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        return networkInfo != null && networkInfo.isAvailable();
+        NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
+        return networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
     }
 
     public static boolean saveStreamToFile(

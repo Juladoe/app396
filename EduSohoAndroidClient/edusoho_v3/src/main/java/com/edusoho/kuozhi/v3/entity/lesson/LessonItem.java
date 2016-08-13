@@ -41,6 +41,8 @@ public class LessonItem<T> implements Serializable {
     public String startTime;
     public String endTime;
     public String replayStatus;
+    public String mediaStorage;
+    public String mediaConvertStatus;
 
     public M3U8DbModel m3u8Model;
     public boolean isSelected;

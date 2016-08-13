@@ -128,7 +128,7 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
         Article article = getChild(groupPosition, childPosition);
 
         viewHolder.mTitleView.setText(article.title);
-        ImageLoader.getInstance().displayImage(article.picture, viewHolder.mImgView, mOptions);
+        ImageLoader.getInstance().displayImage(article.thumb, viewHolder.mImgView, mOptions);
         return convertView;
     }
 

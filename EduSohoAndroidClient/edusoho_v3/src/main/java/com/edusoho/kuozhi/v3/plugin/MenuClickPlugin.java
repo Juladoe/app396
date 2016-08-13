@@ -217,13 +217,13 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     }
 
     @JsAnnotation
-    public void openPlatformLogin(JSONArray args, BridgeCallback callbackContext) throws JSONException {
+    public void openPlatformLogin(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
         String type = args.getString(0);
         final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mContext);
         openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
             @Override
             public void success(UserResult obj) {
-                mActivity.finish();
+                mPluginContext.getActivity().finish();
             }
         });
         openLoginUtil.login(type).then(new PromiseCallback<String[]>() {

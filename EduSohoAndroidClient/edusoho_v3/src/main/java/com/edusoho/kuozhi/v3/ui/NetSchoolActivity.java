@@ -21,7 +21,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.listener.SwitchNetSchoolListener;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.Error;
@@ -203,7 +202,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         SharedPreferences sp = getSharedPreferences("EnterSchool", MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(EnterSchool, mJsonArray.toString());
-        editor.commit();
+        editor.apply();
     }
 
     private List<Map<String, Object>> loadEnterSchool() {
@@ -380,8 +379,12 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         }
     }
 
-    protected void getSchoolApi(SystemInfo systemInfo) {
+    private void startSchoolActivity(School site) {
+        mLoading.dismiss();
+        showSchSplash(site.name, site.splashs);
+    }
 
+    protected void getSchoolApi(SystemInfo systemInfo) {
         final RequestUrl schoolApiUrl = new RequestUrl(systemInfo.mobileApiUrl + Const.VERIFYSCHOOL);
         app.getUrl(schoolApiUrl, new Response.Listener<String>() {
             @Override
@@ -406,6 +409,11 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                 app.registDevice(null);
 
                 bindApiToken(site);
+                SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
+                Date date = new Date();
+                String loginTime = nowfmt.format(date);
+                saveEnterSchool(site.name, loginTime, "登录账号：未登录", app.domain);
+                startSchoolActivity(site);
             }
         }, this);
     }
@@ -439,19 +447,16 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
 
         @Override
         public int getCount() {
-            // TODO Auto-generated method stub
             return mList.size();
         }
 
         @Override
         public Object getItem(int position) {
-            // TODO Auto-generated method stub
             return mList.get(position);
         }
 
         @Override
         public long getItemId(int position) {
-            // TODO Auto-generated method stub
             return 0;
         }
 

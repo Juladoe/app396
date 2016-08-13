@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/chat_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.edusoho.kuozhi.v3.ui.ChatActivity">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/ll_chat_dialog"
@@ -23,7 +22,7 @@
             android:id="@+id/rl_bottom"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="@android:color/white"
+            android:background="@color/chat_tool_background"
             android:orientation="horizontal"
             android:paddingLeft="2dp"
             android:paddingRight="2dp">
