@@ -19,8 +19,7 @@ public class IMChatRoom {
     protected Context mContext;
     protected WeakReference<IImServerAidlInterface> mImBinderRef;
 
-    public IMChatRoom(Context context, String convNo, IImServerAidlInterface imBinder)
-    {
+    public IMChatRoom(Context context, String convNo, IImServerAidlInterface imBinder) {
         this.mConvNo = convNo;
         this.mContext = context;
         this.mImBinderRef = new WeakReference<IImServerAidlInterface>(imBinder);
