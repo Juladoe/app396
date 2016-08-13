@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -71,6 +70,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -274,6 +274,8 @@ public class EdusohoApp extends Application {
             mResouceCacheServer = null;
         }
 
+        stopPlayCacheServer();
+
         M3U8DownService m3U8DownService = M3U8DownService.getService();
         if (m3U8DownService != null) {
             m3U8DownService.cancelAllDownloadTask();
@@ -303,7 +305,7 @@ public class EdusohoApp extends Application {
 
     private void bindImServerHost() {
         User user = getAppSettingProvider().getCurrentUser();
-        new IMServiceProvider(getBaseContext()).bindServer(user == null ? "" :user.nickname);
+        new IMServiceProvider(getBaseContext()).bindServer(user == null ? "" : user.nickname);
     }
 
     private String getDomain() {
@@ -600,7 +602,7 @@ public class EdusohoApp extends Application {
     }
 
     public static File getWorkSpace() {
-        File file = new File(Environment.getExternalStorageDirectory() + "/edusoho");
+        File file = new File(Environment.getExternalStorageDirectory(), "/edusoho");
         return file;
     }
 
@@ -787,6 +789,25 @@ public class EdusohoApp extends Application {
         }
 
         return mPlayCacheServer;
+    }
+
+    public void pausePlayCacheServer() {
+        if (mPlayCacheServer != null) {
+            mPlayCacheServer.pause();
+        }
+    }
+
+    public void resumePlayCacheServer() {
+        if (mPlayCacheServer != null) {
+            mPlayCacheServer.keepOn();
+        }
+    }
+
+    public void stopPlayCacheServer() {
+        if (mPlayCacheServer != null) {
+            mPlayCacheServer.close();
+            mPlayCacheServer = null;
+        }
     }
 
     public <T> T parseJsonValue(String json, TypeToken<T> typeToken) {

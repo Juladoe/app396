@@ -190,7 +190,6 @@ public class SettingActivity extends ActionBarBaseActivity {
                 }, "");
                 Bundle bundle = new Bundle();
                 bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
-                app.pushUnregister(bundle);
             } else {
                 ThirdPartyLogin.getInstance(mContext).loginOut(app.loginUser.thirdParty);
                 app.removeToken();
