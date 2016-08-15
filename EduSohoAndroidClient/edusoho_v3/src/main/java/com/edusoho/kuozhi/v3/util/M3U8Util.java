@@ -280,7 +280,7 @@ public class M3U8Util {
 
         setDownloadStatus(DOWNING);
 
-        if (checkHasLocalM3U8Model(mLessonId, mUserId)) {
+        if (checkHasLocalM3U8Task(mLessonId, mUserId)) {
             for (int i = 0; i < 5; i++) {
                 prepareDownload();
             }
@@ -312,20 +312,20 @@ public class M3U8Util {
         sendBroadcast(status);
     }
 
-    private boolean checkHasLocalM3U8Model(int lessonId, int userId) {
+    private boolean checkHasLocalM3U8Task(int lessonId, int userId) {
         M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, userId, lessonId, mTargetHost, ALL);
         if (m3U8DbModel == null) {
             return false;
         }
 
-        if (m3U8DbModel.finish == UN_FINISH && m3U8DbModel.downloadNum < m3U8DbModel.totalNum) {
-            Log.d(TAG, "continue M3U8DbModle");
-            M3U8File m3U8File = getM3U8FileFromModel(m3U8DbModel);
-            addM3U8SourceToQueue(m3U8File);
-            return true;
+        if (m3U8DbModel.finish == FINISH || m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
+            return false;
         }
 
-        return false;
+        Log.d(TAG, "continue M3U8DbModle");
+        M3U8File m3U8File = getM3U8FileFromModel(m3U8DbModel);
+        addM3U8SourceToQueue(m3U8File);
+        return true;
     }
 
     private void loadLessonUrl(final int lessonId, int courseId) {
@@ -675,7 +675,11 @@ public class M3U8Util {
             //更新总计数器
             M3U8DbModel m3U8DbModel = updateM3U8DownloadNum();
             if (m3U8DbModel != null && m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
-                if (!checkHasLocalM3U8Model(mLessonId, mUserId)) {
+                if (checkHasLocalM3U8Task(mLessonId, mUserId)) {
+                    prepareDownload();
+                    return;
+                }
+                try {
                     String playListStr = createLocalM3U8File(m3U8DbModel);
                     Log.d(TAG, "m3U8DbModle-> finish");
                     cv.put("play_list", playListStr);
@@ -689,8 +693,8 @@ public class M3U8Util {
                                     String.valueOf(mUserId)
                             }
                     );
-
-                    Log.d(TAG, "finish checkHasLocalM3U8Model");
+                } catch (FileNotFoundException fe) {
+                    Log.d(TAG, fe.getMessage());
                 }
             }
         }
@@ -773,7 +777,7 @@ public class M3U8Util {
         mTimeOutList = null;
     }
 
-    private String createLocalM3U8File(M3U8DbModel m3U8DbModel) {
+    private String createLocalM3U8File(M3U8DbModel m3U8DbModel) throws FileNotFoundException {
         String playList = m3U8DbModel.playList;
         StringBuffer stringBuffer = new StringBuffer();
         Matcher matcher = URL_PAT.matcher(playList);
@@ -788,9 +792,11 @@ public class M3U8Util {
                 matcher.appendReplacement(
                         stringBuffer, type + "http://localhost:8800/ext_x_key/" + key);
             } else {
+                if (!new File(m3u8Dir, key).exists()) {
+                    throw new FileNotFoundException(key + "file not exists");
+                }
                 matcher.appendReplacement(
                         stringBuffer, replaceStr + key);
-                Log.d(TAG, key + " exists:" + new File(m3u8Dir, key).exists());
             }
         }
         matcher.appendTail(stringBuffer);
