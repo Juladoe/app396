@@ -38,6 +38,10 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -429,6 +433,16 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
         ImageLoader.getInstance().displayImage(model.content, holder.ivMsgImage, EdusohoApp.app.mOptions, mMyImageLoadingListener);
     }
 
+    private JSONObject getAudioContentFromString(String content) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject = new JSONObject(content);
+        } catch (JSONException e) {
+        }
+
+        return jsonObject;
+    }
+
     protected void handlerSendAudio(final ViewHolder holder, int position) {
         final Chat model = mList.get(position);
         if (position > 0) {
@@ -443,13 +457,14 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
             holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
         }
         ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
+        final JSONObject audioJsonObject = getAudioContentFromString(model.content);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.VISIBLE);
                 try {
-                    int duration = getAmrDuration(model.content);
+                    int duration = getDuration(audioJsonObject.optInt("duration"));
                     holder.tvAudioLength.setText(duration + "\"");
 
                     holder.ivMsgImage.getLayoutParams().width = 100 + mDurationUnit * duration < mDurationMax ? 100 + mDurationUnit * duration : mDurationMax;
@@ -457,7 +472,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                holder.ivMsgImage.setOnClickListener(new AudioMsgClick(model.content, holder, R.drawable.chat_to_speak_voice, R.drawable.chat_to_voice_play_anim));
+                holder.ivMsgImage.setOnClickListener(new AudioMsgClick(audioJsonObject.optString("file"), holder, R.drawable.chat_to_speak_voice, R.drawable.chat_to_voice_play_anim));
                 break;
             case PushUtil.MsgDeliveryType.UPLOADING:
                 holder.pbLoading.setVisibility(View.VISIBLE);
@@ -472,7 +487,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
                     @Override
                     public void onClick(View v) {
                         if (mImageErrorClick != null) {
-                            File file = new File(model.content);
+                            File file = new File(audioJsonObject.optString("file"));
                             if (file.exists()) {
                                 model.delivery = PushUtil.MsgDeliveryType.UPLOADING;
                                 holder.pbLoading.setVisibility(View.VISIBLE);
@@ -503,6 +518,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
             holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
         }
         ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
+        final JSONObject audioJsonObject = getAudioContentFromString(model.content);
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
                 holder.ivStateError.setVisibility(View.GONE);
@@ -511,7 +527,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
                 String audioFileName = AppUtil.getAppCacheDir() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" +
                         DigestUtils.md5(model.content);
                 try {
-                    int duration = getAmrDuration(audioFileName);
+                    int duration = getDuration(audioJsonObject.optInt("duration"));
                     holder.tvAudioLength.setText(duration + "\"");
                     holder.ivMsgImage.getLayoutParams().width = 100 + mDurationUnit * duration < mDurationMax ? 100 + mDurationUnit * duration : mDurationMax;
                     holder.ivMsgImage.requestLayout();
@@ -527,7 +543,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
                 holder.pbLoading.setVisibility(View.VISIBLE);
                 holder.ivStateError.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.GONE);
-                downloadAudio(model.content, model.id);
+                downloadAudio(audioJsonObject.optString("file"), model.id);
                 break;
             case PushUtil.MsgDeliveryType.FAILED:
                 holder.pbLoading.setVisibility(View.GONE);
@@ -538,7 +554,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
                     public void onClick(View v) {
                         holder.pbLoading.setVisibility(View.VISIBLE);
                         holder.ivStateError.setVisibility(View.GONE);
-                        downloadAudio(model.content, model.id);
+                        downloadAudio(audioJsonObject.optString("file"), model.id);
                     }
                 });
                 break;
@@ -564,14 +580,9 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
 
     /**
      * 获取amr播放长度
-     *
-     * @param filePath 文件路径
      * @return 音频长度
      */
-    protected int getAmrDuration(String filePath) {
-        mMediaPlayer = MediaPlayer.create(mContext, Uri.parse(filePath));
-        int duration = mMediaPlayer.getDuration();
-        mMediaPlayer.reset();
+    protected int getDuration(int duration) {
         return (int) Math.ceil(Float.valueOf(duration) / 1000);
     }
 

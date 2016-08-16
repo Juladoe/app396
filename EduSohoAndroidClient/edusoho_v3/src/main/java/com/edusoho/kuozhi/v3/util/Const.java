@@ -84,7 +84,7 @@ public class Const {
     //Plugin事件
     public static final int OPEN_COURSE_CHAT = 3;
 
-    public static final String AUDIO_EXTENSION = ".amr";
+    public static final String AUDIO_EXTENSION = ".mp3";
     public static final String MEDIA_IMAGE = "图片";
     public static final String MEDIA_AUDIO = "语音";
     public static final String GET_PUSH_DATA = "get_push_data";

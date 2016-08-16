@@ -278,7 +278,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.VISIBLE);
                 try {
-                    int duration = getAmrDuration(model.content);
+                    int duration = getDuration(0);
                     holder.tvAudioLength.setText(duration + "\"");
 
                     holder.ivMsgImage.getLayoutParams().width = 100 + mDurationUnit * duration < mDurationMax ? 100 + mDurationUnit * duration : mDurationMax;
@@ -391,7 +391,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                     AudioCacheUtil.getInstance().create(new AudioCacheEntity(audioFileName, model.content));
                 }
                 try {
-                    int duration = getAmrDuration(audioFileName);
+                    int duration = getDuration(0);
                     holder.tvAudioLength.setText(duration + "\"");
                     holder.ivMsgImage.getLayoutParams().width = 100 + mDurationUnit * duration < mDurationMax ? 100 + mDurationUnit * duration : mDurationMax;
                     holder.ivMsgImage.requestLayout();

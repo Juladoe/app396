@@ -368,8 +368,9 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                     //录音中动画
                     double ratio = 0;
                     if (mAudioRecord.getMediaRecorder() != null) {
-                        ratio = (double) mAudioRecord.getMediaRecorder().getMaxAmplitude();
+                        ratio = (double) mAudioRecord.getMediaRecorder().getRealVolume();
                     }
+
                     double db = 0;
                     if (ratio > 1) {
                         db = 20 * Math.log10(ratio);

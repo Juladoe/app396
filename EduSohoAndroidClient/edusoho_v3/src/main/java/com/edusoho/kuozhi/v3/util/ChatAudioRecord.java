@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaRecorder;
 import android.os.Vibrator;
 
+import com.czt.mp3recorder.MP3Recorder;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.io.File;
@@ -30,19 +31,22 @@ public class ChatAudioRecord {
         mSDF = new SimpleDateFormat("yyyyMMddHHmmss");
     }
 
-    public MediaRecorder getMediaRecorder() {
-        return mMediaRecorder;
+    public MP3Recorder getMediaRecorder() {
+        return mRecorder;
     }
+
+    MP3Recorder mRecorder;
 
     public void ready() {
         mAudioFile = new File(mAudioFolderPath + "/" + mSDF.format(System.currentTimeMillis()) + Const.AUDIO_EXTENSION);
         try {
             mAudioFile.createNewFile();
             if (mMediaRecorder == null) {
-                mMediaRecorder = new MediaRecorder();
+                mRecorder = new MP3Recorder(mAudioFile);
+                /*mMediaRecorder = new MediaRecorder();
                 mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
-                mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);*/
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -51,10 +55,12 @@ public class ChatAudioRecord {
 
     public void start() {
         try {
+            mRecorder.start();/*
             mVibrator.vibrate(50);
             mMediaRecorder.setOutputFile(mAudioFile.getPath());
             mMediaRecorder.prepare();
             mMediaRecorder.start();
+            mAudioStartTime = System.currentTimeMillis();*/
             mAudioStartTime = System.currentTimeMillis();
         } catch (Exception e) {
             e.printStackTrace();
@@ -64,10 +70,12 @@ public class ChatAudioRecord {
     public File stop(boolean cancelSave) {
         try {
             if (mAudioFile != null && mAudioFile.exists()) {
-                mMediaRecorder.stop();
+                /*mMediaRecorder.stop();
                 mAudioEndTime = System.currentTimeMillis();
                 mMediaRecorder.reset();
-                mMediaRecorder.release();
+                mMediaRecorder.release();*/
+                mAudioEndTime = System.currentTimeMillis();
+                mRecorder.stop();
                 if (cancelSave) {
                     mAudioFile.delete();
                 }
@@ -100,5 +108,6 @@ public class ChatAudioRecord {
         if (mMediaRecorder != null) {
             mMediaRecorder = null;
         }
+        mRecorder = null;
     }
 }

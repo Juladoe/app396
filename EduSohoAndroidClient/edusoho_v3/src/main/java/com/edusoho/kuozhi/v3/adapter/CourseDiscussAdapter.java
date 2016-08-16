@@ -242,7 +242,7 @@ public class CourseDiscussAdapter<T extends Chat> extends ChatAdapter<T> {
                 String audioFileName = EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE + "/" +
                         model.content.substring(model.content.lastIndexOf('/') + 1);
                 try {
-                    int duration = getAmrDuration(audioFileName);
+                    int duration = getDuration(0);
                     holder.tvAudioLength.setText(duration + "\"");
                     holder.ivMsgImage.getLayoutParams().width = 100 + mDurationUnit * duration < mDurationMax ? 100 + mDurationUnit * duration : mDurationMax;
                     holder.ivMsgImage.requestLayout();
