@@ -259,7 +259,7 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
 
             @Override
             public ReceiverInfo getType() {
-                return new ReceiverInfo(Destination.USER, mConversationNo);
+                return new ReceiverInfo(Destination.CLASSROOM, mConversationNo);
             }
         };
     }

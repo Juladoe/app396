@@ -48,7 +48,7 @@ public class IMServiceProvider extends ModelProvider {
             @Override
             public void success(LinkedHashMap hostMap) {
                 Log.d("IMServiceProvider", "init im service" + hostMap.size());
-                IMClient.getClient().init(mContext.getApplicationContext());
+                IMClient.getClient().init(mContext.getApplicationContext(), getDomain());
                 IMClient.getClient().start(
                         clientName,
                         new ArrayList<String>(hostMap.keySet()),
@@ -83,7 +83,7 @@ public class IMServiceProvider extends ModelProvider {
             public void success(VolleyError obj) {
                 Log.d("IMServiceProvider", "bindServer error");
                 IMClient.getClient().setIMConnectStatus(IMConnectStatus.NO_READY);
-                IMClient.getClient().init(mContext.getApplicationContext());
+                IMClient.getClient().init(mContext.getApplicationContext(), getHost());
                 IMClient.getClient().start(null, null, null);
             }
         });

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -46,6 +47,15 @@ public abstract class ModelProvider {
     protected String getHost() {
         School school = SchoolUtil.getDefaultSchool(mContext);
         return school == null ? "" : school.host;
+    }
+
+    protected String getDomain() {
+        Uri hostUri = Uri.parse(getHost());
+        if (hostUri != null) {
+            return hostUri.getHost();
+        }
+
+        return "";
     }
 
     public static <T> T initProvider(Context context, Class<T> targetClass) {

@@ -294,7 +294,7 @@ public class EdusohoApp extends Application {
         notifyMap = new HashMap<>();
         initApp();
 
-        IMClient.getClient().init(this);
+        IMClient.getClient().init(this, getDomain());
         if (!TextUtils.isEmpty(app.token)) {
             Log.d(TAG, "bindImServerHost");
             bindImServerHost();

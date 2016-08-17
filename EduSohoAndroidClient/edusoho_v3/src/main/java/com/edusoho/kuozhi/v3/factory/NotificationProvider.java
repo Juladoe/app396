@@ -50,7 +50,7 @@ public class NotificationProvider extends AbstractProvider {
                 content = redirectBody.content;
                 break;
             case PushUtil.ChatMsgType.TEXT:
-                content = messageBody.getBody();
+                content = String.format("%s:%s", messageBody.getSource().getNickname(), messageBody.getBody());
                 break;
             default:
                 title = "你有一条新消息";
