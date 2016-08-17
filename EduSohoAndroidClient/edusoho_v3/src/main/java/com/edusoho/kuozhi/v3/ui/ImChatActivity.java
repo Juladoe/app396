@@ -200,7 +200,7 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         ArrayList<Chat> chats = new ArrayList<>();
 
         User currentUser = getAppSettingProvider().getCurrentUser();
-        MessageEntity messageEntity = null;
+        MessageEntity messageEntity;
         for (int i = messageEntityList.size() - 1; i >= 0; i--) {
             messageEntity = messageEntityList.get(i);
             MessageBody messageBody = new MessageBody(messageEntity);

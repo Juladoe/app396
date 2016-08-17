@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
-import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.helper.IMDbManager;
 
 import java.util.ArrayList;
@@ -24,7 +23,7 @@ public class ConvDbHelper {
     }
 
     public List<ConvEntity> getConvListByType(String type) {
-        ArrayList<HashMap> arrayList = mDbHelper.query(TABLE, "type=?", new String[] { type });
+        ArrayList<HashMap<String, String>> arrayList = mDbHelper.query(TABLE, "type=?", new String[]{type});
         List<ConvEntity> entityList = new ArrayList<>();
         if (arrayList == null) {
             return entityList;
@@ -38,7 +37,7 @@ public class ConvDbHelper {
     }
 
     public List<ConvEntity> getConvList() {
-        ArrayList<HashMap> arrayList = mDbHelper.queryBySort(TABLE, "convNo!=?", new String[]{ "" },"updatedTime desc");
+        ArrayList<HashMap<String, String>> arrayList = mDbHelper.queryBySort(TABLE, "convNo!=?", new String[]{""}, "updatedTime desc");
         List<ConvEntity> entityList = new ArrayList<>();
         if (arrayList == null) {
             return entityList;
@@ -71,26 +70,26 @@ public class ConvDbHelper {
     }
 
     public ConvEntity getConv(String convNo) {
-        HashMap arrayMap = mDbHelper.querySingle(TABLE, "convNo=?", new String[] { convNo });
+        HashMap arrayMap = mDbHelper.querySingle(TABLE, "convNo=?", new String[]{convNo});
         return createConvEntity(arrayMap);
     }
 
     public ConvEntity getConvByConNo(String convNo) {
-        HashMap arrayMap = mDbHelper.querySingle(TABLE, "convNo=?", new String[] { convNo });
+        HashMap arrayMap = mDbHelper.querySingle(TABLE, "convNo=?", new String[]{convNo});
         return createConvEntity(arrayMap);
     }
 
     public ConvEntity getConvByTypeAndId(String type, int targetId) {
-        HashMap arrayMap = mDbHelper.querySingle(TABLE, "type=? and targetId=?", new String[] { type, String.valueOf(targetId) });
+        HashMap arrayMap = mDbHelper.querySingle(TABLE, "type=? and targetId=?", new String[]{type, String.valueOf(targetId)});
         return createConvEntity(arrayMap);
     }
 
     public int deleteByConvNo(String convNo) {
-        return mDbHelper.delete(TABLE, "convNo=?", new String[] { convNo });
+        return mDbHelper.delete(TABLE, "convNo=?", new String[]{convNo});
     }
 
     public int deleteById(int id) {
-        return mDbHelper.delete(TABLE, "id=?", new String[] { String.valueOf(id) });
+        return mDbHelper.delete(TABLE, "id=?", new String[]{String.valueOf(id)});
     }
 
     public long save(ConvEntity convEntity) {
@@ -109,7 +108,7 @@ public class ConvDbHelper {
     public int updateUnRead(String convNo, int unRead) {
         ContentValues cv = new ContentValues();
         cv.put("unRead", unRead);
-        return mDbHelper.update(TABLE, cv, "convNo=?", new String[] { convNo });
+        return mDbHelper.update(TABLE, cv, "convNo=?", new String[]{convNo});
     }
 
     public int update(ConvEntity convEntity) {
@@ -122,10 +121,10 @@ public class ConvDbHelper {
         cv.put("avatar", convEntity.getAvatar());
         cv.put("type", convEntity.getType());
         cv.put("unRead", convEntity.getUnRead());
-        return mDbHelper.update(TABLE, cv, "convNo=?", new String[] { convEntity.getConvNo() });
+        return mDbHelper.update(TABLE, cv, "convNo=?", new String[]{convEntity.getConvNo()});
     }
 
     public int updateField(String convNo, ContentValues cv) {
-        return mDbHelper.update(TABLE, cv, "convNo=?", new String[] { convNo });
+        return mDbHelper.update(TABLE, cv, "convNo=?", new String[]{convNo});
     }
 }

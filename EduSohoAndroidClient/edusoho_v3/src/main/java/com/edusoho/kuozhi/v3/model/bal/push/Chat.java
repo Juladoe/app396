@@ -48,7 +48,7 @@ public class Chat extends BaseMsgEntity {
     }
 
     public Chat(MessageBody messageBody) {
-        super(0, messageBody.getBody(), messageBody.getSource().getImage(),  PushUtil.MsgDeliveryType.UPLOADING, messageBody.getType(), messageBody.getCreatedTime());
+        super(0, messageBody.getBody(), messageBody.getSource().getImage(), PushUtil.MsgDeliveryType.UPLOADING, messageBody.getType(), messageBody.getCreatedTime());
 
         msgNo = messageBody.getMsgNo();
         mid = messageBody.getMessageId();
@@ -89,8 +89,7 @@ public class Chat extends BaseMsgEntity {
 
         private Chat mChat;
 
-        public Builder()
-        {
+        public Builder() {
             mChat = new Chat();
         }
 

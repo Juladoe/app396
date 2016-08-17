@@ -19,13 +19,13 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.ChatDownloadListener;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
@@ -298,7 +298,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
         }
         holder.tvSendContent.setText(model.content);
         ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
@@ -330,11 +330,11 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
         if (position > 0) {
             if (model.createdTime - mList.get(position - 1).createdTime > TIME_INTERVAL) {
                 holder.tvSendTime.setVisibility(View.VISIBLE);
-                holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
+                holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
         }
         holder.tvSendContent.setText(model.content);
         ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
@@ -352,7 +352,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
         }
         switch (model.delivery) {
             case PushUtil.MsgDeliveryType.SUCCESS:
@@ -407,7 +407,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
         }
         holder.ivStateError.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -454,7 +454,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
             }
         } else {
             holder.tvSendTime.setVisibility(View.VISIBLE);
-            holder.tvSendTime.setText(AppUtil.convertMills2Date( model.createdTime));
+            holder.tvSendTime.setText(AppUtil.convertMills2Date(model.createdTime));
         }
         ImageLoader.getInstance().displayImage(model.headImgUrl, holder.ivAvatar, mOptions);
         final JSONObject audioJsonObject = getAudioContentFromString(model.content);
@@ -580,6 +580,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
 
     /**
      * 获取amr播放长度
+     *
      * @return 音频长度
      */
     protected int getDuration(int duration) {

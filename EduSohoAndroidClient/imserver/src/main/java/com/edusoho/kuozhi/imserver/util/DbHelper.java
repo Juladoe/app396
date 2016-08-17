@@ -5,8 +5,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.ArrayMap;
+
 import com.edusoho.kuozhi.imserver.helper.IDbManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,13 +40,13 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<HashMap> queryBySortAndLimit(String table, String selection, String[] selectionArgs, String orderBy, String limit) {
+    public ArrayList<HashMap<String, String>> queryBySortAndLimit(String table, String selection, String[] selectionArgs, String orderBy, String limit) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.query(table, null, selection, selectionArgs, null, null, orderBy, limit);
-        ArrayList<HashMap> resultList = new ArrayList<>();
+        ArrayList<HashMap<String, String>> resultList = new ArrayList<>();
         while (cursor.moveToNext()) {
             int columnCount = cursor.getColumnCount();
-            HashMap arrayMap = new HashMap();
+            HashMap<String, String> arrayMap = new HashMap<>();
             for (int i = 0; i < columnCount; i++) {
                 arrayMap.put(cursor.getColumnName(i), cursor.getString(i));
             }
@@ -57,12 +58,13 @@ public class DbHelper extends SQLiteOpenHelper {
         return resultList;
     }
 
-    public ArrayList<HashMap> queryBySort(String table, String selection, String[] selectionArgs, String orderBy) {
+    public ArrayList<HashMap<String, String>> queryBySort(String table, String selection, String[] selectionArgs, String orderBy) {
         return queryBySortAndLimit(table, selection, selectionArgs, orderBy, null);
     }
 
     /**
      * #1 is replace
+     *
      * @param sql
      * @param selectionArgs
      * @return
@@ -85,7 +87,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return resultList;
     }
 
-    public ArrayList<HashMap> query(String table, String selection, String[] selectionArgs) {
+    public ArrayList<HashMap<String, String>> query(String table, String selection, String[] selectionArgs) {
         return queryBySort(table, selection, selectionArgs, null);
     }
 
