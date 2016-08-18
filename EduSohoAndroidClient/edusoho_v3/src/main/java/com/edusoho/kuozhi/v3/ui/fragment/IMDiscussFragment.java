@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -59,6 +60,7 @@ import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ChatAudioRecord;
@@ -243,7 +245,7 @@ public class IMDiscussFragment extends BaseFragment implements
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         if (!hidden) {
-            mAdapter = new CourseDiscussAdapter<>(getList(0), mContext);
+            mAdapter = new CourseDiscussAdapter<>(mContext, getChatList(0));
             mAdapter.setSendImageClickListener(this);
             lvMessage.setAdapter(mAdapter);
             mStart = mAdapter.getCount();
@@ -297,16 +299,20 @@ public class IMDiscussFragment extends BaseFragment implements
     }
 
     private void initConvNoInfo() {
-        IMConvManager imConvManager = IMClient.getClient().getConvManager();
-        ConvEntity convEntity = imConvManager.getConvByTypeAndId(getTargetType(), mCourseId);
-        if (convEntity != null) {
-            mConversationNo = convEntity.getConvNo();
+        if (TextUtils.isEmpty(mConversationNo)) {
+            IMConvManager imConvManager = IMClient.getClient().getConvManager();
+            ConvEntity convEntity = imConvManager.getConvByTypeAndId(getTargetType(), mCourseId);
+            if (convEntity != null) {
+                mConversationNo = convEntity.getConvNo();
+            }
         }
+
         mTargetRole = IMClient.getClient().getRoleManager().getRole(getTargetType(), mCourseId);
     }
 
     protected void initData() {
         mCourseId = getArguments().getInt(Const.COURSE_ID, 0);
+        mConversationNo = getArguments().getString(NewsCourseActivity.CONV_NO);
         if (mCourseId == 0) {
             CommonUtil.longToast(mContext, "聊天记录读取错误");
             return;
@@ -363,7 +369,7 @@ public class IMDiscussFragment extends BaseFragment implements
     }
 
     private void initAdapter() {
-        mAdapter = new ChatAdapter(mContext, getList(0));
+        mAdapter = new CourseDiscussAdapter(mContext, getChatList(0));
         mAdapter.setSendImageClickListener(this);
         lvMessage.setAdapter(mAdapter);
         mAudioDownloadReceiver.setAdapter(mAdapter);
@@ -373,7 +379,7 @@ public class IMDiscussFragment extends BaseFragment implements
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                mAdapter.addItems(getList(mStart));
+                mAdapter.addItems(getChatList(mStart));
                 mStart = mAdapter.getCount();
                 mPtrFrame.refreshComplete();
                 //lvMessage.postDelayed(mListViewSelectRunnable, 100);
@@ -382,13 +388,13 @@ public class IMDiscussFragment extends BaseFragment implements
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
                 boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                int count = getList(mStart).size();
+                int count = getChatList(mStart).size();
                 return count > 0 && canDoRefresh;
             }
         });
     }
 
-    private ArrayList<Chat> getList(int start) {
+    private ArrayList<Chat> getChatList(int start) {
         List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConversationNo).getMessageList(start);
         ArrayList<Chat> chats = new ArrayList<>();
         User currentUser = getAppSettingProvider().getCurrentUser();
@@ -399,7 +405,9 @@ public class IMDiscussFragment extends BaseFragment implements
             Role role = IMClient.getClient().getRoleManager().getRole(messageBody.getSource().getType(), chat.fromId);
             chat.setDirect(chat.fromId == currentUser.id ? Chat.Direct.SEND : Chat.Direct.RECEIVE);
             chat.headImgUrl = role.getAvatar();
-            chat.delivery = messageEntity.getStatus();
+            if (messageEntity.getStatus() != PushUtil.MsgDeliveryType.NONE) {
+                chat.delivery = messageEntity.getStatus();
+            }
             chats.add(chat);
         }
         Collections.reverse(chats);
@@ -513,12 +521,31 @@ public class IMDiscussFragment extends BaseFragment implements
         }
         try {
             mSendTime = System.currentTimeMillis();
-            final MessageBody messageBody = saveMessageToLoacl(file.getAbsolutePath(), type);
+            String content = wrapAudioMessageContent(file.getAbsolutePath(), getAudioDuration(file.getAbsolutePath()));
+            final MessageBody messageBody = saveMessageToLoacl(content, type);
             getUpYunUploadInfo(file, mCourseId, new UpYunUploadCallback(messageBody, file));
             viewMediaLayout.setVisibility(View.GONE);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
+    }
+
+    private int getAudioDuration(String audioFile) {
+        MediaPlayer mediaPlayer = MediaPlayer.create(mContext, Uri.parse(audioFile));
+        int duration = mediaPlayer.getDuration();
+        mediaPlayer.release();
+        return duration;
+    }
+
+    private String wrapAudioMessageContent(String audioFilePath, int audioTime) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("file", audioFilePath);
+            jsonObject.put("duration", audioTime);
+        } catch (JSONException e) {
+        }
+
+        return jsonObject.toString();
     }
 
     public void getUpYunUploadInfo(File file, int fromId, final NormalCallback<UpYunUploadResult> callback) {
@@ -998,7 +1025,7 @@ public class IMDiscussFragment extends BaseFragment implements
                 IMClient.getClient().getMessageManager().saveUploadEntity(
                         messageBody.getMessageId(), messageBody.getType(), file.getPath()
                 );
-                messageBody.setBody(result.getUrl);
+                messageBody.setBody(wrapAudioMessageContent(result.getUrl, getAudioDuration(file.getAbsolutePath())));
                 uploadUnYunMedia(result.putUrl, file, result.getHeaders(), messageBody);
                 saveUploadResult(result.putUrl, result.getUrl, mCourseId);
             } else {

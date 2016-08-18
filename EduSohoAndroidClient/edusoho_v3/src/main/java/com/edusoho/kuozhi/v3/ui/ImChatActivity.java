@@ -476,7 +476,9 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
 
     private int getAudioDuration(String audioFile) {
         MediaPlayer mediaPlayer = MediaPlayer.create(mContext, Uri.parse(audioFile));
-        return mediaPlayer.getDuration();
+        int duration = mediaPlayer.getDuration();
+        mediaPlayer.release();
+        return duration;
     }
 
     private String wrapAudioMessageContent(String audioFilePath, int audioTime) {

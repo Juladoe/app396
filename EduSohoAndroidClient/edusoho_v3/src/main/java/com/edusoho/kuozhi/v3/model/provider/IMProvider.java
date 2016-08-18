@@ -8,6 +8,8 @@ import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
@@ -90,7 +92,7 @@ public class IMProvider extends ModelProvider {
             return providerListener;
         }
 
-        NormalCallback<Role> resultCallback = getConvNoUpdateCallback(convNo, convEntity);
+        NormalCallback<Role> resultCallback = getConvNoUpdateCallback(convEntity);
         switch (type) {
             case Destination.USER:
                 getRoleFromUser(targetId, resultCallback);
@@ -105,12 +107,13 @@ public class IMProvider extends ModelProvider {
         return providerListener;
     }
 
-    private NormalCallback<Role> getConvNoUpdateCallback(final String convNo, final ConvEntity convEntity) {
+    private NormalCallback<Role> getConvNoUpdateCallback(final ConvEntity convEntity) {
         return new NormalCallback<Role>() {
             @Override
             public void success(Role role) {
                 updateRole(role);
                 convEntity.setAvatar(role.getAvatar());
+                convEntity.setUid(getAppSettingProvider().getCurrentUser().id);
                 convEntity.setTargetName(role.getNickname());
                 convEntity.setUpdatedTime(System.currentTimeMillis());
                 IMClient.getClient().getConvManager().updateConv(convEntity);
@@ -260,5 +263,9 @@ public class IMProvider extends ModelProvider {
         IMClient.getClient().getConvManager().createConv(convEntity);
 
         return convEntity;
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 }

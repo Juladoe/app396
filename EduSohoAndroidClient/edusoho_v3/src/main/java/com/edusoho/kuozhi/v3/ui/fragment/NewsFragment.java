@@ -295,7 +295,7 @@ public class NewsFragment extends BaseFragment {
 
     private void initData() {
         if (app.loginUser != null) {
-            List<ConvEntity> convEntityList = IMClient.getClient().getConvManager().getConvList();
+            List<ConvEntity> convEntityList = IMClient.getClient().getConvManager().getConvListByUid(app.loginUser.id);
             mSwipeAdapter.update(coverConvListToNewList(convEntityList));
             setListVisibility(mSwipeAdapter.getCount() == 0);
         }
@@ -361,6 +361,7 @@ public class NewsFragment extends BaseFragment {
                         @Override
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(NewsCourseActivity.COURSE_ID, newItem.fromId);
+                            startIntent.putExtra(NewsCourseActivity.CONV_NO, newItem.convNo);
                             startIntent.putExtra(
                                     NewsCourseActivity.SHOW_TYPE,
                                     newItem.unread > 0 ? NewsCourseActivity.DISCUSS_TYPE : NewsCourseActivity.LEARN_TYPE
@@ -558,6 +559,7 @@ public class NewsFragment extends BaseFragment {
 
     private ConvEntity createConvFromCourse(Course course) {
         ConvEntity convEntity = new ConvEntity();
+        convEntity.setUid(app.loginUser.id);
         convEntity.setTargetId(course.id);
         convEntity.setTargetName(course.title);
         convEntity.setConvNo(course.conversationId);

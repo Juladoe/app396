@@ -39,6 +39,7 @@ import cn.trinea.android.common.util.ToastUtils;
 public class NewsCourseActivity extends ActionBarBaseActivity {
     public static final String COURSE_ID = "course_id";
     public static final String SHOW_TYPE = "show_type";
+    public static final String CONV_NO = "conv_no";
 
     public static final int DISCUSS_TYPE = 0;
     public static final int LEARN_TYPE = 1;
@@ -65,7 +66,6 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     protected void onResume() {
         super.onResume();
         mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
-        NotificationUtil.cancelById(mCourseId);
     }
 
     private void initData() {
@@ -171,6 +171,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         @Override
         public void setArguments(Bundle bundle) {
             bundle.putInt(Const.COURSE_ID, mCourseId);
+            bundle.putString(CONV_NO, getIntent().getStringExtra(CONV_NO));
         }
     };
 

@@ -568,7 +568,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
             mDownloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
         }
         Uri uri = Uri.parse(url);
-        String filename = DigestUtils.md5(url) + ".amr";
+        String filename = DigestUtils.md5(url) + ".mp3";
         DownloadManager.Request request = new DownloadManager.Request(uri);
         request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE | DownloadManager.Request.NETWORK_WIFI);
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
