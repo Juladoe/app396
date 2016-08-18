@@ -6,6 +6,7 @@ package com.edusoho.kuozhi.imserver.entity;
 public class ConvEntity {
 
     private int id;
+    private int uid;
     private int targetId;
     private String targetName;
     private String type;
@@ -15,6 +16,14 @@ public class ConvEntity {
     private int unRead;
     private long createdTime;
     private long updatedTime;
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
 
     public String getAvatar() {
         return avatar;

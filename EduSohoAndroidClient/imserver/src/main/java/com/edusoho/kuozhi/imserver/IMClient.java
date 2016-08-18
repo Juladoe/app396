@@ -15,6 +15,7 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
+import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
 import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
@@ -52,8 +53,9 @@ public class IMClient {
         mIMConnectStatusListenerList = new LinkedList<>();
     }
 
-    public void init(Context context) {
+    public void init(Context context, String dbName) {
         this.mContext = context;
+        DbManagerFactory.getDefaultFactory().setDbName(dbName);
     }
 
     public void start(String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {

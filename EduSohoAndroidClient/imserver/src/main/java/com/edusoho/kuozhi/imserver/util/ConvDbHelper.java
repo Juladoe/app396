@@ -2,11 +2,8 @@ package com.edusoho.kuozhi.imserver.util;
 
 import android.content.ContentValues;
 import android.content.Context;
-
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
-import com.edusoho.kuozhi.imserver.entity.MessageEntity;
-import com.edusoho.kuozhi.imserver.helper.IMDbManager;
-
+import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,11 +17,25 @@ public class ConvDbHelper {
     private DbHelper mDbHelper;
 
     public ConvDbHelper(Context context) {
-        mDbHelper = new DbHelper(context, new IMDbManager(context));
+        mDbHelper = new DbHelper(context, DbManagerFactory.getDefaultFactory().createIMDbManager(context));
     }
 
     public List<ConvEntity> getConvListByType(String type) {
         ArrayList<HashMap> arrayList = mDbHelper.query(TABLE, "type=?", new String[] { type });
+        List<ConvEntity> entityList = new ArrayList<>();
+        if (arrayList == null) {
+            return entityList;
+        }
+        for (HashMap<String, String> arrayMap : arrayList) {
+            ConvEntity convEntity = createConvEntity(arrayMap);
+            entityList.add(convEntity);
+        }
+
+        return entityList;
+    }
+
+    public List<ConvEntity> getConvListByUid(int uid) {
+        ArrayList<HashMap> arrayList = mDbHelper.queryBySort(TABLE, "uid=?", new String[]{ String.valueOf(uid) },"updatedTime desc");
         List<ConvEntity> entityList = new ArrayList<>();
         if (arrayList == null) {
             return entityList;
@@ -62,6 +73,7 @@ public class ConvDbHelper {
         convEntity.setTargetId(MessageUtil.parseInt(arrayMap.get("targetId")));
         convEntity.setLaterMsg(arrayMap.get("laterMsg"));
         convEntity.setType(arrayMap.get("type"));
+        convEntity.setUid(MessageUtil.parseInt(arrayMap.get("uid")));
         convEntity.setAvatar(arrayMap.get("avatar"));
         convEntity.setUnRead(MessageUtil.parseInt(arrayMap.get("unRead")));
         convEntity.setCreatedTime(MessageUtil.parseLong(arrayMap.get("createdTime")));
@@ -102,6 +114,7 @@ public class ConvDbHelper {
         cv.put("createdTime", convEntity.getCreatedTime());
         cv.put("updatedTime", convEntity.getUpdatedTime());
         cv.put("type", convEntity.getType());
+        cv.put("uid", convEntity.getUid());
         cv.put("avatar", convEntity.getAvatar());
         return mDbHelper.insert(TABLE, cv);
     }
@@ -121,6 +134,7 @@ public class ConvDbHelper {
         cv.put("updatedTime", convEntity.getUpdatedTime());
         cv.put("avatar", convEntity.getAvatar());
         cv.put("type", convEntity.getType());
+        cv.put("uid", convEntity.getUid());
         cv.put("unRead", convEntity.getUnRead());
         return mDbHelper.update(TABLE, cv, "convNo=?", new String[] { convEntity.getConvNo() });
     }

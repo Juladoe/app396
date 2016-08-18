@@ -180,7 +180,9 @@ public class ImService extends Service {
 
         @Override
         public void closeIMServer() throws RemoteException {
-            mImServer.stop();
+            if (mImServer != null) {
+                mImServer.stop();
+            }
         }
 
         @Override

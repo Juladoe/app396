@@ -38,9 +38,9 @@ public class ConnectionManager implements IConnectionManager {
 
     @Override
     public void stop() {
-        close();
         this.mIChannelReceiveListener = null;
         this.mIConnectStatusListener = null;
+        close();
     }
 
     private void close() {
@@ -145,7 +145,7 @@ public class ConnectionManager implements IConnectionManager {
                         Log.d(TAG, "close");
                         if (mIConnectStatusListener != null) {
                             mStatus = IConnectManagerListener.CLOSE;
-                            mIConnectStatusListener.onStatusChange(IConnectManagerListener.CLOSE, e.getMessage());
+                            mIConnectStatusListener.onStatusChange(IConnectManagerListener.CLOSE, "close");
                         }
                     }
                 });

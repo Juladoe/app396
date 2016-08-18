@@ -27,6 +27,10 @@ public class IMConvManager {
         return new ConvDbHelper(mContext).getConvListByType(type);
     }
 
+    public List<ConvEntity> getConvListByUid(int uid) {
+        return new ConvDbHelper(mContext).getConvListByUid(uid);
+    }
+
     public ConvEntity getSingleConv(String convNo) {
         return new ConvDbHelper(mContext).getConvByConNo(convNo);
     }

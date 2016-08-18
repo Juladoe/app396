@@ -13,15 +13,16 @@ import java.util.List;
 public class IMDbManager implements IDbManager {
 
     private static int dbVersion = 1;
-    private static final String DB_NAME = "im_db";
+    private String mDbName;
 
     private static final String INIT_SQL = "db_im_%d.sql";
 
     private Context mContext;
 
-    public IMDbManager(Context context)
+    public IMDbManager(Context context, String dbName)
     {
         this.mContext = context;
+        this.mDbName = dbName;
     }
 
     @Override
@@ -31,7 +32,7 @@ public class IMDbManager implements IDbManager {
 
     @Override
     public String getName() {
-        return DB_NAME;
+        return mDbName;
     }
 
     @Override

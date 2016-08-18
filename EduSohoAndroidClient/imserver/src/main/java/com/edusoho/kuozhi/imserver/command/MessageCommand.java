@@ -26,6 +26,7 @@ public class MessageCommand extends BaseCommand {
      "toName": "",
      "msg": "",
      "time": ""
+     status: -1
      * @param params
      */
     @Override
@@ -51,6 +52,7 @@ public class MessageCommand extends BaseCommand {
                 .addTime(time)
                 .addMsgNo(msgNo)
                 .addCmd(cmd)
+                .addStatus(-1)
                 .builder();
         mImServer.onReceiveMessage(messageEntity);
         mImServer.ack(params.optString("msgNo"));

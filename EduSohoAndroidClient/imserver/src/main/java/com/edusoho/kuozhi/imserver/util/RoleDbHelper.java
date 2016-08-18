@@ -3,7 +3,7 @@ package com.edusoho.kuozhi.imserver.util;
 import android.content.ContentValues;
 import android.content.Context;
 import com.edusoho.kuozhi.imserver.entity.Role;
-import com.edusoho.kuozhi.imserver.helper.IMDbManager;
+import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ public class RoleDbHelper {
     private DbHelper mDbHelper;
 
     public RoleDbHelper(Context context) {
-        mDbHelper = new DbHelper(context, new IMDbManager(context));
+        mDbHelper = new DbHelper(context, DbManagerFactory.getDefaultFactory().createIMDbManager(context));
     }
 
     public Role getRoleByType(String type, int rid) {

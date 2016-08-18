@@ -2,9 +2,10 @@ package com.edusoho.kuozhi.imserver.util;
 
 import android.content.ContentValues;
 import android.content.Context;
+
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
-import com.edusoho.kuozhi.imserver.helper.IMDbManager;
+import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,12 +20,12 @@ public class MsgDbHelper {
     private DbHelper mDbHelper;
 
     public MsgDbHelper(Context context) {
-        mDbHelper = new DbHelper(context, new IMDbManager(context));
+        mDbHelper = new DbHelper(context, DbManagerFactory.getDefaultFactory().createIMDbManager(context));
     }
 
     public List<MessageEntity> getMessageList(String convNo, int start) {
         List<MessageEntity> entityList = new ArrayList<>();
-        ArrayList<HashMap> arrayList = mDbHelper.queryBySortAndLimit(TABLE, "convNo=?", new String[] { convNo }, "time desc", String.format("%d, 10", start));
+        ArrayList<HashMap> arrayList = mDbHelper.queryBySortAndLimit(TABLE, "convNo=?", new String[]{convNo}, "time desc", String.format("%d, 10", start));
         if (arrayList == null) {
             return entityList;
         }
@@ -37,7 +38,7 @@ public class MsgDbHelper {
     }
 
     public MessageEntity getMessage(int id) {
-        HashMap arrayMap = mDbHelper.querySingle(TABLE, "id=?", new String[] { String.valueOf(id) });
+        HashMap arrayMap = mDbHelper.querySingle(TABLE, "id=?", new String[]{String.valueOf(id)});
         if (arrayMap == null || arrayMap.isEmpty()) {
             return null;
         }
@@ -45,7 +46,7 @@ public class MsgDbHelper {
     }
 
     public MessageEntity getMessageByUID(String uid) {
-        HashMap arrayMap = mDbHelper.querySingle(TABLE, "uid=?", new String[] { String.valueOf(uid) });
+        HashMap arrayMap = mDbHelper.querySingle(TABLE, "uid=?", new String[]{String.valueOf(uid)});
         if (arrayMap == null || arrayMap.isEmpty()) {
             return null;
         }
@@ -53,7 +54,7 @@ public class MsgDbHelper {
     }
 
     public IMUploadEntity getUploadEntity(String muid) {
-        HashMap arrayMap = mDbHelper.querySingle("im_upload_extr", "message_uid=?", new String[] { muid });
+        HashMap arrayMap = mDbHelper.querySingle("im_upload_extr", "message_uid=?", new String[]{muid});
         return createUploadEntity(arrayMap);
     }
 
@@ -78,11 +79,11 @@ public class MsgDbHelper {
         if (msgNo == null || "".equals(msgNo)) {
             return false;
         }
-        return mDbHelper.querySingle(TABLE, "msgNo=?", new String[] { msgNo }) != null;
+        return mDbHelper.querySingle(TABLE, "msgNo=?", new String[]{msgNo}) != null;
     }
 
     public int deleteByConvNo(String convNo) {
-        return mDbHelper.delete(TABLE, "convNo=?", new String[] { convNo });
+        return mDbHelper.delete(TABLE, "convNo=?", new String[]{convNo});
     }
 
     public long save(MessageEntity messageEntity) {
@@ -96,15 +97,16 @@ public class MsgDbHelper {
         cv.put("msgNo", messageEntity.getMsgNo());
         cv.put("time", messageEntity.getTime());
         cv.put("uid", messageEntity.getUid());
+        cv.put("status", messageEntity.getStatus());
         return mDbHelper.insert(TABLE, cv);
     }
 
     public int updateFiled(String msgNo, ContentValues cv) {
-        return mDbHelper.update(TABLE, cv, "msgNo=?", new String[] { msgNo });
+        return mDbHelper.update(TABLE, cv, "msgNo=?", new String[]{msgNo});
     }
 
     public int updateFiledByUid(String uid, ContentValues cv) {
-        return mDbHelper.update(TABLE, cv, "uid=?", new String[] { uid });
+        return mDbHelper.update(TABLE, cv, "uid=?", new String[]{uid});
     }
 
     public int update(MessageEntity messageEntity) {
@@ -117,7 +119,7 @@ public class MsgDbHelper {
         cv.put("msg", messageEntity.getMsg());
         cv.put("msgNo", messageEntity.getMsgNo());
         cv.put("status", messageEntity.getStatus());
-        return mDbHelper.update(TABLE, cv, "uid=?", new String[] { String.valueOf( messageEntity.getUid()) });
+        return mDbHelper.update(TABLE, cv, "uid=?", new String[]{String.valueOf(messageEntity.getUid())});
     }
 
     private IMUploadEntity createUploadEntity(HashMap<String, String> arrayMap) {
@@ -131,16 +133,16 @@ public class MsgDbHelper {
 
     private MessageEntity createMessageEntity(HashMap<String, String> arrayMap) {
         return new MessageEntityBuildr()
-            .addMsgNo(arrayMap.get("msgNo"))
-            .addMsg(arrayMap.get("msg"))
-            .addToName(arrayMap.get("toName"))
-            .addFromName(arrayMap.get("fromName"))
-            .addToId(arrayMap.get("toId"))
-            .addFromId(arrayMap.get("fromId"))
-            .addTime(MessageUtil.parseInt(arrayMap.get("time")))
-            .addUID(arrayMap.get("uid"))
-            .addId(MessageUtil.parseInt(arrayMap.get("id")))
-            .addStatus(MessageUtil.parseInt(arrayMap.get("status")))
-            .builder();
+                .addMsgNo(arrayMap.get("msgNo"))
+                .addMsg(arrayMap.get("msg"))
+                .addToName(arrayMap.get("toName"))
+                .addFromName(arrayMap.get("fromName"))
+                .addToId(arrayMap.get("toId"))
+                .addFromId(arrayMap.get("fromId"))
+                .addTime(MessageUtil.parseInt(arrayMap.get("time")))
+                .addUID(arrayMap.get("uid"))
+                .addId(MessageUtil.parseInt(arrayMap.get("id")))
+                .addStatus(MessageUtil.parseInt(arrayMap.get("status")))
+                .builder();
     }
 }

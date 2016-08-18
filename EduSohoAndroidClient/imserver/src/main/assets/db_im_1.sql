@@ -29,6 +29,7 @@ create table if not exists im_role (
 
 create table if not exists im_conv (
     id integer primary key AutoIncrement,
+    uid integer,
     convNo varchar(64),
     targetId integer,
     targetName varchar(100),

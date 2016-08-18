@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.listener.IChannelReceiveListener;
 import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import com.edusoho.kuozhi.imserver.listener.IHeartStatusListener;
@@ -302,15 +303,18 @@ public class ImServer {
         convEntity.setCreatedTime(messageBody.getCreatedTime());
         convEntity.setUpdatedTime(0);
 
-        String destionationType = messageBody.getDestination().getType();
+        Source source = messageBody.getSource();
+        Destination destination = messageBody.getDestination();
+        String destionationType = destination.getType();
         if (Destination.USER.equals(destionationType)) {
             convEntity.setType(Destination.USER);
-            convEntity.setTargetName(messageBody.getSource().getNickname());
-            convEntity.setTargetId(messageBody.getSource().getId());
+            convEntity.setTargetName(source.getNickname());
+            convEntity.setTargetId(source.getId());
+            convEntity.setUid(destination.getId());
         } else {
-            convEntity.setTargetName(messageBody.getDestination().getNickname());
-            convEntity.setType(messageBody.getDestination().getType());
-            convEntity.setTargetId(messageBody.getDestination().getId());
+            convEntity.setTargetName(destination.getNickname());
+            convEntity.setType(destination.getType());
+            convEntity.setTargetId(destination.getId());
         }
 
         return convEntity;
