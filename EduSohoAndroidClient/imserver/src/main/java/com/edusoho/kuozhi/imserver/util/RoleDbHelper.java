@@ -2,8 +2,10 @@ package com.edusoho.kuozhi.imserver.util;
 
 import android.content.ContentValues;
 import android.content.Context;
+
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +23,7 @@ public class RoleDbHelper {
     }
 
     public Role getRoleByType(String type, int rid) {
-        HashMap arrayMap = mDbHelper.querySingle(TABLE, "type=? and rid=?", new String[] { type, String.valueOf(rid) });
+        HashMap arrayMap = mDbHelper.querySingle(TABLE, "type=? and rid=?", new String[]{type, String.valueOf(rid)});
         if (arrayMap == null || arrayMap.isEmpty()) {
             return new Role();
         }
@@ -31,7 +33,7 @@ public class RoleDbHelper {
 
     public Map<Integer, Role> getRoleMap(int[] rid) {
         String selectStr = String.format("rid in (%s)", DbUtil.makePlaceholders(rid, ","));
-        ArrayList<HashMap> arrayList = mDbHelper.query(TABLE, selectStr, DbUtil.intArrayToStringArray(rid));
+        ArrayList<HashMap<String, String>> arrayList = mDbHelper.query(TABLE, selectStr, DbUtil.intArrayToStringArray(rid));
         Map<Integer, Role> roleMap = new HashMap<>();
         if (arrayList == null) {
             return roleMap;
@@ -58,7 +60,7 @@ public class RoleDbHelper {
     }
 
     public int deleteByRid(int rid) {
-        return mDbHelper.delete(TABLE, "rid=?", new String[] { String.valueOf(rid) });
+        return mDbHelper.delete(TABLE, "rid=?", new String[]{String.valueOf(rid)});
     }
 
     public long save(Role role) {
@@ -75,6 +77,6 @@ public class RoleDbHelper {
         cv.put("type", role.getType());
         cv.put("nickname", role.getNickname());
         cv.put("avatar", role.getAvatar());
-        return mDbHelper.update(TABLE, cv, "rid=?", new String[] { String.valueOf(role.getRid()) });
+        return mDbHelper.update(TABLE, cv, "rid=?", new String[]{String.valueOf(role.getRid())});
     }
 }

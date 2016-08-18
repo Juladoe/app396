@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.imserver.helper;
 
 import android.content.Context;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,8 +20,7 @@ public class IMDbManager implements IDbManager {
 
     private Context mContext;
 
-    public IMDbManager(Context context, String dbName)
-    {
+    public IMDbManager(Context context, String dbName) {
         this.mContext = context;
         this.mDbName = dbName;
     }
@@ -49,7 +49,7 @@ public class IMDbManager implements IDbManager {
         int version = dbVersion;
         while (version > oldVersion) {
             sqlList.addAll(getSqlByVersion(version));
-            version --;
+            version--;
         }
         return sqlList;
     }

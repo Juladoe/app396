@@ -6,6 +6,7 @@ import android.content.Context;
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +26,7 @@ public class MsgDbHelper {
 
     public List<MessageEntity> getMessageList(String convNo, int start) {
         List<MessageEntity> entityList = new ArrayList<>();
-        ArrayList<HashMap> arrayList = mDbHelper.queryBySortAndLimit(TABLE, "convNo=?", new String[]{convNo}, "time desc", String.format("%d, 10", start));
+        ArrayList<HashMap<String, String>> arrayList = mDbHelper.queryBySortAndLimit(TABLE, "convNo=?", new String[]{convNo}, "time desc", String.format("%d, 10", start));
         if (arrayList == null) {
             return entityList;
         }
@@ -67,7 +68,7 @@ public class MsgDbHelper {
     }
 
     public String getLaterNo() {
-        ArrayList<HashMap> list = mDbHelper.queryBySortAndLimit("im_message", null, null, "time desc", "1");
+        ArrayList<HashMap<String, String>> list = mDbHelper.queryBySortAndLimit("im_message", null, null, "time desc", "1");
         if (list.isEmpty()) {
             return null;
         }

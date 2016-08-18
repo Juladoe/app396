@@ -89,8 +89,7 @@ public class Chat extends BaseMsgEntity {
 
         private Chat mChat;
 
-        public Builder()
-        {
+        public Builder() {
             mChat = new Chat();
         }
 
