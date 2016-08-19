@@ -44,20 +44,20 @@ public class IMProvider extends ModelProvider {
         role.setAvatar(classroom.middlePicture);
         role.setNickname(classroom.title);
 
-        ConvEntity convEntity = createConvNo(convNo, role);
+        ConvEntity convEntity = createConvNo(getAppSettingProvider().getCurrentUser().id, convNo, role);
         providerListener.onResponse(convEntity);
 
         return providerListener;
     }
 
-    public ProviderListener createConvInfoByCourse(final String convNo, Course course) {
+    public ProviderListener createConvInfoByCourse(String convNo, Course course) {
         final ProviderListener<ConvEntity> providerListener = new ProviderListener(){};
         Role role = new Role();
         role.setType(Destination.COURSE);
         role.setRid(course.id);
         role.setAvatar(course.middlePicture);
         role.setNickname(course.title);
-        ConvEntity convEntity = createConvNo(convNo, role);
+        ConvEntity convEntity = createConvNo(getAppSettingProvider().getCurrentUser().id, convNo, role);
         providerListener.onResponse(convEntity);
 
         return providerListener;
@@ -74,7 +74,7 @@ public class IMProvider extends ModelProvider {
                 role.setRid(user.id);
                 role.setAvatar(user.mediumAvatar);
                 role.setNickname(user.nickname);
-                ConvEntity convEntity = createConvNo(convNo, role);
+                ConvEntity convEntity = createConvNo(getAppSettingProvider().getCurrentUser().id, convNo, role);
                 providerListener.onResponse(convEntity);
             }
         });
@@ -251,13 +251,14 @@ public class IMProvider extends ModelProvider {
         return array;
     }
 
-    private ConvEntity createConvNo(String convNo, Role role) {
+    private ConvEntity createConvNo(int uid, String convNo, Role role) {
         ConvEntity convEntity = new ConvEntity();
         convEntity.setTargetId(role.getRid());
         convEntity.setTargetName(role.getNickname());
         convEntity.setConvNo(convNo);
         convEntity.setType(role.getType());
         convEntity.setAvatar(role.getAvatar());
+        convEntity.setUid(uid);
         convEntity.setCreatedTime(System.currentTimeMillis());
         convEntity.setUpdatedTime(0);
         IMClient.getClient().getConvManager().createConv(convEntity);

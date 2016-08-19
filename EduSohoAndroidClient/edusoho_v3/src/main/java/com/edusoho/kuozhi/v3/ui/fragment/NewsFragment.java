@@ -172,8 +172,10 @@ public class NewsFragment extends BaseFragment {
         if (newItem == null) {
             newItem = new New(messageEntity);
             Role role = IMClient.getClient().getRoleManager().getRole(newItem.type, newItem.fromId);
-            newItem.setImgUrl(role.getAvatar());
-            newItem.setTitle(role.getNickname());
+            if (role.getRid() != 0) {
+                newItem.setImgUrl(role.getAvatar());
+                newItem.setTitle(role.getNickname());
+            }
             newItem.setUnread(1);
             mSwipeAdapter.addItem(newItem);
             setListVisibility(mSwipeAdapter.getCount() == 0);
