@@ -46,8 +46,8 @@ public class NotificationProvider extends AbstractProvider {
                 content = String.format("[%s]", Const.MEDIA_AUDIO);
                 break;
             case PushUtil.ChatMsgType.MULTI:
-                RedirectBody redirectBody = new Gson().fromJson(content, RedirectBody.class);
-                content = redirectBody.content;
+                RedirectBody redirectBody = new Gson().fromJson(messageBody.getBody(), RedirectBody.class);
+                 content = redirectBody.content;
                 break;
             case PushUtil.ChatMsgType.TEXT:
                 content = String.format("%s:%s", messageBody.getSource().getNickname(), messageBody.getBody());

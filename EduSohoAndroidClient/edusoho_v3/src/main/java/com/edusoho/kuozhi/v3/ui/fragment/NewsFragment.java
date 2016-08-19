@@ -528,7 +528,7 @@ public class NewsFragment extends BaseFragment {
         SparseArray<ConvEntity> newConvEntityList = new SparseArray<>();
         ConvEntity convEntity = null;
         for (Course course : courses) {
-            if (existCourseIds.indexOfKey(course.id) != -1) {
+            if (existCourseIds.indexOfKey(course.id) >= 0) {
                 convEntity = existCourseIds.get(course.id);
                 convEntity.setAvatar(course.middlePicture);
                 convEntity.setTargetName(course.title);

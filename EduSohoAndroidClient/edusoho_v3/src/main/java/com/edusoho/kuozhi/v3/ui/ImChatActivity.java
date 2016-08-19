@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.media.AudioRecord;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.view.View;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.czt.mp3recorder.MP3Recorder;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.SendEntity;
@@ -209,7 +207,9 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
             Role role = IMClient.getClient().getRoleManager().getRole(messageBody.getSource().getType(), chat.fromId);
             chat.setDirect(chat.fromId == currentUser.id ? Chat.Direct.SEND : Chat.Direct.RECEIVE);
             chat.headImgUrl = role.getAvatar();
-            chat.delivery = messageEntity.getStatus();
+            if (messageEntity.getStatus() != PushUtil.MsgDeliveryType.NONE) {
+                chat.delivery = messageEntity.getStatus();
+            }
             chats.add(chat);
         }
         return chats;
@@ -237,6 +237,9 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         return new IMMessageReceiver() {
             @Override
             public boolean onReceiver(MessageEntity msg) {
+                if (!mConversationNo.equals(msg.getConvNo())) {
+                    return true;
+                }
                 handleMessage(msg);
                 return true;
             }
@@ -462,7 +465,10 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         }
         try {
             mSendTime = System.currentTimeMillis();
-            String content = wrapAudioMessageContent(file.getAbsolutePath(), getAudioDuration(file.getAbsolutePath()));
+            String content = file.getAbsolutePath();
+            if (PushUtil.ChatMsgType.AUDIO.equals(type)) {
+                content = wrapAudioMessageContent(file.getAbsolutePath(), getAudioDuration(file.getAbsolutePath()));
+            }
             MessageBody messageBody = saveMessageToLoacl(content, type);
             IMClient.getClient().getMessageManager().saveUploadEntity(
                     messageBody.getMessageId(), messageBody.getType(), file.getPath()
@@ -535,7 +541,11 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
             if (result != null) {
                 IMUploadEntity uploadEntity = IMClient.getClient().getMessageManager().getUploadEntity(messageBody.getMessageId());
                 File file = new File(uploadEntity.getSource());
-                messageBody.setBody(wrapAudioMessageContent(result.getUrl, getAudioDuration(file.getAbsolutePath())));
+                String body = result.getUrl;
+                if (PushUtil.ChatMsgType.AUDIO.equals(messageBody.getType())) {
+                    body = wrapAudioMessageContent(result.getUrl, getAudioDuration(file.getAbsolutePath()));
+                }
+                messageBody.setBody(body);
 
                 uploadUnYunMedia(result.putUrl, file, result.getHeaders(), messageBody);
                 saveUploadResult(result.putUrl, result.getUrl, mFromId);

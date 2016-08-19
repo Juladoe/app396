@@ -169,6 +169,9 @@ public class IMDiscussFragment extends BaseFragment implements
         return new IMMessageReceiver() {
             @Override
             public boolean onReceiver(MessageEntity msg) {
+                if (!mConversationNo.equals(msg.getConvNo())) {
+                    return true;
+                }
                 handleMessage(msg);
                 return true;
             }
@@ -521,7 +524,10 @@ public class IMDiscussFragment extends BaseFragment implements
         }
         try {
             mSendTime = System.currentTimeMillis();
-            String content = wrapAudioMessageContent(file.getAbsolutePath(), getAudioDuration(file.getAbsolutePath()));
+            String content = file.getAbsolutePath();
+            if (PushUtil.ChatMsgType.AUDIO.equals(type)) {
+                content = wrapAudioMessageContent(file.getAbsolutePath(), getAudioDuration(file.getAbsolutePath()));
+            }
             final MessageBody messageBody = saveMessageToLoacl(content, type);
             getUpYunUploadInfo(file, mCourseId, new UpYunUploadCallback(messageBody, file));
             viewMediaLayout.setVisibility(View.GONE);
@@ -1025,7 +1031,11 @@ public class IMDiscussFragment extends BaseFragment implements
                 IMClient.getClient().getMessageManager().saveUploadEntity(
                         messageBody.getMessageId(), messageBody.getType(), file.getPath()
                 );
-                messageBody.setBody(wrapAudioMessageContent(result.getUrl, getAudioDuration(file.getAbsolutePath())));
+                String body = result.getUrl;
+                if (PushUtil.ChatMsgType.AUDIO.equals(messageBody.getType())) {
+                    body = wrapAudioMessageContent(result.getUrl, getAudioDuration(file.getAbsolutePath()));
+                }
+                messageBody.setBody(body);
                 uploadUnYunMedia(result.putUrl, file, result.getHeaders(), messageBody);
                 saveUploadResult(result.putUrl, result.getUrl, mCourseId);
             } else {

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,19 +13,22 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.v3.handler.ChatSendHandler;
 import com.edusoho.kuozhi.v3.handler.ClassRoomChatSendHandler;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
@@ -33,15 +37,13 @@ import java.util.List;
 /**
  * Created by howzhi on 15/9/28.
  */
-public class ChatSelectFragment extends BaseFragment {
+public class ChatSelectFragment extends AbstractChatSendFragment {
 
     public static final String BODY = "body";
 
     private ChatSelectListAdapter mChatSelectListAdapter;
     private ListView mChatSelectListView;
     private View mSelectFrientBtn;
-
-    private RedirectBody mRedirectBody;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,12 +66,12 @@ public class ChatSelectFragment extends BaseFragment {
         mChatSelectListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                New item = (New)parent.getItemAtPosition(position);
+                New item = (New) parent.getItemAtPosition(position);
                 if (PushUtil.ChatUserType.CLASSROOM.equals(item.type)) {
-                    //new ClassRoomChatSendHandler(mActivity, mRedirectBody).handleClick(item.fromId, item.title, item.imgUrl);
+                    new ClassRoomChatSendHandler(mActivity, mRedirectBody, position).handleClick(mSendMessageHandlerCallback);
                     return;
                 }
-                //new ChatSendHandler(mActivity, mRedirectBody).handleClick(item.fromId, item.title, item.imgUrl);
+                new ChatSendHandler(mActivity, mRedirectBody, position).handleClick(mSendMessageHandlerCallback);
             }
         });
 
@@ -94,6 +96,15 @@ public class ChatSelectFragment extends BaseFragment {
         initChatList();
     }
 
+    private NormalCallback<Integer> mSendMessageHandlerCallback = new NormalCallback<Integer>() {
+        @Override
+        public void success(Integer index) {
+            New newItem = mChatSelectListAdapter.getItem(index);
+            MessageBody messageBody = saveMessageToLoacl(newItem.getFromId(), newItem.convNo, newItem.getType());
+            sendMessageToServer(newItem.convNo, messageBody);
+        }
+    };
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -103,29 +114,40 @@ public class ChatSelectFragment extends BaseFragment {
         }
     }
 
+    @Override
+    protected void sendFailCallback() {
+
+    }
+
+    @Override
+    protected void sendSuccessCallback() {
+        mActivity.finish();
+    }
+
     private void initBundleData() {
         Bundle bundle = getArguments();
         mRedirectBody = (RedirectBody) bundle.getSerializable(BODY);
     }
 
     private void initChatList() {
-        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        List<New> news = newDataSource.getNews("WHERE BELONGID = ? ORDER BY CREATEDTIME DESC", app.loginUser.id + "");
-        mChatSelectListAdapter = new ChatSelectListAdapter(mContext, filterChatSelectList(news));
+
+        List<ConvEntity> convEntityList = IMClient.getClient().getConvManager().getConvListByUid(app.loginUser.id);
+        mChatSelectListAdapter = new ChatSelectListAdapter(mContext, filterChatSelectList(convEntityList));
         mChatSelectListView.setAdapter(mChatSelectListAdapter);
     }
 
-    private List<New> filterChatSelectList(List<New> source) {
+    private List<New> filterChatSelectList(List<ConvEntity> convEntityList) {
         List<New> news = new ArrayList<>();
-        String[] types = new String[] {
+        String[] types = new String[]{
                 PushUtil.ChatUserType.USER,
                 PushUtil.ChatUserType.FRIEND,
                 PushUtil.ChatUserType.TEACHER,
-                PushUtil.ChatUserType.CLASSROOM
+                PushUtil.ChatUserType.CLASSROOM,
+                PushUtil.ChatUserType.COURSE
         };
-        for (New item : source) {
-            if (CommonUtil.inArray(item.type, types)) {
-                news.add(item);
+        for (ConvEntity item : convEntityList) {
+            if (CommonUtil.inArray(item.getType(), types)) {
+                news.add(new New(item));
             }
         }
 
