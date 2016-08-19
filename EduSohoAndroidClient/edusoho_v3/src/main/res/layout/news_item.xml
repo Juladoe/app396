@@ -91,7 +91,6 @@
                     android:paddingLeft="6dp"
                     android:paddingRight="6dp"
                     android:paddingTop="2dp"
-                    android:text="老师"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/x_small_font_size"
                     android:visibility="visible" />
@@ -106,7 +105,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/relativeLayout"
                 android:layout_marginLeft="8dp"
-                android:text="8:50"
                 android:textColor="@color/base_black_35"
                 android:textSize="@dimen/new_item_time_size" />
 
@@ -121,7 +119,6 @@
             android:layout_weight="1"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="EduSoho全新直播节目全新上线"
             android:textColor="@color/base_black_54"
             android:textSize="@dimen/small_font_size" />
 

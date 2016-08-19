@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 import com.android.volley.VolleyError;
@@ -10,7 +11,10 @@ import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.service.message.CommandFactory;
+import com.edusoho.kuozhi.v3.util.PushUtil;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -64,6 +68,11 @@ public class IMServiceProvider extends ModelProvider {
 
                     @Override
                     public void onSuccess(String extr) {
+                        MessageBody messageBody = new MessageBody(extr);
+                        if (messageBody == null) {
+                            return;
+                        }
+                        updateMessageStatus(messageBody);
                         Log.d(getClass().getSimpleName(), "onSuccess:" + extr);
                     }
 
@@ -87,6 +96,12 @@ public class IMServiceProvider extends ModelProvider {
                 IMClient.getClient().start(null, null, null);
             }
         });
+    }
+
+    protected void updateMessageStatus(MessageBody messageBody) {
+        ContentValues cv = new ContentValues();
+        cv.put("status", MessageEntity.StatusType.SUCCESS);
+        IMClient.getClient().getMessageManager().updateMessageFieldByUid(messageBody.getMessageId(), cv);
     }
 
     private void handlerMessage(IMMessageReceiver receiver, MessageEntity messageEntity) {

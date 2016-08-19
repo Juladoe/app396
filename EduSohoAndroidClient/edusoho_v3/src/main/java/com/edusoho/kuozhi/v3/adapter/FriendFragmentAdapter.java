@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.AvatarLoadingListener;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
@@ -115,12 +116,6 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
                     itemHolder.dividerLine.setVisibility(View.GONE);
                 }
 
-                if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), friend.getRoles())) {
-                    itemHolder.teacherTag.setVisibility(View.VISIBLE);
-                } else {
-                    itemHolder.teacherTag.setVisibility(View.GONE);
-                }
-
                 position--;
                 int section = getSectionForPosition(position);
                 if (position == getPositionForSection(section)) {
@@ -137,6 +132,23 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
                 } else {
                     itemType = PushUtil.ChatUserType.FRIEND;
                 }
+
+                if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), friend.getRoles())) {
+                    itemHolder.teacherTag.setVisibility(View.VISIBLE);
+                    itemHolder.teacherTag.setText(R.string.label_teacher);
+                    itemHolder.teacherTag.setBackgroundResource(R.drawable.role_teacher_bg);
+                } else if (Destination.CLASSROOM.equals(friend.getType())) {
+                    itemHolder.teacherTag.setText(R.string.label_classroom);
+                    itemHolder.teacherTag.setVisibility(View.VISIBLE);
+                    itemHolder.teacherTag.setBackgroundResource(R.drawable.role_classroom_bg);
+                } else if (Destination.COURSE.equals(friend.getType())) {
+                    itemHolder.teacherTag.setText(R.string.label_course);
+                    itemHolder.teacherTag.setVisibility(View.VISIBLE);
+                    itemHolder.teacherTag.setBackgroundResource(R.drawable.role_course_bg);
+                } else {
+                    itemHolder.teacherTag.setVisibility(View.GONE);
+                }
+
                 ImageLoader.getInstance().displayImage(friend.getMediumAvatar(), itemHolder.friendAvatar, mApp.mOptions, new AvatarLoadingListener(itemType));
                 break;
         }
