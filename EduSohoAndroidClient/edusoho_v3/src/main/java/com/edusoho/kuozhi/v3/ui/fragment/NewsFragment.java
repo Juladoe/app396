@@ -113,11 +113,6 @@ public class NewsFragment extends BaseFragment {
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (mParentActivity.getCurrentFragment().equals(getClass().getSimpleName())) {
@@ -127,6 +122,20 @@ public class NewsFragment extends BaseFragment {
             mIsNeedRefresh = true;
         }
         registIMMessageReceiver();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mIMMessageReceiver != null) {
+            IMClient.getClient().removeReceiver(mIMMessageReceiver);
+            mIMMessageReceiver = null;
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
     }
 
     private void registIMMessageReceiver() {
@@ -412,15 +421,6 @@ public class NewsFragment extends BaseFragment {
                 new MessageType(UPDATE_UNREAD_NEWS_COURSE, source),
                 new MessageType(Const.REFRESH_LIST, source),
                 new MessageType(Const.ADD_THREAD_POST, source)};
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mIMMessageReceiver != null) {
-            IMClient.getClient().removeReceiver(mIMMessageReceiver);
-            mIMMessageReceiver = null;
-        }
     }
 
     /**
