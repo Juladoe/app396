@@ -8,6 +8,7 @@ import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -16,6 +17,9 @@ import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.util.Const;
+
 import java.util.List;
 import java.util.Map;
 
@@ -117,6 +121,7 @@ public class IMProvider extends ModelProvider {
                 convEntity.setTargetName(role.getNickname());
                 convEntity.setUpdatedTime(System.currentTimeMillis());
                 IMClient.getClient().getConvManager().updateConv(convEntity);
+                MessageEngine.getInstance().sendMsgToTaget(Const.REFRESH_LIST, null, NewsFragment.class);
             }
         };
     }

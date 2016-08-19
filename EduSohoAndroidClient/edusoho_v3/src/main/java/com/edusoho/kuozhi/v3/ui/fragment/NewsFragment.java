@@ -391,6 +391,10 @@ public class NewsFragment extends BaseFragment {
 
     @Override
     public void invoke(WidgetMessage message) {
+        switch (message.type.code) {
+            case Const.REFRESH_LIST:
+                initData();
+        }
     }
 
     @Override
