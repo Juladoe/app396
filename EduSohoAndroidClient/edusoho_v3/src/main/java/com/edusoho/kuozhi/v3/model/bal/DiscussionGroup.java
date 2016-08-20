@@ -5,7 +5,6 @@ package com.edusoho.kuozhi.v3.model.bal;
  */
 public class DiscussionGroup extends Friend {
 
-    public String type;
     public String picture;
 
     @Override

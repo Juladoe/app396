@@ -34,6 +34,7 @@
     <string name="setting_new_msg_notify">新消息提醒</string>
     <string name="setting_online_duration">在线时段</string>
     <string name="setting_wifi_download">允许使用4G网络观看或缓存视频</string>
+    <string name="setting_receive_msg">接受此讨论组消息</string>
     <string name="setting_mediacodec_type">默认视频解码方式:[%s]</string>
     <string name="setting_clean_cache">清理缓存</string>
     <string name="setting_about">关于</string>
@@ -226,4 +227,9 @@
     <!-- error notice -->
     <string name="token_lose_notice">账号登陆失效，或已在别处登陆\n请重新登陆</string>
     <string name="find_card_student_num"> 人参与</string>
+
+    <!-- label -->
+    <string name="label_classroom">班级</string>
+    <string name="label_course">课程</string>
+    <string name="label_teacher">教师</string>
 </resources>

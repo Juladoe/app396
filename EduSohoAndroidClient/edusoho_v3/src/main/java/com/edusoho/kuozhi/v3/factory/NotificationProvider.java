@@ -95,7 +95,9 @@ public class NotificationProvider extends AbstractProvider {
         PendingIntent pendIntent = PendingIntent.getActivity(mContext, 0,
                 notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendIntent);
-        mBuilder.setDefaults(EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
+        mBuilder.setPriority(Notification.PRIORITY_HIGH);
+        mBuilder.setCategory(Notification.CATEGORY_MESSAGE);
+        mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
         return mBuilder.build();
     }
 }
