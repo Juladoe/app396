@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,10 +45,12 @@ import java.util.List;
  */
 public class ClassroomDetailActivity extends ChatItemBaseDetail {
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void initView() {
+        super.initView();
+        if (TextUtils.isEmpty(mConvNo)) {
+            findViewById(R.id.rl_recevie_msg).setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -58,6 +61,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
             return;
         }
         mFromId = intent.getIntExtra(Const.FROM_ID, 0);
+        mConvNo = intent.getStringExtra(CONV_NO);
         setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
 
         RequestUrl requestUrl = app.bindNewUrl(String.format(Const.CLASSROOM_MEMBERS, mFromId), true);

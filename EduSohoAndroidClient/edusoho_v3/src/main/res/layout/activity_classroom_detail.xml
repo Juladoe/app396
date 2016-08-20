@@ -162,7 +162,7 @@
                         android:textSize="@dimen/medium_font_size" />
 
                     <CheckBox
-                        android:id="@+id/cb_offline_type"
+                        android:id="@+id/cb_receivemsg_mode"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"

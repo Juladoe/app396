@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -14,7 +15,11 @@ import com.makeramen.roundedimageview.RoundedImageView;
  * Created by JesseHuang on 15/12/10.
  */
 public class ChatItemBaseDetail extends ActionBarBaseActivity implements View.OnClickListener {
+
+    public static final String CONV_NO = "convNo";
+
     protected int mFromId;
+    protected String mConvNo;
 
     protected EduSohoGridView gvMemberAvatar;
     protected TextView tvMemberSum;
@@ -24,6 +29,7 @@ public class ChatItemBaseDetail extends ActionBarBaseActivity implements View.On
     protected View vAnnouncement;
     protected View vEntry;
     protected View vClearChatRecord;
+    protected CheckBox mReceiveMsgModeCBox;
     protected Button btnDelRecordAndQuit;
 
     @Override
