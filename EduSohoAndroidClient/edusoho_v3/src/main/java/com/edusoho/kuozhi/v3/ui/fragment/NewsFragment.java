@@ -439,7 +439,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void addHeadView() {
-        View headerRootView = LayoutInflater.from(mContext).inflate(R.layout.view_new_header_layout, null);
+        View headerRootView = LayoutInflater.from(mContext).inflate(R.layout.view_new_header_layout, lvNewsList, false);
         mHeaderView = (TextView) headerRootView.findViewById(R.id.header_title);
         lvNewsList.addHeaderView(headerRootView);
     }

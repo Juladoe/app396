@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.imserver.service.Impl;
 
 import android.util.Log;
+
 import com.edusoho.kuozhi.imserver.listener.IChannelReceiveListener;
 import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import com.edusoho.kuozhi.imserver.service.IConnectionManager;
@@ -12,6 +13,7 @@ import com.koushikdutta.async.callback.WritableCallback;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
+
 import java.util.List;
 
 /**
@@ -30,8 +32,7 @@ public class ConnectionManager implements IConnectionManager {
     private IChannelReceiveListener mIChannelReceiveListener;
     private String mClientName;
 
-    public ConnectionManager(String clientName)
-    {
+    public ConnectionManager(String clientName) {
         this.mClientName = clientName;
         this.mStatus = IConnectManagerListener.NONE;
     }
@@ -73,7 +74,7 @@ public class ConnectionManager implements IConnectionManager {
     @Override
     public void accept() {
         mCurrentHostIndex = 0;
-        connectWebsocket();
+        connectWebSocket();
     }
 
     @Override
@@ -91,11 +92,11 @@ public class ConnectionManager implements IConnectionManager {
         return webSocket != null && webSocket.isOpen();
     }
 
-    private void connectWebsocket() {
+    private void connectWebSocket() {
         String host = mHostList.get(mCurrentHostIndex);
         Log.d(getClass().getSimpleName(), host);
-        mWebSocketFuture =  AsyncHttpClient.getDefaultInstance().websocket(
-                host  + "&clientName=" + mClientName,
+        mWebSocketFuture = AsyncHttpClient.getDefaultInstance().websocket(
+                host + "&clientName=" + mClientName,
                 null,
                 getWebSocketConnectCallback()
         );
@@ -114,7 +115,7 @@ public class ConnectionManager implements IConnectionManager {
             }
             return;
         }
-        connectWebsocket();
+        connectWebSocket();
     }
 
     protected AsyncHttpClient.WebSocketConnectCallback getWebSocketConnectCallback() {

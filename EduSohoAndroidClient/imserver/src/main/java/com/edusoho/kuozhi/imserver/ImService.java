@@ -13,9 +13,11 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.edusoho.kuozhi.imserver.broadcast.NetWorkStatusBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.imserver.util.NetTypeConst;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -60,7 +62,7 @@ public class ImService extends Service {
             @Override
             public void onStatusChange(int netType, boolean isConnected) {
                 Log.d(TAG, String.format("onStatusChange netType:%d isConnected:%b", netType, isConnected));
-                if (! mImServer.isReady()) {
+                if (!mImServer.isReady()) {
                     return;
                 }
                 if (isConnected && mImServer.isCancel()) {
@@ -117,14 +119,14 @@ public class ImService extends Service {
         }
 
         Log.d(TAG, "initServerHostFromLater");
-        initServerHost(clientName, new ArrayList<String>(ignoreNosSet), new ArrayList<String>(hostSet));
+        initServerHost(clientName, new ArrayList<>(ignoreNosSet), new ArrayList<>(hostSet));
     }
 
-    private void saveLaterHost(String clientName ,List<String> ignoreNosList, List<String> hostList) {
+    private void saveLaterHost(String clientName, List<String> ignoreNosList, List<String> hostList) {
         SharedPreferences.Editor editor = getSharedPreferences("laterHost", Context.MODE_PRIVATE).edit();
         editor.putString("clientName", clientName);
-        editor.putStringSet("ignoreNosList", new HashSet<String>(ignoreNosList));
-        editor.putStringSet("hostList", new HashSet<String>(hostList));
+        editor.putStringSet("ignoreNosList", new HashSet<>(ignoreNosList));
+        editor.putStringSet("hostList", new HashSet<>(hostList));
         editor.commit();
     }
 
@@ -164,8 +166,7 @@ public class ImService extends Service {
         return mImBinder;
     }
 
-    public class ImBinder extends IImServerAidlInterface.Stub
-    {
+    public class ImBinder extends IImServerAidlInterface.Stub {
         public void requestConnect() {
             mImServer.requestConnect();
         }
@@ -187,7 +188,7 @@ public class ImService extends Service {
 
         @Override
         public int getIMStatus() throws RemoteException {
-            if (! mImServer.isReady()) {
+            if (!mImServer.isReady()) {
                 return IMConnectStatus.NO_READY;
             }
             return mImServer.isConnected() ? IMConnectStatus.OPEN : IMConnectStatus.CLOSE;

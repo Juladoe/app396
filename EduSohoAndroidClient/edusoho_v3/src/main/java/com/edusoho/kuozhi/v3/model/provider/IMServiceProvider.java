@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.model.provider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
+
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
@@ -11,9 +12,7 @@ import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.service.message.CommandFactory;
-import com.edusoho.kuozhi.v3.util.PushUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -24,8 +23,7 @@ import java.util.List;
  */
 public class IMServiceProvider extends ModelProvider {
 
-    public IMServiceProvider(Context context)
-    {
+    public IMServiceProvider(Context context) {
         super(context);
     }
 
@@ -55,8 +53,8 @@ public class IMServiceProvider extends ModelProvider {
                 IMClient.getClient().init(mContext.getApplicationContext(), getDomain());
                 IMClient.getClient().start(
                         clientName,
-                        new ArrayList<String>(hostMap.keySet()),
-                        new ArrayList<String>(hostMap.values())
+                        new ArrayList<>(hostMap.keySet()),
+                        new ArrayList<>(hostMap.values())
                 );
 
                 IMClient.getClient().addGlobalIMMessageReceiver(new IMMessageReceiver() {
