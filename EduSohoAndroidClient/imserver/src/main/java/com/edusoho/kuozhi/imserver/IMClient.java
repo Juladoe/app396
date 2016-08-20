@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.managar.IMMessageManager;
 import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
+import com.edusoho.kuozhi.imserver.util.SystemUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,6 +35,8 @@ import java.util.List;
  * Created by 菊 on 2016/4/23.
  */
 public class IMClient {
+
+    public static final String TAG = "IMClient";
 
     private static Object mLock = new Object();
     private static IMClient client = null;
@@ -58,29 +61,29 @@ public class IMClient {
         DbManagerFactory.getDefaultFactory().setDbName(dbName);
     }
 
-    public void start(String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
-        int pid = android.os.Process.myPid();
-        String processAppName = getAppName(pid);
-        if (processAppName == null || !processAppName.equalsIgnoreCase(mContext.getPackageName())) {
-            Log.e("IMClient", "enter the service process!");
-            return;
-        }
-
-        Intent intent = new Intent("com.edusoho.kuozhi.imserver.IImServerAidlInterface");
-        intent.setPackage(mContext.getPackageName());
-
+    private void startImService(String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
+        Intent intent = getIMServiceIntent();
         intent.putStringArrayListExtra(ImService.HOST, hostList);
         intent.putStringArrayListExtra(ImService.IGNORE_NOS, ignoreNosList);
         intent.putExtra(ImService.CLIENT_NAME, clientName);
         intent.putExtra(ImService.ACTION, ImService.ACTION_INIT);
         mContext.startService(intent);
+    }
 
+    public void start(String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
+        int pid = android.os.Process.myPid();
+        String processAppName = getAppName(pid);
+        if (processAppName == null || !processAppName.equalsIgnoreCase(mContext.getPackageName())) {
+            Log.e(TAG, "enter the service process!");
+            return;
+        }
+
+        startImService(clientName, ignoreNosList, hostList);
         new Handler(Looper.getMainLooper()).postAtTime(new Runnable() {
             @Override
             public void run() {
-                if (mImBinder == null) {
-                    connectService();
-                }
+                mImBinder = null;
+                connectService();
             }
         }, SystemClock.uptimeMillis() + 300);
     }
@@ -90,13 +93,22 @@ public class IMClient {
             try {
                 mImBinder.closeIMServer();
             } catch (RemoteException e) {
-                Log.e(getClass().getSimpleName(), "closeIMServer error");
+                Log.e(TAG, "closeIMServer error");
             }
         }
         if (mServiceConnection != null) {
             mContext.unbindService(mServiceConnection);
+            mServiceConnection = null;
         }
+
+        mContext.stopService(getIMServiceIntent());
         mImBinder = null;
+    }
+
+    private Intent getIMServiceIntent() {
+        Intent intent = new Intent("com.edusoho.kuozhi.imserver.IImServerAidlInterface");
+        intent.setPackage(mContext.getPackageName());
+        return intent;
     }
 
     private String getAppName(int pID) {
@@ -123,12 +135,17 @@ public class IMClient {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
                 mImBinder = IImServerAidlInterface.Stub.asInterface(service);
-                Log.d(getClass().getSimpleName(), "----" + service);
+                try {
+                    Log.d(TAG, "onServiceConnected:" + mImBinder);
+                    mImBinder.start();
+                } catch (RemoteException e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
             public void onServiceDisconnected(ComponentName name) {
-                Log.d(getClass().getSimpleName(), name.toString());
+                Log.d(TAG, name.toString());
             }
         };
         boolean result = mContext.bindService(
@@ -137,7 +154,7 @@ public class IMClient {
                 mServiceConnection,
                 Context.BIND_AUTO_CREATE
         );
-        Log.d(getClass().getSimpleName(), "bind:" + result);
+        Log.d(TAG, "bind:" + result);
     }
 
     public IMChatRoom getChatRoom(String convNo) {
@@ -181,6 +198,10 @@ public class IMClient {
     }
 
     public int getIMConnectStatus() {
+        if (!SystemUtil.isServiceRunning(mContext, ImService.class)) {
+            return IMConnectStatus.NO_READY;
+        }
+
         try {
             return mImBinder == null ? mIMConnectStatus : mImBinder.getIMStatus();
         } catch (RemoteException e) {

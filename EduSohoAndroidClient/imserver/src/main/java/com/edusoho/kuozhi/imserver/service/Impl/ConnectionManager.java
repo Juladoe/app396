@@ -47,7 +47,11 @@ public class ConnectionManager implements IConnectionManager {
         WebSocket webSocket = mWebSocketFuture.tryGet();
         if (webSocket != null) {
             webSocket.close();
+            Log.d(TAG, "webSocket close");
         }
+        mWebSocketFuture.cancel();
+        mWebSocketFuture = null;
+        AsyncHttpClient.getDefaultInstance().getServer().stop();
     }
 
     @Override
@@ -88,6 +92,9 @@ public class ConnectionManager implements IConnectionManager {
         }
 
         WebSocket webSocket = mWebSocketFuture.tryGet();
+        if (webSocket == null) {
+            return false;
+        }
         return webSocket != null && webSocket.isOpen();
     }
 
@@ -114,6 +121,7 @@ public class ConnectionManager implements IConnectionManager {
             }
             return;
         }
+        Log.d(TAG, "switchConnect");
         connectWebsocket();
     }
 

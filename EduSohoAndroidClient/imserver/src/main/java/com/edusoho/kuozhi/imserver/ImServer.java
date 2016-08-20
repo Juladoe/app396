@@ -169,23 +169,33 @@ public class ImServer {
     }
 
     public boolean isConnected() {
-        return mIConnectionManager.isConnected();
+        return mIConnectionManager != null && mIConnectionManager.isConnected();
     }
 
     public boolean isReady() {
         return mIHeartManager != null && mIConnectionManager != null;
     }
 
-    public void stop() {
+    private void cancel() {
         if (this.mIHeartManager != null) {
             this.mIHeartManager.stop();
         }
+
         if (this.mIConnectionManager != null) {
             this.mIConnectionManager.stop();
         }
+        this.mIConnectionManager = null;
+    }
+
+    public void stop() {
+        cancel();
+        sendConnectStatusBroadcast(IConnectManagerListener.CLOSE);
     }
 
     public boolean isCancel() {
+        if (!isConnected()) {
+            return true;
+        }
         int status = mIConnectionManager.getStatus();
         return status == IConnectManagerListener.ERROR
                 || status == IConnectManagerListener.CLOSE
@@ -193,7 +203,7 @@ public class ImServer {
     }
 
     public void start() {
-        stop();
+        cancel();
         if (TextUtils.isEmpty(mClientName) || mHostList == null || mHostList.isEmpty()) {
             return;
         }

@@ -63,19 +63,31 @@ public class ImService extends Service {
                 if (! mImServer.isReady()) {
                     return;
                 }
-                if (isConnected && mImServer.isCancel()) {
-                    mImServer.start();
-                }
                 switch (netType) {
                     case NetTypeConst.WIFI:
                         mImServer.getHeartManager().switchPingType(NetTypeConst.WIFI);
                         break;
                     case NetTypeConst.NONE:
-                        mImServer.stop();
+                        if (!isConnected && mImServer.isConnected()) {
+                            mImServer.stop();
+                        }
                         break;
+                    case NetTypeConst.GSM:
+                    case NetTypeConst.LTE:
                     case NetTypeConst.WCDMA:
-                        mImServer.getHeartManager().switchPingType(NetTypeConst.WCDMA);
+                        mImServer.getHeartManager().switchPingType(netType);
                         break;
+                }
+
+                if (isConnected && mImServer.isCancel()) {
+                    Log.d(TAG, "network Connected and start ImServer");
+                    mImServer.start();
+                    return;
+                }
+
+                if (!isConnected && mImServer.isConnected()) {
+                    Log.d(TAG, "network not Connected and start ImServer");
+                    mImServer.stop();
                 }
             }
         };
@@ -136,14 +148,13 @@ public class ImService extends Service {
 
         Log.d(getClass().getSimpleName(), Arrays.toString(hostList.toArray()));
         mImServer.initWithHost(clientName, hostList, ignoreNosList);
-        mImServer.start();
     }
 
     protected void sendWakeUpAlert() {
         AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
         int anHour = 60 * 1000;
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
-        Intent i = new Intent(this, null);
+        Intent i = new Intent(this, ImService.class);
         PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
         manager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
     }
@@ -154,6 +165,8 @@ public class ImService extends Service {
         if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
+        mImServer.stop();
+        mImServer = null;
         sendWakeUpAlert();
         Log.d(TAG, "onDestroy");
     }
@@ -166,6 +179,10 @@ public class ImService extends Service {
 
     public class ImBinder extends IImServerAidlInterface.Stub
     {
+        public void start() {
+            mImServer.start();
+        }
+
         public void requestConnect() {
             mImServer.requestConnect();
         }

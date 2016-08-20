@@ -18,4 +18,6 @@ interface IImServerAidlInterface {
     void requestConnect();
 
     void requestOfflineMsg();
+
+    void start();
 }

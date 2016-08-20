@@ -41,4 +41,14 @@ create table if not exists im_conv (
     updatedTime  integer
 );
 
+/**
+    status
+    normal 0
+    no_disturb 1
+**/
+create table if not exists im_blacklist (
+    id integer primary key AutoIncrement,
+    convNo varchar(64),
+    status integer
+);
 
