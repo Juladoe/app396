@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="75dp"
-    android:orientation="horizontal"
-    android:paddingBottom="2dp"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingTop="2dp">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="75dp"
+              android:orientation="horizontal"
+              android:paddingBottom="2dp"
+              android:paddingLeft="10dp"
+              android:paddingRight="10dp"
+              android:paddingTop="2dp">
 
     <RelativeLayout
         android:id="@+id/view_avatar"
@@ -23,7 +23,7 @@
             android:layout_margin="6dp"
             android:scaleType="centerCrop"
             android:src="@drawable/default_avatar"
-            app:riv_corner_radius="4dp" />
+            app:riv_corner_radius="4dp"/>
 
         <TextView
             android:id="@+id/tv_parent"
@@ -34,7 +34,7 @@
             android:text="班级"
             android:textColor="@android:color/white"
             android:textSize="@dimen/xx_small_font_size"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
         <com.edusoho.kuozhi.v3.view.EduBadgeView
             android:id="@+id/bv_unread"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:text="1" />
+            android:text="1"/>
     </RelativeLayout>
 
 
@@ -76,7 +76,7 @@
                     android:singleLine="true"
                     android:text=""
                     android:textColor="@color/base_black_87"
-                    android:textSize="@dimen/medium_font_size" />
+                    android:textSize="@dimen/medium_font_size"/>
 
                 <TextView
                     android:id="@+id/tv_role"
@@ -93,7 +93,7 @@
                     android:paddingTop="2dp"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/x_small_font_size"
-                    android:visibility="visible" />
+                    android:visibility="visible"/>
 
             </RelativeLayout>
 
@@ -106,7 +106,7 @@
                 android:layout_alignTop="@+id/relativeLayout"
                 android:layout_marginLeft="8dp"
                 android:textColor="@color/base_black_35"
-                android:textSize="@dimen/new_item_time_size" />
+                android:textSize="@dimen/new_item_time_size"/>
 
         </RelativeLayout>
 
@@ -120,7 +120,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/base_black_54"
-            android:textSize="@dimen/small_font_size" />
+            android:textSize="@dimen/small_font_size"/>
 
     </LinearLayout>
 </LinearLayout>

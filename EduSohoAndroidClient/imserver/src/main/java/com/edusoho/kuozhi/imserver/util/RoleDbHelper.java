@@ -77,6 +77,6 @@ public class RoleDbHelper {
         cv.put("type", role.getType());
         cv.put("nickname", role.getNickname());
         cv.put("avatar", role.getAvatar());
-        return mDbHelper.update(TABLE, cv, "rid=?", new String[]{String.valueOf(role.getRid())});
+        return mDbHelper.update(TABLE, cv, "rid=? and type=?", new String[]{String.valueOf(role.getRid()), role.getType()});
     }
 }
