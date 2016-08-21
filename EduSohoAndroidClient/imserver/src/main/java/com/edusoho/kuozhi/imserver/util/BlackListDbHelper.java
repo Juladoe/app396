@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 
 import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
+import com.edusoho.kuozhi.imserver.managar.IMBlackListManager;
 
 import java.util.HashMap;
 
@@ -19,25 +20,28 @@ public class BlackListDbHelper {
         mDbHelper = new DbHelper(context, DbManagerFactory.getDefaultFactory().createIMDbManager(context));
     }
 
-    public int getStatusByConvNo(String convNo) {
+    public int getBlackList(String convNo) {
         HashMap<String, String> arrayMap = mDbHelper.querySingle(TABLE, "convNo=?", new String[]{convNo});
+        if (arrayMap == null) {
+            return IMBlackListManager.NONE;
+        }
         return MessageUtil.parseInt(arrayMap.get("status"));
     }
 
-    public long createBlackList(String convNo, int status) {
+    public long create(String convNo, int status) {
         ContentValues cv = new ContentValues();
         cv.put("convNo", convNo);
         cv.put("status", status);
         return mDbHelper.insert(TABLE, cv);
     }
 
-    public long updateByConvNo(String convNo, int status) {
+    public long updateByName(String name, String convNo, int status) {
         ContentValues cv = new ContentValues();
         cv.put("status", status);
-        return mDbHelper.update(TABLE, cv, "convNo=?", new String[]{convNo});
+        return mDbHelper.update(TABLE, cv, String.format("%s=?", name), new String[]{convNo});
     }
 
-    public long deleteByConvNo(String convNo) {
-        return mDbHelper.delete(TABLE, "convNo=?", new String[]{convNo});
+    public long deleteByName(String name, String value) {
+        return mDbHelper.delete(TABLE, String.format("%s=?", name), new String[]{value});
     }
 }

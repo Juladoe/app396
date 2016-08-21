@@ -48,20 +48,8 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
     private CourseDetailsResult mCourseResult;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void initData() {
-        super.initData();
-        Intent intent = getIntent();
-        if (intent == null) {
-            CommonUtil.longToast(mContext, "获取课程信息失败");
-            return;
-        }
-        mFromId = intent.getIntExtra(Const.FROM_ID, 0);
-        setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
+    protected void initView() {
+        super.initView();
         tvClassroomAnnouncement.setText(getString(R.string.course_announcement));
         tvEntryClassroom.setText(getString(R.string.entry_course));
         btnDelRecordAndQuit.setText(getString(R.string.del_record_and_quit_course));
@@ -90,6 +78,19 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                 CommonUtil.longToast(mContext, "获取课程信息失败");
             }
         });
+    }
+
+    @Override
+    protected void initData() {
+        super.initData();
+        Intent intent = getIntent();
+        if (intent == null) {
+            CommonUtil.longToast(mContext, "获取课程信息失败");
+            return;
+        }
+        mFromId = intent.getIntExtra(Const.FROM_ID, 0);
+        mConvNo = intent.getStringExtra(CONV_NO);
+        setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
     }
 
     @Override

@@ -142,6 +142,7 @@
                     android:background="@color/grey_dddddd" />
 
                 <RelativeLayout
+                    android:visibility="gone"
                     android:id="@+id/rl_recevie_msg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -48,9 +48,6 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
     @Override
     protected void initView() {
         super.initView();
-        if (TextUtils.isEmpty(mConvNo)) {
-            findViewById(R.id.rl_recevie_msg).setVisibility(View.GONE);
-        }
     }
 
     @Override

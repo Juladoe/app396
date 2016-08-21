@@ -189,7 +189,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
-                    //startIntent.putExtra(Const.ACTIONBAR_TITLE, mCourseTitle);
+                    startIntent.putExtra(ChatItemBaseDetail.CONV_NO, getIntent().getStringExtra(CONV_NO));
                 }
             });
         }
