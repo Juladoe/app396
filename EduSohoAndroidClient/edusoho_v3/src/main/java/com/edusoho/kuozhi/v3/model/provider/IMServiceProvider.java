@@ -9,6 +9,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
@@ -102,7 +103,7 @@ public class IMServiceProvider extends ModelProvider {
 
             @Override
             public ReceiverInfo getType() {
-                return new ReceiverInfo("global", "1");
+                return new ReceiverInfo(Destination.GLOBAL, "1");
             }
         });
     }
