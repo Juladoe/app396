@@ -41,7 +41,7 @@ public class JsBridgeAdapter {
         return instance;
     }
 
-    public void init(Context context) {
+    public void init() {
         mPluginList = new ArrayList<>();
         mPluginList.add(MenuClickPlugin.class);
         mPluginList.add(JsNativeAppPlugin.class);
