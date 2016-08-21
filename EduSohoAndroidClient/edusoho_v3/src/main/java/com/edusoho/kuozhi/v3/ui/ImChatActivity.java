@@ -158,7 +158,7 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         });
         mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
         mAdapter.setSendImageClickListener(this);
-        registIMMessageReceiver();
+        registerIMMessageReceiver();
     }
 
     @Override
@@ -219,18 +219,17 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
     protected void onResume() {
         super.onResume();
         if (!TextUtils.isEmpty(mConversationNo)) {
-            registIMMessageReceiver();
+            registerIMMessageReceiver();
+            IMClient.getClient().getConvManager().clearReadCount(mConversationNo);
         }
     }
 
-    private void registIMMessageReceiver() {
+    private void registerIMMessageReceiver() {
         if (mIMMessageReceiver != null) {
             return;
         }
-
         mIMMessageReceiver = getIMMessageListener();
         IMClient.getClient().addMessageReceiver(mIMMessageReceiver);
-        IMClient.getClient().getConvManager().clearReadCount(mConversationNo);
     }
 
     protected IMMessageReceiver getIMMessageListener() {
@@ -241,6 +240,7 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
                     return true;
                 }
                 handleMessage(msg);
+                IMClient.getClient().getConvManager().clearReadCount(mConversationNo);
                 return true;
             }
 
