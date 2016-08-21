@@ -59,10 +59,6 @@ public class RoleDbHelper {
         return role;
     }
 
-    public int deleteByRid(int rid) {
-        return mDbHelper.delete(TABLE, "rid=?", new String[]{String.valueOf(rid)});
-    }
-
     public long save(Role role) {
         ContentValues cv = new ContentValues();
         cv.put("rid", role.getRid());
