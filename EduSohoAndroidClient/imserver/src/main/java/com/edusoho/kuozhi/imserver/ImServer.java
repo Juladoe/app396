@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.command.CommandFactory;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
@@ -25,8 +26,10 @@ import com.edusoho.kuozhi.imserver.service.Impl.HeartManagerImpl;
 import com.edusoho.kuozhi.imserver.service.Impl.MsgManager;
 import com.edusoho.kuozhi.imserver.util.ConvDbHelper;
 import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +47,7 @@ public class ImServer {
     private int flag;
 
     private String[] pingCmd = {
-            "cmd" , "ping"
+            "cmd", "ping"
     };
 
     private String[] connectCmd = {
@@ -53,7 +56,7 @@ public class ImServer {
     };
 
     private String[] offlineMsgCmd = {
-            "cmd" , "offlineMsg",
+            "cmd", "offlineMsg",
             "lastMsgNo", ""
     };
 
@@ -216,7 +219,7 @@ public class ImServer {
 
     public void ack(String msgNo) {
         Log.d(TAG, "ack:" + msgNo);
-        send(new String[] {
+        send(new String[]{
                 "cmd", "ack",
                 "msgNo", msgNo
         });
@@ -227,10 +230,10 @@ public class ImServer {
     }
 
     public void sendMessage(SendEntity sendEntity) {
-        send(new String[] {
-                "cmd" , "send",
-                "toId" , sendEntity.getToId(),
-                "convNo" , sendEntity.getConvNo(),
+        send(new String[]{
+                "cmd", "send",
+                "toId", sendEntity.getToId(),
+                "convNo", sendEntity.getConvNo(),
                 "msg", sendEntity.getMsg()
         });
     }

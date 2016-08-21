@@ -40,7 +40,7 @@ public abstract class ModelProvider {
     }
 
     protected String getToken() {
-        Map<String,String> tokenMap = ApiTokenUtil.getToken(mContext);
+        Map<String, String> tokenMap = ApiTokenUtil.getToken(mContext);
         return tokenMap.containsKey("token") ? tokenMap.get("token") : "";
     }
 

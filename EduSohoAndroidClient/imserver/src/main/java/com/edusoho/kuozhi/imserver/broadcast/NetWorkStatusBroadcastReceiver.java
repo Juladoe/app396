@@ -15,8 +15,7 @@ public class NetWorkStatusBroadcastReceiver extends BroadcastReceiver {
 
     private NetWorkStatusCallback mNetWorkStatusCallback;
 
-    public NetWorkStatusBroadcastReceiver(NetWorkStatusCallback callback)
-    {
+    public NetWorkStatusBroadcastReceiver(NetWorkStatusCallback callback) {
         this.mNetWorkStatusCallback = callback;
     }
 
@@ -47,8 +46,7 @@ public class NetWorkStatusBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    public interface NetWorkStatusCallback
-    {
+    public interface NetWorkStatusCallback {
         void onStatusChange(int netType, boolean isConnected);
     }
 }

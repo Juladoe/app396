@@ -9,37 +9,35 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
  */
 public abstract class ProviderListener<T> implements Response.Listener<T>, Response.ErrorListener {
 
-    private NormalCallback<T> mCallabck;
-    private NormalCallback<VolleyError> mFailCallabck;
+    private NormalCallback<T> mCallback;
+    private NormalCallback<VolleyError> mFailCallback;
     private T mResponse;
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        if (mFailCallabck != null) {
-            mFailCallabck.success(error);
+        if (mFailCallback != null) {
+            mFailCallback.success(error);
         }
     }
 
     @Override
     public void onResponse(T response) {
-        if (mCallabck == null) {
+        if (mCallback == null) {
             mResponse = response;
             return;
         }
-        mCallabck.success(response);
+        mCallback.success(response);
     }
 
-    public ProviderListener fail(NormalCallback<VolleyError> callback)
-    {
-        this.mFailCallabck = callback;
+    public ProviderListener fail(NormalCallback<VolleyError> callback) {
+        this.mFailCallback = callback;
         return this;
     }
 
-    public ProviderListener success(NormalCallback<T> callabck)
-    {
-        this.mCallabck = callabck;
+    public ProviderListener success(NormalCallback<T> callabck) {
+        this.mCallback = callabck;
         if (mResponse != null) {
-            this.mCallabck.success(mResponse);
+            this.mCallback.success(mResponse);
             mResponse = null;
         }
         return this;

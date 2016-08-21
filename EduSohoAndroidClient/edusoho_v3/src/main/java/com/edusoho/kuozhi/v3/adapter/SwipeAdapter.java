@@ -42,7 +42,7 @@ public class SwipeAdapter extends BaseAdapter {
         mLayoutId = id;
         mList = new ArrayList<>();
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.user_avatar).
-                showImageOnFail(R.drawable.user_avatar).build();
+                showImageOnFail(R.drawable.user_avatar).showImageOnLoading(null).build();
     }
 
     @Override

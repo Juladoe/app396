@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/chat_content"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/chat_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/ll_chat_dialog"
@@ -16,7 +15,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/grey_cccccc" />
+            android:background="@color/grey_cccccc"/>
 
         <LinearLayout
             android:id="@+id/rl_bottom"
@@ -37,7 +36,7 @@
                 android:layout_marginRight="8dp"
                 android:background="@drawable/chat_btn_bg"
                 android:text="@string/font_chat_voice"
-                android:textSize="@dimen/chat_btn_size" />
+                android:textSize="@dimen/chat_btn_size"/>
 
             <!--keyboard按钮-->
             <com.edusoho.kuozhi.v3.view.EduSohoIconView
@@ -50,7 +49,7 @@
                 android:background="@drawable/chat_btn_bg"
                 android:text="@string/font_chat_keyboard"
                 android:textSize="@dimen/chat_btn_size"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
             <!--按住说话按钮-->
             <LinearLayout
@@ -72,7 +71,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/hand_press_and_speak"
                     android:textColor="@color/grey_666666"
-                    android:textSize="@dimen/medium_font_size" />
+                    android:textSize="@dimen/medium_font_size"/>
 
             </LinearLayout>
 
@@ -96,7 +95,7 @@
                     android:gravity="center_vertical"
                     android:inputType="text"
                     android:maxLines="4"
-                    android:textSize="@dimen/medium_font_size" />
+                    android:textSize="@dimen/medium_font_size"/>
 
             </RelativeLayout>
 
@@ -114,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/chat_btn_bg"
                     android:text="@string/font_chat_add_media"
-                    android:textSize="@dimen/chat_btn_size" />
+                    android:textSize="@dimen/chat_btn_size"/>
 
                 <!--发送文字按钮-->
                 <Button
@@ -125,14 +124,14 @@
                     android:text="发送"
                     android:textColor="@color/white"
                     android:textSize="@dimen/small_font_size"
-                    android:visibility="gone" />
+                    android:visibility="gone"/>
             </LinearLayout>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/grey_cccccc" />
+            android:background="@color/grey_cccccc"/>
 
         <LinearLayout
             android:id="@+id/ll_media_layout"
@@ -176,7 +175,7 @@
                             android:gravity="center"
                             android:padding="10dp"
                             android:text="@string/font_chat_media_photo"
-                            android:textSize="@dimen/chat_media_size" />
+                            android:textSize="@dimen/chat_media_size"/>
                     </LinearLayout>
 
                     <TextView
@@ -185,7 +184,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="4dp"
                         android:text="图片"
-                        android:textSize="@dimen/x_small_font_size" />
+                        android:textSize="@dimen/x_small_font_size"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -210,7 +209,7 @@
                             android:gravity="center"
                             android:padding="10dp"
                             android:text="@string/font_chat_media_camera"
-                            android:textSize="@dimen/chat_media_size" />
+                            android:textSize="@dimen/chat_media_size"/>
                     </LinearLayout>
 
                     <TextView
@@ -219,7 +218,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_margin="4dp"
                         android:text="拍照"
-                        android:textSize="@dimen/x_small_font_size" />
+                        android:textSize="@dimen/x_small_font_size"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -251,7 +250,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/record_animate_1" />
+                android:src="@drawable/record_animate_1"/>
 
             <TextView
                 android:id="@+id/tv_speak_hint"
@@ -265,7 +264,7 @@
                 android:padding="2dp"
                 android:text="@string/hand_move_up_and_send_cancel"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/small_font_size" />
+                android:textSize="@dimen/small_font_size"/>
         </RelativeLayout>
 
         <in.srain.cube.views.ptr.PtrClassicFrameLayout
@@ -290,9 +289,9 @@
                 android:fadingEdge="none"
                 android:fastScrollEnabled="false"
                 android:scrollbars="none"
-                android:transcriptMode="alwaysScroll"
+                android:smoothScrollbar="true"
                 android:stackFromBottom="true"
-                android:smoothScrollbar="true" />
+                android:transcriptMode="alwaysScroll"/>
 
         </in.srain.cube.views.ptr.PtrClassicFrameLayout>
     </RelativeLayout>

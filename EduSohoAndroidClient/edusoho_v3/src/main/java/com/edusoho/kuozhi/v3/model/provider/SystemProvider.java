@@ -5,6 +5,7 @@ import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
@@ -15,6 +16,7 @@ import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
+
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,7 +33,8 @@ public class SystemProvider extends ModelProvider {
 
     public ProviderListener<SchoolApp> getSchoolApp(RequestUrl requestUrl) {
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<SchoolApp>(){});
+                requestUrl, new TypeToken<SchoolApp>() {
+                });
 
         requestOption.getRequest().setCacheUseMode(BaseVolleyRequest.ALWAYS_USE_CACHE);
         return requestOption.build();
@@ -46,7 +49,7 @@ public class SystemProvider extends ModelProvider {
     }
 
     public ProviderListener getImServerHosts() {
-        Map<String,String> tokenMap = ApiTokenUtil.getToken(mContext);
+        Map<String, String> tokenMap = ApiTokenUtil.getToken(mContext);
         String token = tokenMap.get("token");
         School school = SchoolUtil.getDefaultSchool(mContext);
         RequestUrl requestUrl = new RequestUrl(school.host + "/api/im/me/login");
@@ -55,8 +58,9 @@ public class SystemProvider extends ModelProvider {
         requestUrl.setParams(params);
         requestUrl.getHeads().put("Auth-Token", token);
 
-        final ProviderListener<LinkedHashMap> stringResponseListener = new ProviderListener<LinkedHashMap>(){};
-        ProviderListener<LinkedHashMap> responseListener = new ProviderListener<LinkedHashMap>(){
+        final ProviderListener<LinkedHashMap> stringResponseListener = new ProviderListener<LinkedHashMap>() {
+        };
+        ProviderListener<LinkedHashMap> responseListener = new ProviderListener<LinkedHashMap>() {
         };
 
         responseListener.success(new NormalCallback<LinkedHashMap>() {

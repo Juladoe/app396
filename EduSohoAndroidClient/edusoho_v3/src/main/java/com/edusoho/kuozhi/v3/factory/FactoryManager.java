@@ -2,7 +2,9 @@ package com.edusoho.kuozhi.v3.factory;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.edusoho.kuozhi.v3.factory.provider.AbstractProvider;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Hashtable;
@@ -52,33 +54,33 @@ public class FactoryManager {
     }
 
     public static <T extends IService> T create(Class tClass) {
-        T factrory = (T) mFactoryManager.getFactory(tClass.getSimpleName());
-        if (factrory != null) {
+        T factory = (T) mFactoryManager.getFactory(tClass.getSimpleName());
+        if (factory != null) {
             Log.d(FactoryManager.class.getName(), "get from " + TARGET);
-            return factrory;
+            return factory;
         }
 
         try {
-            factrory  = (T) mFactoryManager.getFactoryInstance(tClass);
+            factory = (T) mFactoryManager.getFactoryInstance(tClass);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException(tClass.getName() + " Factory create fail");
         }
 
-        mFactoryManager.addFactory(factrory);
-        return factrory;
+        mFactoryManager.addFactory(factory);
+        return factory;
     }
 
-    private  Object getFactoryInstance(Class tClass) throws
+    private Object getFactoryInstance(Class tClass) throws
             InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         if (AbstractProvider.class.isAssignableFrom(tClass)) {
             if (mContext == null) {
                 throw new RuntimeException("create provider must init Context");
             }
             Constructor constructor = tClass.getConstructor(Context.class);
-            return  constructor.newInstance(mContext);
+            return constructor.newInstance(mContext);
         }
-        return  tClass.newInstance();
+        return tClass.newInstance();
     }
 
     public IService getFactory(String servcieName) {

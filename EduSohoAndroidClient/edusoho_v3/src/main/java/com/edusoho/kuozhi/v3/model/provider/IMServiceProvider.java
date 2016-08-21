@@ -60,6 +60,7 @@ public class IMServiceProvider extends ModelProvider {
                     return;
                 }
                 successBindImserver(clientName, hostMap);
+
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override

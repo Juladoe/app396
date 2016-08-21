@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -60,6 +61,7 @@ import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuCreator;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuItem;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
 import com.google.gson.reflect.TypeToken;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -111,11 +113,6 @@ public class NewsFragment extends BaseFragment {
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public void onResume() {
         super.onResume();
         if (mParentActivity.getCurrentFragment().equals(getClass().getSimpleName())) {
@@ -125,6 +122,20 @@ public class NewsFragment extends BaseFragment {
             mIsNeedRefresh = true;
         }
         registIMMessageReceiver();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (mIMMessageReceiver != null) {
+            IMClient.getClient().removeReceiver(mIMMessageReceiver);
+            mIMMessageReceiver = null;
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
     }
 
     private void registIMMessageReceiver() {
@@ -412,15 +423,6 @@ public class NewsFragment extends BaseFragment {
                 new MessageType(Const.ADD_THREAD_POST, source)};
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (mIMMessageReceiver != null) {
-            IMClient.getClient().removeReceiver(mIMMessageReceiver);
-            mIMMessageReceiver = null;
-        }
-    }
-
     /**
      * 设置空数据背景ICON
      *
@@ -437,7 +439,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void addHeadView() {
-        View headerRootView = LayoutInflater.from(mContext).inflate(R.layout.view_new_header_layout, null);
+        View headerRootView = LayoutInflater.from(mContext).inflate(R.layout.view_new_header_layout, lvNewsList, false);
         mHeaderView = (TextView) headerRootView.findViewById(R.id.header_title);
         lvNewsList.addHeaderView(headerRootView);
     }
