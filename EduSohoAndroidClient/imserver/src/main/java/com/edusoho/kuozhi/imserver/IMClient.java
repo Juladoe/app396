@@ -19,10 +19,12 @@ import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
 import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
+import com.edusoho.kuozhi.imserver.managar.IMBlackListManager;
 import com.edusoho.kuozhi.imserver.managar.IMChatRoom;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.managar.IMMessageManager;
 import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
+import com.edusoho.kuozhi.imserver.util.BlackListDbHelper;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 
@@ -159,6 +161,10 @@ public class IMClient {
 
     public IMChatRoom getChatRoom(String convNo) {
         return new IMChatRoom(mContext, convNo, mImBinder);
+    }
+
+    public IMBlackListManager getIMBlackListManager() {
+        return new IMBlackListManager(mContext);
     }
 
     public void addConnectStatusListener(IMConnectStatusListener listener) {

@@ -78,6 +78,7 @@ public class ClassroomDiscussActivity extends ImChatActivity {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     startIntent.putExtra(Const.ACTIONBAR_TITLE, mClassroomName);
+                    startIntent.putExtra(ChatItemBaseDetail.CONV_NO, mConversationNo);
                     startIntent.putExtra(Const.FROM_ID, mFromId);
                 }
             });
