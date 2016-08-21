@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.service.message;
 
 import android.content.Context;
 import android.util.Log;
+
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
@@ -15,8 +16,7 @@ public class DiscussMsgCommand extends AbstractCommand {
 
     private static final String TAG = "DiscussMsgCommand";
 
-    public DiscussMsgCommand(Context context, IMMessageReceiver receiver, MessageBody messageBody)
-    {
+    public DiscussMsgCommand(Context context, IMMessageReceiver receiver, MessageBody messageBody) {
         super(context, receiver, messageBody);
     }
 
@@ -27,7 +27,8 @@ public class DiscussMsgCommand extends AbstractCommand {
             Log.d(TAG, "no destination");
             return;
         }
-        if (! IMClient.getClient().isHandleMessageInFront(destination.getType(), mMessageBody.getConvNo())) {
+        if (!isInBlackList(mMessageBody.getConvNo())
+                && !IMClient.getClient().isHandleMessageInFront(destination.getType(), mMessageBody.getConvNo())) {
             getNotificationProvider().showNotification(mMessageBody);
         }
         String type = mMessageBody.getDestination().getType();
