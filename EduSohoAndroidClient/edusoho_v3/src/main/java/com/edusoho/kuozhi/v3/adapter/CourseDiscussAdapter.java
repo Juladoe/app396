@@ -1,30 +1,17 @@
 package com.edusoho.kuozhi.v3.adapter;
 
-import android.app.DownloadManager;
 import android.content.Context;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.listener.AvatarClickListener;
-import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
-import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -40,8 +27,8 @@ public class CourseDiscussAdapter<T extends Chat> extends ChatAdapter<T> {
         mDownloadList = new HashMap<>();
         mCourseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
-                showImageForEmptyUri(R.drawable.default_avatar).
-                showImageOnFail(R.drawable.default_avatar).build();
+                showImageForEmptyUri(R.drawable.user_avatar).
+                showImageOnFail(R.drawable.user_avatar).build();
     }
 
     @Override
