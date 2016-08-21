@@ -125,9 +125,6 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         }
 
         initAdapter();
-        if (!convNoIsEmpty(mConversationNo)) {
-            getNotificationProvider().cancelNotification(mConversationNo.hashCode());
-        }
     }
 
     protected boolean convNoIsEmpty(String convNo) {
@@ -218,9 +215,10 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
     @Override
     protected void onResume() {
         super.onResume();
-        if (!TextUtils.isEmpty(mConversationNo)) {
+        if (!convNoIsEmpty(mConversationNo)) {
             registerIMMessageReceiver();
             IMClient.getClient().getConvManager().clearReadCount(mConversationNo);
+            getNotificationProvider().cancelNotification(mConversationNo.hashCode());
         }
     }
 
