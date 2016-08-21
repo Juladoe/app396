@@ -49,7 +49,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         startSplash();
         registDevice();
 
-        ESCordovaWebViewFactory.init(mActivity);
+        ESCordovaWebViewFactory.init();
     }
 
     private void initAssets() {
