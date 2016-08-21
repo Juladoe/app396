@@ -48,6 +48,59 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         app.registMsgSource(this);
         startSplash();
         registDevice();
+        ESCordovaWebViewFactory.init();
+    }
+
+    private void initAssets() {
+
+        String zipName = String.format("assets-%s.zip", app.getApkVersion());
+        File target = new File(getFilesDir(), zipName);
+        if (target.exists()) {
+            return;
+        }
+
+        AssetManager assetManager = getAssets();
+        FileOutputStream outputStream = null;
+        ZipOutputStream zipOutputStream = null;
+        try {
+            String[] filter = new String[] {
+                    ".apk", ".ttf", ".zip"
+            };
+
+            outputStream = openFileOutput(zipName, MODE_APPEND);
+            zipOutputStream = new ZipOutputStream(outputStream);
+            String[] list = assetManager.list("");
+            for (String name : list) {
+                if (assetManager.list(name).length != 0) {
+                    continue;
+                }
+
+                if (CommonUtil.inArray(CommonUtil.getFileExt(name), filter)) {
+                    continue;
+                }
+
+                M3U8Util.DigestInputStream inputStream = new M3U8Util.DigestInputStream(
+                        assetManager.open(name), getPackageName(), false);
+                ZipEntry zipEntry = new ZipEntry("assets/" + name);
+                zipOutputStream.putNextEntry(zipEntry);
+
+                byte[] buffer = new byte[1024];
+                int len = 0;
+                while ((len = inputStream.read(buffer)) != -1) {
+                    zipOutputStream.write(buffer, 0, len);
+                }
+                inputStream.close();
+            }
+
+        } catch (Exception e) {
+            deleteFile(zipName);
+            Log.e(TAG, "addAssetPath error");
+        } finally {
+            try {
+                zipOutputStream.close();
+            } catch (Exception e) {
+            }
+        }
     }
 
     public void startSplash() {

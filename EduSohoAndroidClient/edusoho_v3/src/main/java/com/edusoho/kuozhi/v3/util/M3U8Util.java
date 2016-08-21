@@ -10,6 +10,7 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -22,10 +23,12 @@ import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8ListItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +49,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 import cn.trinea.android.common.util.ToastUtils;
@@ -276,8 +280,10 @@ public class M3U8Util {
 
         setDownloadStatus(DOWNING);
 
-        if (checkHasLocalM3U8Model(mLessonId, mUserId)) {
-            prepareDownload();
+        if (checkHasLocalM3U8Task(mLessonId, mUserId)) {
+            for (int i = 0; i < 5; i++) {
+                prepareDownload();
+            }
             LessonItem lessonItem = mSqliteUtil.queryForObj(
                     new TypeToken<LessonItem>() {
                     },
@@ -306,17 +312,20 @@ public class M3U8Util {
         sendBroadcast(status);
     }
 
-    private boolean checkHasLocalM3U8Model(int lessonId, int userId) {
+    private boolean checkHasLocalM3U8Task(int lessonId, int userId) {
         M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, userId, lessonId, mTargetHost, ALL);
-
-        if (m3U8DbModel != null && m3U8DbModel.finish ==UN_FINISH) {
-            Log.d(TAG, "continue M3U8DbModle");
-            M3U8File m3U8File = getM3U8FileFromModel(m3U8DbModel);
-            addM3U8SourceToQueue(m3U8File);
-            return true;
+        if (m3U8DbModel == null) {
+            return false;
         }
 
-        return false;
+        if (m3U8DbModel.finish == FINISH || m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
+            return false;
+        }
+
+        Log.d(TAG, "continue M3U8DbModle");
+        M3U8File m3U8File = getM3U8FileFromModel(m3U8DbModel);
+        addM3U8SourceToQueue(m3U8File);
+        return true;
     }
 
     private void loadLessonUrl(final int lessonId, int courseId) {
@@ -445,7 +454,8 @@ public class M3U8Util {
                         int id = cursor.getInt(cursor.getColumnIndex("id"));
                         filters.put(url, id);
                         return null;
-                    }};
+                    }
+                };
 
         SqliteUtil.getUtil(mContext).query(
                 queryCallBack,
@@ -499,7 +509,9 @@ public class M3U8Util {
             }
             initM3U8DataToDb(m3U8File);
             addM3U8SourceToQueue(m3U8File);
-            prepareDownload();
+            for (int i = 0; i < 5; i++) {
+                prepareDownload();
+            }
         }
     }
 
@@ -515,6 +527,7 @@ public class M3U8Util {
                 new String[]{String.valueOf(lessonId), host}
         );
     }
+
     /*
         初始化需要下载的m3u8列表
     */
@@ -601,14 +614,47 @@ public class M3U8Util {
             updateDownloadFinish(downloadModel);
             return;
         }
-        mDownloadQueue.poll();
-        prepareDownload();
         mDownloadQueue.add(new DownloadItem(downloadModel.url, downloadModel.type));
+        prepareDownload();
+    }
+
+    private void removeSystemDownloadTask(DownloadManager downloadManager, String url, String type) {
+        DownloadModel downloadModel = getDownloadModel(url, type);
+        if (downloadModel != null) {
+            Log.d(TAG, "removeRepeatTask:" + url);
+            downloadManager.remove(downloadModel.reference);
+            mSqliteUtil.delete("download_item", "url=? and type=?", new String[]{url, type});
+        }
+    }
+
+    private DownloadModel getDownloadModel(String url, String type) {
+        SqliteUtil.QueryParser<DownloadModel> queryCallBack =
+                new SqliteUtil.QueryParser<DownloadModel>() {
+                    @Override
+                    public DownloadModel parse(Cursor cursor) {
+                        DownloadModel downloadModel = new DownloadModel();
+                        downloadModel.url = cursor.getString(cursor.getColumnIndex("url"));
+                        downloadModel.type = cursor.getString(cursor.getColumnIndex("type"));
+                        downloadModel.targetId = cursor.getInt(cursor.getColumnIndex("targetId"));
+                        downloadModel.reference = cursor.getInt(cursor.getColumnIndex("reference"));
+                        downloadModel.id = cursor.getInt(cursor.getColumnIndex("id"));
+                        return downloadModel;
+                    }
+                };
+
+        return SqliteUtil.getUtil(mContext).query(
+                queryCallBack,
+                "select * from download_item where url=? and type=?",
+                url,
+                type
+        );
     }
 
     private void updateDownloadFinish(DownloadModel downloadModel) {
         try {
             saveDownloadItem(downloadModel);
+            DownloadManager downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
+            removeSystemDownloadTask(downloadManager, downloadModel.url, downloadModel.type);
         } catch (FileNotFoundException fnfe) {
             Log.d(TAG, "copy file error:" + downloadModel.url);
             prepareDownload();
@@ -625,27 +671,31 @@ public class M3U8Util {
         );
 
         if (result > 0) {
-            mDownloadQueue.poll();
             sendSuccessBroadcast();
             //更新总计数器
             M3U8DbModel m3U8DbModel = updateM3U8DownloadNum();
             if (m3U8DbModel != null && m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
-                String playListStr = createLocalM3U8File(m3U8DbModel);
-                Log.d(TAG, "m3U8DbModle-> finish");
-                cv.put("play_list", playListStr);
-                mSqliteUtil.update(
-                        "data_m3u8",
-                        cv,
-                        "host=? and lessonId=? and userId=?",
-                        new String[]{
-                                mTargetHost,
-                                String.valueOf(mLessonId),
-                                String.valueOf(mUserId)
-                        }
-                );
-
-                Log.d(TAG, "finish checkHasLocalM3U8Model");
-                checkHasLocalM3U8Model(mLessonId, mUserId);
+                if (checkHasLocalM3U8Task(mLessonId, mUserId)) {
+                    prepareDownload();
+                    return;
+                }
+                try {
+                    String playListStr = createLocalM3U8File(m3U8DbModel);
+                    Log.d(TAG, "m3U8DbModle-> finish");
+                    cv.put("play_list", playListStr);
+                    mSqliteUtil.update(
+                            "data_m3u8",
+                            cv,
+                            "host=? and lessonId=? and userId=?",
+                            new String[]{
+                                    mTargetHost,
+                                    String.valueOf(mLessonId),
+                                    String.valueOf(mUserId)
+                            }
+                    );
+                } catch (FileNotFoundException fe) {
+                    Log.d(TAG, fe.getMessage());
+                }
             }
         }
 
@@ -727,12 +777,13 @@ public class M3U8Util {
         mTimeOutList = null;
     }
 
-    private String createLocalM3U8File(M3U8DbModel m3U8DbModel) {
+    private String createLocalM3U8File(M3U8DbModel m3U8DbModel) throws FileNotFoundException {
         String playList = m3U8DbModel.playList;
         StringBuffer stringBuffer = new StringBuffer();
         Matcher matcher = URL_PAT.matcher(playList);
 
         String replaceStr = "http://localhost:8800/" + mLessonId + "/";
+        File m3u8Dir = getLocalM3U8Dir();
         while (matcher.find()) {
             String url = matcher.group(2);
             String type = matcher.group(1);
@@ -741,6 +792,9 @@ public class M3U8Util {
                 matcher.appendReplacement(
                         stringBuffer, type + "http://localhost:8800/ext_x_key/" + key);
             } else {
+                if (!new File(m3u8Dir, key).exists()) {
+                    throw new FileNotFoundException(key + "file not exists");
+                }
                 matcher.appendReplacement(
                         stringBuffer, replaceStr + key);
             }
@@ -800,7 +854,7 @@ public class M3U8Util {
             return;
         }
 
-        DownloadItem downloadItem = mDownloadQueue.peek();
+        DownloadItem downloadItem = mDownloadQueue.poll();
         if (downloadItem == null) {
             return;
         }
@@ -1054,40 +1108,8 @@ public class M3U8Util {
                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
             }
 
-            removeRepeatTask(downloadManager, url, type);
             long reference = downloadManager.enqueue(request);
             insertM3U8SourceDownloadId(reference, url, type, mLessonId);
-        }
-
-        private void removeRepeatTask(DownloadManager downloadManager, String url, String type) {
-            DownloadModel downloadModel = getDownloadModel(url, type);
-            if (downloadModel != null) {
-                Log.d(TAG, "removeRepeatTask:" + url);
-                //downloadManager.remove(downloadModel.reference);
-                mSqliteUtil.delete("download_item", "url=? and type=?", new String[] { url, type } );
-            }
-        }
-
-        private DownloadModel getDownloadModel(String url, String type) {
-            SqliteUtil.QueryParser<DownloadModel> queryCallBack =
-                    new SqliteUtil.QueryParser<DownloadModel>() {
-                        @Override
-                        public DownloadModel parse(Cursor cursor) {
-                            DownloadModel downloadModel = new DownloadModel();
-                            downloadModel.url = cursor.getString(cursor.getColumnIndex("url"));
-                            downloadModel.type = cursor.getString(cursor.getColumnIndex("type"));
-                            downloadModel.targetId = cursor.getInt(cursor.getColumnIndex("targetId"));
-                            downloadModel.reference = cursor.getInt(cursor.getColumnIndex("reference"));
-                            downloadModel.id = cursor.getInt(cursor.getColumnIndex("id"));
-                            return downloadModel;
-                        }};
-
-            return SqliteUtil.getUtil(mContext).query(
-                    queryCallBack,
-                    "select * from download_item where url=? and type=?",
-                    url,
-                    type
-            );
         }
     }
 }
