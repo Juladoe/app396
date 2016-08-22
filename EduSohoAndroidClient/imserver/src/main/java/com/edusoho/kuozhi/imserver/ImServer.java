@@ -275,6 +275,7 @@ public class ImServer {
     private void updateConv(ConvEntity convEntity, MessageEntity messageEntity) {
         if (convEntity == null) {
             convEntity = createConv(messageEntity);
+            convEntity.setUnRead(convEntity.getUnRead() + 1);
             mConvDbHelper.save(convEntity);
             return;
         }

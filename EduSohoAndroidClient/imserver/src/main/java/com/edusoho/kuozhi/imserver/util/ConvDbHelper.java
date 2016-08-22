@@ -118,6 +118,7 @@ public class ConvDbHelper {
         cv.put("type", convEntity.getType());
         cv.put("uid", convEntity.getUid());
         cv.put("avatar", convEntity.getAvatar());
+        cv.put("unRead", convEntity.getUnRead());
         return mDbHelper.insert(TABLE, cv);
     }
 

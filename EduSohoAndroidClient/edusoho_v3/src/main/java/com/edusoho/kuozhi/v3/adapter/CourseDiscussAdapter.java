@@ -19,6 +19,7 @@ import java.util.HashMap;
  * Created by JesseHuang on 15/12/15.
  */
 public class CourseDiscussAdapter<T extends Chat> extends ChatAdapter<T> {
+
     private CourseDiscussDataSource mCourseDiscussDataSource;
 
     public CourseDiscussAdapter(Context context, ArrayList<T> list) {

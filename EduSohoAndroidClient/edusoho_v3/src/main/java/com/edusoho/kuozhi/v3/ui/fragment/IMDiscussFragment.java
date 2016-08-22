@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -32,6 +33,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.SendEntity;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
+import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.entity.Role;
@@ -202,10 +204,10 @@ public class IMDiscussFragment extends BaseFragment implements
     protected void updateMessageSendStatus(MessageBody messageBody) {
         Chat chat = new Chat(messageBody);
         updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, chat);
-        MessageEntity messageEntity = createMessageEntityByBody(messageBody);
-        messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
-        messageBody.setMessageId(messageBody.getMessageId());
-        IMClient.getClient().getMessageManager().updateMessage(messageEntity);
+
+        ContentValues cv = new ContentValues();
+        cv.put("status", MessageEntity.StatusType.SUCCESS);
+        IMClient.getClient().getMessageManager().updateMessageFieldByUid(messageBody.getMessageId(), cv);
     }
 
     private MessageEntity createMessageEntityByBody(MessageBody messageBody) {
@@ -528,8 +530,11 @@ public class IMDiscussFragment extends BaseFragment implements
             if (PushUtil.ChatMsgType.AUDIO.equals(type)) {
                 content = wrapAudioMessageContent(file.getAbsolutePath(), getAudioDuration(file.getAbsolutePath()));
             }
-            final MessageBody messageBody = saveMessageToLoacl(content, type);
-            getUpYunUploadInfo(file, mCourseId, new UpYunUploadCallback(messageBody, file));
+            MessageBody messageBody = saveMessageToLoacl(content, type);
+            IMClient.getClient().getMessageManager().saveUploadEntity(
+                    messageBody.getMessageId(), messageBody.getType(), file.getPath()
+            );
+            getUpYunUploadInfo(file, mCourseId, new UpYunUploadCallback(messageBody));
             viewMediaLayout.setVisibility(View.GONE);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
@@ -629,7 +634,7 @@ public class IMDiscussFragment extends BaseFragment implements
         messageBody.setSource(new Source(chat.toId, Destination.USER));
 
         updateSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
-        getUpYunUploadInfo(file, mCourseId, new UpYunUploadCallback(messageBody, file));
+        getUpYunUploadInfo(file, mCourseId, new UpYunUploadCallback(messageBody));
     }
 
     public void addSendMsgToListView(int delivery, Chat chat) {
@@ -1016,11 +1021,9 @@ public class IMDiscussFragment extends BaseFragment implements
     private class UpYunUploadCallback implements NormalCallback<UpYunUploadResult>
     {
         private MessageBody messageBody;
-        private File file;
 
-        public UpYunUploadCallback(MessageBody messageBody, File file)
+        public UpYunUploadCallback(MessageBody messageBody)
         {
-            this.file = file;
             this.messageBody = messageBody;
         }
 
@@ -1028,14 +1031,14 @@ public class IMDiscussFragment extends BaseFragment implements
         public void success(UpYunUploadResult result) {
             final Chat chat = new Chat(messageBody);
             if (result != null) {
-                IMClient.getClient().getMessageManager().saveUploadEntity(
-                        messageBody.getMessageId(), messageBody.getType(), file.getPath()
-                );
+                IMUploadEntity uploadEntity = IMClient.getClient().getMessageManager().getUploadEntity(messageBody.getMessageId());
+                File file = new File(uploadEntity.getSource());
                 String body = result.getUrl;
                 if (PushUtil.ChatMsgType.AUDIO.equals(messageBody.getType())) {
                     body = wrapAudioMessageContent(result.getUrl, getAudioDuration(file.getAbsolutePath()));
                 }
                 messageBody.setBody(body);
+
                 uploadUnYunMedia(result.putUrl, file, result.getHeaders(), messageBody);
                 saveUploadResult(result.putUrl, result.getUrl, mCourseId);
             } else {
