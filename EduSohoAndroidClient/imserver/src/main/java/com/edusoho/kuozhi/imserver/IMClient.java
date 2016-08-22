@@ -84,7 +84,6 @@ public class IMClient {
         new Handler(Looper.getMainLooper()).postAtTime(new Runnable() {
             @Override
             public void run() {
-                mImBinder = null;
                 connectService();
             }
         }, SystemClock.uptimeMillis() + 300);
