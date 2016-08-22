@@ -412,13 +412,11 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
                 .success(new NormalCallback<LinkedHashMap>() {
                     @Override
                     public void success(LinkedHashMap linkedHashMap) {
-                        String conversationNo = null;
-                        if (linkedHashMap == null || (conversationNo = linkedHashMap.get("no").toString()) == null) {
+                        if (linkedHashMap == null || !linkedHashMap.containsKey("no")) {
                             ToastUtils.show(getBaseContext(), "创建聊天失败!");
                             return;
                         }
-
-                        mConversationNo = conversationNo;
+                        mConversationNo = linkedHashMap.get("no").toString();
                         new IMProvider(mContext).createConvInfoByUser(mConversationNo, mFromId)
                                 .success(new NormalCallback<ConvEntity>() {
                                     @Override

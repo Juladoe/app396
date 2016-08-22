@@ -111,7 +111,7 @@ public class IMServiceProvider extends ModelProvider {
     private void errorBindImServer() {
         Log.d("IMServiceProvider", "bindServer error");
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.ERROR);
-        IMClient.getClient().init(mContext.getApplicationContext(), getHost());
+        IMClient.getClient().init(mContext.getApplicationContext(), getDomain());
     }
 
     public synchronized void bindServer(String clientName) {
