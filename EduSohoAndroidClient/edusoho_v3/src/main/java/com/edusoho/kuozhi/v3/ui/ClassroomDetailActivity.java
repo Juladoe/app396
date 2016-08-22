@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
@@ -188,7 +189,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                             }
                             String url = app.host + "/course/" + mFromId;
                             String title = classroom.title;
-                            String about = classroom.about == null ? "" : classroom.about.toString();
+                            String about = classroom.about == null ? "" : AppUtil.coverCourseAbout(classroom.about.toString());
                             String pic = classroom.middlePicture;
 
                             final ShareTool shareTool = new ShareTool(mActivity, url, title, about, pic);

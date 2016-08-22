@@ -66,18 +66,20 @@ import in.srain.cube.views.ptr.PtrHandler;
  */
 public class ImChatActivity extends BaseChatActivity implements ChatAdapter.ImageErrorClick {
 
-    private IMMessageReceiver mIMMessageReceiver;
 
     public static final String TAG = "ChatActivity";
     public static final String FROM_ID = "from_id";
+    public static final String CONV_NO = "conv_no";
     public static final String MSG_DELIVERY = "msg_delivery";
     public static final String HEAD_IMAGE_URL = "head_image_url";
 
     private ChatAdapter<Chat> mAdapter;
     private long mSendTime;
     private Role mTargetRole;
-    protected int mFromId;
     private int mToId;
+    private IMMessageReceiver mIMMessageReceiver;
+
+    protected int mFromId;
     protected String mConversationNo;
 
     /**
@@ -93,7 +95,9 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         IMConvManager imConvManager = IMClient.getClient().getConvManager();
         ConvEntity convEntity = imConvManager.getConvByTypeAndId(getTargetType(), mFromId);
         if (convEntity != null) {
-            mConversationNo = convEntity.getConvNo();
+            if (convNoIsEmpty(mConversationNo)) {
+                mConversationNo = convEntity.getConvNo();
+            }
             setBackMode(BACK, convEntity.getTargetName());
         }
         mTargetRole = IMClient.getClient().getRoleManager().getRole(getTargetType(), mFromId);
@@ -115,6 +119,7 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         mToId = user.id;
         mFromId = intent.getIntExtra(FROM_ID, mFromId);
         mType = intent.getStringExtra(Const.NEWS_TYPE);
+        mConversationNo = intent.getStringExtra(CONV_NO);
 
         initConvNoInfo();
         initCacheFolder();
@@ -416,7 +421,10 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
                             ToastUtils.show(getBaseContext(), "创建聊天失败!");
                             return;
                         }
-                        mConversationNo = linkedHashMap.get("no").toString();
+                        String convNo = linkedHashMap.get("no").toString();
+                        if (convNo == null || convNo.endsWith(mConversationNo)) {
+                            return;
+                        }
                         new IMProvider(mContext).createConvInfoByUser(mConversationNo, mFromId)
                                 .success(new NormalCallback<ConvEntity>() {
                                     @Override
