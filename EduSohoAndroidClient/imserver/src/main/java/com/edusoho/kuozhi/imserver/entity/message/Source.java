@@ -10,6 +10,9 @@ public class Source {
     private String image;
     private String type;
 
+    public Source() {
+    }
+
     public Source(int id, String type)
     {
         this.id = id;

@@ -50,11 +50,11 @@ public class MessageBody {
         this.uid = body.optString("i");
 
         JSONObject destinationBody = body.optJSONObject("d");
-        this.destination = destinationBody == null ? null : new Destination(
+        this.destination = destinationBody == null ? new Destination() : new Destination(
                 destinationBody.optInt("id"), destinationBody.optString("type"));
 
         JSONObject sourceBody = body.optJSONObject("s");
-        this.sourse =  sourceBody == null ? null : new Source(
+        this.sourse =  sourceBody == null ? new Source() : new Source(
                 sourceBody.optInt("id"), sourceBody.optString("type"));
     }
 

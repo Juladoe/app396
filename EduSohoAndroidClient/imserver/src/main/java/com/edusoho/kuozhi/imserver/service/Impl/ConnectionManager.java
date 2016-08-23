@@ -45,6 +45,9 @@ public class ConnectionManager implements IConnectionManager {
     }
 
     private void close() {
+        if (mWebSocketFuture == null) {
+            return;
+        }
         WebSocket webSocket = mWebSocketFuture.tryGet();
         if (webSocket != null) {
             webSocket.close();

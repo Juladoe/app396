@@ -22,8 +22,10 @@ public class Destination {
 
     public int id;
 
-    public Destination(int id, String type)
-    {
+    public Destination() {
+    }
+
+    public Destination(int id, String type) {
         this.id = id;
         this.type = type;
     }
