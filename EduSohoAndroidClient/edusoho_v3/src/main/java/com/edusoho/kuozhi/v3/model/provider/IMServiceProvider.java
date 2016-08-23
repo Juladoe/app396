@@ -35,7 +35,7 @@ public class IMServiceProvider extends ModelProvider {
 
     public void reConnectServer(String clientName) {
         int status = IMClient.getClient().getIMConnectStatus();
-        if (status != IMConnectStatus.CONNECTING && status != IMConnectStatus.OPEN) {
+        if (status != IMConnectStatus.OPEN) {
             IMClient.getClient().removeGlobalIMMessageReceiver();
             connectServer(clientName);
             return;

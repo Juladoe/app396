@@ -75,7 +75,6 @@ public class ClassroomDiscussActivity extends ImChatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.group_menu, menu);
         return true;
     }

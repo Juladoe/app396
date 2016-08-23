@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.android.volley.Request;
@@ -28,6 +30,7 @@ import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.factory.UtilFactory;
@@ -39,6 +42,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
 import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.base.BaseChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -395,6 +399,25 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
             IMClient.getClient().getChatRoom(mConversationNo).send(sendEntity);
         } catch (Exception e) {
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.chat_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.user_profile) {
+            Bundle bundle = new Bundle();
+            School school = getAppSettingProvider().getCurrentSchool();
+            bundle.putString(Const.WEB_URL, String.format(Const.MOBILE_APP_URL, school.url + "/", String.format(Const.USER_PROFILE, mFromId)));
+            CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private Runnable mNewFragment2UpdateItemBadgeRunnable = new Runnable() {
