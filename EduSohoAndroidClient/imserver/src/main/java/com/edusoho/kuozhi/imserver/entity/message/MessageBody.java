@@ -166,6 +166,7 @@ public class MessageBody {
             sourceObj.put("type", sourse.getType());
             jsonObject.put("s", sourceObj);
         } catch (JSONException e) {
+            e.printStackTrace();
             return "";
         }
         return jsonObject.toString();

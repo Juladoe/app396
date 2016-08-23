@@ -132,6 +132,9 @@ public class IMClient {
     }
 
     private void connectService() {
+        if (mServiceConnection != null) {
+            mContext.unbindService(mServiceConnection);
+        }
         mServiceConnection = new ServiceConnection() {
             @Override
             public void onServiceConnected(ComponentName name, IBinder service) {
