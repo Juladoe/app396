@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.service.message.CommandFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class IMServiceProvider extends ModelProvider {
 
     public void reConnectServer(String clientName) {
         int status = IMClient.getClient().getIMConnectStatus();
-        if (status != IMConnectStatus.OPEN) {
+        if (status == IMConnectStatus.NO_READY) {
             IMClient.getClient().removeGlobalIMMessageReceiver();
             connectServer(clientName);
             return;
@@ -116,11 +117,11 @@ public class IMServiceProvider extends ModelProvider {
 
     public synchronized void bindServer(String clientName) {
         int status = IMClient.getClient().getIMConnectStatus();
-        if (status == IMConnectStatus.CONNECTING || status == IMConnectStatus.OPEN) {
-            Log.d("IMServiceProvider", "serice is runing");
+        if (status == IMConnectStatus.NO_READY) {
+            connectServer(clientName);
+            Log.d("IMServiceProvider", "IMService start ready");
             return;
         }
-        connectServer(clientName);
     }
 
     protected void updateMessageStatus(MessageBody messageBody) {

@@ -125,7 +125,7 @@ public class ConnectionManager implements IConnectionManager {
             }
             return;
         }
-        Log.d(TAG, "switchConnect");
+        Log.d(TAG, "switchConnect" + mHostList.get(mCurrentHostIndex));
         connectWebSocket();
     }
 
@@ -135,7 +135,11 @@ public class ConnectionManager implements IConnectionManager {
             public void onCompleted(Exception ex, WebSocket webSocket) {
                 if (ex != null) {
                     ex.printStackTrace();
-                    switchConnect();
+                    Log.d(TAG, "onCompleted:" + ex.getMessage());
+                    if (mIConnectStatusListener != null) {
+                        mStatus = IConnectManagerListener.END;
+                        mIConnectStatusListener.onStatusChange(IConnectManagerListener.END, ex.getMessage());
+                    }
                     return;
                 }
                 Log.d(TAG, "onCompleted:" + webSocket);

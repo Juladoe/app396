@@ -126,6 +126,8 @@ public class ImServer {
                         break;
                     case IConnectManagerListener.CLOSE:
                     case IConnectManagerListener.END:
+                        mIConnectionManager.switchConnect();
+                        break;
                     case IConnectManagerListener.ERROR:
                         flag = CONNECT_ERROR;
                         reConnect();
@@ -147,7 +149,7 @@ public class ImServer {
                 Log.d(TAG, "reConnect");
                 start();
             }
-        }, SystemClock.uptimeMillis() + 3000);
+        }, SystemClock.uptimeMillis() + 2000);
     }
 
     public void requestOfflineMsg() {
@@ -176,7 +178,16 @@ public class ImServer {
     }
 
     public boolean isReady() {
-        return mIHeartManager != null && mIConnectionManager != null;
+        if (TextUtils.isEmpty(mClientName)) {
+            return false;
+        }
+
+        if (mHostList == null || mHostList.isEmpty()
+                || mIgnoreNosList == null || mIgnoreNosList.isEmpty()) {
+            return false;
+        }
+
+        return true;
     }
 
     private void cancel() {

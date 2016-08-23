@@ -19,5 +19,5 @@ interface IImServerAidlInterface {
 
     void requestOfflineMsg();
 
-    void start();
+    void start(String clientName, inout String[] ignoreNosList, inout String[] hostList);
 }

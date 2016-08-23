@@ -14,6 +14,7 @@ import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.edusoho.kuozhi.imserver.broadcast.IMServiceStartedBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.broadcast.NetWorkStatusBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.imserver.util.NetTypeConst;
@@ -45,7 +46,6 @@ public class ImService extends Service {
         super.onCreate();
         Log.d(TAG, "onCreate");
         mImServer = new ImServer(getBaseContext());
-
         registNetWorkStatusBroadcastReceiver();
     }
 
@@ -96,6 +96,7 @@ public class ImService extends Service {
     @Override
         public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand" + intent);
+        sendServiceStatusBroadCast();
         if (intent == null) {
             initServerHostFromLater();
             return super.onStartCommand(intent, flags, startId);
@@ -104,18 +105,23 @@ public class ImService extends Service {
 
         if (action == ACTION_INIT) {
             Log.d(TAG, "init");
-            List<String> hostList = intent.getStringArrayListExtra(HOST);
-            List<String> ignoreNosList = intent.getStringArrayListExtra(IGNORE_NOS);
-            String clientName = intent.getStringExtra(CLIENT_NAME);
-            if (TextUtils.isEmpty(clientName) || hostList == null || ignoreNosList == null) {
-                return super.onStartCommand(intent, flags, startId);
-            }
-            initServerHost(clientName, hostList, ignoreNosList);
-            saveLaterHost(clientName, ignoreNosList, hostList);
             return Service.START_STICKY;
         }
 
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void sendServiceStatusBroadCast() {
+        Intent intent = new Intent(IMServiceStartedBroadcastReceiver.ACTION_NAME);
+        sendBroadcast(intent);
+    }
+
+    private void setServerHostConfig(String clientName, String[] ignoreNosArray, String[] hostArray) {
+        List<String> hostList = Arrays.asList(hostArray);
+        List<String> ignoreNosList = Arrays.asList(ignoreNosArray);
+
+        initServerHost(clientName, hostList, ignoreNosList);
+        saveLaterHost(clientName, ignoreNosList, hostList);
     }
 
     private void initServerHostFromLater() {
@@ -178,7 +184,8 @@ public class ImService extends Service {
     }
 
     public class ImBinder extends IImServerAidlInterface.Stub {
-        public void start() {
+        public void start(String clientName, String[] ignoreNosList, String[] hostList) {
+            setServerHostConfig(clientName, ignoreNosList, hostList);
             mImServer.start();
         }
 
