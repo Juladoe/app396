@@ -392,12 +392,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BACK:
-                if (null == mToast.getView().getParent()) {
-                    mToast.show();
-                } else {
-                    finish();
-                    app.exit();
-                }
+                finish();
                 return true;
             case KeyEvent.KEYCODE_MENU:
                 return true;
