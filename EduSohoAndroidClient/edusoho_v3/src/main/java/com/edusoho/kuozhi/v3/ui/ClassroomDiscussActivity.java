@@ -16,7 +16,9 @@ import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+
 import java.util.ArrayList;
+
 import cn.trinea.android.common.util.ToastUtils;
 
 /**
@@ -42,26 +44,33 @@ public class ClassroomDiscussActivity extends ImChatActivity {
         final LoadDialog loadDialog = LoadDialog.create(this);
         loadDialog.show();
         new ClassRoomProvider(mContext).getClassRoom(mFromId)
-        .success(new NormalCallback<Classroom>() {
-            @Override
-            public void success(Classroom classroom) {
-                if (classroom == null || TextUtils.isEmpty(classroom.conversationId)) {
-                    ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
-                    return;
-                }
-
-                mConversationNo = classroom.conversationId;
-                new IMProvider(mContext).createConvInfoByClassRoom(mConversationNo, classroom)
-                .success(new NormalCallback<ConvEntity>() {
+                .success(new NormalCallback<Classroom>() {
                     @Override
-                    public void success(ConvEntity convEntity) {
-                        loadDialog.dismiss();
-                        setTitle(convEntity.getTargetName());
-                        initAdapter();
+                    public void success(Classroom classroom) {
+                        if (classroom == null || TextUtils.isEmpty(classroom.conversationId)) {
+                            ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
+                            loadDialog.dismiss();
+                            return;
+                        }
+
+                        String convNo = classroom.conversationId;
+                        if (convNoIsEmpty(convNo) || convNo.equals(mConversationNo)) {
+                            ToastUtils.show(getBaseContext(), "该班级不支持聊天!");
+                            loadDialog.dismiss();
+                            return;
+                        }
+                        mConversationNo = convNo;
+                        new IMProvider(mContext).createConvInfoByClassRoom(mConversationNo, classroom)
+                                .success(new NormalCallback<ConvEntity>() {
+                                    @Override
+                                    public void success(ConvEntity convEntity) {
+                                        loadDialog.dismiss();
+                                        setTitle(convEntity.getTargetName());
+                                        initAdapter();
+                                    }
+                                });
                     }
                 });
-            }
-        });
     }
 
     @Override
