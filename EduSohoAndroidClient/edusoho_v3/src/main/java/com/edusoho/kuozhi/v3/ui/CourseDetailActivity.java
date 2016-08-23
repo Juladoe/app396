@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseMemberResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
@@ -193,7 +194,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                     if (mCourseResult != null && mCourseResult.course != null) {
                         String url = app.host + "/course/" + mFromId;
                         String title = mCourseResult.course.title;
-                        String about = mCourseResult.course.about;
+                        String about = AppUtil.coverCourseAbout(mCourseResult.course.about);
                         String pic = mCourseResult.course.middlePicture;
 
                         final ShareTool shareTool = new ShareTool(mActivity, url, title, about, pic);

@@ -39,14 +39,12 @@ public class ImService extends Service {
 
     private NetWorkStatusBroadcastReceiver mReceiver;
     private ImServer mImServer;
-    private ImBinder mImBinder;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate");
         mImServer = new ImServer(getBaseContext());
-        mImBinder = new ImBinder();
 
         registNetWorkStatusBroadcastReceiver();
     }
@@ -96,7 +94,7 @@ public class ImService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+        public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand" + intent);
         if (intent == null) {
             initServerHostFromLater();
@@ -176,7 +174,7 @@ public class ImService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         Log.d(TAG, "onBind");
-        return mImBinder;
+        return new ImBinder();
     }
 
     public class ImBinder extends IImServerAidlInterface.Stub {

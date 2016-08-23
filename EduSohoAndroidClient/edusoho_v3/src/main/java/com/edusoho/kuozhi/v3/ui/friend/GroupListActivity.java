@@ -115,6 +115,9 @@ public class GroupListActivity extends ActionBarBaseActivity {
             @Override
             public Promise invoke(CourseResult courseResult) {
                 mLoading.setVisibility(View.GONE);
+                if (courseResult == null || courseResult.resources == null || courseResult.resources.length == 0) {
+                    return null;
+                }
                 List<DiscussionGroup> groupsList = coverCourseArray2FriendList(courseResult.resources);
                 setSortChar(groupsList);
                 Collections.sort(groupsList, groupComparator);
