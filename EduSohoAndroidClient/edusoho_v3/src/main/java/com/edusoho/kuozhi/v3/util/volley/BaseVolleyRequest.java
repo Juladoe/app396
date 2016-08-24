@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.util.volley;
 
+import android.util.Log;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
 import com.android.volley.NetworkResponse;
@@ -75,6 +77,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> headers = mRequestUrl.getHeads();
         headers.put("Cookie", mRequestLocalManager.getCookie());
+        Log.d(TAG, "getHeaders: " + mRequestLocalManager.getCookie());
         return headers;
     }
 
@@ -98,7 +101,9 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         String cookie = response.headers.get("Set-Cookie");
-        mRequestLocalManager.setCookie(cookie);
+        if (cookie != null) {
+            mRequestLocalManager.setCookie(cookie);
+        }
         Cache.Entry cache = handleResponseCache(response);
 
         setTag(PARSE_RESPONSE);
@@ -144,10 +149,6 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
             }
 
             return instace;
-        }
-
-        public List<String> getCookieList() {
-            return cookie;
         }
 
         public String getCookie() {
