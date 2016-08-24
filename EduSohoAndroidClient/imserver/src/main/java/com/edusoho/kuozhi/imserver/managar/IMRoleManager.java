@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.imserver.managar;
 
 import android.content.Context;
+import android.text.TextUtils;
+
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.util.RoleDbHelper;
 import java.util.Map;
@@ -22,6 +24,9 @@ public class IMRoleManager {
     }
 
     public Role getRole(String type, int rid) {
+        if (TextUtils.isEmpty(type)) {
+            return new Role();
+        }
         return new RoleDbHelper(mContext).getRoleByType(type, rid);
     }
 

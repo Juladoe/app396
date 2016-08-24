@@ -22,14 +22,22 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.imserver.entity.message.Source;
+import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.v3.adapter.article.ArticleCardAdapter;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.article.Article;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
 import com.edusoho.kuozhi.v3.model.bal.article.MenuItem;
-import com.edusoho.kuozhi.v3.model.bal.push.ServiceProviderModel;
 import com.edusoho.kuozhi.v3.model.provider.ArticleProvider;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -38,11 +46,11 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.ServiceProfileFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -50,6 +58,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
+
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -159,13 +169,13 @@ public class ArticleFragment extends BaseFragment {
             }
         });
         initData();
-        sendNewFragment2UpdateItemBadge();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         initMenu();
+        IMClient.getClient().getConvManager().clearReadCount(Destination.ARTICLE);
     }
 
     private void showArticle(int id) {
@@ -213,9 +223,7 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private void sendNewFragment2UpdateItemBadge() {
-        Bundle bundle = new Bundle();
-        bundle.putInt(Const.FROM_ID, mServiceProvierId);
-        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_ARTICLE_CREATE, bundle, NewsFragment.class);
+
     }
 
     private List<MenuItem> coverMenuItem(List<LinkedHashMap> menuList) {
@@ -291,12 +299,10 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private ArrayList<ArticleModel> getChatList(int start) {
-        ArrayList<ServiceProviderModel> mList = mSPDataSource.getServiceProviderMsgs(app.loginUser.id, start, 5);
-        Collections.reverse(mList);
-
+        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(Destination.ARTICLE).getMessageList(start);
         ArrayList<ArticleModel> articleModels = new ArrayList<>();
-        for (ServiceProviderModel model : mList) {
-            articleModels.add(new ArticleModel(model));
+        for (MessageEntity messageEntity : messageEntityList) {
+            articleModels.add(new ArticleModel(messageEntity));
         }
         return articleModels;
     }
@@ -338,7 +344,9 @@ public class ArticleFragment extends BaseFragment {
                 ArticleModel articleModel = ArticleModel.create(app.loginUser.id, articleList.resources);
                 mArticleAdapter.addArticleChat(articleModel);
                 expandArticle();
-                new ServiceProviderDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).create(articleModel);
+
+                MessageEntity messageEntity = createMessageEntityByBody(createArticleMessageBody(articleModel.body, PushUtil.ChatMsgType.PUSH));
+                IMClient.getClient().getMessageManager().createMessage(messageEntity);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -346,6 +354,30 @@ public class ArticleFragment extends BaseFragment {
                 loadDialog.dismiss();
             }
         });
+    }
+
+    protected MessageBody createArticleMessageBody(String content, String type) {
+        MessageBody messageBody = new MessageBody(MessageBody.VERSION, type, content);
+        messageBody.setCreatedTime(System.currentTimeMillis());
+        messageBody.setDestination(new Destination(0, Destination.GLOBAL));
+        messageBody.setSource(new Source(mServiceProvierId, Destination.ARTICLE));
+        messageBody.setConvNo(Destination.ARTICLE);
+        messageBody.setMessageId(UUID.randomUUID().toString());
+        return messageBody;
+    }
+
+    private MessageEntity createMessageEntityByBody(MessageBody messageBody) {
+        return new MessageEntityBuildr()
+                .addUID(messageBody.getMessageId())
+                .addConvNo(messageBody.getConvNo())
+                .addToId("all")
+                .addToName("资讯")
+                .addFromId("0")
+                .addFromName("系统消息")
+                .addCmd("message")
+                .addMsg(messageBody.toJson())
+                .addTime((int) (messageBody.getCreatedTime() / 1000))
+                .builder();
     }
 
     private void expandArticle() {
@@ -450,5 +482,9 @@ public class ArticleFragment extends BaseFragment {
             new MessageType(Const.ADD_ARTICLE_CREATE_MAG, source),
             new MessageType(Const.CLEAR_HISTORY)
         };
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 }

@@ -95,7 +95,7 @@ public class IMClient {
         mContext.startService(intent);
     }
 
-    public void start(final String clientName, final ArrayList<String> ignoreNosList, final ArrayList<String> hostList) {
+    public void start(int clientId, String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
         int pid = android.os.Process.myPid();
         String processAppName = getAppName(pid);
         if (processAppName == null || !processAppName.equalsIgnoreCase(mContext.getPackageName())) {
@@ -103,7 +103,7 @@ public class IMClient {
             return;
         }
 
-        this.mConnectIMServiceRunnable = new ConnectIMServiceRunnable(clientName, ignoreNosList, hostList);
+        this.mConnectIMServiceRunnable = new ConnectIMServiceRunnable(clientId, clientName, ignoreNosList, hostList);
         startImService();
     }
 
@@ -150,7 +150,7 @@ public class IMClient {
         return processName;
     }
 
-    private void connectService(final String clientName, final String[] ignoreNosList, final String[] hostList) {
+    private void connectService(final int clientId, final String clientName, final String[] ignoreNosList, final String[] hostList) {
         if (mServiceConnection != null) {
             mContext.unbindService(mServiceConnection);
         }
@@ -159,8 +159,8 @@ public class IMClient {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 mImBinder = IImServerAidlInterface.Stub.asInterface(service);
                 try {
-                    Log.d(TAG, "onServiceConnected:" + mImBinder);
-                    mImBinder.start(clientName, ignoreNosList, hostList);
+                    Log.d(TAG, "onServiceConnected:clientName:" + clientName + " ignoreNosList:" + ignoreNosList + " hosts:" + hostList);
+                    mImBinder.start(clientId, clientName, ignoreNosList, hostList);
                 } catch (RemoteException e) {
                     e.printStackTrace();
                 }
@@ -321,11 +321,14 @@ public class IMClient {
     }
 
     private class ConnectIMServiceRunnable implements Runnable {
+
+        private int mClientId;
         private String mClientName;
         private String[] mHostList;
         private String[] mIgnoreNosList;
 
-        public ConnectIMServiceRunnable(String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
+        public ConnectIMServiceRunnable(int clientId, String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
+            this.mClientId = clientId;
             this.mClientName = clientName;
             this.mHostList = new String[hostList.size()];
             this.mIgnoreNosList = new String[ignoreNosList.size()];
@@ -335,7 +338,7 @@ public class IMClient {
 
         @Override
         public void run() {
-            connectService(mClientName, mIgnoreNosList, mHostList);
+            connectService(mClientId, mClientName, mIgnoreNosList, mHostList);
         }
     }
 }

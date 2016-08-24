@@ -29,6 +29,8 @@ public class CommandFactory {
                     return new DiscussMsgCommand(context, receiver, messageBody);
                 }
                 break;
+            case PushUtil.ChatMsgType.PUSH:
+                return new PushMsgCommand(context, receiver, messageBody);
         }
         return new EmptyCommand(context, receiver, messageBody);
     }

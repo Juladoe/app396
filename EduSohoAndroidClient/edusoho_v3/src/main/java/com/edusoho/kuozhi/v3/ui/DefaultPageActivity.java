@@ -495,7 +495,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         if (user == null) {
             return;
         }
-        new IMServiceProvider(getBaseContext()).reConnectServer(user.nickname);
+        new IMServiceProvider(getBaseContext()).reConnectServer(user.id, user.nickname);
     }
 
     protected AppSettingProvider getAppSettingProvider() {

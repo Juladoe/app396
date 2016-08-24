@@ -37,7 +37,7 @@ public class ConvDbHelper {
     }
 
     public List<ConvEntity> getConvListByUid(int uid) {
-        ArrayList<HashMap<String, String>> arrayList = mDbHelper.queryBySort(TABLE, "uid=?", new String[]{String.valueOf(uid)}, "updatedTime desc");
+        ArrayList<HashMap<String, String>> arrayList = mDbHelper.queryBySort(TABLE, "uid=? and updatedTime>0", new String[]{String.valueOf(uid)}, "updatedTime desc");
         List<ConvEntity> entityList = new ArrayList<>();
         if (arrayList == null) {
             return entityList;

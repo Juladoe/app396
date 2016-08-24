@@ -64,6 +64,7 @@ public class ImServer {
     private ConvDbHelper mConvDbHelper;
     private Context mContext;
     private String mClientName;
+    private int mClientId;
     private List<String> mHostList;
     private List<String> mIgnoreNosList;
 
@@ -167,10 +168,11 @@ public class ImServer {
         mContext.sendBroadcast(intent);
     }
 
-    public void initWithHost(String clientName, List<String> host, List<String> ignoreNosList) {
+    public void initWithHost(int clientId, String clientName, List<String> host, List<String> ignoreNosList) {
         this.mIgnoreNosList = ignoreNosList;
         this.mClientName = clientName;
         this.mHostList = host;
+        this.mClientId = clientId;
     }
 
     public boolean isConnected() {
@@ -251,13 +253,7 @@ public class ImServer {
 
     public void onReceiveOfflineMsg(ArrayList<MessageEntity> messageEntities) {
         for (MessageEntity messageEntity : messageEntities) {
-            if (getMsgDbHelper().hasMessageByNo(messageEntity.getMsgNo())) {
-                Log.d("MessageCommand", "hasMessageByNo");
-                return;
-            }
-            mMsgDbHelper.save(messageEntity);
-            ConvEntity convEntity = mConvDbHelper.getConv(messageEntity.getMsgNo());
-            updateConv(convEntity, messageEntity);
+            handleReceiveMessage(messageEntity);
         }
         Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
         intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.OFFLINE_MSG);
@@ -265,17 +261,34 @@ public class ImServer {
         mContext.sendBroadcast(intent);
     }
 
-    public void onReceiveMessage(MessageEntity messageEntity) {
+    private void handleReceiveMessage(MessageEntity messageEntity) {
         if (getMsgDbHelper().hasMessageByNo(messageEntity.getMsgNo())) {
             Log.d("MessageCommand", "hasMessageByNo");
             return;
         }
 
         if ("message".equals(messageEntity.getCmd())) {
+            MessageBody messageBody = new MessageBody(messageEntity);
+            if (messageBody == null) {
+                Log.d(TAG, "messageBody is null");
+                return;
+            }
+            messageEntity.setConvNo(getMessageConvNo(messageBody));
             mMsgDbHelper.save(messageEntity);
             ConvEntity convEntity = mConvDbHelper.getConv(messageEntity.getConvNo());
-            updateConv(convEntity, messageEntity);
+            if (convEntity == null) {
+                convEntity = createConv(messageBody);
+                convEntity.setUnRead(convEntity.getUnRead() + 1);
+                convEntity.setUid(mClientId);
+                mConvDbHelper.save(convEntity);
+            } else {
+                updateConv(convEntity, messageEntity);
+            }
         }
+    }
+
+    public void onReceiveMessage(MessageEntity messageEntity) {
+        handleReceiveMessage(messageEntity);
 
         Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
         intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.RECEIVER);
@@ -283,16 +296,17 @@ public class ImServer {
         mContext.sendBroadcast(intent);
     }
 
-    private void updateConv(ConvEntity convEntity, MessageEntity messageEntity) {
-        if (convEntity == null) {
-            convEntity = createConv(messageEntity);
-            convEntity.setUnRead(convEntity.getUnRead() + 1);
-            mConvDbHelper.save(convEntity);
-            return;
+    private String getMessageConvNo(MessageBody messageBody) {
+        if ("push".equals(messageBody.getType())) {
+            return messageBody.getSource().getType();
         }
+        return messageBody.getConvNo();
+    }
+
+    private void updateConv(ConvEntity convEntity, MessageEntity messageEntity) {
         convEntity.setUnRead(convEntity.getUnRead() + 1);
         convEntity.setLaterMsg(messageEntity.getMsg());
-        convEntity.setUpdatedTime(messageEntity.getTime() * 1000);
+        convEntity.setUpdatedTime(messageEntity.getTime() * 1000L);
 
         mConvDbHelper.update(convEntity);
     }
@@ -302,12 +316,12 @@ public class ImServer {
 
         convEntity.setTargetName(getPushTypeName(messageBody.getSource().getType()));
         convEntity.setLaterMsg(messageBody.toJson());
-        convEntity.setConvNo(messageBody.getConvNo());
+        convEntity.setConvNo(messageBody.getSource().getType());
         convEntity.setCreatedTime(messageBody.getCreatedTime());
         convEntity.setType(messageBody.getSource().getType());
 
         convEntity.setTargetId(messageBody.getSource().getId());
-        convEntity.setUpdatedTime(0);
+        convEntity.setUpdatedTime(messageBody.getCreatedTime());
         return convEntity;
     }
 
@@ -326,7 +340,7 @@ public class ImServer {
         convEntity.setConvNo(messageBody.getConvNo());
         convEntity.setLaterMsg(messageBody.toJson());
         convEntity.setCreatedTime(messageBody.getCreatedTime());
-        convEntity.setUpdatedTime(0);
+        convEntity.setUpdatedTime(messageBody.getCreatedTime() * 1000L);
 
         Source source = messageBody.getSource();
         Destination destination = messageBody.getDestination();
@@ -335,7 +349,6 @@ public class ImServer {
             convEntity.setType(Destination.USER);
             convEntity.setTargetName(source.getNickname());
             convEntity.setTargetId(source.getId());
-            convEntity.setUid(destination.getId());
         } else {
             convEntity.setTargetName(destination.getNickname());
             convEntity.setType(destination.getType());
@@ -345,9 +358,8 @@ public class ImServer {
         return convEntity;
     }
 
-    private ConvEntity createConv(MessageEntity messageEntity) {
+    private ConvEntity createConv(MessageBody messageBody) {
         ConvEntity convEntity = null;
-        MessageBody messageBody = new MessageBody(messageEntity);
         if ("push".equals(messageBody.getType())) {
             convEntity = getConvFromPush(messageBody);
         } else {

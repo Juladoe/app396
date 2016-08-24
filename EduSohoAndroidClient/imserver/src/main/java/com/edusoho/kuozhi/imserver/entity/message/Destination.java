@@ -12,7 +12,7 @@ public class Destination {
     public static final String COURSE = "course";
     public static final String CLASSROOM = "classroom";
     public static final String USER = "user";
-    public static final String ARTICLE = "article";
+    public static final String ARTICLE = "news";
     public static final String LIST = "list";
     public static final String GLOBAL = "global";
 

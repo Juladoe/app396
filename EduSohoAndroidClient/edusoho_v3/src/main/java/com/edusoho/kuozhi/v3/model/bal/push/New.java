@@ -1,11 +1,14 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
+import android.text.TextUtils;
+
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.UtilFactory;
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleMessageBody;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
@@ -69,7 +72,9 @@ public class New implements Serializable {
         return content;
     }
 
-    public void setContent(String type, String content) {
+    public void setContent(MessageBody messageBody) {
+        String type = messageBody.getType();
+        String body = messageBody.getBody();
         switch (type) {
             case PushUtil.ChatMsgType.AUDIO:
                 content = String.format("[%s]", Const.MEDIA_AUDIO);
@@ -78,11 +83,29 @@ public class New implements Serializable {
                 content = String.format("[%s]", Const.MEDIA_IMAGE);
                 break;
             case PushUtil.ChatMsgType.MULTI:
-                RedirectBody body = getUtilFactory().getJsonParser().fromJson(content, RedirectBody.class);
-                content = body.content;
+                RedirectBody redirectBody = getUtilFactory().getJsonParser().fromJson(body, RedirectBody.class);
+                content = redirectBody.content;
                 break;
+            case PushUtil.ChatMsgType.PUSH:
+                content = handlePushMessageBody(messageBody);
+                break;
+            default:
+                content = body;
         }
-        this.content = content;
+        this.content = TextUtils.isEmpty(content) ? "" : AppUtil.coverCourseAbout(content);
+    }
+
+    private String handlePushMessageBody(MessageBody messageBody) {
+        String fromType = messageBody.getSource().getType();
+        switch (fromType) {
+            case PushUtil.ArticleType.TYPE:
+                ArticleMessageBody articleMessageBody = getUtilFactory().getJsonParser().
+                        fromJson(messageBody.getBody(), ArticleMessageBody.class);
+                return articleMessageBody.getContent();
+
+        }
+
+        return "";
     }
 
     public long getCreatedTime() {
@@ -146,15 +169,17 @@ public class New implements Serializable {
         convNo = messageEntity.getConvNo();
 
         fromId = getFromIdByType(messageBody);
-        setContent(messageBody.getType(), messageBody.getBody());
-        title = messageEntity.getFromName();
+        setContent(messageBody);
         createdTime = messageBody.getCreatedTime();
-        type = messageBody.getDestination().getType();
+        type = messageBody.getSource().getType();
         title = getTitleNameByType(messageBody);
     }
 
     private int getFromIdByType(MessageBody messageBody) {
         type = messageBody.getDestination().getType();
+        if (TextUtils.isEmpty(type)) {
+            return 0;
+        }
         switch (type) {
             case Destination.USER:
                 return messageBody.getSource().getId();
@@ -167,13 +192,18 @@ public class New implements Serializable {
     }
 
     private String getTitleNameByType(MessageBody messageBody) {
-        type = messageBody.getDestination().getType();
-        switch (type) {
+        String dType = messageBody.getDestination().getType();
+        if (TextUtils.isEmpty(dType)) {
+            return "";
+        }
+        switch (dType) {
             case Destination.USER:
                 return messageBody.getSource().getNickname();
             case Destination.COURSE:
             case Destination.CLASSROOM:
                 return messageBody.getDestination().getNickname();
+            case Destination.ARTICLE:
+                return "资讯";
         }
 
         return "";
@@ -185,10 +215,10 @@ public class New implements Serializable {
         fromId = convEntity.getTargetId();
         MessageBody messageBody = new MessageBody(convEntity.getLaterMsg());
 
-        setContent(messageBody.getType(), messageBody.getBody());
+        setContent(messageBody);
         unread = convEntity.getUnRead();
         title = convEntity.getTargetName();
-        createdTime = convEntity.getUpdatedTime() == 0 ? convEntity.getCreatedTime() : convEntity.getUpdatedTime();
+        createdTime = convEntity.getUpdatedTime();
         imgUrl = convEntity.getAvatar();
         type = convEntity.getType() == null ? "" : convEntity.getType();
     }

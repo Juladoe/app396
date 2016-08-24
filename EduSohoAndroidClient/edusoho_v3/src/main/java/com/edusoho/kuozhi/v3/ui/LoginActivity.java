@@ -153,7 +153,7 @@ public class LoginActivity extends ActionBarBaseActivity {
                         String entertime = nowfmt.format(date);
                         saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
                         app.sendMessage(Const.LOGIN_SUCCESS, null);
-                        new IMServiceProvider(getBaseContext()).bindServer(userResult.user.nickname);
+                        new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
                         mBtnLogin.setSuccessState();
                         mBtnLogin.postDelayed(new Runnable() {
                             @Override

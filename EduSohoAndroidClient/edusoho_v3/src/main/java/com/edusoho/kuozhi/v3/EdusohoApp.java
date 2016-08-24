@@ -124,7 +124,7 @@ public class EdusohoApp extends Application {
         super.onCreate();
         Log.d(TAG, "create application");
         if (!"debug".equals(BuildConfig.BUILD_TYPE)) {
-            EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
+            //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
         }
         init();
     }
@@ -307,7 +307,9 @@ public class EdusohoApp extends Application {
 
     private void bindImServerHost() {
         User user = getAppSettingProvider().getCurrentUser();
-        new IMServiceProvider(getBaseContext()).bindServer(user == null ? "" : user.nickname);
+        if (user != null) {
+            new IMServiceProvider(getBaseContext()).bindServer(user.id, user.nickname);
+        }
     }
 
     private String getDomain() {

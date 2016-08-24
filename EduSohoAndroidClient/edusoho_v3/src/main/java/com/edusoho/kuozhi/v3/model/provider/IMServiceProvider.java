@@ -34,11 +34,11 @@ public class IMServiceProvider extends ModelProvider {
         IMClient.getClient().destory();
     }
 
-    public void reConnectServer(String clientName) {
+    public void reConnectServer(int clientId, String clientName) {
         int status = IMClient.getClient().getIMConnectStatus();
         if (status == IMConnectStatus.NO_READY) {
             IMClient.getClient().removeGlobalIMMessageReceiver();
-            connectServer(clientName);
+            connectServer(clientId, clientName);
             return;
         }
 
@@ -47,7 +47,7 @@ public class IMServiceProvider extends ModelProvider {
         }
     }
 
-    private void connectServer(final String clientName) {
+    private void connectServer(final int clientId, final String clientName) {
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.CONNECTING);
         new SystemProvider(mContext).getImServerHosts().success(new NormalCallback<LinkedHashMap>() {
             @Override
@@ -61,7 +61,7 @@ public class IMServiceProvider extends ModelProvider {
                     errorBindImServer();
                     return;
                 }
-                successBindImserver(clientName, hostMap);
+                successBindImserver(clientId, clientName, hostMap);
 
             }
         }).fail(new NormalCallback<VolleyError>() {
@@ -72,9 +72,10 @@ public class IMServiceProvider extends ModelProvider {
         });
     }
 
-    private void successBindImserver(String clientName, LinkedHashMap hostMap) {
+    private void successBindImserver(int clientId, String clientName, LinkedHashMap hostMap) {
         IMClient.getClient().init(mContext.getApplicationContext(), getDomain());
         IMClient.getClient().start(
+                clientId,
                 clientName,
                 new ArrayList<String>(hostMap.keySet()),
                 new ArrayList<String>(hostMap.values())
@@ -115,10 +116,10 @@ public class IMServiceProvider extends ModelProvider {
         IMClient.getClient().init(mContext.getApplicationContext(), getDomain());
     }
 
-    public synchronized void bindServer(String clientName) {
+    public synchronized void bindServer(int clientId, String clientName) {
         int status = IMClient.getClient().getIMConnectStatus();
         if (status == IMConnectStatus.NO_READY) {
-            connectServer(clientName);
+            connectServer(clientId, clientName);
             Log.d("IMServiceProvider", "IMService start ready");
             return;
         }

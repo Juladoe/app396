@@ -195,7 +195,7 @@ public class NewsFragment extends BaseFragment {
 
         newItem.setUnread(++newItem.unread);
         MessageBody messageBody = new MessageBody(messageEntity);
-        newItem.setContent(messageBody.getType(), messageBody.getBody());
+        newItem.setContent(messageBody);
         mSwipeAdapter.updateItem(newItem);
     }
 

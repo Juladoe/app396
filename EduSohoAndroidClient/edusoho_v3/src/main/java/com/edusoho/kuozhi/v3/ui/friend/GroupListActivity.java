@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.ui.friend;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -9,23 +8,19 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baidu.cyberplayer.utils.A;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
-import com.edusoho.kuozhi.v3.model.bal.Friend;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
-import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.provider.DiscussionGroupProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.result.DiscussionGroupResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
+import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
@@ -83,14 +78,18 @@ public class GroupListActivity extends ActionBarBaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final DiscussionGroup discussionGroup = (DiscussionGroup) parent.getItemAtPosition(position);
-                app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, Integer.valueOf(discussionGroup.id));
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, discussionGroup.title);
-                    }
-                });
+                Bundle bundle = new Bundle();
+                if (Destination.COURSE.equals(discussionGroup.getType())) {
+                    bundle.putInt(NewsCourseActivity.COURSE_ID, Integer.valueOf(discussionGroup.id));
+                    bundle.putString(NewsCourseActivity.CONV_NO, discussionGroup.getConversationId());
+                    bundle.putInt(NewsCourseActivity.SHOW_TYPE, NewsCourseActivity.DISCUSS_TYPE);
+                    CoreEngine.create(mContext).runNormalPluginWithBundle("NewsCourseActivity", mContext, bundle);
+                    return;
+                }
 
+                bundle.putInt(ClassroomDiscussActivity.FROM_ID, Integer.valueOf(discussionGroup.id));
+                bundle.putString(Const.ACTIONBAR_TITLE, discussionGroup.title);
+                CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomDiscussActivity", mContext, bundle);
             }
         });
         characterParser = CharacterParser.getInstance();
@@ -109,52 +108,10 @@ public class GroupListActivity extends ActionBarBaseActivity {
         loadGroup().then(new PromiseCallback() {
             @Override
             public Promise invoke(Object obj) {
-                return loadCourseGroup();
-            }
-        }).then(new PromiseCallback<CourseResult>() {
-            @Override
-            public Promise invoke(CourseResult courseResult) {
                 mLoading.setVisibility(View.GONE);
-                if (courseResult == null || courseResult.resources == null || courseResult.resources.length == 0) {
-                    return null;
-                }
-                List<DiscussionGroup> groupsList = coverCourseArray2FriendList(courseResult.resources);
-                setSortChar(groupsList);
-                Collections.sort(groupsList, groupComparator);
-                mAdapter.addFriendList(groupsList);
-                new IMProvider(mContext).updateRoles(Destination.COURSE, groupsList);
                 return null;
             }
         });
-    }
-
-    private List<DiscussionGroup> coverCourseArray2FriendList(Course[] courses) {
-        List<DiscussionGroup> groupsList = new ArrayList<>();
-        for (Course course : courses) {
-            DiscussionGroup friend = new DiscussionGroup();
-            friend.setId(course.id);
-            friend.setType(Destination.COURSE);
-            friend.setTitle(course.title);
-            friend.setNickname(course.title);
-            friend.setMediumAvatar(course.middlePicture);
-            friend.setLargeAvatar(course.largePicture);
-            groupsList.add(friend);
-        }
-
-        return groupsList;
-    }
-
-    private Promise loadCourseGroup() {
-        final Promise promise = new Promise();
-        new CourseProvider(mContext).getLearnCourses()
-        .success(new NormalCallback<CourseResult>() {
-            @Override
-            public void success(CourseResult courseResult) {
-                promise.resolve(courseResult);
-            }
-        });
-
-        return promise;
     }
 
     private Promise loadGroup() {

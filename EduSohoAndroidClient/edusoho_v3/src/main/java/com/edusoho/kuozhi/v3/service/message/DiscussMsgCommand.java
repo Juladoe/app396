@@ -29,7 +29,7 @@ public class DiscussMsgCommand extends AbstractCommand {
         }
         if (!isInBlackList(mMessageBody.getConvNo())
                 && !IMClient.getClient().isHandleMessageInFront(destination.getType(), mMessageBody.getConvNo())) {
-            getNotificationProvider().showNotification(mMessageBody);
+            showNotification();
         }
         String type = mMessageBody.getDestination().getType();
         int targetId = mMessageBody.getDestination().getId();

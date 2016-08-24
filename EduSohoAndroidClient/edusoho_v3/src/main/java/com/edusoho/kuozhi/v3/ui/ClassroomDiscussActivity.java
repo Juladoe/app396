@@ -50,6 +50,7 @@ public class ClassroomDiscussActivity extends ImChatActivity {
                         if (classroom == null || TextUtils.isEmpty(classroom.conversationId)) {
                             ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
                             loadDialog.dismiss();
+                            finish();
                             return;
                         }
 
@@ -57,6 +58,7 @@ public class ClassroomDiscussActivity extends ImChatActivity {
                         if (convNoIsEmpty(convNo) || convNo.equals(mConversationNo)) {
                             ToastUtils.show(getBaseContext(), "该班级不支持聊天!");
                             loadDialog.dismiss();
+                            finish();
                             return;
                         }
                         mConversationNo = convNo;

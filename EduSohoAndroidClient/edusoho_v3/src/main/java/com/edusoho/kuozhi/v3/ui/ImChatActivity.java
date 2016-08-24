@@ -443,12 +443,14 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
                         if (linkedHashMap == null || !linkedHashMap.containsKey("no")) {
                             ToastUtils.show(getBaseContext(), "创建聊天失败!");
                             loadDialog.dismiss();
+                            finish();
                             return;
                         }
                         String convNo = linkedHashMap.get("no").toString();
                         if (convNoIsEmpty(convNo) || convNo.equals(mConversationNo)) {
                             ToastUtils.show(getBaseContext(), "此讨论组暂不支持聊天!");
                             loadDialog.dismiss();
+                            finish();
                             return;
                         }
                         mConversationNo = convNo;

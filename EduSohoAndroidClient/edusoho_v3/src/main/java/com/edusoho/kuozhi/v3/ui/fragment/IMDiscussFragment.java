@@ -467,6 +467,7 @@ public class IMDiscussFragment extends BaseFragment implements
 
         MessageEntity messageEntity = createMessageEntityByBody(messageBody);
         IMClient.getClient().getMessageManager().createMessage(messageEntity);
+        updateConv(messageBody);
 
         User currentUser = getAppSettingProvider().getCurrentUser();
         Chat chat = new Chat.Builder()
@@ -481,6 +482,13 @@ public class IMDiscussFragment extends BaseFragment implements
         addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
 
         return messageBody;
+    }
+
+    private void updateConv(MessageBody messageBody) {
+        ContentValues cv = new ContentValues();
+        cv.put("laterMsg", messageBody.toJson());
+        cv.put("updatedTime", System.currentTimeMillis());
+        IMClient.getClient().getConvManager().updateConvField(mConversationNo, cv);
     }
 
     protected void sendMessageToServer(MessageBody messageBody) {

@@ -1,8 +1,11 @@
 package com.edusoho.kuozhi.imserver.entity.message;
 
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 /**
  * Created by 菊 on 2016/5/13.
@@ -10,6 +13,11 @@ import org.json.JSONObject;
  */
 public class MessageBody {
 
+    public static final int VERSION = 1;
+
+    /*
+    user id
+     */
     private String uid;
 
     private String msgNo;
@@ -66,6 +74,7 @@ public class MessageBody {
         this.setMsgNo(messageEntity.getMsgNo());
         this.setConvNo(messageEntity.getConvNo());
         this.setMessageId(messageEntity.getUid());
+        this.setCreatedTime(messageEntity.getTime());
     }
 
     public MessageBody(int version, String type, String body) {

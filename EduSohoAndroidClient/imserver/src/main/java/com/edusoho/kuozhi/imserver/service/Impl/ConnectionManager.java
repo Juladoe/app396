@@ -118,9 +118,9 @@ public class ConnectionManager implements IConnectionManager {
     public void switchConnect() {
         close();
         mCurrentHostIndex++;
-        if (mCurrentHostIndex > mHostList.size()) {
+        if (mCurrentHostIndex >= mHostList.size()) {
+            this.mStatus = IConnectManagerListener.ERROR;
             if (mIConnectStatusListener != null) {
-                this.mStatus = IConnectManagerListener.ERROR;
                 mIConnectStatusListener.onStatusChange(IConnectManagerListener.ERROR, "error");
             }
             return;
@@ -135,9 +135,9 @@ public class ConnectionManager implements IConnectionManager {
             public void onCompleted(Exception ex, WebSocket webSocket) {
                 if (ex != null) {
                     ex.printStackTrace();
-                    Log.d(TAG, "onCompleted:" + ex.getMessage());
+                    Log.d(TAG, "onCompleted error:" + ex.getMessage());
+                    mStatus = IConnectManagerListener.END;
                     if (mIConnectStatusListener != null) {
-                        mStatus = IConnectManagerListener.END;
                         mIConnectStatusListener.onStatusChange(IConnectManagerListener.END, ex.getMessage());
                     }
                     return;
@@ -148,8 +148,8 @@ public class ConnectionManager implements IConnectionManager {
                     @Override
                     public void onCompleted(Exception e) {
                         e.printStackTrace();
+                        mStatus = IConnectManagerListener.END;
                         if (mIConnectStatusListener != null) {
-                            mStatus = IConnectManagerListener.END;
                             mIConnectStatusListener.onStatusChange(IConnectManagerListener.END, e.getMessage());
                         }
                     }
@@ -159,8 +159,8 @@ public class ConnectionManager implements IConnectionManager {
                     @Override
                     public void onCompleted(Exception e) {
                         Log.d(TAG, "close");
+                        mStatus = IConnectManagerListener.CLOSE;
                         if (mIConnectStatusListener != null) {
-                            mStatus = IConnectManagerListener.CLOSE;
                             mIConnectStatusListener.onStatusChange(IConnectManagerListener.CLOSE, "close");
                         }
                     }

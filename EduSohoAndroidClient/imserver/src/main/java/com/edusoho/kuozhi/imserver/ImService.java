@@ -116,17 +116,18 @@ public class ImService extends Service {
         sendBroadcast(intent);
     }
 
-    private void setServerHostConfig(String clientName, String[] ignoreNosArray, String[] hostArray) {
+    private void setServerHostConfig(int clientId, String clientName, String[] ignoreNosArray, String[] hostArray) {
         List<String> hostList = Arrays.asList(hostArray);
         List<String> ignoreNosList = Arrays.asList(ignoreNosArray);
 
-        initServerHost(clientName, hostList, ignoreNosList);
-        saveLaterHost(clientName, ignoreNosList, hostList);
+        initServerHost(clientId, clientName, hostList, ignoreNosList);
+        saveLaterHost(clientId, clientName, ignoreNosList, hostList);
     }
 
     private void initServerHostFromLater() {
         SharedPreferences sp = getSharedPreferences("laterHost", Context.MODE_PRIVATE);
         String clientName = sp.getString("clientName", null);
+        int clientId = sp.getInt("clientId", 0);
         Set ignoreNosSet = sp.getStringSet("ignoreNosList", null);
         Set hostSet = sp.getStringSet("hostList", null);
 
@@ -135,25 +136,26 @@ public class ImService extends Service {
         }
 
         Log.d(TAG, "initServerHostFromLater");
-        initServerHost(clientName, new ArrayList<>(ignoreNosSet), new ArrayList<>(hostSet));
+        initServerHost(clientId, clientName, new ArrayList<>(ignoreNosSet), new ArrayList<>(hostSet));
     }
 
-    private void saveLaterHost(String clientName, List<String> ignoreNosList, List<String> hostList) {
+    private void saveLaterHost(int clientId, String clientName, List<String> ignoreNosList, List<String> hostList) {
         SharedPreferences.Editor editor = getSharedPreferences("laterHost", Context.MODE_PRIVATE).edit();
         editor.putString("clientName", clientName);
+        editor.putInt("clientId", clientId);
         editor.putStringSet("ignoreNosList", new HashSet<>(ignoreNosList));
         editor.putStringSet("hostList", new HashSet<>(hostList));
         editor.commit();
     }
 
-    private void initServerHost(String clientName, List<String> hostList, List<String> ignoreNosList) {
+    private void initServerHost(int clientId, String clientName, List<String> hostList, List<String> ignoreNosList) {
         if (hostList == null || hostList.isEmpty()) {
             Log.d(TAG, "no server host");
             return;
         }
 
         Log.d(getClass().getSimpleName(), Arrays.toString(hostList.toArray()));
-        mImServer.initWithHost(clientName, hostList, ignoreNosList);
+        mImServer.initWithHost(clientId, clientName, hostList, ignoreNosList);
     }
 
     protected void sendWakeUpAlert() {
@@ -184,8 +186,8 @@ public class ImService extends Service {
     }
 
     public class ImBinder extends IImServerAidlInterface.Stub {
-        public void start(String clientName, String[] ignoreNosList, String[] hostList) {
-            setServerHostConfig(clientName, ignoreNosList, hostList);
+        public void start(int clientId, String clientName, String[] ignoreNosList, String[] hostList) {
+            setServerHostConfig(clientId, clientName, ignoreNosList, hostList);
             mImServer.start();
         }
 
