@@ -109,6 +109,7 @@ public class ArticleFragment extends BaseFragment {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ServiceProfileFragment.SERVICE_ID, mServiceProvierId);
+                startIntent.putExtra(ServiceProfileFragment.SERVICE_CONVNO, Destination.ARTICLE);
                 startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ServiceProfileFragment");
             }
         });
