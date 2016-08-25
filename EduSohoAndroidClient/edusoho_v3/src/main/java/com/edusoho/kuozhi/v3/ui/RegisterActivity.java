@@ -227,7 +227,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data).toString());
+                    Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data));
                     btnPhoneReg.setInitState();
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }

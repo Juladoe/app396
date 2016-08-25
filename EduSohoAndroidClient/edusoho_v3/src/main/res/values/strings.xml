@@ -22,7 +22,7 @@
     <string name="login_success">登录成功</string>
     <string name="register">注册</string>
     <string name="register_loading">正在注册...</string>
-    <string name="register_success">正在成功</string>
+    <string name="register_success">注册成功</string>
     <string name="course_study_entrance">进入学习</string>
     <string name="study">学习</string>
     <string name="discuss">讨论</string>
