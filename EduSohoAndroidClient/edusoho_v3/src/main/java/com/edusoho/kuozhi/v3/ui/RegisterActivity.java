@@ -212,7 +212,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                                 }
                             }, 500);
                         } else {
-                            btnMailReg.setInitState();
+                            btnPhoneReg.setInitState();
                             if (!TextUtils.isEmpty(response)) {
                                 CommonUtil.longToast(mContext, response);
                             } else {
