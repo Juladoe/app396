@@ -179,27 +179,6 @@ public class FriendFragment extends BaseFragment {
         });
     }
 
-    public Promise loadSchoolApps() {
-        mFriendAdapter.clearList();
-        RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
-        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        requestUrl.url = stringBuffer.toString();
-
-        final Promise promise = new Promise();
-        mFriendProvider.getSchoolApps(requestUrl)
-                .success(new NormalCallback<List<SchoolApp>>() {
-                    @Override
-                    public void success(List<SchoolApp> schoolAppResult) {
-                        if (schoolAppResult.size() != 0) {
-                            mFriendAdapter.addSchoolList(schoolAppResult);
-                        }
-                        promise.resolve(schoolAppResult);
-                    }
-                });
-
-        return promise;
-    }
-
     public Promise loadFriend() {
         RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
         StringBuffer stringBuffer = new StringBuffer(requestUrl.url);

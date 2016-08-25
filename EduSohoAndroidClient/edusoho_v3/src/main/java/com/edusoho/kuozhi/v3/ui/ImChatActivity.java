@@ -26,7 +26,6 @@ import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
-import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
 import com.edusoho.kuozhi.v3.adapter.ChatAdapter;
@@ -95,16 +94,27 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         return Destination.USER;
     }
 
-    private void initConvNoInfo() {
-        IMConvManager imConvManager = IMClient.getClient().getConvManager();
-        ConvEntity convEntity = imConvManager.getConvByTypeAndId(getTargetType(), mFromId);
-        if (convEntity != null) {
-            if (convNoIsEmpty(mConversationNo)) {
-                mConversationNo = convEntity.getConvNo();
-            }
-            setBackMode(BACK, convEntity.getTargetName());
-        }
+    private void initTargetRole() {
         mTargetRole = IMClient.getClient().getRoleManager().getRole(getTargetType(), mFromId);
+        if (mTargetRole == null) {
+            createTargetRole();
+        }
+    }
+
+    private void createTargetRole() {
+        new UserProvider(mContext).getUserInfo(mFromId)
+                .success(new NormalCallback<User>() {
+                    @Override
+                    public void success(User user) {
+                        Role role = new Role();
+                        role.setNickname(user.nickname);
+                        role.setRid(user.id);
+                        role.setAvatar(user.mediumAvatar);
+                        role.setType(Destination.USER);
+                        IMClient.getClient().getRoleManager().createRole(role);
+                        mTargetRole = role;
+                    }
+                });
     }
 
     @Override
@@ -124,16 +134,30 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
         mFromId = intent.getIntExtra(FROM_ID, mFromId);
         mType = intent.getStringExtra(Const.NEWS_TYPE);
         mConversationNo = intent.getStringExtra(CONV_NO);
-
-        initConvNoInfo();
         initCacheFolder();
 
+        checkConvNo();
+        initTargetRole();
         if (convNoIsEmpty(mConversationNo)) {
             createChatConvNo();
             return;
         }
-
         initAdapter();
+    }
+
+    /**
+     * 检查是否有convNo
+     */
+    private void checkConvNo() {
+        User user = getAppSettingProvider().getCurrentUser();
+        ConvEntity convEntity = IMClient.getClient().getConvManager()
+                .getConvByTypeAndId(getTargetType(), mFromId, user.id);
+        if (convNoIsEmpty(mConversationNo) && convEntity != null) {
+            mConversationNo = convEntity.getConvNo();
+        }
+        if (convEntity != null) {
+            setBackMode(BACK, convEntity.getTargetName());
+        }
     }
 
     protected boolean convNoIsEmpty(String convNo) {
@@ -459,7 +483,7 @@ public class ImChatActivity extends BaseChatActivity implements ChatAdapter.Imag
                                     @Override
                                     public void success(ConvEntity convEntity) {
                                         loadDialog.dismiss();
-                                        setTitle(convEntity.getTargetName());
+                                        setBackMode(BACK, convEntity.getTargetName());
                                         initAdapter();
                                     }
                                 });

@@ -123,7 +123,9 @@ public class FriendSelectFragment extends AbstractChatSendFragment implements Ad
         @Override
         public void success(Integer index) {
             Friend friend = (Friend) mFriendAdapter.getItem(index);
-            ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByTypeAndId(Destination.USER, friend.id);
+            User user = getAppSettingProvider().getCurrentUser();
+            ConvEntity convEntity = IMClient.getClient().getConvManager()
+                    .getConvByTypeAndId(Destination.USER, friend.id, user.id);
             if (convEntity == null) {
                 createChatConvNo(friend.id);
                 return;

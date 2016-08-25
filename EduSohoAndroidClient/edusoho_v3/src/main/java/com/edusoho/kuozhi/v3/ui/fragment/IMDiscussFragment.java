@@ -305,8 +305,9 @@ public class IMDiscussFragment extends BaseFragment implements
 
     private void initConvNoInfo() {
         if (TextUtils.isEmpty(mConversationNo)) {
+            User user = getAppSettingProvider().getCurrentUser();
             IMConvManager imConvManager = IMClient.getClient().getConvManager();
-            ConvEntity convEntity = imConvManager.getConvByTypeAndId(getTargetType(), mCourseId);
+            ConvEntity convEntity = imConvManager.getConvByTypeAndId(getTargetType(), mCourseId, user.id);
             if (convEntity != null) {
                 mConversationNo = convEntity.getConvNo();
             }

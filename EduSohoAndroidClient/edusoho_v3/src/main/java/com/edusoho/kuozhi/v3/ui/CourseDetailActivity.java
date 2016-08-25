@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMemberResult;
@@ -117,8 +118,9 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                 @Override
                 public void onClick(int button) {
                     if (button == PopupDialog.OK) {
+                        User user = getAppSettingProvider().getCurrentUser();
                         IMConvManager imConvManager = IMClient.getClient().getConvManager();
-                        ConvEntity convEntity = imConvManager.getConvByTypeAndId(Destination.COURSE, mFromId);
+                        ConvEntity convEntity = imConvManager.getConvByTypeAndId(Destination.COURSE, mFromId, user.id);
                         if (convEntity == null) {
                             return;
                         }

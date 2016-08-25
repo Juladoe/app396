@@ -74,7 +74,7 @@ public class MessageBody {
         this.setMsgNo(messageEntity.getMsgNo());
         this.setConvNo(messageEntity.getConvNo());
         this.setMessageId(messageEntity.getUid());
-        this.setCreatedTime(messageEntity.getTime());
+        this.setCreatedTime(messageEntity.getTime() * 1000L);
     }
 
     public MessageBody(int version, String type, String body) {

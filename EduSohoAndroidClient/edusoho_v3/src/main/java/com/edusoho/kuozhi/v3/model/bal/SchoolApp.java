@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Created by Melomelon on 2015/7/6.
  */
 public class SchoolApp extends Friend implements Serializable {
+
     public String code;
     public String name;
     public String about;
@@ -63,14 +64,8 @@ public class SchoolApp extends Friend implements Serializable {
         return avatar;
     }
 
-    public static SchoolApp createArticleApp() {
-        SchoolApp app = new SchoolApp();
-        app.name = "资讯";
-        app.title = "";
-        app.id = 2;
-        app.avatar = "R.drawable.article_app_icon";
-        app.code = "news";
-
-        return app;
+    @Override
+    public String getType() {
+        return code;
     }
 }

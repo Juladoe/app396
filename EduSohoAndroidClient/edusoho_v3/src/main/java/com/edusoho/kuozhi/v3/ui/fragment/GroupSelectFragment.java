@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.provider.DiscussionGroupProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMProvider;
@@ -81,7 +82,9 @@ public class GroupSelectFragment extends FriendSelectFragment {
         @Override
         public void success(Integer index) {
             Friend friend = (Friend) mFriendAdapter.getItem(index);
-            ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByTypeAndId(friend.getType(), friend.id);
+            User user = getAppSettingProvider().getCurrentUser();
+            ConvEntity convEntity = IMClient.getClient().getConvManager()
+                    .getConvByTypeAndId(friend.getType(), friend.id, user.id);
             if (convEntity == null) {
                 createChatConvNo(friend.id);
                 return;

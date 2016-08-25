@@ -41,6 +41,7 @@ public class AvatarLoadingListener implements ImageLoadingListener {
 
     private void setAvatarImage(ImageView imageView) {
         if (mType == null) {
+            imageView.setPadding(0, 0, 0, 0);
             imageView.setImageResource(R.drawable.default_avatar);
             return;
         }
@@ -59,9 +60,10 @@ public class AvatarLoadingListener implements ImageLoadingListener {
                 imageView.setBackgroundColor(imageView.getContext().getResources().getColor(R.color.normal_reply_tag));
                 imageView.setPadding(16, 16, 16, 16);
                 imageView.setImageResource(R.drawable.article_app_icon);
-                break;
+                return;
 
         }
+        imageView.setPadding(0, 0, 0, 0);
     }
 
     @Override

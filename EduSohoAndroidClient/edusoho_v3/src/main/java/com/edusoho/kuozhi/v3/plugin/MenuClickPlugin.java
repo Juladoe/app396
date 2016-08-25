@@ -14,6 +14,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -71,15 +72,6 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         String type = args.getString(0);
         JSONObject data = args.getJSONObject(1);
         if ("token_lose".equals(type)) {
-            /*
-            Bundle bundle = new Bundle();
-            bundle.putString(Const.BIND_USER_ID, "");
-            mActivity.app.pushUnregister(bundle);
-            mActivity.app.removeToken();
-            MessageEngine.getInstance().sendMsg(Const.LOGOUT_SUCCESS, null);
-            MessageEngine.getInstance().sendMsg(Const.TOKEN_LOSE, new Bundle());
-            MessageEngine.getInstance().sendMsgToTaget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
-            */
         }
         MessageEngine.getInstance().sendMsg(type, JsonObject2Bundle(data));
     }
@@ -454,6 +446,33 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
             new SooonerLivePlayerAction(mActivity).invoke(bundle);
         } else if ("threadCreate".equals(name)) {
             new ThreadCreateAction(mActivity).invoke(bundle);
+        }
+    }
+
+    @JsAnnotation
+    public void showCourseSetting(JSONArray args, BridgeCallback callbackContext) throws JSONException{
+        final int chatRoomId = args.getInt(0);
+        final String type = args.getString(1);
+        if (type.equals("classroom")) {
+            CoreEngine.create(mContext).runNormalPlugin(
+                    "ClassroomDetailActivity", mActivity, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(Const.FROM_ID,chatRoomId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE,"班级详情");
+                        }
+                    }
+            );
+        } else {
+            CoreEngine.create(mContext).runNormalPlugin(
+                    "CourseDetailActivity", mActivity, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(Const.FROM_ID,chatRoomId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE,"课程详情");
+                        }
+                    }
+            );
         }
     }
 

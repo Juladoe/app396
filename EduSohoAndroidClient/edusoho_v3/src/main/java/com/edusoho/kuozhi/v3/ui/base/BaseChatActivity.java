@@ -5,6 +5,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -37,13 +43,16 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
+
 import cn.trinea.android.common.util.DigestUtils;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
@@ -75,11 +84,6 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
     protected MediaRecorderTask mMediaRecorderTask;
     protected VolumeHandler mHandler;
     protected AudioDownloadReceiver mAudioDownloadReceiver;
-
-    protected int[] mSpeakerAnimResId = new int[]{R.drawable.record_animate_1,
-            R.drawable.record_animate_2,
-            R.drawable.record_animate_3,
-            R.drawable.record_animate_4};
 
     protected int mSendTime;
     protected int mStart = 0;
@@ -240,7 +244,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         if (resultCode != RESULT_OK) {
             return;
         }
-        if(requestCode == SEND_IMAGE){
+        if (requestCode == SEND_IMAGE) {
             List<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
             if (pathList == null || pathList.isEmpty()) {
                 return;
@@ -330,6 +334,10 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
     }
 
     public class MediaRecorderTask extends AsyncTask<Void, Integer, Boolean> {
+
+        private int COUNT_DOWN_NUM = 50;
+        private int TOTAL_NUM = 59;
+
         private ChatAudioRecord mAudioRecord;
         private boolean mCancelSave = false;
         private boolean mStopRecord = false;
@@ -365,18 +373,26 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                     mAudioRecord.clear();
                     break;
                 } else {
-                    //录音中动画
-                    double ratio = 0;
-                    if (mAudioRecord.getMediaRecorder() != null) {
-                        ratio = (double) mAudioRecord.getMediaRecorder().getRealVolume();
-                    }
-
-                    double db = 0;
-                    if (ratio > 1) {
-                        db = 20 * Math.log10(ratio);
+                    long recordTime = (System.currentTimeMillis() - mAudioRecord.getAudioStartTime()) / 1000;
+                    if (recordTime > TOTAL_NUM) {
+                        mStopRecord = true;
+                        mCancelSave = false;
+                        continue;
                     }
                     if (!mCancelSave) {
-                        if (db < 60) {
+                        //录音中动画
+                        double ratio = 0;
+                        if (mAudioRecord.getMediaRecorder() != null) {
+                            ratio = (double) mAudioRecord.getMediaRecorder().getRealVolume();
+                        }
+
+                        double db = 0;
+                        if (ratio > 1) {
+                            db = 20 * Math.log10(ratio);
+                        }
+                        if (recordTime > COUNT_DOWN_NUM) {
+                            mHandler.obtainMessage(VolumeHandler.COUNT_DOWN, (int)(TOTAL_NUM - recordTime), 0).sendToTarget();
+                        } else if (db < 60) {
                             mHandler.sendEmptyMessage(0);
                         } else if (db < 70) {
                             mHandler.sendEmptyMessage(1);
@@ -433,12 +449,29 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
             mStopRecord = stop;
         }
 
+        public boolean getCancelSave() {
+            return mCancelSave;
+        }
+
+        public boolean getStopRecord() {
+            return mStopRecord;
+        }
+
         public ChatAudioRecord getAudioRecord() {
             return mAudioRecord;
         }
     }
 
     protected static class VolumeHandler extends Handler {
+
+        public static final int COUNT_DOWN = 4;
+
+        protected int[] mSpeakerAnimResId = new int[]{
+                R.drawable.record_animate_1,
+                R.drawable.record_animate_2,
+                R.drawable.record_animate_3,
+                R.drawable.record_animate_4};
+
         private WeakReference<BaseChatActivity> mWeakReference;
 
         private VolumeHandler(BaseChatActivity activity) {
@@ -449,8 +482,28 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         public void handleMessage(Message msg) {
             BaseChatActivity activity = mWeakReference.get();
             if (activity != null) {
-                activity.ivRecordImage.setImageResource(activity.mSpeakerAnimResId[msg.what]);
+                if (msg.what == COUNT_DOWN) {
+                    int w = activity.ivRecordImage.getWidth();
+                    int h = activity.ivRecordImage.getWidth();
+                    activity.ivRecordImage.setImageBitmap(getCountDownBitmap(w, h, msg.arg1));
+                    return;
+                }
+                activity.ivRecordImage.setImageResource(mSpeakerAnimResId[msg.what]);
             }
+        }
+
+        private Bitmap getCountDownBitmap(int w, int h, int number) {
+            Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
+            Canvas canvas = new Canvas(bitmap);
+            Paint paint = new Paint();
+            paint.setTextSize(w * 0.9f);
+            paint.setAntiAlias(true);
+            paint.setColor(Color.WHITE);
+
+            Rect rect = new Rect();
+            paint.getTextBounds(String.valueOf(number), 0, 1, rect);
+            canvas.drawText(String.valueOf(number), (w - (rect.right - rect.left)) / 2, (h - rect.bottom - rect.top) / 2, paint);
+            return bitmap;
         }
     }
 
@@ -482,6 +535,9 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    if (mMediaRecorderTask.getStopRecord()) {
+                        return true;
+                    }
                     float mPressMoveY = event.getY();
                     if (Math.abs(mPressDownY - mPressMoveY) > EdusohoApp.screenH * 0.1) {
                         tvSpeak.setText(getString(R.string.hand_up_and_exit));

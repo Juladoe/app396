@@ -70,10 +70,6 @@ public class ChatAudioRecord {
     public File stop(boolean cancelSave) {
         try {
             if (mAudioFile != null && mAudioFile.exists()) {
-                /*mMediaRecorder.stop();
-                mAudioEndTime = System.currentTimeMillis();
-                mMediaRecorder.reset();
-                mMediaRecorder.release();*/
                 mAudioEndTime = System.currentTimeMillis();
                 mRecorder.stop();
                 if (cancelSave) {
@@ -94,6 +90,10 @@ public class ChatAudioRecord {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public long getAudioStartTime() {
+        return mAudioStartTime;
     }
 
     public int getAudioLength() {

@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.imserver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
@@ -144,7 +145,7 @@ public class ImServer {
             return;
         }
         flag = CONNECT_WAIT;
-        new Handler().postAtTime(new Runnable() {
+        new Handler(Looper.getMainLooper()).postAtTime(new Runnable() {
             @Override
             public void run() {
                 Log.d(TAG, "reConnect");
@@ -267,7 +268,7 @@ public class ImServer {
             return;
         }
 
-        if ("message".equals(messageEntity.getCmd())) {
+        if ("message".equals(messageEntity.getCmd()) || "offlineMsg".equals(messageEntity.getCmd())) {
             MessageBody messageBody = new MessageBody(messageEntity);
             if (messageBody == null) {
                 Log.d(TAG, "messageBody is null");
@@ -307,7 +308,11 @@ public class ImServer {
         convEntity.setUnRead(convEntity.getUnRead() + 1);
         convEntity.setLaterMsg(messageEntity.getMsg());
         convEntity.setUpdatedTime(messageEntity.getTime() * 1000L);
-
+        Role role = IMClient.getClient().getRoleManager().getRole(convEntity.getType(), convEntity.getTargetId());
+        if (role.getRid() != 0) {
+            convEntity.setTargetName(role.getNickname());
+            convEntity.setAvatar(role.getAvatar());
+        }
         mConvDbHelper.update(convEntity);
     }
 
@@ -339,7 +344,7 @@ public class ImServer {
 
         convEntity.setConvNo(messageBody.getConvNo());
         convEntity.setLaterMsg(messageBody.toJson());
-        convEntity.setCreatedTime(messageBody.getCreatedTime());
+        convEntity.setCreatedTime(messageBody.getCreatedTime() * 1000L);
         convEntity.setUpdatedTime(messageBody.getCreatedTime() * 1000L);
 
         Source source = messageBody.getSource();

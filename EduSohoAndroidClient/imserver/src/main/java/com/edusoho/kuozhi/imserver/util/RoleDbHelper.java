@@ -32,7 +32,7 @@ public class RoleDbHelper {
     }
 
     public Map<Integer, Role> getRoleMap(int[] rid) {
-        String selectStr = String.format("rid in (%s)", DbUtil.makePlaceholders(rid, ","));
+        String selectStr = String.format("id in (%s)", DbUtil.makePlaceholders(rid, ","));
         ArrayList<HashMap<String, String>> arrayList = mDbHelper.query(TABLE, selectStr, DbUtil.intArrayToStringArray(rid));
         Map<Integer, Role> roleMap = new HashMap<>();
         if (arrayList == null) {

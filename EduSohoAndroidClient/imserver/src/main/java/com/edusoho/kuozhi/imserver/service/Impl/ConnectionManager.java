@@ -70,7 +70,11 @@ public class ConnectionManager implements IConnectionManager {
 
     @Override
     public void send(String content) {
-        mWebSocketFuture.tryGet().send(content);
+        WebSocket webSocket = mWebSocketFuture.tryGet();
+        if (webSocket == null) {
+            return;
+        }
+        webSocket.send(content);
     }
 
     @Override

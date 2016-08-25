@@ -187,19 +187,31 @@ public class ImService extends Service {
 
     public class ImBinder extends IImServerAidlInterface.Stub {
         public void start(int clientId, String clientName, String[] ignoreNosList, String[] hostList) {
+            if (mImServer == null) {
+                return;
+            }
             setServerHostConfig(clientId, clientName, ignoreNosList, hostList);
             mImServer.start();
         }
 
         public void requestConnect() {
+            if (mImServer == null) {
+                return;
+            }
             mImServer.requestConnect();
         }
 
         public void requestOfflineMsg() {
+            if (mImServer == null) {
+                return;
+            }
             mImServer.requestOfflineMsg();
         }
 
         public void send(SendEntity sendEntity) {
+            if (mImServer == null) {
+                return;
+            }
             mImServer.sendMessage(sendEntity);
         }
 

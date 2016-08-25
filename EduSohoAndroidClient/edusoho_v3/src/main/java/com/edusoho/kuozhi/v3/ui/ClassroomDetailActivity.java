@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.ClassroomMember;
 import com.edusoho.kuozhi.v3.model.bal.ClassroomMemberResult;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
@@ -111,7 +112,9 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                 @Override
                 public void onClick(int button) {
                     if (button == PopupDialog.OK) {
-                        ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByTypeAndId(Destination.CLASSROOM, mFromId);
+                        User user = getAppSettingProvider().getCurrentUser();
+                        ConvEntity convEntity = IMClient.getClient().getConvManager()
+                                .getConvByTypeAndId(Destination.CLASSROOM, mFromId, user.id);
                         if (convEntity == null) {
                             return;
                         }

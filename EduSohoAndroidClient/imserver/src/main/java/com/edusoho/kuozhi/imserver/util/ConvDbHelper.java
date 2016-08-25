@@ -94,8 +94,8 @@ public class ConvDbHelper {
         return createConvEntity(arrayMap);
     }
 
-    public ConvEntity getConvByTypeAndId(String type, int targetId) {
-        HashMap arrayMap = mDbHelper.querySingle(TABLE, "type=? and targetId=?", new String[]{type, String.valueOf(targetId)});
+    public ConvEntity getConvByTypeAndId(String type, int targetId, int uid) {
+        HashMap arrayMap = mDbHelper.querySingle(TABLE, "type=? and targetId=? and uid=?", new String[]{type, String.valueOf(targetId), String.valueOf(uid)});
         return createConvEntity(arrayMap);
     }
 

@@ -102,10 +102,13 @@ public class New implements Serializable {
                 ArticleMessageBody articleMessageBody = getUtilFactory().getJsonParser().
                         fromJson(messageBody.getBody(), ArticleMessageBody.class);
                 return articleMessageBody.getContent();
-
+            case PushUtil.BulletinType.TYPE:
+                Bulletin bulletin = getUtilFactory().getJsonParser().
+                        fromJson(messageBody.getBody(), Bulletin.class);
+                return bulletin.title;
         }
 
-        return "";
+        return messageBody.getBody();
     }
 
     public long getCreatedTime() {
@@ -204,6 +207,27 @@ public class New implements Serializable {
                 return messageBody.getDestination().getNickname();
             case Destination.ARTICLE:
                 return "资讯";
+            case Destination.GLOBAL:
+                return "网校公告";
+        }
+
+        return "";
+    }
+
+    private String getTitleNameByConvEntity(ConvEntity convEntity) {
+        String fromType = convEntity.getType();
+        if (TextUtils.isEmpty(fromType)) {
+            return "";
+        }
+        switch (fromType) {
+            case Destination.USER:
+            case Destination.COURSE:
+            case Destination.CLASSROOM:
+                return convEntity.getTargetName();
+            case Destination.ARTICLE:
+                return "资讯";
+            case Destination.GLOBAL:
+                return "网校公告";
         }
 
         return "";
@@ -214,10 +238,10 @@ public class New implements Serializable {
         convNo = convEntity.getConvNo();
         fromId = convEntity.getTargetId();
         MessageBody messageBody = new MessageBody(convEntity.getLaterMsg());
-
+        messageBody.getSource().setNickname(convEntity.getTargetName());
         setContent(messageBody);
         unread = convEntity.getUnRead();
-        title = convEntity.getTargetName();
+        title = getTitleNameByConvEntity(convEntity);
         createdTime = convEntity.getUpdatedTime();
         imgUrl = convEntity.getAvatar();
         type = convEntity.getType() == null ? "" : convEntity.getType();

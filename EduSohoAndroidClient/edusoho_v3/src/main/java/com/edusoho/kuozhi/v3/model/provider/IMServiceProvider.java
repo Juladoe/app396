@@ -100,6 +100,9 @@ public class IMServiceProvider extends ModelProvider {
 
             @Override
             public boolean onOfflineMsgReceiver(List<MessageEntity> messageEntities) {
+                for (MessageEntity messageEntity : messageEntities) {
+                    handlerMessage(this, messageEntity);
+                }
                 return false;
             }
 

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -25,6 +26,9 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
@@ -32,6 +36,7 @@ import com.edusoho.kuozhi.v3.model.bal.SearchFriendResult;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.result.FollowResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -104,6 +109,17 @@ public class SearchDialogFragment extends DialogFragment {
             }
         });
 
+        mSearchFrame.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int keyCode, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_ENTER) {
+                    searchStr = mSearchFrame.getText().toString();
+                    searchFriend(searchStr);
+                    return true;
+                }
+                return false;
+            }
+        });
         mSearchFrame.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -137,6 +153,16 @@ public class SearchDialogFragment extends DialogFragment {
         mResultList = new ArrayList<Friend>();
         mAdapter = new SearchFriendAdapter();
         mList.setAdapter(mAdapter);
+        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Friend friend = (Friend) adapterView.getItemAtPosition(i);
+                Bundle bundle = new Bundle();
+                School school = getAppSettingProvider().getCurrentSchool();
+                bundle.putString(Const.WEB_URL, String.format(Const.MOBILE_APP_URL, school.url + "/", String.format(Const.USER_PROFILE, friend.getId())));
+                CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
+            }
+        });
 
         mFriendProvider = new FriendProvider(mContext);
     }
@@ -184,13 +210,6 @@ public class SearchDialogFragment extends DialogFragment {
     @Override
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
-//        if (mToolbarView.getVisibility() == View.GONE) {
-//        }
-//        int height = (Integer) mToolbarView.getTag();
-//        ObjectAnimator animator = ObjectAnimator.ofInt(new EduSohoAnimWrap(mToolbarView), "height", 0, height);
-//        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-//        animator.setDuration(300);
-//        animator.start();
     }
 
 
@@ -403,4 +422,7 @@ public class SearchDialogFragment extends DialogFragment {
         return requestUrl;
     }
 
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
 }

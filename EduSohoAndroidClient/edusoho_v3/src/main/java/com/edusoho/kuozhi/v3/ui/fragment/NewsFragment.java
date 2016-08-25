@@ -323,6 +323,10 @@ public class NewsFragment extends BaseFragment {
         return newList;
     }
 
+    private void syncIMData() {
+
+    }
+
     private SwipeMenuListView.OnMenuItemClickListener mMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
@@ -353,6 +357,7 @@ public class NewsFragment extends BaseFragment {
                             startIntent.putExtra(ImChatActivity.FROM_ID, newItem.fromId);
                             startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
                             startIntent.putExtra(Const.NEWS_TYPE, newItem.type);
+                            startIntent.putExtra(ImChatActivity.CONV_NO, newItem.convNo);
                             startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, newItem.imgUrl);
                         }
                     });

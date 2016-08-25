@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.imserver.command;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.ImServer;
@@ -41,8 +42,14 @@ public class OfflineMsgCommand extends BaseCommand {
         String toName = params.optString("toName");
         String fromName = params.optString("fromName");
         String msg = params.optString("msg");
+        if(TextUtils.isEmpty(msg)) {
+            msg = params.optString("body");
+        }
         String convNo = params.optString("convNo");
         int time = params.optInt("time");
+        if (time == 0) {
+            time = params.optInt("createdTime");
+        }
         String msgNo = params.optString("msgNo");
 
         return MessageEntityBuildr.getBuilder()
@@ -54,6 +61,7 @@ public class OfflineMsgCommand extends BaseCommand {
                 .addConvNo(convNo)
                 .addTime(time)
                 .addMsgNo(msgNo)
+                .addCmd("offlineMsg")
                 .builder();
     }
 }

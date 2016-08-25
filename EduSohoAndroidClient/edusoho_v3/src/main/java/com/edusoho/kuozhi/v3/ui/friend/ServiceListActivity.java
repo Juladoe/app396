@@ -11,10 +11,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -99,6 +101,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
                     public void success(List<SchoolApp> schoolAppResult) {
                         if (schoolAppResult.size() != 0) {
                             mAdapter.addSchoolAppList(schoolAppResult);
+                            new IMProvider(mContext).updateRoles(Destination.CLASSROOM, schoolAppResult);
                         }
                         promise.resolve(schoolAppResult);
                     }

@@ -223,10 +223,6 @@ public class ArticleFragment extends BaseFragment {
         }
     }
 
-    private void sendNewFragment2UpdateItemBadge() {
-
-    }
-
     private List<MenuItem> coverMenuItem(List<LinkedHashMap> menuList) {
         List<MenuItem> menuItems = new ArrayList<>();
 

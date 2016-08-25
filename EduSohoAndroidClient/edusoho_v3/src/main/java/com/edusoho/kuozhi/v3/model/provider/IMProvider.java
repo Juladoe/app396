@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 
 import java.util.List;
 import java.util.Map;
@@ -106,6 +107,7 @@ public class IMProvider extends ModelProvider {
                 break;
             case Destination.CLASSROOM:
                 getRoleFromClassRoom(targetId, resultCallback);
+                break;
         }
 
         return providerListener;
@@ -222,18 +224,17 @@ public class IMProvider extends ModelProvider {
 
     public <T extends Friend> void updateRoles(String type, List<T> friends) {
         IMRoleManager roleManager = IMClient.getClient().getRoleManager();
-        Map<Integer, Role> roleMap = roleManager.getRoleMap(getIntArrayFromList(friends));
         for (Friend friend : friends) {
-            Role role = new Role();
-            role.setRid(friend.id);
-            role.setAvatar(friend.mediumAvatar);
-            role.setNickname(friend.nickname);
-            role.setType(type);
-            if (roleMap.containsKey(friend.id)) {
+            Role role = roleManager.getRole(friend.getType(), friend.getId());
+
+            role.setAvatar(friend.getMediumAvatar());
+            role.setNickname(friend.getNickname());
+            if (role.getRid() != 0) {
                 roleManager.updateRole(role);
                 continue;
             }
-
+            role.setRid(friend.getId());
+            role.setType(friend.getType());
             roleManager.createRole(role);
         }
     }
