@@ -69,7 +69,6 @@ import in.srain.cube.views.ptr.PtrHandler;
  */
 public class ImChatActivity extends BaseChatActivity implements ChatAdapter.ImageErrorClick {
 
-
     public static final String TAG = "ChatActivity";
     public static final String FROM_ID = "from_id";
     public static final String CONV_NO = "conv_no";

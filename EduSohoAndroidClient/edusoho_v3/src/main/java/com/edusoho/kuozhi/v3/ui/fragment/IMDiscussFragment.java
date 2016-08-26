@@ -7,6 +7,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -696,7 +700,7 @@ public class IMDiscussFragment extends BaseFragment implements
             }
         } else if (v.getId() == R.id.rl_btn_press_to_speak) {
             lvMessage.post(mListViewSelectRunnable);
-            boolean mHandUpAndCancel;
+            boolean mHandUpAndCancel = false;
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     try {
@@ -714,6 +718,9 @@ public class IMDiscussFragment extends BaseFragment implements
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    if (mMediaRecorderTask.getStopRecord()) {
+                        return true;
+                    }
                     float mPressMoveY = event.getY();
                     if (Math.abs(mPressDownY - mPressMoveY) > EdusohoApp.screenH * 0.1) {
                         tvSpeak.setText(getString(R.string.hand_up_and_exit));
@@ -722,10 +729,12 @@ public class IMDiscussFragment extends BaseFragment implements
                         ivRecordImage.setImageResource(R.drawable.record_cancel);
                         mHandUpAndCancel = true;
                     } else {
+                        if (!mMediaRecorderTask.isCountDown()) {
+                            ivRecordImage.setImageResource(R.drawable.record_animate_1);
+                        }
                         tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
                         tvSpeak.setText(getString(R.string.hand_up_and_end));
-                        ivRecordImage.setImageResource(R.drawable.record_animate_1);
                         mHandUpAndCancel = false;
                     }
                     mMediaRecorderTask.setCancel(mHandUpAndCancel);
@@ -801,9 +810,14 @@ public class IMDiscussFragment extends BaseFragment implements
     }
 
     public class MediaRecorderTask extends AsyncTask<Void, Integer, Boolean> {
+
+        private int COUNT_DOWN_NUM = 1;
+        private int TOTAL_NUM = 9;
+
         private ChatAudioRecord mAudioRecord;
         private boolean mCancelSave = false;
         private boolean mStopRecord = false;
+        private boolean mIsCountDown = false;
         private File mUploadAudio;
 
         @Override
@@ -834,17 +848,27 @@ public class IMDiscussFragment extends BaseFragment implements
                     mAudioRecord.clear();
                     break;
                 } else {
-                    //录音中动画
-                    double ratio = 0;
-                    if (mAudioRecord.getMediaRecorder() != null) {
-                        ratio = (double) mAudioRecord.getMediaRecorder().getRealVolume();
-                    }
-                    double db = 0;
-                    if (ratio > 1) {
-                        db = 20 * Math.log10(ratio);
+                    long recordTime = (System.currentTimeMillis() - mAudioRecord.getAudioStartTime()) / 1000;
+                    if (recordTime > TOTAL_NUM) {
+                        mStopRecord = true;
+                        mCancelSave = false;
+                        continue;
                     }
                     if (!mCancelSave) {
-                        if (db < 60) {
+                        //录音中动画
+                        double ratio = 0;
+                        if (mAudioRecord.getMediaRecorder() != null) {
+                            ratio = (double) mAudioRecord.getMediaRecorder().getRealVolume();
+                        }
+
+                        double db = 0;
+                        if (ratio > 1) {
+                            db = 20 * Math.log10(ratio);
+                        }
+                        if (recordTime > COUNT_DOWN_NUM) {
+                            mIsCountDown = true;
+                            mHandler.obtainMessage(VolumeHandler.COUNT_DOWN, (int)(TOTAL_NUM - recordTime), 0).sendToTarget();
+                        } else if (db < 60) {
                             mHandler.sendEmptyMessage(0);
                         } else if (db < 70) {
                             mHandler.sendEmptyMessage(1);
@@ -904,9 +928,19 @@ public class IMDiscussFragment extends BaseFragment implements
         public ChatAudioRecord getAudioRecord() {
             return mAudioRecord;
         }
+
+        public boolean getStopRecord() {
+            return mStopRecord;
+        }
+
+        public boolean isCountDown() {
+            return mIsCountDown;
+        }
     }
 
     public static class VolumeHandler extends Handler {
+
+        public static final int COUNT_DOWN = 4;
         private WeakReference<IMDiscussFragment> mWeakReference;
 
         private VolumeHandler(IMDiscussFragment fragment) {
@@ -919,8 +953,28 @@ public class IMDiscussFragment extends BaseFragment implements
         public void handleMessage(Message msg) {
             IMDiscussFragment fragment = this.mWeakReference.get();
             if (fragment != null) {
+                if (msg.what == COUNT_DOWN) {
+                    int w = fragment.ivRecordImage.getWidth();
+                    int h = fragment.ivRecordImage.getWidth();
+                    fragment.ivRecordImage.setImageBitmap(getCountDownBitmap(w, h, msg.arg1));
+                    return;
+                }
                 fragment.ivRecordImage.setImageResource(fragment.mSpeakerAnimResId[msg.what]);
             }
+        }
+
+        private Bitmap getCountDownBitmap(int w, int h, int number) {
+            Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
+            Canvas canvas = new Canvas(bitmap);
+            Paint paint = new Paint();
+            paint.setTextSize(w * 0.9f);
+            paint.setAntiAlias(true);
+            paint.setColor(Color.WHITE);
+
+            Rect rect = new Rect();
+            paint.getTextBounds(String.valueOf(number), 0, 1, rect);
+            canvas.drawText(String.valueOf(number), (w - (rect.right - rect.left)) / 2, (h - rect.bottom - rect.top) / 2, paint);
+            return bitmap;
         }
     }
 

@@ -341,6 +341,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         private ChatAudioRecord mAudioRecord;
         private boolean mCancelSave = false;
         private boolean mStopRecord = false;
+        private boolean mIsCountDown = false;
         private File mUploadAudio;
 
         @Override
@@ -391,6 +392,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                             db = 20 * Math.log10(ratio);
                         }
                         if (recordTime > COUNT_DOWN_NUM) {
+                            mIsCountDown = true;
                             mHandler.obtainMessage(VolumeHandler.COUNT_DOWN, (int)(TOTAL_NUM - recordTime), 0).sendToTarget();
                         } else if (db < 60) {
                             mHandler.sendEmptyMessage(0);
@@ -449,12 +451,12 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
             mStopRecord = stop;
         }
 
-        public boolean getCancelSave() {
-            return mCancelSave;
-        }
-
         public boolean getStopRecord() {
             return mStopRecord;
+        }
+
+        public boolean isCountDown() {
+            return mIsCountDown;
         }
 
         public ChatAudioRecord getAudioRecord() {
@@ -546,10 +548,13 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                         ivRecordImage.setImageResource(R.drawable.record_cancel);
                         mHandUpAndCancel = true;
                     } else {
-                        tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
-                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
-                        tvSpeak.setText(getString(R.string.hand_up_and_end));
-                        ivRecordImage.setImageResource(R.drawable.record_animate_1);
+                        if (!mMediaRecorderTask.isCountDown()) {
+                            tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
+                            tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+                            tvSpeak.setText(getString(R.string.hand_up_and_end));
+                            ivRecordImage.setImageResource(R.drawable.record_animate_1);
+                        }
+
                         mHandUpAndCancel = false;
                     }
                     mMediaRecorderTask.setCancel(mHandUpAndCancel);
