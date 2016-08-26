@@ -391,7 +391,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                         if (ratio > 1) {
                             db = 20 * Math.log10(ratio);
                         }
-                        if (recordTime > COUNT_DOWN_NUM) {
+                        if (recordTime >= COUNT_DOWN_NUM) {
                             mIsCountDown = true;
                             mHandler.obtainMessage(VolumeHandler.COUNT_DOWN, (int)(TOTAL_NUM - recordTime), 0).sendToTarget();
                         } else if (db < 60) {
@@ -549,11 +549,11 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                         mHandUpAndCancel = true;
                     } else {
                         if (!mMediaRecorderTask.isCountDown()) {
-                            tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
-                            tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
-                            tvSpeak.setText(getString(R.string.hand_up_and_end));
                             ivRecordImage.setImageResource(R.drawable.record_animate_1);
                         }
+                        tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
+                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+                        tvSpeak.setText(getString(R.string.hand_up_and_end));
 
                         mHandUpAndCancel = false;
                     }

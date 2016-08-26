@@ -811,8 +811,8 @@ public class IMDiscussFragment extends BaseFragment implements
 
     public class MediaRecorderTask extends AsyncTask<Void, Integer, Boolean> {
 
-        private int COUNT_DOWN_NUM = 1;
-        private int TOTAL_NUM = 9;
+        private int COUNT_DOWN_NUM = 50;
+        private int TOTAL_NUM = 59;
 
         private ChatAudioRecord mAudioRecord;
         private boolean mCancelSave = false;
