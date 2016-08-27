@@ -135,11 +135,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         isLoginWithToken(new NormalCallback<Boolean>() {
             @Override
             public void success(Boolean isLogin) {
-                if (isLogin) {
-                    selectDownTab(R.id.nav_tab_news);
-                } else {
-                    selectDownTab(R.id.nav_tab_find);
-                }
+                selectDownTab(R.id.nav_tab_find);
             }
         });
 
@@ -323,11 +319,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             new Handler(getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
-                    if (getIntent().hasExtra(Const.SWITCH_NEWS_TAB)) {
-                        selectDownTab(R.id.nav_tab_find);
-                    } else {
-                        selectDownTab(R.id.nav_tab_news);
-                    }
+                    selectDownTab(R.id.nav_tab_find);
                     mLogoutFlag = false;
                 }
             });
