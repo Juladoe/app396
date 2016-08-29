@@ -8,6 +8,8 @@ import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
 
 import java.lang.ref.WeakReference;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -34,6 +36,13 @@ public class IMChatRoom {
     }
 
     public List<MessageEntity> getMessageList(int start) {
-        return new MsgDbHelper(mContext).getMessageList(mConvNo, start);
+        List<MessageEntity> messageEntities =  new MsgDbHelper(mContext).getMessageList(mConvNo, start);
+        Collections.sort(messageEntities, new Comparator<MessageEntity>() {
+            @Override
+            public int compare(MessageEntity t1, MessageEntity t2) {
+                return t1.getTime() - t2.getTime();
+            }
+        });
+        return messageEntities;
     }
 }

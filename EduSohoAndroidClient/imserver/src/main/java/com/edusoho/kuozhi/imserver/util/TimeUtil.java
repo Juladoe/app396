@@ -58,4 +58,8 @@ public class TimeUtil {
         }
         return result;
     }
+
+    public static int getDuration(int duration) {
+        return (int) Math.ceil(Float.valueOf(duration) / 1000);
+    }
 }

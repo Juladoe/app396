@@ -46,6 +46,14 @@ public class MsgDbHelper {
         return createMessageEntity(arrayMap);
     }
 
+    public MessageEntity getMessageByMsgNo(String msgNo) {
+        HashMap arrayMap = mDbHelper.querySingle(TABLE, "msgNo=?", new String[]{msgNo});
+        if (arrayMap == null || arrayMap.isEmpty()) {
+            return null;
+        }
+        return createMessageEntity(arrayMap);
+    }
+
     public MessageEntity getMessageByUID(String uid) {
         HashMap arrayMap = mDbHelper.querySingle(TABLE, "uid=?", new String[]{String.valueOf(uid)});
         if (arrayMap == null || arrayMap.isEmpty()) {
@@ -138,6 +146,7 @@ public class MsgDbHelper {
                 .addMsg(arrayMap.get("msg"))
                 .addToName(arrayMap.get("toName"))
                 .addFromName(arrayMap.get("fromName"))
+                .addConvNo(arrayMap.get("convNo"))
                 .addToId(arrayMap.get("toId"))
                 .addFromId(arrayMap.get("fromId"))
                 .addTime(MessageUtil.parseInt(arrayMap.get("time")))

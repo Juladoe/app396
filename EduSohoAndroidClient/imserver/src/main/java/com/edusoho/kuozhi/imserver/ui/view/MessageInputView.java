@@ -1,23 +1,39 @@
 package com.edusoho.kuozhi.imserver.ui.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.imserver.R;
-import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.imserver.ui.listener.InputViewControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
+import com.edusoho.kuozhi.imserver.ui.util.MediaRecorderTask;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
+
+import java.io.File;
 
 /**
  * Created by suju on 16/8/26.
@@ -37,8 +53,9 @@ public class MessageInputView extends FrameLayout {
     protected View mViewSpeakContainer;
     protected ImageView ivRecordImage;
 
+    private RecordAudioHandler mRecordAudioHandler;
     private MessageSendListener mMessageSendListener;
-    private MessageControllerListener mMessageControllerListener;
+    private InputViewControllerListener mMessageControllerListener;
 
     public MessageInputView(Context context) {
         super(context);
@@ -59,7 +76,7 @@ public class MessageInputView extends FrameLayout {
         this.mMessageSendListener = listener;
     }
 
-    public void setMessageControllerListener(MessageControllerListener listener) {
+    public void setMessageControllerListener(InputViewControllerListener listener) {
         this.mMessageControllerListener = listener;
     }
 
@@ -88,10 +105,36 @@ public class MessageInputView extends FrameLayout {
         ESIconView ivCamera = (ESIconView) findViewById(R.id.iv_camera);
         ivCamera.setOnClickListener(onClickListener);
         tvSpeak = (TextView) findViewById(R.id.tv_speak);
-        tvSpeakHint = (TextView) findViewById(R.id.tv_speak_hint);
-        ivRecordImage = (ImageView) findViewById(R.id.iv_voice_volume);
-        //mViewSpeakContainer = findViewById(R.id.recording_container);
-        //mViewSpeakContainer.bringToFront();
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        initSpeakContainer();
+    }
+
+    private void initSpeakContainer() {
+        mViewSpeakContainer = LayoutInflater.from(getContext()).inflate(R.layout.view_message_record_layout, null);
+        ViewParent viewParent = getParent();
+        if (viewParent != null) {
+            if (viewParent instanceof FrameLayout) {
+                FrameLayout.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.gravity = Gravity.CENTER;
+                ((FrameLayout)viewParent).addView(mViewSpeakContainer, lp);
+            } else if (viewParent instanceof RelativeLayout) {
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.addRule(RelativeLayout.CENTER_VERTICAL);
+                lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                ((RelativeLayout)viewParent).addView(mViewSpeakContainer, lp);
+            } else {
+                ((ViewGroup)viewParent).addView(mViewSpeakContainer);
+            }
+        }
+
+        tvSpeakHint = (TextView) mViewSpeakContainer.findViewById(R.id.tv_speak_hint);
+        ivRecordImage = (ImageView) mViewSpeakContainer.findViewById(R.id.iv_voice_volume);
+        mViewSpeakContainer.bringToFront();
     }
 
     protected OnFocusChangeListener getContentOnFocusChangeListener() {
@@ -112,6 +155,7 @@ public class MessageInputView extends FrameLayout {
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.et_send_content) {
+                    mMessageControllerListener.onInputViewFocus(true);
                     //lvMessage.post(mListViewSelectRunnable);
                 } else if (v.getId() == R.id.iv_show_media_layout) {
                     //加号，显示多媒体框
@@ -129,6 +173,7 @@ public class MessageInputView extends FrameLayout {
                         return;
                     }
                     mMessageSendListener.onSendMessage(etSend.getText().toString());
+                    etSend.setText("");
                 } else if (v.getId() == R.id.btn_voice) {
                     //语音
                     viewMediaLayout.setVisibility(View.GONE);
@@ -162,10 +207,150 @@ public class MessageInputView extends FrameLayout {
     protected OnTouchListener getViewOnTouchListener() {
         return new OnTouchListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        mRecordAudioHandler = new RecordAudioHandler(getContext());
+                        return mRecordAudioHandler.startRecord(event.getY());
+                    case MotionEvent.ACTION_MOVE:
+                        return mRecordAudioHandler.checkContinueRecord(event.getY());
+                    case MotionEvent.ACTION_UP:
+                        mRecordAudioHandler.stopRecord();
+                        mRecordAudioHandler = null;
+                        return true;
+                }
                 return false;
             }
         };
+    }
+
+    public class VolumeHandler extends Handler {
+
+        protected int[] mSpeakerAnimResId = new int[]{R.drawable.record_animate_1,
+                R.drawable.record_animate_2,
+                R.drawable.record_animate_3,
+                R.drawable.record_animate_4};
+
+        public static final int COUNT_DOWN = 4;
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == COUNT_DOWN) {
+                int w = ivRecordImage.getWidth();
+                int h = ivRecordImage.getWidth();
+                ivRecordImage.setImageBitmap(getCountDownBitmap(w, h, msg.arg1));
+                return;
+            }
+            ivRecordImage.setImageResource(mSpeakerAnimResId[msg.what]);
+        }
+
+        private Bitmap getCountDownBitmap(int w, int h, int number) {
+            Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
+            Canvas canvas = new Canvas(bitmap);
+            Paint paint = new Paint();
+            paint.setTextSize(w * 0.9f);
+            paint.setAntiAlias(true);
+            paint.setColor(Color.WHITE);
+
+            Rect rect = new Rect();
+            paint.getTextBounds(String.valueOf(number), 0, 1, rect);
+            canvas.drawText(String.valueOf(number), (w - (rect.right - rect.left)) / 2, (h - rect.bottom - rect.top) / 2, paint);
+            return bitmap;
+        }
+    }
+
+    private class RecordAudioHandler {
+
+        private float mPressDownY;
+        private Context mContext;
+        private boolean mHandUpAndCancel;
+        private MediaRecorderTask mMediaRecorderTask;
+
+        public RecordAudioHandler(Context context) {
+            this.mContext = context;
+        }
+
+        public boolean startRecord(float pressDownY) {
+            try {
+                this.mPressDownY = pressDownY;
+                mMediaRecorderTask = new MediaRecorderTask(mContext, new VolumeHandler(), getMediaRecorderTackListener());
+                mMediaRecorderTask.execute();
+            } catch (Exception e) {
+                mMediaRecorderTask.getAudioRecord().clear();
+            }
+            return false;
+        }
+
+        private MediaRecorderTask.MediaRecorderTackListener getMediaRecorderTackListener() {
+            return new MediaRecorderTask.MediaRecorderTackListener() {
+
+                @Override
+                public void onCancel() {
+                    mViewSpeakContainer.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onReset() {
+                    tvSpeak.setText(mContext.getString(R.string.hand_press_and_speak));
+                    viewPressToSpeak.setPressed(false);
+                }
+
+                @Override
+                public void onPreRecord() {
+                    mViewSpeakContainer.setVisibility(View.VISIBLE);
+                    tvSpeak.setText(mContext.getString(R.string.hand_up_and_end));
+                    tvSpeakHint.setText(getResources().getString(R.string.hand_move_up_and_send_cancel));
+                    tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+                    ivRecordImage.setImageResource(R.drawable.record_animate_1);
+                }
+
+                @Override
+                public void onStopRecord(File audioFile) {
+                    if (audioFile == null || !audioFile.exists()) {
+                        tvSpeakHint.setText(mContext.getString(R.string.audio_length_too_short));
+                        tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+                        ivRecordImage.setImageResource(R.drawable.record_duration_short);
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mViewSpeakContainer.setVisibility(View.GONE);
+                            }
+                        }, 200);
+                    } else {
+                        mMessageSendListener.onSendAudio(audioFile);
+                        mViewSpeakContainer.setVisibility(View.GONE);
+                    }
+                }
+            };
+        }
+
+        public boolean checkContinueRecord(float scrollY) {
+            if (mMediaRecorderTask.getStopRecord()) {
+                return true;
+            }
+
+            if (Math.abs(mPressDownY - scrollY) > SystemUtil.getScreenHeight(mContext) * 0.1) {
+                tvSpeak.setText(mContext.getString(R.string.hand_up_and_exit));
+                tvSpeakHint.setText(mContext.getString(R.string.hand_up_and_exit));
+                tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_bg);
+                ivRecordImage.setImageResource(R.drawable.record_cancel);
+                mHandUpAndCancel = true;
+            } else {
+                if (!mMediaRecorderTask.isCountDown()) {
+                    ivRecordImage.setImageResource(R.drawable.record_animate_1);
+                }
+                tvSpeakHint.setText(mContext.getString(R.string.hand_move_up_and_send_cancel));
+                tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
+                tvSpeak.setText(mContext.getString(R.string.hand_up_and_end));
+                mHandUpAndCancel = false;
+            }
+            mMediaRecorderTask.setCancel(mHandUpAndCancel);
+            return true;
+        }
+
+        public void stopRecord() {
+            mMediaRecorderTask.setAudioStop(true);
+        }
     }
 
     protected TextWatcher mContentTextWatcher = new TextWatcher() {

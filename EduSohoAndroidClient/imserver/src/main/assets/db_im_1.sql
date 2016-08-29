@@ -16,7 +16,7 @@ create table if not exists im_upload_extr (
     id integer PRIMARY KEY AUTOINCREMENT,
     message_uid  varchar(36),
     type varchar(64),
-    source varchar(255)
+    source varchar(1024)
 );
 
 create table if not exists im_role (

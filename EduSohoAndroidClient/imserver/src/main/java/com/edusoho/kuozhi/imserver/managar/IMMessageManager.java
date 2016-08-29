@@ -47,8 +47,10 @@ public class IMMessageManager {
         return new MsgDbHelper(mContext).saveUploadEntity(muid, type, source);
     }
 
-    public long createMessage(MessageEntity messageEntity) {
-        return new MsgDbHelper(mContext).save(messageEntity);
+    public MessageEntity createMessage(MessageEntity messageEntity) {
+        MsgDbHelper msgDbHelper = new MsgDbHelper(mContext);
+        long resultId = msgDbHelper.save(messageEntity);
+        return msgDbHelper.getMessageByUID(messageEntity.getUid());
     }
 
     public long deleteByConvNo(String convNo) {

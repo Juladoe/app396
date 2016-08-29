@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/chat_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <com.edusoho.kuozhi.imserver.ui.view.MessageInputView
+        android:layout_alignParentBottom="true"
+        android:id="@+id/message_input_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <in.srain.cube.views.ptr.PtrClassicFrameLayout
         android:id="@+id/rotate_header_list_view_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background"
-        android:layout_marginBottom="42dp"
+        android:layout_above="@id/message_input_view"
         app:ptr_duration_to_close="200"
         app:ptr_duration_to_close_header="1000"
         app:ptr_keep_header_when_refresh="true"
@@ -29,15 +35,8 @@
             android:fastScrollEnabled="false"
             android:scrollbars="none"
             android:smoothScrollbar="true"
-            android:stackFromBottom="true"
-            android:transcriptMode="alwaysScroll" />
+            android:stackFromBottom="true" />
 
     </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 
-    <com.edusoho.kuozhi.imserver.ui.view.MessageInputView
-        android:id="@+id/message_input_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />
-
-</FrameLayout>
+</RelativeLayout>

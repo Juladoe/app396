@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
-import android.os.SystemClock;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -27,7 +26,7 @@ import com.edusoho.kuozhi.imserver.managar.IMChatRoom;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.managar.IMMessageManager;
 import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
-import com.edusoho.kuozhi.imserver.util.BlackListDbHelper;
+import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 
@@ -48,6 +47,10 @@ public class IMClient {
 
     private int mIMConnectStatus;
     private Context mContext;
+    private int mClientId;
+    private String mClientName;
+    private MessageResourceHelper mMessageResourceHelper;
+
     private IImServerAidlInterface mImBinder;
     private ServiceConnection mServiceConnection;
     private IMMessageReceiver mLaterIMMessageReceiver;
@@ -65,6 +68,7 @@ public class IMClient {
 
     public void init(Context context, String dbName) {
         this.mContext = context;
+        this.mMessageResourceHelper = new MessageResourceHelper(mContext);
         DbManagerFactory.getDefaultFactory().setDbName(dbName);
         registIMServiceStatusBroadcastReceiver();
     }
@@ -103,8 +107,14 @@ public class IMClient {
             return;
         }
 
+        this.mClientId = clientId;
+        this.mClientName = clientName;
         this.mConnectIMServiceRunnable = new ConnectIMServiceRunnable(clientId, clientName, ignoreNosList, hostList);
         startImService();
+    }
+
+    public MessageResourceHelper getResourceHelper() {
+        return mMessageResourceHelper;
     }
 
     public void destory() {
@@ -120,6 +130,10 @@ public class IMClient {
             mServiceConnection = null;
         }
 
+        if (mMessageResourceHelper != null) {
+            mMessageResourceHelper.clear();
+            mMessageResourceHelper = null;
+        }
         unRegistIMServiceStatusBroadcastReceiver();
         mContext.stopService(getIMServiceIntent());
         mImBinder = null;
@@ -208,6 +222,14 @@ public class IMClient {
 
     public void removeReceiver(IMMessageReceiver receiver) {
         this.mMessageReceiverList.remove(receiver);
+    }
+
+    public int getClientId() {
+        return mClientId;
+    }
+
+    public String getClientName() {
+        return mClientName;
     }
 
     public void sendCmd(String cmd) {

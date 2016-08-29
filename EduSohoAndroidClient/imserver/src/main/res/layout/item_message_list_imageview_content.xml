@@ -9,5 +9,4 @@
     android:minHeight="48dp"
     android:minWidth="48dp"
     android:layout_toLeftOf="@+id/ci_send_pic"
-    android:clickable="true"
     android:scaleType="fitCenter" />

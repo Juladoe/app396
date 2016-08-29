@@ -35,6 +35,8 @@ public class MessageEntity implements Parcelable {
         this.convNo = in.readString();
         this.msg = in.readString();
         this.cmd = in.readString();
+        this.status = in.readInt();
+        this.id = in.readInt();
     }
 
     public int getId() {
@@ -144,6 +146,8 @@ public class MessageEntity implements Parcelable {
         dest.writeString(convNo);
         dest.writeString(msg);
         dest.writeString(cmd);
+        dest.writeInt(status);
+        dest.writeInt(id);
     }
 
     @Override
@@ -166,5 +170,6 @@ public class MessageEntity implements Parcelable {
         public static final int SUCCESS = 1;
         public static final int FAILED = 0;
         public static final int UPLOADING = 2;
+        public static final int NONE = -1;
     }
 }

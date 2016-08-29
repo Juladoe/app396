@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
+import com.edusoho.kuozhi.imserver.error.MessageSaveFailException;
 import com.edusoho.kuozhi.imserver.listener.IChannelReceiveListener;
 import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import com.edusoho.kuozhi.imserver.listener.IHeartStatusListener;
@@ -32,6 +33,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -253,29 +255,40 @@ public class ImServer {
     }
 
     public void onReceiveOfflineMsg(ArrayList<MessageEntity> messageEntities) {
+        ArrayList<MessageEntity> entities = new ArrayList<>();
         for (MessageEntity messageEntity : messageEntities) {
-            handleReceiveMessage(messageEntity);
+            try {
+                messageEntity = handleReceiveMessage(messageEntity);
+                if (messageEntity != null) {
+                    entities.add(messageEntity);
+                }
+            } catch (MessageSaveFailException e) {
+            }
         }
         Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
         intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.OFFLINE_MSG);
-        intent.putExtra("message", messageEntities);
+        intent.putExtra("message", entities);
         mContext.sendBroadcast(intent);
     }
 
-    private void handleReceiveMessage(MessageEntity messageEntity) {
+    private MessageEntity handleReceiveMessage(MessageEntity messageEntity) throws MessageSaveFailException {
         if (getMsgDbHelper().hasMessageByNo(messageEntity.getMsgNo())) {
             Log.d("MessageCommand", "hasMessageByNo");
-            return;
+            return null;
         }
 
         if ("message".equals(messageEntity.getCmd()) || "offlineMsg".equals(messageEntity.getCmd())) {
             MessageBody messageBody = new MessageBody(messageEntity);
             if (messageBody == null) {
                 Log.d(TAG, "messageBody is null");
-                return;
+                return null;
             }
             messageEntity.setConvNo(getMessageConvNo(messageBody));
-            mMsgDbHelper.save(messageEntity);
+            if ("text".equals(messageBody.getType()) || "multi".equals(messageBody.getType())) {
+                messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
+            }
+
+            messageEntity = saveMessageEntityToDb(messageEntity);
             ConvEntity convEntity = mConvDbHelper.getConv(messageEntity.getConvNo());
             if (convEntity == null) {
                 convEntity = createConv(messageBody);
@@ -286,15 +299,33 @@ public class ImServer {
                 updateConv(convEntity, messageEntity);
             }
         }
+
+        return messageEntity;
+    }
+
+    private MessageEntity saveMessageEntityToDb(MessageEntity messageEntity) throws MessageSaveFailException {
+        long resultId = mMsgDbHelper.save(messageEntity);
+        if (resultId != 0) {
+            messageEntity = mMsgDbHelper.getMessageByMsgNo(messageEntity.getMsgNo());
+            if (messageEntity == null) {
+                throw new MessageSaveFailException();
+            }
+            return messageEntity;
+        }
+        throw new MessageSaveFailException();
     }
 
     public void onReceiveMessage(MessageEntity messageEntity) {
-        handleReceiveMessage(messageEntity);
+        try {
+            messageEntity = handleReceiveMessage(messageEntity);
 
-        Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
-        intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.RECEIVER);
-        intent.putExtra("message", messageEntity);
-        mContext.sendBroadcast(intent);
+            Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
+            intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.RECEIVER);
+            intent.putExtra("message", messageEntity);
+            mContext.sendBroadcast(intent);
+        } catch (MessageSaveFailException e) {
+            Log.d(TAG, e.getMessage());
+        }
     }
 
     private String getMessageConvNo(MessageBody messageBody) {

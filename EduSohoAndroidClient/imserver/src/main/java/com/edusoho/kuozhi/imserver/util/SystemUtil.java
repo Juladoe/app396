@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.imserver.util;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
@@ -35,5 +37,19 @@ public class SystemUtil {
         } else if (HIDE_KEYBOARD == status) {
             inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
         }
+    }
+
+    public static int getScreenWidth(Context context) {
+        WindowManager wm = (WindowManager) (context.getSystemService(Context.WINDOW_SERVICE));
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        return dm.widthPixels;
+    }
+
+    public static int getScreenHeight(Context context) {
+        WindowManager wm = (WindowManager) (context.getSystemService(Context.WINDOW_SERVICE));
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+        return dm.heightPixels;
     }
 }

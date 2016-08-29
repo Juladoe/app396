@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.imserver.command;
 
-import android.util.Log;
-
 import com.edusoho.kuozhi.imserver.ImServer;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
@@ -13,20 +11,20 @@ import org.json.JSONObject;
  */
 public class MessageCommand extends BaseCommand {
 
-    public MessageCommand(ImServer imServer)
-    {
+    public MessageCommand(ImServer imServer) {
         super(imServer);
     }
 
     /**
      * "convNo": "",
-     "fromId": "",
-     "fromName": "",
-     "toId": "",
-     "toName": "",
-     "msg": "",
-     "time": ""
-     status: -1
+     * "fromId": "",
+     * "fromName": "",
+     * "toId": "",
+     * "toName": "",
+     * "msg": "",
+     * "time": ""
+     * status: -1
+     *
      * @param params
      */
     @Override
@@ -42,18 +40,19 @@ public class MessageCommand extends BaseCommand {
         String msgNo = params.optString("msgNo");
         String cmd = params.optString("cmd");
 
-        MessageEntity messageEntity = MessageEntityBuildr.getBuilder()
-                .addToId(toId)
-                .addToName(toName)
-                .addFromId(fromId)
-                .addFromName(fromName)
-                .addMsg(msg)
-                .addConvNo(convNo)
-                .addTime(time)
-                .addMsgNo(msgNo)
-                .addCmd(cmd)
-                .addStatus(-1)
-                .builder();
+        MessageEntity messageEntity =
+                MessageEntityBuildr.getBuilder()
+                        .addToId(toId)
+                        .addToName(toName)
+                        .addFromId(fromId)
+                        .addFromName(fromName)
+                        .addMsg(msg)
+                        .addConvNo(convNo)
+                        .addTime(time)
+                        .addMsgNo(msgNo)
+                        .addCmd(cmd)
+                        .addStatus(MessageEntity.StatusType.NONE)
+                        .builder();
         mImServer.onReceiveMessage(messageEntity);
         mImServer.ack(params.optString("msgNo"));
     }

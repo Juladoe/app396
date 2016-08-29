@@ -16,8 +16,10 @@ public class MessageBody {
     public static final int VERSION = 1;
 
     /*
-    user id
+    MessageEntity id
      */
+    private int mid;
+
     private String uid;
 
     private String msgNo;
@@ -38,6 +40,8 @@ public class MessageBody {
     public Source sourse;
 
     public long createdTime;
+
+    public int msgStatus;
 
     public MessageBody(String jsonStr)
     {
@@ -74,13 +78,23 @@ public class MessageBody {
         this.setMsgNo(messageEntity.getMsgNo());
         this.setConvNo(messageEntity.getConvNo());
         this.setMessageId(messageEntity.getUid());
+        this.setMsgStatus(messageEntity.getStatus());
         this.setCreatedTime(messageEntity.getTime() * 1000L);
+        this.setMid(messageEntity.getId());
     }
 
     public MessageBody(int version, String type, String body) {
         this.version = version;
         this.type = type;
         this.body = body;
+    }
+
+    public int getMsgStatus() {
+        return msgStatus;
+    }
+
+    public void setMsgStatus(int msgStatus) {
+        this.msgStatus = msgStatus;
     }
 
     public String getConvNo() {
@@ -153,6 +167,14 @@ public class MessageBody {
 
     public void setCreatedTime(long createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public int getMid() {
+        return mid;
+    }
+
+    public void setMid(int mid) {
+        this.mid = mid;
     }
 
     public String toJson() {

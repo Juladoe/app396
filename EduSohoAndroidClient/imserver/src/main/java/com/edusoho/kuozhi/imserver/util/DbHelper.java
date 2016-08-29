@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 
 import com.edusoho.kuozhi.imserver.helper.IDbManager;
 
@@ -40,9 +41,26 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
+    private String getRawQuerySql(String table, String selection, String orderBy, String limit) {
+        StringBuilder stringBuilder = new StringBuilder("select * from ");
+        stringBuilder.append(table);
+        if (!TextUtils.isEmpty(selection)) {
+            stringBuilder.append(" where ").append(selection);
+        }
+        if (!TextUtils.isEmpty(orderBy)) {
+            stringBuilder.append(" order by ").append(orderBy);
+        }
+
+        if (!TextUtils.isEmpty(limit)) {
+            stringBuilder.append(" limit ").append(limit);
+        }
+
+        return stringBuilder.toString();
+    }
+
     public ArrayList<HashMap<String, String>> queryBySortAndLimit(String table, String selection, String[] selectionArgs, String orderBy, String limit) {
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.query(table, null, selection, selectionArgs, null, null, orderBy, limit);
+        Cursor cursor = db.rawQuery(getRawQuerySql(table, selection, orderBy, limit), selectionArgs);
         ArrayList<HashMap<String, String>> resultList = new ArrayList<>();
         while (cursor.moveToNext()) {
             int columnCount = cursor.getColumnCount();

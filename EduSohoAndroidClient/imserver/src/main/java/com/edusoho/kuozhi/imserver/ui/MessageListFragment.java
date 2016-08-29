@@ -1,8 +1,8 @@
 package com.edusoho.kuozhi.imserver.ui;
 
 import android.app.Activity;
-import android.app.DownloadManager;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.media.MediaPlayer;
@@ -20,6 +20,7 @@ import android.widget.ListView;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.R;
 import com.edusoho.kuozhi.imserver.SendEntity;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
@@ -29,16 +30,23 @@ import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.ui.adapter.MessageListAdapter;
-import com.edusoho.kuozhi.imserver.ui.broadcast.AudioDownloadReceiver;
+import com.edusoho.kuozhi.imserver.ui.broadcast.ResourceStatusReceiver;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.ui.entity.UpYunUploadResult;
+import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
+import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
+import com.edusoho.kuozhi.imserver.ui.listener.AudioPlayStatusListener;
+import com.edusoho.kuozhi.imserver.ui.listener.InputViewControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.util.ApiConst;
+import com.edusoho.kuozhi.imserver.ui.util.MessageAudioPlayer;
+import com.edusoho.kuozhi.imserver.ui.util.UpYunUploadTask;
 import com.edusoho.kuozhi.imserver.ui.view.MessageInputView;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
-import com.edusoho.kuozhi.imserver.util.MessageUtil;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
+import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.AsyncHttpGet;
 import com.koushikdutta.async.http.AsyncHttpPost;
@@ -46,6 +54,7 @@ import com.koushikdutta.async.http.AsyncHttpRequest;
 import com.koushikdutta.async.http.AsyncHttpResponse;
 import com.koushikdutta.async.http.body.JSONObjectBody;
 import com.koushikdutta.async.http.body.MultipartFormDataBody;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,21 +76,32 @@ import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 /**
  * Created by suju on 16/8/26.
  */
-public class MessageListFragment extends Fragment {
+public class MessageListFragment extends Fragment implements ResourceStatusReceiver.StatusReceiverCallback {
 
     private static final String TAG = "MessageListFragment";
+    private static final int EXPAID_TIME = 3600 * 1 * 1000;
+
     public static final String CONV_NO = "convNo";
+    public static final String TARGET_TYPE = "targetType";
+    public static final String TARGET_ID = "targetId";
     public static final String CURRENT_ID = "currentId";
     public static final int SEND_IMAGE = 1;
     public static final int SEND_CAMERA = 2;
 
-    protected int mStart = 0;
+    private int mStart = 0;
+    private boolean canLoadData = true;
     private String mConversationNo;
-    private int mCurrentId;
+    private int mTargetId;
+    private String mTargetType;
     private Role mTargetRole;
+    private Context mContext;
+    private int mCurrentSelectedIndex;
+    private MessageAudioPlayer mAudioPlayer;
     private IMMessageReceiver mIMMessageReceiver;
-    protected AudioDownloadReceiver mAudioDownloadReceiver;
+    private MessageSendListener mMessageSendListener;
+    private MessageControllerListener mMessageControllerListener;
 
+    protected ResourceStatusReceiver mResourceStatusReceiver;
     protected PtrClassicFrameLayout mPtrFrame;
     protected ListView mMessageListView;
     protected View mContainerView;
@@ -91,16 +111,19 @@ public class MessageListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAudioDownloadReceiver = new AudioDownloadReceiver();
+        mResourceStatusReceiver = new ResourceStatusReceiver(this);
+        mContext.registerReceiver(mResourceStatusReceiver, new IntentFilter(ResourceStatusReceiver.ACTION));
+        initParams(getArguments());
+        checkConvNo();
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mCurrentId = getArguments().getInt(CURRENT_ID);
-        mConversationNo = getArguments().getString(CONV_NO);
+        mContext = activity.getBaseContext();
         mListAdapter = new MessageListAdapter(getActivity().getBaseContext());
-        mListAdapter.setCurrentId(mCurrentId);
+        mListAdapter.setCurrentId(IMClient.getClient().getClientId());
+        mListAdapter.setmMessageListItemController(getMessageListItemClickListener());
     }
 
     @Nullable
@@ -118,6 +141,74 @@ public class MessageListFragment extends Fragment {
         return mContainerView;
     }
 
+    @Override
+    public void onResourceDownloadInvoke(int resId, String resUri) {
+        MessageEntity messageEntity = IMClient.getClient().getMessageManager().getMessage(resId);
+        if (messageEntity == null) {
+            return;
+        }
+        messageEntity.setStatus(PushUtil.MsgDeliveryType.SUCCESS);
+        updateMessageReceiveStatus(messageEntity);
+    }
+
+    @Override
+    public void onResourceStatusInvoke(int resId, String resUri) {
+        MessageEntity messageEntity = IMClient.getClient().getMessageManager().getMessage(resId);
+        Log.d(TAG, "onResourceStatusInvoke:" + messageEntity.getId());
+        if (messageEntity == null) {
+            return;
+        }
+
+        MessageBody messageBody = new MessageBody(messageEntity);
+        IMUploadEntity uploadEntity = IMClient.getClient().getMessageManager()
+                .getUploadEntity(messageBody.getMessageId());
+        File file = new File(uploadEntity.getSource());
+        String body = resUri;
+        if (PushUtil.ChatMsgType.AUDIO.equals(messageBody.getType())) {
+            body = wrapAudioMessageContent(resUri, getAudioDuration(file.getAbsolutePath()));
+        }
+        messageBody.setBody(body);
+        sendMessageToServer(messageBody);
+    }
+
+    private void initParams(Bundle bundle) {
+        if (bundle == null) {
+            return;
+        }
+        mConversationNo = bundle.getString(CONV_NO);
+        mTargetId = bundle.getInt(TARGET_ID, 0);
+        mTargetType = bundle.getString(TARGET_TYPE);
+
+        mTargetRole = IMClient.getClient().getRoleManager().getRole(mTargetType, mTargetId);
+        if (mTargetRole.getRid() == 0) {
+            Role role = new Role();
+            role.setType(mTargetType);
+            role.setRid(mTargetId);
+            if (IMClient.getClient().getRoleManager().createRole(role) > 0) {
+                mTargetRole = role;
+            }
+        }
+    }
+
+    public void setMessageControllerListener(MessageControllerListener listener) {
+        this.mMessageControllerListener = listener;
+    }
+
+    /**
+     * 检查是否有convNo
+     */
+    private void checkConvNo() {
+        ConvEntity convEntity = IMClient.getClient().getConvManager()
+                .getConvByTypeAndId(mTargetType, mTargetId, IMClient.getClient().getClientId());
+        if (convNoIsEmpty(mConversationNo) && convEntity != null) {
+            mConversationNo = convEntity.getConvNo();
+        }
+    }
+
+    protected boolean convNoIsEmpty(String convNo) {
+        return TextUtils.isEmpty(convNo) || "0".equals(convNo);
+    }
+
     protected void initView(View view) {
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
         mMessageListView = (ListView) view.findViewById(R.id.listview);
@@ -129,6 +220,7 @@ public class MessageListFragment extends Fragment {
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
+                addMessageList(mStart);
                 mPtrFrame.refreshComplete();
                 //lvMessage.postDelayed(mListViewSelectRunnable, 100);
             }
@@ -136,13 +228,13 @@ public class MessageListFragment extends Fragment {
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
                 boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                int count = mListAdapter.getCount();
-                return count > 0 && canDoRefresh;
+                return canLoadData && canDoRefresh;
             }
         });
 
+        mMessageSendListener = getMessageSendListener();
         mMessageInputView.setMessageControllerListener(getMessageControllerListener());
-        mMessageInputView.setMessageSendListener(getMessageSendListener());
+        mMessageInputView.setMessageSendListener(mMessageSendListener);
     }
 
     @Override
@@ -156,7 +248,12 @@ public class MessageListFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getActivity().getBaseContext().unregisterReceiver(mAudioDownloadReceiver);
+        if (mAudioPlayer != null) {
+            mAudioPlayer.stop();
+        }
+        if (mResourceStatusReceiver != null) {
+            mContext.unregisterReceiver(mResourceStatusReceiver);
+        }
     }
 
     @Override
@@ -180,35 +277,100 @@ public class MessageListFragment extends Fragment {
 
         IMClient.getClient().addMessageReceiver(mIMMessageReceiver);
         IMClient.getClient().getConvManager().clearReadCount(mConversationNo);
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        getActivity().getBaseContext().registerReceiver(mAudioDownloadReceiver, intentFilter);
     }
 
     protected void handleMessage(MessageEntity messageEntity) {
-        MessageBody messageBody = new MessageBody(messageEntity);
-        Role role = IMClient.getClient().getRoleManager()
-                .getRole(Destination.USER, MessageUtil.parseInt(messageEntity.getFromId()));
-        mListAdapter.addItem(messageBody);
+        insertDataToList(messageEntity);
     }
 
     protected void handleOfflineMessage(List<MessageEntity> messageEntityList) {
-        ArrayList<MessageBody> chatList = new ArrayList<>();
-        for (MessageEntity messageEntity : messageEntityList) {
-            MessageBody messageBody = new MessageBody(messageEntity);
-            chatList.add(messageBody);
-        }
-
-        mListAdapter.addList(chatList);
+        coverMessageEntityStatus(messageEntityList);
+        mListAdapter.addList(messageEntityList);
     }
 
     protected void updateMessageSendStatus(MessageBody messageBody) {
-        //updateSendMsgToListView(PushUtil.MsgDeliveryType.SUCCESS, chat);
-
         ContentValues cv = new ContentValues();
         cv.put("status", MessageEntity.StatusType.SUCCESS);
         IMClient.getClient().getMessageManager().updateMessageFieldByUid(messageBody.getMessageId(), cv);
+
+        MessageEntity messageEntity = IMClient.getClient().getMessageManager().getMessageByUID(messageBody.getMessageId());
+        mListAdapter.updateItem(messageEntity);
+    }
+
+    private void updateMessageReceiveStatus(MessageEntity messageEntity) {
+        ContentValues cv = new ContentValues();
+        cv.put("status", MessageEntity.StatusType.SUCCESS);
+        IMClient.getClient().getMessageManager().updateMessageField(messageEntity.getMsgNo(), cv);
+        mListAdapter.updateItem(messageEntity);
+    }
+
+    /*
+        MessageListItemClickListener
+     */
+    protected MessageListItemController getMessageListItemClickListener() {
+        return new MessageListItemController() {
+
+            @Override
+            public void onAudioClick(String audioFile, AudioPlayStatusListener listener) {
+                if (mAudioPlayer != null) {
+                    mAudioPlayer.stop();
+                }
+                mAudioPlayer = new MessageAudioPlayer(mContext, audioFile, listener);
+                mAudioPlayer.play();
+            }
+
+            @Override
+            public void onImageClick(String imageUrl) {
+                showImageWithFullScreen(imageUrl);
+            }
+
+            @Override
+            public void onErrorClick(int position) {
+            }
+
+            @Override
+            public void onAvatarClick(int userId) {
+                Role role = IMClient.getClient().getRoleManager().getRole(Destination.USER, userId);
+                mMessageControllerListener.onShowUser(role);
+            }
+
+            @Override
+            public void onContentClick(int position) {
+                MessageBody messageBody = new MessageBody(mListAdapter.getItem(position));
+                if (PushUtil.ChatMsgType.MULTI.equals(messageBody.getType())) {
+                    try {
+                        JSONObject jsonObject = new JSONObject(messageBody.getBody());
+                        mMessageControllerListener.onShowWebPage(jsonObject.optString("url"));
+                    } catch (JSONException e) {
+                    }
+                }
+            }
+        };
+    }
+
+    private void showImageWithFullScreen(String imageUrl) {
+        ArrayList<String> imageUrls = getAllMessageImageUrls();
+        int index = 0;
+        int size = imageUrls.size();
+        for (int i = 0; i < size; i++) {
+            if ((imageUrls.get(i).equals(imageUrl))) {
+                index = i;
+                break;
+            }
+        }
+        mMessageControllerListener.onShowImage(index, imageUrls);
+    }
+
+    protected ArrayList<String> getAllMessageImageUrls() {
+        ArrayList<String> imagesUrls = new ArrayList<>();
+        int size = mListAdapter.getCount();
+        for (int i = 0; i < size; i++) {
+            MessageBody messageBody = new MessageBody(mListAdapter.getItem(i));
+            if (PushUtil.ChatMsgType.IMAGE.equals(messageBody.getType())) {
+                imagesUrls.add(messageBody.getBody());
+            }
+        }
+        return imagesUrls;
     }
 
     protected IMMessageReceiver getIMMessageListener() {
@@ -240,7 +402,7 @@ public class MessageListFragment extends Fragment {
 
             @Override
             public ReceiverInfo getType() {
-                return new ReceiverInfo(Destination.COURSE, mConversationNo);
+                return new ReceiverInfo(mTargetType, mConversationNo);
             }
         };
     }
@@ -265,8 +427,8 @@ public class MessageListFragment extends Fragment {
         };
     }
 
-    protected MessageControllerListener getMessageControllerListener() {
-        return new MessageControllerListener() {
+    protected InputViewControllerListener getMessageControllerListener() {
+        return new InputViewControllerListener() {
             @Override
             public void onSelectPhoto() {
                 openPictureFromLocal();
@@ -276,6 +438,13 @@ public class MessageListFragment extends Fragment {
             public void onTakePhoto() {
                 openPictureFromCamera();
             }
+
+            @Override
+            public void onInputViewFocus(boolean isFocus) {
+                if (isFocus) {
+                    mMessageListView.postDelayed(mListViewScrollToBottomRunnable, 50);
+                }
+            }
         };
     }
 
@@ -283,15 +452,136 @@ public class MessageListFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated");
-        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConversationNo).getMessageList(mStart);
 
-        List<MessageBody> messageBodies = new ArrayList<>();
-        for (MessageEntity entity : messageEntityList) {
-            messageBodies.add(new MessageBody(entity));
+        if (convNoIsEmpty(mConversationNo)) {
+            mMessageControllerListener.createConvNo(new MessageControllerListener.ConvNoCreateCallback() {
+                @Override
+                public void onCreateConvNo(String convNo) {
+                    if (convNoIsEmpty(convNo)) {
+                        Log.d(TAG, "mConversationNo is null");
+                        return;
+                    }
+                    Log.d(TAG, "onCreateConvNo " + convNo);
+                    mConversationNo = convNo;
+                    checkTargetRole();
+                }
+            });
+            return;
         }
 
-        mListAdapter.addList(messageBodies);
+        checkTargetRole();
     }
+
+    private void checkTargetRole() {
+        if (mTargetRole.getRid() != 0) {
+            checkConvEntity(mTargetRole);
+            addMessageList(mStart);
+            return;
+        }
+        mMessageControllerListener.createRole(new MessageControllerListener.RoleUpdateCallback() {
+            @Override
+            public void onCreateRole(Role role) {
+                if (mTargetRole.getRid() == 0) {
+                    Log.d(TAG, "mTargetRole is null");
+                    return;
+                }
+                Log.d(TAG, "mTargetRole " + role.getRid());
+                mTargetRole = role;
+                checkConvEntity(role);
+                addMessageList(mStart);
+            }
+        });
+    }
+
+    private void checkConvEntity(Role role) {
+        ConvEntity convEntity = IMClient.getClient().getConvManager().getSingleConv(mConversationNo);
+        if (convEntity == null) {
+            Log.d(TAG, "create ConvNo");
+            convEntity = createConvNo(IMClient.getClient().getClientId(), mConversationNo, role);
+        }
+
+        if ((System.currentTimeMillis() - convEntity.getUpdatedTime()) > EXPAID_TIME) {
+            Log.d(TAG, "update ConvNo");
+            convEntity.setAvatar(role.getAvatar());
+            convEntity.setTargetName(role.getNickname());
+            convEntity.setUpdatedTime(System.currentTimeMillis());
+            IMClient.getClient().getConvManager().updateConv(convEntity);
+        }
+    }
+
+    private ConvEntity createConvNo(int uid, String convNo, Role role) {
+        ConvEntity convEntity = new ConvEntity();
+        convEntity.setTargetId(role.getRid());
+        convEntity.setTargetName(role.getNickname());
+        convEntity.setConvNo(convNo);
+        convEntity.setType(role.getType());
+        convEntity.setAvatar(role.getAvatar());
+        convEntity.setUid(uid);
+        convEntity.setCreatedTime(System.currentTimeMillis());
+        convEntity.setUpdatedTime(0);
+        IMClient.getClient().getConvManager().createConv(convEntity);
+
+        return convEntity;
+    }
+
+    private void coverMessageEntityStatus(List<MessageEntity> messageEntityList) {
+        MessageResourceHelper messageResourceHelper = IMClient.getClient().getResourceHelper();
+        for (MessageEntity messageEntity : messageEntityList) {
+            if (messageEntity.getStatus() != PushUtil.MsgDeliveryType.SUCCESS
+                    && messageResourceHelper.hasTask(messageEntity.getId())) {
+                messageEntity.setStatus(PushUtil.MsgDeliveryType.UPLOADING);
+            }
+        }
+    }
+
+    public void reload() {
+        mListAdapter.clear();
+        mStart = 0;
+        addMessageList(mStart);
+    }
+
+    protected void addMessageList(int start) {
+        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConversationNo).getMessageList(start);
+        if (messageEntityList == null || messageEntityList.isEmpty()) {
+            canLoadData = false;
+            return;
+        }
+        coverMessageEntityStatus(messageEntityList);
+        mListAdapter.addList(messageEntityList);
+        mStart += messageEntityList.size();
+        mMessageListView.postDelayed(mListViewSelectRunnable, 100);
+    }
+
+    private void insertDataToList(MessageEntity messageEntity) {
+        MessageResourceHelper messageResourceHelper = IMClient.getClient().getResourceHelper();
+        if (messageEntity.getStatus() != PushUtil.MsgDeliveryType.SUCCESS
+                && messageResourceHelper.hasTask(messageEntity.getId())) {
+            messageEntity.setStatus(PushUtil.MsgDeliveryType.UPLOADING);
+        }
+        mListAdapter.addItem(messageEntity);
+        mMessageListView.postDelayed(mListViewScrollToBottomRunnable, 50);
+    }
+
+    protected Runnable mListViewScrollToBottomRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mMessageListView != null && mMessageListView.getAdapter() != null) {
+                mMessageListView.smoothScrollToPosition(mListAdapter.getCount());
+            }
+        }
+    };
+    protected Runnable mListViewSelectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mMessageListView != null && mMessageListView.getAdapter() != null) {
+                if (mStart <= 10) {
+                    mMessageListView.setSelection(mStart);
+                    return;
+                }
+                mMessageListView.setSelectionFromTop(mStart - 10, 50);
+            }
+        }
+    };
 
     /**
      * 从图库获取图片
@@ -312,12 +602,33 @@ public class MessageListFragment extends Fragment {
         startActivityForResult(intent, SEND_IMAGE);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if(requestCode == SEND_IMAGE){
+            List<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+            if (pathList == null || pathList.isEmpty()) {
+                return;
+            }
+
+            for (String path : pathList) {
+                MessageHelper messageHelper = new MessageHelper(mContext);
+                File file = messageHelper.compressImageByFile(path);
+                messageHelper.compressTumbImageByFile(file.getAbsolutePath(), SystemUtil.getScreenWidth(mContext));
+                mMessageSendListener.onSendImage(file);
+            }
+        }
+    }
+
     /*
         send msg
      */
-
     private void sendMsg(String content) {
-        MessageBody messageBody = saveMessageToLoacl(content, PushUtil.ChatMsgType.TEXT);
+        MessageBody messageBody = createSendMessageBody(content, PushUtil.ChatMsgType.TEXT);
+        MessageEntity messageEntity = saveMessageToLoacl(messageBody);
+        insertDataToList(messageEntity);
         sendMessageToServer(messageBody);
     }
 
@@ -341,7 +652,7 @@ public class MessageListFragment extends Fragment {
         }
     }
 
-    private void uploadMedia(final File file, final String type) {
+    private void uploadMedia(File file, String type) {
         if (file == null || !file.exists()) {
             //CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
             return;
@@ -351,12 +662,16 @@ public class MessageListFragment extends Fragment {
             if (PushUtil.ChatMsgType.AUDIO.equals(type)) {
                 content = wrapAudioMessageContent(file.getAbsolutePath(), getAudioDuration(file.getAbsolutePath()));
             }
-            MessageBody messageBody = saveMessageToLoacl(content, type);
+
+            MessageBody messageBody = createSendMessageBody(content, type);
+            MessageEntity messageEntity = saveMessageToLoacl(messageBody);
+            insertDataToList(messageEntity);
             IMClient.getClient().getMessageManager().saveUploadEntity(
                     messageBody.getMessageId(), messageBody.getType(), file.getPath()
             );
-            getUpYunUploadInfo(messageBody, file, mTargetRole.getRid());
-            //viewMediaLayout.setVisibility(View.GONE);
+
+            UpYunUploadTask upYunUploadTask = new UpYunUploadTask(messageEntity.getId(), mTargetId, file, mMessageControllerListener.getRequestHeaders());
+            IMClient.getClient().getResourceHelper().addTask(upYunUploadTask);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
@@ -364,7 +679,7 @@ public class MessageListFragment extends Fragment {
 
     private void uploadUnYunMedia(String uploadUrl, final File file, HashMap<String, String> headers, final MessageBody messageBody) {
 
-        AsyncHttpPost post = new AsyncHttpPost(uploadUrl);
+        AsyncHttpRequest post = new AsyncHttpRequest(Uri.parse(uploadUrl), "PUT");
 
         for (Map.Entry<String, String> entry : headers.entrySet()) {
             post.setHeader(entry.getKey(), entry.getValue());
@@ -372,7 +687,6 @@ public class MessageListFragment extends Fragment {
         MultipartFormDataBody body = new MultipartFormDataBody();
         body.addFilePart("file", file);
         post.setBody(body);
-        post.setMethod("PUT");
         AsyncHttpClient.getDefaultInstance().executeString(post, new AsyncHttpClient.StringCallback() {
             @Override
             public void onCompleted(Exception ex, AsyncHttpResponse source, String result) {
@@ -381,13 +695,12 @@ public class MessageListFragment extends Fragment {
                     Log.d(TAG, "upload media res to upyun failed");
                     return;
                 }
-                //sendMessageToServer(messageBody);
+                sendMessageToServer(messageBody);
             }
         });
     }
 
     public void sendMsgAgain(MessageBody messageBody) {
-        //updateSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
         sendMessageToServer(messageBody);
     }
 
@@ -429,14 +742,19 @@ public class MessageListFragment extends Fragment {
 
     public void getUpYunUploadInfo(final MessageBody messageBody, File file, int fromId) {
 
-        String path = String.format(ApiConst.GET_UPLOAD_INFO, fromId, file.length(), file.getName());
+        String path = String.format(ApiConst.PUSH_HOST + ApiConst.GET_UPLOAD_INFO, fromId, file.length(), file.getName());
         AsyncHttpRequest request = new AsyncHttpGet(path);
+
+        for (Map.Entry<String, String> entry : mMessageControllerListener.getRequestHeaders().entrySet()) {
+            request.setHeader(entry.getKey(), entry.getValue());
+        }
         AsyncHttpClient.getDefaultInstance().executeString(request, new AsyncHttpClient.StringCallback() {
             @Override
             public void onCompleted(Exception e, AsyncHttpResponse source, String result) {
                 UpYunUploadCallback upYunUploadCallback = new UpYunUploadCallback(messageBody);
                 if (e != null || TextUtils.isEmpty(result)) {
                     //CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
+                    e.printStackTrace();
                     Log.d(TAG, "get upload info from upyun failed");
                     upYunUploadCallback.success(null);
                     return;
@@ -500,17 +818,11 @@ public class MessageListFragment extends Fragment {
         IMClient.getClient().getConvManager().updateConvField(mConversationNo, cv);
     }
 
-    protected MessageBody saveMessageToLoacl(String content, String type) {
-        MessageBody messageBody = createSendMessageBody(content, type);
-        long sendTime = messageBody.getCreatedTime();
-
+    protected MessageEntity saveMessageToLoacl(MessageBody messageBody) {
         MessageEntity messageEntity = createMessageEntityByBody(messageBody);
-        IMClient.getClient().getMessageManager().createMessage(messageEntity);
+        messageEntity = IMClient.getClient().getMessageManager().createMessage(messageEntity);
         updateConv(messageBody);
-
-        //addSendMsgToListView(PushUtil.MsgDeliveryType.UPLOADING, chat);
-
-        return messageBody;
+        return messageEntity;
     }
 
     private MessageEntity createMessageEntityByBody(MessageBody messageBody) {
@@ -522,6 +834,7 @@ public class MessageListFragment extends Fragment {
                 .addFromId(String.valueOf(messageBody.getSource().getId()))
                 .addFromName(messageBody.getSource().getNickname())
                 .addCmd("message")
+                .addStatus(MessageEntity.StatusType.NONE)
                 .addMsg(messageBody.toJson())
                 .addTime((int) (messageBody.getCreatedTime() / 1000))
                 .builder();
@@ -534,9 +847,9 @@ public class MessageListFragment extends Fragment {
         MessageBody messageBody = new MessageBody(1, type, content);
         messageBody.setCreatedTime(System.currentTimeMillis());
         messageBody.setDestination(new Destination(mTargetRole.getRid(), mTargetRole.getType()));
-        messageBody.getDestination().setNickname(null);
-        messageBody.setSource(new Source(mCurrentId, Destination.USER));
-        messageBody.getSource().setNickname(mTargetRole.getNickname());
+        messageBody.getDestination().setNickname(mTargetRole.getNickname());
+        messageBody.setSource(new Source(IMClient.getClient().getClientId(), Destination.USER));
+        messageBody.getSource().setNickname(IMClient.getClient().getClientName());
         messageBody.setConvNo(mConversationNo);
         messageBody.setMessageId(UUID.randomUUID().toString());
 
@@ -544,7 +857,10 @@ public class MessageListFragment extends Fragment {
     }
 
     private int getAudioDuration(String audioFile) {
-        MediaPlayer mediaPlayer = MediaPlayer.create(getActivity().getBaseContext(), Uri.parse(audioFile));
+        MediaPlayer mediaPlayer = MediaPlayer.create(mContext, Uri.parse(audioFile));
+        if (mediaPlayer == null) {
+            return 0;
+        }
         int duration = mediaPlayer.getDuration();
         mediaPlayer.release();
         return duration;
