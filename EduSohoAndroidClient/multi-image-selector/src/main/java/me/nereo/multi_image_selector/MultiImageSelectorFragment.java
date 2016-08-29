@@ -314,6 +314,10 @@ public class MultiImageSelectorFragment extends Fragment {
                         mTmpFile = null;
                     }
                 }
+
+                if (mCallback != null) {
+                    mCallback.onCameraShot(mTmpFile);
+                }
             }
         }
     }
