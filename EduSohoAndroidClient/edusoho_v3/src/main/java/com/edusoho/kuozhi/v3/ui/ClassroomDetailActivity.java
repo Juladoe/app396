@@ -14,7 +14,9 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
@@ -119,6 +121,8 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                             return;
                         }
                         IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
+                        MessageEngine.getInstance().sendMsgToTaget(
+                                ClassroomDiscussActivity.CLEAR, null, ClassroomDiscussActivity.class);
                     }
                 }
             });

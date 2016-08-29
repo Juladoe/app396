@@ -6,18 +6,20 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.imserver.entity.ConvEntity;
+import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
-import com.edusoho.kuozhi.v3.model.bal.push.Chat;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMProvider;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-
-import java.util.ArrayList;
+import com.edusoho.kuozhi.v3.util.Promise;
 
 import cn.trinea.android.common.util.ToastUtils;
 
@@ -26,13 +28,9 @@ import cn.trinea.android.common.util.ToastUtils;
  */
 public class ClassroomDiscussActivity extends ImChatActivity {
 
-    private String mClassroomName;
+    public static final int CLEAR = 0x10;
 
-    @Override
-    public void initData() {
-        mClassroomName = getIntent().getStringExtra(Const.ACTIONBAR_TITLE);
-        super.initData();
-    }
+    private Classroom mClassRoom;
 
     @Override
     protected String getTargetType() {
@@ -40,37 +38,44 @@ public class ClassroomDiscussActivity extends ImChatActivity {
     }
 
     @Override
-    protected void createChatConvNo() {
-        final LoadDialog loadDialog = LoadDialog.create(this);
-        loadDialog.show();
-        new ClassRoomProvider(mContext).getClassRoom(mFromId)
+    protected Promise createChatConvNo() {
+        final Promise promise = new Promise();
+        User currentUser = getAppSettingProvider().getCurrentUser();
+        if (currentUser == null || currentUser.id == 0) {
+            ToastUtils.show(getBaseContext(), "用户未登录");
+            promise.resolve(null);
+            return promise;
+        }
+
+        new ClassRoomProvider(mContext).getClassRoom(mTargetId)
                 .success(new NormalCallback<Classroom>() {
                     @Override
                     public void success(Classroom classroom) {
                         if (classroom == null || TextUtils.isEmpty(classroom.conversationId)) {
                             ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
-                            loadDialog.dismiss();
                             finish();
                             return;
                         }
+                        mClassRoom = classroom;
+                        promise.resolve(classroom.conversationId);
+                    }
+                });
 
-                        String convNo = classroom.conversationId;
-                        if (convNoIsEmpty(convNo) || convNo.equals(mConversationNo)) {
-                            ToastUtils.show(getBaseContext(), "该班级不支持聊天!");
-                            loadDialog.dismiss();
-                            finish();
-                            return;
-                        }
-                        mConversationNo = convNo;
-                        new IMProvider(mContext).createConvInfoByClassRoom(mConversationNo, classroom)
-                                .success(new NormalCallback<ConvEntity>() {
-                                    @Override
-                                    public void success(ConvEntity convEntity) {
-                                        loadDialog.dismiss();
-                                        setTitle(convEntity.getTargetName());
-                                        initAdapter();
-                                    }
-                                });
+        return promise;
+    }
+
+    @Override
+    protected void createTargetRole(final MessageControllerListener.RoleUpdateCallback callback) {
+        new IMProvider(mContext).createConvInfoByClassRoom(mConversationNo, mClassRoom)
+                .success(new NormalCallback<User>() {
+                    @Override
+                    public void success(User user) {
+                        Role role = new Role();
+                        role.setRid(user.id);
+                        role.setAvatar(user.mediumAvatar);
+                        role.setType(Destination.CLASSROOM);
+                        role.setNickname(user.nickname);
+                        callback.onCreateRole(role);
                     }
                 });
     }
@@ -84,12 +89,12 @@ public class ClassroomDiscussActivity extends ImChatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.group_profile) {
-            mActivity.app.mEngine.runNormalPlugin("ClassroomDetailActivity", mContext, new PluginRunCallback() {
+            CoreEngine.create(mContext).runNormalPlugin("ClassroomDetailActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(Const.ACTIONBAR_TITLE, mClassroomName);
+                    startIntent.putExtra(Const.ACTIONBAR_TITLE, mTargetName);
                     startIntent.putExtra(ChatItemBaseDetail.CONV_NO, mConversationNo);
-                    startIntent.putExtra(Const.FROM_ID, mFromId);
+                    startIntent.putExtra(Const.FROM_ID, mTargetId);
                 }
             });
         }
@@ -97,7 +102,15 @@ public class ClassroomDiscussActivity extends ImChatActivity {
     }
 
     @Override
-    protected ArrayList<Chat> getChatList(int start) {
-        return super.getChatList(start);
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{new MessageType(CLEAR)};
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        super.invoke(message);
+        if (message.type.code == CLEAR) {
+            mMessageListFragment.reload();
+        }
     }
 }

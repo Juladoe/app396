@@ -88,7 +88,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
                 }
 
                 bundle.putInt(ClassroomDiscussActivity.FROM_ID, Integer.valueOf(discussionGroup.id));
-                bundle.putString(Const.ACTIONBAR_TITLE, discussionGroup.title);
+                bundle.putString(ClassroomDiscussActivity.FROM_NAME, discussionGroup.title);
                 CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomDiscussActivity", mContext, bundle);
             }
         });

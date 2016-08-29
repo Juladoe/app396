@@ -119,10 +119,10 @@ public class IMProvider extends ModelProvider {
             public void success(Role role) {
                 updateRole(role);
                 convEntity.setAvatar(role.getAvatar());
-                convEntity.setUid(getAppSettingProvider().getCurrentUser().id);
                 convEntity.setTargetName(role.getNickname());
                 convEntity.setUpdatedTime(System.currentTimeMillis());
                 IMClient.getClient().getConvManager().updateConv(convEntity);
+                Log.d(TAG, "update convEntity" + convEntity.getConvNo());
                 MessageEngine.getInstance().sendMsgToTaget(Const.REFRESH_LIST, null, NewsFragment.class);
             }
         };

@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -33,6 +34,7 @@ import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
+import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -86,6 +88,7 @@ public class NewsFragment extends BaseFragment {
     private View mEmptyView;
     private TextView tvEmptyText;
     private TextView mHeaderView;
+    private ProgressBar mLoadProgressBar;
 
     private LoadingHandler mLoadingHandler;
     private boolean mIsNeedRefresh;
@@ -197,6 +200,7 @@ public class NewsFragment extends BaseFragment {
         MessageBody messageBody = new MessageBody(messageEntity);
         newItem.setContent(messageBody);
         mSwipeAdapter.updateItem(newItem);
+        mSwipeAdapter.setItemToTop(newItem);
     }
 
     private New findItemInList(String convNo) {
@@ -280,6 +284,7 @@ public class NewsFragment extends BaseFragment {
     protected void initView(View view) {
         mParentActivity = (DefaultPageActivity) getActivity();
         mIsNeedRefresh = true;
+        mLoadProgressBar = (ProgressBar) view.findViewById(R.id.news_progressbar);
         lvNewsList = (SwipeMenuListView) view.findViewById(R.id.lv_news_list);
         mEmptyView = view.findViewById(R.id.view_empty);
         tvEmptyText = (TextView) view.findViewById(R.id.tv_empty_text);
@@ -311,20 +316,27 @@ public class NewsFragment extends BaseFragment {
             List<ConvEntity> convEntityList = IMClient.getClient().getConvManager().getConvListByUid(app.loginUser.id);
             mSwipeAdapter.update(coverConvListToNewList(convEntityList));
             setListVisibility(mSwipeAdapter.getCount() == 0);
+            mLoadProgressBar.setVisibility(View.GONE);
         }
     }
 
     private List<New> coverConvListToNewList(List<ConvEntity> convEntityList) {
         List<New> newList = new ArrayList<>();
+        IMRoleManager roleManager = IMClient.getClient().getRoleManager();
         for (ConvEntity convEntity : convEntityList) {
-            newList.add(new New(convEntity));
+            New newItem = new New(convEntity);
+            Role role = roleManager.getRole(convEntity.getType(), 0);
+            if (role.getRid() != 0) {
+                newItem.setImgUrl(role.getAvatar());
+            }
+            newList.add(newItem);
         }
 
         return newList;
     }
 
     private void syncIMData() {
-
+        //new IMProvider()
     }
 
     private SwipeMenuListView.OnMenuItemClickListener mMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {
@@ -355,7 +367,7 @@ public class NewsFragment extends BaseFragment {
                         @Override
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(ImChatActivity.FROM_ID, newItem.fromId);
-                            startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
+                            startIntent.putExtra(ImChatActivity.FROM_NAME, newItem.title);
                             startIntent.putExtra(Const.NEWS_TYPE, newItem.type);
                             startIntent.putExtra(ImChatActivity.CONV_NO, newItem.convNo);
                             startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, newItem.imgUrl);
@@ -367,7 +379,8 @@ public class NewsFragment extends BaseFragment {
                         @Override
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, newItem.fromId);
-                            startIntent.putExtra(Const.ACTIONBAR_TITLE, newItem.title);
+                            startIntent.putExtra(ClassroomDiscussActivity.FROM_NAME, newItem.title);
+                            startIntent.putExtra(ClassroomDiscussActivity.CONV_NO, newItem.convNo);
                         }
                     });
                     break;

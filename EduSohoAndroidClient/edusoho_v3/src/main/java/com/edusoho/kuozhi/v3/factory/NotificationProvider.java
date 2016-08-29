@@ -26,13 +26,14 @@ public class NotificationProvider extends AbstractProvider {
         notificationManager.cancel(convNoHashCode);
     }
 
-    public void showNotification(int notifiId, String title, String content, Intent notifyIntent)  {
+    public void showNotification(boolean mute, int notifiId, String title, String content, Intent notifyIntent)  {
         NotificationManager notificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notifiId, createNotification(title, content, notifyIntent));
+        notificationManager.notify(notifiId, createNotification(mute, title, content, notifyIntent));
     }
 
-    private Notification createNotification(String title, String content, Intent notifyIntent) {
+    private Notification createNotification(boolean mute, String title, String content, Intent notifyIntent) {
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mContext).setWhen(System.currentTimeMillis())
                         .setSmallIcon(R.mipmap.ic_launcher)
@@ -44,7 +45,11 @@ public class NotificationProvider extends AbstractProvider {
         mBuilder.setContentIntent(pendIntent);
         mBuilder.setPriority(Notification.PRIORITY_HIGH);
         mBuilder.setCategory(Notification.CATEGORY_MESSAGE);
-        mBuilder.setDefaults(Notification.DEFAULT_LIGHTS | EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate);
+        int config = Notification.DEFAULT_LIGHTS;
+        if (!mute) {
+            config = config | EdusohoApp.app.config.msgSound | EdusohoApp.app.config.msgVibrate;
+        }
+        mBuilder.setDefaults(config);
         return mBuilder.build();
     }
 }

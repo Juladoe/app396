@@ -138,17 +138,8 @@ public class ChatSelectFragment extends AbstractChatSendFragment {
 
     private List<New> filterChatSelectList(List<ConvEntity> convEntityList) {
         List<New> news = new ArrayList<>();
-        String[] types = new String[]{
-                PushUtil.ChatUserType.USER,
-                PushUtil.ChatUserType.FRIEND,
-                PushUtil.ChatUserType.TEACHER,
-                PushUtil.ChatUserType.CLASSROOM,
-                PushUtil.ChatUserType.COURSE
-        };
         for (ConvEntity item : convEntityList) {
-            if (CommonUtil.inArray(item.getType(), types)) {
-                news.add(new New(item));
-            }
+            news.add(new New(item));
         }
 
         return news;

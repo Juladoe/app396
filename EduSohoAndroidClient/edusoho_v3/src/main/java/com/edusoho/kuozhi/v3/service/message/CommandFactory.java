@@ -11,7 +11,7 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
  */
 public class CommandFactory {
 
-    public static AbstractCommand create(Context context, IMMessageReceiver receiver, MessageBody messageBody) {
+    public static AbstractCommand create(Context context, String cmd, IMMessageReceiver receiver, MessageBody messageBody) {
 
         String toType = messageBody.getDestination().getType();
         String bodyType = messageBody.getType();
@@ -22,11 +22,11 @@ public class CommandFactory {
             case PushUtil.ChatMsgType.TEXT:
             case PushUtil.ChatMsgType.MULTI:
                 if (PushUtil.ChatUserType.CLASSROOM.equals(toType)) {
-                    return new DiscussMsgCommand(context, receiver, messageBody);
+                    return new DiscussMsgCommand(context, cmd, receiver, messageBody);
                 } else if (PushUtil.ChatUserType.USER.equals(toType)) {
-                    return new MessageCommand(context, receiver, messageBody);
+                    return new MessageCommand(context, cmd, receiver, messageBody);
                 } else if (PushUtil.ChatUserType.COURSE.equals(toType)) {
-                    return new DiscussMsgCommand(context, receiver, messageBody);
+                    return new DiscussMsgCommand(context, cmd, receiver, messageBody);
                 }
                 break;
             case PushUtil.ChatMsgType.PUSH:
@@ -39,7 +39,7 @@ public class CommandFactory {
     {
         public EmptyCommand(Context context, IMMessageReceiver receiver, MessageBody messageBody)
         {
-            super(context, receiver, messageBody);
+            super(context, "", receiver, messageBody);
         }
 
         @Override

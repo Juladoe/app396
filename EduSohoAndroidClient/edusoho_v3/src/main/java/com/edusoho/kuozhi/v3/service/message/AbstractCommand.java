@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
@@ -23,11 +24,13 @@ import com.google.gson.Gson;
  */
 public abstract class AbstractCommand {
 
+    private String cmd;
     protected MessageBody mMessageBody;
     protected Context mContext;
     protected IMMessageReceiver mReceiver;
 
-    public AbstractCommand(Context context, IMMessageReceiver receiver, MessageBody messageBody) {
+    public AbstractCommand(Context context, String cmd, IMMessageReceiver receiver, MessageBody messageBody) {
+        this.cmd = cmd;
         this.mContext = context;
         this.mReceiver = receiver;
         this.mMessageBody = messageBody;
@@ -47,7 +50,7 @@ public abstract class AbstractCommand {
     protected void showNotification() {
         String[] content = getNotificationContent();
         getNotificationProvider().showNotification(
-                mMessageBody.getConvNo().hashCode(), content[0], content[1], getNotifyIntent());
+                "offlineMsg".equals(cmd), mMessageBody.getConvNo().hashCode(), content[0], content[1], getNotifyIntent());
     }
 
     protected String getNotificationTitle() {
@@ -79,26 +82,32 @@ public abstract class AbstractCommand {
     }
 
     protected String[] getNotificationContent() {
-        String content = "";
+        String content, title = "你有一条新消息";
         String type = mMessageBody.getType();
+        String nickname = mMessageBody.getSource().getNickname();
+        ConvEntity convEntity = IMClient.getClient().getConvManager().getSingleConv(mMessageBody.getConvNo());
+        int unRead = convEntity == null ? 0 : convEntity.getUnRead();
         switch (type) {
             case PushUtil.ChatMsgType.IMAGE:
-                content = String.format("[%s]", Const.MEDIA_IMAGE);
+                content = String.format("[%d条]%s:[%s]", unRead, nickname, Const.MEDIA_IMAGE);
                 break;
             case PushUtil.ChatMsgType.AUDIO:
-                content = String.format("[%s]", Const.MEDIA_AUDIO);
+                content = String.format("[%d条]%s:[%s]",  unRead, nickname, Const.MEDIA_AUDIO);
                 break;
             case PushUtil.ChatMsgType.MULTI:
                 RedirectBody redirectBody = new Gson().fromJson(mMessageBody.getBody(), RedirectBody.class);
-                content = redirectBody.content;
+                content = String.format("[%d条]%s:%s",  unRead, nickname, redirectBody == null ? "" : redirectBody.content);
                 break;
             case PushUtil.ChatMsgType.TEXT:
-                content = String.format("%s:%s", mMessageBody.getSource().getNickname(), mMessageBody.getBody());
+                content = String.format("[%d条]%s:%s",  unRead, mMessageBody.getSource().getNickname(), mMessageBody.getBody());
                 break;
             default:
                 content = "你有一条新消息";
         }
-
-        return new String[]{"你有一条新消息", content};
+        if (Destination.CLASSROOM.equals(mMessageBody.getDestination().getType())
+                || Destination.COURSE.equals(mMessageBody.getDestination().getType())) {
+            title = String.format("%s(讨论组)", mMessageBody.getDestination().getNickname());
+        }
+        return new String[]{title, content};
     }
 }

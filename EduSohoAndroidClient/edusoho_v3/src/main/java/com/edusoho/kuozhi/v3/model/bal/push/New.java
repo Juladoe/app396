@@ -174,7 +174,7 @@ public class New implements Serializable {
         fromId = getFromIdByType(messageBody);
         setContent(messageBody);
         createdTime = messageBody.getCreatedTime();
-        type = messageBody.getSource().getType();
+        type = messageBody.getDestination().getType();
         title = getTitleNameByType(messageBody);
     }
 

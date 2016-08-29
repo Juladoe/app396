@@ -12,6 +12,8 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
@@ -321,6 +323,15 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         });
         userResult.token = mActivity.app.token;
         mActivity.app.saveToken(userResult);
+
+        User user = userResult.user;
+        if (user != null) {
+            Role role = new Role();
+            role.setRid(user.id);
+            role.setNickname(user.nickname);
+            role.setAvatar(user.mediumAvatar);
+            IMClient.getClient().getRoleManager().updateRole(role);
+        }
 
         Bundle bundle = new Bundle();
         bundle.putInt("id", userResult.user.id);

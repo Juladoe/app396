@@ -27,7 +27,7 @@ public class PushMsgCommand extends AbstractCommand {
     private static final String TAG = "PushMsgCommand";
 
     public PushMsgCommand(Context context, IMMessageReceiver receiver, MessageBody messageBody) {
-        super(context, receiver, messageBody);
+        super(context, "push", receiver, messageBody);
     }
 
     @Override

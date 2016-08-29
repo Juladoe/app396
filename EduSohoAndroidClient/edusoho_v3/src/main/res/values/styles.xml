@@ -92,7 +92,7 @@
         <item name="actionBarStyle">@style/EdusohoActionBarStyle</item>
         <item name="homeAsUpIndicator">@drawable/action_bar_back</item>
         <item name="android:homeAsUpIndicator">@drawable/action_bar_back</item>
-        <item name="android:windowAnimationStyle">@style/EdusohoActivityAnim</item>
+        <item name="android:windowAnimationStyle">@style/SlideToWindowAnimTheme</item>
         <item name="actionBarSize">44dp</item>
         <item name="colorAccent">@color/primary</item>
         <item name="colorPrimary">@color/primary</item>
@@ -106,6 +106,13 @@
     <style name="EdusohoActivityAnim">
         <item name="@android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
         <item name="@android:activityOpenExitAnimation">@anim/activity_open_exit</item>
+    </style>
+
+    <style name="SlideToWindowAnimTheme">
+        <item name="android:activityOpenEnterAnimation">@anim/in_from_right</item>
+        <item name="android:activityOpenExitAnimation">@anim/out_from_left</item>
+        <item name="android:activityCloseEnterAnimation">@anim/in_from_left</item>
+        <item name="android:activityCloseExitAnimation">@anim/out_from_right</item>
     </style>
 
     <style name="EdusohoActionBarMenuTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">
@@ -183,11 +190,13 @@
         <item name="colorPrimaryDark">@color/primary_fb</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="actionBarSize">44dp</item>
+        <item name="android:windowAnimationStyle">@style/SlideToWindowAnimTheme</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="AppViewPaperTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowAnimationStyle">@style/EdusohoActivityAnim</item>
         <item name="android:windowIsTranslucent">true</item>
     </style>
 

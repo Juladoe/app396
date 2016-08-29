@@ -117,7 +117,7 @@ public class FriendFragment extends BaseFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(ImChatActivity.FROM_ID, friend.id);
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, friend.nickname);
+                        startIntent.putExtra(ImChatActivity.FROM_NAME, friend.nickname);
                         startIntent.putExtra(Const.NEWS_TYPE, CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), friend.roles) ?
                                 PushUtil.ChatUserType.TEACHER : PushUtil.ChatUserType.FRIEND);
                         startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, friend.mediumAvatar);

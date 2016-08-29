@@ -152,7 +152,7 @@
 
     <plugin
         name="DiscussFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.IMDiscussFragment"
+        package="com.edusoho.kuozhi.imserver.ui.MessageListFragment"
         version="1.0" />
 
     <plugin

@@ -77,8 +77,8 @@ public class IMServiceProvider extends ModelProvider {
         IMClient.getClient().start(
                 clientId,
                 clientName,
-                new ArrayList<String>(hostMap.keySet()),
-                new ArrayList<String>(hostMap.values())
+                new ArrayList(hostMap.keySet()),
+                new ArrayList(hostMap.values())
         );
 
         IMClient.getClient().addGlobalIMMessageReceiver(new IMMessageReceiver() {
@@ -139,6 +139,6 @@ public class IMServiceProvider extends ModelProvider {
         if (messageBody == null) {
             return;
         }
-        CommandFactory.create(mContext, receiver, messageBody).invoke();
+        CommandFactory.create(mContext, messageEntity.getCmd(), receiver, messageBody).invoke();
     }
 }

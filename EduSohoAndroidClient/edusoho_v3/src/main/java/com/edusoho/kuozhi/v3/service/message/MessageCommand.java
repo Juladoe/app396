@@ -11,9 +11,9 @@ import com.edusoho.kuozhi.v3.model.provider.IMProvider;
  */
 public class MessageCommand extends AbstractCommand {
 
-    public MessageCommand(Context context, IMMessageReceiver receiver, MessageBody messageBody)
+    public MessageCommand(Context context, String cmd, IMMessageReceiver receiver, MessageBody messageBody)
     {
-        super(context, receiver, messageBody);
+        super(context, cmd, receiver, messageBody);
     }
 
     @Override

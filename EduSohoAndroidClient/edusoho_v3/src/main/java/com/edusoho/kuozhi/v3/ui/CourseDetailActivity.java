@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
@@ -48,6 +49,12 @@ import java.util.List;
 public class CourseDetailActivity extends ChatItemBaseDetail {
 
     private CourseDetailsResult mCourseResult;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setBackMode(BACK, getIntent().getStringExtra(Const.ACTIONBAR_TITLE));
+    }
 
     @Override
     protected void initView() {
@@ -125,6 +132,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                             return;
                         }
                         IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
+                        MessageEngine.getInstance().sendMsgToTaget(NewsCourseActivity.CLEAR, null, NewsCourseActivity.class);
                     }
                 }
             });

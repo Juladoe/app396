@@ -12,31 +12,47 @@ import android.widget.RadioGroup;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.entity.Role;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
+import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.NotificationUtil;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import cn.trinea.android.common.util.ToastUtils;
 
 /**
  * Created by JesseHuang on 15/9/16.
  */
 public class NewsCourseActivity extends ActionBarBaseActivity {
+
+    public static final int CLEAR = 0x10;
+
     public static final String COURSE_ID = "course_id";
     public static final String SHOW_TYPE = "show_type";
     public static final String CONV_NO = "conv_no";
@@ -52,7 +68,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private String mFragmentType;
     private String mCurrentFragmentTag;
     private String mUserTypeInCourse;
-
+    private Course mCourse;
     private Handler mHandler;
 
     @Override
@@ -92,6 +108,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                     ToastUtils.show(mContext, "课程信息不存在!");
                     return;
                 }
+                mCourse = courseDetailsResult.course;
                 int userId = getAppSettingProvider().getCurrentUser().id;
                 checkUserRole(userId);
             }
@@ -130,6 +147,8 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         } else {
             if (tag.equals(mFragmentTags[0])) {
                 fragment = app.mEngine.runPluginWithFragment(tag, mActivity, mStudyPluginFragmentCallback);
+                mMessageListFragment = (MessageListFragment) fragment;
+                initChatRoomController((MessageListFragment) fragment);
             } else if (tag.equals(mFragmentTags[1])) {
                 fragment = app.mEngine.runPluginWithFragment(tag, mActivity, mStudyPluginFragmentCallback);
             } else if (tag.equals(mFragmentTags[2])) {
@@ -170,8 +189,10 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private PluginFragmentCallback mStudyPluginFragmentCallback = new PluginFragmentCallback() {
         @Override
         public void setArguments(Bundle bundle) {
+            bundle.putString(MessageListFragment.CONV_NO, getIntent().getStringExtra(CONV_NO));
+            bundle.putInt(MessageListFragment.TARGET_ID, mCourseId);
             bundle.putInt(Const.COURSE_ID, mCourseId);
-            bundle.putString(CONV_NO, getIntent().getStringExtra(CONV_NO));
+            bundle.putString(MessageListFragment.TARGET_TYPE, Destination.COURSE);
         }
     };
 
@@ -189,6 +210,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
+                    startIntent.putExtra(Const.FROM_ID, mCourseId);
                     startIntent.putExtra(ChatItemBaseDetail.CONV_NO, getIntent().getStringExtra(CONV_NO));
                 }
             });
@@ -202,18 +224,16 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         String source = this.getClass().getSimpleName();
         return new MessageType[]{
                 new MessageType(Const.ADD_COURSE_DISCUSS_MSG, source),
-                new MessageType(Const.TOKEN_LOSE)
+                new MessageType(Const.TOKEN_LOSE),
+                new MessageType(CLEAR)
         };
     }
 
     @Override
     public void invoke(WidgetMessage message) {
         processMessage(message);
-        MessageType messageType = message.type;
-        switch (messageType.code) {
-            case Const.ADD_COURSE_DISCUSS_MSG:
-
-            default:
+        if (message.type.code == CLEAR) {
+            mMessageListFragment.reload();
         }
     }
 
@@ -264,5 +284,108 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             public void onErrorResponse(VolleyError error) {
             }
         });
+    }
+
+    /*
+        MessageControllerListener
+     */
+    private MessageListFragment mMessageListFragment;
+
+    private void initChatRoomController(MessageListFragment messageListFragment) {
+        messageListFragment.setMessageControllerListener(getMessageControllerListener());
+    }
+
+    private MessageControllerListener getMessageControllerListener() {
+        return new MessageControllerListener() {
+            @Override
+            public void createConvNo(final ConvNoCreateCallback callback) {
+                final LoadDialog loadDialog = LoadDialog.create(mActivity);
+                loadDialog.show();
+                createChatConvNo().then(new PromiseCallback<String>() {
+                    @Override
+                    public Promise invoke(String convNo) {
+                        loadDialog.dismiss();
+                        callback.onCreateConvNo(convNo);
+                        return null;
+                    }
+                });
+            }
+
+            @Override
+            public void createRole(RoleUpdateCallback callback) {
+                createTargetRole(callback);
+            }
+
+            @Override
+            public Map<String, String> getRequestHeaders() {
+                HashMap map = new HashMap();
+                map.put("Auth-Token", app.apiToken);
+                return map;
+            }
+
+            @Override
+            public void onShowImage(int index, ArrayList<String> imageList) {
+                Bundle bundle = new Bundle();
+                bundle.putInt("index", index);
+                bundle.putStringArrayList("imageList", imageList);
+                CoreEngine.create(mContext).runNormalPluginWithBundle("ViewPagerActivity", mContext, bundle);
+            }
+
+            @Override
+            public void onShowUser(Role role) {
+                Bundle bundle = new Bundle();
+                School school = getAppSettingProvider().getCurrentSchool();
+                bundle.putString(Const.WEB_URL, String.format(
+                        Const.MOBILE_APP_URL,
+                        school.url + "/",
+                        String.format(Const.USER_PROFILE, role.getRid()))
+                );
+                CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
+            }
+
+            @Override
+            public void onShowWebPage(String url) {
+                Bundle bundle = new Bundle();
+                bundle.putString(Const.WEB_URL, url);
+                CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
+            }
+        };
+    }
+
+    protected Promise createChatConvNo() {
+        final Promise promise = new Promise();
+        User currentUser = getAppSettingProvider().getCurrentUser();
+        if (currentUser == null || currentUser.id == 0) {
+            ToastUtils.show(getBaseContext(), "用户未登录");
+            promise.resolve(null);
+            return promise;
+        }
+
+        new CourseProvider(mContext).getCourse(mCourseId)
+                .success(new NormalCallback<CourseDetailsResult>() {
+                    @Override
+                    public void success(CourseDetailsResult courseDetailsResult) {
+                        if (courseDetailsResult == null
+                                || courseDetailsResult.course == null
+                                || courseDetailsResult.course.conversationId != null
+                                ) {
+                            ToastUtils.show(mContext, "创建聊天失败!");
+                            return;
+                        }
+                        mCourse = courseDetailsResult.course;
+                        promise.resolve(courseDetailsResult.course.conversationId);
+                    }
+                });
+
+        return promise;
+    }
+
+    protected void createTargetRole(MessageControllerListener.RoleUpdateCallback callback) {
+        Role role = new Role();
+        role.setRid(mCourse.id);
+        role.setAvatar(mCourse.middlePicture);
+        role.setType(Destination.COURSE);
+        role.setNickname(mCourse.title);
+        callback.onCreateRole(role);
     }
 }

@@ -16,8 +16,8 @@ public class DiscussMsgCommand extends AbstractCommand {
 
     private static final String TAG = "DiscussMsgCommand";
 
-    public DiscussMsgCommand(Context context, IMMessageReceiver receiver, MessageBody messageBody) {
-        super(context, receiver, messageBody);
+    public DiscussMsgCommand(Context context, String cmd, IMMessageReceiver receiver, MessageBody messageBody) {
+        super(context, cmd, receiver, messageBody);
     }
 
     @Override
