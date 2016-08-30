@@ -66,11 +66,14 @@ public class IMClient {
         mIMConnectStatusListenerList = new LinkedList<>();
     }
 
-    public void init(Context context, String dbName) {
+    public void init(Context context) {
         this.mContext = context;
         this.mMessageResourceHelper = new MessageResourceHelper(mContext);
-        DbManagerFactory.getDefaultFactory().setDbName(dbName);
         registIMServiceStatusBroadcastReceiver();
+    }
+
+    public void setIMDataBase(String dbName) {
+        DbManagerFactory.getDefaultFactory().setDbName(dbName);
     }
 
     private void registIMServiceStatusBroadcastReceiver() {

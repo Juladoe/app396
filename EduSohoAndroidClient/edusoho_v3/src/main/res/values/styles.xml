@@ -104,8 +104,8 @@
     </style>
 
     <style name="EdusohoActivityAnim">
-        <item name="@android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
-        <item name="@android:activityOpenExitAnimation">@anim/activity_open_exit</item>
+        <item name="android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_open_exit</item>
     </style>
 
     <style name="SlideToWindowAnimTheme">

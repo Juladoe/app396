@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.listener;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -42,9 +43,11 @@ public class AvatarLoadingListener implements ImageLoadingListener {
     private void setAvatarImage(ImageView imageView) {
         if (mType == null) {
             imageView.setPadding(0, 0, 0, 0);
+            imageView.setBackgroundColor(Color.TRANSPARENT);
             imageView.setImageResource(R.drawable.default_avatar);
             return;
         }
+        imageView.setBackgroundColor(Color.TRANSPARENT);
         switch (mType) {
             case PushUtil.ChatUserType.FRIEND:
             case PushUtil.ChatUserType.TEACHER:

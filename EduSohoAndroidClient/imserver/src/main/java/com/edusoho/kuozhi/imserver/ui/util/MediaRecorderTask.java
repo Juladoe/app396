@@ -57,7 +57,7 @@ public class MediaRecorderTask extends AsyncTask<Void, Integer, Boolean> {
             if (mStopRecord) {
                 //结束录音
                 mUploadAudio = mAudioRecord.stop(mCancelSave);
-                int audioLength = mAudioRecord.getAudioLength();
+                long audioLength = mAudioRecord.getAudioLength();
                 if (audioLength >= 1) {
                     Log.d(TAG, "上传成功");
                 } else {

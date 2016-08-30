@@ -52,6 +52,16 @@
             android:background="@drawable/chat_text_from_layout"
             android:layout_toRightOf="@id/tv_avatar"></FrameLayout>
 
+        <ImageView
+            android:id="@+id/tv_unread_view"
+            android:visibility="gone"
+            android:layout_marginLeft="6dp"
+            android:layout_alignTop="@id/tv_container"
+            android:layout_toRightOf="@id/tv_container"
+            android:src="@drawable/message_unread_tag"
+            android:layout_width="8dp"
+            android:layout_height="8dp" />
+
         <ProgressBar
             android:id="@+id/tv_status_pbar"
             style="?android:attr/progressBarStyleSmall"
@@ -74,14 +84,14 @@
 
         <TextView
             android:layout_toRightOf="@id/tv_container"
-            android:layout_alignTop="@id/tv_container"
+            android:layout_alignBottom="@id/tv_container"
             android:id="@+id/tv_audio_length"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="top|right"
-            android:layout_marginLeft="4dp"
+            android:padding="6dp"
             android:textColor="@color/grey_666666"
-            android:textSize="@dimen/small_font_size"
+            android:textSize="@dimen/x_small_font_size"
             android:visibility="gone" />
 
     </RelativeLayout>

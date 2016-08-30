@@ -35,9 +35,6 @@ public class ResourceStatusReceiver extends BroadcastReceiver {
             int taskType = intent.getIntExtra(TASK_TYPE, ITaskStatusListener.UPLOAD);
             String resUri = intent.getStringExtra(RES_URI);
 
-            if (TextUtils.isEmpty(resUri)) {
-                return;
-            }
             if (taskType == ITaskStatusListener.UPLOAD) {
                 mStatusReceiverCallback.onResourceStatusInvoke(resId, resUri);
                 return;

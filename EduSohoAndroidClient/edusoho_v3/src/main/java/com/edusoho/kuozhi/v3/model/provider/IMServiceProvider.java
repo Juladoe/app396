@@ -48,6 +48,7 @@ public class IMServiceProvider extends ModelProvider {
     }
 
     private void connectServer(final int clientId, final String clientName) {
+        IMClient.getClient().setIMDataBase(String.format("%s_%d", getDomain(), clientId));
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.CONNECTING);
         new SystemProvider(mContext).getImServerHosts().success(new NormalCallback<LinkedHashMap>() {
             @Override
@@ -73,7 +74,6 @@ public class IMServiceProvider extends ModelProvider {
     }
 
     private void successBindImserver(int clientId, String clientName, LinkedHashMap hostMap) {
-        IMClient.getClient().init(mContext.getApplicationContext(), getDomain());
         IMClient.getClient().start(
                 clientId,
                 clientName,
@@ -116,7 +116,6 @@ public class IMServiceProvider extends ModelProvider {
     private void errorBindImServer() {
         Log.d("IMServiceProvider", "bindServer error");
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.ERROR);
-        IMClient.getClient().init(mContext.getApplicationContext(), getDomain());
     }
 
     public synchronized void bindServer(int clientId, String clientName) {

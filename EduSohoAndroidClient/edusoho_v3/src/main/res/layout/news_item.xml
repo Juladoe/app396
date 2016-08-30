@@ -88,11 +88,11 @@
                     android:background="@drawable/role_course_bg"
                     android:gravity="center"
                     android:paddingBottom="2dp"
-                    android:paddingLeft="6dp"
-                    android:paddingRight="6dp"
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
                     android:paddingTop="2dp"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/x_small_font_size"
+                    android:textSize="@dimen/xx_small_font_size"
                     android:visibility="visible"/>
 
             </RelativeLayout>

@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.ui.adapter.MessageListAdapter;
 import com.edusoho.kuozhi.imserver.ui.broadcast.ResourceStatusReceiver;
+import com.edusoho.kuozhi.imserver.ui.entity.AudioBody;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.ui.entity.UpYunUploadResult;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
@@ -41,12 +42,15 @@ import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.util.ApiConst;
+import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
 import com.edusoho.kuozhi.imserver.ui.util.MessageAudioPlayer;
+import com.edusoho.kuozhi.imserver.ui.util.ResourceDownloadTask;
 import com.edusoho.kuozhi.imserver.ui.util.UpYunUploadTask;
 import com.edusoho.kuozhi.imserver.ui.view.MessageInputView;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
+import com.edusoho.kuozhi.imserver.util.TimeUtil;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.AsyncHttpGet;
 import com.koushikdutta.async.http.AsyncHttpPost;
@@ -61,6 +65,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -147,8 +152,17 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         if (messageEntity == null) {
             return;
         }
-        messageEntity.setStatus(PushUtil.MsgDeliveryType.SUCCESS);
-        updateMessageReceiveStatus(messageEntity);
+        if (TextUtils.isEmpty(resUri)) {
+            updateMessageReceiveStatus(messageEntity, MessageEntity.StatusType.FAILED);
+            return;
+        }
+
+        MessageBody messageBody = new MessageBody(messageEntity);
+        if (PushUtil.ChatMsgType.AUDIO.equals(messageBody.getType())) {
+            updateMessageReceiveStatus(messageEntity, MessageEntity.StatusType.UNREAD);
+            return;
+        }
+        updateMessageReceiveStatus(messageEntity, MessageEntity.StatusType.SUCCESS);
     }
 
     @Override
@@ -159,13 +173,17 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             return;
         }
 
+        if (resUri == null || TextUtils.isEmpty(resUri)) {
+            updateMessageReceiveStatus(messageEntity, MessageEntity.StatusType.FAILED);
+            return;
+        }
+
         MessageBody messageBody = new MessageBody(messageEntity);
-        IMUploadEntity uploadEntity = IMClient.getClient().getMessageManager()
-                .getUploadEntity(messageBody.getMessageId());
-        File file = new File(uploadEntity.getSource());
         String body = resUri;
         if (PushUtil.ChatMsgType.AUDIO.equals(messageBody.getType())) {
-            body = wrapAudioMessageContent(resUri, getAudioDuration(file.getAbsolutePath()));
+            AudioBody audioBody = AudioUtil.getAudioBody(messageBody.getBody());
+            audioBody.setFile(resUri);
+            body = audioBody.toString();
         }
         messageBody.setBody(body);
         sendMessageToServer(messageBody);
@@ -222,7 +240,6 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             public void onRefreshBegin(PtrFrameLayout frame) {
                 addMessageList(mStart);
                 mPtrFrame.refreshComplete();
-                //lvMessage.postDelayed(mListViewSelectRunnable, 100);
             }
 
             @Override
@@ -254,6 +271,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         if (mResourceStatusReceiver != null) {
             mContext.unregisterReceiver(mResourceStatusReceiver);
         }
+        mListAdapter.destory();
     }
 
     @Override
@@ -297,10 +315,11 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         mListAdapter.updateItem(messageEntity);
     }
 
-    private void updateMessageReceiveStatus(MessageEntity messageEntity) {
+    private void updateMessageReceiveStatus(MessageEntity messageEntity, int status) {
         ContentValues cv = new ContentValues();
-        cv.put("status", MessageEntity.StatusType.SUCCESS);
+        cv.put("status", status);
         IMClient.getClient().getMessageManager().updateMessageField(messageEntity.getMsgNo(), cv);
+        messageEntity.setStatus(status);
         mListAdapter.updateItem(messageEntity);
     }
 
@@ -311,12 +330,19 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         return new MessageListItemController() {
 
             @Override
-            public void onAudioClick(String audioFile, AudioPlayStatusListener listener) {
+            public void onAudioClick(int position, String audioFile, AudioPlayStatusListener listener) {
                 if (mAudioPlayer != null) {
                     mAudioPlayer.stop();
                 }
                 mAudioPlayer = new MessageAudioPlayer(mContext, audioFile, listener);
                 mAudioPlayer.play();
+
+                MessageEntity messageEntity = mListAdapter.getItem(position);
+                if (messageEntity.getStatus() == MessageEntity.StatusType.SUCCESS) {
+                    return;
+                }
+                updateMessageReceiveStatus(messageEntity, MessageEntity.StatusType.SUCCESS);
+                mListAdapter.updateItem(messageEntity);
             }
 
             @Override
@@ -346,6 +372,61 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 }
             }
         };
+    }
+
+    private void handleErrorMessage(MessageEntity messageEntity) {
+        MessageBody messageBody = new MessageBody(messageEntity);
+        switch (messageBody.getType()) {
+            case PushUtil.ChatMsgType.TEXT:
+            case PushUtil.ChatMsgType.MULTI:
+                sendMessageToServer(messageBody);
+                break;
+            case PushUtil.ChatMsgType.AUDIO:
+                if (IMClient.getClient().getClientId() == messageBody.getSource().getId()) {
+                    sendMediaMessageAgain(messageBody);
+                    return;
+                }
+                //receive
+                receiveAudioMessageAgain(messageBody);
+            case PushUtil.ChatMsgType.IMAGE:
+                if (IMClient.getClient().getClientId() == messageBody.getSource().getId()) {
+                    sendMediaMessageAgain(messageBody);
+                    return;
+                }
+                receiveImageMessageAgain(messageBody);
+        }
+    }
+
+    private void sendMediaMessageAgain(MessageBody messageBody) {
+        IMUploadEntity uploadEntity = IMClient.getClient().getMessageManager()
+                .getUploadEntity(messageBody.getMessageId());
+        if (uploadEntity == null) {
+            SystemUtil.toast(mContext, "媒体文件不存在,请重新发送消息");
+            return;
+        }
+        File audioFile = new File(uploadEntity.getSource());
+        uploadAudio(audioFile, TimeUtil.getAudioDuration(mContext, uploadEntity.getSource()));
+    }
+
+    private void receiveAudioMessageAgain(MessageBody messageBody) {
+        AudioBody audioBody = AudioUtil.getAudioBody(messageBody.getBody());
+        try {
+            File realFile = new MessageHelper(mContext).createAudioFile(audioBody.getFile());
+            ResourceDownloadTask downloadTask = new ResourceDownloadTask(mContext, messageBody.getMid(), audioBody.getFile(), realFile);
+            IMClient.getClient().getResourceHelper().addTask(downloadTask);
+        } catch (IOException e) {
+            SystemUtil.toast(mContext, "音频文件不存在,请重新发送语音消息");
+        }
+    }
+
+    private void receiveImageMessageAgain(MessageBody messageBody) {
+        try {
+            File realFile = new MessageHelper(mContext).createImageFile(messageBody.getBody());
+            ResourceDownloadTask downloadTask = new ResourceDownloadTask(mContext, messageBody.getMid(), messageBody.getBody(), realFile);
+            IMClient.getClient().getResourceHelper().addTask(downloadTask);
+        } catch (IOException e) {
+            SystemUtil.toast(mContext, "图片文件不存在,请重新发送语音消息");
+        }
     }
 
     private void showImageWithFullScreen(String imageUrl) {
@@ -381,12 +462,14 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                     return true;
                 }
                 handleMessage(msg);
+                IMClient.getClient().getConvManager().clearReadCount(mConversationNo);
                 return true;
             }
 
             @Override
             public boolean onOfflineMsgReceiver(List<MessageEntity> messageEntities) {
                 handleOfflineMessage(messageEntities);
+                IMClient.getClient().getConvManager().clearReadCount(mConversationNo);
                 return false;
             }
 
@@ -416,13 +499,17 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             }
 
             @Override
-            public void onSendAudio(File audioFile) {
-                uploadMedia(audioFile, PushUtil.ChatMsgType.AUDIO);
+            public void onSendAudio(File audioFile, int audioLength) {
+                if (audioFile == null || !audioFile.exists()) {
+                    SystemUtil.toast(mContext, "音频文件不存在,请重新录制");
+                    return;
+                }
+                uploadAudio(audioFile, audioLength);
             }
 
             @Override
             public void onSendImage(File imageFile) {
-                uploadMedia(imageFile, PushUtil.ChatMsgType.IMAGE);
+                uploadImage(imageFile);
             }
         };
     }
@@ -652,18 +739,23 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         }
     }
 
-    private void uploadMedia(File file, String type) {
+    private void uploadAudio(File file, int audioLength) {
+        String content = wrapAudioMessageContent(file.getAbsolutePath(), audioLength);
+        MessageBody messageBody = createSendMessageBody(content, PushUtil.ChatMsgType.AUDIO);
+        uploadMedia(file, messageBody);
+    }
+
+    private void uploadImage(File file) {
+        MessageBody messageBody = createSendMessageBody(file.getAbsolutePath(), PushUtil.ChatMsgType.IMAGE);
+        uploadMedia(file, messageBody);
+    }
+
+    private void uploadMedia(File file, MessageBody messageBody) {
         if (file == null || !file.exists()) {
-            //CommonUtil.shortToast(mContext, String.format("%s不存在", strType));
+            SystemUtil.toast(mContext, "媒体文件不存在");
             return;
         }
         try {
-            String content = file.getAbsolutePath();
-            if (PushUtil.ChatMsgType.AUDIO.equals(type)) {
-                content = wrapAudioMessageContent(file.getAbsolutePath(), getAudioDuration(file.getAbsolutePath()));
-            }
-
-            MessageBody messageBody = createSendMessageBody(content, type);
             MessageEntity messageEntity = saveMessageToLoacl(messageBody);
             insertDataToList(messageEntity);
             IMClient.getClient().getMessageManager().saveUploadEntity(
@@ -674,140 +766,6 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             IMClient.getClient().getResourceHelper().addTask(upYunUploadTask);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
-        }
-    }
-
-    private void uploadUnYunMedia(String uploadUrl, final File file, HashMap<String, String> headers, final MessageBody messageBody) {
-
-        AsyncHttpRequest post = new AsyncHttpRequest(Uri.parse(uploadUrl), "PUT");
-
-        for (Map.Entry<String, String> entry : headers.entrySet()) {
-            post.setHeader(entry.getKey(), entry.getValue());
-        }
-        MultipartFormDataBody body = new MultipartFormDataBody();
-        body.addFilePart("file", file);
-        post.setBody(body);
-        AsyncHttpClient.getDefaultInstance().executeString(post, new AsyncHttpClient.StringCallback() {
-            @Override
-            public void onCompleted(Exception ex, AsyncHttpResponse source, String result) {
-                if (ex != null) {
-                    //CommonUtil.longToast(mContext, getString(R.string.request_fail_text));
-                    Log.d(TAG, "upload media res to upyun failed");
-                    return;
-                }
-                sendMessageToServer(messageBody);
-            }
-        });
-    }
-
-    public void sendMsgAgain(MessageBody messageBody) {
-        sendMessageToServer(messageBody);
-    }
-
-    public void sendMediaMsg(MessageBody messageBody, String type) {
-    }
-
-    public void saveUploadResult(String putUrl, String getUrl, int fromId) {
-
-        String path = String.format(ApiConst.SAVE_UPLOAD_INFO, fromId);
-        AsyncHttpPost post = new AsyncHttpPost(path);
-        JSONObject params = new JSONObject();
-        try {
-            params.put("putUrl", putUrl);
-            params.put("getUrl", getUrl);
-        } catch (JSONException e) {
-
-        }
-
-        JSONObjectBody body = new JSONObjectBody(params);
-        post.setBody(body);
-        AsyncHttpClient.getDefaultInstance().executeString(post, new AsyncHttpClient.StringCallback() {
-            @Override
-            public void onCompleted(Exception ex, AsyncHttpResponse source, String result) {
-                if (ex != null) {
-                    Log.d(TAG, "save upload info error");
-                    return;
-                }
-                try {
-                    JSONObject resultJsonObject = new JSONObject(result);
-                    if ("success".equals(resultJsonObject.getString("result"))) {
-                        Log.d(TAG, "save upload result success");
-                    }
-                } catch (JSONException e) {
-                    Log.d(TAG, "convert json to obj error");
-                }
-            }
-        });
-    }
-
-    public void getUpYunUploadInfo(final MessageBody messageBody, File file, int fromId) {
-
-        String path = String.format(ApiConst.PUSH_HOST + ApiConst.GET_UPLOAD_INFO, fromId, file.length(), file.getName());
-        AsyncHttpRequest request = new AsyncHttpGet(path);
-
-        for (Map.Entry<String, String> entry : mMessageControllerListener.getRequestHeaders().entrySet()) {
-            request.setHeader(entry.getKey(), entry.getValue());
-        }
-        AsyncHttpClient.getDefaultInstance().executeString(request, new AsyncHttpClient.StringCallback() {
-            @Override
-            public void onCompleted(Exception e, AsyncHttpResponse source, String result) {
-                UpYunUploadCallback upYunUploadCallback = new UpYunUploadCallback(messageBody);
-                if (e != null || TextUtils.isEmpty(result)) {
-                    //CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
-                    e.printStackTrace();
-                    Log.d(TAG, "get upload info from upyun failed");
-                    upYunUploadCallback.success(null);
-                    return;
-                }
-
-                try {
-                    UpYunUploadResult upYunUploadResult = new UpYunUploadResult();
-                    JSONObject jsonObject = new JSONObject(result);
-                    upYunUploadResult.setPutUrl(jsonObject.optString("putUrl"));
-                    upYunUploadResult.setGetUrl(jsonObject.optString("getUrl"));
-
-                    JSONArray jsonArray = jsonObject.optJSONArray("headers");
-                    if (jsonArray == null || jsonArray.length() == 0) {
-                        upYunUploadCallback.success(null);
-                        return;
-                    }
-                    int length = jsonArray.length();
-                    String[] headers = new String[length];
-                    for (int i = 0; i < length; i++) {
-                        headers[i] = jsonArray.optString(i);
-                    }
-                    upYunUploadResult.setHeaders(headers);
-                    upYunUploadCallback.success(upYunUploadResult);
-                } catch (JSONException je) {
-                    upYunUploadCallback.success(null);
-                }
-            }
-        });
-    }
-
-    private class UpYunUploadCallback {
-        private MessageBody messageBody;
-
-        public UpYunUploadCallback(MessageBody messageBody) {
-            this.messageBody = messageBody;
-        }
-
-        public void success(UpYunUploadResult result) {
-            if (result != null) {
-                IMUploadEntity uploadEntity = IMClient.getClient().getMessageManager()
-                        .getUploadEntity(messageBody.getMessageId());
-                File file = new File(uploadEntity.getSource());
-                String body = result.getUrl;
-                if (PushUtil.ChatMsgType.AUDIO.equals(messageBody.getType())) {
-                    body = wrapAudioMessageContent(result.getUrl, getAudioDuration(file.getAbsolutePath()));
-                }
-                messageBody.setBody(body);
-
-                uploadUnYunMedia(result.putUrl, file, result.getHeaders(), messageBody);
-                saveUploadResult(result.putUrl, result.getUrl, mTargetRole.getRid());
-            } else {
-                //updateSendMsgToListView(PushUtil.MsgDeliveryType.FAILED, chat);
-            }
         }
     }
 
@@ -854,16 +812,6 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         messageBody.setMessageId(UUID.randomUUID().toString());
 
         return messageBody;
-    }
-
-    private int getAudioDuration(String audioFile) {
-        MediaPlayer mediaPlayer = MediaPlayer.create(mContext, Uri.parse(audioFile));
-        if (mediaPlayer == null) {
-            return 0;
-        }
-        int duration = mediaPlayer.getDuration();
-        mediaPlayer.release();
-        return duration;
     }
 
     private String wrapAudioMessageContent(String audioFilePath, int audioTime) {

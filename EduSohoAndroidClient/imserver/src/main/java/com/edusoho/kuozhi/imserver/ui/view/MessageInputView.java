@@ -120,15 +120,15 @@ public class MessageInputView extends FrameLayout {
             if (viewParent instanceof FrameLayout) {
                 FrameLayout.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 lp.gravity = Gravity.CENTER;
-                ((FrameLayout)viewParent).addView(mViewSpeakContainer, lp);
+                ((FrameLayout) viewParent).addView(mViewSpeakContainer, lp);
             } else if (viewParent instanceof RelativeLayout) {
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 lp.addRule(RelativeLayout.CENTER_VERTICAL);
                 lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-                ((RelativeLayout)viewParent).addView(mViewSpeakContainer, lp);
+                ((RelativeLayout) viewParent).addView(mViewSpeakContainer, lp);
             } else {
-                ((ViewGroup)viewParent).addView(mViewSpeakContainer);
+                ((ViewGroup) viewParent).addView(mViewSpeakContainer);
             }
         }
 
@@ -305,7 +305,7 @@ public class MessageInputView extends FrameLayout {
                 }
 
                 @Override
-                public void onStopRecord(File audioFile) {
+                public void onStopRecord(final File audioFile) {
                     if (audioFile == null || !audioFile.exists()) {
                         tvSpeakHint.setText(mContext.getString(R.string.audio_length_too_short));
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
@@ -317,7 +317,12 @@ public class MessageInputView extends FrameLayout {
                             }
                         }, 200);
                     } else {
-                        mMessageSendListener.onSendAudio(audioFile);
+                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                mMessageSendListener.onSendAudio(audioFile, (int) mMediaRecorderTask.getAudioRecord().getAudioLength());
+                            }
+                        }, 200);
                         mViewSpeakContainer.setVisibility(View.GONE);
                     }
                 }

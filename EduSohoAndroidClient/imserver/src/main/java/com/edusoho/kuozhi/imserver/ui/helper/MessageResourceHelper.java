@@ -48,7 +48,7 @@ public class MessageResourceHelper {
             }
 
             @Override
-            public void onFail(int taskId) {
+            public void onFail(int taskId, int taskType) {
                 Intent intent = new Intent(ResourceStatusReceiver.ACTION);
                 intent.putExtra(ResourceStatusReceiver.RES_ID, taskId);
                 mContext.sendBroadcast(intent);

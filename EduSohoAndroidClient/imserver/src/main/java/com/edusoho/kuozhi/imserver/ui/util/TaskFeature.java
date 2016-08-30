@@ -29,6 +29,6 @@ public class TaskFeature {
         if (mITaskStatusListener == null) {
                 return;
         }
-        mITaskStatusListener.onFail(mTaskId);
+        mITaskStatusListener.onFail(mTaskId, mTaskType);
     }
 }

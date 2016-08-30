@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -132,6 +133,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                             return;
                         }
                         IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
+                        IMClient.getClient().getConvManager().clearLaterMsg(convEntity.getConvNo());
                         MessageEngine.getInstance().sendMsgToTaget(NewsCourseActivity.CLEAR, null, NewsCourseActivity.class);
                     }
                 }

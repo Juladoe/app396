@@ -89,7 +89,7 @@ public class ConvDbHelper {
         return createConvEntity(arrayMap);
     }
 
-    public ConvEntity getConvByConNo(String convNo) {
+    public ConvEntity getConvByConvNo(String convNo) {
         HashMap arrayMap = mDbHelper.querySingle(TABLE, "convNo=?", new String[]{convNo});
         return createConvEntity(arrayMap);
     }

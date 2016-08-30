@@ -9,7 +9,7 @@ public interface MessageSendListener {
 
     void onSendMessage(String message);
 
-    void onSendAudio(File audioFile);
+    void onSendAudio(File audioFile, int audioLength);
 
     void onSendImage(File imageFile);
 }

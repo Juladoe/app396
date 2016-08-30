@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.imserver.ui.entity;
 
+
 /**
  * Created by suju on 16/8/28.
  */
@@ -22,5 +23,16 @@ public class AudioBody {
 
     public void setFile(String file) {
         this.file = file;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        return stringBuilder.append("{'file':'")
+                .append(file)
+                .append("', 'duration':")
+                .append(duration)
+                .append("}")
+                .toString();
     }
 }

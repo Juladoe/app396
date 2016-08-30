@@ -171,5 +171,6 @@ public class MessageEntity implements Parcelable {
         public static final int FAILED = 0;
         public static final int UPLOADING = 2;
         public static final int NONE = -1;
+        public static final int UNREAD = 4;
     }
 }

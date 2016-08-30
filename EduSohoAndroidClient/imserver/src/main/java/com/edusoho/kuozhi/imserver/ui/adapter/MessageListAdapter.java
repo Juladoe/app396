@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.imserver.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.graphics.drawable.AnimationDrawable;
 import android.util.Log;
 import android.view.Gravity;
@@ -22,8 +21,11 @@ import com.edusoho.kuozhi.imserver.ui.entity.AudioBody;
 import com.edusoho.kuozhi.imserver.ui.entity.Direct;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
+import com.edusoho.kuozhi.imserver.ui.helper.ViewCacheHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.AudioPlayStatusListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
+import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
+import com.edusoho.kuozhi.imserver.ui.util.ChatAudioRecord;
 import com.edusoho.kuozhi.imserver.ui.util.ResourceDownloadTask;
 import com.edusoho.kuozhi.imserver.util.MessageUtil;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
@@ -40,6 +42,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import me.nereo.multi_image_selector.bean.Image;
+
 /**
  * Created by suju on 16/8/26.
  */
@@ -48,9 +52,20 @@ public class MessageListAdapter extends BaseAdapter {
     private static final int SEND = 0X01;
     private static final int RECEIVE = 0X02;
 
+    private static final int RECEIVE_TEXT = 0;
+    private static final int SEND_TEXT = 1;
+    private static final int RECEIVE_AUDIO = 2;
+    private static final int SEND_AUDIO = 3;
+    private static final int RECEIVE_IMAGE = 4;
+    private static final int SEND_IMAGE = 5;
+    private static final int RECEIVE_MULTI = 6;
+    private static final int SEND_MULTI = 7;
+
     protected static long TIME_INTERVAL = 60 * 5 * 1000;
+    protected static final String TAG = "MessageListAdapter";
 
     private int mCurrentId;
+    private ViewCacheHelper mViewCacheHelper;
     private MessageHelper mMessageHelper;
     private MessageListItemController mMessageListItemController;
 
@@ -65,6 +80,7 @@ public class MessageListAdapter extends BaseAdapter {
                 showImageForEmptyUri(R.drawable.message_image_default).
                 showImageOnFail(R.drawable.message_image_default).build();
 
+        this.mViewCacheHelper = new ViewCacheHelper();
         this.mMessageHelper = new MessageHelper(mContext);
     }
 
@@ -95,13 +111,29 @@ public class MessageListAdapter extends BaseAdapter {
 
     @Override
     public int getViewTypeCount() {
-        return 3;
+        return 8;
     }
 
     @Override
     public int getItemViewType(int position) {
         MessageBody messageBody = new MessageBody(mMessageList.get(position));
-        return messageBody.getSource().getId() == mCurrentId ? SEND : RECEIVE;
+        String type = messageBody.getType();
+        boolean isSend = messageBody.getSource().getId() == mCurrentId;
+        switch (type) {
+            case PushUtil.ChatMsgType.TEXT:
+                return isSend ? SEND_TEXT : RECEIVE_TEXT;
+            case PushUtil.ChatMsgType.AUDIO:
+                return isSend ? SEND_AUDIO : RECEIVE_AUDIO;
+            case PushUtil.ChatMsgType.IMAGE:
+                return isSend ? SEND_IMAGE : RECEIVE_IMAGE;
+            case PushUtil.ChatMsgType.MULTI:
+                return isSend ? SEND_MULTI: RECEIVE_MULTI;
+        }
+        return isSend ? SEND_TEXT : RECEIVE_TEXT;
+    }
+
+    public void destory() {
+        mViewCacheHelper.clear();
     }
 
     @Override
@@ -111,8 +143,10 @@ public class MessageListAdapter extends BaseAdapter {
         MessageBody messageBody = new MessageBody(mMessageList.get(i));
         if (view == null) {
             int type = getItemViewType(i);
-            view = getItemView(type);
+            Log.d(TAG, "type:" + type);
+            view = getItemView(type, messageBody.getSource().getId() == mCurrentId);
             view.setTag(createItemViewHolder(view));
+            //mViewCacheHelper.putView(messageBody.getMid(), view);
         }
 
         viewHolder = (SendViewHolder) view.getTag();
@@ -203,27 +237,66 @@ public class MessageListAdapter extends BaseAdapter {
         this.mMessageListItemController = listItemClickListener;
     }
 
-    protected View getItemView(int type) {
-        if (type == SEND) {
-            return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_send_layout, null);
+    protected TextView createTextView() {
+        return (TextView) LayoutInflater.from(mContext).inflate(R.layout.item_message_list_send_text_content, null);
+    }
+
+    protected View createMultiView() {
+        return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_multi_content, null);
+    }
+
+    protected ImageView createImageView() {
+        return (ImageView) LayoutInflater.from(mContext).inflate(R.layout.item_message_list_imageview_content, null);
+    }
+
+    protected ImageView createAudioView(Direct direct) {
+        if (direct == Direct.RECEIVE) {
+            return (ImageView) LayoutInflater.from(mContext).inflate(R.layout.item_message_list_receive_audio_content, null);
         }
-        return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_receive_layout, null);
+        return (ImageView) LayoutInflater.from(mContext).inflate(R.layout.item_message_list_send_audio_content, null);
+    }
+
+    protected View getItemView(int type, boolean isSend) {
+        View contentView = null;
+        switch (type) {
+            case SEND_TEXT:
+                contentView = createTextView();
+                break;
+            case RECEIVE_TEXT:
+                contentView = createTextView();
+                break;
+            case SEND_AUDIO:
+                contentView = createAudioView(isSend ? Direct.SEND : Direct.RECEIVE);
+                break;
+            case RECEIVE_AUDIO:
+                contentView = createAudioView(isSend ? Direct.SEND : Direct.RECEIVE);
+                break;
+            case SEND_IMAGE:
+                contentView = createImageView();
+                break;
+            case RECEIVE_IMAGE:
+                contentView = createImageView();
+                break;
+            case SEND_MULTI:
+                contentView = createMultiView();
+                break;
+            case RECEIVE_MULTI:
+                contentView = createMultiView();
+                break;
+        }
+        View rootView = null;
+        if (isSend) {
+            rootView = LayoutInflater.from(mContext).inflate(R.layout.item_message_list_send_layout, null);
+        } else {
+            rootView = LayoutInflater.from(mContext).inflate(R.layout.item_message_list_receive_layout, null);
+        }
+        ViewGroup containerView = (ViewGroup) rootView.findViewById(R.id.tv_container);
+        containerView.addView(contentView);
+        return rootView;
     }
 
     protected SendViewHolder createItemViewHolder(View view) {
         return new SendViewHolder(view);
-    }
-
-    private AudioBody getAudioBody(String body) {
-        AudioBody audioBody = new AudioBody();
-        try {
-            JSONObject jsonObject = new JSONObject(body);
-            audioBody.setDuration(jsonObject.optInt("duration"));
-            audioBody.setFile(jsonObject.optString("file"));
-        } catch (JSONException e) {
-        }
-
-        return audioBody;
     }
 
     /**
@@ -256,7 +329,7 @@ public class MessageListAdapter extends BaseAdapter {
             if (id == R.id.tv_container) {
                 MessageBody messageBody = new MessageBody(getItem(mPosition));
                 if (PushUtil.ChatMsgType.AUDIO.equals(messageBody.getType())) {
-                    AudioBody audioBody = getAudioBody(messageBody.getBody());
+                    AudioBody audioBody = AudioUtil.getAudioBody(messageBody.getBody());
 
                     File audioFile = mMessageHelper.getRealAudioFile(audioBody.getFile());
                     if (audioFile == null || !audioFile.exists()) {
@@ -264,6 +337,7 @@ public class MessageListAdapter extends BaseAdapter {
                     }
                     int[] animResArray = getAudioAnimResArray(messageBody, mCurrentId);
                     mMessageListItemController.onAudioClick(
+                            mPosition,
                             audioFile.getAbsolutePath(),
                             new AudioPlayStatusListenerImpl((ImageView) view.findViewById(R.id.iv_voice_play_anim), animResArray));
                 } else if (PushUtil.ChatMsgType.IMAGE.equals(messageBody.getType())) {
@@ -316,7 +390,7 @@ public class MessageListAdapter extends BaseAdapter {
     }
 
     /*
-        SendViewHolder
+        MultiViewHolder
      */
 
     class MultiViewHolder {
@@ -333,7 +407,7 @@ public class MessageListAdapter extends BaseAdapter {
     }
 
     /*
-
+        SendViewHolder
      */
     class SendViewHolder {
 
@@ -345,6 +419,7 @@ public class MessageListAdapter extends BaseAdapter {
         public FrameLayout containerView;
         public ProgressBar statusProgressBar;
         public ImageView errorStatusView;
+        public ImageView unReadView;
 
         public SendViewHolder(View view) {
             lengthView = (TextView) view.findViewById(R.id.tv_audio_length);
@@ -353,33 +428,14 @@ public class MessageListAdapter extends BaseAdapter {
             containerView = (FrameLayout) view.findViewById(R.id.tv_container);
             statusProgressBar = (ProgressBar) view.findViewById(R.id.tv_status_pbar);
             errorStatusView = (ImageView) view.findViewById(R.id.tv_error_status);
+            unReadView = (ImageView) view.findViewById(R.id.tv_unread_view);
         }
 
         public void setDirect(Direct direct) {
             this.mDirect = direct;
         }
 
-        protected TextView createTextView() {
-            return (TextView) LayoutInflater.from(mContext).inflate(R.layout.item_message_list_send_text_content, null);
-        }
-
-        protected View createMultiView() {
-            return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_multi_content, null);
-        }
-
-        protected ImageView createImageView() {
-            return (ImageView) LayoutInflater.from(mContext).inflate(R.layout.item_message_list_imageview_content, null);
-        }
-
-        protected ImageView createAudioView() {
-            if (mDirect == Direct.RECEIVE) {
-                return (ImageView) LayoutInflater.from(mContext).inflate(R.layout.item_message_list_receive_audio_content, null);
-            }
-            return (ImageView) LayoutInflater.from(mContext).inflate(R.layout.item_message_list_send_audio_content, null);
-        }
-
         public void setContainerContent(MessageBody messageBody) {
-            containerView.removeAllViews();
             lengthView.setVisibility(View.GONE);
             new MessageTypeProcessor(this).processorMessageContent(messageBody);
         }
@@ -414,7 +470,7 @@ public class MessageListAdapter extends BaseAdapter {
                 lp.gravity = Gravity.CENTER;
                 lp.width = (int) (SystemUtil.getScreenWidth(mContext) * 0.5f);
 
-                View view = createMultiView();
+                View view = mViewHolder.containerView.findViewById(R.id.chat_multi_body);
                 MultiViewHolder viewHolder = new MultiViewHolder(view);
                 try {
                     JSONObject jsonObject = new JSONObject(messageBody.getBody());
@@ -424,17 +480,12 @@ public class MessageListAdapter extends BaseAdapter {
                     ImageLoader.getInstance().displayImage(jsonObject.optString("image"), viewHolder.mulitIconView);
                 } catch (JSONException e) {
                 }
-
-                mViewHolder.containerView.addView(view, lp);
+                view.setLayoutParams(lp);
             }
 
             public void processorText(MessageBody messageBody) {
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                lp.gravity = Gravity.CENTER;
-                TextView textView = createTextView();
+                TextView textView = (TextView) mViewHolder.containerView.findViewById(R.id.tv_send_content);
                 textView.setText(messageBody.getBody());
-                mViewHolder.containerView.addView(textView, lp);
             }
 
             public void processorImage(MessageBody messageBody) {
@@ -443,7 +494,7 @@ public class MessageListAdapter extends BaseAdapter {
                 lp.gravity = Gravity.CENTER;
 
                 String body = messageBody.getBody();
-                ImageView imageView = createImageView();
+                ImageView imageView = (ImageView) mViewHolder.containerView.findViewById(R.id.iv_msg_image);
                 String imagePath = mMessageHelper.getThumbImagePath(body);
 
                 //local file
@@ -464,8 +515,7 @@ public class MessageListAdapter extends BaseAdapter {
                 int[] size = mMessageHelper.getThumbImageSize(body);
                 lp.width = size[0];
                 lp.height = size[1];
-
-                mViewHolder.containerView.addView(imageView, lp);
+                imageView.setLayoutParams(lp);
             }
 
             public void processorAudio(MessageBody messageBody) {
@@ -473,14 +523,17 @@ public class MessageListAdapter extends BaseAdapter {
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 lp.gravity = Gravity.CENTER;
 
-                ImageView audioView = createAudioView();
-                AudioBody audioBody = getAudioBody(messageBody.getBody());
+                ImageView audioView = (ImageView) mViewHolder.containerView.findViewById(R.id.iv_voice_play_anim);
+                AudioBody audioBody = AudioUtil.getAudioBody(messageBody.getBody());
                 lp.width = 32 + TimeUtil.getDuration(audioBody.getDuration()) * 5;
                 lp.height = 32;
-                mViewHolder.containerView.addView(audioView, lp);
+                audioView.setLayoutParams(lp);
 
+                if (mViewHolder.unReadView != null) {
+                    mViewHolder.unReadView.setVisibility(View.GONE);
+                }
                 switch (messageBody.getMsgStatus()) {
-                    case PushUtil.MsgDeliveryType.NONE:
+                    case MessageEntity.StatusType.NONE:
                         try {
                             File realFile = mMessageHelper.createAudioFile(audioBody.getFile());
                             ResourceDownloadTask downloadTask = new ResourceDownloadTask(mContext, messageBody.getMid(), audioBody.getFile(), realFile);
@@ -490,7 +543,13 @@ public class MessageListAdapter extends BaseAdapter {
                             ie.printStackTrace();
                         }
                         break;
-                    case PushUtil.MsgDeliveryType.SUCCESS:
+                    case MessageEntity.StatusType.UNREAD:
+                        mViewHolder.errorStatusView.setVisibility(View.GONE);
+                        mViewHolder.statusProgressBar.setVisibility(View.GONE);
+                        if (mViewHolder.unReadView != null) {
+                            mViewHolder.unReadView.setVisibility(View.VISIBLE);
+                        }
+                    case MessageEntity.StatusType.SUCCESS:
                         mViewHolder.lengthView.setVisibility(View.VISIBLE);
                         mViewHolder.lengthView.setText(String.format("%d\"", TimeUtil.getDuration(audioBody.getDuration())));
                         break;

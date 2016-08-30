@@ -4,6 +4,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 import com.edusoho.kuozhi.imserver.ui.entity.UpYunUploadResult;
+import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.AsyncHttpGet;
@@ -157,8 +158,7 @@ public class UpYunUploadTask implements IResourceTask {
         mFuture = AsyncHttpClient.getDefaultInstance().executeString(post, new AsyncHttpClient.StringCallback() {
             @Override
             public void onCompleted(Exception ex, AsyncHttpResponse source, String resopne) {
-                if (ex != null) {
-                    //CommonUtil.longToast(mContext, getString(R.string.request_fail_text));
+                if (ex != null || source.code() != 200) {
                     Log.d(TAG, "upload media res to upyun failed");
                     mTaskFeature.fail();
                     return;

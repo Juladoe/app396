@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.imserver.ui.util;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
@@ -15,6 +16,8 @@ import java.io.File;
  * Created by suju on 16/8/28.
  */
 public class ResourceDownloadTask implements IResourceTask {
+
+    private  static final String TAG = "ResourceDownloadTask";
 
     private String mUrl;
     private int mTaskId;
@@ -37,7 +40,13 @@ public class ResourceDownloadTask implements IResourceTask {
         mFuture = AsyncHttpClient.getDefaultInstance().executeFile(httpGet, mRealFile.getAbsolutePath(), new AsyncHttpClient.FileCallback() {
             @Override
             public void onCompleted(Exception e, AsyncHttpResponse source, File file) {
-                if (e != null || !file.exists()) {
+                if ( e != null) {
+                    e.printStackTrace();
+                    mTaskFeature.fail();
+                    return;
+                }
+                if (!file.exists() || source.code() != 200) {
+                    Log.d(TAG, "resource down fail " + mTaskId);
                     mTaskFeature.fail();
                     return;
                 }

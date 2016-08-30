@@ -27,7 +27,7 @@ public class PushUtil {
 
     public static class AnnouncementType {
         public static final String COURSE = "course";
-        public static final String GLOBAL = "announcement";
+        public static final String GLOBAL = "global";
     }
 
     public static class ChatUserType {

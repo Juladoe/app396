@@ -91,10 +91,10 @@ public class ChatAudioRecord {
         return mAudioStartTime;
     }
 
-    public int getAudioLength() {
-        int length = (int) ((mAudioEndTime - mAudioStartTime) / 1000);
-        if (length < 1) {
-            return -1;
+    public long getAudioLength() {
+        long length = mAudioEndTime - mAudioStartTime;
+        if (length < 0) {
+            return 0;
         }
         return length;
     }

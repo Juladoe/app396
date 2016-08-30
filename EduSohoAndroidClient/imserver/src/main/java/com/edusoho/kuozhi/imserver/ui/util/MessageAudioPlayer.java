@@ -47,7 +47,6 @@ public class MessageAudioPlayer {
         }
         if (mAudioPlayStatusListener != null) {
             mAudioPlayStatusListener.onStop();
-            mAudioPlayStatusListener = null;
         }
 
         mMediaPlayer.release();

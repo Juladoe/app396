@@ -73,7 +73,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 SchoolApp schoolApp = (SchoolApp) adapterView.getItemAtPosition(i);
                 switch (schoolApp.code) {
-                    case "announcement":
+                    case PushUtil.AnnouncementType.GLOBAL:
                         app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
                         break;
                     case PushUtil.ArticleType.TYPE:

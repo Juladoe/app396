@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.util.ConvDbHelper;
 
@@ -33,7 +34,7 @@ public class IMConvManager {
     }
 
     public ConvEntity getSingleConv(String convNo) {
-        return new ConvDbHelper(mContext).getConvByConNo(convNo);
+        return new ConvDbHelper(mContext).getConvByConvNo(convNo);
     }
 
     public ConvEntity getConvByTypeAndId(String type, int targetId, int uid) {
@@ -45,6 +46,12 @@ public class IMConvManager {
 
     public int updateConv(ConvEntity convEntity) {
         return new ConvDbHelper(mContext).update(convEntity);
+    }
+
+    public int clearLaterMsg(String convNo) {
+        ContentValues cv = new ContentValues();
+        cv.put("laterMsg", "");
+        return new ConvDbHelper(mContext).updateField(convNo, cv);
     }
 
     public int updateConvField(String convNo, ContentValues cv) {

@@ -103,6 +103,8 @@ public class ServiceProfileFragment extends BaseFragment {
 
     private void clearHistory() {
         IMClient.getClient().getMessageManager().deleteByConvNo(mConvNo);
+        IMClient.getClient().getConvManager().clearLaterMsg(mConvNo);
+
         Bundle bundle = new Bundle();
         bundle.putInt(SERVICE_ID, mSchoolProfileId);
         app.sendMessage(Const.CLEAR_HISTORY, bundle);

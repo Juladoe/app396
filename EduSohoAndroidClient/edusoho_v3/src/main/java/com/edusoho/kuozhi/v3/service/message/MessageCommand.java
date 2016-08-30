@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.service.message;
 
 import android.content.Context;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.v3.model.provider.IMProvider;
@@ -18,7 +19,8 @@ public class MessageCommand extends AbstractCommand {
 
     @Override
     public void invoke() {
-        if (!isInBlackList(mMessageBody.getConvNo()) && !IMClient.getClient().isHandleMessageInFront("user", mMessageBody.getConvNo())) {
+        if (!isInBlackList(mMessageBody.getConvNo())
+                && !IMClient.getClient().isHandleMessageInFront(Destination.USER, mMessageBody.getConvNo())) {
             showNotification();
         }
 

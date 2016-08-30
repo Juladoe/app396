@@ -1,5 +1,8 @@
 package com.edusoho.kuozhi.imserver.util;
 
+import android.content.Context;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
@@ -61,5 +64,15 @@ public class TimeUtil {
 
     public static int getDuration(int duration) {
         return (int) Math.ceil(Float.valueOf(duration) / 1000);
+    }
+
+    public static int getAudioDuration(Context context, String audioFile) {
+        MediaPlayer mediaPlayer = MediaPlayer.create(context, Uri.parse(audioFile));
+        if (mediaPlayer == null) {
+            return 0;
+        }
+        int duration = mediaPlayer.getDuration();
+        mediaPlayer.release();
+        return duration;
     }
 }

@@ -1,12 +1,12 @@
 package com.edusoho.kuozhi.imserver.util;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Created by suju on 16/8/20.
@@ -51,5 +51,9 @@ public class SystemUtil {
         DisplayMetrics dm = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(dm);
         return dm.heightPixels;
+    }
+
+    public static void toast(Context context, String content) {
+        Toast.makeText(context, content, Toast.LENGTH_LONG).show();
     }
 }

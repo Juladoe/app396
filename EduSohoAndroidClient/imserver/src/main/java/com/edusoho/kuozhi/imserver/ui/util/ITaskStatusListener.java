@@ -10,5 +10,5 @@ public interface ITaskStatusListener {
 
     void onSuccess(int taskId, int taskType, String uri);
 
-    void onFail(int taskId);
+    void onFail(int taskId, int taskType);
 }

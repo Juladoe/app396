@@ -5,7 +5,7 @@ package com.edusoho.kuozhi.imserver.ui.listener;
  */
 public interface MessageListItemController {
 
-    void onAudioClick(String audioFile, AudioPlayStatusListener listener);
+    void onAudioClick(int position, String audioFile, AudioPlayStatusListener listener);
 
     void onImageClick(String imageUrl);
 

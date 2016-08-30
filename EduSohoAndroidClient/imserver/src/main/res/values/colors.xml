@@ -13,5 +13,6 @@
     <color name="grey_alpha">#999999</color>
     <color name="grey_beta">#97989a</color>
     <color name="base_black_87">#dd000000</color>
+    <color name="base_light_red">#ff5822</color>
     <color name="transparent">@android:color/transparent</color>
 </resources>
