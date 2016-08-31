@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
+import com.edusoho.kuozhi.v3.model.provider.SystemProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppUpdateInfo;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -39,6 +40,7 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.LinkedHashMap;
 import java.util.Queue;
 
 /**
@@ -83,6 +85,23 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         if (getIntent().hasExtra(Const.INTENT_TARGET) || getIntent().hasExtra(Const.SWITCH_NEWS_TAB)) {
             processIntent(getIntent());
         }
+
+        initIMChatConfig();
+    }
+
+    private void initIMChatConfig() {
+        new SystemProvider(mContext).getIMChatConfig()
+        .success(new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap linkedHashMap) {
+                if (linkedHashMap != null && linkedHashMap.containsKey("enabled")) {
+                    String enabled = linkedHashMap.get("enabled").toString();
+                    app.config.isOpenChatRoom = "1".equals(enabled);
+                    app.saveConfig();
+                    Log.d(TAG, "isOpenChatRoom:" + enabled);
+                }
+            }
+        });
     }
 
     @Override
