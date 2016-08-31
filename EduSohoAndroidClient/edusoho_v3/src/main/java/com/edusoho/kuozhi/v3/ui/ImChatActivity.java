@@ -41,12 +41,14 @@ public class ImChatActivity extends ActionBarBaseActivity {
 
     public static final String TAG = "ChatActivity";
     public static final String FROM_ID = "from_id";
+    public static final String TARGET_TYPE = "targer_type";
     public static final String FROM_NAME = "from_name";
     public static final String CONV_NO = "conv_no";
     public static final String HEAD_IMAGE_URL = "head_image_url";
 
     protected int mTargetId;
     protected String mTargetName;
+    protected String mTargetType;
     protected String mConversationNo;
     protected MessageListFragment mMessageListFragment;
 
@@ -90,13 +92,14 @@ public class ImChatActivity extends ActionBarBaseActivity {
     }
 
     protected String getTargetType() {
-        return Destination.USER;
+        return TextUtils.isEmpty(mTargetType) ? Destination.USER : mTargetType;
     }
 
     private void initParams() {
         Intent dataIntent = getIntent();
         mTargetId = dataIntent.getIntExtra(FROM_ID, 0);
         mConversationNo = dataIntent.getStringExtra(CONV_NO);
+        mTargetType = dataIntent.getStringExtra(TARGET_TYPE);
         mTargetName = dataIntent.getStringExtra(FROM_NAME);
     }
 
@@ -165,7 +168,7 @@ public class ImChatActivity extends ActionBarBaseActivity {
                         Role role = new Role();
                         role.setRid(user.id);
                         role.setAvatar(user.mediumAvatar);
-                        role.setType(Destination.USER);
+                        role.setType(getTargetType());
                         role.setNickname(user.nickname);
                         callback.onCreateRole(role);
                     }

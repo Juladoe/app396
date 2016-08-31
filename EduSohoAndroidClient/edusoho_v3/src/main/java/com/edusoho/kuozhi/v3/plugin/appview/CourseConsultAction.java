@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
@@ -37,11 +38,10 @@ public class CourseConsultAction {
                 User user = mActivity.parseJsonValue(response, new TypeToken<User>() {
                 });
                 if (user != null) {
-                    bundle.putString(Const.ACTIONBAR_TITLE, user.nickname);
+                    bundle.putString(ImChatActivity.FROM_NAME, user.nickname);
                     bundle.putInt(ImChatActivity.FROM_ID, user.id);
                     bundle.putString(ImChatActivity.HEAD_IMAGE_URL, user.mediumAvatar);
-                    bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.TEACHER);
-                    mActivity.app.mEngine.runNormalPluginWithBundle("ImChatActivity", mActivity, bundle);
+                    CoreEngine.create(mActivity.getBaseContext()).runNormalPluginWithBundle("ImChatActivity", mActivity, bundle);
                 }
             }
         }, new Response.ErrorListener() {

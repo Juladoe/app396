@@ -73,6 +73,7 @@ public class IMClient {
     }
 
     public void setIMDataBase(String dbName) {
+        Log.d(TAG, "setIMDataBase : " + dbName);
         DbManagerFactory.getDefaultFactory().setDbName(dbName);
     }
 

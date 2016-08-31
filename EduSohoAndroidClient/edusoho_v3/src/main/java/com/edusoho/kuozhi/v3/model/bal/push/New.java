@@ -175,6 +175,9 @@ public class New implements Serializable {
         setContent(messageBody);
         createdTime = messageBody.getCreatedTime();
         type = messageBody.getDestination().getType();
+        if (PushUtil.ChatMsgType.PUSH.equals(messageBody.getType())) {
+            type = messageBody.getSource().getType();
+        }
         title = getTitleNameByType(messageBody);
     }
 
@@ -189,17 +192,16 @@ public class New implements Serializable {
             case Destination.COURSE:
             case Destination.CLASSROOM:
                 return messageBody.getDestination().getId();
+            case Destination.ARTICLE:
+            case Destination.GLOBAL:
+                return messageBody.getSource().getId();
         }
 
         return 0;
     }
 
     private String getTitleNameByType(MessageBody messageBody) {
-        String dType = messageBody.getDestination().getType();
-        if (TextUtils.isEmpty(dType)) {
-            return "";
-        }
-        switch (dType) {
+        switch (type) {
             case Destination.USER:
                 return messageBody.getSource().getNickname();
             case Destination.COURSE:

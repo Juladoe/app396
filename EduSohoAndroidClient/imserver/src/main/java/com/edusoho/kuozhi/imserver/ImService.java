@@ -40,6 +40,7 @@ public class ImService extends Service {
 
     private NetWorkStatusBroadcastReceiver mReceiver;
     private ImServer mImServer;
+    private boolean isCloseByUser;
 
     @Override
     public void onCreate() {
@@ -175,7 +176,9 @@ public class ImService extends Service {
         }
         mImServer.stop();
         mImServer = null;
-        sendWakeUpAlert();
+        if (!isCloseByUser) {
+            sendWakeUpAlert();
+        }
         Log.d(TAG, "onDestroy");
     }
 
@@ -219,6 +222,7 @@ public class ImService extends Service {
         public void closeIMServer() throws RemoteException {
             if (mImServer != null) {
                 mImServer.stop();
+                isCloseByUser = true;
             }
         }
 

@@ -115,14 +115,8 @@ public class GroupListActivity extends ActionBarBaseActivity {
     }
 
     private Promise loadGroup() {
-
-        RequestUrl requestUrl = app.bindNewUrl(Const.DISCUSSION_GROUP, true);
-        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        stringBuffer.append("?start=0&limit=10000/");
-        requestUrl.url = stringBuffer.toString();
-
         final Promise promise = new Promise();
-        mDiscussionGroupProvider.getClassrooms(requestUrl).success(new NormalCallback<DiscussionGroupResult>() {
+        mDiscussionGroupProvider.getGroupList().success(new NormalCallback<DiscussionGroupResult>() {
             @Override
             public void success(DiscussionGroupResult discussionGroupResult) {
                 if (discussionGroupResult.resources.length != 0) {
@@ -131,7 +125,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
                     setSortChar(groupsList);
                     Collections.sort(groupsList, groupComparator);
                     mAdapter.addFriendList(groupsList);
-                    new IMProvider(mContext).updateRoles(Destination.CLASSROOM, groupsList);
+                    new IMProvider(mContext).updateRoles(groupsList);
                 } else {
                     mEmptyNotice.setVisibility(View.VISIBLE);
                 }

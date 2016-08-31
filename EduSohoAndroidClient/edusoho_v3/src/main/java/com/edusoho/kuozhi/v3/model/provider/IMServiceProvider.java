@@ -48,6 +48,7 @@ public class IMServiceProvider extends ModelProvider {
     }
 
     private void connectServer(final int clientId, final String clientName) {
+        IMClient.getClient().init(mContext.getApplicationContext());
         IMClient.getClient().setIMDataBase(String.format("%s_%d", getDomain(), clientId));
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.CONNECTING);
         new SystemProvider(mContext).getImServerHosts().success(new NormalCallback<LinkedHashMap>() {
@@ -84,7 +85,7 @@ public class IMServiceProvider extends ModelProvider {
         IMClient.getClient().addGlobalIMMessageReceiver(new IMMessageReceiver() {
             @Override
             public boolean onReceiver(MessageEntity msg) {
-                handlerMessage(this, msg);
+                handlerMessage(false, this, msg);
                 return false;
             }
 
@@ -101,7 +102,7 @@ public class IMServiceProvider extends ModelProvider {
             @Override
             public boolean onOfflineMsgReceiver(List<MessageEntity> messageEntities) {
                 for (MessageEntity messageEntity : messageEntities) {
-                    handlerMessage(this, messageEntity);
+                    handlerMessage(true, this, messageEntity);
                 }
                 return false;
             }
@@ -120,11 +121,11 @@ public class IMServiceProvider extends ModelProvider {
 
     public synchronized void bindServer(int clientId, String clientName) {
         int status = IMClient.getClient().getIMConnectStatus();
-        if (status == IMConnectStatus.NO_READY) {
-            connectServer(clientId, clientName);
-            Log.d("IMServiceProvider", "IMService start ready");
+        if (status == IMConnectStatus.OPEN || status == IMConnectStatus.CONNECTING) {
             return;
         }
+        connectServer(clientId, clientName);
+        Log.d("IMServiceProvider", "IMService start ready");
     }
 
     protected void updateMessageStatus(MessageBody messageBody) {
@@ -133,11 +134,11 @@ public class IMServiceProvider extends ModelProvider {
         IMClient.getClient().getMessageManager().updateMessageFieldByUid(messageBody.getMessageId(), cv);
     }
 
-    private void handlerMessage(IMMessageReceiver receiver, MessageEntity messageEntity) {
+    private void handlerMessage(boolean isOfflineMsg, IMMessageReceiver receiver, MessageEntity messageEntity) {
         MessageBody messageBody = new MessageBody(messageEntity);
         if (messageBody == null) {
             return;
         }
-        CommandFactory.create(mContext, messageEntity.getCmd(), receiver, messageBody).invoke();
+        CommandFactory.create(mContext, isOfflineMsg ? "offlineMsg" : messageEntity.getCmd(), receiver, messageBody).invoke();
     }
 }

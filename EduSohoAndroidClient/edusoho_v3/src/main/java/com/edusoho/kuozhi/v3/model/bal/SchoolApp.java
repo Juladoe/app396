@@ -25,6 +25,11 @@ public class SchoolApp extends Friend implements Serializable {
         return title;
     }
 
+    @Override
+    public String getNickname() {
+        return name;
+    }
+
     public String getAbout() {
         return about;
     }

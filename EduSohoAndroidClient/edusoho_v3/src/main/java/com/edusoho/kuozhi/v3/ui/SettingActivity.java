@@ -175,6 +175,7 @@ public class SettingActivity extends ActionBarBaseActivity {
                         bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
 
                         new IMServiceProvider(getBaseContext()).unBindServer();
+                        getAppSettingProvider().setUser(null);
                         app.removeToken();
                         btnLogout.setVisibility(View.INVISIBLE);
                         app.sendMessage(Const.LOGOUT_SUCCESS, null);
@@ -185,7 +186,6 @@ public class SettingActivity extends ActionBarBaseActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
                     }
                 }, "");
                 Bundle bundle = new Bundle();

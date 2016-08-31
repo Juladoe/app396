@@ -90,18 +90,15 @@ public class ServiceListActivity extends ActionBarBaseActivity {
 
     public Promise loadSchoolApps() {
         mAdapter.clearList();
-        RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
-        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        requestUrl.url = stringBuffer.toString();
 
         final Promise promise = new Promise();
-        mProvider.getSchoolApps(requestUrl)
+        mProvider.getSchoolApps()
                 .success(new NormalCallback<List<SchoolApp>>() {
                     @Override
                     public void success(List<SchoolApp> schoolAppResult) {
                         if (schoolAppResult.size() != 0) {
                             mAdapter.addSchoolAppList(schoolAppResult);
-                            new IMProvider(mContext).updateRoles(Destination.CLASSROOM, schoolAppResult);
+                            new IMProvider(mContext).updateRoles(schoolAppResult);
                         }
                         promise.resolve(schoolAppResult);
                     }

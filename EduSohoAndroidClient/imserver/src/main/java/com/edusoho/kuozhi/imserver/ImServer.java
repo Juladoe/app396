@@ -78,8 +78,6 @@ public class ImServer {
     public ImServer(Context context) {
         this.mContext = context;
         this.flag = CONNECT_NONE;
-        this.mMsgDbHelper = new MsgDbHelper(context);
-        this.mConvDbHelper = new ConvDbHelper(context);
         initHeartManager();
         initMsgManager();
     }
@@ -176,6 +174,9 @@ public class ImServer {
         this.mClientName = clientName;
         this.mHostList = host;
         this.mClientId = clientId;
+
+        this.mMsgDbHelper = new MsgDbHelper(mContext);
+        this.mConvDbHelper = new ConvDbHelper(mContext);
     }
 
     public boolean isConnected() {
@@ -209,6 +210,8 @@ public class ImServer {
     public void stop() {
         cancel();
         sendConnectStatusBroadcast(IConnectManagerListener.CLOSE);
+        this.mMsgDbHelper = null;
+        this.mConvDbHelper = null;
     }
 
     public boolean isCancel() {

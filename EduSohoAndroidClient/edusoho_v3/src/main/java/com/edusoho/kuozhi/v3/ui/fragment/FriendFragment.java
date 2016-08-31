@@ -180,13 +180,8 @@ public class FriendFragment extends BaseFragment {
     }
 
     public Promise loadFriend() {
-        RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
-        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        stringBuffer.append("?start=0&limit=10000/");
-        requestUrl.url = stringBuffer.toString();
-
         final Promise promise = new Promise();
-        mFriendProvider.getFriend(requestUrl)
+        mFriendProvider.getFriendList()
                 .success(new NormalCallback<FriendResult>() {
                     @Override
                     public void success(FriendResult friendResult) {
@@ -196,7 +191,7 @@ public class FriendFragment extends BaseFragment {
                             Collections.sort(list, friendComparator);
                             mFriendAdapter.clearList();
                             mFriendAdapter.addFriendList(list);
-                            new IMProvider(mContext).updateRoles(Destination.USER, list);
+                            new IMProvider(mContext).updateRoles(list);
                         }
                         setFriendsCount(friendResult.data.length + "");
                         promise.resolve(friendResult);

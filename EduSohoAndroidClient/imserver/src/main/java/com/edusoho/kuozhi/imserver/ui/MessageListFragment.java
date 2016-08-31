@@ -198,14 +198,6 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         mTargetType = bundle.getString(TARGET_TYPE);
 
         mTargetRole = IMClient.getClient().getRoleManager().getRole(mTargetType, mTargetId);
-        if (mTargetRole.getRid() == 0) {
-            Role role = new Role();
-            role.setType(mTargetType);
-            role.setRid(mTargetId);
-            if (IMClient.getClient().getRoleManager().createRole(role) > 0) {
-                mTargetRole = role;
-            }
-        }
     }
 
     public void setMessageControllerListener(MessageControllerListener listener) {
@@ -568,12 +560,13 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         mMessageControllerListener.createRole(new MessageControllerListener.RoleUpdateCallback() {
             @Override
             public void onCreateRole(Role role) {
-                if (mTargetRole.getRid() == 0) {
+                if (role.getRid() == 0) {
                     Log.d(TAG, "mTargetRole is null");
                     return;
                 }
                 Log.d(TAG, "mTargetRole " + role.getRid());
                 mTargetRole = role;
+                IMClient.getClient().getRoleManager().createRole(role);
                 checkConvEntity(role);
                 addMessageList(mStart);
             }

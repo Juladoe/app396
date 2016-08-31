@@ -67,6 +67,7 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -83,16 +84,15 @@ public class NewsFragment extends BaseFragment {
     public static final int SHOW = 60;
     public static final int DISMISS = 61;
 
+    private List<ConvEntity> mConvEntityList;
     private SwipeMenuListView lvNewsList;
     private SwipeAdapter mSwipeAdapter;
     private View mEmptyView;
     private TextView tvEmptyText;
     private TextView mHeaderView;
     private ProgressBar mLoadProgressBar;
-
     private LoadingHandler mLoadingHandler;
     private boolean mIsNeedRefresh;
-
     private DefaultPageActivity mParentActivity;
     private IMMessageReceiver mIMMessageReceiver;
 
@@ -106,6 +106,7 @@ public class NewsFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_news);
         mLoadingHandler = new LoadingHandler(this);
+        syncIMData();
     }
 
     @Override
@@ -312,12 +313,13 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void initData() {
-        if (app.loginUser != null) {
-            List<ConvEntity> convEntityList = IMClient.getClient().getConvManager().getConvListByUid(app.loginUser.id);
-            mSwipeAdapter.update(coverConvListToNewList(convEntityList));
-            setListVisibility(mSwipeAdapter.getCount() == 0);
-            mLoadProgressBar.setVisibility(View.GONE);
+        if (app.loginUser == null) {
+            return;
         }
+        mConvEntityList = IMClient.getClient().getConvManager().getConvListByUid(app.loginUser.id);
+        mSwipeAdapter.update(coverConvListToNewList(mConvEntityList));
+        setListVisibility(mSwipeAdapter.getCount() == 0);
+        mLoadProgressBar.setVisibility(View.GONE);
     }
 
     private List<New> coverConvListToNewList(List<ConvEntity> convEntityList) {
@@ -325,7 +327,7 @@ public class NewsFragment extends BaseFragment {
         IMRoleManager roleManager = IMClient.getClient().getRoleManager();
         for (ConvEntity convEntity : convEntityList) {
             New newItem = new New(convEntity);
-            Role role = roleManager.getRole(convEntity.getType(), 0);
+            Role role = roleManager.getRole(convEntity.getType(), convEntity.getTargetId());
             if (role.getRid() != 0) {
                 newItem.setImgUrl(role.getAvatar());
             }
@@ -336,7 +338,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void syncIMData() {
-        //new IMProvider()
+        new IMProvider(mContext).syncIMRoleData();
     }
 
     private SwipeMenuListView.OnMenuItemClickListener mMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {
@@ -538,7 +540,6 @@ public class NewsFragment extends BaseFragment {
             });
         } catch (Exception ex) {
             mLoadingHandler.sendEmptyMessage(DISMISS);
-            Log.e(TAG, ex.getMessage());
         }
     }
 

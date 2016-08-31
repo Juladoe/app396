@@ -77,7 +77,6 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     public Map<String, String> getHeaders() throws AuthFailureError {
         Map<String, String> headers = mRequestUrl.getHeads();
         headers.put("Cookie", mRequestLocalManager.getCookie());
-        Log.d(TAG, "getHeaders: " + mRequestLocalManager.getCookie());
         return headers;
     }
 

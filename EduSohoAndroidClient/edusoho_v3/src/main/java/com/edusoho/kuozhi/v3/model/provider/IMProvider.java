@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
@@ -12,15 +14,21 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
+import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.result.DiscussionGroupResult;
+import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,8 +40,7 @@ public class IMProvider extends ModelProvider {
     private static final int EXPAID_TIME = 3600 * 6 * 1000;
     private static final String TAG = "IMProvider";
 
-    public IMProvider(Context context)
-    {
+    public IMProvider(Context context) {
         super(context);
     }
 
@@ -42,7 +49,8 @@ public class IMProvider extends ModelProvider {
     }
 
     public ProviderListener createConvInfoByClassRoom(final String convNo, Classroom classroom) {
-        final ProviderListener<ConvEntity> providerListener = new ProviderListener(){};
+        final ProviderListener<ConvEntity> providerListener = new ProviderListener() {
+        };
         Role role = new Role();
         role.setType(Destination.CLASSROOM);
         role.setRid(classroom.id);
@@ -56,7 +64,8 @@ public class IMProvider extends ModelProvider {
     }
 
     public ProviderListener createConvInfoByCourse(String convNo, Course course) {
-        final ProviderListener<ConvEntity> providerListener = new ProviderListener(){};
+        final ProviderListener<ConvEntity> providerListener = new ProviderListener() {
+        };
         Role role = new Role();
         role.setType(Destination.COURSE);
         role.setRid(course.id);
@@ -68,31 +77,33 @@ public class IMProvider extends ModelProvider {
         return providerListener;
     }
 
-    private ProviderListener getTargetInfoByUser(final String convNo,int targetId) {
-        final ProviderListener<ConvEntity> providerListener = new ProviderListener(){};
+    private ProviderListener getTargetInfoByUser(final String convNo, int targetId) {
+        final ProviderListener<ConvEntity> providerListener = new ProviderListener() {
+        };
         new UserProvider(mContext).getUserInfo(targetId)
-        .success(new NormalCallback<User>() {
-            @Override
-            public void success(User user) {
-                Role role = new Role();
-                role.setType(Destination.USER);
-                role.setRid(user.id);
-                role.setAvatar(user.mediumAvatar);
-                role.setNickname(user.nickname);
-                ConvEntity convEntity = createConvNo(getAppSettingProvider().getCurrentUser().id, convNo, role);
-                providerListener.onResponse(convEntity);
-            }
-        });
+                .success(new NormalCallback<User>() {
+                    @Override
+                    public void success(User user) {
+                        Role role = new Role();
+                        role.setType(Destination.USER);
+                        role.setRid(user.id);
+                        role.setAvatar(user.mediumAvatar);
+                        role.setNickname(user.nickname);
+                        ConvEntity convEntity = createConvNo(getAppSettingProvider().getCurrentUser().id, convNo, role);
+                        providerListener.onResponse(convEntity);
+                    }
+                });
 
         return providerListener;
     }
 
     public ProviderListener<ConvEntity> updateConvInfo(String convNo, String type, int targetId) {
-        ProviderListener<ConvEntity> providerListener = new ProviderListener(){};
+        ProviderListener<ConvEntity> providerListener = new ProviderListener() {
+        };
         IMConvManager imConvManager = IMClient.getClient().getConvManager();
         ConvEntity convEntity = imConvManager.getSingleConv(convNo);
 
-        if ((System.currentTimeMillis() /1000) - convEntity.getUpdatedTime() < EXPAID_TIME) {
+        if ((System.currentTimeMillis() / 1000) - convEntity.getUpdatedTime() < EXPAID_TIME) {
             Log.d(TAG, "ConvEntity not update");
             return providerListener;
         }
@@ -176,17 +187,17 @@ public class IMProvider extends ModelProvider {
 
     private void getRoleFromUser(int userId, final NormalCallback<Role> callback) {
         new UserProvider(mContext).getUserInfo(userId)
-        .success(new NormalCallback<User>() {
-            @Override
-            public void success(User user) {
-                Role role = new Role();
-                role.setAvatar(user.mediumAvatar);
-                role.setNickname(user.nickname);
-                role.setRid(user.id);
-                role.setType(Destination.USER);
-                callback.success(role);
-            }
-        });
+                .success(new NormalCallback<User>() {
+                    @Override
+                    public void success(User user) {
+                        Role role = new Role();
+                        role.setAvatar(user.mediumAvatar);
+                        role.setNickname(user.nickname);
+                        role.setRid(user.id);
+                        role.setType(Destination.USER);
+                        callback.success(role);
+                    }
+                });
     }
 
     public void updateRoleByUser(User user) {
@@ -222,7 +233,7 @@ public class IMProvider extends ModelProvider {
         }
     }
 
-    public <T extends Friend> void updateRoles(String type, List<T> friends) {
+    public <T extends Friend> void updateRoles(List<T> friends) {
         IMRoleManager roleManager = IMClient.getClient().getRoleManager();
         for (Friend friend : friends) {
             Role role = roleManager.getRole(friend.getType(), friend.getId());
@@ -270,6 +281,89 @@ public class IMProvider extends ModelProvider {
         IMClient.getClient().getConvManager().createConv(convEntity);
 
         return convEntity;
+    }
+
+    public void syncIMRoleData() {
+        syncFriendList().then(new PromiseCallback<List<? extends Friend>>() {
+            @Override
+            public Promise invoke(List<? extends Friend> friends) {
+                if (friends != null) {
+                    updateRoles(friends);
+                }
+                return syncGroupList().then(new PromiseCallback<List<? extends Friend>>() {
+                    @Override
+                    public Promise invoke(List<? extends Friend> friends) {
+                        if (friends != null) {
+                            updateRoles(friends);
+                        }
+                        return syncServiceList().then(new PromiseCallback<List<? extends Friend>>() {
+                            @Override
+                            public Promise invoke(List<? extends Friend> friends) {
+                                if (friends != null) {
+                                    updateRoles(friends);
+                                }
+                                return null;
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    private Promise syncFriendList() {
+        final Promise promise = new Promise();
+        new FriendProvider(mContext).getFriendList()
+                .success(new NormalCallback<FriendResult>() {
+                    @Override
+                    public void success(FriendResult friendResult) {
+                        Log.d(TAG, "sync friends");
+                        promise.resolve(Arrays.asList(friendResult.data));
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                promise.resolve(null);
+            }
+        });
+
+        return promise;
+    }
+
+    private Promise syncGroupList() {
+        final Promise promise = new Promise();
+        new FriendProvider(mContext).getSchoolApps()
+                .success(new NormalCallback<List<SchoolApp>>() {
+                    @Override
+                    public void success(List<SchoolApp> schoolApps) {
+                        Log.d(TAG, "sync group");
+                        promise.resolve(schoolApps);
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                promise.resolve(null);
+            }
+        });
+        return promise;
+    }
+
+    private Promise syncServiceList() {
+        final Promise promise = new Promise();
+        new DiscussionGroupProvider(mContext).getGroupList()
+                .success(new NormalCallback<DiscussionGroupResult>() {
+                    @Override
+                    public void success(DiscussionGroupResult discussionGroupResult) {
+                        Log.d(TAG, "sync service");
+                        promise.resolve(Arrays.asList(discussionGroupResult.resources));
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                promise.resolve(null);
+            }
+        });
+        return promise;
     }
 
     protected AppSettingProvider getAppSettingProvider() {
