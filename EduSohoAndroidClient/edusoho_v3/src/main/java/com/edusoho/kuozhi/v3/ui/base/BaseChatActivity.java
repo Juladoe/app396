@@ -90,6 +90,15 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         setContentView(R.layout.activity_chat);
         initView();
         initData();
+        initChatRoomSetting();
+    }
+
+    private void initChatRoomSetting() {
+        if (!app.config.isOpenChatRoom) {
+            etSend.setEnabled(false);
+            ivAddMedia.setEnabled(false);
+            btnVoice.setEnabled(false);
+        }
     }
 
     @Override

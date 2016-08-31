@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">赛优教育</string>
+
+    <string name="app_host">http://www.cuour.org</string>
+    <string name="app_code">cuour</string>
+    <string name="about_welcome">关于赛优教育</string>
+    <string name="channel_name">cuour</string>
+    <string name="splash_num">4</string>
+    <string name="splash_padding">0</string>
+    <string name="app_id">wx10ab70921e4b7554</string>
+
+    <string-array
+        name="shard_filter"
+        >
+        <item>TencentWeibo</item>
+        <item>QZone</item>
+        <item>QQ</item>
+        <item>Wechat</item>
+        <item>SinaWeibo</item>
+        <item>WechatFavorite</item>
+        <item>WechatMoments</item>
+
+    </string-array>
+
+</resources>

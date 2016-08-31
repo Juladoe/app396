@@ -21,4 +21,5 @@ public class AppConfig {
 
     public boolean newVerifiedNotify;
 
+    public boolean isOpenChatRoom;
 }

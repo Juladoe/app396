@@ -124,7 +124,6 @@ CacheServer extends Thread {
                 Log.d(TAG, "WorkThread Start");
             }
         } catch (IOException e) {
-            ToastUtils.show(mActivity.getBaseContext(), "离线缓存加载失败!");
             isLoop = false;
         } finally {
             try {

@@ -189,6 +189,15 @@ public class DiscussFragment extends BaseFragment implements View.OnClickListene
         mViewSpeakContainer = view.findViewById(R.id.recording_container);
         mViewSpeakContainer.bringToFront();
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
+        initChatRoomSetting();
+    }
+
+    private void initChatRoomSetting() {
+        if (!app.config.isOpenChatRoom) {
+            etSend.setEnabled(false);
+            ivAddMedia.setEnabled(false);
+            btnVoice.setEnabled(false);
+        }
     }
 
     protected void initData() {
