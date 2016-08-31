@@ -90,8 +90,6 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     public static final String TARGET_TYPE = "targetType";
     public static final String TARGET_ID = "targetId";
     public static final String CURRENT_ID = "currentId";
-    public static final int SEND_IMAGE = 1;
-    public static final int SEND_CAMERA = 2;
 
     private int mStart = 0;
     private boolean canLoadData = true;
@@ -506,16 +504,40 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         };
     }
 
+    private void handleSelectPhotoResult(List<String> pathList) {
+        if (pathList == null || pathList.isEmpty()) {
+            return;
+        }
+
+        for (String path : pathList) {
+            MessageHelper messageHelper = new MessageHelper(mContext);
+            File file = messageHelper.compressImageByFile(path);
+            messageHelper.compressTumbImageByFile(file.getAbsolutePath(), SystemUtil.getScreenWidth(mContext));
+            mMessageSendListener.onSendImage(file);
+        }
+    }
+
     protected InputViewControllerListener getMessageControllerListener() {
         return new InputViewControllerListener() {
             @Override
             public void onSelectPhoto() {
-                openPictureFromLocal();
+                mMessageControllerListener.selectPhoto(new MessageControllerListener.PhotoSelectCallback() {
+                    @Override
+                    public void onSelected(List<String> pathList) {
+                        handleSelectPhotoResult(pathList);
+                    }
+                });
             }
 
             @Override
             public void onTakePhoto() {
-                openPictureFromCamera();
+                mMessageControllerListener.takePhoto(new MessageControllerListener.PhotoSelectCallback() {
+                    @Override
+                    public void onSelected(List<String> pathList) {
+                        handleSelectPhotoResult(pathList);
+
+                    }
+                });
             }
 
             @Override
@@ -662,45 +684,6 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             }
         }
     };
-
-    /**
-     * 从图库获取图片
-     */
-    protected void openPictureFromLocal() {
-        Intent intent = new Intent(getActivity().getBaseContext(), MultiImageSelectorActivity.class);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 5);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
-        startActivityForResult(intent, SEND_IMAGE);
-    }
-
-    protected void openPictureFromCamera() {
-        Intent intent = new Intent(getActivity().getBaseContext(), MultiImageSelectorActivity.class);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_TAKE_CAMERA, true);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
-        startActivityForResult(intent, SEND_IMAGE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-        if(requestCode == SEND_IMAGE){
-            List<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-            if (pathList == null || pathList.isEmpty()) {
-                return;
-            }
-
-            for (String path : pathList) {
-                MessageHelper messageHelper = new MessageHelper(mContext);
-                File file = messageHelper.compressImageByFile(path);
-                messageHelper.compressTumbImageByFile(file.getAbsolutePath(), SystemUtil.getScreenWidth(mContext));
-                mMessageSendListener.onSendImage(file);
-            }
-        }
-    }
 
     /*
         send msg

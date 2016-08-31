@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,9 +43,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import cn.trinea.android.common.util.ToastUtils;
+import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 /**
  * Created by JesseHuang on 15/9/16.
@@ -52,6 +55,8 @@ import cn.trinea.android.common.util.ToastUtils;
 public class NewsCourseActivity extends ActionBarBaseActivity {
 
     public static final int CLEAR = 0x10;
+    public static final int SEND_IMAGE = 1;
+    public static final int SEND_CAMERA = 2;
 
     public static final String COURSE_ID = "course_id";
     public static final String SHOW_TYPE = "show_type";
@@ -70,6 +75,7 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private String mUserTypeInCourse;
     private Course mCourse;
     private Handler mHandler;
+    private MessageControllerListener.PhotoSelectCallback mPhotoSelectCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -349,6 +355,18 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 bundle.putString(Const.WEB_URL, url);
                 CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
             }
+
+            @Override
+            public void selectPhoto(PhotoSelectCallback callback) {
+                mPhotoSelectCallback = callback;
+                openPictureFromLocal();
+            }
+
+            @Override
+            public void takePhoto(PhotoSelectCallback callback) {
+                mPhotoSelectCallback = callback;
+                openPictureFromCamera();
+            }
         };
     }
 
@@ -387,5 +405,37 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         role.setType(Destination.COURSE);
         role.setNickname(mCourse.title);
         callback.onCreateRole(role);
+    }
+
+    /**
+     * 从图库获取图片
+     */
+    protected void openPictureFromLocal() {
+        Intent intent = new Intent(getBaseContext(), MultiImageSelectorActivity.class);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 5);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
+        startActivityForResult(intent, SEND_IMAGE);
+    }
+
+    protected void openPictureFromCamera() {
+        Intent intent = new Intent(getBaseContext(), MultiImageSelectorActivity.class);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_TAKE_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
+        startActivityForResult(intent, SEND_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == SEND_IMAGE) {
+            List<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+            if (mPhotoSelectCallback != null) {
+                mPhotoSelectCallback.onSelected(pathList);
+            }
+        }
     }
 }

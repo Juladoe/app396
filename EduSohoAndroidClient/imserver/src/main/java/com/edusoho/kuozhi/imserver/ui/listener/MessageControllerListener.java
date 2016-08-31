@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.imserver.ui.listener;
 import com.edusoho.kuozhi.imserver.entity.Role;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,18 +21,26 @@ public interface MessageControllerListener {
 
     void onShowWebPage(String url);
 
+    void selectPhoto(PhotoSelectCallback callback);
+
+    void takePhoto(PhotoSelectCallback callback);
+
     Map<String, String> getRequestHeaders();
 
     /*
         callback
      */
-    interface RoleUpdateCallback
-    {
+
+    interface PhotoSelectCallback {
+
+        void onSelected(List<String> pathList);
+    }
+
+    interface RoleUpdateCallback {
         void onCreateRole(Role role);
     }
 
-    interface ConvNoCreateCallback
-    {
+    interface ConvNoCreateCallback {
         void onCreateConvNo(String convNo);
     }
 }

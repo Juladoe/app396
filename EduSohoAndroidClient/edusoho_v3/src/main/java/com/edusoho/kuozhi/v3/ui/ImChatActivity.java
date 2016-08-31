@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
@@ -26,18 +28,22 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import cn.trinea.android.common.util.ToastUtils;
+import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 /**
  * Created by suju on 16/8/26.
  */
 public class ImChatActivity extends ActionBarBaseActivity {
+
+    public static final int SEND_IMAGE = 1;
+    public static final int SEND_CAMERA = 2;
 
     public static final String TAG = "ChatActivity";
     public static final String FROM_ID = "from_id";
@@ -51,6 +57,8 @@ public class ImChatActivity extends ActionBarBaseActivity {
     protected String mTargetType;
     protected String mConversationNo;
     protected MessageListFragment mMessageListFragment;
+
+    private MessageControllerListener.PhotoSelectCallback mPhotoSelectCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +96,7 @@ public class ImChatActivity extends ActionBarBaseActivity {
         bundle.putInt(MessageListFragment.TARGET_ID, mTargetId);
         bundle.putString(MessageListFragment.TARGET_TYPE, getTargetType());
         mMessageListFragment.setArguments(bundle);
-        fragmentTransaction.add(android.R.id.content, mMessageListFragment,  "im_container").commit();
+        fragmentTransaction.add(android.R.id.content, mMessageListFragment, "im_container").commit();
     }
 
     protected String getTargetType() {
@@ -157,6 +165,18 @@ public class ImChatActivity extends ActionBarBaseActivity {
                 bundle.putString(Const.WEB_URL, url);
                 CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
             }
+
+            @Override
+            public void selectPhoto(PhotoSelectCallback callback) {
+                mPhotoSelectCallback = callback;
+                openPictureFromLocal();
+            }
+
+            @Override
+            public void takePhoto(PhotoSelectCallback callback) {
+                mPhotoSelectCallback = callback;
+                openPictureFromCamera();
+            }
         };
     }
 
@@ -224,4 +244,37 @@ public class ImChatActivity extends ActionBarBaseActivity {
 
         return frameLayout;
     }
+
+    /**
+     * 从图库获取图片
+     */
+    protected void openPictureFromLocal() {
+        Intent intent = new Intent(getBaseContext(), MultiImageSelectorActivity.class);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 5);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
+        startActivityForResult(intent, SEND_IMAGE);
+    }
+
+    protected void openPictureFromCamera() {
+        Intent intent = new Intent(getBaseContext(), MultiImageSelectorActivity.class);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_TAKE_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
+        startActivityForResult(intent, SEND_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == SEND_IMAGE) {
+            List<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+            if (mPhotoSelectCallback != null) {
+                mPhotoSelectCallback.onSelected(pathList);
+            }
+        }
+    }
+
 }
