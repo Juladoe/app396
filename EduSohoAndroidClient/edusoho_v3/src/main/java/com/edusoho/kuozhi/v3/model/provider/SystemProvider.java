@@ -43,7 +43,7 @@ public class SystemProvider extends ModelProvider {
     public ProviderListener<LinkedHashMap> getIMChatConfig() {
         School school = SchoolUtil.getDefaultSchool(mContext);
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
-        String token = tokenMap.get("token").toString();
+        String token = tokenMap.containsKey("token") ? tokenMap.get("token").toString() : "";
         RequestUrl requestUrl = new RequestUrl(school.host + "/api/setting/app_im");
         requestUrl.heads.put("Auth-Token", token);
 
