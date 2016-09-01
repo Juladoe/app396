@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.helper.IDbManager;
 
@@ -23,6 +24,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public DbHelper(Context context, IDbManager dbManager) {
         super(context, dbManager.getName(), null, dbManager.getVersion());
         this.mIMDbManager = dbManager;
+        Log.d("IDbManager", dbManager.getName());
     }
 
     @Override

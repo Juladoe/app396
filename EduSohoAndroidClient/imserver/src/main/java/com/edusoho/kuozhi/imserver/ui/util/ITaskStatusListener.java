@@ -7,6 +7,7 @@ public interface ITaskStatusListener {
 
     int DOWNLOAD = 0001;
     int UPLOAD = 0002;
+    int NO_BROADCAST = 0003;
 
     void onSuccess(int taskId, int taskType, String uri);
 

@@ -14,4 +14,6 @@ public interface MessageListItemController {
     void onAvatarClick(int userId);
 
     void onContentClick(int position);
+
+    void onUpdateRole(String type, int rid);
 }

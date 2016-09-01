@@ -21,11 +21,9 @@ import com.edusoho.kuozhi.imserver.ui.entity.AudioBody;
 import com.edusoho.kuozhi.imserver.ui.entity.Direct;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
-import com.edusoho.kuozhi.imserver.ui.helper.ViewCacheHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.AudioPlayStatusListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
-import com.edusoho.kuozhi.imserver.ui.util.ChatAudioRecord;
 import com.edusoho.kuozhi.imserver.ui.util.ResourceDownloadTask;
 import com.edusoho.kuozhi.imserver.util.MessageUtil;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
@@ -65,7 +63,6 @@ public class MessageListAdapter extends BaseAdapter {
     protected static final String TAG = "MessageListAdapter";
 
     private int mCurrentId;
-    private ViewCacheHelper mViewCacheHelper;
     private MessageHelper mMessageHelper;
     private MessageListItemController mMessageListItemController;
 
@@ -80,7 +77,6 @@ public class MessageListAdapter extends BaseAdapter {
                 showImageForEmptyUri(R.drawable.message_image_default).
                 showImageOnFail(R.drawable.message_image_default).build();
 
-        this.mViewCacheHelper = new ViewCacheHelper();
         this.mMessageHelper = new MessageHelper(mContext);
     }
 
@@ -134,7 +130,6 @@ public class MessageListAdapter extends BaseAdapter {
     }
 
     public void destory() {
-        mViewCacheHelper.clear();
     }
 
     @Override
@@ -147,7 +142,6 @@ public class MessageListAdapter extends BaseAdapter {
             Log.d(TAG, "type:" + type);
             view = getItemView(type, messageBody.getSource().getId() == mCurrentId);
             view.setTag(createItemViewHolder(view));
-            //mViewCacheHelper.putView(messageBody.getMid(), view);
         }
 
         viewHolder = (SendViewHolder) view.getTag();
@@ -156,6 +150,7 @@ public class MessageListAdapter extends BaseAdapter {
         setMessageBody(viewHolder, messageBody, i);
 
         String avatarSrc = mMessageHelper.getRoleAvatar(messageBody.getSource().getType(), messageBody.getSource().getId());
+        mMessageListItemController.onUpdateRole(messageBody.getSource().getType(), messageBody.getSource().getId());
         ImageLoader.getInstance().displayImage(avatarSrc, viewHolder.avatarView, mOptions);
 
         switch (messageBody.getMsgStatus()) {

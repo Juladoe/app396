@@ -31,7 +31,14 @@ public class IMRoleManager {
     }
 
     public long createRole(Role role) {
-        return new RoleDbHelper(mContext).save(role);
+        if (TextUtils.isEmpty(role.getType()) || role.getRid() == 0) {
+            return 0;
+        }
+        RoleDbHelper roleDbHelper = new RoleDbHelper(mContext);
+        if (roleDbHelper.getRoleByType(role.getType(), role.getRid()).getRid() != 0) {
+            return 0;
+        }
+        return roleDbHelper.save(role);
     }
 
     public int updateRole(Role role) {

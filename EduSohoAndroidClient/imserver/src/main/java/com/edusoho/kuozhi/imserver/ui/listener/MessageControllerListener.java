@@ -15,7 +15,7 @@ public interface MessageControllerListener {
 
     void createConvNo(ConvNoCreateCallback callback);
 
-    void createRole(RoleUpdateCallback callback);
+    void createRole(String type, int rid, RoleUpdateCallback callback);
 
     void onShowImage(int index, ArrayList<String> imageList);
 

@@ -368,10 +368,10 @@ public class ImServer {
         }
 
         if (checkPushConvEntityCanUpdate(convEntity.getConvNo(), messageEntity.getConvNo())) {
-            mConvDbHelper.updateByConvNo(convEntity);
+            mConvDbHelper.update(convEntity);
             return;
         }
-        mConvDbHelper.update(convEntity);
+        mConvDbHelper.updateByConvNo(convEntity);
     }
 
     /*

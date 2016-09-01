@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -40,7 +41,9 @@ import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
 import com.edusoho.kuozhi.imserver.ui.util.MessageAudioPlayer;
 import com.edusoho.kuozhi.imserver.ui.util.ResourceDownloadTask;
+import com.edusoho.kuozhi.imserver.ui.util.TaskFeature;
 import com.edusoho.kuozhi.imserver.ui.util.UpYunUploadTask;
+import com.edusoho.kuozhi.imserver.ui.util.UpdateRoleTask;
 import com.edusoho.kuozhi.imserver.ui.view.MessageInputView;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
@@ -324,12 +327,23 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
 
             @Override
             public void onErrorClick(int position) {
+                handleErrorMessage(mListAdapter.getItem(position));
             }
 
             @Override
             public void onAvatarClick(int userId) {
                 Role role = IMClient.getClient().getRoleManager().getRole(Destination.USER, userId);
+                role.setRid(userId);
                 mMessageControllerListener.onShowUser(role);
+            }
+
+            @Override
+            public void onUpdateRole(final String type, final int rid) {
+                Role role = IMClient.getClient().getRoleManager().getRole(type, rid);
+                if (role.getRid() != 0) {
+                    return;
+                }
+                new Handler().postDelayed(new UpdateRoleRunnable(type, rid), 200);
             }
 
             @Override
@@ -577,7 +591,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             addMessageList(mStart);
             return;
         }
-        mMessageControllerListener.createRole(new MessageControllerListener.RoleUpdateCallback() {
+        mMessageControllerListener.createRole(mTargetType, mTargetId, new MessageControllerListener.RoleUpdateCallback() {
             @Override
             public void onCreateRole(Role role) {
                 if (role.getRid() == 0) {
@@ -797,5 +811,39 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         }
 
         return jsonObject.toString();
+    }
+
+    private class UpdateRoleRunnable implements Runnable {
+
+        private String type;
+        private int rid;
+
+        public UpdateRoleRunnable(String type, int rid) {
+            this.type = type;
+            this.rid = rid;
+        }
+
+        @Override
+        public void run() {
+            UpdateRoleTask task = new UpdateRoleTask(type, rid, new UpdateRoleTask.TaskCallback() {
+                @Override
+                public void run(final TaskFeature taskFeature) {
+                    mMessageControllerListener.createRole(type, rid, new MessageControllerListener.RoleUpdateCallback() {
+                        @Override
+                        public void onCreateRole(Role role) {
+                            if (role.getRid() != 0) {
+                                IMClient.getClient().getRoleManager().createRole(role);
+                                Log.d(TAG, "create role:" + rid);
+                                mListAdapter.notifyDataSetInvalidated();
+                                taskFeature.success(null);
+                                return;
+                            }
+                            taskFeature.fail();
+                        }
+                    });
+                }
+            });
+            IMClient.getClient().getResourceHelper().addTask(task);
+        }
     }
 }

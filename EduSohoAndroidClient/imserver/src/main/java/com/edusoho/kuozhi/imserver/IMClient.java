@@ -74,7 +74,7 @@ public class IMClient {
 
     public void setIMDataBase(String dbName) {
         Log.d(TAG, "setIMDataBase : " + dbName);
-        DbManagerFactory.getDefaultFactory().setDbName(dbName);
+        DbManagerFactory.getDefaultFactory().setDbName(mContext, dbName);
     }
 
     private void registIMServiceStatusBroadcastReceiver() {
@@ -177,7 +177,6 @@ public class IMClient {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 mImBinder = IImServerAidlInterface.Stub.asInterface(service);
                 try {
-                    Log.d(TAG, "onServiceConnected:clientName:" + clientName + " ignoreNosList:" + ignoreNosList + " hosts:" + hostList);
                     mImBinder.start(clientId, clientName, ignoreNosList, hostList);
                 } catch (RemoteException e) {
                     e.printStackTrace();

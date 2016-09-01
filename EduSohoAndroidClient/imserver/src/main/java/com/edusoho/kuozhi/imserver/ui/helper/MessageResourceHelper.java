@@ -39,19 +39,23 @@ public class MessageResourceHelper {
         return new ITaskStatusListener() {
             @Override
             public void onSuccess(int taskId, int taskType, String uri) {
-                Intent intent = new Intent(ResourceStatusReceiver.ACTION);
-                intent.putExtra(ResourceStatusReceiver.RES_ID, taskId);
-                intent.putExtra(ResourceStatusReceiver.TASK_TYPE, taskType);
-                intent.putExtra(ResourceStatusReceiver.RES_URI, uri);
-                mContext.sendBroadcast(intent);
+                if (taskType != ITaskStatusListener.NO_BROADCAST) {
+                    Intent intent = new Intent(ResourceStatusReceiver.ACTION);
+                    intent.putExtra(ResourceStatusReceiver.RES_ID, taskId);
+                    intent.putExtra(ResourceStatusReceiver.TASK_TYPE, taskType);
+                    intent.putExtra(ResourceStatusReceiver.RES_URI, uri);
+                    mContext.sendBroadcast(intent);
+                }
                 removeTask(taskId);
             }
 
             @Override
             public void onFail(int taskId, int taskType) {
-                Intent intent = new Intent(ResourceStatusReceiver.ACTION);
-                intent.putExtra(ResourceStatusReceiver.RES_ID, taskId);
-                mContext.sendBroadcast(intent);
+                if (taskType != ITaskStatusListener.NO_BROADCAST) {
+                    Intent intent = new Intent(ResourceStatusReceiver.ACTION);
+                    intent.putExtra(ResourceStatusReceiver.RES_ID, taskId);
+                    mContext.sendBroadcast(intent);
+                }
                 removeTask(taskId);
             }
         };
