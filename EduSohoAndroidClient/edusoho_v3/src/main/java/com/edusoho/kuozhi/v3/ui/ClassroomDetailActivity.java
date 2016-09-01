@@ -117,7 +117,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                     if (button == PopupDialog.OK) {
                         User user = getAppSettingProvider().getCurrentUser();
                         ConvEntity convEntity = IMClient.getClient().getConvManager()
-                                .getConvByTypeAndId(Destination.CLASSROOM, mFromId, user.id);
+                                .getConvByTypeAndId(Destination.CLASSROOM, mFromId);
                         if (convEntity == null) {
                             return;
                         }

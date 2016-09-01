@@ -189,7 +189,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
      */
     private void checkConvNo() {
         ConvEntity convEntity = IMClient.getClient().getConvManager()
-                .getConvByTypeAndId(mTargetType, mTargetId, IMClient.getClient().getClientId());
+                .getConvByTypeAndId(mTargetType, mTargetId);
         if (convNoIsEmpty(mConversationNo) && convEntity != null) {
             mConversationNo = convEntity.getConvNo();
         }

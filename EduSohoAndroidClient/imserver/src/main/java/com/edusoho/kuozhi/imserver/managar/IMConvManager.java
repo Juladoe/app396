@@ -37,11 +37,11 @@ public class IMConvManager {
         return new ConvDbHelper(mContext).getConvByConvNo(convNo);
     }
 
-    public ConvEntity getConvByTypeAndId(String type, int targetId, int uid) {
+    public ConvEntity getConvByTypeAndId(String type, int targetId) {
         if (TextUtils.isEmpty(type)) {
             return null;
         }
-        return new ConvDbHelper(mContext).getConvByTypeAndId(type, targetId, uid);
+        return new ConvDbHelper(mContext).getConvByTypeAndId(type, targetId);
     }
 
     public int updateConvByConvNo(ConvEntity convEntity) {

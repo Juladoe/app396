@@ -128,7 +128,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                     if (button == PopupDialog.OK) {
                         User user = getAppSettingProvider().getCurrentUser();
                         IMConvManager imConvManager = IMClient.getClient().getConvManager();
-                        ConvEntity convEntity = imConvManager.getConvByTypeAndId(Destination.COURSE, mFromId, user.id);
+                        ConvEntity convEntity = imConvManager.getConvByTypeAndId(Destination.COURSE, mFromId);
                         if (convEntity == null) {
                             return;
                         }

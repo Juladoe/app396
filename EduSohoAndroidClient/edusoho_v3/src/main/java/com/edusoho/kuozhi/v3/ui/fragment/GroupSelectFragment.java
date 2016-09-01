@@ -82,9 +82,8 @@ public class GroupSelectFragment extends FriendSelectFragment {
         @Override
         public void success(Integer index) {
             Friend friend = (Friend) mFriendAdapter.getItem(index);
-            User user = getAppSettingProvider().getCurrentUser();
             ConvEntity convEntity = IMClient.getClient().getConvManager()
-                    .getConvByTypeAndId(friend.getType(), friend.id, user.id);
+                    .getConvByTypeAndId(friend.getType(), friend.id);
             if (convEntity == null) {
                 createChatConvNo(friend.id);
                 return;

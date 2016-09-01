@@ -148,9 +148,8 @@ public class ImChatActivity_b extends BaseChatActivity implements ChatAdapter.Im
      * 检查是否有convNo
      */
     private void checkConvNo() {
-        User user = getAppSettingProvider().getCurrentUser();
         ConvEntity convEntity = IMClient.getClient().getConvManager()
-                .getConvByTypeAndId(getTargetType(), mFromId, user.id);
+                .getConvByTypeAndId(getTargetType(), mFromId);
         if (convNoIsEmpty(mConversationNo) && convEntity != null) {
             mConversationNo = convEntity.getConvNo();
         }
