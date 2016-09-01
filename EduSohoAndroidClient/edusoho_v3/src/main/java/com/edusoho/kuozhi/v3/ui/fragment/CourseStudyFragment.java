@@ -14,7 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.baidu.cyberplayer.utils.A;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.v3.adapter.StudyProcessRecyclerAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -35,6 +40,10 @@ import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -167,6 +176,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     public void filterData() {
         dataList = filterList(dataList);
         dataList = addLessonTitle(dataList);
+        dataList.addAll(getNewsCourseList());
         addCourseSummary();
 
         mAdapter.setmDataList(dataList);
@@ -174,8 +184,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
 
     public List<NewsCourseEntity> filterIntoEntity(ArrayList<CourseDynamicsItem> dynamicsItems) {
         Collections.reverse(dynamicsItems);
-        for (CourseDynamicsItem dynamicsItem :
-                dynamicsItems) {
+        for (CourseDynamicsItem dynamicsItem : dynamicsItems) {
             String type = dynamicsItem.getType();
             NewsCourseEntity entity = new NewsCourseEntity();
             if (dynamicsItem.getProperties().getLesson() != null) {
@@ -227,15 +236,40 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                 case "become_student":
                 default:
                     break;
-
             }
         }
         return dataList;
     }
 
-    private List<NewsCourseEntity> getNewsCourseList(int start) {
-        List<NewsCourseEntity> entities = newsCourseDataSource.getNewsCourses(start, Const.STUDY_PROCESS_LIMIT, mCourseId, app.loginUser.id);
-        Collections.reverse(entities);
+    private List<NewsCourseEntity> getNewsCourseList() {
+        List<MessageEntity> messageEntityList = IMClient.getClient().getMessageManager().
+                getMessageListByConvNo(Destination.COURSE, 0, 1000);
+        List<NewsCourseEntity> entities = new ArrayList<>();
+        for (MessageEntity messageEntity : messageEntityList) {
+            NewsCourseEntity entity = new NewsCourseEntity();
+            MessageBody messageBody = new MessageBody(messageEntity);
+            try {
+                JSONObject bodyJsonObj = new JSONObject(messageBody.getBody());
+                entity.setId(messageEntity.getId());
+                entity.setCourseId(bodyJsonObj.optInt("courseId"));
+                entity.setTitle(bodyJsonObj.optString("questionTitle"));
+                entity.setContent(bodyJsonObj.optString("title"));
+                entity.setFromType(messageBody.getSource().getType());
+                entity.setBodyType(bodyJsonObj.optString("type"));
+                entity.setLessonType(bodyJsonObj.optString("lessonType"));
+                entity.setUserId(messageBody.getSource().getId());
+                entity.setCreatedTime(bodyJsonObj.optInt("questionCreatedTime"));
+                entity.setLessonId(bodyJsonObj.optInt("lessonId"));
+                entity.setHomworkResultId(bodyJsonObj.optInt("homeworkResultId"));
+                entity.setThreadId(bodyJsonObj.optInt("threadId"));
+                entity.setLearnStartTime(bodyJsonObj.optInt("startTime"));
+                entity.setLearnFinishTime(bodyJsonObj.optInt("finishTime"));
+
+                entities.add(entity);
+            } catch (JSONException e) {
+            }
+        }
+
         return entities;
     }
 
@@ -431,7 +465,6 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
             }
         });
     }

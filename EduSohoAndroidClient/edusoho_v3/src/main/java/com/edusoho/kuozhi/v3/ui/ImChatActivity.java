@@ -131,8 +131,8 @@ public class ImChatActivity extends ActionBarBaseActivity {
             }
 
             @Override
-            public void createRole(RoleUpdateCallback callback) {
-                createTargetRole(callback);
+            public void createRole(String type, int rid, RoleUpdateCallback callback) {
+                createTargetRole(type, rid, callback);
             }
 
             @Override
@@ -188,8 +188,8 @@ public class ImChatActivity extends ActionBarBaseActivity {
         };
     }
 
-    protected void createTargetRole(final MessageControllerListener.RoleUpdateCallback callback) {
-        new UserProvider(mContext).getUserInfo(mTargetId)
+    protected void createTargetRole(String type, int rid, final MessageControllerListener.RoleUpdateCallback callback) {
+        new UserProvider(mContext).getUserInfo(rid)
                 .success(new NormalCallback<User>() {
                     @Override
                     public void success(User user) {

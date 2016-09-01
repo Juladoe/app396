@@ -3,11 +3,13 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.WebView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.webview.ESWebChromeClient;
 import com.edusoho.kuozhi.v3.view.webview.ESWebView;
 
 /**
@@ -43,6 +45,11 @@ public class TeachFragment extends BaseFragment {
             return;
         }
         mWebView.initPlugin(mActivity);
+        mWebView.setWebChromeClient(new ESWebChromeClient(mWebView.getWebView()) {
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+            }
+        });
         mWebView.loadUrl(url);
     }
 }

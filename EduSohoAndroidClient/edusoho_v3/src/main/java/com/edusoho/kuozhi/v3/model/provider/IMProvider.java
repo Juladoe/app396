@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
+import com.baidu.cyberplayer.utils.C;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
@@ -56,7 +57,7 @@ public class IMProvider extends ModelProvider {
         role.setAvatar(classroom.middlePicture);
         role.setNickname(classroom.title);
 
-        ConvEntity convEntity = createConvNo(getAppSettingProvider().getCurrentUser().id, convNo, role);
+        ConvEntity convEntity = createConvNo(convNo, role);
         providerListener.onResponse(convEntity);
 
         return providerListener;
@@ -70,7 +71,7 @@ public class IMProvider extends ModelProvider {
         role.setRid(course.id);
         role.setAvatar(course.middlePicture);
         role.setNickname(course.title);
-        ConvEntity convEntity = createConvNo(getAppSettingProvider().getCurrentUser().id, convNo, role);
+        ConvEntity convEntity = createConvNo(convNo, role);
         providerListener.onResponse(convEntity);
 
         return providerListener;
@@ -88,7 +89,7 @@ public class IMProvider extends ModelProvider {
                         role.setRid(user.id);
                         role.setAvatar(user.mediumAvatar);
                         role.setNickname(user.nickname);
-                        ConvEntity convEntity = createConvNo(getAppSettingProvider().getCurrentUser().id, convNo, role);
+                        ConvEntity convEntity = createConvNo(convNo, role);
                         providerListener.onResponse(convEntity);
                     }
                 });
@@ -96,16 +97,27 @@ public class IMProvider extends ModelProvider {
         return providerListener;
     }
 
-    public ProviderListener<ConvEntity> updateConvInfo(String convNo, String type, int targetId) {
+    public ProviderListener<ConvEntity> updateConvEntityByPush(String convNo, String type, int targetId) {
         ProviderListener<ConvEntity> providerListener = new ProviderListener() {};
         IMConvManager imConvManager = IMClient.getClient().getConvManager();
-        ConvEntity convEntity = imConvManager.getSingleConv(convNo);
-
-        if ((System.currentTimeMillis() / 1000) - convEntity.getUpdatedTime() < EXPAID_TIME) {
-            Log.d(TAG, "ConvEntity not update");
-            return providerListener;
+        ConvEntity convEntity = imConvManager.getConvByConvNo(convNo);
+        if (convEntity == null) {
+            convEntity = imConvManager.getConvByTypeAndId(type, targetId);
         }
 
+        if (convEntity == null) {
+            createConvEntityByType(convNo, type, targetId);
+            return providerListener;
+        }
+        updateConvEntityByType(type, targetId, convEntity);
+        return providerListener;
+    }
+
+    private void updateConvEntityByType(String type, int targetId, ConvEntity convEntity) {
+        if ((System.currentTimeMillis() / 1000) - convEntity.getUpdatedTime() < EXPAID_TIME) {
+            Log.d(TAG, "ConvEntity not update");
+            return;
+        }
         NormalCallback<Role> resultCallback = getConvNoUpdateCallback(convEntity);
         switch (type) {
             case Destination.USER:
@@ -118,8 +130,45 @@ public class IMProvider extends ModelProvider {
                 getRoleFromClassRoom(targetId, resultCallback);
                 break;
         }
+    }
 
+    private void createConvEntityByType(String convNo, String type, int targetId) {
+        NormalCallback<Role> resultCallback = getConvNoCreateCallback(convNo);
+        switch (type) {
+            case Destination.USER:
+                getRoleFromUser(targetId, resultCallback);
+                break;
+            case Destination.COURSE:
+                getRoleFromCourse(targetId, resultCallback);
+                break;
+            case Destination.CLASSROOM:
+                getRoleFromClassRoom(targetId, resultCallback);
+                break;
+        }
+    }
+
+    public ProviderListener<ConvEntity> updateConvEntityByMessage(String convNo, String type, int targetId) {
+        ProviderListener<ConvEntity> providerListener = new ProviderListener() {};
+        IMConvManager imConvManager = IMClient.getClient().getConvManager();
+        ConvEntity convEntity = imConvManager.getConvByConvNo(convNo);
+
+        if (convEntity == null) {
+            createConvEntityByType(convNo, type, targetId);
+            return providerListener;
+        }
+        updateConvEntityByType(type, targetId, convEntity);
         return providerListener;
+    }
+
+    private NormalCallback<Role> getConvNoCreateCallback(final String convNo) {
+        return new NormalCallback<Role>() {
+            @Override
+            public void success(Role role) {
+                createConvNo(convNo, role);
+                Log.d(TAG, "create convEntity:" + convNo);
+                MessageEngine.getInstance().sendMsgToTaget(Const.REFRESH_LIST, null, NewsFragment.class);
+            }
+        };
     }
 
     private NormalCallback<Role> getConvNoUpdateCallback(final ConvEntity convEntity) {
@@ -257,23 +306,13 @@ public class IMProvider extends ModelProvider {
         return array;
     }
 
-    private <T extends Friend> int[] getIntArrayFromList(List<T> friends) {
-        int[] array = new int[friends.size()];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = friends.get(i).id;
-        }
-
-        return array;
-    }
-
-    private ConvEntity createConvNo(int uid, String convNo, Role role) {
+    private ConvEntity createConvNo(String convNo, Role role) {
         ConvEntity convEntity = new ConvEntity();
         convEntity.setTargetId(role.getRid());
         convEntity.setTargetName(role.getNickname());
         convEntity.setConvNo(convNo);
         convEntity.setType(role.getType());
         convEntity.setAvatar(role.getAvatar());
-        convEntity.setUid(uid);
         convEntity.setCreatedTime(System.currentTimeMillis());
         convEntity.setUpdatedTime(0);
         IMClient.getClient().getConvManager().createConv(convEntity);

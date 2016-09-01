@@ -85,7 +85,7 @@ public abstract class AbstractCommand {
         String content, title = "你有一条新消息";
         String type = mMessageBody.getType();
         String nickname = mMessageBody.getSource().getNickname();
-        ConvEntity convEntity = IMClient.getClient().getConvManager().getSingleConv(mMessageBody.getConvNo());
+        ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByConvNo(mMessageBody.getConvNo());
         int unRead = convEntity == null ? 0 : convEntity.getUnRead();
         switch (type) {
             case PushUtil.ChatMsgType.IMAGE:

@@ -131,7 +131,7 @@ public class ChatSelectFragment extends AbstractChatSendFragment {
 
     private void initChatList() {
 
-        List<ConvEntity> convEntityList = IMClient.getClient().getConvManager().getConvListByUid(app.loginUser.id);
+        List<ConvEntity> convEntityList = IMClient.getClient().getConvManager().getConvList();
         mChatSelectListAdapter = new ChatSelectListAdapter(mContext, filterChatSelectList(convEntityList));
         mChatSelectListView.setAdapter(mChatSelectListAdapter);
     }

@@ -315,7 +315,7 @@ public class NewsFragment extends BaseFragment {
         if (app.loginUser == null) {
             return;
         }
-        mConvEntityList = IMClient.getClient().getConvManager().getConvListByUid(app.loginUser.id);
+        mConvEntityList = IMClient.getClient().getConvManager().getConvList();
         mSwipeAdapter.update(coverConvListToNewList(mConvEntityList));
         setListVisibility(mSwipeAdapter.getCount() == 0);
         mLoadProgressBar.setVisibility(View.GONE);

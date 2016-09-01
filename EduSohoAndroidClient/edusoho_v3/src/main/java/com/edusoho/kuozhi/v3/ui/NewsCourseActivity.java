@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
+import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -318,8 +319,8 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
             }
 
             @Override
-            public void createRole(RoleUpdateCallback callback) {
-                createTargetRole(callback);
+            public void createRole(String type, int rid, RoleUpdateCallback callback) {
+                createTargetRole(type, rid, callback);
             }
 
             @Override
@@ -403,13 +404,32 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         return promise;
     }
 
-    protected void createTargetRole(MessageControllerListener.RoleUpdateCallback callback) {
+    protected void createTargetRole(String type, int rid, MessageControllerListener.RoleUpdateCallback callback) {
+        if (Destination.USER.equals(type)) {
+            createTargetRoleFromUser(rid, callback);
+            return;
+        }
         Role role = new Role();
         role.setRid(mCourse.id);
         role.setAvatar(mCourse.middlePicture);
         role.setType(Destination.COURSE);
         role.setNickname(mCourse.title);
         callback.onCreateRole(role);
+    }
+
+    protected void createTargetRoleFromUser(int rid, final MessageControllerListener.RoleUpdateCallback callback) {
+        new UserProvider(mContext).getUserInfo(rid)
+                .success(new NormalCallback<User>() {
+                    @Override
+                    public void success(User user) {
+                        Role role = new Role();
+                        role.setRid(user.id);
+                        role.setAvatar(user.mediumAvatar);
+                        role.setType(Destination.USER);
+                        role.setNickname(user.nickname);
+                        callback.onCreateRole(role);
+                    }
+                });
     }
 
     /**

@@ -26,7 +26,7 @@ public class MessageCommand extends AbstractCommand {
 
         String type = mMessageBody.getSource().getType();
         int targetId = mMessageBody.getSource().getId();
-        new IMProvider(mContext).updateConvInfo(mMessageBody.getConvNo(), type, targetId);
+        new IMProvider(mContext).updateConvEntityByMessage(mMessageBody.getConvNo(), type, targetId);
     }
 
 }

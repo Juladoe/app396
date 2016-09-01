@@ -35,9 +35,9 @@ public class PushMsgCommand extends AbstractCommand {
         showNotification();
         String type = mMessageBody.getSource().getType();
         int targetId = mMessageBody.getSource().getId();
-        new IMProvider(mContext).updateConvInfo(type, type, targetId);
+        new IMProvider(mContext).updateConvEntityByPush(mMessageBody.getConvNo(), type, targetId);
         Role role = IMClient.getClient().getRoleManager().getRole(type, targetId);
-        ConvEntity convEntity = IMClient.getClient().getConvManager().getSingleConv(type);
+        ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByConvNo(type);
         if (convEntity != null && role.getRid() != 0) {
             convEntity.setAvatar(role.getAvatar());
             convEntity.setTargetName(role.getNickname());

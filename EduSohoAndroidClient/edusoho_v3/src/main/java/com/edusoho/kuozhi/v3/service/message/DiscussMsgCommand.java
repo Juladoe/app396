@@ -33,6 +33,6 @@ public class DiscussMsgCommand extends AbstractCommand {
         }
         String type = mMessageBody.getDestination().getType();
         int targetId = mMessageBody.getDestination().getId();
-        new IMProvider(mContext).updateConvInfo(mMessageBody.getConvNo(), type, targetId);
+        new IMProvider(mContext).updateConvEntityByMessage(mMessageBody.getConvNo(), type, targetId);
     }
 }

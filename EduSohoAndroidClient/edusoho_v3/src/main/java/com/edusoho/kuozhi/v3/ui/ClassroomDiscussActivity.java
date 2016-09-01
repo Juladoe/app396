@@ -65,19 +65,23 @@ public class ClassroomDiscussActivity extends ImChatActivity {
     }
 
     @Override
-    protected void createTargetRole(final MessageControllerListener.RoleUpdateCallback callback) {
-        new IMProvider(mContext).createConvInfoByClassRoom(mConversationNo, mClassRoom)
-                .success(new NormalCallback<User>() {
-                    @Override
-                    public void success(User user) {
-                        Role role = new Role();
-                        role.setRid(user.id);
-                        role.setAvatar(user.mediumAvatar);
-                        role.setType(Destination.CLASSROOM);
-                        role.setNickname(user.nickname);
-                        callback.onCreateRole(role);
-                    }
-                });
+    protected void createTargetRole(String type, int rid, final MessageControllerListener.RoleUpdateCallback callback) {
+        if (Destination.CLASSROOM.equals(type)) {
+            new IMProvider(mContext).createConvInfoByClassRoom(mConversationNo, mClassRoom)
+                    .success(new NormalCallback<User>() {
+                        @Override
+                        public void success(User user) {
+                            Role role = new Role();
+                            role.setRid(user.id);
+                            role.setAvatar(user.mediumAvatar);
+                            role.setType(Destination.CLASSROOM);
+                            role.setNickname(user.nickname);
+                            callback.onCreateRole(role);
+                        }
+                    });
+            return;
+        }
+        super.createTargetRole(type, rid, callback);
     }
 
     @Override
