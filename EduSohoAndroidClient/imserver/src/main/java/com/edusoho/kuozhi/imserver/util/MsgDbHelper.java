@@ -24,9 +24,9 @@ public class MsgDbHelper {
         mDbHelper = new DbHelper(context, DbManagerFactory.getDefaultFactory().createIMDbManager(context));
     }
 
-    public List<MessageEntity> getMessageList(String convNo, int start) {
+    public List<MessageEntity> getMessageList(String convNo, int start, int limit) {
         List<MessageEntity> entityList = new ArrayList<>();
-        ArrayList<HashMap<String, String>> arrayList = mDbHelper.queryBySortAndLimit(TABLE, "convNo=?", new String[]{convNo}, "time desc", String.format("%d, 10", start));
+        ArrayList<HashMap<String, String>> arrayList = mDbHelper.queryBySortAndLimit(TABLE, "convNo=?", new String[]{convNo}, "time desc", String.format("%d, %d", start, limit));
         if (arrayList == null) {
             return entityList;
         }

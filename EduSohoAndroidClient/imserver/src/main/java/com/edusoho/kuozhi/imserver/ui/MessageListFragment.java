@@ -608,7 +608,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     }
 
     private void checkConvEntity(Role role) {
-        ConvEntity convEntity = IMClient.getClient().getConvManager().getSingleConv(mConversationNo);
+        ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByConvNo(mConversationNo);
         if (convEntity == null) {
             Log.d(TAG, "create ConvNo");
             convEntity = createConvNo(IMClient.getClient().getClientId(), mConversationNo, role);

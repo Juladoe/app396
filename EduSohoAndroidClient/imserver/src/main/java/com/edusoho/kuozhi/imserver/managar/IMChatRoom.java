@@ -36,7 +36,7 @@ public class IMChatRoom {
     }
 
     public List<MessageEntity> getMessageList(int start) {
-        List<MessageEntity> messageEntities =  new MsgDbHelper(mContext).getMessageList(mConvNo, start);
+        List<MessageEntity> messageEntities =  new MsgDbHelper(mContext).getMessageList(mConvNo, start, 10);
         Collections.sort(messageEntities, new Comparator<MessageEntity>() {
             @Override
             public int compare(MessageEntity t1, MessageEntity t2) {

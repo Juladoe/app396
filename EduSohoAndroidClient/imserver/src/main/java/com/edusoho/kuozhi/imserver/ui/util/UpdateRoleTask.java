@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.imserver.ui.util;
 
+import android.os.Handler;
+
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
@@ -27,7 +29,12 @@ public class UpdateRoleTask implements IResourceTask {
     @Override
     public TaskFeature execute() {
         final TaskFeature taskFeature = new TaskFeature(rid, ITaskStatusListener.NO_BROADCAST);
-        mTaskCallback.run(taskFeature);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mTaskCallback.run(taskFeature);
+            }
+        }, 300);
         return taskFeature;
     }
 

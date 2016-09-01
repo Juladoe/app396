@@ -7,6 +7,8 @@ import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
 
+import java.util.List;
+
 /**
  * Created by 菊 on 2016/5/15.
  */
@@ -33,6 +35,10 @@ public class IMMessageManager {
 
     public MessageEntity getMessage(int id) {
         return new MsgDbHelper(mContext).getMessage(id);
+    }
+
+    public List<MessageEntity> getMessageListByConvNo(String convNo, int start, int limit) {
+        return new MsgDbHelper(mContext).getMessageList(convNo, start, limit);
     }
 
     public MessageEntity getMessageByUID(String uid) {

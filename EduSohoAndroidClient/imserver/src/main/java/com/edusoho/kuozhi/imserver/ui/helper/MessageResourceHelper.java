@@ -64,6 +64,7 @@ public class MessageResourceHelper {
     public void removeTask(int id) {
         IResourceTask task = mTaskMap.get(id);
         if (task == null) {
+            mTaskMap.remove(id);
             return;
         }
         Log.d(TAG, "removeTask task:" + id);

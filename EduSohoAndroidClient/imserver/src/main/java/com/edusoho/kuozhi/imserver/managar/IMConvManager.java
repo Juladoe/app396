@@ -3,8 +3,6 @@ package com.edusoho.kuozhi.imserver.managar;
 import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
-
-import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.util.ConvDbHelper;
 
@@ -29,11 +27,7 @@ public class IMConvManager {
         return new ConvDbHelper(mContext).getConvListByType(type);
     }
 
-    public List<ConvEntity> getConvListByUid(int uid) {
-        return new ConvDbHelper(mContext).getConvListByUid(uid);
-    }
-
-    public ConvEntity getSingleConv(String convNo) {
+    public ConvEntity getConvByConvNo(String convNo) {
         return new ConvDbHelper(mContext).getConvByConvNo(convNo);
     }
 

@@ -24,7 +24,6 @@ public class DbHelper extends SQLiteOpenHelper {
     public DbHelper(Context context, IDbManager dbManager) {
         super(context, dbManager.getName(), null, dbManager.getVersion());
         this.mIMDbManager = dbManager;
-        Log.d("IDbManager", dbManager.getName());
     }
 
     @Override
