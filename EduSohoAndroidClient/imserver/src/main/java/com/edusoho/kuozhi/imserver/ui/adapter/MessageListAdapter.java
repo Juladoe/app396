@@ -126,6 +126,7 @@ public class MessageListAdapter extends BaseAdapter {
                 return isSend ? SEND_AUDIO : RECEIVE_AUDIO;
             case PushUtil.ChatMsgType.IMAGE:
                 return isSend ? SEND_IMAGE : RECEIVE_IMAGE;
+            case PushUtil.ChatMsgType.PUSH:
             case PushUtil.ChatMsgType.MULTI:
                 return isSend ? SEND_MULTI: RECEIVE_MULTI;
         }
@@ -456,11 +457,32 @@ public class MessageListAdapter extends BaseAdapter {
                     case "audio":
                         processorAudio(messageBody);
                         break;
+                    case "push":
                     case "multi":
                         processorMulit(messageBody);
                         break;
                     case "image":
                         processorImage(messageBody);
+                }
+            }
+
+            private void parseMultiMessageBody(MessageBody messageBody, MultiViewHolder viewHolder) {
+                String body = messageBody.getBody();
+                try {
+                    JSONObject jsonObject = new JSONObject(body);
+                    String type = jsonObject.optString("type");
+                    switch (type) {
+                        case PushUtil.CourseType.QUESTION_CREATED:
+                            viewHolder.multiTitleView.setText(jsonObject.optString("questionTitle"));
+                            viewHolder.multiContentView.setText(jsonObject.optString("title"));
+                            viewHolder.mulitIconView.setImageResource(R.drawable.default_course);
+                            break;
+                        default:
+                            viewHolder.multiTitleView.setText(jsonObject.optString("title"));
+                            viewHolder.multiContentView.setText(jsonObject.optString("content"));
+                            ImageLoader.getInstance().displayImage(jsonObject.optString("image"), viewHolder.mulitIconView);
+                    }
+                } catch (JSONException e) {
                 }
             }
 
@@ -472,14 +494,7 @@ public class MessageListAdapter extends BaseAdapter {
 
                 View view = mViewHolder.containerView.findViewById(R.id.chat_multi_body);
                 MultiViewHolder viewHolder = new MultiViewHolder(view);
-                try {
-                    JSONObject jsonObject = new JSONObject(messageBody.getBody());
-
-                    viewHolder.multiTitleView.setText(jsonObject.optString("title"));
-                    viewHolder.multiContentView.setText(jsonObject.optString("content"));
-                    ImageLoader.getInstance().displayImage(jsonObject.optString("image"), viewHolder.mulitIconView);
-                } catch (JSONException e) {
-                }
+                parseMultiMessageBody(messageBody, viewHolder);
                 view.setLayoutParams(lp);
             }
 

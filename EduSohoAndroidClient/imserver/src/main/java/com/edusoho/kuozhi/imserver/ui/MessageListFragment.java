@@ -3,10 +3,7 @@ package com.edusoho.kuozhi.imserver.ui;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,7 +30,6 @@ import com.edusoho.kuozhi.imserver.ui.adapter.MessageListAdapter;
 import com.edusoho.kuozhi.imserver.ui.broadcast.ResourceStatusReceiver;
 import com.edusoho.kuozhi.imserver.ui.entity.AudioBody;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
-import com.edusoho.kuozhi.imserver.ui.entity.UpYunUploadResult;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.AudioPlayStatusListener;
@@ -41,7 +37,6 @@ import com.edusoho.kuozhi.imserver.ui.listener.InputViewControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
-import com.edusoho.kuozhi.imserver.ui.util.ApiConst;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
 import com.edusoho.kuozhi.imserver.ui.util.MessageAudioPlayer;
 import com.edusoho.kuozhi.imserver.ui.util.ResourceDownloadTask;
@@ -51,32 +46,19 @@ import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
-import com.koushikdutta.async.http.AsyncHttpClient;
-import com.koushikdutta.async.http.AsyncHttpGet;
-import com.koushikdutta.async.http.AsyncHttpPost;
-import com.koushikdutta.async.http.AsyncHttpRequest;
-import com.koushikdutta.async.http.AsyncHttpResponse;
-import com.koushikdutta.async.http.body.JSONObjectBody;
-import com.koushikdutta.async.http.body.MultipartFormDataBody;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
-import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 /**
  * Created by suju on 16/8/26.
@@ -353,12 +335,28 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             @Override
             public void onContentClick(int position) {
                 MessageBody messageBody = new MessageBody(mListAdapter.getItem(position));
-                if (PushUtil.ChatMsgType.MULTI.equals(messageBody.getType())) {
-                    try {
-                        JSONObject jsonObject = new JSONObject(messageBody.getBody());
-                        mMessageControllerListener.onShowWebPage(jsonObject.optString("url"));
-                    } catch (JSONException e) {
-                    }
+                switch (messageBody.getType()) {
+                    case PushUtil.ChatMsgType.MULTI:
+                        try {
+                            JSONObject jsonObject = new JSONObject(messageBody.getBody());
+                            mMessageControllerListener.onShowWebPage(jsonObject.optString("url"));
+                        } catch (JSONException e) {
+                        }
+                        break;
+                    case PushUtil.ChatMsgType.PUSH:
+                        try {
+                            JSONObject jsonObject = new JSONObject(messageBody.getBody());
+                            String type = jsonObject.optString("type");
+                            if (PushUtil.CourseType.QUESTION_CREATED.equals(type)) {
+                                Bundle bundle = new Bundle();
+                                bundle.putInt("target_id", jsonObject.optInt("course"));
+                                bundle.putString("target_type", "course");
+                                bundle.putInt("thread_id", jsonObject.optInt("threadId"));
+                                bundle.putString("activity_type", "thread.post");
+                                mMessageControllerListener.onShowActivity(bundle);
+                            }
+                        } catch (JSONException e) {
+                        }
                 }
             }
         };
@@ -607,7 +605,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             convEntity.setAvatar(role.getAvatar());
             convEntity.setTargetName(role.getNickname());
             convEntity.setUpdatedTime(System.currentTimeMillis());
-            IMClient.getClient().getConvManager().updateConv(convEntity);
+            IMClient.getClient().getConvManager().updateConvByConvNo(convEntity);
         }
     }
 

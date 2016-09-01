@@ -41,7 +41,7 @@ public class PushMsgCommand extends AbstractCommand {
         if (convEntity != null && role.getRid() != 0) {
             convEntity.setAvatar(role.getAvatar());
             convEntity.setTargetName(role.getNickname());
-            IMClient.getClient().getConvManager().updateConv(convEntity);
+            IMClient.getClient().getConvManager().updateConvByConvNo(convEntity);
         }
     }
 

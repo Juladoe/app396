@@ -94,8 +94,8 @@ public class ConvDbHelper {
         return createConvEntity(arrayMap);
     }
 
-    public ConvEntity getConvByTypeAndId(String type, int targetId, int uid) {
-        HashMap arrayMap = mDbHelper.querySingle(TABLE, "type=? and targetId=? and uid=?", new String[]{type, String.valueOf(targetId), String.valueOf(uid)});
+    public ConvEntity getConvByTypeAndId(String type, int targetId) {
+        HashMap arrayMap = mDbHelper.querySingle(TABLE, "type=? and targetId=?", new String[]{type, String.valueOf(targetId)});
         return createConvEntity(arrayMap);
     }
 
@@ -128,6 +128,20 @@ public class ConvDbHelper {
         return mDbHelper.update(TABLE, cv, "convNo=?", new String[]{convNo});
     }
 
+    public int updateByConvNo(ConvEntity convEntity) {
+        ContentValues cv = new ContentValues();
+        cv.put("targetId", convEntity.getTargetId());
+        cv.put("targetName", convEntity.getTargetName());
+        cv.put("laterMsg", convEntity.getLaterMsg());
+        cv.put("createdTime", convEntity.getCreatedTime());
+        cv.put("updatedTime", convEntity.getUpdatedTime());
+        cv.put("avatar", convEntity.getAvatar());
+        cv.put("type", convEntity.getType());
+        cv.put("uid", convEntity.getUid());
+        cv.put("unRead", convEntity.getUnRead());
+        return mDbHelper.update(TABLE, cv, "convNo=?", new String[]{String.valueOf(convEntity.getConvNo())});
+    }
+
     public int update(ConvEntity convEntity) {
         ContentValues cv = new ContentValues();
         cv.put("targetId", convEntity.getTargetId());
@@ -139,7 +153,8 @@ public class ConvDbHelper {
         cv.put("type", convEntity.getType());
         cv.put("uid", convEntity.getUid());
         cv.put("unRead", convEntity.getUnRead());
-        return mDbHelper.update(TABLE, cv, "convNo=?", new String[]{convEntity.getConvNo()});
+        cv.put("convNo", convEntity.getConvNo());
+        return mDbHelper.update(TABLE, cv, "id=?", new String[]{String.valueOf(convEntity.getId())});
     }
 
     public int updateField(String convNo, ContentValues cv) {

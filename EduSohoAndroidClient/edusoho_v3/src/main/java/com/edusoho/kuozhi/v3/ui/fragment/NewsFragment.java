@@ -67,7 +67,6 @@ import com.google.gson.reflect.TypeToken;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -559,7 +558,7 @@ public class NewsFragment extends BaseFragment {
                 convEntity = existCourseIds.get(course.id);
                 convEntity.setAvatar(course.middlePicture);
                 convEntity.setTargetName(course.title);
-                IMClient.getClient().getConvManager().updateConv(convEntity);
+                IMClient.getClient().getConvManager().updateConvByConvNo(convEntity);
                 newConvEntityList.put(course.id, convEntity);
                 existCourseIds.remove(course.id);
                 continue;

@@ -28,12 +28,12 @@ import com.edusoho.kuozhi.imserver.service.Impl.HeartManagerImpl;
 import com.edusoho.kuozhi.imserver.service.Impl.MsgManager;
 import com.edusoho.kuozhi.imserver.util.ConvDbHelper;
 import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
+import com.edusoho.kuozhi.imserver.util.SystemUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -46,6 +46,12 @@ public class ImServer {
     private static final int CONNECT_WAIT = 0002;
     private static final int CONNECT_OPEN = 0003;
     private static final int CONNECT_ERROR = 0004;
+    private static String[] PUSH_TYPE = {
+            Destination.ARTICLE,
+            Destination.COURSE,
+            Destination.CLASSROOM,
+            Destination.GLOBAL
+    };
 
     private int flag;
 
@@ -292,18 +298,26 @@ public class ImServer {
             }
 
             messageEntity = saveMessageEntityToDb(messageEntity);
-            ConvEntity convEntity = mConvDbHelper.getConv(messageEntity.getConvNo());
+            ConvEntity convEntity = getConvEntityFromMessage(messageBody);
             if (convEntity == null) {
                 convEntity = createConv(messageBody);
                 convEntity.setUnRead(convEntity.getUnRead() + 1);
                 convEntity.setUid(mClientId);
                 mConvDbHelper.save(convEntity);
             } else {
-                updateConv(convEntity, messageEntity);
+                updateConvEntity(convEntity, messageEntity);
             }
         }
 
         return messageEntity;
+    }
+
+    private ConvEntity getConvEntityFromMessage(MessageBody messageBody) {
+        if (TextUtils.isEmpty(messageBody.getConvNo())) {
+            return mConvDbHelper.getConvByTypeAndId(Destination.COURSE, messageBody.getSource().getId());
+        }
+
+        return mConvDbHelper.getConvByConvNo(messageBody.getConvNo());
     }
 
     private MessageEntity saveMessageEntityToDb(MessageEntity messageEntity) throws MessageSaveFailException {
@@ -338,7 +352,7 @@ public class ImServer {
         return messageBody.getConvNo();
     }
 
-    private void updateConv(ConvEntity convEntity, MessageEntity messageEntity) {
+    private void updateConvEntity(ConvEntity convEntity, MessageEntity messageEntity) {
         convEntity.setUnRead(convEntity.getUnRead() + 1);
         convEntity.setLaterMsg(messageEntity.getMsg());
         convEntity.setUpdatedTime(messageEntity.getTime() * 1000L);
@@ -347,7 +361,28 @@ public class ImServer {
             convEntity.setTargetName(role.getNickname());
             convEntity.setAvatar(role.getAvatar());
         }
+
+        if(TextUtils.isEmpty(messageEntity.getConvNo()) &&
+                SystemUtil.searchInArray(PUSH_TYPE, convEntity.getConvNo()) != -1) {
+
+        }
+
+        if (checkPushConvEntityCanUpdate(convEntity.getConvNo(), messageEntity.getConvNo())) {
+            mConvDbHelper.updateByConvNo(convEntity);
+            return;
+        }
         mConvDbHelper.update(convEntity);
+    }
+
+    /*
+        检查convNo是否是push类型 push类型的convNo和已增加convNo统一为一个
+     */
+    private boolean checkPushConvEntityCanUpdate(String convNo, String messageConvNo) {
+        if (TextUtils.isEmpty(messageConvNo) || messageConvNo.equals(convNo)) {
+            return false;
+        }
+
+        return SystemUtil.searchInArray(PUSH_TYPE, convNo) != -1;
     }
 
     private ConvEntity getConvFromPush(MessageBody messageBody) {

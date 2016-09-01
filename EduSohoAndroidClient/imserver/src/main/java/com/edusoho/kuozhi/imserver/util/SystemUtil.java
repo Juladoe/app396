@@ -56,4 +56,16 @@ public class SystemUtil {
     public static void toast(Context context, String content) {
         Toast.makeText(context, content, Toast.LENGTH_LONG).show();
     }
+
+    public static <T> int searchInArray(T[] array, T search) {
+        if (array == null || array.length == 0) {
+            return -1;
+        }
+        for (int i = 0; i < array.length; i++) {
+            if (search.equals(array[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

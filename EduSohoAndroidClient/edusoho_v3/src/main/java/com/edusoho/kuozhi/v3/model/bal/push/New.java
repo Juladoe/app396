@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
 
 /**
  * Created by JesseHuang on 15/7/2.
@@ -106,6 +107,17 @@ public class New implements Serializable {
                 Bulletin bulletin = getUtilFactory().getJsonParser().
                         fromJson(messageBody.getBody(), Bulletin.class);
                 return bulletin.title;
+            case PushUtil.CourseType.TYPE:
+                LinkedHashMap linkedHashMap = getUtilFactory().getJsonParser().
+                        fromJson(messageBody.getBody(), LinkedHashMap.class);
+                if (!linkedHashMap.containsKey("type")) {
+                    return "课程有一条新更新信息";
+                }
+                switch (linkedHashMap.get("type").toString()) {
+                    case PushUtil.CourseType.QUESTION_CREATED:
+                        return String.format("[问答]:%s", linkedHashMap.get("questionTitle").toString());
+                }
+                return "课程有一条新更新信息";
         }
 
         return messageBody.getBody();

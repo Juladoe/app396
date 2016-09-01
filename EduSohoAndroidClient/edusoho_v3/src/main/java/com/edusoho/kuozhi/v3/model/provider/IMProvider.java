@@ -26,7 +26,6 @@ import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.edusoho.kuozhi.v3.util.PushUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -98,8 +97,7 @@ public class IMProvider extends ModelProvider {
     }
 
     public ProviderListener<ConvEntity> updateConvInfo(String convNo, String type, int targetId) {
-        ProviderListener<ConvEntity> providerListener = new ProviderListener() {
-        };
+        ProviderListener<ConvEntity> providerListener = new ProviderListener() {};
         IMConvManager imConvManager = IMClient.getClient().getConvManager();
         ConvEntity convEntity = imConvManager.getSingleConv(convNo);
 
@@ -132,7 +130,7 @@ public class IMProvider extends ModelProvider {
                 convEntity.setAvatar(role.getAvatar());
                 convEntity.setTargetName(role.getNickname());
                 convEntity.setUpdatedTime(System.currentTimeMillis());
-                IMClient.getClient().getConvManager().updateConv(convEntity);
+                IMClient.getClient().getConvManager().updateConvByConvNo(convEntity);
                 Log.d(TAG, "update convEntity" + convEntity.getConvNo());
                 MessageEngine.getInstance().sendMsgToTaget(Const.REFRESH_LIST, null, NewsFragment.class);
             }

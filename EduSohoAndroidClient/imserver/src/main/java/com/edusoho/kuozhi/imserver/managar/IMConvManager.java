@@ -44,8 +44,8 @@ public class IMConvManager {
         return new ConvDbHelper(mContext).getConvByTypeAndId(type, targetId, uid);
     }
 
-    public int updateConv(ConvEntity convEntity) {
-        return new ConvDbHelper(mContext).update(convEntity);
+    public int updateConvByConvNo(ConvEntity convEntity) {
+        return new ConvDbHelper(mContext).updateByConvNo(convEntity);
     }
 
     public int clearLaterMsg(String convNo) {

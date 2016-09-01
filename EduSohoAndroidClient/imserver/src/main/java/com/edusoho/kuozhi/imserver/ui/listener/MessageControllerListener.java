@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.imserver.ui.listener;
 
+import android.os.Bundle;
+
 import com.edusoho.kuozhi.imserver.entity.Role;
 
 import java.util.ArrayList;
@@ -20,6 +22,8 @@ public interface MessageControllerListener {
     void onShowUser(Role role);
 
     void onShowWebPage(String url);
+
+    void onShowActivity(Bundle bundle);
 
     void selectPhoto(PhotoSelectCallback callback);
 

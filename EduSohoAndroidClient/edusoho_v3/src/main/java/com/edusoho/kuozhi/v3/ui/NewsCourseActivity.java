@@ -367,6 +367,11 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 mPhotoSelectCallback = callback;
                 openPictureFromCamera();
             }
+
+            @Override
+            public void onShowActivity(Bundle bundle) {
+                CoreEngine.create(mContext).runNormalPluginWithBundle("ThreadDiscussActivity", mContext, bundle);
+            }
         };
     }
 
