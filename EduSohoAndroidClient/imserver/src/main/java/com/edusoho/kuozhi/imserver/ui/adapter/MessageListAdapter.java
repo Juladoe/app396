@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.imserver.ui.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import com.edusoho.kuozhi.imserver.ui.listener.AudioPlayStatusListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
 import com.edusoho.kuozhi.imserver.ui.util.ResourceDownloadTask;
+import com.edusoho.kuozhi.imserver.ui.view.ChatImageView;
 import com.edusoho.kuozhi.imserver.util.MessageUtil;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
@@ -241,8 +243,10 @@ public class MessageListAdapter extends BaseAdapter {
         return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_multi_content, null);
     }
 
-    protected ImageView createImageView() {
-        return (ImageView) LayoutInflater.from(mContext).inflate(R.layout.item_message_list_imageview_content, null);
+    protected ImageView createImageView(boolean isSend) {
+        ChatImageView imageView = (ChatImageView) LayoutInflater.from(mContext).inflate(R.layout.item_message_list_imageview_content, null);
+        imageView.setBackgroudRes(isSend ? R.drawable.chat_send_to : R.drawable.chat_text_from);
+        return imageView;
     }
 
     protected ImageView createAudioView(Direct direct) {
@@ -254,6 +258,14 @@ public class MessageListAdapter extends BaseAdapter {
 
     protected View getItemView(int type, boolean isSend) {
         View contentView = null;
+        View rootView = null;
+        if (isSend) {
+            rootView = LayoutInflater.from(mContext).inflate(R.layout.item_message_list_send_layout, null);
+        } else {
+            rootView = LayoutInflater.from(mContext).inflate(R.layout.item_message_list_receive_layout, null);
+        }
+        ViewGroup containerView = (ViewGroup) rootView.findViewById(R.id.tv_container);
+
         switch (type) {
             case SEND_TEXT:
                 contentView = createTextView();
@@ -268,10 +280,12 @@ public class MessageListAdapter extends BaseAdapter {
                 contentView = createAudioView(isSend ? Direct.SEND : Direct.RECEIVE);
                 break;
             case SEND_IMAGE:
-                contentView = createImageView();
+                contentView = createImageView(true);
+                containerView.setBackground(new ColorDrawable(0));
                 break;
             case RECEIVE_IMAGE:
-                contentView = createImageView();
+                contentView = createImageView(false);
+                containerView.setBackground(new ColorDrawable(0));
                 break;
             case SEND_MULTI:
                 contentView = createMultiView();
@@ -280,13 +294,7 @@ public class MessageListAdapter extends BaseAdapter {
                 contentView = createMultiView();
                 break;
         }
-        View rootView = null;
-        if (isSend) {
-            rootView = LayoutInflater.from(mContext).inflate(R.layout.item_message_list_send_layout, null);
-        } else {
-            rootView = LayoutInflater.from(mContext).inflate(R.layout.item_message_list_receive_layout, null);
-        }
-        ViewGroup containerView = (ViewGroup) rootView.findViewById(R.id.tv_container);
+
         containerView.addView(contentView);
         return rootView;
     }
@@ -535,7 +543,7 @@ public class MessageListAdapter extends BaseAdapter {
 
                 ImageView audioView = (ImageView) mViewHolder.containerView.findViewById(R.id.iv_voice_play_anim);
                 AudioBody audioBody = AudioUtil.getAudioBody(messageBody.getBody());
-                lp.width = 32 + TimeUtil.getDuration(audioBody.getDuration()) * 5;
+                lp.width = 48 + TimeUtil.getDuration(audioBody.getDuration()) * 8;
                 lp.height = 32;
                 audioView.setLayoutParams(lp);
 

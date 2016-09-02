@@ -80,7 +80,7 @@ public class MessageHelper {
     public int[] getThumbImageSize(String path) {
         Uri uri = Uri.parse(path);
         if (uri == null) {
-            return new int[] { 100, 100 };
+            return new int[] { 80, 80 };
         }
 
         String uriPath = uri.getLastPathSegment();
@@ -88,7 +88,7 @@ public class MessageHelper {
         if (thumbFile.exists()) {
             return ImageUtil.getImageSize(thumbFile.getAbsolutePath());
         }
-        return new int[] { 100, 100 };
+        return new int[] { 80, 80 };
     }
 
     public File getRealAudioFile(String audioFile) {

@@ -41,7 +41,11 @@
             android:layout_below="@id/tv_time"
             android:layout_toLeftOf="@id/tv_avatar"
             android:id="@+id/tv_container"
-            android:background="@drawable/chat_text_to_layout"
+            android:paddingLeft="4px"
+            android:paddingTop="4px"
+            android:paddingRight="16px"
+            android:paddingBottom="4px"
+            android:background="@drawable/chat_send_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         </FrameLayout>
