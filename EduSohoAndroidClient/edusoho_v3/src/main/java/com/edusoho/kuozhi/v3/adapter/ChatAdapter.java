@@ -588,6 +588,19 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
         return (int) Math.ceil(Float.valueOf(duration) / 1000);
     }
 
+    protected int getMediaLength(String path) {
+        MediaPlayer mediaPlayer = MediaPlayer.create(mContext, Uri.parse(path));
+        if (mediaPlayer == null) {
+            return 0;
+        }
+
+        int duration = mediaPlayer.getDuration();
+        mediaPlayer.release();
+        mediaPlayer = null;
+
+        return duration;
+    }
+
     /**
      * 获取缩略图文件路径
      *

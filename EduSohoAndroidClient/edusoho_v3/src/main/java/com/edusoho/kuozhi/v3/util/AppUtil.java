@@ -580,6 +580,24 @@ public class AppUtil {
         return appStorage;
     }
 
+    public static File getImageStorage() {
+        File imageStore = new File(AppUtil.getAppStorage(), Const.UPLOAD_IMAGE_CACHE_FILE);
+        if (!imageStore.exists()) {
+            imageStore.mkdirs();
+        }
+
+        return imageStore;
+    }
+
+    public static File getThumbImageStorage() {
+        File imageStore = new File(AppUtil.getAppStorage(), Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
+        if (!imageStore.exists()) {
+            imageStore.mkdirs();
+        }
+
+        return imageStore;
+    }
+
     public static File getHtmlPluginStorage(Context context, String domain) {
         File html5plugin = context.getDir("html5plugin", Context.MODE_PRIVATE);
         File schoolStorage = new File(html5plugin, domain);

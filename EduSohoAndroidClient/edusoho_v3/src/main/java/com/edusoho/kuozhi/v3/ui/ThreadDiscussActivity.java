@@ -326,16 +326,11 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
     @Override
     public void sendMsg(final String content) {
-//        Log.d(TAG, content);
-//        if (mAdapter.getCount() == 0) {
-//            handleSendThread(content, PushUtil.ChatMsgType.TEXT);
-//        } else if (mAdapter.getCount() > 0) {
-        final CourseThreadPostEntity postModel = createCoursePostThreadByCurrentUser(content, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING);
+        CourseThreadPostEntity postModel = createCoursePostThreadByCurrentUser(content, PushUtil.ChatMsgType.TEXT, PushUtil.MsgDeliveryType.UPLOADING);
         postModel.pid = (int) mCourseThreadPostDataSource.create(postModel);
-        final ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
+        ThreadDiscussEntity discussModel = convertThreadDiscuss(postModel);
         addItem2ListView(discussModel);
         handleSendPost(postModel);
-//        }
     }
 
     @Override
@@ -676,7 +671,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
     private void filterPostThreads(List<CourseThreadPostEntity> posts) {
         try {
             for (CourseThreadPostEntity post : posts) {
-                if (post.content.contains("amr")) {
+                if (post.content.contains("mp3")) {
                     post.type = PushUtil.ChatMsgType.AUDIO;
                     AudioCacheEntity cache = AudioCacheUtil.getInstance().getAudioCacheByPath(post.content);
                     if (cache != null && !TextUtils.isEmpty(cache.localPath)) {

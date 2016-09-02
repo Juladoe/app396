@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -44,19 +45,19 @@ public class ThreadDiscussAdapter extends ChatAdapter {
     protected final CourseThreadPostDataSource mCourseThreadPostDataSource;
     protected List<ThreadDiscussEntity> mList;
 
+    private HashMap<Integer, Integer> mDurationArray;
+
     public ThreadDiscussAdapter(Context context) {
         mContext = context;
         mCourseThreadDataSource = new CourseThreadDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mList = new ArrayList<>();
         mDownloadList = new HashMap<>();
+        mDurationArray = new HashMap<>();
     }
 
     public ThreadDiscussAdapter(List<CourseThreadPostEntity> list, CourseThreadEntity courseThreadEntity, Context context) {
-        mContext = context;
-        mCourseThreadDataSource = new CourseThreadDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
-        mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
-        mList = new ArrayList<>();
+        this(context);
         int size = list.size();
         mCourseThreadModel = courseThreadEntity;
         //回复
@@ -278,7 +279,12 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.VISIBLE);
                 try {
-                    int duration = getDuration(0);
+                    int duration = 0;
+                    if (!mDurationArray.containsKey(model.id)) {
+                        duration = getMediaLength(model.content);
+                        mDurationArray.put(model.id, duration);
+                    }
+                    duration = getDuration(mDurationArray.get(model.id));
                     holder.tvAudioLength.setText(duration + "\"");
 
                     holder.ivMsgImage.getLayoutParams().width = 100 + mDurationUnit * duration < mDurationMax ? 100 + mDurationUnit * duration : mDurationMax;
@@ -391,7 +397,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                     AudioCacheUtil.getInstance().create(new AudioCacheEntity(audioFileName, model.content));
                 }
                 try {
-                    int duration = getDuration(0);
+                    int duration = getDuration(getMediaLength(audioFileName));
                     holder.tvAudioLength.setText(duration + "\"");
                     holder.ivMsgImage.getLayoutParams().width = 100 + mDurationUnit * duration < mDurationMax ? 100 + mDurationUnit * duration : mDurationMax;
                     holder.ivMsgImage.requestLayout();

@@ -314,9 +314,8 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
             Bitmap resultBitmap = AppUtil.scaleImage(tmpBitmap, tmpBitmap.getWidth(), AppUtil.getImageDegree(filePath));
             Bitmap thumbBitmap = AppUtil.scaleImage(tmpBitmap, EdusohoApp.screenW * 0.4f, AppUtil.getImageDegree(filePath));
             compressedFile = AppUtil.convertBitmap2File(resultBitmap,
-                    AppUtil.getAppStorage() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
-            AppUtil.convertBitmap2File(thumbBitmap, AppUtil.getAppStorage() +
-                    Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
+                    AppUtil.getImageStorage() + "/" + System.currentTimeMillis());
+            AppUtil.convertBitmap2File(thumbBitmap, AppUtil.getThumbImageStorage() + "/" + compressedFile.getName());
             if (!tmpBitmap.isRecycled()) {
                 tmpBitmap.recycle();
             }
