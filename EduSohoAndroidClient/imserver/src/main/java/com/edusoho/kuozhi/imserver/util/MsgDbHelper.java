@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.imserver.util;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
@@ -63,6 +64,9 @@ public class MsgDbHelper {
     }
 
     public IMUploadEntity getUploadEntity(String muid) {
+        if (TextUtils.isEmpty(muid)) {
+            return null;
+        }
         HashMap arrayMap = mDbHelper.querySingle("im_upload_extr", "message_uid=?", new String[]{muid});
         return createUploadEntity(arrayMap);
     }

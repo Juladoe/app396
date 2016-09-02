@@ -89,7 +89,7 @@ public class NewsFragment extends BaseFragment {
     private View mEmptyView;
     private TextView tvEmptyText;
     private TextView mHeaderView;
-    private ProgressBar mLoadProgressBar;
+    private View mLoadProgressBar;
     private LoadingHandler mLoadingHandler;
     private boolean mIsNeedRefresh;
     private DefaultPageActivity mParentActivity;
@@ -284,7 +284,7 @@ public class NewsFragment extends BaseFragment {
     protected void initView(View view) {
         mParentActivity = (DefaultPageActivity) getActivity();
         mIsNeedRefresh = true;
-        mLoadProgressBar = (ProgressBar) view.findViewById(R.id.news_progressbar);
+        mLoadProgressBar = view.findViewById(R.id.news_progressbar);
         lvNewsList = (SwipeMenuListView) view.findViewById(R.id.lv_news_list);
         mEmptyView = view.findViewById(R.id.view_empty);
         tvEmptyText = (TextView) view.findViewById(R.id.tv_empty_text);

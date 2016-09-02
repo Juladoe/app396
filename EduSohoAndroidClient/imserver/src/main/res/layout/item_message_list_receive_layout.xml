@@ -50,7 +50,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_nickname"
             android:background="@drawable/chat_text_from_layout"
-            android:layout_toRightOf="@id/tv_avatar"></FrameLayout>
+            android:layout_toRightOf="@id/tv_avatar">
+        </FrameLayout>
 
         <ImageView
             android:id="@+id/tv_unread_view"

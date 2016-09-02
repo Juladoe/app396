@@ -166,7 +166,7 @@ public class MessageListAdapter extends BaseAdapter {
             case MessageEntity.StatusType.FAILED:
                 viewHolder.statusProgressBar.setVisibility(View.GONE);
                 viewHolder.errorStatusView.setVisibility(View.VISIBLE);
-                viewHolder.lengthView.setVisibility(View.VISIBLE);
+                viewHolder.lengthView.setVisibility(View.GONE);
 
         }
         initClickListener(viewHolder, i);

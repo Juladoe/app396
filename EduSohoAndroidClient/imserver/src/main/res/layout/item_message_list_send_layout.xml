@@ -43,7 +43,8 @@
             android:id="@+id/tv_container"
             android:background="@drawable/chat_text_to_layout"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"></FrameLayout>
+            android:layout_height="wrap_content">
+        </FrameLayout>
 
         <ProgressBar
             android:layout_toLeftOf="@id/tv_container"

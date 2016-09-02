@@ -11,6 +11,7 @@ import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
+import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -53,9 +54,23 @@ public class PushMsgCommand extends AbstractCommand {
                 return getArticleIntent();
             case Destination.GLOBAL:
                 return getBulletinIntent();
+            case Destination.COURSE:
+                return getCourseIntent();
         }
 
         return super.getNotifyIntent();
+    }
+
+    private Intent getCourseIntent() {
+        Intent notifyIntent = mContext.getPackageManager().getLaunchIntentForPackage(mContext.getPackageName());
+        notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
+        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        notifyIntent.putExtra(Const.INTENT_TARGET, NewsCourseActivity.class);
+        notifyIntent.putExtra(NewsCourseActivity.COURSE_ID, mMessageBody.getSource().getId());
+        notifyIntent.putExtra(NewsCourseActivity.CONV_NO, mMessageBody.getConvNo());
+        notifyIntent.putExtra(NewsCourseActivity.SHOW_TYPE, NewsCourseActivity.LEARN_TYPE);
+        return notifyIntent;
     }
 
     private Intent getBulletinIntent() {
@@ -87,9 +102,21 @@ public class PushMsgCommand extends AbstractCommand {
                 return handlerArticleMessage(mMessageBody.getBody());
             case Destination.GLOBAL:
                 return handlerBulletinMessage(mMessageBody.getBody());
+            case Destination.COURSE:
+                return handlerCourseMessage(mMessageBody.getBody());
         }
 
         return super.getNotificationContent();
+    }
+
+    private String[] handlerCourseMessage(String body) {
+        LinkedHashMap<String, String> linkedHashMap = new Gson().fromJson(body, LinkedHashMap.class);
+        String type = linkedHashMap.get("type");
+        switch (type) {
+            case "question.created":
+                return new String[] { String.format("[课程问答]:%s", linkedHashMap.get("questionTitle")), AppUtil.coverCourseAbout(linkedHashMap.get("title"))};
+        }
+        return new String[]{ "课程信息更新", AppUtil.coverCourseAbout(linkedHashMap.get("title"))};
     }
 
     private String[] handlerBulletinMessage(String body) {

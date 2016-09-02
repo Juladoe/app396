@@ -390,13 +390,25 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 }
                 //receive
                 receiveAudioMessageAgain(messageBody);
+                break;
             case PushUtil.ChatMsgType.IMAGE:
                 if (IMClient.getClient().getClientId() == messageBody.getSource().getId()) {
-                    sendMediaMessageAgain(messageBody);
+                    sendImageMediaMessageAgain(messageBody);
                     return;
                 }
                 receiveImageMessageAgain(messageBody);
         }
+    }
+
+    private void sendImageMediaMessageAgain(MessageBody messageBody) {
+        IMUploadEntity uploadEntity = IMClient.getClient().getMessageManager()
+                .getUploadEntity(messageBody.getMessageId());
+        if (uploadEntity == null) {
+            SystemUtil.toast(mContext, "媒体文件不存在,请重新发送消息");
+            return;
+        }
+        File audioFile = new File(uploadEntity.getSource());
+        uploadImage(audioFile);
     }
 
     private void sendMediaMessageAgain(MessageBody messageBody) {
@@ -738,6 +750,22 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         uploadMedia(file, messageBody);
     }
 
+    private void uploadMediaAgain(File file, MessageBody messageBody) {
+        if (file == null || !file.exists()) {
+            SystemUtil.toast(mContext, "媒体文件不存在");
+            return;
+        }
+        try {
+            MessageEntity messageEntity = saveMessageToLoacl(messageBody);
+            messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
+
+            UpYunUploadTask upYunUploadTask = new UpYunUploadTask(messageEntity.getId(), mTargetId, file, mMessageControllerListener.getRequestHeaders());
+            IMClient.getClient().getResourceHelper().addTask(upYunUploadTask);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
     private void uploadMedia(File file, MessageBody messageBody) {
         if (file == null || !file.exists()) {
             SystemUtil.toast(mContext, "媒体文件不存在");
@@ -745,6 +773,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         }
         try {
             MessageEntity messageEntity = saveMessageToLoacl(messageBody);
+            messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
             insertDataToList(messageEntity);
             IMClient.getClient().getMessageManager().saveUploadEntity(
                     messageBody.getMessageId(), messageBody.getType(), file.getPath()
@@ -805,8 +834,8 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     private String wrapAudioMessageContent(String audioFilePath, int audioTime) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("file", audioFilePath);
-            jsonObject.put("duration", audioTime);
+            jsonObject.put("f", audioFilePath);
+            jsonObject.put("d", audioTime);
         } catch (JSONException e) {
         }
 
