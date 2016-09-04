@@ -3,7 +3,9 @@ package com.edusoho.kuozhi.imserver.ui.adapter;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
 import com.edusoho.kuozhi.imserver.ui.util.ResourceDownloadTask;
 import com.edusoho.kuozhi.imserver.ui.view.ChatImageView;
+import com.edusoho.kuozhi.imserver.ui.view.MessageStatusView;
 import com.edusoho.kuozhi.imserver.util.MessageUtil;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
@@ -71,6 +74,7 @@ public class MessageListAdapter extends BaseAdapter {
     protected Context mContext;
     protected List<MessageEntity> mMessageList;
     protected DisplayImageOptions mOptions;
+    protected SparseArray<String> mImagePathArray;
 
     public MessageListAdapter(Context context) {
         this.mContext = context;
@@ -80,6 +84,7 @@ public class MessageListAdapter extends BaseAdapter {
                 showImageOnFail(R.drawable.message_image_default).build();
 
         this.mMessageHelper = new MessageHelper(mContext);
+        this.mImagePathArray = new SparseArray<>();
     }
 
     public MessageListAdapter(Context context, int currentId) {
@@ -132,6 +137,8 @@ public class MessageListAdapter extends BaseAdapter {
     }
 
     public void destory() {
+        mImagePathArray.clear();
+        mMessageList.clear();
     }
 
     @Override
@@ -141,7 +148,7 @@ public class MessageListAdapter extends BaseAdapter {
         MessageBody messageBody = new MessageBody(mMessageList.get(i));
         if (view == null) {
             int type = getItemViewType(i);
-            Log.d(TAG, "type:" + type);
+            Log.d(TAG, "create view type:" + type);
             view = getItemView(type, messageBody.getSource().getId() == mCurrentId);
             view.setTag(createItemViewHolder(view));
         }
@@ -157,17 +164,16 @@ public class MessageListAdapter extends BaseAdapter {
 
         switch (messageBody.getMsgStatus()) {
             case MessageEntity.StatusType.SUCCESS:
-                viewHolder.statusProgressBar.setVisibility(View.GONE);
-                viewHolder.errorStatusView.setVisibility(View.GONE);
+                viewHolder.errorStatusView.setVisibility(View.INVISIBLE);
                 break;
             case MessageEntity.StatusType.UPLOADING:
-                viewHolder.statusProgressBar.setVisibility(View.VISIBLE);
-                viewHolder.errorStatusView.setVisibility(View.GONE);
+                viewHolder.errorStatusView.setVisibility(View.VISIBLE);
+                viewHolder.errorStatusView.setProgressStatus();
                 viewHolder.lengthView.setVisibility(View.GONE);
                 break;
             case MessageEntity.StatusType.FAILED:
-                viewHolder.statusProgressBar.setVisibility(View.GONE);
                 viewHolder.errorStatusView.setVisibility(View.VISIBLE);
+                viewHolder.errorStatusView.setErrorStatus();
                 viewHolder.lengthView.setVisibility(View.GONE);
 
         }
@@ -269,33 +275,43 @@ public class MessageListAdapter extends BaseAdapter {
         switch (type) {
             case SEND_TEXT:
                 contentView = createTextView();
+                containerView.setTag(new TextViewHolder(contentView));
                 break;
             case RECEIVE_TEXT:
                 contentView = createTextView();
+                containerView.setTag(new TextViewHolder(contentView));
                 break;
             case SEND_AUDIO:
                 contentView = createAudioView(isSend ? Direct.SEND : Direct.RECEIVE);
+                containerView.setTag(new AudioViewHolder(contentView));
                 break;
             case RECEIVE_AUDIO:
                 contentView = createAudioView(isSend ? Direct.SEND : Direct.RECEIVE);
+                containerView.setTag(new AudioViewHolder(contentView));
                 break;
             case SEND_IMAGE:
                 contentView = createImageView(true);
                 containerView.setBackground(new ColorDrawable(0));
+                containerView.setTag(new ImageVewHolder(contentView));
                 break;
             case RECEIVE_IMAGE:
                 contentView = createImageView(false);
                 containerView.setBackground(new ColorDrawable(0));
+                containerView.setTag(new ImageVewHolder(contentView));
                 break;
             case SEND_MULTI:
                 contentView = createMultiView();
+                containerView.setTag(new MultiViewHolder(contentView));
                 break;
             case RECEIVE_MULTI:
                 contentView = createMultiView();
+                containerView.setTag(new MultiViewHolder(contentView));
                 break;
         }
 
-        containerView.addView(contentView);
+        FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        containerView.addView(contentView, lp);
         return rootView;
     }
 
@@ -394,7 +410,7 @@ public class MessageListAdapter extends BaseAdapter {
     }
 
     /*
-        MultiViewHolder
+        content MultiViewHolder
      */
 
     class MultiViewHolder {
@@ -410,6 +426,30 @@ public class MessageListAdapter extends BaseAdapter {
         }
     }
 
+    class TextViewHolder {
+
+        public TextView mContentView;
+        public TextViewHolder(View view) {
+            mContentView = (TextView) view.findViewById(R.id.tv_send_content);
+        }
+    }
+
+    class AudioViewHolder {
+
+        public ImageView mAudioView;
+        public AudioViewHolder(View view) {
+            mAudioView = (ImageView) view.findViewById(R.id.iv_voice_play_anim);
+        }
+    }
+
+    class ImageVewHolder {
+
+        public ImageView mImageView;
+        public ImageVewHolder(View view) {
+            mImageView = (ImageView) view.findViewById(R.id.iv_msg_image);
+        }
+    }
+
     /*
         SendViewHolder
      */
@@ -421,8 +461,8 @@ public class MessageListAdapter extends BaseAdapter {
         public TextView lengthView;
         public ImageView avatarView;
         public FrameLayout containerView;
-        public ProgressBar statusProgressBar;
-        public ImageView errorStatusView;
+        //public ProgressBar statusProgressBar;
+        public MessageStatusView errorStatusView;
         public ImageView unReadView;
 
         public SendViewHolder(View view) {
@@ -430,8 +470,8 @@ public class MessageListAdapter extends BaseAdapter {
             timeView = (TextView) view.findViewById(R.id.tv_time);
             avatarView = (ImageView) view.findViewById(R.id.tv_avatar);
             containerView = (FrameLayout) view.findViewById(R.id.tv_container);
-            statusProgressBar = (ProgressBar) view.findViewById(R.id.tv_status_pbar);
-            errorStatusView = (ImageView) view.findViewById(R.id.tv_error_status);
+            //statusProgressBar = (ProgressBar) view.findViewById(R.id.tv_status_pbar);
+            errorStatusView = (MessageStatusView) view.findViewById(R.id.tv_error_status);
             unReadView = (ImageView) view.findViewById(R.id.tv_unread_view);
         }
 
@@ -494,16 +534,14 @@ public class MessageListAdapter extends BaseAdapter {
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 lp.gravity = Gravity.CENTER;
                 lp.width = (int) (SystemUtil.getScreenWidth(mContext) * 0.5f);
-
-                View view = mViewHolder.containerView.findViewById(R.id.chat_multi_body);
-                MultiViewHolder viewHolder = new MultiViewHolder(view);
+                MultiViewHolder viewHolder = (MultiViewHolder) mViewHolder.containerView.getTag();
                 parseMultiMessageBody(messageBody, viewHolder);
-                view.setLayoutParams(lp);
+                //view.setLayoutParams(lp);
             }
 
             public void processorText(MessageBody messageBody) {
-                TextView textView = (TextView) mViewHolder.containerView.findViewById(R.id.tv_send_content);
-                textView.setText(messageBody.getBody());
+                TextViewHolder textViewHolder = (TextViewHolder) mViewHolder.containerView.getTag();
+                textViewHolder.mContentView.setText(messageBody.getBody());
             }
 
             public void processorImage(MessageBody messageBody) {
@@ -512,12 +550,17 @@ public class MessageListAdapter extends BaseAdapter {
                 lp.gravity = Gravity.CENTER;
 
                 String body = messageBody.getBody();
-                ImageView imageView = (ImageView) mViewHolder.containerView.findViewById(R.id.iv_msg_image);
-                String imagePath = mMessageHelper.getThumbImagePath(body);
+                ImageVewHolder imageVewHolder = (ImageVewHolder) mViewHolder.containerView.getTag();
+                ImageView imageView = imageVewHolder.mImageView;
 
+                String imagePath = mImagePathArray.get(messageBody.getMid());
+                if (TextUtils.isEmpty(imagePath)) {
+                    imagePath = mMessageHelper.getThumbImagePath(body);
+                    mImagePathArray.put(messageBody.getMid(), imagePath);
+                }
                 //local file
                 if (imagePath.startsWith("file:")) {
-                    ImageLoader.getInstance().displayImage(imagePath, imageView, mOptions);
+                    ImageLoader.getInstance().displayImage(imagePath, imageView);
                 } else {
                     try {
                         File realFile = mMessageHelper.createImageFile(body);
@@ -529,11 +572,11 @@ public class MessageListAdapter extends BaseAdapter {
                     }
                     imageView.setImageResource(mMessageHelper.getDefaultImageRes());
                 }
-
-                int[] size = mMessageHelper.getThumbImageSize(body);
+                /*int[] size = mMessageHelper.getThumbImageSize(body);
                 lp.width = size[0];
-                lp.height = size[1];
-                imageView.setLayoutParams(lp);
+                lp.height = size[1];*/
+
+                //imageView.setLayoutParams(lp);
             }
 
             public void processorAudio(MessageBody messageBody) {
@@ -541,11 +584,12 @@ public class MessageListAdapter extends BaseAdapter {
                         ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 lp.gravity = Gravity.CENTER;
 
-                ImageView audioView = (ImageView) mViewHolder.containerView.findViewById(R.id.iv_voice_play_anim);
+                AudioViewHolder audioViewHolder = (AudioViewHolder) mViewHolder.containerView.getTag();
+                ImageView audioView = audioViewHolder.mAudioView;
                 AudioBody audioBody = AudioUtil.getAudioBody(messageBody.getBody());
                 lp.width = 48 + TimeUtil.getDuration(audioBody.getDuration()) * 8;
                 lp.height = 32;
-                audioView.setLayoutParams(lp);
+                //audioView.setLayoutParams(lp);
 
                 if (mViewHolder.unReadView != null) {
                     mViewHolder.unReadView.setVisibility(View.GONE);
@@ -562,8 +606,7 @@ public class MessageListAdapter extends BaseAdapter {
                         }
                         break;
                     case MessageEntity.StatusType.UNREAD:
-                        mViewHolder.errorStatusView.setVisibility(View.GONE);
-                        mViewHolder.statusProgressBar.setVisibility(View.GONE);
+                        mViewHolder.errorStatusView.setVisibility(View.VISIBLE);
                         if (mViewHolder.unReadView != null) {
                             mViewHolder.unReadView.setVisibility(View.VISIBLE);
                         }

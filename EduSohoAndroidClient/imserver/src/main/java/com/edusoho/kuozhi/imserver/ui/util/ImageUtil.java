@@ -107,11 +107,11 @@ public class ImageUtil {
      * @param path   file位置
      * @return
      */
-    public static File convertBitmap2File(Bitmap bitmap, String path) throws IOException {
+    public static File convertBitmap2File(Bitmap bitmap, String path, int quality) throws IOException {
         File file = new File(path);
         file.createNewFile();
         FileOutputStream fos = new FileOutputStream(file);
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, fos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, fos);
         fos.flush();
         fos.close();
         return file;

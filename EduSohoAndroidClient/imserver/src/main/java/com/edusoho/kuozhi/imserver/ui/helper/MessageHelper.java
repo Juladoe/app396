@@ -180,9 +180,9 @@ public class MessageHelper {
     public File compressTumbImageByFile(String filePath, int maxWidth) {
         File targetFile = new File(filePath);
         Bitmap tmpBitmap = ImageUtil.compressImage(filePath);
-        Bitmap thumbBitmap = ImageUtil.scaleImage(tmpBitmap, maxWidth * 0.5f, ImageUtil.getImageDegree(filePath));
+        Bitmap thumbBitmap = ImageUtil.scaleImage(tmpBitmap, maxWidth * 0.2f, ImageUtil.getImageDegree(filePath));
         try {
-            targetFile = ImageUtil.convertBitmap2File(thumbBitmap, String.format("%s/%s", getThumbImageStorage(), targetFile.getName()));
+            targetFile = ImageUtil.convertBitmap2File(thumbBitmap, String.format("%s/%s", getThumbImageStorage(), targetFile.getName()), 50);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -202,7 +202,8 @@ public class MessageHelper {
         try {
             Bitmap tmpBitmap = ImageUtil.compressImage(filePath);
             Bitmap resultBitmap = ImageUtil.scaleImage(tmpBitmap, tmpBitmap.getWidth(), ImageUtil.getImageDegree(filePath));
-            compressedFile = ImageUtil.convertBitmap2File(resultBitmap, String.format("%s/%s", getImageStorage(), String.valueOf(System.currentTimeMillis())));
+            compressedFile = ImageUtil.convertBitmap2File(
+                    resultBitmap, String.format("%s/%s", getImageStorage(), String.valueOf(System.currentTimeMillis())), 80);
             if (!tmpBitmap.isRecycled()) {
                 tmpBitmap.recycle();
             }

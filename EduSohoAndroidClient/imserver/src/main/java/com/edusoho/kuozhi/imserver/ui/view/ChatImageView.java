@@ -69,11 +69,6 @@ public class ChatImageView extends ImageView {
     }
 
     @Override
-    public void setImageResource(int resId) {
-        setImageBitmap(BitmapFactory.decodeResource(getResources(), resId));
-    }
-
-    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
     }
