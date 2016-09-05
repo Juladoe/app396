@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -30,6 +31,7 @@ import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by JesseHuang on 15/5/6.
@@ -131,7 +133,11 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         }
 
         protected void bindApiToken(final UserResult userResult) {
-            RequestUrl requestUrl = mApp.bindNewUrl(Const.GET_API_TOKEN, false);
+            School school = userResult.site;
+
+            RequestUrl requestUrl = new RequestUrl(school.host + Const.GET_API_TOKEN);
+            Map<String,String> tokenMap =  ApiTokenUtil.getToken(mActivity.getBaseContext());
+            requestUrl.heads.put("Auth-Token", tokenMap.get("token"));
             mApp.getUrl(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -187,7 +193,11 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                             return;
                         }
 
-                        final School site = userResult.site;
+                        School site = userResult.site;
+                        if (site == null) {
+                            CommonUtil.longToast(mActivity.getBaseContext(), "没有识别到网校信息!");
+                            return;
+                        }
                         if (!checkMobileVersion(site, site.apiVersionRange)) {
                             return;
                         }
