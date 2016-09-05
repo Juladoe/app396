@@ -90,6 +90,17 @@ public class MessageListAdapter extends BaseAdapter {
         this.mCurrentId = currentId;
     }
 
+    public void removeItem(int id) {
+        int size = mMessageList.size();
+        for (int i = 0; i < size; i++) {
+            if (mMessageList.get(i).getId() == id) {
+                mMessageList.remove(i);
+                notifyDataSetChanged();
+                return;
+            }
+        }
+    }
+
     public void updateItem(MessageEntity messageEntity) {
         int size = mMessageList.size();
         for (int i = 0; i < size; i++) {

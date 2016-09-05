@@ -291,6 +291,12 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         new MenuInflater(mContext).inflate(R.menu.message_list_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.menu_copy);
+        MessageBody messageBody = getSelectedMessageBody();
+        if (menuItem == null || messageBody == null) {
+            return;
+        }
+        menuItem.setVisible(PushUtil.ChatMsgType.TEXT.equals(messageBody.getType()));
     }
 
     private void copyDataToClipboard(String text) {
@@ -299,22 +305,27 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         SystemUtil.toast(mContext, "已复制");
     }
 
+    private MessageBody getSelectedMessageBody() {
+        MessageEntity messageEntity = mListAdapter.getItem(mCurrentSelectedIndex);
+        if (messageEntity == null) {
+            return null;
+        }
+        return new MessageBody(messageEntity);
+    }
+
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_copy) {
-            MessageEntity messageEntity = mListAdapter.getItem(mCurrentSelectedIndex);
-            if (messageEntity == null) {
-                return true;
+            MessageBody messageBody = getSelectedMessageBody();
+            if (messageBody != null) {
+                copyDataToClipboard(messageBody.getBody());
             }
-            MessageBody messageBody = new MessageBody(messageEntity);
-            copyDataToClipboard(messageBody.getBody());
         } else if (id == R.id.menu_replay) {
-            MessageEntity messageEntity = mListAdapter.getItem(mCurrentSelectedIndex);
-            if (messageEntity == null) {
+            MessageBody messageBody = getSelectedMessageBody();
+            if (messageBody == null) {
                 return true;
             }
-            MessageBody messageBody = new MessageBody(messageEntity);
             JSONObject data = new JSONObject();
             try {
                 data.put("type", messageBody.getType());
@@ -331,7 +342,11 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             bundle.putString("activityName", "ChatSelectFragment");
             mMessageControllerListener.onShowActivity(bundle);
         } else if (id == R.id.menu_delete) {
-
+            MessageBody messageBody = getSelectedMessageBody();
+            if (messageBody == null) {
+                return true;
+            }
+            mListAdapter.removeItem(messageBody.getMid());
         }
         return super.onContextItemSelected(item);
     }
