@@ -28,10 +28,11 @@ public class ChatSendHandler {
     }
 
     public void handleClick(final NormalCallback finishCallback) {
+        String content = mRedirectBody.content;
         RedirectPreViewDialog dialog = RedirectPreViewDialog.getBuilder(mActivity)
                 .setLayout(R.layout.redirect_preview_layout)
                 .setTitle(mRedirectBody.title)
-                .setBody(mRedirectBody.content)
+                .setBody(content)
                 .setIconByUri(mRedirectBody.image)
                 .build();
         dialog.show();
@@ -44,5 +45,4 @@ public class ChatSendHandler {
             }
         });
     }
-
 }

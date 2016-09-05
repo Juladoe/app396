@@ -23,15 +23,21 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -184,7 +190,27 @@ public class ImChatActivity extends ActionBarBaseActivity {
 
             @Override
             public void onShowActivity(Bundle bundle) {
-                CoreEngine.create(mContext).runNormalPluginWithBundle("ThreadDiscussActivity", mContext, bundle);
+                String activityName = bundle.getString("activityName");
+                switch (activityName) {
+                    case "ThreadDiscussActivity":
+                        CoreEngine.create(mContext).runNormalPluginWithBundle("ThreadDiscussActivity", mContext, bundle);
+                        break;
+                    case "ChatSelectFragment":
+                        try {
+                            JSONObject data = new JSONObject(bundle.getString("data"));
+                            final RedirectBody redirectBody = RedirectBody.createByJsonObj(data);
+                            mActivity.app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra(Const.ACTIONBAR_TITLE, "选择");
+                                    startIntent.putExtra(ChatSelectFragment.BODY, redirectBody);
+                                    startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ChatSelectFragment");
+                                }
+                            });
+                        } catch (JSONException e) {
+                        }
+                        break;
+                }
             }
         };
     }

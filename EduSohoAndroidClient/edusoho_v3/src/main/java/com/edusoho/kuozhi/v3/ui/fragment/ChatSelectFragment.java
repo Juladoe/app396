@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.app.Activity;
-import android.content.ContentValues;
+import android.app.Activity;;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,7 +25,6 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -67,11 +65,14 @@ public class ChatSelectFragment extends AbstractChatSendFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 New item = (New) parent.getItemAtPosition(position);
+
+                RedirectBody redirectBody = getShowRedirectBody(item.title, item.imgUrl);
                 if (PushUtil.ChatUserType.CLASSROOM.equals(item.type)) {
-                    new ClassRoomChatSendHandler(mActivity, mRedirectBody, position).handleClick(mSendMessageHandlerCallback);
+                    new ClassRoomChatSendHandler(mActivity, redirectBody, position).handleClick(mSendMessageHandlerCallback);
                     return;
                 }
-                new ChatSendHandler(mActivity, mRedirectBody, position).handleClick(mSendMessageHandlerCallback);
+
+                new ChatSendHandler(mActivity, redirectBody, position).handleClick(mSendMessageHandlerCallback);
             }
         });
 
@@ -139,6 +140,9 @@ public class ChatSelectFragment extends AbstractChatSendFragment {
     private List<New> filterChatSelectList(List<ConvEntity> convEntityList) {
         List<New> news = new ArrayList<>();
         for (ConvEntity item : convEntityList) {
+            if (Destination.ARTICLE.equals(item.getType()) || Destination.GLOBAL.equals(item.getType())) {
+                continue;
+            }
             news.add(new New(item));
         }
 

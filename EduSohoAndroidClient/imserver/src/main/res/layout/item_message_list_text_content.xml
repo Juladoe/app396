@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/message_time_bg"
         android:clickable="true"
         android:textColor="@android:color/white"
@@ -28,6 +29,7 @@
         android:src="@drawable/default_avatar" />
 
     <FrameLayout
+        android:clickable="true"
         android:id="@+id/tv_container"
         android:layout_below="@id/tv_time"
         android:layout_toLeftOf="@id/tv_avatar"
@@ -38,8 +40,7 @@
             android:id="@+id/tv_send_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/chat_send_to"
-            android:clickable="true"
+            android:background="@drawable/chat_send_layout"
             android:gravity="left|center_vertical"
             android:lineSpacingExtra="1dp"
             android:lineSpacingMultiplier="1.1"

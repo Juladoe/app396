@@ -28,9 +28,9 @@ public class AudioBody {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        return stringBuilder.append("{'f':'")
+        return stringBuilder.append("{\"f\":\"")
                 .append(file)
-                .append("', 'd':")
+                .append("\", \"d\":")
                 .append(duration)
                 .append("}")
                 .toString();

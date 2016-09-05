@@ -5,6 +5,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -40,6 +42,10 @@ public class NotificationProvider extends AbstractProvider {
                         .setContentTitle(title)
                         .setContentText(content).setAutoCancel(true);
 
+        Bitmap largeIcon = BitmapFactory.decodeResource(mContext.getResources(), R.mipmap.ic_launcher);
+        if (largeIcon != null) {
+            mBuilder.setLargeIcon(largeIcon);
+        }
         PendingIntent pendIntent = PendingIntent.getActivity(mContext, 0,
                 notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         mBuilder.setContentIntent(pendIntent);

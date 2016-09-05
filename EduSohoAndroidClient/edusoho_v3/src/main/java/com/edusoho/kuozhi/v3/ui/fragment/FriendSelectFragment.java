@@ -115,7 +115,9 @@ public class FriendSelectFragment extends AbstractChatSendFragment implements Ad
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        ChatSendHandler chatSendHandler = new ChatSendHandler(mActivity, mRedirectBody, position);
+        Friend friend = (Friend) mFriendAdapter.getItem(position);
+        RedirectBody redirectBody = getShowRedirectBody(friend.getNickname(), friend.getMediumAvatar());
+        ChatSendHandler chatSendHandler = new ChatSendHandler(mActivity, redirectBody, position);
         chatSendHandler.handleClick(mSendMessageHandlerCallback);
     }
 

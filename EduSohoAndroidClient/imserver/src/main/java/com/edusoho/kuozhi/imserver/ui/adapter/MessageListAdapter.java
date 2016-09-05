@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.R;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.ui.entity.AudioBody;
 import com.edusoho.kuozhi.imserver.ui.entity.Direct;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
@@ -153,10 +154,7 @@ public class MessageListAdapter extends BaseAdapter {
         viewHolder.setDirect(messageBody.getSource().getId() == mCurrentId ? Direct.SEND : Direct.RECEIVE);
         viewHolder.setContainerContent(messageBody);
         setMessageBody(viewHolder, messageBody, i);
-
-        String avatarSrc = mMessageHelper.getRoleAvatar(messageBody.getSource().getType(), messageBody.getSource().getId());
-        mMessageListItemController.onUpdateRole(messageBody.getSource().getType(), messageBody.getSource().getId());
-        ImageLoader.getInstance().displayImage(avatarSrc, viewHolder.avatarView, mOptions);
+        setAvatar(viewHolder, messageBody);
 
         switch (messageBody.getMsgStatus()) {
             case MessageEntity.StatusType.SUCCESS:
@@ -175,11 +173,45 @@ public class MessageListAdapter extends BaseAdapter {
         return view;
     }
 
+    private void setAvatar(final SendViewHolder viewHolder, MessageBody messageBody) {
+        Source source = messageBody.getSource();
+        String avatarSrc = mMessageHelper.getRoleAvatar(source.getType(), source.getId());
+        MaskBitmap maskBitmap = ImageCache.getInstance().get(avatarSrc);
+        if (maskBitmap == null || maskBitmap.target == null) {
+            mMessageListItemController.onUpdateRole(source.getType(), source.getId());
+            ImageLoader.getInstance().displayImage(avatarSrc, viewHolder.avatarView, mOptions, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    if (imageUri.startsWith("drawable:")) {
+                        return;
+                    }
+                    ImageCache.getInstance().put(imageUri, new MaskBitmap(loadedImage));
+                    viewHolder.avatarView.setImageBitmap(loadedImage);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+                }
+            });
+            return;
+        }
+        viewHolder.avatarView.setImageBitmap(maskBitmap.target);
+    }
+
     private void initClickListener(SendViewHolder viewHolder, int position) {
         ViewItemClickListener itemClickListener = new ViewItemClickListener(position);
         viewHolder.containerView.setOnClickListener(itemClickListener);
         viewHolder.avatarView.setOnClickListener(itemClickListener);
         viewHolder.errorStatusView.setOnClickListener(itemClickListener);
+        viewHolder.containerView.setOnLongClickListener(itemClickListener);
     }
 
     public void setMessageBody(SendViewHolder viewHolder, MessageBody messageBody, int position) {
@@ -303,14 +335,10 @@ public class MessageListAdapter extends BaseAdapter {
         return contentView;
     }
 
-    protected SendViewHolder createItemViewHolder(View view) {
-        return new SendViewHolder(view);
-    }
-
     /**
      * ViewItemClickListener
      */
-    class ViewItemClickListener implements View.OnClickListener {
+    class ViewItemClickListener implements View.OnClickListener, View.OnLongClickListener {
 
         private int mPosition;
 
@@ -329,6 +357,19 @@ public class MessageListAdapter extends BaseAdapter {
                     R.drawable.chat_from_speak_voice,
                     R.drawable.chat_from_voice_play_anim
             };
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            int id = view.getId();
+            if (id == R.id.tv_container) {
+                View parent = (View) view.getParent();
+                if (parent != null) {
+                    parent.performLongClick();
+                }
+                return true;
+            }
+            return false;
         }
 
         @Override

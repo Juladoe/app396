@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.imserver.ui;
 
 import android.app.Activity;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,9 +13,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.edusoho.kuozhi.imserver.IMClient;
@@ -237,7 +243,6 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
                 mPtrFrame.refreshComplete();
-                mMessageListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_DISABLED);
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -254,10 +259,81 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         });
 
         mMessageSendListener = getMessageSendListener();
-        mMessageInputView.setMessageControllerListener(getMessageControllerListener());
         mMessageInputView.setMessageSendListener(mMessageSendListener);
+        mMessageInputView.setMessageControllerListener(getMessageControllerListener());
+        initListViewListener();
+    }
 
+    protected void initListViewListener() {
+        mMessageListView.setOnItemLongClickListener(getOnItemLongClickListener());
         mMessageListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true));
+    }
+
+    protected AdapterView.OnItemLongClickListener getOnItemLongClickListener() {
+        return new AdapterView.OnItemLongClickListener() {
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                if (view.getTag() != null) {
+                    mCurrentSelectedIndex = i;
+                    showItemMenuDialog();
+                    return false;
+                }
+                return false;
+            }
+        };
+    }
+
+    protected void showItemMenuDialog() {
+        registerForContextMenu(mMessageListView);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        new MenuInflater(mContext).inflate(R.menu.message_list_menu, menu);
+    }
+
+    private void copyDataToClipboard(String text) {
+        ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        cm.setText(text);
+        SystemUtil.toast(mContext, "已复制");
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_copy) {
+            MessageEntity messageEntity = mListAdapter.getItem(mCurrentSelectedIndex);
+            if (messageEntity == null) {
+                return true;
+            }
+            MessageBody messageBody = new MessageBody(messageEntity);
+            copyDataToClipboard(messageBody.getBody());
+        } else if (id == R.id.menu_replay) {
+            MessageEntity messageEntity = mListAdapter.getItem(mCurrentSelectedIndex);
+            if (messageEntity == null) {
+                return true;
+            }
+            MessageBody messageBody = new MessageBody(messageEntity);
+            JSONObject data = new JSONObject();
+            try {
+                data.put("type", messageBody.getType());
+                data.put("fromType", Destination.USER);
+                data.put("title", "确定转发给:");
+                data.put("content", messageBody.getBody());
+                data.put("source", "self");
+                data.put("id", messageBody.getDestination().getId());
+            } catch (JSONException e) {
+            }
+
+            Bundle bundle = new Bundle();
+            bundle.putString("data", data.toString());
+            bundle.putString("activityName", "ChatSelectFragment");
+            mMessageControllerListener.onShowActivity(bundle);
+        } else if (id == R.id.menu_delete) {
+
+        }
+        return super.onContextItemSelected(item);
     }
 
     @Override

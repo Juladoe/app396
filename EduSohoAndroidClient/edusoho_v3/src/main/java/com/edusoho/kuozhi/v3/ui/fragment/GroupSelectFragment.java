@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.provider.DiscussionGroupProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMProvider;
@@ -74,7 +75,9 @@ public class GroupSelectFragment extends FriendSelectFragment {
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        ClassRoomChatSendHandler chatSendHandler = new ClassRoomChatSendHandler(mActivity, mRedirectBody, position);
+        Friend friend = (Friend) mFriendAdapter.getItem(position);
+        RedirectBody redirectBody = getShowRedirectBody(friend.getNickname(), friend.getMediumAvatar());
+        ClassRoomChatSendHandler chatSendHandler = new ClassRoomChatSendHandler(mActivity, redirectBody, position);
         chatSendHandler.handleClick(mSendMessageHandlerCallback);
     }
 

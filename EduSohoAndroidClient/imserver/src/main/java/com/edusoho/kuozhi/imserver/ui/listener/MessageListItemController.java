@@ -16,4 +16,5 @@ public interface MessageListItemController {
     void onContentClick(int position);
 
     void onUpdateRole(String type, int rid);
+
 }
