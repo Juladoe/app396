@@ -58,7 +58,7 @@ public class ESExpandableTextView extends LinearLayout implements View.OnClickLi
 
     private boolean mRelayout;
 
-    private boolean mCollapsed = true; // Show short version as default.
+    private boolean mCollapsed = true; // show short version as default.
 
     private int mCollapsedHeight;
 
@@ -188,7 +188,7 @@ public class ESExpandableTextView extends LinearLayout implements View.OnClickLi
         // Saves the text height w/ max lines
         mTextHeightWithMaxLines = getRealTextViewHeight(mTv);
 
-        // Doesn't fit in collapsed mode. Collapse text view as needed. Show
+        // Doesn't fit in collapsed mode. Collapse text view as needed. show
         // button.
         if (mCollapsed) {
             mTv.setMaxLines(mMaxCollapsedLines);

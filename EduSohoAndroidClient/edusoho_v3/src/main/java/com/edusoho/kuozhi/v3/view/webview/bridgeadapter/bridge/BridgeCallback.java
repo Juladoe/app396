@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge;
 
 import android.text.TextUtils;
+
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.JsBridgeAdapter;
 
 /**
@@ -12,8 +13,7 @@ public class BridgeCallback {
     private String mError;
     private JsBridgeAdapter mJsBridgeAdapter;
 
-    public BridgeCallback(String callbackId, JsBridgeAdapter jsBridgeAdapter)
-    {
+    public BridgeCallback(String callbackId, JsBridgeAdapter jsBridgeAdapter) {
         this.mCallbackId = callbackId;
         this.mJsBridgeAdapter = jsBridgeAdapter;
     }
@@ -27,7 +27,7 @@ public class BridgeCallback {
     }
 
     protected void formatMessage(String type, Object message) {
-        String args = message == null || TextUtils.isEmpty(message.toString()) ? "''": message.toString();
+        String args = message == null || TextUtils.isEmpty(message.toString()) ? "''" : "'" + message.toString() + "'";
         mJsBridgeAdapter.getWebView().invokeCallback(mCallbackId, type, args);
     }
 }

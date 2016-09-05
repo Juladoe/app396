@@ -7,16 +7,13 @@
     <string name="app_code">yunzhiguang</string>
     <string name="about_welcome">关于云知光照明学院</string>
     <string name="channel_name">yunzhiguang</string>
-    <string name="splash_num">5</string>
+    <string name="splash_num">3</string>
     <string name="splash_padding">0</string>
     <string name="app_id">wx08608675cb570e5e</string>
 
-    <string-array
-        name="shard_filter"
-        >
+    <string-array name="shard_filter">
         <item>TencentWeibo</item>
         <item>QZone</item>
-
     </string-array>
 
 </resources>

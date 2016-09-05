@@ -43,7 +43,6 @@ public class ThreadDiscussAdapter extends ChatAdapter {
     protected final CourseThreadDataSource mCourseThreadDataSource;
     protected final CourseThreadPostDataSource mCourseThreadPostDataSource;
     protected List<ThreadDiscussEntity> mList;
-    protected List<CourseThreadPostEntity> mInitPosts;
 
     public ThreadDiscussAdapter(Context context) {
         mContext = context;
@@ -57,28 +56,12 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         mContext = context;
         mCourseThreadDataSource = new CourseThreadDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
-        mInitPosts = list;
         mList = new ArrayList<>();
-        mDownloadList = new HashMap<>();
-        int size = mInitPosts.size() + 1;
+        int size = list.size();
         mCourseThreadModel = courseThreadEntity;
-        //问题
-        ThreadDiscussEntity threadDiscussModel = new ThreadDiscussEntity(
-                0,
-                courseThreadEntity.id,
-                courseThreadEntity.courseId,
-                courseThreadEntity.lessonId,
-                courseThreadEntity.user.id,
-                courseThreadEntity.user.nickname,
-                courseThreadEntity.user.mediumAvatar,
-                courseThreadEntity.content,
-                PushUtil.ChatMsgType.TEXT,
-                1,
-                courseThreadEntity.createdTime);
-        mList.add(0, threadDiscussModel);
         //回复
-        for (int i = 1; i < size; i++) {
-            CourseThreadPostEntity courseThreadPostModel = list.get(i - 1);
+        for (int i = 0; i < size; i++) {
+            CourseThreadPostEntity courseThreadPostModel = list.get(i);
             ThreadDiscussEntity threadPostDiscussModel = new ThreadDiscussEntity(
                     courseThreadPostModel.pid,
                     courseThreadPostModel.threadId,
@@ -96,7 +79,6 @@ public class ThreadDiscussAdapter extends ChatAdapter {
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
                 showImageForEmptyUri(R.drawable.default_avatar).
                 showImageOnFail(R.drawable.default_avatar).build();
-
     }
 
     public List<ThreadDiscussEntity> getList() {
@@ -115,13 +97,11 @@ public class ThreadDiscussAdapter extends ChatAdapter {
 
     public void updateItemState(int id, int state) {
         try {
-            if (mList.size() > 1) {
-                for (ThreadDiscussEntity tmpModel : mList) {
-                    if (tmpModel.id == id) {
-                        tmpModel.delivery = state;
-                        notifyDataSetChanged();
-                        break;
-                    }
+            for (ThreadDiscussEntity tmpModel : mList) {
+                if (tmpModel.id == id) {
+                    tmpModel.delivery = state;
+                    notifyDataSetChanged();
+                    break;
                 }
             }
         } catch (Exception e) {

@@ -3,11 +3,11 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.text.TextUtils;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +31,7 @@ import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.SearchFriendResult;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
 import com.edusoho.kuozhi.v3.model.result.FollowResult;
-import com.edusoho.kuozhi.v3.model.sys.*;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -76,8 +76,7 @@ public class SearchDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar);
-
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.edusohoTheme);
     }
 
     @Override
@@ -142,12 +141,12 @@ public class SearchDialogFragment extends DialogFragment {
         mFriendProvider = new FriendProvider(mContext);
     }
 
-    public void closeInput(){
+    public void closeInput() {
         InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
-    public void clearList(){
+    public void clearList() {
         mResultList.clear();
         mAdapter.notifyDataSetChanged();
     }
@@ -279,7 +278,7 @@ public class SearchDialogFragment extends DialogFragment {
 
     public Promise loadSearchResult() {
         final Promise promise = new Promise();
-        RequestUrl requestUrl = mApp.bindNewUrl(Const.USERS, false);
+        RequestUrl requestUrl = mApp.bindNewUrl(Const.USERS, true);
         requestUrl.setGetParams(new String[]{"q", URLEncoder.encode(searchStr)});
         mFriendProvider.getSearchFriend(requestUrl).success(new NormalCallback<SearchFriendResult>() {
             @Override
@@ -366,7 +365,7 @@ public class SearchDialogFragment extends DialogFragment {
         final Promise promise = new Promise();
 
         RequestUrl requestUrl = mApp.bindNewUrl(Const.ADD_FRIEND, true);
-        requestUrl.url = String.format(requestUrl.url,friend.id);
+        requestUrl.url = String.format(requestUrl.url, friend.id);
         final HashMap<String, String> params = requestUrl.getParams();
         params.put("method", "follow");
         params.put("userId", mApp.loginUser.id + "");
@@ -396,10 +395,10 @@ public class SearchDialogFragment extends DialogFragment {
         for (Friend friend : list) {
             users.append(friend.id + ",");
         }
-        if (users.length()>0){
+        if (users.length() > 0) {
             users.deleteCharAt(users.length() - 1);
         }
-        requestUrl.url = String.format(requestUrl.url,mApp.loginUser.id,users.toString());
+        requestUrl.url = String.format(requestUrl.url, mApp.loginUser.id, users.toString());
 
         return requestUrl;
     }

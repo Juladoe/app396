@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.ListView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.FindListAdapter;
@@ -32,10 +31,8 @@ import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoBanner;
-
 import java.util.Iterator;
 import java.util.List;
-
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;

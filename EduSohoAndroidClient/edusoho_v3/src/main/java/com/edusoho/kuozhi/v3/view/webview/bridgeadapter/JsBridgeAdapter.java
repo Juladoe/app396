@@ -41,7 +41,7 @@ public class JsBridgeAdapter {
         return instance;
     }
 
-    public void init(Context context) {
+    public void init() {
         mPluginList = new ArrayList<>();
         mPluginList.add(MenuClickPlugin.class);
         mPluginList.add(JsNativeAppPlugin.class);
@@ -88,6 +88,9 @@ public class JsBridgeAdapter {
         Log.d(TAG, String.format("t:%s m%s", targetName, method));
         Object result = null;
         IBridgePlugin nativeBridge = getBridgePlugin(targetName);
+        if (nativeBridge == null) {
+            return "";
+        }
         try {
             result = nativeBridge.executeAnsy(method, new JSONArray(args));
         } catch (JSONException e) {

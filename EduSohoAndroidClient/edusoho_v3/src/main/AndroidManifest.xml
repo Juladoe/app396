@@ -210,14 +210,33 @@
             android:name=".v3.ui.FragmentPageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".v3.ui.WebViewActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".v3.ui.MyThreadActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+
+        <activity
+
+            android:name=".v3.ui.ThreadCreateActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".v3.ui.ThreadActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppThemeNoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".v3.ui.NoteActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppThemeNoActionBar"
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name="com.edusoho.kuozhi.v3.view.photo.ViewPagerActivity"
@@ -274,7 +293,7 @@
                 <action android:name="com.tencent.android.tpush.action.FEEDBACK" />
             </intent-filter>
         </receiver>
-        
+
         <service
             android:name="com.tencent.android.tpush.service.XGPushService"
             android:exported="true"

@@ -267,7 +267,6 @@ public class Const {
     public static final String REVIEWS = "Course/getReviews";
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";
-    public static final String LESSON = "Lesson/getLesson";
     public static final String SEARCH_COURSE = "Course/searchCourse";
     public static final String TEACHER_COURSES = "Course/getTeacherCourses";
     public static final String COURSE_NOTICE = "Course/getCourseNotice";
@@ -308,18 +307,9 @@ public class Const {
     public static final String SHOW_TESTPAPER = "Testpaper/showTestpaper";
 
     /**
-     * 获取考试课程详情
+     * 检查优惠码
      */
     public static final String COURSE_CODE = "Course/coupon";
-
-    //笔记列表
-    public static final String USER_NOTES = "Course/getNoteList";
-    public static final String COURSE_NOTES = "Course/getCourseNotes";
-    public static final String ONE_NOTE = "Course/getOneNote";
-
-    //笔记编辑
-    public static final String ADD_NOTE = "Course/AddNote";
-    public static final String GET_LESSON_NOTE = "Course/getLessonNote";
 
     //意见反馈
     public static final String SUGGESTION = "School/sendSuggestion";
@@ -360,8 +350,11 @@ public class Const {
     public static final String FREE = "free";
     public static final String LESSON_ID = "lessonId";
     public static final String LESSON_NAME = "lesson_name";
+    public static final String VIDEO_TYPE = "video_type";
+    public static final String CLOUD_VIDEO_CONVERT_STATUS = "cloud_video_convert_status";
     public static final String QUESTION_TYPE = "question_type";
-    public static final String MEDIA_URL = "mediaUrl";
+    public static final String STREAM_URL = "mediaUrl";
+    public static final String MEDIA_URL = "streamUrls";
     public static final String HEAD_URL = "headUrl";
     public static final String MEDIA_ID = "mediaId";
     public static final String STATUS = "status";
@@ -440,9 +433,9 @@ public class Const {
     public static final String MY_FAVORITE = "main#/myfavorite";
     public static final String USER_PROFILE = "main#/userinfo/%d";
     public static final String MOBILE_WEB_COURSE = "main#/course/%d";
-    public static final String MOBILE_WEB_CLASSROOMS = "main#/classroomlist/";
-    public static final String MOBILE_WEB_COURSES = "main#/courselist/normal/";
-    public static final String MOBILE_WEB_LIVE_COURSES = "main#/courselist/live/";
+    public static final String MOBILE_WEB_CLASSROOMS = "main#/classroomlist/?categoryId=%d&orderType=%s";
+    public static final String MOBILE_WEB_COURSES = "main#/courselist/normal/?categoryId=%d&orderType=%s";
+    public static final String MOBILE_WEB_LIVE_COURSES = "main#/courselist/live/?categoryId=%d&orderType=%s";
     public static final String MOBILE_SEARCH = "main#/search";
     public static final String ANNOUNCEMENT = "main#/coursenotice/course/%d";
     public static final String ARTICLE_CONTENT = "%smobile/main#/article/%d";
@@ -452,6 +445,7 @@ public class Const {
     public static final String CLASSROOM_MEMBER_LIST = "main#/studentlist/classroom/%d";
     public static final String COURSE_MEMBER_LIST = "main#/studentlist/course/%d";
     public static final String TEACHER_MANAGERMENT = "main#/todolist/%d";
+    public static final String HTML5_LESSON = "main#/lesson/%d/%d";
 
 
     public static final String HAVE_ADD_TRUE = "friend";
@@ -479,6 +473,9 @@ public class Const {
     public static final String COURSE_MEMBERS = "/api/courses/%d/members";
     public static final String ROLE_IN_COURSE = "/api/courses/%d/membership/%d";
 
+    public static final String LESSON_NOTE = "/api/courses/%d/notes";
+    public static final String GET_LESSON_NOTE = "/api/courses/%d/notes";
+
     public static final String BIND_LOGIN = "/api/users/bind_login";
 
     public static final String HOMEWORK_CONTENT = "/api/homework/%d";
@@ -501,10 +498,14 @@ public class Const {
     public static final String COURSE_LEARNING_DYNAMICS = "/api/course/%d/status";
 
     public static final String CREATE_THREAD = "/api/chaos_threads";
+    public static final String THREAD_POSTS = "/api/thread/%d/posts?type=%s";
+    public static final String CLASSROOM_THREAD = "/api/classroom/thread/%d";
     public static final String POST_THREAD = "/api/chaos_threads_posts";
 
     public static final String MY_CREATED_THREADS = "/api/chaos_threads/getThreads";
     public static final String MY_POSTED_THREADS = "/api/chaos_threads_posts/getThreadPosts";
+
+    public static final String LESSON = "/api/lessons/%d";
 
     /*
      * intent action

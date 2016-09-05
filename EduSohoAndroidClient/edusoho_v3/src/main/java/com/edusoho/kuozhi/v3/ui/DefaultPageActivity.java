@@ -144,7 +144,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         });
 
         mDownTabNews.setUpdateIcon(0);
-        if (app.config.newVerifiedNotify){
+        if (app.config.newVerifiedNotify) {
             mDownTabFriends.setBageIcon(true);
         }
     }
@@ -469,24 +469,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-
                 }
             });
 
             mAjaxQueue.offer(request);
         }
 
-    }
-
-    private boolean checkSchoolHasLogined(String host) {
-        if (host.startsWith("http://")) {
-            host = host.substring(7);
-            Log.d(null, "host->" + host);
-        }
-        SharedPreferences sp = getSharedPreferences("search_history", MODE_PRIVATE);
-        if (sp.contains(host)) {
-            return true;
-        }
-        return false;
     }
 }

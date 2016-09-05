@@ -9,7 +9,7 @@ public class Accuracy {
     public int noAnswer;
     public int all;
     public int right;
-    public int score;
-    public int totalScore;
+    public double score;
+    public double totalScore;
     public boolean hasEssay;
 }

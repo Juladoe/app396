@@ -27,8 +27,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.DownloadingAdapter;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
@@ -56,7 +56,7 @@ import extensions.PagerSlidingTabStrip;
  */
 public class DownloadManagerActivity extends ActionBarBaseActivity {
     public static final String[] DOWNLOAD_FRAGMENTS = {"DownloadedFragment", "DownloadingFragment"};
-    public static final String[] DOWNLOAD_TITLES = {"已下载", "下载中"};
+    public static final String[] DOWNLOAD_TITLES = {"已缓存", "缓存中"};
 
     private PagerSlidingTabStrip mPagerTab;
     private ViewPager mViewPagers;
@@ -108,7 +108,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     };
 
     private void initView() {
-        setBackMode(BACK, "已下载课时");
+        setBackMode(BACK, getResources().getString(R.string.mine_items_download));
         mPagerTab = (PagerSlidingTabStrip) findViewById(R.id.tab_download);
         pbDownloadDeviceInfo = (ProgressBar) findViewById(R.id.pb_download_device_info);
         mViewPagers = (ViewPager) findViewById(R.id.viewpager_download);
@@ -391,15 +391,20 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
         String m3u8LessonIds = coverM3U8Ids(ids);
         String cacheLessonIds = coverLessonIds(ids);
         sqliteUtil.execSQL(String.format(
-                        "delete from data_cache where type='%s' and key in %s",
-                        Const.CACHE_LESSON_TYPE,
-                        cacheLessonIds.toString()
+                "delete from data_cache where type='%s' and key in %s",
+                Const.CACHE_LESSON_TYPE,
+                cacheLessonIds.toString()
                 )
         );
         sqliteUtil.execSQL(String.format(
-                        "delete from data_m3u8 where host='%s' and lessonId in %s",
-                        app.domain,
-                        m3u8LessonIds.toString())
+                "delete from data_m3u8 where host='%s' and lessonId in %s",
+                app.domain,
+                m3u8LessonIds.toString())
+        );
+
+        sqliteUtil.execSQL(String.format(
+                "delete from data_m3u8_url where lessonId in %s",
+                m3u8LessonIds.toString())
         );
 
         M3U8DownService service = M3U8DownService.getService();
