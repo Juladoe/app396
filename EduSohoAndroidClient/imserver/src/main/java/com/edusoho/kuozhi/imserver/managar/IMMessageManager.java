@@ -66,4 +66,8 @@ public class IMMessageManager {
     public long deleteByConvNo(String convNo) {
         return new MsgDbHelper(mContext).deleteByConvNo(convNo);
     }
+
+    public int deleteById(int id) {
+        return new MsgDbHelper(mContext).deleteById(id);
+    }
 }

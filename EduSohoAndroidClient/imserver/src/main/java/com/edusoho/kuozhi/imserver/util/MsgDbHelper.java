@@ -163,4 +163,8 @@ public class MsgDbHelper {
                 .addStatus(MessageUtil.parseInt(arrayMap.get("status")))
                 .builder();
     }
+
+    public int deleteById(int id) {
+        return mDbHelper.delete(TABLE, "id=?", new String[]{String.valueOf(id)});
+    }
 }

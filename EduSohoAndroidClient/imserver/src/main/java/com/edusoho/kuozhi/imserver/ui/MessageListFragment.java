@@ -347,6 +347,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 return true;
             }
             mListAdapter.removeItem(messageBody.getMid());
+            IMClient.getClient().getMessageManager().deleteById(messageBody.getMid());
         }
         return super.onContextItemSelected(item);
     }
