@@ -29,7 +29,6 @@ public class ViewPagerActivity extends ActionBarBaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getWindow().setWindowAnimations(R.style.WindowZoomAnimation);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.photo_layout);
         initView();

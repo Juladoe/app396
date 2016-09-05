@@ -14,7 +14,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.edusoho.kuozhi.imserver.IMClient;
@@ -325,7 +324,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     private void updateMessageReceiveStatus(MessageEntity messageEntity, int status) {
         ContentValues cv = new ContentValues();
         cv.put("status", status);
-        IMClient.getClient().getMessageManager().updateMessageField(messageEntity.getMsgNo(), cv);
+        IMClient.getClient().getMessageManager().updateMessageFieldByMsgNo(messageEntity.getMsgNo(), cv);
         messageEntity.setStatus(status);
         mListAdapter.updateItem(messageEntity);
     }
@@ -416,48 +415,50 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 sendMessageToServer(messageBody);
                 break;
             case PushUtil.ChatMsgType.AUDIO:
+                messageEntity.setUid(messageBody.getMessageId());
                 if (IMClient.getClient().getClientId() == messageBody.getSource().getId()) {
-                    sendMediaMessageAgain(messageBody);
+                    sendMediaMessageAgain(messageEntity);
                     return;
                 }
                 //receive
                 receiveAudioMessageAgain(messageBody);
                 break;
             case PushUtil.ChatMsgType.IMAGE:
+                messageEntity.setUid(messageBody.getMessageId());
                 if (IMClient.getClient().getClientId() == messageBody.getSource().getId()) {
-                    sendImageMediaMessageAgain(messageBody);
+                    sendImageMediaMessageAgain(messageEntity);
                     return;
                 }
                 receiveImageMessageAgain(messageBody);
         }
     }
 
-    private void sendImageMediaMessageAgain(MessageBody messageBody) {
+    private void sendImageMediaMessageAgain(MessageEntity messageEntity) {
         IMUploadEntity uploadEntity = IMClient.getClient().getMessageManager()
-                .getUploadEntity(messageBody.getMessageId());
+                .getUploadEntity(messageEntity.getUid());
         if (uploadEntity == null) {
             SystemUtil.toast(mContext, "媒体文件不存在,请重新发送消息");
             return;
         }
         File audioFile = new File(uploadEntity.getSource());
-        uploadImageAgain(audioFile);
+        uploadImageAgain(audioFile, messageEntity);
     }
 
-    private void sendMediaMessageAgain(MessageBody messageBody) {
+    private void sendMediaMessageAgain(MessageEntity messageEntity) {
         IMUploadEntity uploadEntity = IMClient.getClient().getMessageManager()
-                .getUploadEntity(messageBody.getMessageId());
+                .getUploadEntity(messageEntity.getUid());
         if (uploadEntity == null) {
             SystemUtil.toast(mContext, "媒体文件不存在,请重新发送消息");
             return;
         }
         File audioFile = new File(uploadEntity.getSource());
-        uploadAudioAgain(audioFile, TimeUtil.getAudioDuration(mContext, uploadEntity.getSource()));
+        uploadAudioAgain(audioFile, TimeUtil.getAudioDuration(mContext, uploadEntity.getSource()), messageEntity);
     }
 
-    private void uploadMediaAgain(File file, MessageBody messageBody) {
+    private void uploadMediaAgain(File file, MessageEntity messageEntity) {
         try {
-            MessageEntity messageEntity = saveMessageToLoacl(messageBody);
             messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
+            mListAdapter.updateItem(messageEntity);
 
             UpYunUploadTask upYunUploadTask = new UpYunUploadTask(messageEntity.getId(), mTargetId, file, mMessageControllerListener.getRequestHeaders());
             IMClient.getClient().getResourceHelper().addTask(upYunUploadTask);
@@ -780,6 +781,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 case Destination.USER:
                     toId = String.valueOf(messageBody.getDestination().getId());
             }
+            messageBody.setMsgStatus(MessageEntity.StatusType.NONE);
             SendEntity sendEntity = SendEntityBuildr.getBuilder()
                     .addToId(toId)
                     .addMsg(messageBody.toJson())
@@ -795,10 +797,9 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         uploadMedia(file, messageBody);
     }
 
-    private void uploadAudioAgain(File file, int audioLength) {
+    private void uploadAudioAgain(File file, int audioLength, MessageEntity messageEntity) {
         String content = wrapAudioMessageContent(file.getAbsolutePath(), audioLength);
-        MessageBody messageBody = createSendMessageBody(content, PushUtil.ChatMsgType.AUDIO);
-        uploadMediaAgain(file, messageBody);
+        uploadMediaAgain(file, messageEntity);
     }
 
     private void uploadImage(File file) {
@@ -806,9 +807,8 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         uploadMedia(file, messageBody);
     }
 
-    private void uploadImageAgain(File file) {
-        MessageBody messageBody = createSendMessageBody(file.getAbsolutePath(), PushUtil.ChatMsgType.IMAGE);
-        uploadMediaAgain(file, messageBody);
+    private void uploadImageAgain(File file, MessageEntity messageEntity) {
+        uploadMediaAgain(file, messageEntity);
     }
 
     private void uploadMedia(File file, MessageBody messageBody) {
@@ -850,7 +850,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 .addFromId(String.valueOf(messageBody.getSource().getId()))
                 .addFromName(messageBody.getSource().getNickname())
                 .addCmd("message")
-                .addStatus(MessageEntity.StatusType.NONE)
+                .addStatus(MessageEntity.StatusType.FAILED)
                 .addMsg(messageBody.toJson())
                 .addTime((int) (messageBody.getCreatedTime() / 1000))
                 .builder();

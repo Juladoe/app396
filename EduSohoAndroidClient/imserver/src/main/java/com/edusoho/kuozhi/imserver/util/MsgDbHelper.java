@@ -114,8 +114,12 @@ public class MsgDbHelper {
         return mDbHelper.insert(TABLE, cv);
     }
 
-    public int updateFiled(String msgNo, ContentValues cv) {
+    public int updateFiledByMsgNo(String msgNo, ContentValues cv) {
         return mDbHelper.update(TABLE, cv, "msgNo=?", new String[]{msgNo});
+    }
+
+    public int updateFiled(int id, ContentValues cv) {
+        return mDbHelper.update(TABLE, cv, "id=?", new String[]{String.valueOf(id)});
     }
 
     public int updateFiledByUid(String uid, ContentValues cv) {

@@ -1,17 +1,15 @@
 package com.edusoho.kuozhi.imserver.ui.adapter;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,7 +30,6 @@ import com.edusoho.kuozhi.imserver.ui.util.ResourceDownloadTask;
 import com.edusoho.kuozhi.imserver.ui.view.ChatImageView;
 import com.edusoho.kuozhi.imserver.ui.view.MessageStatusView;
 import com.edusoho.kuozhi.imserver.util.MessageUtil;
-import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -467,6 +464,12 @@ public class MessageListAdapter extends BaseAdapter {
             mLengthView = (TextView) view.findViewById(R.id.tv_audio_length);
         }
 
+        private void updateMessageStatus(int id, int status) {
+            ContentValues cv = new ContentValues();
+            cv.put("status", status);
+            IMClient.getClient().getMessageManager().updateMessageField(id, cv);
+        }
+
         @Override
         public void setContainerContent(MessageBody messageBody) {
             super.setContainerContent(messageBody);
@@ -491,6 +494,7 @@ public class MessageListAdapter extends BaseAdapter {
                         ResourceDownloadTask downloadTask = new ResourceDownloadTask(mContext, messageBody.getMid(), audioBody.getFile(), realFile);
                         IMClient.getClient().getResourceHelper().addTask(downloadTask);
                         messageBody.setMsgStatus(MessageEntity.StatusType.UPLOADING);
+                        updateMessageStatus(messageBody.getMid(), MessageEntity.StatusType.FAILED);
                     } catch (IOException ie) {
                         ie.printStackTrace();
                     }
@@ -522,11 +526,7 @@ public class MessageListAdapter extends BaseAdapter {
             super.setContainerContent(messageBody);
             String body = messageBody.getBody();
 
-            String imagePath = mImagePathArray.get(messageBody.getMid());
-            if (TextUtils.isEmpty(imagePath)) {
-                imagePath = mMessageHelper.getThumbImagePath(body);
-                mImagePathArray.put(messageBody.getMid(), imagePath);
-            }
+            String imagePath = mMessageHelper.getThumbImagePath(body);
             //local file
             if (imagePath.startsWith("file:")) {
                 MaskBitmap bitmap = ImageCache.getInstance().get(imagePath);
@@ -547,6 +547,7 @@ public class MessageListAdapter extends BaseAdapter {
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         ImageCache.getInstance().put(imageUri, new MaskBitmap(loadedImage));
+                        mImageView.setMaskBitmap(new MaskBitmap(loadedImage));
                     }
 
                     @Override

@@ -33,6 +33,12 @@ public class ApiTokenUtil {
         return (Map<String,String>) sp.getAll();
     }
 
+    public static String getApiToken(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("token", context.MODE_APPEND);
+        Map tokenMap = sp.getAll();
+        return tokenMap.containsKey("apiToken") ? tokenMap.get("apiToken").toString() : "";
+    }
+
     public static void saveApiToken(Context context, String apiToken) {
         SharedPreferences sp = context.getSharedPreferences("token", context.MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();

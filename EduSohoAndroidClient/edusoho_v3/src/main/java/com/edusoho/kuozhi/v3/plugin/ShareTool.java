@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -96,7 +97,7 @@ public class ShareTool {
                 R.mipmap.ic_launcher,
                 mTitle,
                 mUrl,
-                AppUtil.coverCourseAbout(mAbout),
+                Html.fromHtml(mAbout).toString(),
                 file,
                 EdusohoApp.app.host
                 , mDialogType

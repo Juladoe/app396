@@ -138,20 +138,8 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     Token token = mActivity.parseJsonValue(response, new TypeToken<Token>() {
                     });
                     if (token != null) {
-                        final School site = userResult.site;
                         mApp.saveApiToken(token.token);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Const.BIND_USER_ID, userResult.user == null ? "" : userResult.user.id + "");
-                        bundle.putSerializable(Const.SHOW_SCH_SPLASH, new SwitchNetSchoolListener() {
-                            @Override
-                            public void showSplash() {
-                                startSchoolActivity(site);
-                            }
-                        });
-                        //mApp.pushRegister(bundle);
-                        if (userResult.user == null) {
-                            startSchoolActivity(site);
-                        }
+                        selectSchool(userResult);
                     }
                 }
             }, new Response.ErrorListener() {
@@ -160,6 +148,25 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                     CommonUtil.longToast(mActivity.getBaseContext(), "获取网校信息失败");
                 }
             });
+        }
+
+        public void selectSchool(UserResult userResult) {
+            if (userResult.token == null || "".equals(userResult.token)) {
+                //未登录二维码
+                mApp.removeToken();
+                mApp.sendMessage(Const.LOGOUT_SUCCESS, null);
+            } else {
+                //扫描登录用户二维码
+                mApp.saveToken(userResult);
+                mApp.sendMessage(Const.LOGIN_SUCCESS, null);
+            }
+
+            School site = userResult.site;
+            mApp.setCurrentSchool(site);
+            SqliteChatUtil.getSqliteChatUtil(mActivity.getBaseContext(), mApp.domain).close();
+            mApp.registDevice(null);
+
+            startSchoolActivity(site);
         }
 
         public void change(String url) {
@@ -185,21 +192,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                             return;
                         }
 
-                        if (userResult.token == null || "".equals(userResult.token)) {
-                            //未登录二维码
-                            mApp.removeToken();
-                            mApp.sendMessage(Const.LOGOUT_SUCCESS, null);
-                        } else {
-                            //扫描登录用户二维码
-                            mApp.saveToken(userResult);
-                            mApp.sendMessage(Const.LOGIN_SUCCESS, null);
-                        }
-
-                        mApp.setCurrentSchool(site);
-                        SqliteChatUtil.getSqliteChatUtil(mActivity.getBaseContext(), mApp.domain).close();
-                        mApp.registDevice(null);
-
-                        startSchoolActivity(site);
+                        bindApiToken(userResult);
 
                     } catch (Exception e) {
                         mLoading.dismiss();

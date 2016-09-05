@@ -25,8 +25,12 @@ public class IMMessageManager {
         return new MsgDbHelper(mContext).update(messageEntity);
     }
 
-    public int updateMessageField(String msgNo, ContentValues cv) {
-        return new MsgDbHelper(mContext).updateFiled(msgNo, cv);
+    public int updateMessageFieldByMsgNo(String msgNo, ContentValues cv) {
+        return new MsgDbHelper(mContext).updateFiledByMsgNo(msgNo, cv);
+    }
+
+    public int updateMessageField(int id, ContentValues cv) {
+        return new MsgDbHelper(mContext).updateFiled(id, cv);
     }
 
     public int updateMessageFieldByUid(String uid, ContentValues cv) {

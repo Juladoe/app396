@@ -913,7 +913,7 @@ public class ChatAdapter<T extends Chat> extends BaseAdapter implements ChatDown
 
             ContentValues cv = new ContentValues();
             cv.put("status", downloadChat.delivery);
-            IMClient.getClient().getMessageManager().updateMessageField(downloadChat.msgNo, cv);
+            IMClient.getClient().getMessageManager().updateMessageFieldByMsgNo(downloadChat.msgNo, cv);
             mDownloadList.remove(downId);
             notifyDataSetChanged();
         } catch (Exception ex) {

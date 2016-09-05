@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
@@ -138,7 +139,7 @@ public class ImChatActivity extends ActionBarBaseActivity {
             @Override
             public Map<String, String> getRequestHeaders() {
                 HashMap map = new HashMap();
-                map.put("Auth-Token", app.apiToken);
+                map.put("Auth-Token", ApiTokenUtil.getApiToken(mContext));
                 return map;
             }
 
