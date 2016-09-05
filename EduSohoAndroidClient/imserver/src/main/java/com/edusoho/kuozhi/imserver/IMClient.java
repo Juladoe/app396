@@ -177,6 +177,7 @@ public class IMClient {
             public void onServiceConnected(ComponentName name, IBinder service) {
                 mImBinder = IImServerAidlInterface.Stub.asInterface(service);
                 try {
+                    Log.d(TAG, "mImBinder:" + mImBinder);
                     mImBinder.start(clientId, clientName, ignoreNosList, hostList);
                 } catch (RemoteException e) {
                     e.printStackTrace();

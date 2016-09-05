@@ -180,7 +180,7 @@ public class MessageHelper {
     public File compressTumbImageByFile(String filePath, int maxWidth) {
         File targetFile = new File(filePath);
         Bitmap tmpBitmap = ImageUtil.compressImage(filePath);
-        Bitmap thumbBitmap = ImageUtil.scaleImage(tmpBitmap, maxWidth * 0.2f, ImageUtil.getImageDegree(filePath));
+        Bitmap thumbBitmap = ImageUtil.scaleImage(tmpBitmap, maxWidth * 0.3f, ImageUtil.getImageDegree(filePath));
         try {
             targetFile = ImageUtil.convertBitmap2File(thumbBitmap, String.format("%s/%s", getThumbImageStorage(), targetFile.getName()), 50);
         } catch (IOException e) {

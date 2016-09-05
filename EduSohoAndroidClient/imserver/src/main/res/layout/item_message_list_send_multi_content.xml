@@ -11,11 +11,12 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/message_time_bg"
         android:clickable="true"
         android:textColor="@android:color/white"
         android:textSize="@dimen/x_small_font_size"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/tv_avatar"
@@ -30,31 +31,47 @@
 
     <LinearLayout
         android:clickable="true"
-        android:id="@+id/tv_container"
         android:layout_below="@id/tv_time"
         android:layout_toLeftOf="@id/tv_avatar"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:id="@+id/tv_container"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/chat_send_layout"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/tv_audio_length"
+            android:id="@+id/chat_multi_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:padding="6dp"
-            android:textColor="@color/grey_666666"
-            android:textSize="@dimen/x_small_font_size" />
+            android:textColor="@color/base_black_87"
+            android:textSize="@dimen/small_font_size" />
 
-        <ImageView
-            android:id="@+id/iv_voice_play_anim"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:minWidth="80dp"
-            android:layout_height="32dp"
-            android:scaleType="fitEnd"
-            android:background="@drawable/chat_send_layout"
-            android:src="@drawable/chat_to_speak_voice" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/chat_multi_icon"
+                android:layout_width="@dimen/head_icon_large"
+                android:layout_height="@dimen/head_icon_large"
+                android:layout_margin="6dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/message_image_default" />
+
+            <TextView
+                android:id="@+id/chat_multi_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="6dp"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textColor="@color/grey_666666"
+                android:textSize="@dimen/small_font_size" />
+        </LinearLayout>
     </LinearLayout>
 
     <com.edusoho.kuozhi.imserver.ui.view.MessageStatusView
@@ -65,6 +82,6 @@
         android:layout_toLeftOf="@id/tv_container"
         android:clickable="true"
         android:scaleType="fitXY"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 </RelativeLayout>

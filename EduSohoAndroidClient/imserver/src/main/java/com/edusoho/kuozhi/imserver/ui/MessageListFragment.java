@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ListView;
 
 import com.edusoho.kuozhi.imserver.IMClient;
@@ -49,6 +51,9 @@ import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -172,6 +177,25 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         sendMessageToServer(messageBody);
     }
 
+    public static final int MESSAGE_SELECT_LAST = 0;
+    public static final int MESSAGE_SELECT_POSTION = 1;
+
+    protected Handler mUpdateHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case MESSAGE_SELECT_LAST:
+                    mMessageListView.setSelection(mListAdapter.getCount() - 1);
+                    break;
+                case MESSAGE_SELECT_POSTION:
+                    mMessageListView.setSelectionFromTop(mListAdapter.getCount() - msg.arg1, 100);
+                    break;
+            }
+        }
+    };
+
     private void initParams(Bundle bundle) {
         if (bundle == null) {
             return;
@@ -213,8 +237,14 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         mPtrFrame.setPtrHandler(new PtrHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
-                addMessageList(mStart);
                 mPtrFrame.refreshComplete();
+                mMessageListView.setTranscriptMode(ListView.TRANSCRIPT_MODE_DISABLED);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        addMessageList(mStart);
+                    }
+                }, 300);
             }
 
             @Override
@@ -227,6 +257,8 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         mMessageSendListener = getMessageSendListener();
         mMessageInputView.setMessageControllerListener(getMessageControllerListener());
         mMessageInputView.setMessageSendListener(mMessageSendListener);
+
+        mMessageListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true));
     }
 
     @Override
@@ -408,7 +440,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             return;
         }
         File audioFile = new File(uploadEntity.getSource());
-        uploadImage(audioFile);
+        uploadImageAgain(audioFile);
     }
 
     private void sendMediaMessageAgain(MessageBody messageBody) {
@@ -419,7 +451,19 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             return;
         }
         File audioFile = new File(uploadEntity.getSource());
-        uploadAudio(audioFile, TimeUtil.getAudioDuration(mContext, uploadEntity.getSource()));
+        uploadAudioAgain(audioFile, TimeUtil.getAudioDuration(mContext, uploadEntity.getSource()));
+    }
+
+    private void uploadMediaAgain(File file, MessageBody messageBody) {
+        try {
+            MessageEntity messageEntity = saveMessageToLoacl(messageBody);
+            messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
+
+            UpYunUploadTask upYunUploadTask = new UpYunUploadTask(messageEntity.getId(), mTargetId, file, mMessageControllerListener.getRequestHeaders());
+            IMClient.getClient().getResourceHelper().addTask(upYunUploadTask);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
     }
 
     private void receiveAudioMessageAgain(MessageBody messageBody) {
@@ -674,8 +718,14 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         }
         coverMessageEntityStatus(messageEntityList);
         mListAdapter.addList(messageEntityList);
+        if (start == 0) {
+            mUpdateHandler.obtainMessage(MESSAGE_SELECT_LAST).sendToTarget();
+        } else {
+            Message msg = mUpdateHandler.obtainMessage(MESSAGE_SELECT_POSTION);
+            msg.arg1 = mStart;
+            mUpdateHandler.sendMessage(msg);
+        }
         mStart += messageEntityList.size();
-        mMessageListView.postDelayed(mListViewSelectRunnable, 100);
     }
 
     private void insertDataToList(MessageEntity messageEntity) {
@@ -745,32 +795,23 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         uploadMedia(file, messageBody);
     }
 
+    private void uploadAudioAgain(File file, int audioLength) {
+        String content = wrapAudioMessageContent(file.getAbsolutePath(), audioLength);
+        MessageBody messageBody = createSendMessageBody(content, PushUtil.ChatMsgType.AUDIO);
+        uploadMediaAgain(file, messageBody);
+    }
+
     private void uploadImage(File file) {
         MessageBody messageBody = createSendMessageBody(file.getAbsolutePath(), PushUtil.ChatMsgType.IMAGE);
         uploadMedia(file, messageBody);
     }
 
-    private void uploadMediaAgain(File file, MessageBody messageBody) {
-        if (file == null || !file.exists()) {
-            SystemUtil.toast(mContext, "媒体文件不存在");
-            return;
-        }
-        try {
-            MessageEntity messageEntity = saveMessageToLoacl(messageBody);
-            messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
-
-            UpYunUploadTask upYunUploadTask = new UpYunUploadTask(messageEntity.getId(), mTargetId, file, mMessageControllerListener.getRequestHeaders());
-            IMClient.getClient().getResourceHelper().addTask(upYunUploadTask);
-        } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
-        }
+    private void uploadImageAgain(File file) {
+        MessageBody messageBody = createSendMessageBody(file.getAbsolutePath(), PushUtil.ChatMsgType.IMAGE);
+        uploadMediaAgain(file, messageBody);
     }
 
     private void uploadMedia(File file, MessageBody messageBody) {
-        if (file == null || !file.exists()) {
-            SystemUtil.toast(mContext, "媒体文件不存在");
-            return;
-        }
         try {
             MessageEntity messageEntity = saveMessageToLoacl(messageBody);
             messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);

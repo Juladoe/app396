@@ -40,6 +40,7 @@ public class MessageResourceHelper {
             @Override
             public void onSuccess(int taskId, int taskType, String uri) {
                 if (taskType != ITaskStatusListener.NO_BROADCAST) {
+                    Log.d(TAG, "onSuccess");
                     Intent intent = new Intent(ResourceStatusReceiver.ACTION);
                     intent.putExtra(ResourceStatusReceiver.RES_ID, taskId);
                     intent.putExtra(ResourceStatusReceiver.TASK_TYPE, taskType);
@@ -52,6 +53,7 @@ public class MessageResourceHelper {
             @Override
             public void onFail(int taskId, int taskType) {
                 if (taskType != ITaskStatusListener.NO_BROADCAST) {
+                    Log.d(TAG, "onFail");
                     Intent intent = new Intent(ResourceStatusReceiver.ACTION);
                     intent.putExtra(ResourceStatusReceiver.RES_ID, taskId);
                     mContext.sendBroadcast(intent);
