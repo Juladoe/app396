@@ -114,7 +114,7 @@ public class PushMsgCommand extends AbstractCommand {
         String type = linkedHashMap.get("type");
         switch (type) {
             case "question.created":
-                return new String[] { String.format("[课程问答]:%s", linkedHashMap.get("questionTitle")), AppUtil.coverCourseAbout(linkedHashMap.get("title"))};
+                return new String[] { AppUtil.coverCourseAbout(linkedHashMap.get("title")), String.format("[课程问答]:%s", linkedHashMap.get("questionTitle"))};
         }
         return new String[]{ "课程信息更新", AppUtil.coverCourseAbout(linkedHashMap.get("title"))};
     }

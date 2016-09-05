@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.R;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.ui.entity.AudioBody;
@@ -226,6 +227,15 @@ public class MessageListAdapter extends BaseAdapter {
     }
 
     public void setMessageBody(SendViewHolder viewHolder, MessageBody messageBody, int position) {
+        switch (messageBody.getDestination().getType()) {
+            case Destination.COURSE:
+            case Destination.CLASSROOM:
+                viewHolder.nicknameView.setText(messageBody.getSource().getNickname());
+                viewHolder.nicknameView.setVisibility(View.VISIBLE);
+                break;
+            default:
+                viewHolder.nicknameView.setVisibility(View.GONE);
+        }
         viewHolder.timeView.setVisibility(View.GONE);
         if (position > 0) {
             long preTime = mMessageList.get(position - 1).getTime() * 1000L;
@@ -631,17 +641,17 @@ public class MessageListAdapter extends BaseAdapter {
         protected Direct mDirect;
 
         public TextView timeView;
+        public TextView nicknameView;
         public ImageView avatarView;
         public View containerView;
-        //public ProgressBar statusProgressBar;
         public MessageStatusView errorStatusView;
         public ImageView unReadView;
 
         public SendViewHolder(View view) {
             timeView = (TextView) view.findViewById(R.id.tv_time);
+            nicknameView = (TextView) view.findViewById(R.id.tv_nickname);
             containerView = view.findViewById(R.id.tv_container);
             avatarView = (ImageView) view.findViewById(R.id.tv_avatar);
-            //statusProgressBar = (ProgressBar) view.findViewById(R.id.tv_status_pbar);
             errorStatusView = (MessageStatusView) view.findViewById(R.id.tv_error_status);
             unReadView = (ImageView) view.findViewById(R.id.tv_unread_view);
         }

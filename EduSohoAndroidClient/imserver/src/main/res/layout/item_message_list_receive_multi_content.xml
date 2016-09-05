@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_time"
         android:layout_marginBottom="3dp"
+        android:layout_marginLeft="3dp"
         android:layout_toRightOf="@id/tv_avatar"
         android:lineSpacingExtra="0dp"
         android:text="nickname"

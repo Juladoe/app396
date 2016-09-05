@@ -15,7 +15,7 @@
         android:background="@drawable/message_time_bg"
         android:textColor="@android:color/white"
         android:textSize="@dimen/x_small_font_size"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <ImageView
         android:id="@+id/tv_avatar"
@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_time"
         android:layout_marginBottom="3dp"
+        android:layout_marginLeft="3dp"
         android:layout_toRightOf="@id/tv_avatar"
         android:lineSpacingExtra="0dp"
         android:text="nickname"
