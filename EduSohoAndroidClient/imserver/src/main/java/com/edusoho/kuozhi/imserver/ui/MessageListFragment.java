@@ -246,7 +246,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        addMessageList(mStart);
+                        insertDataToMessageList(mStart);
                     }
                 }, 300);
             }
@@ -803,6 +803,20 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         addMessageList(mStart);
     }
 
+    protected void insertDataToMessageList(int start) {
+        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConversationNo).getMessageList(start);
+        if (messageEntityList == null || messageEntityList.isEmpty()) {
+            canLoadData = false;
+            return;
+        }
+        coverMessageEntityStatus(messageEntityList);
+        mListAdapter.insertList(messageEntityList);
+        Message msg = mUpdateHandler.obtainMessage(MESSAGE_SELECT_POSTION);
+        msg.arg1 = mStart;
+        mUpdateHandler.sendMessage(msg);
+        mStart += messageEntityList.size();
+    }
+
     protected void addMessageList(int start) {
         List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConversationNo).getMessageList(start);
         if (messageEntityList == null || messageEntityList.isEmpty()) {
@@ -858,6 +872,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     private void sendMsg(String content) {
         MessageBody messageBody = createSendMessageBody(content, PushUtil.ChatMsgType.TEXT);
         MessageEntity messageEntity = saveMessageToLoacl(messageBody);
+        messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
         insertDataToList(messageEntity);
         sendMessageToServer(messageBody);
     }

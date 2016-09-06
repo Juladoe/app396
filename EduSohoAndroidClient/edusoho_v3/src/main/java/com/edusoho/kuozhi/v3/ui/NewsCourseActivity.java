@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
@@ -89,6 +91,11 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     protected void onResume() {
         super.onResume();
         mHandler.postDelayed(mNewFragment2UpdateItemBadgeRunnable, 500);
+
+        String convNo = getIntent().getStringExtra(CONV_NO);
+        if (!TextUtils.isEmpty(convNo)) {
+            getNotificationProvider().cancelNotification(convNo.hashCode());
+        }
     }
 
     private void initData() {
@@ -462,5 +469,9 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 mPhotoSelectCallback.onSelected(pathList);
             }
         }
+    }
+
+    protected NotificationProvider getNotificationProvider() {
+        return FactoryManager.getInstance().create(NotificationProvider.class);
     }
 }

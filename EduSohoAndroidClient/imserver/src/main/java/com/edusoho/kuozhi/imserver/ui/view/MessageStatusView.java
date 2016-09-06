@@ -36,10 +36,18 @@ public class MessageStatusView extends ImageView {
     }
 
     public void setProgressStatus() {
-        Drawable drawable = getResources().getDrawable(R.drawable.load_progress);
-        setImageDrawable(drawable);
-        if (drawable instanceof AnimationDrawable) {
-            mAnimationDrawable =(AnimationDrawable) drawable;
+        if (mAnimationDrawable == null) {
+            Drawable drawable = getResources().getDrawable(R.drawable.load_progress);
+            setImageDrawable(drawable);
+            if (drawable instanceof AnimationDrawable) {
+                mAnimationDrawable = (AnimationDrawable) drawable;
+            }
+        }
+
+        if (mAnimationDrawable != null && mAnimationDrawable.isRunning()) {
+            mAnimationDrawable.stop();
+        }
+        if (mAnimationDrawable != null) {
             mAnimationDrawable.start();
         }
     }
@@ -50,5 +58,6 @@ public class MessageStatusView extends ImageView {
         if (mAnimationDrawable != null) {
             mAnimationDrawable.stop();
         }
+        mAnimationDrawable = null;
     }
 }

@@ -35,7 +35,7 @@
             android:scrollbars="none"
             android:stackFromBottom="true"
             android:scrollbarStyle="outsideOverlay"
-            android:transcriptMode="alwaysScroll"/>
+            android:transcriptMode="normal"/>
 
     </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 

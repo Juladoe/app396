@@ -49,7 +49,7 @@ import java.util.List;
 /**
  * Created by suju on 16/8/26.
  */
-public class MessageListAdapter extends BaseAdapter {
+public class MessageRecyclerListAdapter extends BaseAdapter {
 
     private static final int SEND = 0X01;
     private static final int RECEIVE = 0X02;
@@ -75,7 +75,7 @@ public class MessageListAdapter extends BaseAdapter {
     protected DisplayImageOptions mOptions;
     protected SparseArray<MessageBody> mIndexArray;
 
-    public MessageListAdapter(Context context) {
+    public MessageRecyclerListAdapter(Context context) {
         this.mContext = context;
         this.mMessageList = new ArrayList<>();
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
@@ -86,7 +86,7 @@ public class MessageListAdapter extends BaseAdapter {
         this.mIndexArray = new SparseArray<>();
     }
 
-    public MessageListAdapter(Context context, int currentId) {
+    public MessageRecyclerListAdapter(Context context, int currentId) {
         this(context);
         this.mCurrentId = currentId;
     }
