@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.imserver.command;
 
+import android.util.Log;
+
 import com.edusoho.kuozhi.imserver.ImServer;
 
 import org.json.JSONObject;
@@ -16,7 +18,9 @@ public class ConnectedCommand extends BaseCommand {
 
     @Override
     public void invoke(JSONObject params) {
+        Log.d("ConnectedCommand", "invoke");
         mImServer.requestOfflineMsg();
+        mImServer.getHeartManager().start();
     }
 
 }

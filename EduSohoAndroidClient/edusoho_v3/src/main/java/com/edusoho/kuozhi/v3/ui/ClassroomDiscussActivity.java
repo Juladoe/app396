@@ -67,15 +67,22 @@ public class ClassroomDiscussActivity extends ImChatActivity {
     @Override
     protected void createTargetRole(String type, int rid, final MessageControllerListener.RoleUpdateCallback callback) {
         if (Destination.CLASSROOM.equals(type)) {
-            new IMProvider(mContext).createConvInfoByClassRoom(mConversationNo, mClassRoom)
-                    .success(new NormalCallback<User>() {
+            new ClassRoomProvider(mContext).getClassRoom(mTargetId)
+                    .success(new NormalCallback<Classroom>() {
                         @Override
-                        public void success(User user) {
+                        public void success(Classroom classroom) {
+                            if (classroom == null || TextUtils.isEmpty(classroom.conversationId)) {
+                                ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
+                                finish();
+                                return;
+                            }
+                            mClassRoom = classroom;
+
                             Role role = new Role();
-                            role.setRid(user.id);
-                            role.setAvatar(user.mediumAvatar);
+                            role.setRid(classroom.id);
+                            role.setAvatar(classroom.middlePicture);
                             role.setType(Destination.CLASSROOM);
-                            role.setNickname(user.nickname);
+                            role.setNickname(classroom.title);
                             callback.onCreateRole(role);
                         }
                     });

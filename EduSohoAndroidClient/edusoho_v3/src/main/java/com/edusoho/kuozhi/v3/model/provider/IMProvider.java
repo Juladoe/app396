@@ -48,9 +48,20 @@ public class IMProvider extends ModelProvider {
         return getTargetInfoByUser(convNo, targetId);
     }
 
-    public ProviderListener createConvInfoByClassRoom(final String convNo, Classroom classroom) {
+    public ProviderListener createConvInfoByClassRoom(final String convNo, int classRoomId, Classroom classroom) {
         final ProviderListener<ConvEntity> providerListener = new ProviderListener() {
         };
+        if (classroom == null) {
+            getRoleFromClassRoom(classRoomId, new NormalCallback<Role>() {
+                @Override
+                public void success(Role role) {
+                    ConvEntity convEntity = createConvNo(convNo, role);
+                    providerListener.onResponse(convEntity);
+                }
+            });
+            return providerListener;
+        }
+
         Role role = new Role();
         role.setType(Destination.CLASSROOM);
         role.setRid(classroom.id);
@@ -64,7 +75,7 @@ public class IMProvider extends ModelProvider {
     }
 
     public ProviderListener createConvInfoByCourse(String convNo, Course course) {
-        final ProviderListener<ConvEntity> providerListener = new ProviderListener() {
+        ProviderListener<ConvEntity> providerListener = new ProviderListener() {
         };
         Role role = new Role();
         role.setType(Destination.COURSE);

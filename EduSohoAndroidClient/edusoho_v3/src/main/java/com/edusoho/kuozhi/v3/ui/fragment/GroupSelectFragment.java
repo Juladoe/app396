@@ -109,7 +109,7 @@ public class GroupSelectFragment extends FriendSelectFragment {
                         }
 
                         mConvNo = classroom.conversationId;
-                        new IMProvider(mContext).createConvInfoByClassRoom(mConvNo, classroom)
+                        new IMProvider(mContext).createConvInfoByClassRoom(mConvNo, fromId, classroom)
                                 .success(new NormalCallback<ConvEntity>() {
                                     @Override
                                     public void success(ConvEntity convEntity) {

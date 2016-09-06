@@ -70,7 +70,7 @@ public class ImService extends Service {
                         break;
                     case NetTypeConst.NONE:
                         if (!isConnected && mImServer.isConnected()) {
-                            mImServer.stop();
+                            mImServer.pause();
                         }
                         break;
                     case NetTypeConst.GSM:
@@ -87,8 +87,8 @@ public class ImService extends Service {
                 }
 
                 if (!isConnected && mImServer.isConnected()) {
-                    Log.d(TAG, "network not Connected and start ImServer");
-                    mImServer.stop();
+                    Log.d(TAG, "network not Connected and stop ImServer");
+                    mImServer.pause();
                 }
             }
         };

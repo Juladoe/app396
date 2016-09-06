@@ -130,7 +130,6 @@ public class ImServer {
                 switch (status) {
                     case IConnectManagerListener.OPEN:
                         flag = CONNECT_OPEN;
-                        mIHeartManager.start();
                         break;
                     case IConnectManagerListener.CLOSE:
                     case IConnectManagerListener.END:
@@ -202,7 +201,7 @@ public class ImServer {
         return true;
     }
 
-    private void cancel() {
+    public void pause() {
         if (this.mIHeartManager != null) {
             this.mIHeartManager.stop();
         }
@@ -214,14 +213,14 @@ public class ImServer {
     }
 
     public void stop() {
-        cancel();
+        pause();
         sendConnectStatusBroadcast(IConnectManagerListener.CLOSE);
         this.mMsgDbHelper = null;
         this.mConvDbHelper = null;
     }
 
     public boolean isCancel() {
-        if (!isConnected()) {
+        if (mIConnectionManager == null) {
             return true;
         }
         int status = mIConnectionManager.getStatus();
@@ -231,7 +230,7 @@ public class ImServer {
     }
 
     public void start() {
-        cancel();
+        pause();
         if (TextUtils.isEmpty(mClientName) || mHostList == null || mHostList.isEmpty()) {
             return;
         }
