@@ -6,16 +6,16 @@
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
     <Wechat Id="1" SortId="1" AppId="wx10ab70921e4b7554"
-        AppSecret="dcada9d4a0c6750b2d06b97b91eb4e2c" BypassApproval="false" Enable="true" />
+        AppSecret="ffbb4786ce19a44cf778cbb96f90108a" BypassApproval="false" Enable="true" />
 
     <WechatMoments Id="2" SortId="2" AppId="wx10ab70921e4b7554"
-        AppSecret="dcada9d4a0c6750b2d06b97b91eb4e2c" BypassApproval="true" Enable="true" />
+        AppSecret="ffbb4786ce19a44cf778cbb96f90108a" BypassApproval="true" Enable="true" />
 
     <WechatFavorite Id="3" SortId="3" AppId="wx10ab70921e4b7554"
-        AppSecret="dcada9d4a0c6750b2d06b97b91eb4e2c" Enable="true" />
+        AppSecret="ffbb4786ce19a44cf778cbb96f90108a" Enable="true" />
 
-    <SinaWeibo Id="4" SortId="4" AppKey="2128814312" AppSecret="b1d8ed5a2ba0ef2046ab20309f26290e"
-        RedirectUrl="http://www.qswangxiao.com" ShareByAppClient="true" Enable="true" />
+    <!--<SinaWeibo Id="4" SortId="4" AppKey="2128814312" AppSecret="b1d8ed5a2ba0ef2046ab20309f26290e"
+        RedirectUrl="http://www.qswangxiao.com" ShareByAppClient="true" Enable="true" />-->
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
 
