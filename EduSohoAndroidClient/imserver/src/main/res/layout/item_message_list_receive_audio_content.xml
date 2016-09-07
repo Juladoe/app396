@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:paddingLeft="16dp"
     android:paddingBottom="8dp"
     android:paddingTop="8dp">
 
@@ -22,7 +23,6 @@
         android:layout_height="@dimen/head_icon_small"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/tv_time"
-        android:layout_marginLeft="16dp"
         android:layout_marginRight="8dp"
         android:clickable="true"
         android:src="@drawable/default_avatar" />

@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
     android:paddingTop="8dp">
 
     <TextView
@@ -22,7 +23,6 @@
         android:layout_height="@dimen/head_icon_small"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/tv_time"
-        android:layout_marginLeft="16dp"
         android:layout_marginRight="8dp"
         android:clickable="true"
         android:src="@drawable/default_avatar" />

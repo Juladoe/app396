@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.ui.BulletinActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
+import com.edusoho.kuozhi.v3.ui.ThreadDiscussChatActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
@@ -66,10 +67,15 @@ public class PushMsgCommand extends AbstractCommand {
         notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-        notifyIntent.putExtra(Const.INTENT_TARGET, NewsCourseActivity.class);
-        notifyIntent.putExtra(NewsCourseActivity.COURSE_ID, mMessageBody.getSource().getId());
-        notifyIntent.putExtra(NewsCourseActivity.CONV_NO, mMessageBody.getConvNo());
-        notifyIntent.putExtra(NewsCourseActivity.SHOW_TYPE, NewsCourseActivity.LEARN_TYPE);
+        LinkedHashMap<String, String> linkedHashMap = new Gson().fromJson(mMessageBody.getBody(), LinkedHashMap.class);
+        if (linkedHashMap != null && "question.created".equals(linkedHashMap.get("type"))) {
+            notifyIntent.putExtra(Const.INTENT_TARGET, ThreadDiscussChatActivity.class);
+            notifyIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_ID, AppUtil.parseInt(linkedHashMap.get("courseId")));
+            notifyIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_TYPE, mMessageBody.getSource().getType());
+            notifyIntent.putExtra(ThreadDiscussChatActivity.FROM_ID, AppUtil.parseInt(linkedHashMap.get("threadId")));
+            notifyIntent.putExtra(ThreadDiscussChatActivity.THREAD_TYPE, "question");
+        }
+
         return notifyIntent;
     }
 

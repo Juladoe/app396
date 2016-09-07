@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -66,8 +67,6 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     public static final String THREAD_TARGET_ID = "thread_target_id";
     public static final String IMAGE_FORMAT = "<img alt=\"\" src=\"%s\" />";
 
-    private View mHeaderView;
-    private LinearLayout mContentLayout;
     protected ThreadProvider mThreadProvider;
     /**
      * ask,answer
@@ -89,6 +88,11 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mThreadProvider = new ThreadProvider(mContext);
+    }
+
+    @Override
+    protected View createView() {
+        return LayoutInflater.from(mContext).inflate(R.layout.activity_thread_discuss_layout, null);
     }
 
     @Override
@@ -121,19 +125,6 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         mThreadTargetType = dataIntent.getStringExtra(THREAD_TARGET_TYPE);
         mThreadTargetId = dataIntent.getIntExtra(THREAD_TARGET_ID, 0);
         mLessonId = dataIntent.getIntExtra(LESSON_ID, 0);
-    }
-
-    @Override
-    public void setContentView(@LayoutRes int layoutResID) {
-        mHeaderView = LayoutInflater.from(mContext).inflate(R.layout.activity_thread_dicuss_head_layout, null);
-        View rootView = LayoutInflater.from(mContext).inflate(layoutResID, null);
-        mContentLayout = new LinearLayout(mContext);
-        mContentLayout.setOrientation(LinearLayout.VERTICAL);
-
-        mContentLayout.addView(mHeaderView);
-        mContentLayout.addView(rootView);
-
-        setContentView(mContentLayout);
     }
 
     @Override

@@ -10,8 +10,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -35,7 +33,6 @@ import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.ui.adapter.MessageListAdapter;
-import com.edusoho.kuozhi.imserver.ui.adapter.MessageRecyclerListAdapter;
 import com.edusoho.kuozhi.imserver.ui.broadcast.ResourceStatusReceiver;
 import com.edusoho.kuozhi.imserver.ui.entity.AudioBody;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
@@ -43,9 +40,9 @@ import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.AudioPlayStatusListener;
 import com.edusoho.kuozhi.imserver.ui.listener.DefautlMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.listener.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.InputViewControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
-import com.edusoho.kuozhi.imserver.ui.listener.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
@@ -59,13 +56,13 @@ import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -77,7 +74,7 @@ import in.srain.cube.views.ptr.PtrHandler;
 /**
  * Created by suju on 16/8/26.
  */
-public class MessageListFragment extends Fragment implements ResourceStatusReceiver.StatusReceiverCallback {
+public class MessageNormalListFragment extends Fragment implements ResourceStatusReceiver.StatusReceiverCallback {
 
     private static final String TAG = "MessageListFragment";
 
@@ -102,11 +99,10 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
 
     protected ResourceStatusReceiver mResourceStatusReceiver;
     protected PtrClassicFrameLayout mPtrFrame;
-    protected RecyclerView mMessageListView;
+    protected ListView mMessageListView;
     protected View mContainerView;
-    protected LinearLayoutManager mLayoutManager;
     protected MessageInputView mMessageInputView;
-    protected MessageRecyclerListAdapter mListAdapter;
+    protected MessageListAdapter mListAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,9 +120,9 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mContext = activity.getBaseContext();
-        mListAdapter = new MessageRecyclerListAdapter(getActivity().getBaseContext());
+        mListAdapter = new MessageListAdapter(getActivity().getBaseContext());
         mListAdapter.setCurrentId(IMClient.getClient().getClientId());
-        mListAdapter.setMessageListItemController(getMessageListItemClickListener());
+        mListAdapter.setmMessageListItemController(getMessageListItemClickListener());
     }
 
     @Nullable
@@ -200,11 +196,10 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             super.handleMessage(msg);
             switch (msg.what) {
                 case MESSAGE_SELECT_LAST:
-                    mMessageListView.scrollToPosition(0);
+                    mMessageListView.setSelection(mListAdapter.getCount() - 1);
                     break;
                 case MESSAGE_SELECT_POSTION:
-                    Log.d(TAG, "p:" + (mListAdapter.getItemCount() - msg.arg1));
-                    mMessageListView.smoothScrollToPosition(msg.arg1);
+                    mMessageListView.setSelectionFromTop(mListAdapter.getCount() - msg.arg1, 100);
                     break;
             }
         }
@@ -242,12 +237,8 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
 
     protected void initView(View view) {
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
-        mMessageListView = (RecyclerView) view.findViewById(R.id.listview);
+        mMessageListView = (ListView) view.findViewById(R.id.listview);
         mMessageInputView = (MessageInputView) view.findViewById(R.id.message_input_view);
-
-        mLayoutManager = new LinearLayoutManager(mContext);
-        mLayoutManager.setReverseLayout(true);
-        mMessageListView.setLayoutManager(mLayoutManager);
         mMessageListView.setAdapter(mListAdapter);
         Log.d(TAG, "initView");
 
@@ -261,7 +252,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                     public void run() {
                         insertDataToMessageList(mStart);
                     }
-                }, 500);
+                }, 300);
             }
 
             @Override
@@ -277,10 +268,9 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         initListViewListener();
     }
 
-    //// TODO: 16/9/7
     protected void initListViewListener() {
-        //mMessageListView.setOnItemLongClickListener(getOnItemLongClickListener());
-        //mMessageListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true));
+        mMessageListView.setOnItemLongClickListener(getOnItemLongClickListener());
+        mMessageListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true));
     }
 
     protected AdapterView.OnItemLongClickListener getOnItemLongClickListener() {
@@ -609,7 +599,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
 
     protected ArrayList<String> getAllMessageImageUrls() {
         ArrayList<String> imagesUrls = new ArrayList<>();
-        int size = mListAdapter.getItemCount();
+        int size = mListAdapter.getCount();
         for (int i = 0; i < size; i++) {
             MessageBody messageBody = new MessageBody(mListAdapter.getItem(i));
             if (PushUtil.ChatMsgType.IMAGE.equals(messageBody.getType())) {
@@ -814,16 +804,16 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             canLoadData = false;
             return;
         }
-        Collections.sort(messageEntityList, new Comparator<MessageEntity>() {
-            @Override
-            public int compare(MessageEntity t1, MessageEntity t2) {
-                return t2.getId() - t1.getId();
-            }
-        });
         coverMessageEntityStatus(messageEntityList);
         mListAdapter.addList(messageEntityList);
+        if (start == 0) {
+            mUpdateHandler.obtainMessage(MESSAGE_SELECT_LAST).sendToTarget();
+        } else {
+            Message msg = mUpdateHandler.obtainMessage(MESSAGE_SELECT_POSTION);
+            msg.arg1 = mStart;
+            mUpdateHandler.sendMessage(msg);
+        }
         mStart += messageEntityList.size();
-        mUpdateHandler.obtainMessage(MESSAGE_SELECT_LAST).sendToTarget();
     }
 
     private void insertDataToList(MessageEntity messageEntity) {
@@ -832,7 +822,6 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 && messageResourceHelper.hasTask(messageEntity.getId())) {
             messageEntity.setStatus(PushUtil.MsgDeliveryType.UPLOADING);
         }
-
         mListAdapter.addItem(messageEntity);
         mMessageListView.postDelayed(mListViewScrollToBottomRunnable, 50);
     }
@@ -841,7 +830,19 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         @Override
         public void run() {
             if (mMessageListView != null && mMessageListView.getAdapter() != null) {
-                mMessageListView.smoothScrollToPosition(mListAdapter.getItemCount());
+                mMessageListView.smoothScrollToPosition(mListAdapter.getCount());
+            }
+        }
+    };
+    protected Runnable mListViewSelectRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (mMessageListView != null && mMessageListView.getAdapter() != null) {
+                if (mStart <= 10) {
+                    mMessageListView.setSelection(mStart);
+                    return;
+                }
+                mMessageListView.setSelectionFromTop(mStart - 10, 50);
             }
         }
     };
@@ -949,7 +950,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                             if (role.getRid() != 0) {
                                 IMClient.getClient().getRoleManager().createRole(role);
                                 Log.d(TAG, "create role:" + rid);
-                                mListAdapter.notifyDataSetChanged();
+                                mListAdapter.notifyDataSetInvalidated();
                                 taskFeature.success(null);
                                 return;
                             }

@@ -24,7 +24,7 @@
         app:ptr_ratio_of_header_height_to_refresh="1.2"
         app:ptr_resistance="1.7">
 
-        <com.edusoho.kuozhi.imserver.ui.view.ChatListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/listview"
             android:listSelector="@color/transparent"
             android:layout_width="match_parent"
@@ -33,9 +33,7 @@
             android:clickable="true"
             android:divider="@null"
             android:scrollbars="none"
-            android:stackFromBottom="true"
-            android:scrollbarStyle="outsideOverlay"
-            android:transcriptMode="normal"/>
+            android:scrollbarStyle="outsideOverlay"/>
 
     </in.srain.cube.views.ptr.PtrClassicFrameLayout>
 

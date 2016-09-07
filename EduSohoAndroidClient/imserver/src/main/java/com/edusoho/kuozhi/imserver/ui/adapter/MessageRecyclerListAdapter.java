@@ -4,15 +4,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.R;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
@@ -37,6 +36,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,7 +49,7 @@ import java.util.List;
 /**
  * Created by suju on 16/8/26.
  */
-public class MessageRecyclerListAdapter extends BaseAdapter {
+public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecyclerListAdapter.MessageViewHolder> {
 
     private static final int SEND = 0X01;
     private static final int RECEIVE = 0X02;
@@ -86,11 +86,6 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
         this.mIndexArray = new SparseArray<>();
     }
 
-    public MessageRecyclerListAdapter(Context context, int currentId) {
-        this(context);
-        this.mCurrentId = currentId;
-    }
-
     public void removeItem(int id) {
         int size = mMessageList.size();
         for (int i = 0; i < size; i++) {
@@ -122,9 +117,49 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
         this.mCurrentId = currentId;
     }
 
-    @Override
     public int getViewTypeCount() {
         return 8;
+    }
+
+    public MessageEntity getItem(int position) {
+        return mMessageList.get(position);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mMessageList.size();
+    }
+
+    @Override
+    public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d(TAG, "create view type:" + viewType);
+        View contentView = getItemView(viewType);
+        return createViewHolder(viewType, contentView);
+    }
+
+    @Override
+    public void onBindViewHolder(MessageViewHolder viewHolder, int position) {
+        MessageBody messageBody = new MessageBody(mMessageList.get(position));
+
+        viewHolder.setDirect(messageBody.getSource().getId() == mCurrentId ? Direct.SEND : Direct.RECEIVE);
+        viewHolder.setContainerContent(messageBody);
+        viewHolder.setMessageBody(messageBody, position);
+        viewHolder.setAvatar(messageBody);
+
+        switch (messageBody.getMsgStatus()) {
+            case MessageEntity.StatusType.SUCCESS:
+                viewHolder.errorStatusView.setVisibility(View.INVISIBLE);
+                break;
+            case MessageEntity.StatusType.UPLOADING:
+                viewHolder.errorStatusView.setVisibility(View.VISIBLE);
+                viewHolder.errorStatusView.setProgressStatus();
+                break;
+            case MessageEntity.StatusType.FAILED:
+                viewHolder.errorStatusView.setVisibility(View.VISIBLE);
+                viewHolder.errorStatusView.setErrorStatus();
+
+        }
+        initClickListener(viewHolder, position);
     }
 
     @Override
@@ -146,117 +181,106 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
         return isSend ? SEND_TEXT : RECEIVE_TEXT;
     }
 
+    private MessageViewHolder createViewHolder(int viewType, View contentView) {
+        switch (viewType) {
+            case SEND_AUDIO:
+            case RECEIVE_AUDIO:
+                return new AudioViewHolder(contentView);
+            case SEND_IMAGE:
+            case RECEIVE_IMAGE:
+                return new ImageVewHolder(contentView);
+            case SEND_MULTI:
+            case RECEIVE_MULTI:
+                return new MultiViewHolder(contentView);
+        }
+
+        return new TextViewHolder(contentView);
+    }
+
+    class MessageViewHolder extends RecyclerView.ViewHolder {
+
+        protected Direct mDirect;
+
+        public TextView timeView;
+        public TextView nicknameView;
+        public ImageView avatarView;
+        public View containerView;
+        public MessageStatusView errorStatusView;
+        public ImageView unReadView;
+
+        public MessageViewHolder(View view) {
+            super(view);
+            timeView = (TextView) view.findViewById(R.id.tv_time);
+            nicknameView = (TextView) view.findViewById(R.id.tv_nickname);
+            containerView = view.findViewById(R.id.tv_container);
+            avatarView = (ImageView) view.findViewById(R.id.tv_avatar);
+            errorStatusView = (MessageStatusView) view.findViewById(R.id.tv_error_status);
+            unReadView = (ImageView) view.findViewById(R.id.tv_unread_view);
+        }
+
+        public void setDirect(Direct direct) {
+            this.mDirect = direct;
+        }
+
+        public void setContainerContent(MessageBody messageBody) {
+        }
+
+        public void setMessageBody(MessageBody messageBody, int position) {
+            switch (messageBody.getDestination().getType()) {
+                case Destination.COURSE:
+                case Destination.CLASSROOM:
+                    nicknameView.setText(messageBody.getSource().getNickname());
+                    nicknameView.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    nicknameView.setVisibility(View.GONE);
+            }
+            timeView.setVisibility(View.GONE);
+            if (position > 0) {
+                long preTime = mMessageList.get(position - 1).getTime() * 1000L;
+                if (messageBody.getCreatedTime() - preTime > TIME_INTERVAL) {
+                    timeView.setVisibility(View.VISIBLE);
+                    timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
+                }
+            } else {
+                timeView.setVisibility(View.VISIBLE);
+                timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
+            }
+        }
+
+        private void setAvatar(MessageBody messageBody) {
+            Source source = messageBody.getSource();
+            String avatarSrc = mMessageHelper.getRoleAvatar(source.getType(), source.getId());
+            MaskBitmap maskBitmap = ImageCache.getInstance().get(avatarSrc);
+            if (maskBitmap == null || maskBitmap.target == null) {
+                mMessageListItemController.onUpdateRole(source.getType(), source.getId());
+                ImageLoader.getInstance().displayImage(avatarSrc, avatarView, mOptions, new SimpleImageLoadingListener() {
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        if (imageUri.startsWith("drawable:")) {
+                            return;
+                        }
+                        ImageCache.getInstance().put(imageUri, new MaskBitmap(loadedImage));
+                        avatarView.setImageBitmap(loadedImage);
+                    }
+                });
+                return;
+            }
+            avatarView.setImageBitmap(maskBitmap.target);
+        }
+    }
+
     public void destory() {
         mIndexArray.clear();
         mMessageList.clear();
     }
 
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-
-        SendViewHolder viewHolder = null;
-        MessageBody messageBody = new MessageBody(mMessageList.get(i));
-        if (view == null) {
-            int type = getItemViewType(i);
-            Log.d(TAG, "create view type:" + type);
-            view = getItemView(type, messageBody.getSource().getId() == mCurrentId);
-        }
-
-        viewHolder = (SendViewHolder) view.getTag();
-        viewHolder.setDirect(messageBody.getSource().getId() == mCurrentId ? Direct.SEND : Direct.RECEIVE);
-        viewHolder.setContainerContent(messageBody);
-        setMessageBody(viewHolder, messageBody, i);
-        setAvatar(viewHolder, messageBody);
-
-        switch (messageBody.getMsgStatus()) {
-            case MessageEntity.StatusType.SUCCESS:
-                viewHolder.errorStatusView.setVisibility(View.INVISIBLE);
-                break;
-            case MessageEntity.StatusType.UPLOADING:
-                viewHolder.errorStatusView.setVisibility(View.VISIBLE);
-                viewHolder.errorStatusView.setProgressStatus();
-                break;
-            case MessageEntity.StatusType.FAILED:
-                viewHolder.errorStatusView.setVisibility(View.VISIBLE);
-                viewHolder.errorStatusView.setErrorStatus();
-
-        }
-        initClickListener(viewHolder, i);
-        return view;
-    }
-
-    private void setAvatar(final SendViewHolder viewHolder, MessageBody messageBody) {
-        Source source = messageBody.getSource();
-        String avatarSrc = mMessageHelper.getRoleAvatar(source.getType(), source.getId());
-        MaskBitmap maskBitmap = ImageCache.getInstance().get(avatarSrc);
-        if (maskBitmap == null || maskBitmap.target == null) {
-            mMessageListItemController.onUpdateRole(source.getType(), source.getId());
-            ImageLoader.getInstance().displayImage(avatarSrc, viewHolder.avatarView, mOptions, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    if (imageUri.startsWith("drawable:")) {
-                        return;
-                    }
-                    ImageCache.getInstance().put(imageUri, new MaskBitmap(loadedImage));
-                    viewHolder.avatarView.setImageBitmap(loadedImage);
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-                }
-            });
-            return;
-        }
-        viewHolder.avatarView.setImageBitmap(maskBitmap.target);
-    }
-
-    private void initClickListener(SendViewHolder viewHolder, int position) {
+    private void initClickListener(MessageViewHolder viewHolder, int position) {
         ViewItemClickListener itemClickListener = new ViewItemClickListener(position);
         viewHolder.containerView.setOnClickListener(itemClickListener);
         viewHolder.avatarView.setOnClickListener(itemClickListener);
         viewHolder.errorStatusView.setOnClickListener(itemClickListener);
         viewHolder.containerView.setOnLongClickListener(itemClickListener);
-    }
-
-    public void setMessageBody(SendViewHolder viewHolder, MessageBody messageBody, int position) {
-        switch (messageBody.getDestination().getType()) {
-            case Destination.COURSE:
-            case Destination.CLASSROOM:
-                viewHolder.nicknameView.setText(messageBody.getSource().getNickname());
-                viewHolder.nicknameView.setVisibility(View.VISIBLE);
-                break;
-            default:
-                viewHolder.nicknameView.setVisibility(View.GONE);
-        }
-        viewHolder.timeView.setVisibility(View.GONE);
-        if (position > 0) {
-            long preTime = mMessageList.get(position - 1).getTime() * 1000L;
-            if (messageBody.getCreatedTime() - preTime > TIME_INTERVAL) {
-                viewHolder.timeView.setVisibility(View.VISIBLE);
-                viewHolder.timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
-            }
-        } else {
-            viewHolder.timeView.setVisibility(View.VISIBLE);
-            viewHolder.timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
-        }
-    }
-
-    @Override
-    public int getCount() {
-        return mMessageList.size();
-    }
-
-    @Override
-    public MessageEntity getItem(int i) {
-        return mMessageList.get(i);
     }
 
     @Override
@@ -265,7 +289,7 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
     }
 
     public void addList(List<MessageEntity> messageBodyList) {
-        mMessageList.addAll(0, messageBodyList);
+        mMessageList.addAll(messageBodyList);
         notifyDataSetChanged();
     }
 
@@ -278,8 +302,8 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
         if (messageBodyList.isEmpty()) {
             return;
         }
-        mMessageList.addAll(0, messageBodyList);
-        notifyDataSetInvalidated();
+        mMessageList.addAll(messageBodyList);
+        notifyDataSetChanged();
     }
 
     public void addItem(MessageEntity messageBody) {
@@ -287,7 +311,7 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void setmMessageListItemController(MessageListItemController listItemClickListener) {
+    public void setMessageListItemController(MessageListItemController listItemClickListener) {
         this.mMessageListItemController = listItemClickListener;
     }
 
@@ -312,16 +336,15 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
         return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_receive_image_content, null);
     }
 
-    protected View createAudioView(Direct direct) {
-        if (direct == Direct.RECEIVE) {
-            return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_receive_audio_content, null);
+    protected View createAudioView(boolean isSend) {
+        if (isSend) {
+            return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_send_audio_content, null);
         }
-        return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_send_audio_content, null);
+        return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_receive_audio_content, null);
     }
 
-    protected View getItemView(int type, boolean isSend) {
+    protected View getItemView(int type) {
         View contentView = null;
-
         switch (type) {
             case SEND_TEXT:
                 contentView = createTextView(true);
@@ -332,11 +355,11 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
                 contentView.setTag(new TextViewHolder(contentView));
                 break;
             case SEND_AUDIO:
-                contentView = createAudioView(isSend ? Direct.SEND : Direct.RECEIVE);
+                contentView = createAudioView(true);
                 contentView.setTag(new AudioViewHolder(contentView));
                 break;
             case RECEIVE_AUDIO:
-                contentView = createAudioView(isSend ? Direct.SEND : Direct.RECEIVE);
+                contentView = createAudioView(false);
                 contentView.setTag(new AudioViewHolder(contentView));
                 break;
             case SEND_IMAGE:
@@ -400,7 +423,7 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
         public void onClick(View view) {
             int id = view.getId();
             if (id == R.id.tv_container) {
-                MessageBody messageBody = new MessageBody(getItem(mPosition));
+                MessageBody messageBody = new MessageBody(mMessageList.get(mPosition));
                 if (PushUtil.ChatMsgType.AUDIO.equals(messageBody.getType())) {
                     AudioBody audioBody = AudioUtil.getAudioBody(messageBody.getBody());
 
@@ -421,7 +444,7 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
             } else if (id == R.id.tv_error_status) {
                 mMessageListItemController.onErrorClick(mPosition);
             } else if (id == R.id.tv_avatar) {
-                mMessageListItemController.onAvatarClick(MessageUtil.parseInt(getItem(mPosition).getFromId()));
+                mMessageListItemController.onAvatarClick(MessageUtil.parseInt(mMessageList.get(mPosition).getFromId()));
             }
         }
 
@@ -466,7 +489,7 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
         content MultiViewHolder
      */
 
-    class MultiViewHolder extends SendViewHolder {
+    class MultiViewHolder extends MessageViewHolder {
 
         public TextView multiTitleView;
         public TextView multiContentView;
@@ -502,7 +525,7 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
         }
     }
 
-    class TextViewHolder extends SendViewHolder {
+    class TextViewHolder extends MessageViewHolder {
 
         public TextView mContentView;
 
@@ -518,7 +541,7 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
         }
     }
 
-    class AudioViewHolder extends SendViewHolder {
+    class AudioViewHolder extends MessageViewHolder {
 
         public ImageView mAudioView;
         public TextView mLengthView;
@@ -577,7 +600,7 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
         }
     }
 
-    class ImageVewHolder extends SendViewHolder {
+    class ImageVewHolder extends MessageViewHolder {
 
         public ChatImageView mImageView;
 
@@ -633,37 +656,6 @@ public class MessageRecyclerListAdapter extends BaseAdapter {
                 }
                 mImageView.setImageResource(mMessageHelper.getDefaultImageRes());
             }
-        }
-    }
-
-    /*
-        SendViewHolder
-     */
-    class SendViewHolder {
-
-        protected Direct mDirect;
-
-        public TextView timeView;
-        public TextView nicknameView;
-        public ImageView avatarView;
-        public View containerView;
-        public MessageStatusView errorStatusView;
-        public ImageView unReadView;
-
-        public SendViewHolder(View view) {
-            timeView = (TextView) view.findViewById(R.id.tv_time);
-            nicknameView = (TextView) view.findViewById(R.id.tv_nickname);
-            containerView = view.findViewById(R.id.tv_container);
-            avatarView = (ImageView) view.findViewById(R.id.tv_avatar);
-            errorStatusView = (MessageStatusView) view.findViewById(R.id.tv_error_status);
-            unReadView = (ImageView) view.findViewById(R.id.tv_unread_view);
-        }
-
-        public void setDirect(Direct direct) {
-            this.mDirect = direct;
-        }
-
-        public void setContainerContent(MessageBody messageBody) {
         }
     }
 }
