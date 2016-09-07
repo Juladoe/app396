@@ -93,7 +93,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
      */
     private String mActivityType;
     private String mRoleType;
-    private String mCourseTitle;
     private int mToUserId;
     private int mThreadId;
     private int mTargetId;

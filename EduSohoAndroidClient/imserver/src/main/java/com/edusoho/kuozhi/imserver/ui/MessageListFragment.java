@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +23,6 @@ import android.widget.ListView;
 
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.R;
-import com.edusoho.kuozhi.imserver.SendEntity;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
@@ -41,8 +39,10 @@ import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.AudioPlayStatusListener;
+import com.edusoho.kuozhi.imserver.ui.listener.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.InputViewControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.imserver.ui.listener.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
@@ -52,16 +52,12 @@ import com.edusoho.kuozhi.imserver.ui.util.TaskFeature;
 import com.edusoho.kuozhi.imserver.ui.util.UpYunUploadTask;
 import com.edusoho.kuozhi.imserver.ui.util.UpdateRoleTask;
 import com.edusoho.kuozhi.imserver.ui.view.MessageInputView;
-import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
-import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.PauseOnScrollListener;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,7 +75,6 @@ import in.srain.cube.views.ptr.PtrHandler;
 public class MessageListFragment extends Fragment implements ResourceStatusReceiver.StatusReceiverCallback {
 
     private static final String TAG = "MessageListFragment";
-    private static final int EXPAID_TIME = 3600 * 1 * 1000;
 
     public static final String CONV_NO = "convNo";
     public static final String TARGET_TYPE = "targetType";
@@ -97,6 +92,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     private MessageAudioPlayer mAudioPlayer;
     private IMMessageReceiver mIMMessageReceiver;
     private MessageSendListener mMessageSendListener;
+    private IMessageDataProvider mIMessageDataProvider;
     private MessageControllerListener mMessageControllerListener;
 
     protected ResourceStatusReceiver mResourceStatusReceiver;
@@ -113,6 +109,9 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         mContext.registerReceiver(mResourceStatusReceiver, new IntentFilter(ResourceStatusReceiver.ACTION));
         initParams(getArguments());
         checkConvNo();
+        if (mIMessageDataProvider == null) {
+            setIMessageDataProvider(new DefautlMessageDataProvider());
+        }
     }
 
     @Override
@@ -139,9 +138,13 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         return mContainerView;
     }
 
+    public void setIMessageDataProvider(IMessageDataProvider provider) {
+        this.mIMessageDataProvider = provider;
+    }
+
     @Override
     public void onResourceDownloadInvoke(int resId, String resUri) {
-        MessageEntity messageEntity = IMClient.getClient().getMessageManager().getMessage(resId);
+        MessageEntity messageEntity = mIMessageDataProvider.getMessageManager().getMessage(resId);
         if (messageEntity == null) {
             return;
         }
@@ -160,8 +163,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
 
     @Override
     public void onResourceStatusInvoke(int resId, String resUri) {
-        MessageEntity messageEntity = IMClient.getClient().getMessageManager().getMessage(resId);
-        Log.d(TAG, "onResourceStatusInvoke:" + messageEntity.getId());
+        MessageEntity messageEntity = mIMessageDataProvider.getMessageManager().getMessage(resId);
         if (messageEntity == null) {
             return;
         }
@@ -347,7 +349,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 return true;
             }
             mListAdapter.removeItem(messageBody.getMid());
-            IMClient.getClient().getMessageManager().deleteById(messageBody.getMid());
+            mIMessageDataProvider.getMessageManager().deleteById(messageBody.getMid());
         }
         return super.onContextItemSelected(item);
     }
@@ -407,16 +409,16 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     protected void updateMessageSendStatus(MessageBody messageBody) {
         ContentValues cv = new ContentValues();
         cv.put("status", MessageEntity.StatusType.SUCCESS);
-        IMClient.getClient().getMessageManager().updateMessageFieldByUid(messageBody.getMessageId(), cv);
+        mIMessageDataProvider.getMessageManager().updateMessageFieldByUid(messageBody.getMessageId(), cv);
 
-        MessageEntity messageEntity = IMClient.getClient().getMessageManager().getMessageByUID(messageBody.getMessageId());
+        MessageEntity messageEntity = mIMessageDataProvider.getMessageManager().getMessageByUID(messageBody.getMessageId());
         mListAdapter.updateItem(messageEntity);
     }
 
     private void updateMessageReceiveStatus(MessageEntity messageEntity, int status) {
         ContentValues cv = new ContentValues();
         cv.put("status", status);
-        IMClient.getClient().getMessageManager().updateMessageFieldByMsgNo(messageEntity.getMsgNo(), cv);
+        mIMessageDataProvider.getMessageManager().updateMessageFieldByMsgNo(messageEntity.getMsgNo(), cv);
         messageEntity.setStatus(status);
         mListAdapter.updateItem(messageEntity);
     }
@@ -526,7 +528,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     }
 
     private void sendImageMediaMessageAgain(MessageEntity messageEntity) {
-        IMUploadEntity uploadEntity = IMClient.getClient().getMessageManager()
+        IMUploadEntity uploadEntity = mIMessageDataProvider.getMessageManager()
                 .getUploadEntity(messageEntity.getUid());
         if (uploadEntity == null) {
             SystemUtil.toast(mContext, "媒体文件不存在,请重新发送消息");
@@ -537,7 +539,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     }
 
     private void sendMediaMessageAgain(MessageEntity messageEntity) {
-        IMUploadEntity uploadEntity = IMClient.getClient().getMessageManager()
+        IMUploadEntity uploadEntity = mIMessageDataProvider.getMessageManager()
                 .getUploadEntity(messageEntity.getUid());
         if (uploadEntity == null) {
             SystemUtil.toast(mContext, "媒体文件不存在,请重新发送消息");
@@ -757,34 +759,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     }
 
     private void checkConvEntity(Role role) {
-        ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByConvNo(mConversationNo);
-        if (convEntity == null) {
-            Log.d(TAG, "create ConvNo");
-            convEntity = createConvNo(IMClient.getClient().getClientId(), mConversationNo, role);
-        }
-
-        if ((System.currentTimeMillis() - convEntity.getUpdatedTime()) > EXPAID_TIME) {
-            Log.d(TAG, "update ConvNo");
-            convEntity.setAvatar(role.getAvatar());
-            convEntity.setTargetName(role.getNickname());
-            convEntity.setUpdatedTime(System.currentTimeMillis());
-            IMClient.getClient().getConvManager().updateConvByConvNo(convEntity);
-        }
-    }
-
-    private ConvEntity createConvNo(int uid, String convNo, Role role) {
-        ConvEntity convEntity = new ConvEntity();
-        convEntity.setTargetId(role.getRid());
-        convEntity.setTargetName(role.getNickname());
-        convEntity.setConvNo(convNo);
-        convEntity.setType(role.getType());
-        convEntity.setAvatar(role.getAvatar());
-        convEntity.setUid(uid);
-        convEntity.setCreatedTime(System.currentTimeMillis());
-        convEntity.setUpdatedTime(0);
-        IMClient.getClient().getConvManager().createConv(convEntity);
-
-        return convEntity;
+        mIMessageDataProvider.updateConvEntity(mConversationNo, role);
     }
 
     private void coverMessageEntityStatus(List<MessageEntity> messageEntityList) {
@@ -803,6 +778,10 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         addMessageList(mStart);
     }
 
+    public void updateListByEntity(MessageEntity messageEntity) {
+        mListAdapter.updateItem(messageEntity);
+    }
+
     protected void insertDataToMessageList(int start) {
         List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConversationNo).getMessageList(start);
         if (messageEntityList == null || messageEntityList.isEmpty()) {
@@ -818,7 +797,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     }
 
     protected void addMessageList(int start) {
-        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConversationNo).getMessageList(start);
+        List<MessageEntity> messageEntityList = mIMessageDataProvider.getMessageList(mConversationNo, start);
         if (messageEntityList == null || messageEntityList.isEmpty()) {
             canLoadData = false;
             return;
@@ -871,31 +850,14 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
      */
     private void sendMsg(String content) {
         MessageBody messageBody = createSendMessageBody(content, PushUtil.ChatMsgType.TEXT);
-        MessageEntity messageEntity = saveMessageToLoacl(messageBody);
+        MessageEntity messageEntity = saveMessageToLocal(messageBody);
         messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
         insertDataToList(messageEntity);
         sendMessageToServer(messageBody);
     }
 
     protected void sendMessageToServer(MessageBody messageBody) {
-        try {
-            String toId = "";
-            switch (messageBody.getDestination().getType()) {
-                case Destination.CLASSROOM:
-                case Destination.COURSE:
-                    toId = "all";
-                    break;
-                case Destination.USER:
-                    toId = String.valueOf(messageBody.getDestination().getId());
-            }
-            messageBody.setMsgStatus(MessageEntity.StatusType.NONE);
-            SendEntity sendEntity = SendEntityBuildr.getBuilder()
-                    .addToId(toId)
-                    .addMsg(messageBody.toJson())
-                    .builder();
-            IMClient.getClient().getChatRoom(mConversationNo).send(sendEntity);
-        } catch (Exception e) {
-        }
+        mIMessageDataProvider.sendMessage(mConversationNo, messageBody);
     }
 
     private void uploadAudio(File file, int audioLength) {
@@ -920,10 +882,10 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
 
     private void uploadMedia(File file, MessageBody messageBody) {
         try {
-            MessageEntity messageEntity = saveMessageToLoacl(messageBody);
+            MessageEntity messageEntity = saveMessageToLocal(messageBody);
             messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
             insertDataToList(messageEntity);
-            IMClient.getClient().getMessageManager().saveUploadEntity(
+            mIMessageDataProvider.getMessageManager().saveUploadEntity(
                     messageBody.getMessageId(), messageBody.getType(), file.getPath()
             );
 
@@ -934,33 +896,8 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         }
     }
 
-    private void updateConv(MessageBody messageBody) {
-        ContentValues cv = new ContentValues();
-        cv.put("laterMsg", messageBody.toJson());
-        cv.put("updatedTime", System.currentTimeMillis());
-        IMClient.getClient().getConvManager().updateConvField(mConversationNo, cv);
-    }
-
-    protected MessageEntity saveMessageToLoacl(MessageBody messageBody) {
-        MessageEntity messageEntity = createMessageEntityByBody(messageBody);
-        messageEntity = IMClient.getClient().getMessageManager().createMessage(messageEntity);
-        updateConv(messageBody);
-        return messageEntity;
-    }
-
-    private MessageEntity createMessageEntityByBody(MessageBody messageBody) {
-        return new MessageEntityBuildr()
-                .addUID(messageBody.getMessageId())
-                .addConvNo(messageBody.getConvNo())
-                .addToId(String.valueOf(messageBody.getDestination().getId()))
-                .addToName(messageBody.getDestination().getNickname())
-                .addFromId(String.valueOf(messageBody.getSource().getId()))
-                .addFromName(messageBody.getSource().getNickname())
-                .addCmd("message")
-                .addStatus(MessageEntity.StatusType.FAILED)
-                .addMsg(messageBody.toJson())
-                .addTime((int) (messageBody.getCreatedTime() / 1000))
-                .builder();
+    protected MessageEntity saveMessageToLocal(MessageBody messageBody) {
+        return mIMessageDataProvider.createMessageEntity(messageBody);
     }
 
     /*

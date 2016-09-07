@@ -37,6 +37,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -191,14 +192,7 @@ public class MessageListAdapter extends BaseAdapter {
         MaskBitmap maskBitmap = ImageCache.getInstance().get(avatarSrc);
         if (maskBitmap == null || maskBitmap.target == null) {
             mMessageListItemController.onUpdateRole(source.getType(), source.getId());
-            ImageLoader.getInstance().displayImage(avatarSrc, viewHolder.avatarView, mOptions, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                }
+            ImageLoader.getInstance().displayImage(avatarSrc, viewHolder.avatarView, mOptions, new SimpleImageLoadingListener() {
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
@@ -207,10 +201,6 @@ public class MessageListAdapter extends BaseAdapter {
                     }
                     ImageCache.getInstance().put(imageUri, new MaskBitmap(loadedImage));
                     viewHolder.avatarView.setImageBitmap(loadedImage);
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
                 }
             });
             return;
@@ -600,23 +590,11 @@ public class MessageListAdapter extends BaseAdapter {
                     mImageView.setMaskBitmap(bitmap);
                     return;
                 }
-                ImageLoader.getInstance().displayImage(imagePath, mImageView, mOptions, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    }
-
+                ImageLoader.getInstance().displayImage(imagePath, mImageView, mOptions, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         ImageCache.getInstance().put(imageUri, new MaskBitmap(loadedImage));
                         mImageView.setMaskBitmap(new MaskBitmap(loadedImage));
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
                     }
                 });
             } else {

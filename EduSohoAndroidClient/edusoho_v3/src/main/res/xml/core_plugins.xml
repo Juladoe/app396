@@ -67,7 +67,7 @@
 
     <plugin
         name="ThreadDiscussActivity"
-        package="com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity"
+        package="com.edusoho.kuozhi.v3.ui.ThreadDiscussChatActivity"
         version="1.0" />
 
     <plugin

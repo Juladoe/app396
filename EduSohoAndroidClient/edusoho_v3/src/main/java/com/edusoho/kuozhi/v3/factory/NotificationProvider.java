@@ -28,6 +28,12 @@ public class NotificationProvider extends AbstractProvider {
         notificationManager.cancel(convNoHashCode);
     }
 
+    public void cancelAllNotification() {
+        NotificationManager notificationManager =
+                (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
+    }
+
     public void showNotification(boolean mute, int notifiId, String title, String content, Intent notifyIntent)  {
         NotificationManager notificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);

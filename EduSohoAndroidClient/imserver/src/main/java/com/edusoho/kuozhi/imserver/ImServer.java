@@ -313,7 +313,7 @@ public class ImServer {
 
     private ConvEntity getConvEntityFromMessage(MessageBody messageBody) {
         if (TextUtils.isEmpty(messageBody.getConvNo())) {
-            return mConvDbHelper.getConvByTypeAndId(Destination.COURSE, messageBody.getSource().getId());
+            return mConvDbHelper.getConvByTypeAndId(messageBody.getSource().getType(), messageBody.getSource().getId());
         }
 
         return mConvDbHelper.getConvByConvNo(messageBody.getConvNo());
@@ -334,7 +334,9 @@ public class ImServer {
     public void onReceiveMessage(MessageEntity messageEntity) {
         try {
             messageEntity = handleReceiveMessage(messageEntity);
-
+            if (messageEntity == null) {
+                return;
+            }
             Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
             intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.RECEIVER);
             intent.putExtra("message", messageEntity);

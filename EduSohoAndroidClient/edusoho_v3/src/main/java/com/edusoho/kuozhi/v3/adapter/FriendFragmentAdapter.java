@@ -126,13 +126,6 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
                 }
 
                 itemHolder.friendName.setText(friend.getNickname());
-                String itemType;
-                if (friend instanceof DiscussionGroup) {
-                    itemType = PushUtil.ChatUserType.CLASSROOM;
-                } else {
-                    itemType = PushUtil.ChatUserType.FRIEND;
-                }
-
                 if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), friend.getRoles())) {
                     itemHolder.teacherTag.setVisibility(View.VISIBLE);
                     itemHolder.teacherTag.setText(R.string.label_teacher);
@@ -149,7 +142,7 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
                     itemHolder.teacherTag.setVisibility(View.GONE);
                 }
 
-                ImageLoader.getInstance().displayImage(friend.getMediumAvatar(), itemHolder.friendAvatar, mApp.mOptions, new AvatarLoadingListener(itemType));
+                ImageLoader.getInstance().displayImage(friend.getMediumAvatar(), itemHolder.friendAvatar, mApp.mOptions, new AvatarLoadingListener(friend.getType()));
                 break;
         }
         return v;

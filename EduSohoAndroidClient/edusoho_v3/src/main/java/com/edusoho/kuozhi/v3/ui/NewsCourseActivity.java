@@ -1,12 +1,12 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,14 +18,11 @@ import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
-import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
-import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
@@ -33,9 +30,8 @@ import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -44,26 +40,17 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import cn.trinea.android.common.util.ToastUtils;
-import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 /**
  * Created by JesseHuang on 15/9/16.
  */
-public class NewsCourseActivity extends ActionBarBaseActivity {
+public class NewsCourseActivity extends AbstractIMChatActivity {
 
     public static final int CLEAR = 0x10;
-    public static final int SEND_IMAGE = 1;
-    public static final int SEND_CAMERA = 2;
 
     public static final String COURSE_ID = "course_id";
     public static final String SHOW_TYPE = "show_type";
-    public static final String CONV_NO = "conv_no";
 
     public static final int DISCUSS_TYPE = 0;
     public static final int LEARN_TYPE = 1;
@@ -78,13 +65,16 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     private String mUserTypeInCourse;
     private Course mCourse;
     private Handler mHandler;
-    private MessageControllerListener.PhotoSelectCallback mPhotoSelectCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_news_course);
         initData();
+    }
+
+    @Override
+    protected View createView() {
+        return LayoutInflater.from(mContext).inflate(R.layout.activity_news_course, null);
     }
 
     @Override
@@ -96,6 +86,10 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
         if (!TextUtils.isEmpty(convNo)) {
             getNotificationProvider().cancelNotification(convNo.hashCode());
         }
+    }
+
+    @Override
+    protected void attachMessageListFragment() {
     }
 
     private void initData() {
@@ -303,84 +297,8 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
     /*
         MessageControllerListener
      */
-    private MessageListFragment mMessageListFragment;
-
     private void initChatRoomController(MessageListFragment messageListFragment) {
         messageListFragment.setMessageControllerListener(getMessageControllerListener());
-    }
-
-    private MessageControllerListener getMessageControllerListener() {
-        return new MessageControllerListener() {
-            @Override
-            public void createConvNo(final ConvNoCreateCallback callback) {
-                final LoadDialog loadDialog = LoadDialog.create(mActivity);
-                loadDialog.show();
-                createChatConvNo().then(new PromiseCallback<String>() {
-                    @Override
-                    public Promise invoke(String convNo) {
-                        loadDialog.dismiss();
-                        callback.onCreateConvNo(convNo);
-                        return null;
-                    }
-                });
-            }
-
-            @Override
-            public void createRole(String type, int rid, RoleUpdateCallback callback) {
-                createTargetRole(type, rid, callback);
-            }
-
-            @Override
-            public Map<String, String> getRequestHeaders() {
-                HashMap map = new HashMap();
-                map.put("Auth-Token", app.apiToken);
-                return map;
-            }
-
-            @Override
-            public void onShowImage(int index, ArrayList<String> imageList) {
-                Bundle bundle = new Bundle();
-                bundle.putInt("index", index);
-                bundle.putStringArrayList("imageList", imageList);
-                CoreEngine.create(mContext).runNormalPluginWithBundle("ViewPagerActivity", mContext, bundle);
-            }
-
-            @Override
-            public void onShowUser(Role role) {
-                Bundle bundle = new Bundle();
-                School school = getAppSettingProvider().getCurrentSchool();
-                bundle.putString(Const.WEB_URL, String.format(
-                        Const.MOBILE_APP_URL,
-                        school.url + "/",
-                        String.format(Const.USER_PROFILE, role.getRid()))
-                );
-                CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
-            }
-
-            @Override
-            public void onShowWebPage(String url) {
-                Bundle bundle = new Bundle();
-                bundle.putString(Const.WEB_URL, url);
-                CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
-            }
-
-            @Override
-            public void selectPhoto(PhotoSelectCallback callback) {
-                mPhotoSelectCallback = callback;
-                openPictureFromLocal();
-            }
-
-            @Override
-            public void takePhoto(PhotoSelectCallback callback) {
-                mPhotoSelectCallback = callback;
-                openPictureFromCamera();
-            }
-
-            @Override
-            public void onShowActivity(Bundle bundle) {
-                CoreEngine.create(mContext).runNormalPluginWithBundle("ThreadDiscussActivity", mContext, bundle);
-            }
-        };
     }
 
     protected Promise createChatConvNo() {
@@ -430,6 +348,10 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                     @Override
                     public void success(User user) {
                         Role role = new Role();
+                        if (user == null) {
+                            callback.onCreateRole(role);
+                            return;
+                        }
                         role.setRid(user.id);
                         role.setAvatar(user.mediumAvatar);
                         role.setType(Destination.USER);
@@ -439,39 +361,4 @@ public class NewsCourseActivity extends ActionBarBaseActivity {
                 });
     }
 
-    /**
-     * 从图库获取图片
-     */
-    protected void openPictureFromLocal() {
-        Intent intent = new Intent(getBaseContext(), MultiImageSelectorActivity.class);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 5);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
-        startActivityForResult(intent, SEND_IMAGE);
-    }
-
-    protected void openPictureFromCamera() {
-        Intent intent = new Intent(getBaseContext(), MultiImageSelectorActivity.class);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_TAKE_CAMERA, true);
-        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
-        startActivityForResult(intent, SEND_IMAGE);
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) {
-            return;
-        }
-        if (requestCode == SEND_IMAGE) {
-            List<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-            if (mPhotoSelectCallback != null) {
-                mPhotoSelectCallback.onSelected(pathList);
-            }
-        }
-    }
-
-    protected NotificationProvider getNotificationProvider() {
-        return FactoryManager.getInstance().create(NotificationProvider.class);
-    }
 }

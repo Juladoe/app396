@@ -13,11 +13,13 @@ import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
+import com.edusoho.kuozhi.v3.factory.UtilFactory;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.service.message.CommandFactory;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -31,6 +33,7 @@ public class IMServiceProvider extends ModelProvider {
     }
 
     public void unBindServer() {
+        getNotificationProvider().cancelAllNotification();
         IMClient.getClient().destory();
     }
 
@@ -140,5 +143,9 @@ public class IMServiceProvider extends ModelProvider {
             return;
         }
         CommandFactory.create(mContext, isOfflineMsg ? "offlineMsg" : messageEntity.getCmd(), receiver, messageBody).invoke();
+    }
+
+    protected NotificationProvider getNotificationProvider() {
+        return FactoryManager.getInstance().create(NotificationProvider.class);
     }
 }

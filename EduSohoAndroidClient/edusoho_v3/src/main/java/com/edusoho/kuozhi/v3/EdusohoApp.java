@@ -565,6 +565,7 @@ public class EdusohoApp extends Application {
         }
 
         loadToken();
+        loginUser = loadUserInfo();
     }
 
     public int getMsgDisturbFromCourseId(int fromId) {
