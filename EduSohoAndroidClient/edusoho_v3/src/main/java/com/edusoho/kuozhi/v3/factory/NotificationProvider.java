@@ -17,6 +17,9 @@ import com.edusoho.kuozhi.v3.factory.provider.AbstractProvider;
  */
 public class NotificationProvider extends AbstractProvider {
 
+    public static final String ACTION_TAG = "NotificationActionTag";
+    public static final int PUSH = 0;
+
     public NotificationProvider(Context context)
     {
         super(context);
@@ -52,8 +55,11 @@ public class NotificationProvider extends AbstractProvider {
         if (largeIcon != null) {
             mBuilder.setLargeIcon(largeIcon);
         }
+
+        notifyIntent.putExtra(ACTION_TAG, PUSH);
         PendingIntent pendIntent = PendingIntent.getActivity(mContext, 0,
                 notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+
         mBuilder.setContentIntent(pendIntent);
         mBuilder.setPriority(Notification.PRIORITY_HIGH);
         mBuilder.setCategory(Notification.CATEGORY_MESSAGE);

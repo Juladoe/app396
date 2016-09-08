@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginRight="32dp"
             android:background="@drawable/role_teacher_bg"
             android:paddingBottom="2dp"
             android:paddingLeft="4dp"
@@ -63,7 +63,7 @@
             android:text="老师"
             android:textColor="@android:color/white"
             android:textSize="@dimen/x_small_font_size"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
     </LinearLayout>
 

@@ -841,7 +841,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         @Override
         public void run() {
             if (mMessageListView != null && mMessageListView.getAdapter() != null) {
-                mMessageListView.smoothScrollToPosition(mListAdapter.getItemCount());
+                mMessageListView.smoothScrollToPosition(0);
             }
         }
     };

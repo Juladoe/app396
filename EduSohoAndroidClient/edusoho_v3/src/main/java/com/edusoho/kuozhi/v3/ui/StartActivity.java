@@ -1,14 +1,17 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
@@ -24,11 +27,7 @@ import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebViewFactory;
 import com.google.gson.reflect.TypeToken;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.util.HashMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 
 public class StartActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
@@ -40,67 +39,41 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCurrentIntent = getIntent();
-        if (mCurrentIntent != null && !mCurrentIntent.hasCategory(Intent.CATEGORY_LAUNCHER)) {
+        if (mCurrentIntent != null && mCurrentIntent.hasExtra(NotificationProvider.ACTION_TAG)) {
             startApp();
             return;
         }
+
         setContentView(R.layout.activity_start);
         app.registMsgSource(this);
-        startSplash();
-        registDevice();
-        ESCordovaWebViewFactory.init();
+        startAnim();
     }
 
-    private void initAssets() {
+    private void startAnim() {
+        final View nameView =  findViewById(R.id.tv_start_name);
+        final View titleView = findViewById(R.id.tv_start_title);
+        View iconView = findViewById(R.id.tv_start_icon);
 
-        String zipName = String.format("assets-%s.zip", app.getApkVersion());
-        File target = new File(getFilesDir(), zipName);
-        if (target.exists()) {
-            return;
-        }
+        iconView.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.activity_start_icon_anim));
+        nameView.startAnimation(AnimationUtils.loadAnimation(mContext, R.anim.alpha_top_to_bottom));
 
-        AssetManager assetManager = getAssets();
-        FileOutputStream outputStream = null;
-        ZipOutputStream zipOutputStream = null;
-        try {
-            String[] filter = new String[] {
-                    ".apk", ".ttf", ".zip"
-            };
-
-            outputStream = openFileOutput(zipName, MODE_APPEND);
-            zipOutputStream = new ZipOutputStream(outputStream);
-            String[] list = assetManager.list("");
-            for (String name : list) {
-                if (assetManager.list(name).length != 0) {
-                    continue;
-                }
-
-                if (CommonUtil.inArray(CommonUtil.getFileExt(name), filter)) {
-                    continue;
-                }
-
-                M3U8Util.DigestInputStream inputStream = new M3U8Util.DigestInputStream(
-                        assetManager.open(name), getPackageName(), false);
-                ZipEntry zipEntry = new ZipEntry("assets/" + name);
-                zipOutputStream.putNextEntry(zipEntry);
-
-                byte[] buffer = new byte[1024];
-                int len = 0;
-                while ((len = inputStream.read(buffer)) != -1) {
-                    zipOutputStream.write(buffer, 0, len);
-                }
-                inputStream.close();
+        Animation titleAnimation = AnimationUtils.loadAnimation(mContext, R.anim.alpha_bottom_to_top);
+        titleView.setAnimation(titleAnimation);
+        titleAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
             }
 
-        } catch (Exception e) {
-            deleteFile(zipName);
-            Log.e(TAG, "addAssetPath error");
-        } finally {
-            try {
-                zipOutputStream.close();
-            } catch (Exception e) {
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                startSplash();
             }
-        }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        titleAnimation.start();
     }
 
     public void startSplash() {

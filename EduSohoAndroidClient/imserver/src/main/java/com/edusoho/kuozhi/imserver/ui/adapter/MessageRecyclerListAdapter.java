@@ -134,6 +134,9 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
     public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "create view type:" + viewType);
         View contentView = getItemView(viewType);
+        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        contentView.setLayoutParams(lp);
+
         return createViewHolder(viewType, contentView);
     }
 
@@ -307,7 +310,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
     }
 
     public void addItem(MessageEntity messageBody) {
-        mMessageList.add(messageBody);
+        mMessageList.add(0, messageBody);
         notifyDataSetChanged();
     }
 

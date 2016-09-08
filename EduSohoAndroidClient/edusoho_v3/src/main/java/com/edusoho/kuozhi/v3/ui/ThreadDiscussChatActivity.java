@@ -109,11 +109,13 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                     }
                     mThreadInfo = linkedHashMap;
                     setBackMode(BACK, mThreadInfo.get("title").toString());
+                    initHeaderInfo(mThreadInfo);
                     initThreadPostList();
                 }
             });
             return;
         }
+        initHeaderInfo(mThreadInfo);
         initThreadPostList();
     }
 
@@ -406,7 +408,21 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         nicknameView.setText(user.get("nickname"));
         ImageView userAvatar = (ImageView) findViewById(R.id.tdh_avatar);
         ImageLoader.getInstance().displayImage(user.get("avatar"), userAvatar);
+    }
 
+    private void initHeaderInfo(LinkedHashMap threadInfo) {
+        fillThreaLabelData(threadInfo);
+        if ("course".equals(mThreadTargetType)) {
+            initThreadInfoByCourse(threadInfo);
+            return;
+        }
+        if ("classroom".equals(mThreadTargetType)) {
+            initThreadInfoByClassRoom(threadInfo);
+            return;
+        }
+    }
+
+    private void initThreadInfoByClassRoom(LinkedHashMap threadInfo) {
         LinkedHashMap<String, String> course = (LinkedHashMap<String, String>) threadInfo.get("target");
         TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
         fromCourseView.setText(String.format("来自班级:《%s》", course.get("title")));
@@ -428,32 +444,22 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         });
     }
 
-    protected void getThreadInfoByCourse() {
-        mThreadProvider.getCourseThreadInfo(mTargetId, mThreadTargetId).success(new NormalCallback<LinkedHashMap>() {
+    private void initThreadInfoByCourse(LinkedHashMap threadInfo) {
+        LinkedHashMap<String, String> course = (LinkedHashMap<String, String>) threadInfo.get("course");
+        TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
+        fromCourseView.setText(String.format("来自课程:《%s》", course.get("title")));
+        fromCourseView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void success(LinkedHashMap threadInfo) {
-                if (threadInfo == null) {
-                    return;
-                }
-
-                fillThreaLabelData(threadInfo);
-                LinkedHashMap<String, String> course = (LinkedHashMap<String, String>) threadInfo.get("course");
-                TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
-                fromCourseView.setText(String.format("来自课程:《%s》", course.get("title")));
-                fromCourseView.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                final String url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        String.format(Const.MOBILE_WEB_COURSE, mTargetId)
+                );
+                mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
-                    public void onClick(View v) {
-                        final String url = String.format(
-                                Const.MOBILE_APP_URL,
-                                EdusohoApp.app.schoolHost,
-                                String.format(Const.MOBILE_WEB_COURSE, mTargetId)
-                        );
-                        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
-                            @Override
-                            public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(Const.WEB_URL, url);
-                            }
-                        });
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.WEB_URL, url);
                     }
                 });
             }

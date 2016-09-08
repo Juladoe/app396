@@ -95,7 +95,7 @@ public abstract class AbstractIMChatActivity extends ActionBarBaseActivity {
         bundle.putInt(MessageListFragment.TARGET_ID, mTargetId);
         bundle.putString(MessageListFragment.TARGET_TYPE, getTargetType());
         mMessageListFragment.setArguments(bundle);
-        fragmentTransaction.add(android.R.id.content, mMessageListFragment, "im_container").commit();
+        fragmentTransaction.add(R.id.chat_content, mMessageListFragment, "im_container").commit();
     }
 
     protected MessageListFragment createFragment() {
@@ -216,7 +216,7 @@ public abstract class AbstractIMChatActivity extends ActionBarBaseActivity {
 
     protected View createView() {
         FrameLayout frameLayout = new FrameLayout(getBaseContext());
-        frameLayout.setId(android.R.id.content);
+        frameLayout.setId(R.id.chat_content);
 
         return frameLayout;
     }

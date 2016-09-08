@@ -33,4 +33,39 @@
             android:textColor="@android:color/white" />
 
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/tv_start_icon"
+        android:layout_marginTop="180dp"
+        android:layout_centerHorizontal="true"
+        android:src="@mipmap/ic_launcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:gravity="center"
+        android:layout_marginBottom="32dp"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_start_name"
+            android:textSize="@dimen/base_x_large_size"
+            android:textColor="@color/base_black_87"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name" />
+
+        <TextView
+            android:id="@+id/tv_start_title"
+            android:layout_marginTop="6dp"
+            android:textSize="@dimen/base_small_size"
+            android:textColor="@color/base_black_54"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="将学校装进口袋" />
+    </LinearLayout>
 </RelativeLayout>

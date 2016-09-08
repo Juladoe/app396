@@ -484,7 +484,7 @@ public class EdusohoApp extends Application {
 
     public User loadUserInfo() {
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(getBaseContext());
-        String strUser = tokenMap.get("userInfo").toString();
+        String strUser = tokenMap.containsKey("userInfo") ? tokenMap.get("userInfo").toString() : null;
         User user = null;
         if (!TextUtils.isEmpty(strUser)) {
             user = parseJsonValue(AppUtil.encode2(strUser), new TypeToken<User>() {

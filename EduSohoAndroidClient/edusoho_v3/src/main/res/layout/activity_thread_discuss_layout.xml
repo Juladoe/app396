@@ -8,9 +8,9 @@
         layout="@layout/activity_thread_dicuss_head_layout" />
 
     <FrameLayout
-        android:id="@android:id/content"
+        android:id="@id/chat_content"
         android:layout_below="@id/td_head_layout"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="match_parent">
     </FrameLayout>
 </RelativeLayout>
