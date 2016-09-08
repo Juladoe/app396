@@ -50,24 +50,22 @@ public class IMServiceProvider extends ModelProvider {
         }
     }
 
-    private void connectServer(final int clientId, final String clientName) {
-        IMClient.getClient().init(mContext.getApplicationContext());
+    private void connectServer(int clientId, String clientName) {
+        IMClient.getClient().setClientInfo(clientId, clientName);
         IMClient.getClient().setIMDataBase(String.format("%s_%d", getDomain(), clientId));
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.CONNECTING);
         new SystemProvider(mContext).getImServerHosts().success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap hostMap) {
                 Log.d("IMServiceProvider", "init im service" + hostMap.size());
-                if (TextUtils.isEmpty(clientName)
-                        || hostMap == null
+                if (hostMap == null
                         || hostMap.isEmpty()
                         || hostMap.values().isEmpty()
                         || hostMap.keySet().isEmpty()) {
                     errorBindImServer();
                     return;
                 }
-                successBindImserver(clientId, clientName, hostMap);
-
+                successBindImserver(hostMap);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -77,10 +75,8 @@ public class IMServiceProvider extends ModelProvider {
         });
     }
 
-    private void successBindImserver(int clientId, String clientName, LinkedHashMap hostMap) {
+    private void successBindImserver(LinkedHashMap hostMap) {
         IMClient.getClient().start(
-                clientId,
-                clientName,
                 new ArrayList(hostMap.keySet()),
                 new ArrayList(hostMap.values())
         );

@@ -1,20 +1,24 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.AvatarLoadingListener;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -142,17 +146,26 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
                     itemHolder.teacherTag.setVisibility(View.GONE);
                 }
 
-                ImageLoader.getInstance().displayImage(friend.getMediumAvatar(), itemHolder.friendAvatar, mApp.mOptions, new AvatarLoadingListener(friend.getType()));
+                ImageLoader.getInstance().displayImage(
+                        friend.getMediumAvatar(),
+                        itemHolder.friendAvatar,
+                        mApp.mOptions,
+                        new AvatarLoadingListener(friend.getType())
+                );
+                int titleMaxWidth = getTitleMaxWidth();
+                itemHolder.friendName.setMaxWidth(titleMaxWidth);
                 break;
         }
         return v;
     }
 
-    public void addSchoolList(List<T> list) {
-        list.get(0).isTop = true;
-        list.get(list.size() - 1).isBottom = true;
-        mList.addAll(list);
-        notifyDataSetChanged();
+    private int getTitleMaxWidth() {
+        WindowManager wm = (WindowManager) (mContext.getSystemService(Context.WINDOW_SERVICE));
+        DisplayMetrics dm = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(dm);
+
+        int space = mContext.getResources().getDimensionPixelSize(R.dimen.head_icon_medium);
+        return dm.widthPixels - space - AppUtil.dp2px(mContext, 64 + 32);
     }
 
     public void addFriendList(List<T> list) {

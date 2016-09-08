@@ -68,6 +68,11 @@ public class IMClient {
 
     public void init(Context context) {
         this.mContext = context;
+    }
+
+    public void setClientInfo(int clientId, String clientName) {
+        this.mClientId = clientId;
+        this.mClientName = clientName;
         this.mMessageResourceHelper = new MessageResourceHelper(mContext);
         registIMServiceStatusBroadcastReceiver();
     }
@@ -103,17 +108,14 @@ public class IMClient {
         mContext.startService(intent);
     }
 
-    public void start(int clientId, String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
+    public void start(ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
         int pid = android.os.Process.myPid();
         String processAppName = getAppName(pid);
         if (processAppName == null || !processAppName.equalsIgnoreCase(mContext.getPackageName())) {
             Log.e(TAG, "enter the service process!");
             return;
         }
-
-        this.mClientId = clientId;
-        this.mClientName = clientName;
-        this.mConnectIMServiceRunnable = new ConnectIMServiceRunnable(clientId, clientName, ignoreNosList, hostList);
+        this.mConnectIMServiceRunnable = new ConnectIMServiceRunnable(mClientId, mClientName, ignoreNosList, hostList);
         startImService();
     }
 
@@ -141,6 +143,8 @@ public class IMClient {
         unRegistIMServiceStatusBroadcastReceiver();
         mContext.stopService(getIMServiceIntent());
         mImBinder = null;
+
+        setClientInfo(0, null);
     }
 
     private Intent getIMServiceIntent() {

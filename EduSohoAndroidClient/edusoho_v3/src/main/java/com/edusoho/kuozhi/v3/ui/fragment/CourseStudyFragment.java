@@ -176,7 +176,6 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     public void filterData() {
         dataList = filterList(dataList);
         dataList = addLessonTitle(dataList);
-        dataList.addAll(getNewsCourseList());
         addCourseSummary();
 
         mAdapter.setmDataList(dataList);
