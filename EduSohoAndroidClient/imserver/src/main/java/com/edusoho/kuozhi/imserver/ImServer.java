@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.imserver.service.IMsgManager;
 import com.edusoho.kuozhi.imserver.service.Impl.ConnectionManager;
 import com.edusoho.kuozhi.imserver.service.Impl.HeartManagerImpl;
 import com.edusoho.kuozhi.imserver.service.Impl.MsgManager;
+import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.util.ConvDbHelper;
 import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
@@ -279,6 +280,20 @@ public class ImServer {
         mContext.sendBroadcast(intent);
     }
 
+    private boolean filterMessageBody(MessageBody messageBody) {
+        if (messageBody == null) {
+            return true;
+        }
+        if (PushUtil.ChatMsgType.PUSH.equals(messageBody.getType())) {
+            Source source = messageBody.getSource();
+            if (Destination.CLASSROOM.equals(source.getType()) || Destination.COURSE.equals(source.getType())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private MessageEntity handleReceiveMessage(MessageEntity messageEntity) throws MessageSaveFailException {
         if (getMsgDbHelper().hasMessageByNo(messageEntity.getMsgNo())) {
             Log.d("MessageCommand", "hasMessageByNo");
@@ -287,6 +302,9 @@ public class ImServer {
 
         if ("message".equals(messageEntity.getCmd()) || "offlineMsg".equals(messageEntity.getCmd())) {
             MessageBody messageBody = new MessageBody(messageEntity);
+            if (filterMessageBody(messageBody)) {
+                return messageEntity;
+            }
             if (messageBody == null) {
                 Log.d(TAG, "messageBody is null");
                 return null;
@@ -340,7 +358,7 @@ public class ImServer {
             Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
             intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.RECEIVER);
             intent.putExtra("message", messageEntity);
-            mContext.sendBroadcast(intent);
+                mContext.sendBroadcast(intent);
         } catch (MessageSaveFailException e) {
             Log.d(TAG, e.getMessage());
         }

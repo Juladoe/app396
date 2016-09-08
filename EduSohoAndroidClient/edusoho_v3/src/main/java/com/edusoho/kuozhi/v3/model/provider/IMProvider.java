@@ -164,7 +164,7 @@ public class IMProvider extends ModelProvider {
         ConvEntity convEntity = imConvManager.getConvByConvNo(convNo);
 
         if (convEntity == null) {
-            createConvEntityByType(convNo, type, targetId);
+            //createConvEntityByType(convNo, type, targetId);
             return providerListener;
         }
         updateConvEntityByType(type, targetId, convEntity);
