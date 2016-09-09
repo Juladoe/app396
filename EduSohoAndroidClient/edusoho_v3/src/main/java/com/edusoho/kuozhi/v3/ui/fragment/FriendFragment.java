@@ -112,6 +112,10 @@ public class FriendFragment extends BaseFragment {
         mFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                    CommonUtil.longToast(mContext, "聊天功能已关闭");
+                    return;
+                }
                 final Friend friend = (Friend) parent.getAdapter().getItem(position);
                 app.mEngine.runNormalPlugin("ImChatActivity", mActivity, new PluginRunCallback() {
                     @Override
@@ -142,6 +146,10 @@ public class FriendFragment extends BaseFragment {
                     showSearchDialog();
                 }
                 if (i == R.id.discussion_group) {
+                    if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                        CommonUtil.longToast(mContext, "聊天功能已关闭");
+                        return;
+                    }
                     app.mEngine.runNormalPlugin("GroupListActivity", mActivity, null);
                 }
                 if (i == R.id.service) {

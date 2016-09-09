@@ -220,6 +220,10 @@ public class NewsFragment extends BaseFragment {
             case IMConnectStatus.CLOSE:
             case IMConnectStatus.END:
             case IMConnectStatus.ERROR:
+                if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                    updateNetWorkStatusHeader("聊天功能已关闭");
+                    return;
+                }
                 updateNetWorkStatusHeader("当前网络不可用，请检查你的网络设置");
                 break;
             case IMConnectStatus.CONNECTING:
@@ -364,6 +368,10 @@ public class NewsFragment extends BaseFragment {
             TypeBusinessEnum.getName(newItem.type);
             switch (newItem.type) {
                 case Destination.USER:
+                    if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                        CommonUtil.longToast(mContext, "聊天功能已关闭");
+                        return;
+                    }
                     app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
@@ -376,6 +384,10 @@ public class NewsFragment extends BaseFragment {
                     });
                     break;
                 case Destination.CLASSROOM:
+                    if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                        CommonUtil.longToast(mContext, "聊天功能已关闭");
+                        return;
+                    }
                     app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {

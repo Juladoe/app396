@@ -181,6 +181,10 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
                     showFragment(mFragmentTags[2]);
                 }
             } else if (checkedId == R.id.rb_discuss) {
+                if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                    CommonUtil.longToast(mContext, "聊天功能已关闭");
+                    return;
+                }
                 showFragment(mFragmentTags[0]);
             }
         }

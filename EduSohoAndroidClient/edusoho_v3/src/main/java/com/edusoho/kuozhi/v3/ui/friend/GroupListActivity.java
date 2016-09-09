@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.SideBar;
@@ -77,6 +78,10 @@ public class GroupListActivity extends ActionBarBaseActivity {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                    CommonUtil.longToast(mContext, "聊天功能已关闭");
+                    return;
+                }
                 final DiscussionGroup discussionGroup = (DiscussionGroup) parent.getItemAtPosition(position);
                 Bundle bundle = new Bundle();
                 if (Destination.COURSE.equals(discussionGroup.getType())) {

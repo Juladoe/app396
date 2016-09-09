@@ -4,6 +4,7 @@
     android:layout_height="fill_parent">
 
     <LinearLayout
+        android:id="@+id/li_start_load"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -17,14 +18,13 @@
         android:visibility="gone">
 
         <ProgressBar
-            android:id="@+id/load"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="center"
             android:indeterminateDrawable="@drawable/load" />
 
         <TextView
-            android:id="@+id/loading_txt"
+            android:id="@+id/li_start_laodtext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -34,38 +34,50 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/tv_start_icon"
-        android:layout_marginTop="180dp"
+    <FrameLayout
+        android:layout_marginTop="80dp"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/ic_launcher"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/tv_start_icon_bg"
+            android:layout_width="240dp"
+            android:layout_height="240dp" />
+
+        <ImageView
+            android:layout_gravity="center"
+            android:id="@+id/tv_start_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher" />
+
+    </FrameLayout>
 
     <LinearLayout
-        android:gravity="center"
-        android:layout_marginBottom="32dp"
-        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp"
+        android:gravity="center"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_start_name"
-            android:textSize="@dimen/base_x_large_size"
-            android:textColor="@color/base_black_87"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/app_name" />
+            android:text="@string/app_name"
+            android:textColor="@color/base_black_87"
+            android:textSize="@dimen/base_x_large_size" />
 
         <TextView
             android:id="@+id/tv_start_title"
-            android:layout_marginTop="6dp"
-            android:textSize="@dimen/base_small_size"
-            android:textColor="@color/base_black_54"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="将学校装进口袋" />
+            android:layout_marginTop="6dp"
+            android:text="将学校装进口袋"
+            android:textColor="@color/base_black_54"
+            android:textSize="@dimen/base_small_size" />
     </LinearLayout>
 </RelativeLayout>

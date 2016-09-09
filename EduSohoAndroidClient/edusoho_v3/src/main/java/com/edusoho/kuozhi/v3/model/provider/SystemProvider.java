@@ -48,6 +48,19 @@ public class SystemProvider extends ModelProvider {
         return responseListener;
     }
 
+    public ProviderListener<LinkedHashMap> getIMSetting() {
+        Map<String, String> tokenMap = ApiTokenUtil.getToken(mContext);
+        String token = tokenMap.get("token");
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        RequestUrl requestUrl = new RequestUrl(school.host + "/api/setting/app_im");
+        requestUrl.getHeads().put("Auth-Token", token);
+
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
+    }
+
     public ProviderListener getImServerHosts() {
         Map<String, String> tokenMap = ApiTokenUtil.getToken(mContext);
         String token = tokenMap.get("token");

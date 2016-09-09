@@ -28,6 +28,10 @@ public class ImChatActivity extends AbstractIMChatActivity {
                     @Override
                     public void success(User user) {
                         Role role = new Role();
+                        if (user == null) {
+                            callback.onCreateRole(role);
+                            return;
+                        }
                         role.setRid(user.id);
                         role.setAvatar(user.mediumAvatar);
                         role.setType(getTargetType());

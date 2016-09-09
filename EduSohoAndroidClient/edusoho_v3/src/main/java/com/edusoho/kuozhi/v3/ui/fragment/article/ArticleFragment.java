@@ -30,6 +30,7 @@ import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.v3.adapter.article.ArticleCardAdapter;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -176,6 +177,7 @@ public class ArticleFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initMenu();
+        getNotificationProvider().cancelNotification(Destination.ARTICLE.hashCode());
         IMClient.getClient().getConvManager().clearReadCount(Destination.ARTICLE);
     }
 
@@ -483,5 +485,9 @@ public class ArticleFragment extends BaseFragment {
 
     protected AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    protected NotificationProvider getNotificationProvider() {
+        return FactoryManager.getInstance().create(NotificationProvider.class);
     }
 }

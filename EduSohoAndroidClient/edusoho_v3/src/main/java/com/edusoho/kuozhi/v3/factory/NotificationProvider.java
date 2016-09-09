@@ -40,10 +40,10 @@ public class NotificationProvider extends AbstractProvider {
     public void showNotification(boolean mute, int notifiId, String title, String content, Intent notifyIntent)  {
         NotificationManager notificationManager =
                 (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(notifiId, createNotification(mute, title, content, notifyIntent));
+        notificationManager.notify(notifiId, createNotification(mute, notifiId, title, content, notifyIntent));
     }
 
-    private Notification createNotification(boolean mute, String title, String content, Intent notifyIntent) {
+    private Notification createNotification(boolean mute, int notifiId, String title, String content, Intent notifyIntent) {
 
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(mContext).setWhen(System.currentTimeMillis())
@@ -57,7 +57,8 @@ public class NotificationProvider extends AbstractProvider {
         }
 
         notifyIntent.putExtra(ACTION_TAG, PUSH);
-        PendingIntent pendIntent = PendingIntent.getActivity(mContext, 0,
+        notifyIntent.setAction("Action:" + notifiId);
+        PendingIntent pendIntent = PendingIntent.getActivity(mContext, notifiId,
                 notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         mBuilder.setContentIntent(pendIntent);

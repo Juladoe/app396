@@ -16,8 +16,10 @@ import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.factory.UtilFactory;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.service.message.CommandFactory;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -38,6 +40,10 @@ public class IMServiceProvider extends ModelProvider {
     }
 
     public void reConnectServer(int clientId, String clientName) {
+        if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+            IMClient.getClient().setIMConnectStatus(IMConnectStatus.ERROR);
+            return;
+        }
         int status = IMClient.getClient().getIMConnectStatus();
         if (status == IMConnectStatus.NO_READY) {
             IMClient.getClient().removeGlobalIMMessageReceiver();
@@ -119,6 +125,10 @@ public class IMServiceProvider extends ModelProvider {
     }
 
     public synchronized void bindServer(int clientId, String clientName) {
+        if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+            IMClient.getClient().setIMConnectStatus(IMConnectStatus.ERROR);
+            return;
+        }
         int status = IMClient.getClient().getIMConnectStatus();
         if (status == IMConnectStatus.OPEN || status == IMConnectStatus.CONNECTING) {
             return;
@@ -143,5 +153,9 @@ public class IMServiceProvider extends ModelProvider {
 
     protected NotificationProvider getNotificationProvider() {
         return FactoryManager.getInstance().create(NotificationProvider.class);
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 }

@@ -1,20 +1,28 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
+import com.edusoho.kuozhi.v3.model.provider.SystemProvider;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
+import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -23,9 +31,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebViewFactory;
 import com.google.gson.reflect.TypeToken;
 import java.util.HashMap;
 
@@ -35,6 +41,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     public static final String INIT_APP = "init_app";
 
     protected Intent mCurrentIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +73,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                startSplash();
+                startIconRotateAnim();
             }
 
             @Override
@@ -74,6 +81,34 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             }
         });
         titleAnimation.start();
+    }
+
+    private void startIconRotateAnim() {
+        View iconBgView = findViewById(R.id.tv_start_icon_bg);
+        iconBgView.setBackgroundResource(R.drawable.app_splash);
+
+        Animation rotateAnimation = AnimationUtils.loadAnimation(mContext, R.anim.alpha_rotate);
+        iconBgView.setAnimation(rotateAnimation);
+        rotateAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        startSplash();
+                    }
+                }, 200);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        rotateAnimation.start();
     }
 
     public void startSplash() {
@@ -84,6 +119,18 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             return;
         }
         app.sendMessage(INIT_APP, null);
+    }
+
+    protected void startLoading(String loadText) {
+        View loadLayoutView = findViewById(R.id.li_start_load);
+        TextView loadTextTv = (TextView) findViewById(R.id.li_start_laodtext);
+        loadTextTv.setText(loadText);
+        loadLayoutView.setVisibility(View.VISIBLE);
+    }
+
+    protected void hideLoading() {
+        View loadLayoutView = findViewById(R.id.li_start_load);
+        loadLayoutView.setVisibility(View.GONE);
     }
 
     protected void initApp() {
@@ -119,13 +166,47 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         super.onDestroy();
     }
 
+    protected void checkSchoolAndUserToken(SystemInfo systemInfo) {
+        startLoading("登录用户");
+        ajaxGet(String.format("%s/%s?version=2", systemInfo.mobileApiUrl, Const.CHECKTOKEN), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                UserResult userResult = parseJsonValue(response.toString(), new TypeToken<UserResult>() {
+                });
+
+                if (userResult == null || userResult.site == null) {
+                    showSchoolErrorDlg();
+                    return;
+                }
+                School site = userResult.site;
+                if (!checkMobileVersion(site.apiVersionRange)) {
+                    return;
+                }
+
+                getAppSettingProvider().setCurrentSchool(site);
+                app.setCurrentSchool(site);
+                if (userResult.user != null) {
+                    app.saveToken(userResult);
+                }
+                startApp();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                hideLoading();
+            }
+        });
+    }
+
     /**
      * 检查网校版本
      */
     private void checkSchoolVersion(SystemInfo systemInfo) {
+        startLoading("检查App版本");
         ajaxGet(systemInfo.mobileApiUrl + Const.VERIFYSCHOOL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                hideLoading();
                 SchoolResult schoolResult = parseJsonValue(response.toString(), new TypeToken<SchoolResult>() {
                 });
 
@@ -138,13 +219,14 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                     return;
                 }
 
+                getAppSettingProvider().setCurrentSchool(site);
                 app.setCurrentSchool(site);
                 startApp();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                hideLoading();
             }
         });
     }
@@ -212,22 +294,28 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
      * 检查网校Api版本
      */
     protected void checkSchoolApiVersion() {
+        startLoading("检查网校信息");
         ajaxGet(app.host + Const.VERIFYVERSION, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                hideLoading();
                 SystemInfo info = parseJsonValue(response.toString(), new TypeToken<SystemInfo>() {
                 });
-                if (info == null
-                        || info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
-
+                if (info == null || info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
                     showSchoolErrorDlg();
                     return;
                 }
-                checkSchoolVersion(info);
+
+                if (TextUtils.isEmpty(app.token)) {
+                    checkSchoolVersion(info);
+                    return;
+                }
+                checkSchoolAndUserToken(info);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                hideLoading();
                 showSchoolErrorDlg();
             }
         });

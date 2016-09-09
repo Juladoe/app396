@@ -117,7 +117,7 @@ public class IMProvider extends ModelProvider {
         }
 
         if (convEntity == null) {
-            createConvEntityByType(convNo, type, targetId);
+            //createConvEntityByType(convNo, type, targetId);
             return providerListener;
         }
         updateConvEntityByType(type, targetId, convEntity);

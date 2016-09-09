@@ -53,14 +53,10 @@ public abstract class AbstractCommand {
                 "offlineMsg".equals(cmd), mMessageBody.getConvNo().hashCode(), content[0], content[1], getNotifyIntent());
     }
 
-    protected String getNotificationTitle() {
-        return "你有一条新消息";
-    }
-
     protected Intent getNotifyIntent() {
         Intent notifyIntent = mContext.getPackageManager().getLaunchIntentForPackage(mContext.getPackageName());
         notifyIntent.removeCategory(Intent.CATEGORY_LAUNCHER);
-        notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         String type = mMessageBody.getDestination().getType();
         switch (type) {

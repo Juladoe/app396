@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.factory.UtilFactory;
 import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -74,6 +75,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        getNotificationProvider().cancelNotification(Destination.GLOBAL.hashCode());
         IMClient.getClient().getConvManager().clearReadCount(Destination.GLOBAL);
     }
 
@@ -223,11 +225,11 @@ public class BulletinActivity extends ActionBarBaseActivity {
             if (position > 0) {
                 if (bulletin.getCreateTime() - mList.get(position - 1).getCreateTime() > TIME_INTERVAL) {
                     holder.tvCreatedTime.setVisibility(View.VISIBLE);
-                    holder.tvCreatedTime.setText(AppUtil.convertMills2Date(((long) bulletin.getCreateTime()) * 1000));
+                    holder.tvCreatedTime.setText(AppUtil.convertMills2Date((bulletin.getCreateTime())));
                 }
             } else {
                 holder.tvCreatedTime.setVisibility(View.VISIBLE);
-                holder.tvCreatedTime.setText(AppUtil.convertMills2Date(((long) bulletin.getCreateTime()) * 1000));
+                holder.tvCreatedTime.setText(AppUtil.convertMills2Date((bulletin.getCreateTime())));
             }
             holder.tvContent.setText(bulletin.title);
             ImageLoader.getInstance().displayImage(bulletin.getAvatar(), holder.ivHeadImageUrl, mOptions);
@@ -259,5 +261,9 @@ public class BulletinActivity extends ActionBarBaseActivity {
 
     protected UtilFactory getUtilFactory() {
         return FactoryManager.getInstance().create(UtilFactory.class);
+    }
+
+    protected NotificationProvider getNotificationProvider() {
+        return FactoryManager.getInstance().create(NotificationProvider.class);
     }
 }

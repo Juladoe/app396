@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
+import com.edusoho.kuozhi.v3.ui.ThreadDiscussChatActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -82,10 +83,10 @@ public class MyThreadAdapter extends RecyclerView.Adapter {
                     mApp.mEngine.runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(ThreadDiscussActivity.TARGET_ID, course.id);
-                            startIntent.putExtra(ThreadDiscussActivity.TARGET_TYPE, "course");
-                            startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, threadId);
-                            startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
+                            startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_ID, course.id);
+                            startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_TYPE, "course");
+                            startIntent.putExtra(ThreadDiscussChatActivity.FROM_ID, threadId);
+                            startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TYPE, threadEntity.getType());
                         }
                     });
                 }
