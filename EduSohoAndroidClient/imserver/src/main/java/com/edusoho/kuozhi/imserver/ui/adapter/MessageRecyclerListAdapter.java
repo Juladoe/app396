@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.imserver.ui.util.ResourceDownloadTask;
 import com.edusoho.kuozhi.imserver.ui.view.ChatImageView;
 import com.edusoho.kuozhi.imserver.ui.view.MessageStatusView;
 import com.edusoho.kuozhi.imserver.util.MessageUtil;
+import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -67,6 +68,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
     protected static final String TAG = "MessageListAdapter";
 
     private int mCurrentId;
+    private int mMaxAudioWidth;
     private MessageHelper mMessageHelper;
     private MessageListItemController mMessageListItemController;
 
@@ -84,6 +86,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
 
         this.mMessageHelper = new MessageHelper(mContext);
         this.mIndexArray = new SparseArray<>();
+        this.mMaxAudioWidth = SystemUtil.getScreenWidth(mContext) / 3;
     }
 
     public void removeItem(int id) {
@@ -239,16 +242,16 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
                     nicknameView.setVisibility(View.GONE);
             }
             timeView.setVisibility(View.GONE);
-            if (position > 0) {
-                long preTime = mMessageList.get(position - 1).getTime() * 1000L;
+            if (position < (getItemCount() - 1)) {
+                long preTime = mMessageList.get(position + 1).getTime() * 1000L;
                 if (messageBody.getCreatedTime() - preTime > TIME_INTERVAL) {
                     timeView.setVisibility(View.VISIBLE);
                     timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
                 }
-            } else {
-                timeView.setVisibility(View.VISIBLE);
-                timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
+                return;
             }
+            timeView.setVisibility(View.VISIBLE);
+            timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
         }
 
         private void setAvatar(MessageBody messageBody) {
@@ -566,7 +569,9 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             super.setContainerContent(messageBody);
             AudioBody audioBody = AudioUtil.getAudioBody(messageBody.getBody());
             ViewGroup.LayoutParams lp = mAudioView.getLayoutParams();
-            lp.width = 96 + TimeUtil.getDuration(audioBody.getDuration()) * 8;
+
+            int lengthWidth = TimeUtil.getDuration(audioBody.getDuration()) * 8;
+            lp.width = 120 + (lengthWidth > mMaxAudioWidth ? mMaxAudioWidth : lengthWidth);
             //lp.height = 48;
             mAudioView.setLayoutParams(lp);
 

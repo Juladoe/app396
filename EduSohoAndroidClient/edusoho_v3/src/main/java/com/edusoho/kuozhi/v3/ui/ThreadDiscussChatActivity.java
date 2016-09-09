@@ -1,11 +1,14 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,6 +45,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
+import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.text.SimpleDateFormat;
@@ -78,6 +82,9 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     //讨论组目标id:课程或者班级id
     private int mThreadTargetId;
     private int mLessonId;
+    private int mHeaderViewHeight;
+    private View mHeaderView;
+    private View mContentLayout;
 
     //讨论组目标类型:course 或classroom
     private String mThreadTargetType;
@@ -92,7 +99,9 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
 
     @Override
     protected View createView() {
-        return LayoutInflater.from(mContext).inflate(R.layout.activity_thread_discuss_layout, null);
+        mContentLayout = LayoutInflater.from(mContext).inflate(R.layout.activity_thread_discuss_layout, null);
+        mHeaderView = mContentLayout.findViewById(R.id.td_head_layout);
+        return mContentLayout;
     }
 
     @Override
@@ -117,6 +126,48 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         }
         initHeaderInfo(mThreadInfo);
         initThreadPostList();
+    }
+
+    @Override
+    protected void attachMessageListFragment() {
+        super.attachMessageListFragment();
+        mContentLayout.addOnLayoutChangeListener(getOnLayoutChangeListener());
+    }
+
+    private void hideHeaderLayout() {
+        mHeaderViewHeight = mHeaderView.getHeight();
+        PropertyValuesHolder heightPVH = PropertyValuesHolder.ofInt("height", mHeaderViewHeight, 0);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(new EduSohoAnimWrap(mHeaderView), heightPVH)
+                .setDuration(240);
+        objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        objectAnimator.start();
+    }
+
+    private void showHeaderLayout() {
+        if (mHeaderViewHeight == 0) {
+            mHeaderView.measure(0, 0);
+            mHeaderViewHeight = mHeaderView.getMeasuredHeight();
+        }
+        PropertyValuesHolder heightPVH = PropertyValuesHolder.ofInt("height", 0, mHeaderViewHeight);
+        PropertyValuesHolder translationYPVH = PropertyValuesHolder.ofFloat("translationY", -mHeaderViewHeight, 0);
+        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(new EduSohoAnimWrap(mHeaderView), heightPVH, translationYPVH)
+                .setDuration(240);
+        objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        objectAnimator.start();
+    }
+
+    protected View.OnLayoutChangeListener getOnLayoutChangeListener() {
+        return new View.OnLayoutChangeListener() {
+            @Override
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                int keyHeight = getWindowManager().getDefaultDisplay().getHeight() / 3;
+                if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
+                    hideHeaderLayout();
+                } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
+                    showHeaderLayout();
+                }
+            }
+        };
     }
 
     protected void initParams() {
@@ -422,17 +473,17 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         }
     }
 
-    private void initThreadInfoByClassRoom(LinkedHashMap threadInfo) {
-        LinkedHashMap<String, String> course = (LinkedHashMap<String, String>) threadInfo.get("target");
+    private void initThreadInfoByClassRoom(final LinkedHashMap threadInfo) {
+        LinkedHashMap<String, String> classroom = (LinkedHashMap<String, String>) threadInfo.get("target");
         TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
-        fromCourseView.setText(String.format("来自班级:《%s》", course.get("title")));
+        fromCourseView.setText(String.format("来自班级:《%s》", classroom.get("title")));
         fromCourseView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final String url = String.format(
                         Const.MOBILE_APP_URL,
                         EdusohoApp.app.schoolHost,
-                        String.format(Const.MOBILE_WEB_COURSE, mTargetId)
+                        String.format(Const.CLASSROOM_COURSES, AppUtil.parseInt(threadInfo.get("targetId").toString()))
                 );
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
@@ -454,7 +505,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                 final String url = String.format(
                         Const.MOBILE_APP_URL,
                         EdusohoApp.app.schoolHost,
-                        String.format(Const.MOBILE_WEB_COURSE, mTargetId)
+                        String.format(Const.MOBILE_WEB_COURSE, mThreadTargetId)
                 );
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override

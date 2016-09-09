@@ -41,7 +41,8 @@
     <color name="recommend_sch_info">#8A8A8A</color>
     <color name="course_content_head">#03b884</color>
     <color name="course_content_head_pressed">#ffffff</color>
-    <color name="load_bg">#999</color>
+    <color name="load_bg">#fff</color>
+    <color name="load_bg_stroke">#f0f0f0</color>
     <color name="course_title">#4d4d4d</color>
     <color name="course_info_title">#03b884</color>
     <color name="course_teacher">#808080</color>

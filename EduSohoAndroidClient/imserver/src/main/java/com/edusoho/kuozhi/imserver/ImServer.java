@@ -310,10 +310,11 @@ public class ImServer {
                 return null;
             }
             messageEntity.setConvNo(getMessageConvNo(messageBody));
+            int messageStatus = MessageEntity.StatusType.NONE;
             if ("text".equals(messageBody.getType()) || "multi".equals(messageBody.getType())) {
-                messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
+                messageStatus = MessageEntity.StatusType.SUCCESS;
             }
-
+            messageEntity.setStatus(messageStatus);
             messageEntity = saveMessageEntityToDb(messageEntity);
             ConvEntity convEntity = getConvEntityFromMessage(messageBody);
             if (convEntity == null) {
@@ -432,8 +433,8 @@ public class ImServer {
 
         convEntity.setConvNo(messageBody.getConvNo());
         convEntity.setLaterMsg(messageBody.toJson());
-        convEntity.setCreatedTime(messageBody.getCreatedTime() * 1000L);
-        convEntity.setUpdatedTime(messageBody.getCreatedTime() * 1000L);
+        convEntity.setCreatedTime(messageBody.getCreatedTime());
+        convEntity.setUpdatedTime(messageBody.getCreatedTime());
 
         Source source = messageBody.getSource();
         Destination destination = messageBody.getDestination();

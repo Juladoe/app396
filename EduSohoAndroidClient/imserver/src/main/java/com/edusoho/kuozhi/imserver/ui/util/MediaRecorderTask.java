@@ -23,7 +23,7 @@ public class MediaRecorderTask extends AsyncTask<Void, Integer, Boolean> {
     private static final String TAG = "MediaRecorderTask";
 
     private int COUNT_DOWN_NUM = 50;
-    private int TOTAL_NUM = 59;
+    private int TOTAL_NUM = 58;
 
     private ChatAudioRecord mAudioRecord;
     private boolean mCancelSave = false;
@@ -58,8 +58,8 @@ public class MediaRecorderTask extends AsyncTask<Void, Integer, Boolean> {
                 //结束录音
                 mUploadAudio = mAudioRecord.stop(mCancelSave);
                 long audioLength = mAudioRecord.getAudioLength();
-                if (audioLength >= 1) {
-                    Log.d(TAG, "上传成功");
+                if (audioLength >= 1000) {
+                    Log.d(TAG, "录制成功");
                 } else {
                     return false;
                 }

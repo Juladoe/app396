@@ -20,7 +20,7 @@
     <ImageView
         android:id="@+id/tv_avatar"
         android:layout_width="@dimen/head_icon_small"
-        android:layout_height="@dimen/head_icon_small"
+        android:layout_height="@dimen/head_icon_medium"
         android:layout_alignParentLeft="true"
         android:layout_below="@id/tv_time"
         android:layout_marginRight="8dp"

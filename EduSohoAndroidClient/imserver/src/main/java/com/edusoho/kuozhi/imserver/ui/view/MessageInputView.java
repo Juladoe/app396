@@ -156,7 +156,6 @@ public class MessageInputView extends FrameLayout {
             public void onClick(View v) {
                 if (v.getId() == R.id.et_send_content) {
                     mMessageControllerListener.onInputViewFocus(true);
-                    //lvMessage.post(mListViewSelectRunnable);
                 } else if (v.getId() == R.id.iv_show_media_layout) {
                     //加号，显示多媒体框
                     if (viewMediaLayout.getVisibility() == View.GONE) {
@@ -190,14 +189,11 @@ public class MessageInputView extends FrameLayout {
                     viewMsgInput.setVisibility(View.VISIBLE);
                     btnKeyBoard.setVisibility(View.GONE);
                     etSend.requestFocus();
-                    //lvMessage.post(mListViewSelectRunnable);
                 } else if (v.getId() == R.id.rl_btn_press_to_speak) {
                     viewMediaLayout.setVisibility(View.GONE);
                 } else if (v.getId() == R.id.iv_image) {
-                    //openPictureFromLocal();
                     mMessageControllerListener.onSelectPhoto();
                 } else if (v.getId() == R.id.iv_camera) {
-                    //openPictureFromCamera();
                     mMessageControllerListener.onTakePhoto();
                 }
             }
@@ -210,6 +206,7 @@ public class MessageInputView extends FrameLayout {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        mMessageSendListener.onStartRecordAudio();
                         mRecordAudioHandler = new RecordAudioHandler(getContext());
                         return mRecordAudioHandler.startRecord(event.getY());
                     case MotionEvent.ACTION_MOVE:

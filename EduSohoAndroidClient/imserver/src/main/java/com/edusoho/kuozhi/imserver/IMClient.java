@@ -244,7 +244,9 @@ public class IMClient {
         try {
             switch (cmd) {
                 case "requestOfflineMsg":
-                    mImBinder.requestOfflineMsg();
+                    if (mImBinder != null) {
+                        mImBinder.requestOfflineMsg();
+                    }
             }
         } catch (RemoteException e) {
         }
@@ -252,6 +254,7 @@ public class IMClient {
 
     public void setIMConnectStatus(int status) {
         this.mIMConnectStatus = status;
+        invokeConnectReceiver(status, false);
     }
 
     public int getIMConnectStatus() {

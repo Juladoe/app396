@@ -26,6 +26,9 @@ public class MessageResourceHelper {
     }
 
     public void addTask(IResourceTask task) {
+        if (mTaskMap == null) {
+            return;
+        }
         if (hasTask(task.getTaskId())) {
             Log.d(TAG, "task has:" + task.getTaskId());
             return;
@@ -64,6 +67,9 @@ public class MessageResourceHelper {
     }
 
     public void removeTask(int id) {
+        if (mTaskMap == null) {
+            return;
+        }
         IResourceTask task = mTaskMap.get(id);
         if (task == null) {
             mTaskMap.remove(id);
@@ -75,6 +81,9 @@ public class MessageResourceHelper {
     }
 
     public boolean hasTask(int id) {
+        if (mTaskMap == null) {
+            return false;
+        }
         return mTaskMap.containsKey(id);
     }
 

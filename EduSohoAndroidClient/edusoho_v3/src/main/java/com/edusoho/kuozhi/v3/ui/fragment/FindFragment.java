@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCourse;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.discovery.DiscoveryModel;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
@@ -30,6 +31,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoBanner;
 import java.util.Iterator;
 import java.util.List;
@@ -200,7 +202,6 @@ public class FindFragment extends BaseFragment {
 
             @Override
             public void onFailure(String code, String message) {
-
             }
         });
     }

@@ -63,7 +63,7 @@ public class TimeUtil {
     }
 
     public static int getDuration(int duration) {
-        return (int) Math.ceil(Float.valueOf(duration) / 1000);
+        return Math.round(Float.valueOf(duration) / 1000);
     }
 
     public static int getAudioDuration(Context context, String audioFile) {

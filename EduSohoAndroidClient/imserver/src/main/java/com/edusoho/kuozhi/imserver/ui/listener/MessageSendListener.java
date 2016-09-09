@@ -12,4 +12,6 @@ public interface MessageSendListener {
     void onSendAudio(File audioFile, int audioLength);
 
     void onSendImage(File imageFile);
+
+    void onStartRecordAudio();
 }

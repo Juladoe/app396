@@ -1,10 +1,8 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,7 +13,6 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
-import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -40,7 +37,6 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -115,7 +111,6 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                 @Override
                 public void onClick(int button) {
                     if (button == PopupDialog.OK) {
-                        User user = getAppSettingProvider().getCurrentUser();
                         ConvEntity convEntity = IMClient.getClient().getConvManager()
                                 .getConvByTypeAndId(Destination.CLASSROOM, mFromId);
                         if (convEntity == null) {
@@ -143,10 +138,8 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                             @Override
                             public void onResponse(String response) {
                                 if (response.equals("true")) {
-                                    ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                                    classroomDiscussDataSource.delete(mFromId, app.loginUser.id);
-                                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                                    newDataSource.delete(mFromId + "", PushUtil.ChatUserType.CLASSROOM, app.loginUser.id + "");
+                                    IMClient.getClient().getMessageManager().deleteByConvNo(mConvNo);
+                                    IMClient.getClient().getConvManager().deleteConv(mConvNo);
                                     Bundle bundle = new Bundle();
                                     bundle.putInt(Const.FROM_ID, mFromId);
                                     app.sendMsgToTarget(Const.REFRESH_LIST, bundle, NewsFragment.class);
@@ -196,7 +189,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                             if (classroom == null) {
                                 return;
                             }
-                            String url = app.host + "/course/" + mFromId;
+                            String url = app.host + "/classroom/" + mFromId;
                             String title = classroom.title;
                             String about = classroom.about == null ? "" : AppUtil.coverCourseAbout(classroom.about.toString());
                             String pic = classroom.middlePicture;
@@ -208,10 +201,8 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                                     shareTool.shardCourse();
                                 }
                             });
-                            if (classroom != null) {
-
-                            } else {
-                                CommonUtil.longToast(mContext, "获取课程信息失败");
+                            if (classroom == null) {
+                                CommonUtil.longToast(mContext, "获取班级信息失败");
                             }
                         }
                     }).fail(new NormalCallback<VolleyError>() {

@@ -245,28 +245,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         mMessageListView = (RecyclerView) view.findViewById(R.id.listview);
         mMessageInputView = (MessageInputView) view.findViewById(R.id.message_input_view);
 
-        mLayoutManager = new LinearLayoutManager(mContext) {
-
-            private boolean mNeedMeasureHeight = true;
-
-            @Override
-            public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
-                if(mNeedMeasureHeight && mListAdapter.getItemCount() > 0){
-                    View view = recycler.getViewForPosition(0);
-                    measureChild(view, widthSpec, heightSpec);
-                    int measuredWidth = View.MeasureSpec.getSize(widthSpec);
-                    int measuredHeight = view.getMeasuredHeight() * mListAdapter.getItemCount();
-                    int rootViewHeight = mPtrFrame.getHeight();
-                    if (measuredHeight > rootViewHeight) {
-                        mNeedMeasureHeight = false;
-                        measuredHeight = rootViewHeight;
-                    }
-                    setMeasuredDimension(measuredWidth, measuredHeight);
-                    return;
-                }
-                super.onMeasure(recycler, state, widthSpec, heightSpec);
-            }
-        };
+        mLayoutManager = new LinearLayoutManager(mContext);
         mLayoutManager.setReverseLayout(true);
         mMessageListView.setLayoutManager(mLayoutManager);
         mMessageListView.setAdapter(mListAdapter);
@@ -691,6 +670,13 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                     return;
                 }
                 uploadAudio(audioFile, audioLength);
+            }
+
+            @Override
+            public void onStartRecordAudio() {
+                if (mAudioPlayer != null) {
+                    mAudioPlayer.stop();
+                }
             }
 
             @Override
