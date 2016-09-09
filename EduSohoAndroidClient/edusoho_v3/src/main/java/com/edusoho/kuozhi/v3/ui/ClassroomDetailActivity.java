@@ -20,7 +20,6 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.ClassroomMember;
 import com.edusoho.kuozhi.v3.model.bal.ClassroomMemberResult;
-import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
@@ -28,10 +27,6 @@ import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.util.sql.ClassroomDiscussDataSource;
-import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
@@ -117,7 +112,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                             return;
                         }
                         IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
-                        IMClient.getClient().getConvManager().clearLaterMsg(mConvNo);
+                        IMClient.getClient().getConvManager().clearLaterMsg(convEntity.getConvNo());
                         MessageEngine.getInstance().sendMsgToTaget(
                                 ClassroomDiscussActivity.CLEAR, null, ClassroomDiscussActivity.class);
                     }
@@ -138,8 +133,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                             @Override
                             public void onResponse(String response) {
                                 if (response.equals("true")) {
-                                    IMClient.getClient().getMessageManager().deleteByConvNo(mConvNo);
-                                    IMClient.getClient().getConvManager().deleteConv(mConvNo);
+                                    removeClassRoomConvEntity();
                                     Bundle bundle = new Bundle();
                                     bundle.putInt(Const.FROM_ID, mFromId);
                                     app.sendMsgToTarget(Const.REFRESH_LIST, bundle, NewsFragment.class);
@@ -165,6 +159,16 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
             popupDialog.setOkText("确定");
             popupDialog.show();
         }
+    }
+
+    private void removeClassRoomConvEntity() {
+        ConvEntity convEntity = IMClient.getClient().getConvManager()
+                .getConvByTypeAndId(Destination.CLASSROOM, mFromId);
+        if (convEntity == null) {
+            return;
+        }
+        IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
+        IMClient.getClient().getConvManager().deleteConv(convEntity.getConvNo());
     }
 
     @Override
