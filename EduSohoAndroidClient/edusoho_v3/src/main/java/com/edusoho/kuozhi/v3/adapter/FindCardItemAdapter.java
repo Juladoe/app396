@@ -47,6 +47,7 @@ public class FindCardItemAdapter extends BaseAdapter {
     private Context mContext;
     private List<DiscoveryCardProperty> mList;
     private DisplayImageOptions mOptions;
+    private DisplayImageOptions mClassRoomOptions;
     private LessonModel mLessonModel;
     private SimpleDateFormat mLiveFormat = new SimpleDateFormat("MM-dd HH:mm");
 
@@ -62,8 +63,14 @@ public class FindCardItemAdapter extends BaseAdapter {
     public FindCardItemAdapter(Context context, List<DiscoveryCardProperty> list) {
         this.mContext = context;
         this.mList = list;
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_course).
-                showImageOnFail(R.drawable.default_course).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
+                .showImageForEmptyUri(R.drawable.default_course).
+                showImageOnFail(R.drawable.default_course)
+                .build();
+        mClassRoomOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
+                .showImageForEmptyUri(R.drawable.default_classroom).
+                        showImageOnFail(R.drawable.default_classroom)
+                .build();
         mLessonModel = new LessonModel();
         paddingLeftRight = AppUtil.dp2px(mContext, 8);
         paddingTopBottom = AppUtil.dp2px(mContext, 10);
@@ -175,7 +182,8 @@ public class FindCardItemAdapter extends BaseAdapter {
             return convertView;
         }
 
-        ImageLoader.getInstance().displayImage(discoveryCardEntity.getPicture(), viewHolder.coverView, mOptions);
+        DisplayImageOptions options = getItemViewType(position) == CLASSROOM ? mClassRoomOptions : mOptions;
+        ImageLoader.getInstance().displayImage(discoveryCardEntity.getPicture(), viewHolder.coverView, options);
         viewHolder.titleView.setText(discoveryCardEntity.getTitle());
 
         if (position % 2 == 0) {
