@@ -64,7 +64,7 @@ public class FriendFragment extends BaseFragment {
     private CharacterParser characterParser;
     private FriendComparator friendComparator;
     private TextView dialog;
-    private FrameLayout mLoading;
+    private View mLoading;
 
     private FriendProvider mFriendProvider;
 
@@ -90,7 +90,7 @@ public class FriendFragment extends BaseFragment {
         characterParser = CharacterParser.getInstance();
         friendComparator = new FriendComparator();
 
-        mLoading = (FrameLayout) view.findViewById(R.id.friend_fragment_loading);
+        mLoading = view.findViewById(R.id.friend_fragment_loading);
         mFootView = mActivity.getLayoutInflater().inflate(R.layout.friend_list_foot, null);
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
         mSidebar = (SideBar) mContainerView.findViewById(R.id.sidebar);

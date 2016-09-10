@@ -118,7 +118,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
 
     protected void startLoading(String loadText) {
         View loadLayoutView = findViewById(R.id.li_start_load);
-        TextView loadTextTv = (TextView) findViewById(R.id.li_start_laodtext);
+        TextView loadTextTv = (TextView) findViewById(R.id.loading_txt);
         loadTextTv.setText(loadText);
         loadLayoutView.setVisibility(View.VISIBLE);
     }

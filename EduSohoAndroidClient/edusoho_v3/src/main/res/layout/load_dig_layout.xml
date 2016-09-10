@@ -3,7 +3,6 @@
     android:id="@+id/load_layout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/load_bg"
     android:orientation="vertical"
     android:paddingBottom="15dp"
     android:paddingLeft="20dp"
@@ -11,7 +10,7 @@
     android:paddingTop="15dp">
 
     <ProgressBar
-        android:id="@+id/load"
+        android:id="@+id/load_progress"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_gravity="center"

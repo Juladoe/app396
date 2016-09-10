@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.v3.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -15,7 +17,9 @@ public class LoadDialog extends Dialog {
 
     public LoadDialog(Context context) {
         super(context);
-        setContentView(R.layout.load_dig_layout);
+        View rootView = LayoutInflater.from(context).inflate(R.layout.load_dig_layout, null);
+        rootView.setBackgroundResource(R.drawable.load_bg);
+        setContentView(rootView);
         initView();
     }
 

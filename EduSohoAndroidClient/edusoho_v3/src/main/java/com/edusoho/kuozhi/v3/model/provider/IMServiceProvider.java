@@ -76,6 +76,7 @@ public class IMServiceProvider extends ModelProvider {
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
+                obj.printStackTrace();
                 errorBindImServer();
             }
         });

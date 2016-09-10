@@ -124,7 +124,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         mSearchEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_UP) {
                     return true;
                 }
                 String searchStr = mSearchEdt.getText().toString();

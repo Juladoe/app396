@@ -28,4 +28,12 @@
         </ListView>
 
     </com.edusoho.kuozhi.v3.view.FixPtrClassicFrameLayout>
+
+    <include
+        android:id="@+id/find_load_layout"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/load_dig_layout" />
 </FrameLayout>

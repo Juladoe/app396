@@ -2,7 +2,9 @@ package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
 import android.os.Build;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -105,7 +107,11 @@ public class SystemProvider extends ModelProvider {
         WindowManager windowManager = (WindowManager) mContext.getSystemService(Context.WINDOW_SERVICE);
         windowManager.getDefaultDisplay().getMetrics(displayMetrics);
 
-        params.put("deviceToken", telephonyManager.getDeviceId());
+        String deviceId = telephonyManager.getDeviceId();
+        if (TextUtils.isEmpty(deviceId)) {
+            deviceId = Settings.System.getString(mContext.getContentResolver(), Settings.System.ANDROID_ID);
+        }
+        params.put("deviceToken", deviceId);
         params.put("desiceName", "Android " + Build.MODEL);
         params.put("deviceVersion", Build.VERSION.SDK);
         params.put("deviceKernel", Build.VERSION.RELEASE);
