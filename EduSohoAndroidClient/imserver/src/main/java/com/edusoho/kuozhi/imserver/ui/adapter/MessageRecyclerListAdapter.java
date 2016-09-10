@@ -46,6 +46,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by suju on 16/8/26.
@@ -79,7 +80,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
 
     public MessageRecyclerListAdapter(Context context) {
         this.mContext = context;
-        this.mMessageList = new ArrayList<>();
+        this.mMessageList = new CopyOnWriteArrayList<>();
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).
                 showImageForEmptyUri(R.drawable.message_image_default).
                 showImageOnFail(R.drawable.message_image_default).build();

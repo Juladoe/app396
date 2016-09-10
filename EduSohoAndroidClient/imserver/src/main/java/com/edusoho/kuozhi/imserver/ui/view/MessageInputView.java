@@ -34,6 +34,11 @@ import com.edusoho.kuozhi.imserver.ui.util.MediaRecorderTask;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 
 /**
  * Created by suju on 16/8/26.
@@ -302,7 +307,7 @@ public class MessageInputView extends FrameLayout {
                 }
 
                 @Override
-                public void onStopRecord(final File audioFile) {
+                public void onStopRecord(File audioFile) {
                     if (audioFile == null || !audioFile.exists()) {
                         tvSpeakHint.setText(mContext.getString(R.string.audio_length_too_short));
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
@@ -314,14 +319,65 @@ public class MessageInputView extends FrameLayout {
                             }
                         }, 200);
                     } else {
-                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mMessageSendListener.onSendAudio(audioFile, (int) mMediaRecorderTask.getAudioRecord().getAudioLength());
-                            }
-                        }, 200);
-                        mViewSpeakContainer.setVisibility(View.GONE);
+                        prepareSendAudio(audioFile);
                     }
+                }
+
+                private void sendAudioToMessage(File audioFile) {
+                    mViewSpeakContainer.setVisibility(View.GONE);
+                    mMessageSendListener.onSendAudio(
+                            audioFile,
+                            (int) mMediaRecorderTask.getAudioRecord().getAudioLength()
+                    );
+                }
+
+                private void prepareSendAudio(final File audioFile) {
+                    final Handler handler = new Handler(Looper.getMainLooper());
+                    final Runnable runnable = new Runnable() {
+
+                        private int count = 0;
+
+                        @Override
+                        public void run() {
+                            if (count > 20) {
+                                Log.d("MediaRecorderTask", "open audio timeout");
+                                sendAudioToMessage(audioFile);
+                                return;
+                            }
+                            if (checkFileIsOpen(audioFile)) {
+                                count ++;
+                                handler.postDelayed(this, 100);
+                                return;
+                            }
+                            sendAudioToMessage(audioFile);
+                        }
+                    };
+                    handler.postDelayed(runnable, 100);
+                }
+
+                private boolean checkFileIsOpen(File audioFile) {
+                    FileOutputStream fis = null;
+                    try {
+                        fis = new FileOutputStream(audioFile, true);
+                        FileChannel fc = fis.getChannel();
+                        FileLock lock = fc.tryLock();
+                        if (lock == null) {
+                            Log.d("MediaRecorderTask", "audio file is opening");
+                            return true;
+                        } else {
+                            lock.release();
+                            return false;
+                        }
+                    } catch (OverlappingFileLockException ofe) {
+                        return true;
+                    } catch (IOException e) {
+                    } finally {
+                        try {
+                            fis.close();
+                        } catch (Exception e) {
+                        }
+                    }
+                    return false;
                 }
             };
         }
