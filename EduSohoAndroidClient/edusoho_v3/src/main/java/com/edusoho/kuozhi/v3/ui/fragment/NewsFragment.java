@@ -589,7 +589,7 @@ public class NewsFragment extends BaseFragment {
         int existCourseIdsCount = existCourseIds.size();
         for (int i = 0; i < existCourseIdsCount; i++) {
             convEntity = existCourseIds.valueAt(i);
-            IMClient.getClient().getConvManager().deleteConv(convEntity.getId());
+            IMClient.getClient().getConvManager().deleteById(convEntity.getId());
         }
 
         initData();

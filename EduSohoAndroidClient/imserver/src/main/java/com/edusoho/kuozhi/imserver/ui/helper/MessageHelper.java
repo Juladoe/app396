@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.Log;
 import com.edusoho.kuozhi.imserver.R;
 import com.edusoho.kuozhi.imserver.entity.Role;
@@ -92,6 +93,9 @@ public class MessageHelper {
     }
 
     public File getRealAudioFile(String audioFile) {
+        if (TextUtils.isEmpty(audioFile)) {
+            return null;
+        }
         String uriPath;
         Uri uri = Uri.parse(audioFile);
         if (uri == null) {

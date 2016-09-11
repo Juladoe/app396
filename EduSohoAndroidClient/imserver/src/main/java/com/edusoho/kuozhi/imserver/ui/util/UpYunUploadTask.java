@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.imserver.ui.util;
 
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import com.edusoho.kuozhi.imserver.ui.entity.UpYunUploadResult;
@@ -19,6 +21,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,9 +62,63 @@ public class UpYunUploadTask implements IResourceTask {
         }
     }
 
+    private void prepareUploadFile(final File audioFile) {
+        final Handler handler = new Handler(Looper.getMainLooper());
+        final Runnable runnable = new Runnable() {
+
+            private int count = 0;
+
+            @Override
+            public void run() {
+                if (count > 20) {
+                    Log.d(TAG, "open file timeout");
+                    getFileUploadInfo();
+                    return;
+                }
+                if (checkFileIsOpen(audioFile)) {
+                    count ++;
+                    handler.postDelayed(this, 100);
+                    return;
+                }
+                getFileUploadInfo();
+            }
+        };
+        handler.postDelayed(runnable, 100);
+    }
+
+    private boolean checkFileIsOpen(File audioFile) {
+        FileOutputStream fis = null;
+        try {
+            fis = new FileOutputStream(audioFile, true);
+            FileChannel fc = fis.getChannel();
+            FileLock lock = fc.tryLock();
+            if (lock == null) {
+                Log.d(TAG, "file is opening");
+                return true;
+            } else {
+                lock.release();
+                return false;
+            }
+        } catch (OverlappingFileLockException ofe) {
+            return true;
+        } catch (IOException e) {
+        } finally {
+            try {
+                fis.close();
+            } catch (Exception e) {
+            }
+        }
+        return false;
+    }
+
     @Override
     public TaskFeature execute() {
         mTaskFeature = new TaskFeature(mTaskId, ITaskStatusListener.UPLOAD);
+        prepareUploadFile(mTargetFile);
+        return mTaskFeature;
+    }
+
+    private void getFileUploadInfo() {
         String path = String.format(ApiConst.PUSH_HOST + ApiConst.GET_UPLOAD_INFO, mTargetId, mTargetFile.length(), mTargetFile.getName());
         AsyncHttpRequest request = new AsyncHttpGet(path);
 
@@ -69,8 +130,6 @@ public class UpYunUploadTask implements IResourceTask {
             public void onCompleted(Exception e, AsyncHttpResponse source, String result) {
                 UpYunUploadCallback upYunUploadCallback = new UpYunUploadCallback();
                 if (e != null || TextUtils.isEmpty(result)) {
-                    //CommonUtil.longToast(mActivity, getString(R.string.request_fail_text));
-                    e.printStackTrace();
                     Log.d(TAG, "get upload info from upyun failed");
                     upYunUploadCallback.success(null);
                     return;
@@ -99,8 +158,6 @@ public class UpYunUploadTask implements IResourceTask {
                 }
             }
         });
-
-        return mTaskFeature;
     }
 
     private class UpYunUploadCallback {
@@ -158,8 +215,14 @@ public class UpYunUploadTask implements IResourceTask {
         mFuture = AsyncHttpClient.getDefaultInstance().executeString(post, new AsyncHttpClient.StringCallback() {
             @Override
             public void onCompleted(Exception ex, AsyncHttpResponse source, String resopne) {
-                if (ex != null || source.code() != 200) {
-                    Log.d(TAG, "upload media res to upyun failed");
+                if (ex != null) {
+                    ex.printStackTrace();
+                    mTaskFeature.fail();
+                    return;
+                }
+
+                if (source.code() != 200) {
+                    Log.d(TAG, "upload media fail:" + source.code());
                     mTaskFeature.fail();
                     return;
                 }

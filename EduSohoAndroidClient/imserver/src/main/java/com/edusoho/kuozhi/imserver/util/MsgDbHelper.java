@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.imserver.util;
 import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.ArrayMap;
+import android.util.SparseArray;
 
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
@@ -10,7 +12,9 @@ import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by 菊 on 2016/4/29.
@@ -20,8 +24,10 @@ public class MsgDbHelper {
     private static final String TABLE = "im_message";
 
     private DbHelper mDbHelper;
+    private ConcurrentHashMap<String, String> mMsgNoArray;
 
     public MsgDbHelper(Context context) {
+        mMsgNoArray = new ConcurrentHashMap<>();
         mDbHelper = new DbHelper(context, DbManagerFactory.getDefaultFactory().createIMDbManager(context));
     }
 
@@ -92,6 +98,9 @@ public class MsgDbHelper {
         if (msgNo == null || "".equals(msgNo)) {
             return false;
         }
+        if (mMsgNoArray.containsKey(msgNo)) {
+            return true;
+        }
         return mDbHelper.querySingle(TABLE, "msgNo=?", new String[]{msgNo}) != null;
     }
 
@@ -111,7 +120,14 @@ public class MsgDbHelper {
         cv.put("time", messageEntity.getTime());
         cv.put("uid", messageEntity.getUid());
         cv.put("status", messageEntity.getStatus());
-        return mDbHelper.insert(TABLE, cv);
+        long resultId = mDbHelper.insert(TABLE, cv);
+        if (resultId > 0) {
+            if (mMsgNoArray.size() > 300) {
+                mMsgNoArray.clear();
+            }
+            mMsgNoArray.put(messageEntity.getMsgNo(), "");
+        }
+        return resultId;
     }
 
     public int updateFiledByMsgNo(String msgNo, ContentValues cv) {

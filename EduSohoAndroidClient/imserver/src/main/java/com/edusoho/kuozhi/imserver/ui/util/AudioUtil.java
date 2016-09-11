@@ -14,10 +14,16 @@ public class AudioUtil {
         AudioBody audioBody = new AudioBody();
         try {
             JSONObject jsonObject = new JSONObject(body);
-            audioBody.setDuration(jsonObject.getInt("d"));
-            audioBody.setFile(jsonObject.getString("f"));
+            audioBody.setDuration(jsonObject.optInt("d"));
+            audioBody.setFile(jsonObject.optString("f"));
+            if (jsonObject.has("file")) {
+                audioBody.setFile(jsonObject.getString("file"));
+            }
+            if (jsonObject.has("duration")) {
+                audioBody.setDuration(jsonObject.getInt("duration"));
+            }
         } catch (JSONException e) {
-            return null;
+            return audioBody;
         }
 
         return audioBody;

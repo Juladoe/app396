@@ -565,6 +565,24 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             IMClient.getClient().getMessageManager().updateMessageField(id, cv);
         }
 
+        private void checkAudioFileIsExist(MessageBody messageBody, AudioBody audioBody) {
+            File realFile = mMessageHelper.getRealAudioFile(audioBody.getFile());
+            if (realFile == null || !realFile.exists()) {
+                try {
+                    if (IMClient.getClient().getResourceHelper().hasTask(messageBody.getMid())) {
+                        return;
+                    }
+                    realFile = mMessageHelper.createAudioFile(audioBody.getFile());
+                    ResourceDownloadTask downloadTask = new ResourceDownloadTask(mContext, messageBody.getMid(), audioBody.getFile(), realFile);
+                    IMClient.getClient().getResourceHelper().addTask(downloadTask);
+                    messageBody.setMsgStatus(MessageEntity.StatusType.UPLOADING);
+                    updateMessageStatus(messageBody.getMid(), MessageEntity.StatusType.FAILED);
+                } catch (IOException ie) {
+                    ie.printStackTrace();
+                }
+            }
+        }
+
         @Override
         public void setContainerContent(MessageBody messageBody) {
             super.setContainerContent(messageBody);
@@ -575,26 +593,20 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             lp.width = 120 + (lengthWidth > mMaxAudioWidth ? mMaxAudioWidth : lengthWidth);
             //lp.height = 48;
             mAudioView.setLayoutParams(lp);
-
             if (unReadView != null) {
                 unReadView.setVisibility(View.GONE);
             }
-
+            if (MessageEntity.StatusType.FAILED == messageBody.getMsgStatus()) {
+                mLengthView.setText("");
+                return;
+            }
+            checkAudioFileIsExist(messageBody, audioBody);
             switch (messageBody.getMsgStatus()) {
+                case MessageEntity.StatusType.UPLOADING:
+                    mLengthView.setText("");
+                    break;
                 case MessageEntity.StatusType.NONE:
                     mLengthView.setText("");
-                    try {
-                        if (IMClient.getClient().getResourceHelper().hasTask(messageBody.getMid())) {
-                            return;
-                        }
-                        File realFile = mMessageHelper.createAudioFile(audioBody.getFile());
-                        ResourceDownloadTask downloadTask = new ResourceDownloadTask(mContext, messageBody.getMid(), audioBody.getFile(), realFile);
-                        IMClient.getClient().getResourceHelper().addTask(downloadTask);
-                        messageBody.setMsgStatus(MessageEntity.StatusType.UPLOADING);
-                        updateMessageStatus(messageBody.getMid(), MessageEntity.StatusType.FAILED);
-                    } catch (IOException ie) {
-                        ie.printStackTrace();
-                    }
                     break;
                 case MessageEntity.StatusType.UNREAD:
                     mLengthView.setText("");
@@ -632,23 +644,11 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
                     mImageView.setMaskBitmap(bitmap);
                     return;
                 }
-                ImageLoader.getInstance().displayImage(imagePath, mImageView, mOptions, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                    }
-
+                ImageLoader.getInstance().displayImage(imagePath, mImageView, mOptions, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                         ImageCache.getInstance().put(imageUri, new MaskBitmap(loadedImage));
                         mImageView.setMaskBitmap(new MaskBitmap(loadedImage));
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
                     }
                 });
             } else {

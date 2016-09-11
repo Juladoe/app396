@@ -103,6 +103,10 @@ public class ConvDbHelper {
         return mDbHelper.delete(TABLE, "convNo=?", new String[]{convNo});
     }
 
+    public int deleteByTypeAndId(String type, int targetId) {
+        return mDbHelper.delete(TABLE, "type=? and targetId=?", new String[]{type, String.valueOf(targetId)});
+    }
+
     public int deleteById(int id) {
         return mDbHelper.delete(TABLE, "id=?", new String[]{String.valueOf(id)});
     }
@@ -130,14 +134,10 @@ public class ConvDbHelper {
 
     public int updateByConvNo(ConvEntity convEntity) {
         ContentValues cv = new ContentValues();
-        cv.put("targetId", convEntity.getTargetId());
         cv.put("targetName", convEntity.getTargetName());
         cv.put("laterMsg", convEntity.getLaterMsg());
-        cv.put("createdTime", convEntity.getCreatedTime());
         cv.put("updatedTime", convEntity.getUpdatedTime());
         cv.put("avatar", convEntity.getAvatar());
-        cv.put("type", convEntity.getType());
-        cv.put("uid", convEntity.getUid());
         cv.put("unRead", convEntity.getUnRead());
         return mDbHelper.update(TABLE, cv, "convNo=?", new String[]{String.valueOf(convEntity.getConvNo())});
     }

@@ -8,7 +8,9 @@ import com.edusoho.kuozhi.imserver.ui.broadcast.ResourceStatusReceiver;
 import com.edusoho.kuozhi.imserver.ui.util.IResourceTask;
 import com.edusoho.kuozhi.imserver.ui.util.ITaskStatusListener;
 
+import java.util.ArrayDeque;
 import java.util.HashMap;
+import java.util.Queue;
 
 /**
  * Created by suju on 16/8/28.
@@ -19,10 +21,12 @@ public class MessageResourceHelper {
 
     private Context mContext;
     private HashMap<Integer, IResourceTask> mTaskMap;
+    private Queue mTaskQueue;
 
     public MessageResourceHelper(Context context) {
         this.mContext = context;
         mTaskMap = new HashMap<>();
+        mTaskQueue = new ArrayDeque();
     }
 
     public void addTask(IResourceTask task) {

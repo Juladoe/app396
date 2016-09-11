@@ -168,7 +168,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
             return;
         }
         IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
-        IMClient.getClient().getConvManager().deleteConv(convEntity.getConvNo());
+        IMClient.getClient().getConvManager().deleteConvByTypeAndId(Destination.CLASSROOM, mFromId);
     }
 
     @Override

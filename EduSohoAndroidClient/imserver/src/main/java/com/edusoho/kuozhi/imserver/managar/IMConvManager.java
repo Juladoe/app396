@@ -60,7 +60,11 @@ public class IMConvManager {
         return new ConvDbHelper(mContext).deleteByConvNo(convNo);
     }
 
-    public int deleteConv(int id) {
+    public int deleteConvByTypeAndId(String type, int targetId) {
+        return new ConvDbHelper(mContext).deleteByTypeAndId(type, targetId);
+    }
+
+    public int deleteById(int id) {
         return new ConvDbHelper(mContext).deleteById(id);
     }
 

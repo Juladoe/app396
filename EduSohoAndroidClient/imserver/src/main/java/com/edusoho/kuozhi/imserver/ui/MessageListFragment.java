@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
@@ -111,13 +112,13 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mResourceStatusReceiver = new ResourceStatusReceiver(this);
-        mContext.registerReceiver(mResourceStatusReceiver, new IntentFilter(ResourceStatusReceiver.ACTION));
         initParams(getArguments());
         checkConvNo();
         if (mIMessageDataProvider == null) {
             setIMessageDataProvider(new DefautlMessageDataProvider());
         }
+        mResourceStatusReceiver = new ResourceStatusReceiver(this);
+        mContext.registerReceiver(mResourceStatusReceiver, new IntentFilter(ResourceStatusReceiver.ACTION));
     }
 
     @Override
@@ -576,11 +577,15 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     private void receiveAudioMessageAgain(MessageBody messageBody) {
         AudioBody audioBody = AudioUtil.getAudioBody(messageBody.getBody());
         try {
+            if (TextUtils.isEmpty(audioBody.getFile())) {
+                SystemUtil.toast(mContext, "音频文件不存在,语音消息接受失败");
+                return;
+            }
             File realFile = new MessageHelper(mContext).createAudioFile(audioBody.getFile());
             ResourceDownloadTask downloadTask = new ResourceDownloadTask(mContext, messageBody.getMid(), audioBody.getFile(), realFile);
             IMClient.getClient().getResourceHelper().addTask(downloadTask);
         } catch (IOException e) {
-            SystemUtil.toast(mContext, "音频文件不存在,请重新发送语音消息");
+            SystemUtil.toast(mContext, "音频文件不存在,语音消息接受失败");
         }
     }
 
@@ -677,6 +682,14 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 if (mAudioPlayer != null) {
                     mAudioPlayer.stop();
                 }
+                pauseMusic();
+            }
+
+            private void pauseMusic() {
+                Intent freshIntent = new Intent();
+                freshIntent.setAction("com.android.music.musicservicecommand.pause");
+                freshIntent.putExtra("command", "pause");
+                mContext.sendBroadcast(freshIntent);
             }
 
             @Override
