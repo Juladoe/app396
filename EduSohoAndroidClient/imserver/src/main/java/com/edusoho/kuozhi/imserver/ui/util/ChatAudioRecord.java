@@ -5,6 +5,7 @@ import android.media.MediaRecorder;
 import android.os.Vibrator;
 
 import com.czt.mp3recorder.MP3Recorder;
+import com.edusoho.kuozhi.imserver.helper.recorder.MessageAudioRecorder;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
 
 import java.io.File;
@@ -17,12 +18,12 @@ public class ChatAudioRecord {
 
     public static final String AUDIO_EXTENSION = ".mp3";
     private MessageHelper mMessageHelper;
-    private MediaRecorder mMediaRecorder;
     private File mAudioFolderPath;
     private File mAudioFile;
     private SimpleDateFormat mSDF;
     private long mAudioStartTime;
     private long mAudioEndTime;
+    private MessageAudioRecorder mRecorder;
     private Vibrator mVibrator;
 
     public ChatAudioRecord(Context ctx) {
@@ -35,18 +36,16 @@ public class ChatAudioRecord {
         mSDF = new SimpleDateFormat("yyyyMMddHHmmss");
     }
 
-    public MP3Recorder getMediaRecorder() {
+    public MessageAudioRecorder getMediaRecorder() {
         return mRecorder;
     }
-
-    MP3Recorder mRecorder;
 
     public void ready() {
         mAudioFile = new File(mAudioFolderPath, String.format("%s%s", mSDF.format(System.currentTimeMillis()), AUDIO_EXTENSION));
         try {
             mAudioFile.createNewFile();
-            if (mMediaRecorder == null) {
-                mRecorder = new MP3Recorder(mAudioFile);
+            if (mRecorder == null) {
+                mRecorder = new MessageAudioRecorder(mAudioFile);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,8 +99,8 @@ public class ChatAudioRecord {
     }
 
     public void clear() {
-        if (mMediaRecorder != null) {
-            mMediaRecorder = null;
+        if (mRecorder != null && mRecorder.isRecording()) {
+            mRecorder.stop();
         }
         mRecorder = null;
     }

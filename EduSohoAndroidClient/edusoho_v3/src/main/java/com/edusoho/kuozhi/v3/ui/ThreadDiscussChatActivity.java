@@ -190,7 +190,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                             Role role = new Role();
                             role.setRid(user.id);
                             role.setAvatar(user.mediumAvatar);
-                            role.setType(getTargetType());
+                            role.setType(Destination.USER);
                             role.setNickname(user.nickname);
                             callback.onCreateRole(role);
                         }

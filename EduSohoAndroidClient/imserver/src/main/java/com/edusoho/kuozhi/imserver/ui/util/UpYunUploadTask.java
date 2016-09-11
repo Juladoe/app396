@@ -62,6 +62,38 @@ public class UpYunUploadTask implements IResourceTask {
         }
     }
 
+    private void prepareUploadFileByLength(final File audioFile) {
+        final Handler handler = new Handler(Looper.getMainLooper());
+        final Runnable runnable = new Runnable() {
+
+            private int successCount = 0;
+            private int count = 0;
+            private long preAudioLength;
+
+            @Override
+            public void run() {
+                if (count > 20) {
+                    Log.d(TAG, "check file timeout");
+                    getFileUploadInfo();
+                    return;
+                }
+                long length = audioFile.length();
+                if (preAudioLength == length) {
+                    Log.d(TAG, "preAudioLength == length :" + length);
+                    successCount ++;
+                }
+                preAudioLength = length;
+                if (successCount < 3) {
+                    count ++;
+                    handler.postDelayed(this, 100);
+                    return;
+                }
+                getFileUploadInfo();
+            }
+        };
+        handler.postDelayed(runnable, 100);
+    }
+
     private void prepareUploadFile(final File audioFile) {
         final Handler handler = new Handler(Looper.getMainLooper());
         final Runnable runnable = new Runnable() {
@@ -92,12 +124,8 @@ public class UpYunUploadTask implements IResourceTask {
             fis = new FileOutputStream(audioFile, true);
             FileChannel fc = fis.getChannel();
             FileLock lock = fc.tryLock();
-            if (lock == null) {
-                Log.d(TAG, "file is opening");
-                return true;
-            } else {
+            if (lock != null) {
                 lock.release();
-                return false;
             }
         } catch (OverlappingFileLockException ofe) {
             return true;
@@ -114,7 +142,7 @@ public class UpYunUploadTask implements IResourceTask {
     @Override
     public TaskFeature execute() {
         mTaskFeature = new TaskFeature(mTaskId, ITaskStatusListener.UPLOAD);
-        prepareUploadFile(mTargetFile);
+        prepareUploadFileByLength(mTargetFile);
         return mTaskFeature;
     }
 
@@ -125,6 +153,7 @@ public class UpYunUploadTask implements IResourceTask {
         for (Map.Entry<String, String> entry : mHeaders.entrySet()) {
             request.setHeader(entry.getKey(), entry.getValue());
         }
+        Log.d(TAG, "file length:" + mTargetFile.getAbsolutePath());
         mFuture = AsyncHttpClient.getDefaultInstance().executeString(request, new AsyncHttpClient.StringCallback() {
             @Override
             public void onCompleted(Exception e, AsyncHttpResponse source, String result) {

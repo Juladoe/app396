@@ -667,6 +667,10 @@ public class MessageNormalListFragment extends Fragment implements ResourceStatu
             }
 
             @Override
+            public void onStopRecordAudio() {
+            }
+
+            @Override
             public void onSendImage(File imageFile) {
                 uploadImage(imageFile);
             }

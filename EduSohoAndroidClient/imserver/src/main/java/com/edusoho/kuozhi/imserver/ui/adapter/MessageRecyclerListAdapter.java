@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -566,6 +567,10 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         }
 
         private void checkAudioFileIsExist(MessageBody messageBody, AudioBody audioBody) {
+            if (TextUtils.isEmpty(audioBody.getFile())) {
+                messageBody.setMsgStatus(MessageEntity.StatusType.FAILED);
+                return;
+            }
             File realFile = mMessageHelper.getRealAudioFile(audioBody.getFile());
             if (realFile == null || !realFile.exists()) {
                 try {

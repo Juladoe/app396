@@ -44,10 +44,7 @@ public class MessageStatusView extends ImageView {
             }
         }
 
-        if (mAnimationDrawable != null && mAnimationDrawable.isRunning()) {
-            mAnimationDrawable.stop();
-        }
-        if (mAnimationDrawable != null) {
+        if (mAnimationDrawable != null && !mAnimationDrawable.isRunning()) {
             mAnimationDrawable.start();
         }
     }

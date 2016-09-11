@@ -121,7 +121,7 @@ public class MsgDbHelper {
         cv.put("uid", messageEntity.getUid());
         cv.put("status", messageEntity.getStatus());
         long resultId = mDbHelper.insert(TABLE, cv);
-        if (resultId > 0) {
+        if (resultId > 0 && !TextUtils.isEmpty(messageEntity.getMsgNo())) {
             if (mMsgNoArray.size() > 300) {
                 mMsgNoArray.clear();
             }

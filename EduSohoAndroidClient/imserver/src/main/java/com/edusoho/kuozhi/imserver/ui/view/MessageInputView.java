@@ -321,6 +321,7 @@ public class MessageInputView extends FrameLayout {
                     } else {
                         sendAudioToMessage(audioFile);
                     }
+                    mMessageSendListener.onStopRecordAudio();
                 }
 
                 private void sendAudioToMessage(File audioFile) {

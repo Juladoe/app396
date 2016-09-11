@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -685,11 +686,9 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 pauseMusic();
             }
 
-            private void pauseMusic() {
-                Intent freshIntent = new Intent();
-                freshIntent.setAction("com.android.music.musicservicecommand.pause");
-                freshIntent.putExtra("command", "pause");
-                mContext.sendBroadcast(freshIntent);
+            @Override
+            public void onStopRecordAudio() {
+                resumeMusic();
             }
 
             @Override
@@ -697,6 +696,31 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 uploadImage(imageFile);
             }
         };
+    }
+
+    private void resumeMusic() {
+        AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.abandonAudioFocus(null);
+
+        Intent freshIntent = new Intent();
+        freshIntent.setAction("com.android.music.musicservicecommand.resume");
+        freshIntent.putExtra("command", "resume");
+        mContext.sendBroadcast(freshIntent);
+    }
+
+    private void pauseMusic() {
+        Intent freshIntent = new Intent();
+        freshIntent.setAction("com.android.music.musicservicecommand.pause");
+        freshIntent.putExtra("command", "pause");
+        mContext.sendBroadcast(freshIntent);
+
+        AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.requestAudioFocus(new AudioManager.OnAudioFocusChangeListener() {
+            @Override
+            public void onAudioFocusChange(int focusChange) {
+                Log.d(TAG, "onAudioFocusChange:" + focusChange);
+            }
+        }, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
     }
 
     private void handleSelectPhotoResult(List<String> pathList) {
@@ -913,7 +937,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             UpYunUploadTask upYunUploadTask = new UpYunUploadTask(messageEntity.getId(), mTargetId, file, mMessageControllerListener.getRequestHeaders());
             IMClient.getClient().getResourceHelper().addTask(upYunUploadTask);
         } catch (Exception e) {
-            Log.e(TAG, e.getMessage());
+            e.printStackTrace();
         }
     }
 

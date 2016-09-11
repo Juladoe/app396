@@ -1,8 +1,11 @@
 package com.edusoho.kuozhi.imserver.ui.util;
 
 import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.ui.listener.AudioPlayStatusListener;
 
@@ -36,6 +39,7 @@ public class MessageAudioPlayer {
         });
         mMediaPlayer.start();
         mAudioPlayStatusListener.onPlay();
+        pauseMusic();
     }
 
     public void stop() {
@@ -51,5 +55,26 @@ public class MessageAudioPlayer {
 
         mMediaPlayer.release();
         mMediaPlayer = null;
+        resumeMusic();
+    }
+
+    private void resumeMusic() {
+        AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.abandonAudioFocus(null);
+
+        Intent freshIntent = new Intent();
+        freshIntent.setAction("com.android.music.musicservicecommand.resume");
+        freshIntent.putExtra("command", "resume");
+        mContext.sendBroadcast(freshIntent);
+    }
+
+    private void pauseMusic() {
+        Intent freshIntent = new Intent();
+        freshIntent.setAction("com.android.music.musicservicecommand.pause");
+        freshIntent.putExtra("command", "pause");
+        mContext.sendBroadcast(freshIntent);
+
+        AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
     }
 }
