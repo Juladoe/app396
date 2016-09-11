@@ -1,8 +1,11 @@
 package com.edusoho.kuozhi.imserver.ui.util;
 
 import android.content.Context;
+import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaRecorder;
 import android.os.Vibrator;
+import android.util.Log;
 
 import com.czt.mp3recorder.MP3Recorder;
 import com.edusoho.kuozhi.imserver.helper.recorder.MessageAudioRecorder;
@@ -25,8 +28,10 @@ public class ChatAudioRecord {
     private long mAudioEndTime;
     private MessageAudioRecorder mRecorder;
     private Vibrator mVibrator;
+    private Context mContext;
 
     public ChatAudioRecord(Context ctx) {
+        this.mContext = ctx;
         mMessageHelper = new MessageHelper(ctx);
         mVibrator = (Vibrator) ctx.getSystemService(Context.VIBRATOR_SERVICE);
         mAudioFolderPath = mMessageHelper.getAudioStorage();
@@ -53,6 +58,7 @@ public class ChatAudioRecord {
     }
 
     public void start() {
+        int focus = pauseMusic();
         try {
             mRecorder.start();
             mAudioStartTime = System.currentTimeMillis();
@@ -73,6 +79,7 @@ public class ChatAudioRecord {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        resumeMusic();
         return mAudioFile;
     }
 
@@ -103,5 +110,29 @@ public class ChatAudioRecord {
             mRecorder.stop();
         }
         mRecorder = null;
+    }
+
+    private void resumeMusic() {
+        Intent freshIntent = new Intent();
+        freshIntent.setAction("com.android.music.musicservicecommand.resume");
+        freshIntent.putExtra("command", "resume");
+        mContext.sendBroadcast(freshIntent);
+
+        AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+        audioManager.abandonAudioFocus(null);
+    }
+
+    private int pauseMusic() {
+        Intent freshIntent = new Intent();
+        freshIntent.setAction("com.android.music.musicservicecommand.pause");
+        freshIntent.putExtra("command", "pause");
+        mContext.sendBroadcast(freshIntent);
+
+        AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+        return audioManager.requestAudioFocus(
+                null,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT
+        );
     }
 }

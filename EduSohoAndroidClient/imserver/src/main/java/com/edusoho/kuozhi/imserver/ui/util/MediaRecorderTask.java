@@ -67,7 +67,7 @@ public class MediaRecorderTask extends AsyncTask<Void, Integer, Boolean> {
                 break;
             } else {
                 long recordTime = (System.currentTimeMillis() - mAudioRecord.getAudioStartTime()) / 1000;
-                if (recordTime > TOTAL_NUM) {
+                if (mAudioRecord.getAudioStartTime() > 0 && recordTime > TOTAL_NUM) {
                     mStopRecord = true;
                     mCancelSave = false;
                     continue;

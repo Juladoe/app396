@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.imserver.helper.recorder;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
+import android.util.Log;
+
 import com.czt.mp3recorder.PCMFormat;
 import com.czt.mp3recorder.util.LameUtil;
 

@@ -683,12 +683,10 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 if (mAudioPlayer != null) {
                     mAudioPlayer.stop();
                 }
-                pauseMusic();
             }
 
             @Override
             public void onStopRecordAudio() {
-                resumeMusic();
             }
 
             @Override
@@ -696,31 +694,6 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
                 uploadImage(imageFile);
             }
         };
-    }
-
-    private void resumeMusic() {
-        AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
-        audioManager.abandonAudioFocus(null);
-
-        Intent freshIntent = new Intent();
-        freshIntent.setAction("com.android.music.musicservicecommand.resume");
-        freshIntent.putExtra("command", "resume");
-        mContext.sendBroadcast(freshIntent);
-    }
-
-    private void pauseMusic() {
-        Intent freshIntent = new Intent();
-        freshIntent.setAction("com.android.music.musicservicecommand.pause");
-        freshIntent.putExtra("command", "pause");
-        mContext.sendBroadcast(freshIntent);
-
-        AudioManager audioManager = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
-        audioManager.requestAudioFocus(new AudioManager.OnAudioFocusChangeListener() {
-            @Override
-            public void onAudioFocusChange(int focusChange) {
-                Log.d(TAG, "onAudioFocusChange:" + focusChange);
-            }
-        }, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
     }
 
     private void handleSelectPhotoResult(List<String> pathList) {
