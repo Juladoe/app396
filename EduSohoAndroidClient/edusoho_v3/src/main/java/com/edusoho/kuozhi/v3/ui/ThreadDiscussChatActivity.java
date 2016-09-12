@@ -336,7 +336,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     }
 
     private void sendMessageToServer(final int position, String content) {
-        String threadType = "course".equals(mThreadTargetType) ? "course" : "common";
+        final String threadType = "course".equals(mThreadTargetType) ? "course" : "common";
         mThreadProvider.createThreadPost(mThreadTargetType, mThreadTargetId, threadType, mTargetId, content)
                 .success(new NormalCallback<PostThreadResult>() {
                     @Override
@@ -344,6 +344,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                         if (threadResult != null) {
                             MessageEntity messageEntity = mMessageEntityList.get(position);
                             if (messageEntity != null) {
+                                messageEntity.setTime((int)AppUtil.convertUTCTimeToMilliSecond(threadResult.createdTime));
                                 messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
                                 mMessageListFragment.updateListByEntity(messageEntity);
                             }
@@ -401,7 +402,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                 AppUtil.parseInt(mThreadInfo.get("id").toString()), mThreadInfo.get("type").toString()));
         messageBody.setSource(new Source(user.id, Destination.USER));
         messageEntity.setMsg(messageBody.toJson());
-        messageEntity.setTime((int) AppUtil.convertTimeZone2Millisecond(postEntity.createdTime));
+        messageEntity.setTime((int) AppUtil.convertUTCTimeToMilliSecond(postEntity.createdTime));
 
         messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
         return messageEntity;

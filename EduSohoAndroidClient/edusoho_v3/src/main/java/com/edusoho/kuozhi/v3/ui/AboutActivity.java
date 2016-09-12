@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.os.Bundle;
+import android.text.SpannableString;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -90,6 +91,7 @@ public class AboutActivity extends ActionBarBaseActivity {
                 app.getApkVersion(),
                 R.color.system_normal_text
         ));
+        tvCheckUpdate.append(" - " + app.getApkVersionCode());
 
         registNotify();
         checkNotify();

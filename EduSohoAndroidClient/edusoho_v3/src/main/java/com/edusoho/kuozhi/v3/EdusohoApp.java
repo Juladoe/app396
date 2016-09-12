@@ -461,6 +461,17 @@ public class EdusohoApp extends Application {
         return version;
     }
 
+    public int getApkVersionCode() {
+        int version = 0;
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            version = packageInfo.versionCode;
+        } catch (Exception e) {
+
+        }
+        return version;
+    }
+
     public void setCurrentSchool(School school) {
         app.defaultSchool = school;
         app.schoolHost = school.url + "/";

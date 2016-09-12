@@ -52,6 +52,7 @@ import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -863,6 +864,20 @@ public class AppUtil {
         time = time.replace(' ', 'T').substring(0, time.length() - 2)
                 + ":00";
         return time;
+    }
+
+    public static long convertUTCTimeToMilliSecond(String timeZone) {
+        long time = 0;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String tDate = timeZone.split("[+]")[0].replace('T', ' ');
+            time = sdf.parse(tDate).getTime() / 1000;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            return time;
+        }
     }
 
     public static long convertTimeZone2Millisecond(String timeZone) {

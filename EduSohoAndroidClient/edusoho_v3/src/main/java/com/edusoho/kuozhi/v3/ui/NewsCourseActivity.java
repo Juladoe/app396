@@ -272,7 +272,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
         @Override
         public void setArguments(Bundle bundle) {
             School school = getAppSettingProvider().getCurrentSchool();
-            String url = String.format(Const.MOBILE_APP_URL, school.host + "/", String.format(Const.TEACHER_MANAGERMENT, mCourseId));
+            String url = String.format(Const.MOBILE_APP_URL, school.url + "/", String.format(Const.TEACHER_MANAGERMENT, mCourseId));
             bundle.putString(Const.WEB_URL, url);
         }
     };
