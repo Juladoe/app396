@@ -302,9 +302,12 @@ public class ImServer {
 
         if ("message".equals(messageEntity.getCmd()) || "offlineMsg".equals(messageEntity.getCmd())) {
             MessageBody messageBody = new MessageBody(messageEntity);
-            if (messageBody == null || filterMessageBody(messageBody)) {
-                Log.d(TAG, "messageBody is null");
+            if (messageBody == null) {
                 return null;
+            }
+
+            if (filterMessageBody(messageBody)) {
+                return messageEntity;
             }
 
             messageEntity.setConvNo(getMessageConvNo(messageBody));

@@ -33,6 +33,12 @@ public class ApiTokenUtil {
         return (Map<String,String>) sp.getAll();
     }
 
+    public static String getTokenString(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("token", context.MODE_APPEND);
+        Map<String,String> map = (Map<String,String>) sp.getAll();
+        return map.containsKey("token") ? map.get("token") : "";
+    }
+
     public static String getApiToken(Context context) {
         SharedPreferences sp = context.getSharedPreferences("token", context.MODE_APPEND);
         Map tokenMap = sp.getAll();

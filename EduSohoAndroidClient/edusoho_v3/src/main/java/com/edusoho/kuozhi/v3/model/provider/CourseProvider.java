@@ -10,7 +10,11 @@ import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,5 +91,19 @@ public class CourseProvider extends ModelProvider {
         requestUrl.heads.put("token", token);
 
         return getCourse(requestUrl);
+    }
+
+    public ProviderListener<LinkedHashMap> getMembership(int courseId, int userId) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        String token = ApiTokenUtil.getTokenString(mContext);
+
+        RequestUrl requestUrl = null;
+        requestUrl = new RequestUrl(school.host + String.format(Const.ROLE_IN_COURSE, courseId, userId));
+        requestUrl.heads.put("X-Auth-Token", token);
+
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
     }
 }

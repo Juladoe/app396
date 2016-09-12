@@ -5,13 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.baidu.cyberplayer.utils.A;
@@ -20,7 +25,12 @@ import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.StudyProcessRecyclerAdapter;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.UtilFactory;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
@@ -31,6 +41,7 @@ import com.edusoho.kuozhi.v3.model.bal.courseDynamics.DynamicsProvider;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ThreadCreateActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -56,7 +67,7 @@ import java.util.Map;
 /**
  * Created by JesseHuang on 15/12/14.
  */
-public class CourseStudyFragment extends BaseFragment implements View.OnClickListener {
+public class CourseStudyFragment extends Fragment implements View.OnClickListener {
     private RecyclerView studyProcessRecyclerView;
     private TextView mFloatButton;
     private TextView mErrorTip;
@@ -70,17 +81,18 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     private List<NewsCourseEntity> dataList;
     private Bundle mBundle;
     private int mCourseId;
+    private Context mContext;
     private boolean isEndByLength = false;
-
-    private NewsCourseDataSource newsCourseDataSource;
     private FrameLayout mLoading;
-
     private String[] types = {PushUtil.CourseType.TESTPAPER_REVIEWED,
             PushUtil.CourseType.QUESTION_ANSWERED,
             PushUtil.CourseType.HOMEWORK_REVIEWED,
             PushUtil.CourseType.LESSON_FINISH,
             PushUtil.CourseType.LESSON_START
     };
+
+    protected int mViewId;
+    protected View mContainerView;
 
     List lessonIds = new ArrayList();
     List questionIds = new ArrayList();
@@ -91,32 +103,50 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     private View.OnClickListener summaryListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+            CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.MOBILE_WEB_COURSE, mCourseId));
+                    School school = getAppSettingProvider().getCurrentSchool();
+                    String url = String.format(Const.MOBILE_APP_URL, school.host + "/", String.format(Const.MOBILE_WEB_COURSE, mCourseId));
                     startIntent.putExtra(Const.WEB_URL, url);
                 }
             });
         }
     };
 
+    protected void setContainerView(int viewId) {
+        mViewId = viewId;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getActivity().getBaseContext();
         setContainerView(R.layout.fragment_course_study_process_layout);
     }
 
     @Override
-    protected void initView(View view) {
-        super.initView(view);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        if (mContainerView == null) {
+            mContainerView = inflater.inflate(mViewId, null);
+            initView(mContainerView);
+        }
 
+        ViewGroup parent = (ViewGroup) mContainerView.getParent();
+        if (parent != null) {
+            parent.removeView(mContainerView);
+        }
+        return mContainerView;
+    }
+
+    protected void initView(View view) {
         mErrorTip = (TextView) view.findViewById(R.id.error_tip);
         mRecyclerLinearLayoutManager = new RecyclerLinearLayoutManager(mContext);
         studyProcessRecyclerView = (RecyclerView) view.findViewById(R.id.study_process_list);
         studyProcessRecyclerView.setLayoutManager(mRecyclerLinearLayoutManager);
         studyProcessRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        EdusohoApp app = (EdusohoApp) getActivity().getApplication();
         mAdapter = new StudyProcessRecyclerAdapter(mContext, new ArrayList(), app);
         mAdapter.setSummaryListene(summaryListener);
         studyProcessRecyclerView.setAdapter(mAdapter);
@@ -156,7 +186,8 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
         final Promise promise = new Promise();
 
         String subUrl = String.format(Const.COURSE_LEARNING_DYNAMICS, mCourseId);
-        RequestUrl requestUrl = app.bindNewApiUrl(subUrl, true);
+        EdusohoApp edusohoApp = (EdusohoApp) getActivity().getApplication();
+        RequestUrl requestUrl = edusohoApp.bindNewApiUrl(subUrl, true);
         requestUrl.setGetParams(new String[]{"limit", "10000"});
         mDynamicsProvider.getDynamics(requestUrl).success(new NormalCallback<ArrayList<CourseDynamicsItem>>() {
             @Override
@@ -427,14 +458,14 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void addCourseSummary() {
+        EdusohoApp app = (EdusohoApp) getActivity().getApplication();
         RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("courseId", mCourseId + "");
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                CourseDetailsResult courseDetailsResult = mActivity.parseJsonValue(response, new TypeToken<CourseDetailsResult>() {
-                });
+                CourseDetailsResult courseDetailsResult = getUtilFactory().getJsonParser().fromJson(response, CourseDetailsResult.class);
                 if (courseDetailsResult == null) {
                     mErrorHandler = new ErrorHandler();
                     mErrorHandler.sendEmptyMessage(0);
@@ -488,7 +519,7 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.float_button) {
-            app.mEngine.runNormalPlugin("ThreadCreateActivity", mActivity, new PluginRunCallback() {
+            CoreEngine.create(mContext).runNormalPlugin("ThreadCreateActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mCourseId);
@@ -497,17 +528,6 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
                 }
             });
         }
-    }
-
-    @Override
-    public MessageType[] getMsgTypes() {
-        String source = this.getClass().getSimpleName();
-        return new MessageType[]{new MessageType(Const.ADD_COURSE_MSG, source)};
-    }
-
-    @Override
-    public void invoke(WidgetMessage message) {
-
     }
 
     private static class RecyclerLinearLayoutManager extends LinearLayoutManager {
@@ -534,5 +554,13 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
             studyProcessRecyclerView.setVisibility(View.GONE);
             mLoading.setVisibility(View.GONE);
         }
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    protected UtilFactory getUtilFactory() {
+        return FactoryManager.getInstance().create(UtilFactory.class);
     }
 }

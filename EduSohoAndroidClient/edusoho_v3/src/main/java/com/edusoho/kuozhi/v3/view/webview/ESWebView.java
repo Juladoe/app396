@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.view.webview;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -17,11 +18,14 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.cache.request.RequestCallback;
 import com.edusoho.kuozhi.v3.cache.request.RequestManager;
 import com.edusoho.kuozhi.v3.cache.request.model.Request;
 import com.edusoho.kuozhi.v3.cache.request.model.Response;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.UtilFactory;
 import com.edusoho.kuozhi.v3.model.htmlapp.AppMeta;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
@@ -55,7 +59,7 @@ public class ESWebView extends RelativeLayout {
     protected AbstractJsBridgeAdapterWebView mWebView;
     protected ProgressBar pbLoading;
     protected Context mContext;
-    protected BaseActivity mActivity;
+    protected Activity mActivity;
     protected String mAppCode;
     private AttributeSet mAttrs;
     private String mUrl;
@@ -130,14 +134,6 @@ public class ESWebView extends RelativeLayout {
         return mRequestManager;
     }
 
-    public void loadApp(String appCode) {
-        updateCode(appCode);
-        mLocalAppMeta = getLocalApp(appCode);
-        setLoadType(LOAD_FROM_CACHE);
-        mUrl = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, appCode);
-        loadUrl(mUrl);
-    }
-
     private void updateCode(String code) {
         this.mAppCode = code;
         mRequestManager = ESWebViewRequestManager.getRequestManager(mContext, this.mAppCode);
@@ -145,7 +141,8 @@ public class ESWebView extends RelativeLayout {
     }
 
     private AppMeta getLocalApp(String appCode) {
-        File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, mActivity.app.domain);
+        EdusohoApp app = (EdusohoApp) mActivity.getApplication();
+        File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, app.domain);
         File appDir = new File(schoolStorage, appCode);
 
         if (appDir.exists()) {
@@ -154,9 +151,7 @@ public class ESWebView extends RelativeLayout {
             if (appVersionString == null) {
                 return null;
             }
-            return mActivity.parseJsonValue(
-                    appVersionString.toString(), new TypeToken<AppMeta>() {
-                    });
+            return getUtilFactory().getJsonParser().fromJson(appVersionString.toString(), AppMeta.class);
         }
 
         return null;
@@ -170,7 +165,7 @@ public class ESWebView extends RelativeLayout {
         return mWebView.canGoBack();
     }
 
-    public BaseActivity getActivity() {
+    public Activity getActivity() {
         return mActivity;
     }
 
@@ -185,7 +180,8 @@ public class ESWebView extends RelativeLayout {
 
     public void updateApp(String appCode) {
         String projectCode = mContext.getString(R.string.app_code);
-        RequestUrl appVersionUrl = mActivity.app.bindUrl(
+        EdusohoApp app = (EdusohoApp) mActivity.getApplication();
+        RequestUrl appVersionUrl = app.bindUrl(
                 String.format(Const.MOBILE_APP_VERSION, appCode, projectCode), true);
 
         RequestCallback<Boolean> callback = new RequestCallback<Boolean>() {
@@ -225,7 +221,8 @@ public class ESWebView extends RelativeLayout {
     }
 
     private boolean checkResourceIsExists() {
-        File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, mActivity.app.domain);
+        EdusohoApp app = (EdusohoApp) mActivity.getApplication();
+        File schoolStorage = AppUtil.getHtmlPluginStorage(mContext, app.domain);
         File schoolAppFile = new File(schoolStorage, mAppCode);
 
         if (mLocalAppMeta == null) {
@@ -276,7 +273,7 @@ public class ESWebView extends RelativeLayout {
                     while ((line = bufferedReader.readLine()) != null) {
                         stringBuilder.append(line);
                     }
-                    localAppMeta = mActivity.parseJsonValue(stringBuilder.toString(), new TypeToken<AppMeta>(){});
+                    localAppMeta = getUtilFactory().getJsonParser().fromJson(stringBuilder.toString(), AppMeta.class);
                     break;
                 }
                 zipInputStream.closeEntry();
@@ -293,7 +290,7 @@ public class ESWebView extends RelativeLayout {
         return localAppMeta;
     }
 
-    public void initPlugin(BaseActivity activity) {
+    public void initPlugin(Activity activity) {
         this.mActivity = activity;
         initWebView();
     }
@@ -327,12 +324,13 @@ public class ESWebView extends RelativeLayout {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if (url.startsWith(mActivity.app.host)) {
+            EdusohoApp app = (EdusohoApp) mActivity.getApplication();
+            if (url.startsWith(app.host)) {
                 loadUrl(url);
                 return true;
             }
 
-            mActivity.app.startUpdateWebView(url);
+            app.startUpdateWebView(url);
             return true;
         }
 
@@ -367,5 +365,9 @@ public class ESWebView extends RelativeLayout {
 
     public AbstractJsBridgeAdapterWebView getWebView() {
         return mWebView;
+    }
+
+    protected UtilFactory getUtilFactory() {
+        return FactoryManager.getInstance().create(UtilFactory.class);
     }
 }

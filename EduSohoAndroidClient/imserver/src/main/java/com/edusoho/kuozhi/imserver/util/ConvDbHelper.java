@@ -147,11 +147,9 @@ public class ConvDbHelper {
         cv.put("targetId", convEntity.getTargetId());
         cv.put("targetName", convEntity.getTargetName());
         cv.put("laterMsg", convEntity.getLaterMsg());
-        cv.put("createdTime", convEntity.getCreatedTime());
         cv.put("updatedTime", convEntity.getUpdatedTime());
         cv.put("avatar", convEntity.getAvatar());
         cv.put("type", convEntity.getType());
-        cv.put("uid", convEntity.getUid());
         cv.put("unRead", convEntity.getUnRead());
         cv.put("convNo", convEntity.getConvNo());
         return mDbHelper.update(TABLE, cv, "id=?", new String[]{String.valueOf(convEntity.getId())});

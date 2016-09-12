@@ -7,6 +7,7 @@ import com.edusoho.kuozhi.v3.factory.UtilFactory;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 
@@ -81,6 +82,11 @@ public class AppSettingProvider extends AbstractProvider {
     public void setUser(User user) {
         this.mCurrentUser = user;
         saveUser(user);
+    }
+
+    public void removeToken() {
+        this.mCurrentUser = null;
+        ApiTokenUtil.removeToken(mContext);
     }
 
     private void saveUser(User user) {

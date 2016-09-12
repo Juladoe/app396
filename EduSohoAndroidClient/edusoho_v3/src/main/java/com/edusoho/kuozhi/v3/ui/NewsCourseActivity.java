@@ -4,13 +4,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -18,6 +24,8 @@ import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -27,9 +35,11 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
@@ -37,15 +47,23 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
+import com.edusoho.kuozhi.v3.view.EduSohoCompoundButton;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+import com.google.gson.JsonObject;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.LinkedHashMap;
+
 import cn.trinea.android.common.util.ToastUtils;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by JesseHuang on 15/9/16.
  */
-public class NewsCourseActivity extends AbstractIMChatActivity {
+public class NewsCourseActivity extends AbstractIMChatActivity implements MessageEngine.MessageCallback {
 
     public static final int CLEAR = 0x10;
 
@@ -65,16 +83,42 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
     private String mUserTypeInCourse;
     private Course mCourse;
     private Handler mHandler;
+    private ActionBar mActionBar;
+    private EduSohoCompoundButton switchButton;
+    private RadioButton rbStudyRadioButton;
+    private RadioButton rbDiscussRadioButton;
+    private CircleImageView civBadgeView;
+
+    protected FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mActionBar = getSupportActionBar();
+        mFragmentManager = getSupportFragmentManager();
+        MessageEngine.getInstance().registMessageSource(this);
         initData();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     protected View createView() {
         return LayoutInflater.from(mContext).inflate(R.layout.activity_news_course, null);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MessageEngine.getInstance().unRegistMessageSource(this);
     }
 
     @Override
@@ -108,19 +152,20 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
         final LoadDialog loadDialog = LoadDialog.create(this);
         loadDialog.show();
         new CourseProvider(mContext).getCourse(mCourseId)
-        .success(new NormalCallback<CourseDetailsResult>() {
-            @Override
-            public void success(CourseDetailsResult courseDetailsResult) {
-                loadDialog.dismiss();
-                if (courseDetailsResult == null || courseDetailsResult.course == null) {
-                    ToastUtils.show(mContext, "课程信息不存在!");
-                    return;
-                }
-                mCourse = courseDetailsResult.course;
-                int userId = getAppSettingProvider().getCurrentUser().id;
-                checkUserRole(userId);
-            }
-        });
+                .success(new NormalCallback<CourseDetailsResult>() {
+                    @Override
+                    public void success(CourseDetailsResult courseDetailsResult) {
+                        Log.d(TAG, "load course");
+                        loadDialog.dismiss();
+                        if (courseDetailsResult == null || courseDetailsResult.course == null) {
+                            ToastUtils.show(mContext, "课程信息不存在!");
+                            return;
+                        }
+                        mCourse = courseDetailsResult.course;
+                        int userId = getAppSettingProvider().getCurrentUser().id;
+                        checkUserRole(userId);
+                    }
+                });
     }
 
     private void checkUserRole(int userId) {
@@ -128,11 +173,12 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
             @Override
             public void success(String role) {
                 mUserTypeInCourse = role;
+                Log.d(TAG, "check role:" + role);
                 if (PushUtil.ChatUserType.STUDENT.equals(mUserTypeInCourse)) {
-                    initSwitchButton(BACK, mRadioButtonTitle[0], mOnCheckedChangeListener);
+                    initSwitchButton(mRadioButtonTitle[0], mOnCheckedChangeListener);
                     setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
                 } else if (PushUtil.ChatUserType.TEACHER.equals(mUserTypeInCourse)) {
-                    initSwitchButton(BACK, mRadioButtonTitle[1], mOnCheckedChangeListener);
+                    initSwitchButton(mRadioButtonTitle[1], mOnCheckedChangeListener);
                     setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
                 } else {
                     CommonUtil.longToast(mContext, "您不是该课程的学生");
@@ -140,6 +186,28 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
                 }
             }
         });
+    }
+
+    private void setRadioButtonChecked(int id) {
+        if (rbStudyRadioButton.getId() == id) {
+            rbStudyRadioButton.setChecked(true);
+        } else {
+            rbDiscussRadioButton.setChecked(true);
+        }
+    }
+
+    protected void initSwitchButton(String roleTitle, RadioGroup.OnCheckedChangeListener clickListener) {
+        View switchButtonLayout = getLayoutInflater().inflate(R.layout.actionbar_course_switch_button, null);
+        switchButton = (EduSohoCompoundButton) switchButtonLayout.findViewById(R.id.ecb_switch);
+        rbStudyRadioButton = (RadioButton) switchButtonLayout.findViewById(R.id.rb_study);
+        rbDiscussRadioButton = (RadioButton) switchButtonLayout.findViewById(R.id.rb_discuss);
+        civBadgeView = (CircleImageView) switchButtonLayout.findViewById(R.id.civ_badge_view);
+        rbStudyRadioButton.setText(roleTitle);
+        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
+                ActionBar.LayoutParams.WRAP_CONTENT);
+        layoutParams.gravity = Gravity.CENTER;
+        mActionBar.setCustomView(switchButtonLayout, layoutParams);
+        switchButton.setOnCheckedChangeListener(clickListener);
     }
 
     private void showFragment(String tag) {
@@ -151,16 +219,20 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
         }
         fragment = mFragmentManager.findFragmentByTag(tag);
         if (fragment != null) {
+            if (fragment instanceof MessageListFragment) {
+                mMessageListFragment = (MessageListFragment) fragment;
+                initChatRoomController(mMessageListFragment);
+            }
             fragmentTransaction.show(fragment);
         } else {
             if (tag.equals(mFragmentTags[0])) {
-                fragment = app.mEngine.runPluginWithFragment(tag, mActivity, mStudyPluginFragmentCallback);
+                fragment = CoreEngine.create(mContext).runPluginWithFragment(tag, this, mStudyPluginFragmentCallback);
                 mMessageListFragment = (MessageListFragment) fragment;
                 initChatRoomController((MessageListFragment) fragment);
             } else if (tag.equals(mFragmentTags[1])) {
-                fragment = app.mEngine.runPluginWithFragment(tag, mActivity, mStudyPluginFragmentCallback);
+                fragment = CoreEngine.create(mContext).runPluginWithFragment(tag, this, mStudyPluginFragmentCallback);
             } else if (tag.equals(mFragmentTags[2])) {
-                fragment = app.mEngine.runPluginWithFragment(tag, mActivity, mTeachPluginFragmentCallback);
+                fragment = CoreEngine.create(mContext).runPluginWithFragment(tag, this, mTeachPluginFragmentCallback);
             }
             fragmentTransaction.add(R.id.fragment_container, fragment, tag);
         }
@@ -168,6 +240,12 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
         mCurrentFragmentTag = tag;
         if (mCurrentFragmentTag.equals(mFragmentTags[0])) {
             setSwitchBadgeViewVisible(View.INVISIBLE);
+        }
+    }
+
+    private void setSwitchBadgeViewVisible(int visible) {
+        if (civBadgeView != null) {
+            civBadgeView.setVisibility(visible);
         }
     }
 
@@ -193,7 +271,8 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
     private PluginFragmentCallback mTeachPluginFragmentCallback = new PluginFragmentCallback() {
         @Override
         public void setArguments(Bundle bundle) {
-            String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.TEACHER_MANAGERMENT, mCourseId));
+            School school = getAppSettingProvider().getCurrentSchool();
+            String url = String.format(Const.MOBILE_APP_URL, school.host + "/", String.format(Const.TEACHER_MANAGERMENT, mCourseId));
             bundle.putString(Const.WEB_URL, url);
         }
     };
@@ -217,8 +296,12 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
         if (item.getItemId() == R.id.news_course_profile) {
-            app.mEngine.runNormalPlugin("CourseDetailActivity", mContext, new PluginRunCallback() {
+            CoreEngine.create(mContext).runNormalPlugin("CourseDetailActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
@@ -239,6 +322,31 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
                 new MessageType(Const.TOKEN_LOSE),
                 new MessageType(CLEAR)
         };
+    }
+
+    protected void handleTokenLostMsg() {
+        Bundle bundle = new Bundle();
+        bundle.putString(Const.BIND_USER_ID, "");
+
+        new IMServiceProvider(getBaseContext()).unBindServer();
+        getAppSettingProvider().removeToken();
+        MessageEngine.getInstance().sendMsg(Const.LOGOUT_SUCCESS, null);
+        MessageEngine.getInstance().sendMsgToTaget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
+    }
+
+    protected void processMessage(WidgetMessage message) {
+        MessageType messageType = message.type;
+        if (Const.TOKEN_LOSE.equals(messageType.type)) {
+            PopupDialog dialog = PopupDialog.createNormal(NewsCourseActivity.this, "提示", getString(R.string.token_lose_notice));
+            dialog.setOkListener(new PopupDialog.PopupClickListener() {
+                @Override
+                public void onClick(int button) {
+                    handleTokenLostMsg();
+                    finish();
+                }
+            });
+            dialog.show();
+        }
     }
 
     @Override
@@ -267,33 +375,22 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
             Bundle bundle = new Bundle();
             bundle.putInt(Const.FROM_ID, mCourseId);
             bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.COURSE);
-            app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
+            MessageEngine.getInstance().sendMsgToTaget(NewsFragment.UPDATE_UNREAD_MSG, bundle, NewsFragment.class);
         }
     };
 
     private void getRoleInCourse(int courseId, int userId, final NormalCallback<String> normalCallback) {
-        RequestUrl requestUrl = app.bindNewUrl(String.format(Const.ROLE_IN_COURSE, courseId, userId), true);
-        ajaxGetWithCache(requestUrl, new Response.Listener<String>() {
+        new CourseProvider(mContext).getMembership(courseId, userId)
+        .success(new NormalCallback<LinkedHashMap>() {
             @Override
-            public void onResponse(String response) {
-                try {
-                    if (response.contains("membership")) {
-                        JSONObject jsonObject = new JSONObject(response);
-                        if ("teacher".equals(jsonObject.getString("membership"))) {
-                            normalCallback.success("teacher");
-                        } else if ("student".equals(jsonObject.getString("membership"))) {
-                            normalCallback.success("student");
-                        } else {
-                            normalCallback.success("none");
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            public void success(LinkedHashMap jsonObject) {
+                if ("teacher".equals(jsonObject.get("membership"))) {
+                    normalCallback.success("teacher");
+                } else if ("student".equals(jsonObject.get("membership"))) {
+                    normalCallback.success("student");
+                } else {
+                    normalCallback.success("none");
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
             }
         });
     }
@@ -365,4 +462,9 @@ public class NewsCourseActivity extends AbstractIMChatActivity {
                 });
     }
 
+
+    @Override
+    public int getMode() {
+        return REGIST_CLASS;
+    }
 }

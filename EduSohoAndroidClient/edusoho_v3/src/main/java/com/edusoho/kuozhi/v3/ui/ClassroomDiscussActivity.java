@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,6 +11,7 @@ import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
@@ -26,11 +28,23 @@ import cn.trinea.android.common.util.ToastUtils;
 /**
  * Created by JesseHuang on 15/10/16.
  */
-public class ClassroomDiscussActivity extends ImChatActivity {
+public class ClassroomDiscussActivity extends ImChatActivity implements MessageEngine.MessageCallback {
 
     public static final int CLEAR = 0x10;
 
     private Classroom mClassRoom;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        MessageEngine.getInstance().registMessageSource(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MessageEngine.getInstance().unRegistMessageSource(this);
+    }
 
     @Override
     protected String getTargetType() {
@@ -119,9 +133,13 @@ public class ClassroomDiscussActivity extends ImChatActivity {
 
     @Override
     public void invoke(WidgetMessage message) {
-        super.invoke(message);
         if (message.type.code == CLEAR) {
             mMessageListFragment.reload();
         }
+    }
+
+    @Override
+    public int getMode() {
+        return REGIST_CLASS;
     }
 }

@@ -75,6 +75,7 @@ import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
+import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 /**
  * Created by suju on 16/8/26.
@@ -115,16 +116,15 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         super.onCreate(savedInstanceState);
         initParams(getArguments());
         checkConvNo();
-        if (mIMessageDataProvider == null) {
-            setIMessageDataProvider(new DefautlMessageDataProvider());
-        }
         mResourceStatusReceiver = new ResourceStatusReceiver(this);
         mContext.registerReceiver(mResourceStatusReceiver, new IntentFilter(ResourceStatusReceiver.ACTION));
+        Log.d(TAG, "onCreate");
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        Log.d(TAG, "onAttach");
         mContext = activity.getBaseContext();
         mListAdapter = new MessageRecyclerListAdapter(getActivity().getBaseContext());
         mListAdapter.setCurrentId(IMClient.getClient().getClientId());
@@ -147,6 +147,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     }
 
     public void setIMessageDataProvider(IMessageDataProvider provider) {
+        Log.d(TAG, "IMessageDataProvider:" + provider);
         this.mIMessageDataProvider = provider;
     }
 
@@ -243,6 +244,10 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     }
 
     protected void initView(View view) {
+        if (mIMessageDataProvider == null) {
+            setIMessageDataProvider(new DefautlMessageDataProvider());
+        }
+
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
         mMessageListView = (RecyclerView) view.findViewById(R.id.listview);
         mMessageInputView = (MessageInputView) view.findViewById(R.id.message_input_view);
@@ -403,6 +408,7 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
     @Override
     public void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
         if (mIMMessageReceiver == null) {
             mIMMessageReceiver = getIMMessageListener();
         }
@@ -713,23 +719,12 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
         return new InputViewControllerListener() {
             @Override
             public void onSelectPhoto() {
-                mMessageControllerListener.selectPhoto(new MessageControllerListener.PhotoSelectCallback() {
-                    @Override
-                    public void onSelected(List<String> pathList) {
-                        handleSelectPhotoResult(pathList);
-                    }
-                });
+                mMessageControllerListener.selectPhoto(null);
             }
 
             @Override
             public void onTakePhoto() {
-                mMessageControllerListener.takePhoto(new MessageControllerListener.PhotoSelectCallback() {
-                    @Override
-                    public void onSelected(List<String> pathList) {
-                        handleSelectPhotoResult(pathList);
-
-                    }
-                });
+                mMessageControllerListener.takePhoto(null);
             }
 
             @Override
@@ -977,5 +972,13 @@ public class MessageListFragment extends Fragment implements ResourceStatusRecei
             });
             IMClient.getClient().getResourceHelper().addTask(task);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "onActivityResult :" + requestCode);
+        ArrayList<String> pathList = data.getStringArrayListExtra("ImageList");
+        handleSelectPhotoResult(pathList);
     }
 }

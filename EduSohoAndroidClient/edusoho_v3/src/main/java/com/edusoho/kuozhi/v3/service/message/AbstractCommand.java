@@ -82,20 +82,20 @@ public abstract class AbstractCommand {
         String type = mMessageBody.getType();
         String nickname = mMessageBody.getSource().getNickname();
         ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByConvNo(mMessageBody.getConvNo());
-        int unRead = convEntity == null ? 0 : convEntity.getUnRead();
+        String unReadStr = convEntity == null ? "" : String.format("[%d条]", convEntity.getUnRead());
         switch (type) {
             case PushUtil.ChatMsgType.IMAGE:
-                content = String.format("[%d条]%s:[%s]", unRead, nickname, Const.MEDIA_IMAGE);
+                content = String.format("%s%s:[%s]", unReadStr, nickname, Const.MEDIA_IMAGE);
                 break;
             case PushUtil.ChatMsgType.AUDIO:
-                content = String.format("[%d条]%s:[%s]",  unRead, nickname, Const.MEDIA_AUDIO);
+                content = String.format("%s%s:[%s]",  unReadStr, nickname, Const.MEDIA_AUDIO);
                 break;
             case PushUtil.ChatMsgType.MULTI:
                 RedirectBody redirectBody = new Gson().fromJson(mMessageBody.getBody(), RedirectBody.class);
-                content = String.format("[%d条]%s:%s",  unRead, nickname, redirectBody == null ? "" : redirectBody.content);
+                content = String.format("%s%s:%s",  unReadStr, nickname, redirectBody == null ? "" : redirectBody.content);
                 break;
             case PushUtil.ChatMsgType.TEXT:
-                content = String.format("[%d条]%s:%s",  unRead, mMessageBody.getSource().getNickname(), mMessageBody.getBody());
+                content = String.format("%s%s:%s",  unReadStr, mMessageBody.getSource().getNickname(), mMessageBody.getBody());
                 break;
             default:
                 content = "你有一条新消息";

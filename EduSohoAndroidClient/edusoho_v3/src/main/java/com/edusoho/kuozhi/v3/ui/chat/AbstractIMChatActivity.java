@@ -1,13 +1,19 @@
 package com.edusoho.kuozhi.v3.ui.chat;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.Role;
@@ -17,6 +23,8 @@ import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
+import com.edusoho.kuozhi.v3.factory.UtilFactory;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
@@ -39,11 +47,12 @@ import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 /**
  * Created by suju on 16/9/6.
  */
-public abstract class AbstractIMChatActivity extends ActionBarBaseActivity {
+public abstract class AbstractIMChatActivity extends AppCompatActivity {
 
     public static final int SEND_IMAGE = 1;
     public static final int SEND_CAMERA = 2;
 
+    public static final String BACK = "返回";
     public static final String TAG = "ChatActivity";
     public static final String FROM_ID = "from_id";
     public static final String TARGET_TYPE = "targer_type";
@@ -56,28 +65,44 @@ public abstract class AbstractIMChatActivity extends ActionBarBaseActivity {
     protected String mTargetType;
     protected String mConversationNo;
     protected MessageListFragment mMessageListFragment;
+    protected Context mContext;
+    protected TextView mTitleTextView;
+    protected View mTitleLayoutView;
 
-    private MessageControllerListener.PhotoSelectCallback mPhotoSelectCallback;
+    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate");
+        mActionBar = getSupportActionBar();
+        mContext = getBaseContext();
         setContentView(createView());
         initParams();
         setBackMode(BACK, TextUtils.isEmpty(mTargetName) ? "聊天" : mTargetName);
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
         attachMessageListFragment();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Log.d(TAG, "onResume");
         if (mConversationNo != null) {
             getNotificationProvider().cancelNotification(mConversationNo.hashCode());
+        }
+    }
+
+    public void setBackMode(String backTitle, String title) {
+        mTitleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
+        mTitleTextView = (TextView) mTitleLayoutView.findViewById(R.id.tv_action_bar_title);
+        mTitleTextView.setText(title);
+        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
+                ActionBar.LayoutParams.MATCH_PARENT);
+        layoutParams.gravity = Gravity.CENTER;
+        mActionBar.setCustomView(mTitleLayoutView, layoutParams);
+
+        if (backTitle != null) {
+            mActionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
 
@@ -86,19 +111,28 @@ public abstract class AbstractIMChatActivity extends ActionBarBaseActivity {
     }
 
     protected void attachMessageListFragment() {
+        Log.d(TAG, "attachMessageListFragment");
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        mMessageListFragment = createFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(MessageListFragment.CONV_NO, mConversationNo);
-        bundle.putInt(MessageListFragment.TARGET_ID, mTargetId);
-        bundle.putString(MessageListFragment.TARGET_TYPE, getTargetType());
-        mMessageListFragment.setArguments(bundle);
-        fragmentTransaction.add(R.id.chat_content, mMessageListFragment, "im_container").commitAllowingStateLoss();
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag("im_container");
+        if (fragment != null) {
+            mMessageListFragment = (MessageListFragment) fragment;
+            mMessageListFragment.setMessageControllerListener(getMessageControllerListener());
+            fragmentTransaction.show(fragment);
+        } else {
+            mMessageListFragment = createFragment();
+            mMessageListFragment.setMessageControllerListener(getMessageControllerListener());
+            Bundle bundle = new Bundle();
+            bundle.putString(MessageListFragment.CONV_NO, mConversationNo);
+            bundle.putInt(MessageListFragment.TARGET_ID, mTargetId);
+            bundle.putString(MessageListFragment.TARGET_TYPE, getTargetType());
+            mMessageListFragment.setArguments(bundle);
+            fragmentTransaction.add(R.id.chat_content, mMessageListFragment, "im_container");
+        }
+        fragmentTransaction.commitAllowingStateLoss();
     }
 
     protected MessageListFragment createFragment() {
         MessageListFragment messageListFragment = (MessageListFragment) Fragment.instantiate(mContext, MessageListFragment.class.getName());
-        messageListFragment.setMessageControllerListener(getMessageControllerListener());
         return messageListFragment;
     }
 
@@ -118,7 +152,7 @@ public abstract class AbstractIMChatActivity extends ActionBarBaseActivity {
         return new MessageControllerListener() {
             @Override
             public void createConvNo(final ConvNoCreateCallback callback) {
-                final LoadDialog loadDialog = LoadDialog.create(mActivity);
+                final LoadDialog loadDialog = LoadDialog.create(AbstractIMChatActivity.this);
                 loadDialog.show();
                 createChatConvNo().then(new PromiseCallback<String>() {
                     @Override
@@ -171,13 +205,11 @@ public abstract class AbstractIMChatActivity extends ActionBarBaseActivity {
 
             @Override
             public void selectPhoto(PhotoSelectCallback callback) {
-                mPhotoSelectCallback = callback;
                 openPictureFromLocal();
             }
 
             @Override
             public void takePhoto(PhotoSelectCallback callback) {
-                mPhotoSelectCallback = callback;
                 openPictureFromCamera();
             }
 
@@ -192,7 +224,7 @@ public abstract class AbstractIMChatActivity extends ActionBarBaseActivity {
                         try {
                             JSONObject data = new JSONObject(bundle.getString("data"));
                             final RedirectBody redirectBody = RedirectBody.createByJsonObj(data);
-                            mActivity.app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+                            CoreEngine.create(mContext).runNormalPlugin("FragmentPageActivity", mContext, new PluginRunCallback() {
                                 @Override
                                 public void setIntentDate(Intent startIntent) {
                                     startIntent.putExtra(Const.ACTIONBAR_TITLE, "选择");
@@ -240,14 +272,26 @@ public abstract class AbstractIMChatActivity extends ActionBarBaseActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
         if (requestCode == SEND_IMAGE) {
-            List<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-            if (mPhotoSelectCallback != null) {
-                mPhotoSelectCallback.onSelected(pathList);
+            ArrayList<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+            int size = getSupportFragmentManager().getFragments().size();
+            data.removeExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+            data.putStringArrayListExtra("ImageList", pathList);
+            for (int i = 0; i < size; i++) {
+                getSupportFragmentManager().getFragments().get(i).onActivityResult(requestCode, resultCode, data);
             }
         }
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    protected UtilFactory getUtilFactory() {
+        return FactoryManager.getInstance().create(UtilFactory.class);
     }
 }

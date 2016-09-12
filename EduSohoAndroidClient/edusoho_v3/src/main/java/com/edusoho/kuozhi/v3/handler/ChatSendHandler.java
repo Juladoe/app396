@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.handler;
 
+import android.app.Activity;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
@@ -18,10 +20,10 @@ public class ChatSendHandler {
 
     //must Activity
     protected int mItemIndex;
-    protected BaseActivity mActivity;
+    protected Activity mActivity;
     protected RedirectBody mRedirectBody;
 
-    public ChatSendHandler(BaseActivity activity, RedirectBody redirectBody, int itemIndex) {
+    public ChatSendHandler(Activity activity, RedirectBody redirectBody, int itemIndex) {
         mActivity = activity;
         mItemIndex = itemIndex;
         mRedirectBody = redirectBody;

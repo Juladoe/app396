@@ -50,6 +50,10 @@ public class ImChatActivity extends AbstractIMChatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
         if (item.getItemId() == R.id.user_profile) {
             Bundle bundle = new Bundle();
             School school = getAppSettingProvider().getCurrentSchool();

@@ -17,6 +17,9 @@ import android.util.Log;
 import com.edusoho.kuozhi.imserver.broadcast.IMServiceStartedBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
 import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
@@ -302,12 +305,30 @@ public class IMClient {
         this.mLaterIMMessageReceiver = null;
     }
 
+    private boolean filterMessageBody(MessageBody messageBody) {
+        if (messageBody == null) {
+            return true;
+        }
+        if (com.edusoho.kuozhi.imserver.ui.entity.PushUtil.ChatMsgType.PUSH.equals(messageBody.getType())) {
+            Source source = messageBody.getSource();
+            if (Destination.CLASSROOM.equals(source.getType()) || Destination.COURSE.equals(source.getType())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void invokeReceiver(MessageEntity messageEntity) {
         int count = mMessageReceiverList.size();
         for (int i = count - 1; i >= 0; i--) {
             IMMessageReceiver receiver = mMessageReceiverList.get(i);
             if ("success".equals(messageEntity.getCmd())) {
                 receiver.onSuccess(messageEntity.getMsg());
+                continue;
+            }
+            if (!Destination.GLOBAL.equals(receiver.getType().msgType)
+                    && filterMessageBody(new MessageBody(messageEntity))) {
                 continue;
             }
             receiver.getType().isProcessed = receiver.onReceiver(messageEntity);
@@ -336,11 +357,6 @@ public class IMClient {
         }
 
         return msgType.equals(receiverInfo.msgType) && convNo.equals(receiverInfo.convNo);
-    }
-
-    private String getRandomClientName(Context context) {
-        TelephonyManager TelephonyMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        return String.format("android_%s", TelephonyMgr.getDeviceId());
     }
 
     public static IMClient getClient() {

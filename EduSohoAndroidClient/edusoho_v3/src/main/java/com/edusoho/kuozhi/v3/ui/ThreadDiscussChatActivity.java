@@ -5,15 +5,15 @@ import android.animation.PropertyValuesHolder;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.android.volley.VolleyError;
+import com.baidu.cyberplayer.utils.A;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
@@ -94,6 +95,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mMessageEntityList = new ArrayList<>();
         mThreadProvider = new ThreadProvider(mContext);
     }
 
@@ -129,8 +131,18 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     }
 
     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     protected void attachMessageListFragment() {
         super.attachMessageListFragment();
+        mMessageListFragment.setIMessageDataProvider(this);
         mContentLayout.addOnLayoutChangeListener(getOnLayoutChangeListener());
     }
 
@@ -275,13 +287,6 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     }
 
     @Override
-    protected MessageListFragment createFragment() {
-        MessageListFragment messageListFragment = super.createFragment();
-        messageListFragment.setIMessageDataProvider(this);
-        return messageListFragment;
-    }
-
-    @Override
     public MessageEntity createMessageEntity(MessageBody messageBody) {
         MessageEntity messageEntity = new MessageEntityBuildr()
                 .addUID(messageBody.getMessageId())
@@ -297,6 +302,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                 .builder();
 
         messageEntity.setId(mMessageEntityList.size());
+        messageBody.setMid(mMessageEntityList.size());
         mMessageEntityList.add(messageEntity);
         return messageEntity;
     }
@@ -356,7 +362,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         }
 
         AudioBody audioBody = AudioUtil.getAudioBody(body);
-        if (audioBody != null) {
+        if (audioBody != null && !TextUtils.isEmpty(audioBody.getFile())) {
             return PushUtil.ChatMsgType.AUDIO;
         }
 
@@ -408,9 +414,8 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                 if (threadPostResult != null && threadPostResult.resources != null) {
                     List<CourseThreadPostEntity> posts = threadPostResult.resources;
                     Collections.reverse(posts);
-                    mMessageEntityList = coverPostListToMessageEntity(posts);
-
-                    attachMessageListFragment();
+                    mMessageEntityList.addAll(coverPostListToMessageEntity(posts));
+                    mMessageListFragment.reload();
                 }
             }
         }).fail(new NormalCallback<VolleyError>() {
@@ -485,7 +490,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                         EdusohoApp.app.schoolHost,
                         String.format(Const.CLASSROOM_COURSES, AppUtil.parseInt(threadInfo.get("targetId").toString()))
                 );
-                mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.WEB_URL, url);
@@ -507,7 +512,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                         EdusohoApp.app.schoolHost,
                         String.format(Const.MOBILE_WEB_COURSE, mThreadTargetId)
                 );
-                mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.WEB_URL, url);
