@@ -107,7 +107,7 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     School school = getAppSettingProvider().getCurrentSchool();
-                    String url = String.format(Const.MOBILE_APP_URL, school.host + "/", String.format(Const.MOBILE_WEB_COURSE, mCourseId));
+                    String url = String.format(Const.MOBILE_APP_URL, school.url + "/", String.format(Const.MOBILE_WEB_COURSE, mCourseId));
                     startIntent.putExtra(Const.WEB_URL, url);
                 }
             });
