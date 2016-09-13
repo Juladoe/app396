@@ -49,6 +49,7 @@ import com.edusoho.kuozhi.v3.view.webview.ESWebChromeClient;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BaseBridgePlugin;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgeCallback;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -62,7 +63,7 @@ import java.util.List;
 /**
  * Created by JesseHuang on 15/6/2.
  */
-public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
+public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
 
     @Override
     public String getName() {
@@ -82,7 +83,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     public void redirect(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
         JSONObject body = args.getJSONObject(0);
         final RedirectBody redirectBody = RedirectBody.createByJsonObj(body);
-        mActivity.app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(Const.ACTIONBAR_TITLE, "选择");
@@ -231,13 +232,13 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
 
     @JsAnnotation
     public void backWebView(JSONArray args, BridgeCallback callbackContext) throws JSONException {
-        mActivity.app.sendMsgToTarget(WebViewActivity.BACK, null, mPluginContext.getActivity());
+        MessageEngine.getInstance().sendMsgToTaget(WebViewActivity.BACK, null, mPluginContext.getActivity());
     }
 
     @JsAnnotation
     public void openWebView(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         final String strUrl = args.getString(0);
-        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(Const.WEB_URL, strUrl);
@@ -247,7 +248,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
 
     @JsAnnotation
     public void closeWebView(JSONArray args, BridgeCallback callbackContext) throws JSONException {
-        mActivity.app.sendMsgToTarget(WebViewActivity.CLOSE, null, mPluginContext.getActivity());
+        MessageEngine.getInstance().sendMsgToTaget(WebViewActivity.CLOSE, null, mPluginContext.getActivity());
     }
 
     @JsAnnotation
@@ -255,7 +256,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         JSONObject result = new JSONObject();
         User user = EdusohoApp.app.loginUser;
         if (user != null) {
-            result.put("user", new JSONObject(mActivity.gson.toJson(user)));
+            result.put("user", new JSONObject(new Gson().toJson(user)));
             result.put("token", EdusohoApp.app.token);
         }
 
@@ -304,25 +305,26 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     @JsAnnotation
     public void saveUserToken(JSONArray args, BridgeCallback callbackContext) throws JSONException {
 
+        EdusohoApp app = (EdusohoApp) mActivity.getApplication();
         UserResult userResult = new UserResult();
         userResult.token = args.length() > 1 ? args.getString(1) : "";
-        userResult.user = mActivity.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
+        userResult.user = app.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
         });
-        mActivity.app.saveToken(userResult);
-        mActivity.app.sendMessage(Const.LOGIN_SUCCESS, null);
+        app.saveToken(userResult);
+        app.sendMessage(Const.LOGIN_SUCCESS, null);
         Bundle bundle = new Bundle();
         bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
-        //mActivity.app.pushRegister(bundle);
     }
 
     @JsAnnotation
     public void updateUser(JSONArray args, BridgeCallback callbackContext) throws JSONException {
 
+        EdusohoApp app = (EdusohoApp) mActivity.getApplication();
         UserResult userResult = new UserResult();
-        userResult.user = mActivity.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
+        userResult.user = app.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
         });
-        userResult.token = mActivity.app.token;
-        mActivity.app.saveToken(userResult);
+        userResult.token = app.token;
+        app.saveToken(userResult);
 
         User user = userResult.user;
         if (user != null) {
@@ -335,7 +337,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
 
         Bundle bundle = new Bundle();
         bundle.putInt("id", userResult.user.id);
-        mActivity.app.sendMessage(Const.USER_UPDATE, bundle);
+        app.sendMessage(Const.USER_UPDATE, bundle);
     }
 
     @JsAnnotation
@@ -358,7 +360,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     public void pay(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         final String mTitle = args.getString(0);
         final String payUrl = args.getString(1);
-        mActivity.app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AlipayFragment");
@@ -402,19 +404,21 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
             imgPaths[i] = imageArray.getString(i);
         }
         bundle.putStringArray("images", imgPaths);
-        mActivity.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", mActivity, bundle);
+        CoreEngine.create(mContext).runNormalPluginWithBundle("ViewPagerActivity", mActivity, bundle);
     }
 
     @JsAnnotation
     public void clearUserToken(JSONArray args, BridgeCallback callbackContext) throws JSONException {
-        mActivity.app.removeToken();
-        mActivity.app.sendMessage(Const.LOGOUT_SUCCESS, null);
+
+        EdusohoApp app = (EdusohoApp) mActivity.getApplication();
+        app.removeToken();
+        app.sendMessage(Const.LOGOUT_SUCCESS, null);
     }
 
     @JsAnnotation
     public void showDownLesson(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         final int courseId = args.getInt(0);
-        mActivity.app.mEngine.runNormalPlugin(
+        CoreEngine.create(mContext).runNormalPlugin(
                 "LessonDownloadingActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -448,7 +452,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
             }
         }
         if ("Fragment".equals(type)) {
-            mActivity.app.mEngine.runPluginWithFragmentByBundle(name + "Fragment", mActivity, bundle);
+            CoreEngine.create(mContext).runPluginWithFragmentByBundle(name + "Fragment", mActivity, bundle);
         } else if ("courseConsult".equals(name)) {
             new CourseConsultAction(mActivity).invoke(bundle);
         } else if ("threadDiscuss".equals(name)) {

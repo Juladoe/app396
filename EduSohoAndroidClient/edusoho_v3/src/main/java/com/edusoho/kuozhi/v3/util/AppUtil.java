@@ -581,6 +581,16 @@ public class AppUtil {
         return appStorage;
     }
 
+    public static File getAppInstallStorage() {
+        File store = getAppStorage();
+        File installStore = new File(store, "install");
+        if (!installStore.exists()) {
+            installStore.mkdirs();
+        }
+
+        return installStore;
+    }
+
     public static File getImageStorage() {
         File imageStore = new File(AppUtil.getAppStorage(), Const.UPLOAD_IMAGE_CACHE_FILE);
         if (!imageStore.exists()) {

@@ -84,6 +84,12 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        Log.d(TAG, "onRestoreInstanceState");
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume");
@@ -117,7 +123,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         if (fragment != null) {
             mMessageListFragment = (MessageListFragment) fragment;
             mMessageListFragment.setMessageControllerListener(getMessageControllerListener());
-            fragmentTransaction.show(fragment);
+            //fragmentTransaction.show(fragment);
         } else {
             mMessageListFragment = createFragment();
             mMessageListFragment.setMessageControllerListener(getMessageControllerListener());

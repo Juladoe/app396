@@ -5,6 +5,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.Role;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -34,7 +35,7 @@ public class ImChatActivity extends AbstractIMChatActivity {
                         }
                         role.setRid(user.id);
                         role.setAvatar(user.mediumAvatar);
-                        role.setType(getTargetType());
+                        role.setType(Destination.USER);
                         role.setNickname(user.nickname);
                         callback.onCreateRole(role);
                     }

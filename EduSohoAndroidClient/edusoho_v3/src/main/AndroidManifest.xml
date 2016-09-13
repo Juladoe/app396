@@ -42,6 +42,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
+        android:largeHeap="true"
         android:persistent="true"
         android:hardwareAccelerated="true"
         android:theme="@style/EdusohoAppTheme">

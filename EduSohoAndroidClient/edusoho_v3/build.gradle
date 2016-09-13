@@ -21,7 +21,7 @@ dependencies {
     compile project(':bdvideoplayer')
     compile project(':shard')
     compile project(':commonLib')
-    compile project(':liveEplayer')
+    //compile project(':liveEplayer')
     compile project(':multi-image-selector')
     compile project(':imserver')
     compile 'com.czt.mp3recorder:library:1.0.4'
@@ -41,6 +41,4 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.2.1'
     compile 'com.android.support:cardview-v7:22.2.1'
     compile 'com.android.support:design:22.2.1'
-
-    compile 'com.android.support:multidex:1.0.0'
 }

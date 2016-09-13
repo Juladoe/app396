@@ -1,9 +1,11 @@
 package com.edusoho.kuozhi.v3.plugin.appview;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -21,21 +23,22 @@ import java.util.HashMap;
  */
 public class CourseConsultAction {
 
-    private BaseActivity mActivity;
+    private Activity mActivity;
 
-    public CourseConsultAction(BaseActivity activity)
+    public CourseConsultAction(Activity activity)
     {
         this.mActivity = activity;
     }
 
     public void invoke(final Bundle bundle) {
-        RequestUrl requestUrl = mActivity.app.bindUrl(Const.USERINFO, false);
+        final EdusohoApp app = (EdusohoApp) mActivity.getApplication();
+        RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("userId", bundle.getString("userId"));
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+        app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                User user = mActivity.parseJsonValue(response, new TypeToken<User>() {
+                User user = app.parseJsonValue(response, new TypeToken<User>() {
                 });
                 if (user != null) {
                     bundle.putString(ImChatActivity.FROM_NAME, user.nickname);

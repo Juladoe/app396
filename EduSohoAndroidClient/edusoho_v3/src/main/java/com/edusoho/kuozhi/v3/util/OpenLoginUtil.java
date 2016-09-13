@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -64,12 +65,12 @@ public class OpenLoginUtil {
         this.mLoginhandler = callback;
     }
 
-    public void bindOpenUser(final BaseActivity activity, String[] params) {
+    public void bindOpenUser(final Activity activity, String[] params) {
         if (params == null) {
             CommonUtil.longToast(mContext, "授权失败!");
             return;
         }
-        EdusohoApp app = activity.app;
+        final EdusohoApp app = (EdusohoApp) activity.getApplication();
         RequestUrl requestUrl = app.bindNewUrl(Const.BIND_LOGIN, false);
         requestUrl.setParams(new String[]{
                 "type", params[3],
@@ -82,26 +83,26 @@ public class OpenLoginUtil {
         final LoadDialog loadDialog = LoadDialog.create(activity);
         loadDialog.setMessage("登录中...");
         loadDialog.show();
-        activity.ajaxPost(requestUrl, new Response.Listener<String>() {
+        app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 loadDialog.dismiss();
-                UserResult userResult = activity.parseJsonValue(
+                UserResult userResult = app.parseJsonValue(
                         response, new TypeToken<UserResult>() {
                         });
-                activity.app.saveToken(userResult);
-                activity.app.loginUser.thirdParty = thirdPartyType;
-                activity.app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
+                app.saveToken(userResult);
+                app.loginUser.thirdParty = thirdPartyType;
+                app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                 Bundle bundle = new Bundle();
-                bundle.putString(Const.BIND_USER_ID, String.valueOf(activity.app.loginUser.id));
+                bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUser.id));
 
-                User user = activity.app.loginUser;
+                User user = app.loginUser;
                 new IMServiceProvider(activity.getBaseContext()).bindServer(user.id, user.nickname);
                 mLoginhandler.success(userResult);
                 SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
                 String entertime = nowfmt.format(date);
-                saveEnterSchool(activity.app.defaultSchool.name, entertime, "登录账号：" + activity.app.loginUser.nickname, activity.app.domain);
+                saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
             }
         }, null);
         Looper.loop();

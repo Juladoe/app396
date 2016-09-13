@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.plugin.appview;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -14,9 +15,9 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
  */
 public class ThreadDiscussAction {
 
-    private BaseActivity mActivity;
+    private Activity mActivity;
 
-    public ThreadDiscussAction(BaseActivity activity)
+    public ThreadDiscussAction(Activity activity)
     {
         this.mActivity = activity;
     }

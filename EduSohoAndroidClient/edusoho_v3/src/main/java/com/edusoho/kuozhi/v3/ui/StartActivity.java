@@ -45,10 +45,14 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             startApp();
             return;
         }
-
-        setContentView(R.layout.activity_start);
+        initView();
         app.registMsgSource(this);
         startAnim();
+    }
+
+    protected void initView() {
+        setContentView(R.layout.activity_start);
+        findViewById(R.id.li_start_load).setBackgroundResource(R.drawable.load_bg);
     }
 
     private void startAnim() {

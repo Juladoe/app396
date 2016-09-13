@@ -1,4 +1,4 @@
-package com.edusoho.liveplayer;
+package com.soooner.EplayerPluginLibary;
 
 import android.content.Context;
 import com.soooner.EplayerPluginLibary.util.ActivityUtil;

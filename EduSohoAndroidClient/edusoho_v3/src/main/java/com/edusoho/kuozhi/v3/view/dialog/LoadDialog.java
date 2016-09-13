@@ -17,13 +17,12 @@ public class LoadDialog extends Dialog {
 
     public LoadDialog(Context context) {
         super(context);
-        View rootView = LayoutInflater.from(context).inflate(R.layout.load_dig_layout, null);
-        rootView.setBackgroundResource(R.drawable.load_bg);
-        setContentView(rootView);
+        setContentView(R.layout.load_dig_layout);
         initView();
     }
 
     private void initView() {
+        findViewById(R.id.load_layout).setBackgroundResource(R.drawable.load_bg);
         loading_txt = (TextView) findViewById(R.id.loading_txt);
         setCanceledOnTouchOutside(false);
     }

@@ -1,7 +1,10 @@
 package com.edusoho.kuozhi.v3.plugin.appview;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.ThreadCreateActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
@@ -12,15 +15,15 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
  */
 public class ThreadCreateAction {
 
-    private BaseActivity mActivity;
+    private Activity mActivity;
 
-    public ThreadCreateAction(BaseActivity activity)
+    public ThreadCreateAction(Activity activity)
     {
         this.mActivity = activity;
     }
 
     public void invoke(final Bundle bundle) {
-        mActivity.app.mEngine.runNormalPlugin("ThreadCreateActivity", mActivity.getBaseContext(), new PluginRunCallback() {
+        CoreEngine.create(mActivity).runNormalPlugin("ThreadCreateActivity", mActivity.getBaseContext(), new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ThreadCreateActivity.TARGET_ID, AppUtil.parseInt(bundle.getString("targetId")));

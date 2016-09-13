@@ -131,6 +131,7 @@ public class IMServiceProvider extends ModelProvider {
             return;
         }
         int status = IMClient.getClient().getIMConnectStatus();
+        Log.d("IMServiceProvider", "status:" + status);
         if (status == IMConnectStatus.OPEN || status == IMConnectStatus.CONNECTING) {
             return;
         }
