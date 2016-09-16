@@ -68,12 +68,15 @@ public class PushMsgCommand extends AbstractCommand {
         notifyIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         LinkedHashMap<String, String> linkedHashMap = new Gson().fromJson(mMessageBody.getBody(), LinkedHashMap.class);
-        if (linkedHashMap != null && "question.created".equals(linkedHashMap.get("type"))) {
-            notifyIntent.putExtra(Const.INTENT_TARGET, ThreadDiscussChatActivity.class);
-            notifyIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_ID, AppUtil.parseInt(linkedHashMap.get("courseId")));
-            notifyIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_TYPE, mMessageBody.getSource().getType());
-            notifyIntent.putExtra(ThreadDiscussChatActivity.FROM_ID, AppUtil.parseInt(linkedHashMap.get("threadId")));
-            notifyIntent.putExtra(ThreadDiscussChatActivity.THREAD_TYPE, "question");
+        if (linkedHashMap != null) {
+            if ("question.created".equals(linkedHashMap.get("type"))
+                    || "question.answered".equals(linkedHashMap.get("type"))) {
+                notifyIntent.putExtra(Const.INTENT_TARGET, ThreadDiscussChatActivity.class);
+                notifyIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_ID, AppUtil.parseInt(linkedHashMap.get("courseId")));
+                notifyIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_TYPE, mMessageBody.getSource().getType());
+                notifyIntent.putExtra(ThreadDiscussChatActivity.FROM_ID, AppUtil.parseInt(linkedHashMap.get("threadId")));
+                notifyIntent.putExtra(ThreadDiscussChatActivity.THREAD_TYPE, "question");
+            }
         }
 
         return notifyIntent;

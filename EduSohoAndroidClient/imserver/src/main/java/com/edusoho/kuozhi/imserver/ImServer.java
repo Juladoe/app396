@@ -312,7 +312,8 @@ public class ImServer {
 
             messageEntity.setConvNo(getMessageConvNo(messageBody));
             int messageStatus = MessageEntity.StatusType.NONE;
-            if ("text".equals(messageBody.getType()) || "multi".equals(messageBody.getType())) {
+            if (PushUtil.ChatMsgType.TEXT.equals(messageBody.getType())
+                    || PushUtil.ChatMsgType.MULTI.equals(messageBody.getType())) {
                 messageStatus = MessageEntity.StatusType.SUCCESS;
             }
             messageEntity.setStatus(messageStatus);
@@ -381,11 +382,6 @@ public class ImServer {
         if (role.getRid() != 0) {
             convEntity.setTargetName(role.getNickname());
             convEntity.setAvatar(role.getAvatar());
-        }
-
-        if(TextUtils.isEmpty(messageEntity.getConvNo()) &&
-                SystemUtil.searchInArray(PUSH_TYPE, convEntity.getConvNo()) != -1) {
-
         }
 
         if (checkPushConvEntityCanUpdate(convEntity.getConvNo(), messageEntity.getConvNo())) {

@@ -16,7 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
@@ -81,17 +83,35 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     }
 
     private void syncSchoolSetting() {
+        User user = getAppSettingProvider().getCurrentUser();
+        if (user == null) {
+            return;
+        }
         new SystemProvider(mContext).getIMSetting()
                 .success(new NormalCallback<LinkedHashMap>() {
                     @Override
                     public void success(LinkedHashMap linkedHashMap) {
+                        AppConfig appConfig = getAppSettingProvider().getAppConfig();
+                        boolean isEnableIMChat = false;
                         if (linkedHashMap != null && linkedHashMap.containsKey("enabled")) {
-                            AppConfig appConfig = getAppSettingProvider().getAppConfig();
-                            appConfig.isEnableIMChat = AppConfig.IM_OPEN.equals(linkedHashMap.get("enabled"));
+                            isEnableIMChat = AppConfig.IM_OPEN.equals(linkedHashMap.get("enabled"));
+                        } else {
+                            isEnableIMChat = false;
+                        }
+                        if (isEnableIMChat && appConfig.isEnableIMChat != isEnableIMChat) {
+                            appConfig.isEnableIMChat = isEnableIMChat;
                             getAppSettingProvider().saveConfig(appConfig);
+                            reConnectServer();
                         }
                     }
-                });
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError volleyError) {
+                AppConfig appConfig = getAppSettingProvider().getAppConfig();
+                appConfig.isEnableIMChat = false;
+                getAppSettingProvider().saveConfig(appConfig);
+            }
+        });
     }
 
     @Override
@@ -436,11 +456,15 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     protected void onResume() {
         super.onResume();
+        syncSchoolSetting();
+        reConnectServer();
+    }
+
+    private void reConnectServer() {
         User user = getAppSettingProvider().getCurrentUser();
         if (user == null) {
             return;
         }
-        syncSchoolSetting();
         new IMServiceProvider(getBaseContext()).reConnectServer(user.id, user.nickname);
     }
 

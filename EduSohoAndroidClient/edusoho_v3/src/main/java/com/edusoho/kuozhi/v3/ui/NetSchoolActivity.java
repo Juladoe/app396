@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
@@ -406,19 +407,17 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                 if (!checkMobileVersion(site, site.apiVersionRange)) {
                     return;
                 }
-                app.setCurrentSchool(site);
-                app.removeToken();
-                SqliteChatUtil.getSqliteChatUtil(mContext, app.domain).close();
-                app.registDevice(null);
-
                 bindApiToken(site);
-                SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
-                Date date = new Date();
-                String loginTime = nowfmt.format(date);
-                saveEnterSchool(site.name, loginTime, "登录账号：未登录", app.domain);
-                startSchoolActivity(site);
             }
         }, this);
+    }
+
+    private void saveSchoolHistory(School site) {
+        SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String loginTime = nowfmt.format(date);
+        saveEnterSchool(site.name, loginTime, "登录账号：未登录", app.domain);
+        startSchoolActivity(site);
     }
 
     protected void bindApiToken(final School site) {
@@ -426,17 +425,20 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                mLoading.dismiss();
                 Token token = parseJsonValue(response, new TypeToken<Token>() {
                 });
-                if (token != null) {
-                    app.saveApiToken(token.token);
-                    mLoading.dismiss();
-                    showSchSplash(site.name, site.splashs);
-                    SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
-                    Date date = new Date();
-                    String entertime = nowfmt.format(date);
-                    saveEnterSchool(site.name, entertime, "登录账号：未登录", app.domain);
+                if (token == null || TextUtils.isEmpty(token.token)) {
+                    CommonUtil.longToast(mContext, "获取网校信息失败");
+                    return;
                 }
+                app.setCurrentSchool(site);
+                app.removeToken();
+                app.registDevice(null);
+                app.saveApiToken(token.token);
+                getAppSettingProvider().setUser(null);
+                IMClient.getClient().destory();
+                saveSchoolHistory(site);
             }
         }, this);
     }

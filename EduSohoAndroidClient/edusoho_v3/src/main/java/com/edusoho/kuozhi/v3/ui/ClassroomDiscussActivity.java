@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -79,7 +80,7 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
     }
 
     @Override
-    protected void createTargetRole(String type, int rid, final MessageControllerListener.RoleUpdateCallback callback) {
+    protected void createTargetRole(String type, int rid, final MessageListPresenterImpl.RoleUpdateCallback callback) {
         if (Destination.CLASSROOM.equals(type)) {
             new ClassRoomProvider(mContext).getClassRoom(mTargetId)
                     .success(new NormalCallback<Classroom>() {
@@ -134,7 +135,7 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
     @Override
     public void invoke(WidgetMessage message) {
         if (message.type.code == CLEAR) {
-            mMessageListFragment.reload();
+            mIMessageListPresenter.refresh();
         }
     }
 

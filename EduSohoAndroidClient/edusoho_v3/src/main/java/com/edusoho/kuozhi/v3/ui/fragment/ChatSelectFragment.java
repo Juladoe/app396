@@ -37,6 +37,8 @@ import java.util.List;
  */
 public class ChatSelectFragment extends AbstractChatSendFragment {
 
+    public static final int REQUEST_SELECT = 0010;
+    public static final int RESULT_SEND_OK = 0020;
     public static final String BODY = "body";
 
     private ChatSelectListAdapter mChatSelectListAdapter;
@@ -111,6 +113,7 @@ public class ChatSelectFragment extends AbstractChatSendFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == ChatSendHandler.REQUEST_SELECT_FRIEND
                 && resultCode == ChatSendHandler.RESULT_SELECT_FRIEND_OK) {
+            mActivity.setResult(RESULT_SEND_OK);
             mActivity.finish();
         }
     }
@@ -122,6 +125,7 @@ public class ChatSelectFragment extends AbstractChatSendFragment {
 
     @Override
     protected void sendSuccessCallback() {
+        mActivity.setResult(RESULT_SEND_OK);
         mActivity.finish();
     }
 

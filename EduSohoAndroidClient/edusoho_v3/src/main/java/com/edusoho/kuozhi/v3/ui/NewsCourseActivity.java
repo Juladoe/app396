@@ -20,9 +20,12 @@ import android.widget.RadioGroup;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
+import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
+import com.edusoho.kuozhi.imserver.ui.listener.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -236,7 +239,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             }
             fragmentTransaction.add(R.id.fragment_container, fragment, tag);
         }
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
         mCurrentFragmentTag = tag;
         if (mCurrentFragmentTag.equals(mFragmentTags[0])) {
             setSwitchBadgeViewVisible(View.INVISIBLE);
@@ -353,7 +356,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
     public void invoke(WidgetMessage message) {
         processMessage(message);
         if (message.type.code == CLEAR) {
-            mMessageListFragment.reload();
+            mIMessageListPresenter.refresh();
         }
     }
 
@@ -400,6 +403,11 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
      */
     private void initChatRoomController(MessageListFragment messageListFragment) {
         messageListFragment.setMessageControllerListener(getMessageControllerListener());
+        mIMessageListPresenter = new ChatMessageListPresenterImpl(
+                messageListFragment.getArguments(),
+                IMClient.getClient().getResourceHelper(),
+                new DefautlMessageDataProvider(),
+                messageListFragment);
     }
 
     protected Promise createChatConvNo() {
@@ -430,7 +438,8 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
         return promise;
     }
 
-    protected void createTargetRole(String type, int rid, MessageControllerListener.RoleUpdateCallback callback) {
+    @Override
+    protected void createTargetRole(String type, int rid, MessageListPresenterImpl.RoleUpdateCallback callback) {
         if (Destination.USER.equals(type)) {
             createTargetRoleFromUser(rid, callback);
             return;
@@ -443,7 +452,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
         callback.onCreateRole(role);
     }
 
-    protected void createTargetRoleFromUser(int rid, final MessageControllerListener.RoleUpdateCallback callback) {
+    protected void createTargetRoleFromUser(int rid, final MessageListPresenterImpl.RoleUpdateCallback callback) {
         new UserProvider(mContext).getUserInfo(rid)
                 .success(new NormalCallback<User>() {
                     @Override

@@ -15,6 +15,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
@@ -180,7 +182,6 @@ public class SettingActivity extends ActionBarBaseActivity {
                         btnLogout.setVisibility(View.INVISIBLE);
                         app.sendMessage(Const.LOGOUT_SUCCESS, null);
                         app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
-                        NotificationUtil.cancelAll();
                         finish();
                     }
                 }, new Response.ErrorListener() {
@@ -191,15 +192,16 @@ public class SettingActivity extends ActionBarBaseActivity {
                 Bundle bundle = new Bundle();
                 bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
             } else {
+                new IMServiceProvider(getBaseContext()).unBindServer();
+                getAppSettingProvider().setUser(null);
                 ThirdPartyLogin.getInstance(mContext).loginOut(app.loginUser.thirdParty);
                 app.removeToken();
                 btnLogout.setVisibility(View.INVISIBLE);
                 app.sendMessage(Const.LOGOUT_SUCCESS, null);
                 app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
-                NotificationUtil.cancelAll();
                 finish();
             }
-
+            getNotificationProvider().cancelAllNotification();
             M3U8DownService service = M3U8DownService.getService();
             if (service != null) {
                 service.cancelAllDownloadTask();
@@ -267,5 +269,9 @@ public class SettingActivity extends ActionBarBaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return super.onKeyDown(keyCode, event);
+    }
+
+    protected NotificationProvider getNotificationProvider() {
+        return FactoryManager.getInstance().create(NotificationProvider.class);
     }
 }

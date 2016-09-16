@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.R;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
@@ -24,6 +25,7 @@ import com.edusoho.kuozhi.imserver.ui.entity.Direct;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.AudioPlayStatusListener;
+import com.edusoho.kuozhi.imserver.ui.listener.MessageItemOnClickListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
 import com.edusoho.kuozhi.imserver.ui.util.ImageCache;
@@ -46,6 +48,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -72,6 +75,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
     private int mCurrentId;
     private int mMaxAudioWidth;
     private MessageHelper mMessageHelper;
+    private MessageItemOnClickListener mMessageItemOnClickListener;
     private MessageListItemController mMessageListItemController;
 
     protected Context mContext;
@@ -102,28 +106,33 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         }
     }
 
-    public void updateItem(MessageEntity messageEntity) {
-        int size = mMessageList.size();
-        for (int i = 0; i < size; i++) {
-            if (mMessageList.get(i).getId() == messageEntity.getId()) {
-                mMessageList.remove(i);
-                mMessageList.add(i, messageEntity);
+    private void updateMessageEntity(MessageEntity oldEntity, MessageEntity newEntity) {
+        oldEntity.setStatus(newEntity.getStatus());
+        oldEntity.setTime(newEntity.getTime());
+        oldEntity.setCmd(newEntity.getCmd());
+        oldEntity.setConvNo(newEntity.getConvNo());
+        oldEntity.setFromId(newEntity.getFromId());
+        oldEntity.setFromName(newEntity.getFromName());
+        oldEntity.setMsg(newEntity.getMsg());
+        oldEntity.setToId(newEntity.getToId());
+        oldEntity.setToName(newEntity.getToName());
+        oldEntity.setUid(newEntity.getUid());
+    }
+
+    public void updateItem(MessageEntity updateMessageEntity) {
+        Iterator<MessageEntity> iterator = mMessageList.iterator();
+        while (iterator.hasNext()) {
+            MessageEntity messageEntity = iterator.next();
+            if (messageEntity.getId() == updateMessageEntity.getId()) {
+                updateMessageEntity(messageEntity, updateMessageEntity);
                 notifyDataSetChanged();
                 return;
             }
         }
     }
 
-    private void updateViewByPosition(int position, MessageEntity messageEntity) {
-
-    }
-
     public void setCurrentId(int currentId) {
         this.mCurrentId = currentId;
-    }
-
-    public int getViewTypeCount() {
-        return 8;
     }
 
     public MessageEntity getItem(int position) {
@@ -135,38 +144,33 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         return mMessageList.size();
     }
 
+    public void setOnItemClickListener(MessageItemOnClickListener listener) {
+        this.mMessageItemOnClickListener = listener;
+    }
+
     @Override
     public MessageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.d(TAG, "create view type:" + viewType);
         View contentView = getItemView(viewType);
-        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         contentView.setLayoutParams(lp);
-
-        return createViewHolder(viewType, contentView);
+        MessageViewHolder viewHolder = createViewHolder(viewType, contentView);
+        viewHolder.setMessageItemOnClickListener(mMessageItemOnClickListener);
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(MessageViewHolder viewHolder, int position) {
         MessageBody messageBody = new MessageBody(mMessageList.get(position));
 
+        viewHolder.resetItemClickListenerIndex(position);
         viewHolder.setDirect(messageBody.getSource().getId() == mCurrentId ? Direct.SEND : Direct.RECEIVE);
         viewHolder.setContainerContent(messageBody);
         viewHolder.setMessageBody(messageBody, position);
+        viewHolder.setMessageStatus(messageBody);
         viewHolder.setAvatar(messageBody);
 
-        switch (messageBody.getMsgStatus()) {
-            case MessageEntity.StatusType.SUCCESS:
-                viewHolder.errorStatusView.setVisibility(View.INVISIBLE);
-                break;
-            case MessageEntity.StatusType.UPLOADING:
-                viewHolder.errorStatusView.setVisibility(View.VISIBLE);
-                viewHolder.errorStatusView.setProgressStatus();
-                break;
-            case MessageEntity.StatusType.FAILED:
-                viewHolder.errorStatusView.setVisibility(View.VISIBLE);
-                viewHolder.errorStatusView.setErrorStatus();
-
-        }
         initClickListener(viewHolder, position);
     }
 
@@ -216,6 +220,9 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         public MessageStatusView errorStatusView;
         public ImageView unReadView;
 
+        private int mCurrentPosition;
+        private MessageItemOnClickListener mMessageItemOnClickListener;
+
         public MessageViewHolder(View view) {
             super(view);
             timeView = (TextView) view.findViewById(R.id.tv_time);
@@ -231,6 +238,44 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         }
 
         public void setContainerContent(MessageBody messageBody) {
+        }
+
+        public void setMessageItemOnClickListener(MessageItemOnClickListener listener) {
+            if (listener == null) {
+                return;
+            }
+            this.mMessageItemOnClickListener = listener;
+            itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mMessageItemOnClickListener.onItemClick(mCurrentPosition, itemView);
+                    return false;
+                }
+            });
+        }
+
+        public void resetItemClickListenerIndex(int position) {
+            this.mCurrentPosition = position;
+        }
+
+        private void setMessageStatus(MessageBody messageBody) {
+            if (mDirect == Direct.RECEIVE
+                    && (PushUtil.ChatMsgType.TEXT.equals(messageBody.getType()) || PushUtil.ChatMsgType.MULTI.equals(messageBody.getType()))) {
+                errorStatusView.setVisibility(View.INVISIBLE);
+                return;
+            }
+            switch (messageBody.getMsgStatus()) {
+                case MessageEntity.StatusType.SUCCESS:
+                    errorStatusView.setVisibility(View.INVISIBLE);
+                    break;
+                case MessageEntity.StatusType.UPLOADING:
+                    errorStatusView.setVisibility(View.VISIBLE);
+                    errorStatusView.setProgressStatus();
+                    break;
+                case MessageEntity.StatusType.FAILED:
+                    errorStatusView.setVisibility(View.VISIBLE);
+                    errorStatusView.setErrorStatus();
+            }
         }
 
         public void setMessageBody(MessageBody messageBody, int position) {
@@ -296,7 +341,8 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         return i;
     }
 
-    public void addList(List<MessageEntity> messageBodyList) {
+    public void setList(List<MessageEntity> messageBodyList) {
+        mMessageList.clear();
         mMessageList.addAll(messageBodyList);
         notifyDataSetChanged();
     }
@@ -643,17 +689,19 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             String imagePath = mMessageHelper.getThumbImagePath(body);
             //local file
             if (imagePath.startsWith("file:")) {
-                MaskBitmap bitmap = ImageCache.getInstance().get(imagePath);
-                if (bitmap != null) {
+                MaskBitmap maskBitmap = ImageCache.getInstance().get(imagePath);
+                if (maskBitmap != null && maskBitmap.direct == mDirect) {
                     Log.d(TAG, "image is cache");
-                    mImageView.setMaskBitmap(bitmap);
+                    mImageView.setMaskBitmap(maskBitmap);
                     return;
                 }
                 ImageLoader.getInstance().displayImage(imagePath, mImageView, mOptions, new SimpleImageLoadingListener() {
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        ImageCache.getInstance().put(imageUri, new MaskBitmap(loadedImage));
-                        mImageView.setMaskBitmap(new MaskBitmap(loadedImage));
+                        MaskBitmap maskBitmap = new MaskBitmap(loadedImage);
+                        maskBitmap.direct = mDirect;
+                        ImageCache.getInstance().put(imageUri, maskBitmap);
+                        mImageView.setMaskBitmap(maskBitmap);
                     }
                 });
             } else {

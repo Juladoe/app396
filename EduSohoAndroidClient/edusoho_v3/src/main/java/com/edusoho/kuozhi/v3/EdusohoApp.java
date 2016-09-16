@@ -540,7 +540,6 @@ public class EdusohoApp extends Application {
             return;
         }
         mService.sendMessage(EdusohoMainService.EXIT_USER, null);
-        Log.d(null, "remove->token data->" + loginUser);
     }
 
     public boolean taskIsRun(String name) {

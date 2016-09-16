@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -25,6 +26,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class ServiceProfileFragment extends BaseFragment {
 
     public static final String SERVICE_ID = "id";
+    public static final String SERVICE_TITLE = "title";
     public static final String SERVICE_CONVNO = "convNo";
 
     private SystemProvider mSystemProvider;
@@ -42,6 +44,13 @@ public class ServiceProfileFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.service_profile_layout);
         ModelProvider.init(mContext, this);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        Bundle bundle = getArguments();
+        activity.setTitle(bundle == null ? "设置" : bundle.getString(SERVICE_TITLE));
     }
 
     @Override

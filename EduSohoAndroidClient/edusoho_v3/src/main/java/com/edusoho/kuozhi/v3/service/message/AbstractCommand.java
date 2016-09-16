@@ -62,13 +62,16 @@ public abstract class AbstractCommand {
         switch (type) {
             case Destination.USER:
                 notifyIntent.putExtra(ImChatActivity.FROM_ID, mMessageBody.getSource().getId());
+                notifyIntent.putExtra(ImChatActivity.FROM_NAME, mMessageBody.getSource().getNickname());
                 notifyIntent.putExtra(Const.INTENT_TARGET, ImChatActivity.class);
                 break;
             case Destination.CLASSROOM:
                 notifyIntent.putExtra(ImChatActivity.FROM_ID, mMessageBody.getDestination().getId());
+                notifyIntent.putExtra(ImChatActivity.FROM_NAME, mMessageBody.getDestination().getNickname());
                 notifyIntent.putExtra(Const.INTENT_TARGET, ClassroomDiscussActivity.class);
                 break;
             case Destination.COURSE:
+                notifyIntent.putExtra(NewsCourseActivity.FROM_NAME, mMessageBody.getDestination().getNickname());
                 notifyIntent.putExtra(NewsCourseActivity.COURSE_ID, mMessageBody.getDestination().getId());
                 notifyIntent.putExtra(Const.INTENT_TARGET, NewsCourseActivity.class);
                 notifyIntent.putExtra(NewsCourseActivity.SHOW_TYPE, NewsCourseActivity.DISCUSS_TYPE);

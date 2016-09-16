@@ -406,6 +406,7 @@ public class NewsFragment extends BaseFragment {
                         @Override
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(NewsCourseActivity.COURSE_ID, newItem.fromId);
+                            startIntent.putExtra(NewsCourseActivity.FROM_NAME, newItem.title);
                             startIntent.putExtra(NewsCourseActivity.CONV_NO, newItem.convNo);
                             startIntent.putExtra(
                                     NewsCourseActivity.SHOW_TYPE,

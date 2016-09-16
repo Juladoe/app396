@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.baidu.cyberplayer.utils.A;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
@@ -22,9 +23,12 @@ import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.managar.IMMessageManager;
+import com.edusoho.kuozhi.imserver.ui.IMessageListPresenter;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
+import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.entity.AudioBody;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
+import com.edusoho.kuozhi.imserver.ui.listener.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
@@ -142,8 +146,21 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     @Override
     protected void attachMessageListFragment() {
         super.attachMessageListFragment();
-        mMessageListFragment.setIMessageDataProvider(this);
         mContentLayout.addOnLayoutChangeListener(getOnLayoutChangeListener());
+    }
+
+    @Override
+    protected IMessageListPresenter createProsenter() {
+        Bundle bundle = new Bundle();
+        bundle.putString(MessageListFragment.CONV_NO, mConversationNo);
+        bundle.putInt(MessageListFragment.TARGET_ID, mTargetId);
+        bundle.putString(MessageListFragment.TARGET_TYPE, getTargetType());
+
+        return new ChatMessageListPresenterImpl(
+                bundle,
+                IMClient.getClient().getResourceHelper(),
+                this,
+                mMessageListFragment);
     }
 
     private void hideHeaderLayout() {
@@ -193,7 +210,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     }
 
     @Override
-    protected void createTargetRole(String type, int rid, final MessageControllerListener.RoleUpdateCallback callback) {
+    protected void createTargetRole(String type, int rid, final MessageListPresenterImpl.RoleUpdateCallback callback) {
         if (Destination.USER.equals(type)) {
             new UserProvider(mContext).getUserInfo(rid)
                     .success(new NormalCallback<User>() {
@@ -265,12 +282,24 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         if ("course".equals(mThreadTargetType)) {
             mThreadProvider.getCourseThreadInfo(mTargetId, mThreadTargetId)
                     .success(normalCallback)
-                    .fail(normalCallback);
+                    .fail(new NormalCallback<VolleyError>() {
+                        @Override
+                        public void success(VolleyError obj) {
+                            CommonUtil.longToast(mContext, "获取问答内容失败");
+                        }
+                    });
             return;
         }
 
         if ("classroom".equals(mThreadTargetType)) {
-            mThreadProvider.getClassRoomThreadInfo(mTargetId).success(normalCallback);
+            mThreadProvider.getClassRoomThreadInfo(mTargetId)
+                    .success(normalCallback)
+                    .fail(new NormalCallback<VolleyError>() {
+                        @Override
+                        public void success(VolleyError obj) {
+                            CommonUtil.longToast(mContext, "获取问答内容失败");
+                        }
+                    });
             return;
         }
         normalCallback.success(null);
@@ -416,7 +445,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                     List<CourseThreadPostEntity> posts = threadPostResult.resources;
                     Collections.reverse(posts);
                     mMessageEntityList.addAll(coverPostListToMessageEntity(posts));
-                    mMessageListFragment.reload();
+                    mIMessageListPresenter.refresh();
                 }
             }
         }).fail(new NormalCallback<VolleyError>() {

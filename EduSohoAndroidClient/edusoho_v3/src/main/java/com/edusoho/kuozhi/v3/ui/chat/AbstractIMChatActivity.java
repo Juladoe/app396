@@ -16,9 +16,16 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.ui.IMessageListPresenter;
+import com.edusoho.kuozhi.imserver.ui.IMessageListView;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
+import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
+import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
+import com.edusoho.kuozhi.imserver.ui.listener.DefautlMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.listener.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
@@ -30,18 +37,20 @@ import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 /**
@@ -64,6 +73,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
     protected String mTargetName;
     protected String mTargetType;
     protected String mConversationNo;
+    protected IMessageListPresenter mIMessageListPresenter;
     protected MessageListFragment mMessageListFragment;
     protected Context mContext;
     protected TextView mTitleTextView;
@@ -120,6 +130,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         Log.d(TAG, "attachMessageListFragment");
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = getSupportFragmentManager().findFragmentByTag("im_container");
+
         if (fragment != null) {
             mMessageListFragment = (MessageListFragment) fragment;
             mMessageListFragment.setMessageControllerListener(getMessageControllerListener());
@@ -127,14 +138,24 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         } else {
             mMessageListFragment = createFragment();
             mMessageListFragment.setMessageControllerListener(getMessageControllerListener());
-            Bundle bundle = new Bundle();
-            bundle.putString(MessageListFragment.CONV_NO, mConversationNo);
-            bundle.putInt(MessageListFragment.TARGET_ID, mTargetId);
-            bundle.putString(MessageListFragment.TARGET_TYPE, getTargetType());
-            mMessageListFragment.setArguments(bundle);
             fragmentTransaction.add(R.id.chat_content, mMessageListFragment, "im_container");
+            fragmentTransaction.commitAllowingStateLoss();
         }
-        fragmentTransaction.commitAllowingStateLoss();
+
+        mIMessageListPresenter = createProsenter();
+    }
+
+    protected IMessageListPresenter createProsenter() {
+        Bundle bundle = new Bundle();
+        bundle.putString(MessageListFragment.CONV_NO, mConversationNo);
+        bundle.putInt(MessageListFragment.TARGET_ID, mTargetId);
+        bundle.putString(MessageListFragment.TARGET_TYPE, getTargetType());
+
+        return new ChatMessageListPresenterImpl(
+                bundle,
+                IMClient.getClient().getResourceHelper(),
+                new DefautlMessageDataProvider(),
+                mMessageListFragment);
     }
 
     protected MessageListFragment createFragment() {
@@ -158,21 +179,12 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         return new MessageControllerListener() {
             @Override
             public void createConvNo(final ConvNoCreateCallback callback) {
-                final LoadDialog loadDialog = LoadDialog.create(AbstractIMChatActivity.this);
-                loadDialog.show();
-                createChatConvNo().then(new PromiseCallback<String>() {
-                    @Override
-                    public Promise invoke(String convNo) {
-                        loadDialog.dismiss();
-                        callback.onCreateConvNo(convNo);
-                        return null;
-                    }
-                });
+
             }
 
             @Override
             public void createRole(String type, int rid, RoleUpdateCallback callback) {
-                createTargetRole(type, rid, callback);
+                //createTargetRole(type, rid, callback);
             }
 
             @Override
@@ -187,7 +199,11 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 bundle.putInt("index", index);
                 bundle.putStringArrayList("imageList", imageList);
-                CoreEngine.create(mContext).runNormalPluginWithBundle("ViewPagerActivity", mContext, bundle);
+                FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                ViewPagerFragment viewPagerFragment = new ViewPagerFragment();
+                viewPagerFragment.setArguments(bundle);
+                fragmentTransaction.setCustomAnimations(R.anim.window_zoom_open, R.anim.window_zoom_exit);
+                viewPagerFragment.show(fragmentTransaction, "viewpager");
             }
 
             @Override
@@ -230,14 +246,20 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
                         try {
                             JSONObject data = new JSONObject(bundle.getString("data"));
                             final RedirectBody redirectBody = RedirectBody.createByJsonObj(data);
-                            CoreEngine.create(mContext).runNormalPlugin("FragmentPageActivity", mContext, new PluginRunCallback() {
+                            PluginRunCallback pluginRunCallback = new PluginRunCallback() {
                                 @Override
                                 public void setIntentDate(Intent startIntent) {
                                     startIntent.putExtra(Const.ACTIONBAR_TITLE, "选择");
                                     startIntent.putExtra(ChatSelectFragment.BODY, redirectBody);
                                     startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ChatSelectFragment");
                                 }
-                            });
+                            };
+                            CoreEngine.create(mContext).runNormalPluginForResult(
+                                    "FragmentPageActivity",
+                                    AbstractIMChatActivity.this,
+                                    ChatSelectFragment.REQUEST_SELECT,
+                                    pluginRunCallback
+                            );
                         } catch (JSONException e) {
                         }
                         break;
@@ -246,7 +268,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         };
     }
 
-    protected abstract void createTargetRole(String type, int rid, MessageControllerListener.RoleUpdateCallback callback);
+    protected abstract void createTargetRole(String type, int rid, MessageListPresenterImpl.RoleUpdateCallback callback);
 
     protected abstract Promise createChatConvNo();
 
@@ -279,6 +301,10 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == ChatSelectFragment.REQUEST_SELECT && resultCode == ChatSelectFragment.RESULT_SEND_OK) {
+            mIMessageListPresenter.refresh();
+            return;
+        }
         if (resultCode != Activity.RESULT_OK) {
             return;
         }
@@ -299,5 +325,41 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
 
     protected UtilFactory getUtilFactory() {
         return FactoryManager.getInstance().create(UtilFactory.class);
+    }
+
+    protected class ChatMessageListPresenterImpl extends MessageListPresenterImpl {
+
+        public ChatMessageListPresenterImpl(Bundle params,
+                                            MessageResourceHelper messageResourceHelper,
+                                            IMessageDataProvider mIMessageDataProvider,
+                                            IMessageListView messageListView) {
+            super(params, messageResourceHelper, mIMessageDataProvider, messageListView);
+        }
+
+        @Override
+        protected Map<String, String> getRequestHeaders() {
+            HashMap map = new HashMap();
+            map.put("Auth-Token", ApiTokenUtil.getApiToken(mContext));
+            return map;
+        }
+
+        @Override
+        protected void createRole(String type, int rid, MessageListPresenterImpl.RoleUpdateCallback callback) {
+            createTargetRole(type, rid, callback);
+        }
+
+        @Override
+        protected void createConvNo(final MessageListPresenterImpl.ConvNoCreateCallback convNoCreateCallback) {
+            final LoadDialog loadDialog = LoadDialog.create(AbstractIMChatActivity.this);
+            loadDialog.show();
+            createChatConvNo().then(new PromiseCallback<String>() {
+                @Override
+                public Promise invoke(String convNo) {
+                    loadDialog.dismiss();
+                    convNoCreateCallback.onCreateConvNo(convNo);
+                    return null;
+                }
+            });
+        }
     }
 }

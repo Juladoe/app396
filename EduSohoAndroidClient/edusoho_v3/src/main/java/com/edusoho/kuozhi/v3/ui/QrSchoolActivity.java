@@ -10,9 +10,13 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.SwitchNetSchoolListener;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -132,6 +136,10 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             showSchSplash(site.name, site.splashs);
         }
 
+        protected AppSettingProvider getAppSettingProvider() {
+            return FactoryManager.getInstance().create(AppSettingProvider.class);
+        }
+
         protected void bindApiToken(final UserResult userResult) {
             School school = userResult.site;
 
@@ -157,19 +165,22 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
         }
 
         public void selectSchool(UserResult userResult) {
+            IMClient.getClient().destory();
             if (userResult.token == null || "".equals(userResult.token)) {
                 //未登录二维码
                 mApp.removeToken();
+                getAppSettingProvider().setUser(null);
                 mApp.sendMessage(Const.LOGOUT_SUCCESS, null);
             } else {
                 //扫描登录用户二维码
                 mApp.saveToken(userResult);
+                getAppSettingProvider().setUser(userResult.user);
+                new IMServiceProvider(mActivity.getApplicationContext()).bindServer(userResult.user.id, userResult.user.nickname);
                 mApp.sendMessage(Const.LOGIN_SUCCESS, null);
             }
 
             School site = userResult.site;
             mApp.setCurrentSchool(site);
-            SqliteChatUtil.getSqliteChatUtil(mActivity.getBaseContext(), mApp.domain).close();
             mApp.registDevice(null);
 
             startSchoolActivity(site);

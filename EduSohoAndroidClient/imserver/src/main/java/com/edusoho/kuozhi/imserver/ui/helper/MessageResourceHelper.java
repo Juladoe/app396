@@ -4,10 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.ui.broadcast.ResourceStatusReceiver;
 import com.edusoho.kuozhi.imserver.ui.util.IResourceTask;
 import com.edusoho.kuozhi.imserver.ui.util.ITaskStatusListener;
+import com.edusoho.kuozhi.imserver.ui.util.ResourceDownloadTask;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.Queue;
@@ -27,6 +31,18 @@ public class MessageResourceHelper {
         this.mContext = context;
         mTaskMap = new HashMap<>();
         mTaskQueue = new ArrayDeque();
+    }
+
+    public void addAudioDownloadTask(int taskId, String readFilePath) throws IOException {
+        File realFile = new MessageHelper(mContext).createAudioFile(readFilePath);
+        ResourceDownloadTask downloadTask = new ResourceDownloadTask(mContext, taskId, readFilePath, realFile);
+        addTask(downloadTask);
+    }
+
+    public void addImageDownloadTask(int taskId, String readFilePath) throws IOException {
+        File realFile = new MessageHelper(mContext).createImageFile(readFilePath);
+        ResourceDownloadTask downloadTask = new ResourceDownloadTask(mContext, taskId, readFilePath, realFile);
+        addTask(downloadTask);
     }
 
     public void addTask(IResourceTask task) {
