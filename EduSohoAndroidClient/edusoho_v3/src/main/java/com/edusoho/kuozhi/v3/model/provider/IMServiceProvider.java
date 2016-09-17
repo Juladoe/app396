@@ -11,6 +11,7 @@ import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
@@ -30,8 +31,16 @@ import java.util.List;
  */
 public class IMServiceProvider extends ModelProvider {
 
+    private int mClientId;
+    private String mClientName;
+
     public IMServiceProvider(Context context) {
         super(context);
+    }
+
+    private void setClientInfo(int clientId, String clientName) {
+        this.mClientId = clientId;
+        this.mClientName = clientName;
     }
 
     public void unBindServer() {
@@ -40,13 +49,15 @@ public class IMServiceProvider extends ModelProvider {
     }
 
     public void reConnectServer(int clientId, String clientName) {
+        setClientInfo(clientId, clientName);
         if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
             IMClient.getClient().setIMConnectStatus(IMConnectStatus.ERROR);
             return;
         }
         int status = IMClient.getClient().getIMConnectStatus();
-        if (status == IMConnectStatus.NO_READY) {
+        if (status == IMConnectStatus.NO_READY || status == IMConnectStatus.ERROR) {
             IMClient.getClient().removeGlobalIMMessageReceiver();
+            IMClient.getClient().removeGlobalIMConnectStatusListener();
             connectServer(clientId, clientName);
             return;
         }
@@ -88,6 +99,7 @@ public class IMServiceProvider extends ModelProvider {
                 new ArrayList(hostMap.values())
         );
 
+        IMClient.getClient().addGlobalConnectStatusListener(getIMConnectStatusListener());
         IMClient.getClient().addGlobalIMMessageReceiver(new IMMessageReceiver() {
             @Override
             public boolean onReceiver(MessageEntity msg) {
@@ -120,12 +132,34 @@ public class IMServiceProvider extends ModelProvider {
         });
     }
 
+    private IMConnectStatusListener getIMConnectStatusListener() {
+        return new IMConnectStatusListener() {
+            @Override
+            public void onError() {
+                reConnectServer(mClientId, mClientName);
+            }
+
+            @Override
+            public void onClose() {
+            }
+
+            @Override
+            public void onConnect() {
+            }
+
+            @Override
+            public void onOpen() {
+            }
+        };
+    }
+
     private void errorBindImServer() {
         Log.d("IMServiceProvider", "bindServer error");
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.ERROR);
     }
 
     public synchronized void bindServer(int clientId, String clientName) {
+        setClientInfo(clientId, clientName);
         if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
             IMClient.getClient().setIMConnectStatus(IMConnectStatus.ERROR);
             return;

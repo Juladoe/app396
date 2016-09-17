@@ -60,6 +60,7 @@ public class IMClient {
     private List<IMMessageReceiver> mMessageReceiverList;
     private List<IMConnectStatusListener> mIMConnectStatusListenerList;
     private IMMessageReceiver mGlobalIMMessageReceiver;
+    private IMConnectStatusListener mGlobalIMConnectStatusListener;
     private BroadcastReceiver mIMServiceStatusBroadcastReceiver;
     private ConnectIMServiceRunnable mConnectIMServiceRunnable;
 
@@ -147,6 +148,8 @@ public class IMClient {
         mContext.stopService(getIMServiceIntent());
         mImBinder = null;
 
+        mIMConnectStatusListenerList.clear();
+        mMessageReceiverList.clear();
         setClientInfo(0, null);
     }
 
@@ -215,6 +218,16 @@ public class IMClient {
 
     public void addConnectStatusListener(IMConnectStatusListener listener) {
         this.mIMConnectStatusListenerList.add(listener);
+    }
+
+    public void addGlobalConnectStatusListener(IMConnectStatusListener listener) {
+        this.mGlobalIMConnectStatusListener = listener;
+        this.mIMConnectStatusListenerList.add(listener);
+    }
+
+    public void removeGlobalIMConnectStatusListener() {
+        this.mIMConnectStatusListenerList.remove(mGlobalIMConnectStatusListener);
+        this.mGlobalIMConnectStatusListener = null;
     }
 
     public void addMessageReceiver(IMMessageReceiver receiver) {

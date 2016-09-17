@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.imserver.service.Impl.HeartManagerImpl;
 import com.edusoho.kuozhi.imserver.service.Impl.MsgManager;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.util.ConvDbHelper;
+import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 
@@ -138,6 +139,7 @@ public class ImServer {
                         break;
                     case IConnectManagerListener.ERROR:
                         flag = CONNECT_ERROR;
+                        pause();
                         reConnect();
                 }
             }
@@ -154,10 +156,12 @@ public class ImServer {
         new Handler(Looper.getMainLooper()).postAtTime(new Runnable() {
             @Override
             public void run() {
-                Log.d(TAG, "reConnect");
-                start();
+                if (isCancel()) {
+                    Log.d(TAG, "reConnect");
+                    start();
+                }
             }
-        }, SystemClock.uptimeMillis() + 2000);
+        }, SystemClock.uptimeMillis() + 5000);
     }
 
     public void requestOfflineMsg() {
@@ -187,6 +191,13 @@ public class ImServer {
 
     public boolean isConnected() {
         return mIConnectionManager != null && mIConnectionManager.isConnected();
+    }
+
+    public int getStatus() {
+        if (mIConnectionManager == null || !mIConnectionManager.isConnected()) {
+            return IMConnectStatus.ERROR;
+        }
+        return mIConnectionManager.getStatus();
     }
 
     public boolean isReady() {
@@ -225,9 +236,7 @@ public class ImServer {
             return true;
         }
         int status = mIConnectionManager.getStatus();
-        return status == IConnectManagerListener.ERROR
-                || status == IConnectManagerListener.CLOSE
-                || status == IConnectManagerListener.END;
+        return status == IConnectManagerListener.ERROR;
     }
 
     public void start() {

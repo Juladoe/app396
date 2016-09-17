@@ -79,7 +79,7 @@ public class ConnectionManager implements IConnectionManager {
 
     @Override
     public int getStatus() {
-        return 0;
+        return mStatus;
     }
 
     @Override
@@ -163,6 +163,7 @@ public class ConnectionManager implements IConnectionManager {
                     @Override
                     public void onCompleted(Exception e) {
                         Log.d(TAG, "close");
+
                         mStatus = IConnectManagerListener.CLOSE;
                         if (mIConnectStatusListener != null) {
                             mIConnectStatusListener.onStatusChange(IConnectManagerListener.CLOSE, "close");

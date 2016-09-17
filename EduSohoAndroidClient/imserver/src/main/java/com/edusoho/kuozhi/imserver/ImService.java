@@ -231,7 +231,7 @@ public class ImService extends Service {
             if (!mImServer.isReady()) {
                 return IMConnectStatus.NO_READY;
             }
-            return mImServer.isConnected() ? IMConnectStatus.OPEN : IMConnectStatus.CLOSE;
+            return mImServer.getStatus();
         }
 
         public void joinConversation(String clientId, String nickname, String convNo) {
