@@ -1,7 +1,10 @@
 package com.edusoho.kuozhi.imserver.ui;
 
+import android.os.Bundle;
+
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 
 import java.io.File;
 
@@ -39,4 +42,14 @@ public interface IMessageListPresenter {
     void removeReceiver();
 
     void refresh();
+
+    void onShowActivity(Bundle bundle);
+
+    void onShowUser(int userId);
+
+    void selectPhoto(String action);
+
+    void updateRole(String type, int rid);
+
+    void addMessageControllerListener(MessageControllerListener listener);
 }

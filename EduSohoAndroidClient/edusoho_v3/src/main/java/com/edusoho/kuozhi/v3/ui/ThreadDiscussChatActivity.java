@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,28 +13,26 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.android.volley.VolleyError;
-import com.baidu.cyberplayer.utils.A;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
-import com.edusoho.kuozhi.imserver.managar.IMMessageManager;
+import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.ui.IMessageListPresenter;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.entity.AudioBody;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
-import com.edusoho.kuozhi.imserver.ui.listener.DefautlMessageDataProvider;
-import com.edusoho.kuozhi.imserver.ui.listener.IMessageDataProvider;
-import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
-import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -158,6 +157,8 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
 
         return new ChatMessageListPresenterImpl(
                 bundle,
+                new MockConvManager(mContext),
+                IMClient.getClient().getRoleManager(),
                 IMClient.getClient().getResourceHelper(),
                 this,
                 mMessageListFragment);
@@ -351,15 +352,6 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     }
 
     @Override
-    public IMMessageManager getMessageManager() {
-        return mIMMessageManager;
-    }
-
-    @Override
-    public void updateConvEntity(String convNo, Role role) {
-    }
-
-    @Override
     public List<MessageEntity> getMessageList(String convNo, int start) {
         return mMessageEntityList;
     }
@@ -373,7 +365,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                         if (threadResult != null) {
                             MessageEntity messageEntity = mMessageEntityList.get(position);
                             if (messageEntity != null) {
-                                messageEntity.setTime((int)AppUtil.convertUTCTimeToMilliSecond(threadResult.createdTime));
+                                messageEntity.setTime((int) AppUtil.convertUTCTimeToMilliSecond(threadResult.createdTime));
                                 messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
                                 mMessageListFragment.updateListByEntity(messageEntity);
                             }
@@ -552,54 +544,65 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         });
     }
 
-    private IMMessageManager mIMMessageManager = new IMMessageManager(mContext) {
+    @Override
+    public IMUploadEntity getUploadEntity(String muid) {
+        return null;
+    }
 
-        public int updateMessage(MessageEntity messageEntity) {
+    @Override
+    public long saveUploadEntity(String muid, String type, String source) {
+        return 0;
+    }
+
+    @Override
+    public MessageEntity getMessageByUID(String uid) {
+        return null;
+    }
+
+    @Override
+    public MessageEntity getMessage(int msgId) {
+        return mMessageEntityList.get(msgId);
+    }
+
+    @Override
+    public int updateMessageFieldByMsgNo(String msgNo, ContentValues cv) {
+        return 0;
+    }
+
+    @Override
+    public int updateMessageFieldByUid(String uid, ContentValues cv) {
+        return 0;
+    }
+
+    class MockConvManager extends IMConvManager {
+
+        public MockConvManager(Context context) {
+            super(context);
+        }
+
+        @Override
+        public long createConv(ConvEntity convEntity) {
             return 0;
         }
 
-        public int updateMessageFieldByMsgNo(String msgNo, ContentValues cv) {
-            return 0;
-        }
-
-        public int updateMessageField(int id, ContentValues cv) {
-            return 0;
-        }
-
-        public int updateMessageFieldByUid(String uid, ContentValues cv) {
-            return 0;
-        }
-
-        public MessageEntity getMessage(int id) {
-            return mMessageEntityList.get(id);
-        }
-
-        public List<MessageEntity> getMessageListByConvNo(String convNo, int start, int limit) {
-            return mMessageEntityList;
-        }
-
-        public MessageEntity getMessageByUID(String uid) {
+        @Override
+        public ConvEntity getConvByConvNo(String convNo) {
             return null;
         }
 
-        public IMUploadEntity getUploadEntity(String muid) {
+        @Override
+        public ConvEntity getConvByTypeAndId(String type, int targetId) {
             return null;
         }
 
-        public long saveUploadEntity(String muid, String type, String source) {
+        @Override
+        public int updateConvByConvNo(ConvEntity convEntity) {
             return 0;
         }
 
-        public MessageEntity createMessage(MessageEntity messageEntity) {
-            return null;
-        }
-
-        public long deleteByConvNo(String convNo) {
+        @Override
+        public int clearReadCount(String convNo) {
             return 0;
         }
-
-        public int deleteById(int id) {
-            return 0;
-        }
-    };
+    }
 }

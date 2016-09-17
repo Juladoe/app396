@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.imserver.ui;
 
 import android.content.ContentValues;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 import com.edusoho.kuozhi.imserver.IMClient;
@@ -14,20 +15,23 @@ import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
+import com.edusoho.kuozhi.imserver.managar.IMConvManager;
+import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.ui.entity.AudioBody;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
-import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
-import com.edusoho.kuozhi.imserver.ui.listener.IMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
-import com.edusoho.kuozhi.imserver.ui.util.ResourceDownloadTask;
+import com.edusoho.kuozhi.imserver.ui.util.TaskFeature;
 import com.edusoho.kuozhi.imserver.ui.util.UpYunUploadTask;
+import com.edusoho.kuozhi.imserver.ui.util.UpdateRoleTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -38,6 +42,7 @@ import java.util.UUID;
 public abstract class MessageListPresenterImpl implements IMessageListPresenter {
 
     public static final String TAG = "MessageListPresenter";
+    private static final int EXPAID_TIME = 3600 * 1 * 1000;
 
     private int mStart = 0;
     private String mConversationNo;
@@ -45,16 +50,23 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     private String mTargetType;
     private Role mTargetRole;
 
+    private IMConvManager mIMConvManager;
+    private IMRoleManager mIMRoleManager;
     private MessageResourceHelper mMessageResourceHelper;
     private IMMessageReceiver mIMMessageReceiver;
     private IMessageListView mIMessageListView;
     private IMessageDataProvider mIMessageDataProvider;
+    private MessageControllerListener mMessageControllerListener;
 
     public MessageListPresenterImpl(
             Bundle params,
+            IMConvManager convManager,
+            IMRoleManager roleManager,
             MessageResourceHelper messageResourceHelper,
             IMessageDataProvider mIMessageDataProvider,
             IMessageListView messageListView) {
+        this.mIMConvManager = convManager;
+        this.mIMRoleManager = roleManager;
         this.mMessageResourceHelper = messageResourceHelper;
         this.mIMessageDataProvider = mIMessageDataProvider;
         this.mIMessageListView = messageListView;
@@ -65,7 +77,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
 
     @Override
     public void processResourceStatusChange(int resId, String resUri) {
-        MessageEntity messageEntity = mIMessageDataProvider.getMessageManager().getMessage(resId);
+        MessageEntity messageEntity = mIMessageDataProvider.getMessage(resId);
         if (messageEntity == null) {
             return;
         }
@@ -85,6 +97,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         messageBody.setBody(body);
         sendMessageToServer(messageBody);
     }
+
 
     @Override
     public void refresh() {
@@ -146,16 +159,14 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         }
     }
 
-    protected void handleOfflineMessage(List<MessageEntity> messageEntityList) {
-        coverMessageEntityStatus(messageEntityList);
-        mIMessageListView.insertMessageList(messageEntityList);
+    public void addMessageControllerListener(MessageControllerListener listener) {
+        this.mMessageControllerListener = listener;
     }
 
     private void coverMessageEntityStatus(List<MessageEntity> messageEntityList) {
-        MessageResourceHelper messageResourceHelper = IMClient.getClient().getResourceHelper();
         for (MessageEntity messageEntity : messageEntityList) {
             if (messageEntity.getStatus() != PushUtil.MsgDeliveryType.SUCCESS
-                    && messageResourceHelper.hasTask(messageEntity.getId())) {
+                    && mMessageResourceHelper.hasTask(messageEntity.getId())) {
                 messageEntity.setStatus(PushUtil.MsgDeliveryType.UPLOADING);
             }
         }
@@ -188,15 +199,14 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
             mIMessageListView.updateMessageEntity(messageEntity);
 
             UpYunUploadTask upYunUploadTask = new UpYunUploadTask(messageEntity.getId(), mTargetId, file, getRequestHeaders());
-            IMClient.getClient().getResourceHelper().addTask(upYunUploadTask);
+            mMessageResourceHelper.addTask(upYunUploadTask);
         } catch (Exception e) {
             Log.e(TAG, e.getMessage());
         }
     }
 
     private void sendImageMediaMessageAgain(MessageEntity messageEntity) {
-        IMUploadEntity uploadEntity = mIMessageDataProvider.getMessageManager()
-                .getUploadEntity(messageEntity.getUid());
+        IMUploadEntity uploadEntity = mIMessageDataProvider.getUploadEntity(messageEntity.getUid());
         if (uploadEntity == null) {
             mIMessageListView.notifiy("媒体文件不存在,请重新发送消息");
             return;
@@ -206,8 +216,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     }
 
     private void sendAudioMessageAgain(MessageEntity messageEntity) {
-        IMUploadEntity uploadEntity = mIMessageDataProvider.getMessageManager()
-                .getUploadEntity(messageEntity.getUid());
+        IMUploadEntity uploadEntity = mIMessageDataProvider.getUploadEntity(messageEntity.getUid());
         if (uploadEntity == null) {
             mIMessageListView.notifiy("媒体文件不存在,请重新发送消息");
             return;
@@ -222,7 +231,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
 
     @Override
     public void processResourceDownload(int resId, String resUri) {
-        MessageEntity messageEntity = mIMessageDataProvider.getMessageManager().getMessage(resId);
+        MessageEntity messageEntity = mIMessageDataProvider.getMessage(resId);
         if (messageEntity == null) {
             return;
         }
@@ -245,18 +254,17 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
             MessageEntity messageEntity = mIMessageDataProvider.createMessageEntity(messageBody);
             messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
 
-            MessageResourceHelper messageResourceHelper = IMClient.getClient().getResourceHelper();
             if (messageEntity.getStatus() != PushUtil.MsgDeliveryType.SUCCESS
-                    && messageResourceHelper.hasTask(messageEntity.getId())) {
+                    && mMessageResourceHelper.hasTask(messageEntity.getId())) {
                 messageEntity.setStatus(PushUtil.MsgDeliveryType.UPLOADING);
             }
             mIMessageListView.insertMessage(messageEntity);
-            mIMessageDataProvider.getMessageManager().saveUploadEntity(
+            mIMessageDataProvider.saveUploadEntity(
                     messageBody.getMessageId(), messageBody.getType(), file.getPath()
             );
 
             UpYunUploadTask upYunUploadTask = new UpYunUploadTask(messageEntity.getId(), mTargetId, file, getRequestHeaders());
-            IMClient.getClient().getResourceHelper().addTask(upYunUploadTask);
+            mMessageResourceHelper.addTask(upYunUploadTask);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -264,7 +272,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
 
     @Override
     public void insertMessageList() {
-        List<MessageEntity> messageEntityList  = IMClient.getClient().getChatRoom(mConversationNo).getMessageList(mStart);
+        List<MessageEntity> messageEntityList = mIMessageDataProvider.getMessageList(mConversationNo, mStart);
         mIMessageListView.insertMessageList(messageEntityList);
     }
 
@@ -275,14 +283,14 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         }
 
         IMClient.getClient().addMessageReceiver(mIMMessageReceiver);
-        IMClient.getClient().getConvManager().clearReadCount(mConversationNo);
+        mIMConvManager.clearReadCount(mConversationNo);
     }
 
     @Override
     public void updateMessageReceiveStatus(MessageEntity messageEntity, int status) {
         ContentValues cv = new ContentValues();
         cv.put("status", status);
-        mIMessageDataProvider.getMessageManager().updateMessageFieldByMsgNo(messageEntity.getMsgNo(), cv);
+        mIMessageDataProvider.updateMessageFieldByMsgNo(messageEntity.getMsgNo(), cv);
         messageEntity.setStatus(status);
         mIMessageListView.updateMessageEntity(messageEntity);
     }
@@ -309,9 +317,8 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     }
 
     protected void insertMessageToList(MessageEntity messageEntity) {
-        MessageResourceHelper messageResourceHelper = IMClient.getClient().getResourceHelper();
         if (messageEntity.getStatus() != PushUtil.MsgDeliveryType.SUCCESS
-                && messageResourceHelper.hasTask(messageEntity.getId())) {
+                && mMessageResourceHelper.hasTask(messageEntity.getId())) {
             messageEntity.setStatus(PushUtil.MsgDeliveryType.UPLOADING);
         }
         mIMessageListView.insertMessage(messageEntity);
@@ -342,7 +349,33 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     }
 
     private void checkConvEntity(Role role) {
-        mIMessageDataProvider.updateConvEntity(mConversationNo, role);
+        ConvEntity convEntity = mIMConvManager.getConvByConvNo(mConversationNo);
+        if (convEntity == null) {
+            Log.d("DefautlMessageProvider", "create ConvNo");
+            convEntity = createConvNo(mConversationNo, role);
+        }
+
+        if ((System.currentTimeMillis() - convEntity.getUpdatedTime()) > EXPAID_TIME) {
+            Log.d("DefautlMessageProvider", "update ConvNo");
+            convEntity.setAvatar(role.getAvatar());
+            convEntity.setTargetName(role.getNickname());
+            convEntity.setUpdatedTime(System.currentTimeMillis());
+            mIMConvManager.updateConvByConvNo(convEntity);
+        }
+    }
+
+    private ConvEntity createConvNo(String convNo, Role role) {
+        ConvEntity convEntity = new ConvEntity();
+        convEntity.setTargetId(role.getRid());
+        convEntity.setTargetName(role.getNickname());
+        convEntity.setConvNo(convNo);
+        convEntity.setType(role.getType());
+        convEntity.setAvatar(role.getAvatar());
+        convEntity.setCreatedTime(System.currentTimeMillis());
+        convEntity.setUpdatedTime(0);
+        mIMConvManager.createConv(convEntity);
+
+        return convEntity;
     }
 
     private void checkTargetRole() {
@@ -360,7 +393,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
                 }
                 Log.d(TAG, "mTargetRole " + role.getRid());
                 mTargetRole = role;
-                IMClient.getClient().getRoleManager().createRole(role);
+                mIMRoleManager.createRole(role);
                 checkConvEntity(role);
                 mIMessageListView.setMessageList(mIMessageDataProvider.getMessageList(mConversationNo, mStart));
             }
@@ -381,15 +414,14 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         mTargetId = bundle.getInt(TARGET_ID, 0);
         mTargetType = bundle.getString(TARGET_TYPE);
 
-        mTargetRole = IMClient.getClient().getRoleManager().getRole(mTargetType, mTargetId);
+        mTargetRole = mIMRoleManager.getRole(mTargetType, mTargetId);
     }
 
     /**
      * 检查是否有convNo
      */
     private void checkConvNo() {
-        ConvEntity convEntity = IMClient.getClient().getConvManager()
-                .getConvByTypeAndId(mTargetType, mTargetId);
+        ConvEntity convEntity = mIMConvManager.getConvByTypeAndId(mTargetType, mTargetId);
         if (convNoIsEmpty(mConversationNo) && convEntity != null) {
             mConversationNo = convEntity.getConvNo();
         }
@@ -398,9 +430,9 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     protected void updateMessageSendStatus(MessageBody messageBody) {
         ContentValues cv = new ContentValues();
         cv.put("status", MessageEntity.StatusType.SUCCESS);
-        mIMessageDataProvider.getMessageManager().updateMessageFieldByUid(messageBody.getMessageId(), cv);
+        mIMessageDataProvider.updateMessageFieldByUid(messageBody.getMessageId(), cv);
 
-        MessageEntity messageEntity = mIMessageDataProvider.getMessageManager().getMessageByUID(messageBody.getMessageId());
+        MessageEntity messageEntity = mIMessageDataProvider.getMessageByUID(messageBody.getMessageId());
         mIMessageListView.updateMessageEntity(messageEntity);
     }
 
@@ -417,7 +449,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
                 }
 
                 mIMessageListView.insertMessage(msg);
-                IMClient.getClient().getConvManager().clearReadCount(mConversationNo);
+                mIMConvManager.clearReadCount(mConversationNo);
                 return true;
             }
 
@@ -425,7 +457,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
             public boolean onOfflineMsgReceiver(List<MessageEntity> messageEntities) {
                 coverMessageEntityStatus(messageEntities);
                 mIMessageListView.insertMessageList(messageEntities);
-                IMClient.getClient().getConvManager().clearReadCount(mConversationNo);
+                mIMConvManager.clearReadCount(mConversationNo);
                 return false;
             }
 
@@ -444,6 +476,86 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
                 return new ReceiverInfo(mTargetType, mConversationNo);
             }
         };
+    }
+
+    @Override
+    public void onShowActivity(Bundle bundle) {
+        String type = bundle.getString("type");
+        if (TextUtils.isEmpty(type)) {
+            return;
+        }
+
+        switch (type) {
+            case "webpage":
+                mMessageControllerListener.onShowWebPage(bundle.getString("url"));
+                return;
+            case "showImage":
+                int index = bundle.getInt("index");
+                ArrayList<String> imageUrls = bundle.getStringArrayList("imageList");
+                mMessageControllerListener.onShowImage(index, imageUrls);
+                return;
+        }
+        mMessageControllerListener.onShowActivity(bundle);
+    }
+
+    @Override
+    public void onShowUser(int userId) {
+        Role role = IMClient.getClient().getRoleManager().getRole(Destination.USER, userId);
+        role.setRid(userId);
+        mMessageControllerListener.onShowUser(role);
+    }
+
+    @Override
+    public void updateRole(String type, int rid) {
+        Role role = IMClient.getClient().getRoleManager().getRole(type, rid);
+        if (role.getRid() != 0) {
+            return;
+        }
+        new Handler().postDelayed(new UpdateRoleRunnable(type, rid), 200);
+    }
+
+    @Override
+    public void selectPhoto(String action) {
+        if ("take".equals(action)) {
+            mMessageControllerListener.takePhoto();
+            return;
+        }
+
+        mMessageControllerListener.selectPhoto();
+    }
+
+    private class UpdateRoleRunnable implements Runnable {
+
+        private String type;
+        private int rid;
+
+        public UpdateRoleRunnable(String type, int rid) {
+            this.type = type;
+            this.rid = rid;
+        }
+
+        @Override
+        public void run() {
+            UpdateRoleTask task = new UpdateRoleTask(type, rid, new UpdateRoleTask.TaskCallback() {
+                @Override
+                public void run(final TaskFeature taskFeature) {
+                    createRole(type, rid, new RoleUpdateCallback() {
+                        @Override
+                        public void onCreateRole(Role role) {
+                            if (role.getRid() != 0) {
+                                mIMRoleManager.createRole(role);
+                                Log.d(TAG, "create role:" + rid);
+                                mIMessageListView.notifyDataSetChanged();
+                                taskFeature.success(null);
+                                return;
+                            }
+                            taskFeature.fail();
+                        }
+                    });
+                }
+            });
+            mMessageResourceHelper.addTask(task);
+        }
     }
 
     public interface RoleUpdateCallback {

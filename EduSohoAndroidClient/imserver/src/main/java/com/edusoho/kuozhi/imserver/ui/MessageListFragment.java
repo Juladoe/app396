@@ -33,13 +33,10 @@ import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.AudioPlayStatusListener;
 import com.edusoho.kuozhi.imserver.ui.listener.InputViewControllerListener;
-import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageItemOnClickListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.util.MessageAudioPlayer;
-import com.edusoho.kuozhi.imserver.ui.util.TaskFeature;
-import com.edusoho.kuozhi.imserver.ui.util.UpdateRoleTask;
 import com.edusoho.kuozhi.imserver.ui.view.MessageInputView;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import org.json.JSONException;
@@ -73,7 +70,6 @@ public class MessageListFragment extends Fragment implements
     private int mCurrentSelectedIndex;
     private MessageAudioPlayer mAudioPlayer;
     private MessageSendListener mMessageSendListener;
-    private MessageControllerListener mMessageControllerListener;
 
     protected ResourceStatusReceiver mResourceStatusReceiver;
     protected PtrClassicFrameLayout mPtrFrame;
@@ -143,6 +139,11 @@ public class MessageListFragment extends Fragment implements
     }
 
     @Override
+    public void notifyDataSetChanged() {
+        mListAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void notifiy(String content) {
         SystemUtil.toast(mContext, content);
     }
@@ -166,10 +167,6 @@ public class MessageListFragment extends Fragment implements
             }
         }
     };
-
-    public void setMessageControllerListener(MessageControllerListener listener) {
-        this.mMessageControllerListener = listener;
-    }
 
     protected void initView(View view) {
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
@@ -278,7 +275,7 @@ public class MessageListFragment extends Fragment implements
             Bundle bundle = new Bundle();
             bundle.putString("data", data.toString());
             bundle.putString("activityName", "ChatSelectFragment");
-            mMessageControllerListener.onShowActivity(bundle);
+            //mMessageControllerListener.onShowActivity(bundle);
         } else if (id == R.id.menu_delete) {
             MessageBody messageBody = getSelectedMessageBody();
             if (messageBody == null) {
@@ -353,18 +350,12 @@ public class MessageListFragment extends Fragment implements
 
             @Override
             public void onAvatarClick(int userId) {
-                Role role = IMClient.getClient().getRoleManager().getRole(Destination.USER, userId);
-                role.setRid(userId);
-                mMessageControllerListener.onShowUser(role);
+                mIMessageListPresenter.onShowUser(userId);
             }
 
             @Override
             public void onUpdateRole(final String type, final int rid) {
-                Role role = IMClient.getClient().getRoleManager().getRole(type, rid);
-                if (role.getRid() != 0) {
-                    return;
-                }
-                new Handler().postDelayed(new UpdateRoleRunnable(type, rid), 200);
+                mIMessageListPresenter.updateRole(type, rid);
             }
 
             @Override
@@ -374,7 +365,10 @@ public class MessageListFragment extends Fragment implements
                     case PushUtil.ChatMsgType.MULTI:
                         try {
                             JSONObject jsonObject = new JSONObject(messageBody.getBody());
-                            mMessageControllerListener.onShowWebPage(jsonObject.optString("url"));
+                            Bundle bundle = new Bundle();
+                            bundle.putString("url", jsonObject.optString("url"));
+                            bundle.putString("type", "webpage");
+                            mIMessageListPresenter.onShowActivity(bundle);
                         } catch (JSONException e) {
                         }
                         break;
@@ -388,7 +382,8 @@ public class MessageListFragment extends Fragment implements
                                 bundle.putString("target_type", "course");
                                 bundle.putInt("thread_id", jsonObject.optInt("threadId"));
                                 bundle.putString("activity_type", "thread.post");
-                                mMessageControllerListener.onShowActivity(bundle);
+                                bundle.putString("type", "question.created");
+                                mIMessageListPresenter.onShowActivity(bundle);
                             }
                         } catch (JSONException e) {
                         }
@@ -407,7 +402,11 @@ public class MessageListFragment extends Fragment implements
                 break;
             }
         }
-        mMessageControllerListener.onShowImage(index, imageUrls);
+        Bundle bundle = new Bundle();
+        bundle.putString("type", "showImage");
+        bundle.putInt("index", index);
+        bundle.putStringArrayList("imageList", imageUrls);
+        mIMessageListPresenter.onShowActivity(bundle);
     }
 
     protected ArrayList<String> getAllMessageImageUrls() {
@@ -474,12 +473,12 @@ public class MessageListFragment extends Fragment implements
         return new InputViewControllerListener() {
             @Override
             public void onSelectPhoto() {
-                mMessageControllerListener.selectPhoto(null);
+                mIMessageListPresenter.selectPhoto("select");
             }
 
             @Override
             public void onTakePhoto() {
-                mMessageControllerListener.takePhoto(null);
+                mIMessageListPresenter.selectPhoto("take");
             }
 
             @Override
@@ -558,40 +557,6 @@ public class MessageListFragment extends Fragment implements
             }
         }
     };
-
-    private class UpdateRoleRunnable implements Runnable {
-
-        private String type;
-        private int rid;
-
-        public UpdateRoleRunnable(String type, int rid) {
-            this.type = type;
-            this.rid = rid;
-        }
-
-        @Override
-        public void run() {
-            UpdateRoleTask task = new UpdateRoleTask(type, rid, new UpdateRoleTask.TaskCallback() {
-                @Override
-                public void run(final TaskFeature taskFeature) {
-                    mMessageControllerListener.createRole(type, rid, new MessageControllerListener.RoleUpdateCallback() {
-                        @Override
-                        public void onCreateRole(Role role) {
-                            if (role.getRid() != 0) {
-                                IMClient.getClient().getRoleManager().createRole(role);
-                                Log.d(TAG, "create role:" + rid);
-                                mListAdapter.notifyDataSetChanged();
-                                taskFeature.success(null);
-                                return;
-                            }
-                            taskFeature.fail();
-                        }
-                    });
-                }
-            });
-            IMClient.getClient().getResourceHelper().addTask(task);
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

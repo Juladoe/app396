@@ -19,13 +19,15 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.managar.IMConvManager;
+import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.ui.IMessageListPresenter;
 import com.edusoho.kuozhi.imserver.ui.IMessageListView;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
-import com.edusoho.kuozhi.imserver.ui.listener.DefautlMessageDataProvider;
-import com.edusoho.kuozhi.imserver.ui.listener.IMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
@@ -133,16 +135,15 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
 
         if (fragment != null) {
             mMessageListFragment = (MessageListFragment) fragment;
-            mMessageListFragment.setMessageControllerListener(getMessageControllerListener());
             //fragmentTransaction.show(fragment);
         } else {
             mMessageListFragment = createFragment();
-            mMessageListFragment.setMessageControllerListener(getMessageControllerListener());
             fragmentTransaction.add(R.id.chat_content, mMessageListFragment, "im_container");
             fragmentTransaction.commitAllowingStateLoss();
         }
 
         mIMessageListPresenter = createProsenter();
+        mIMessageListPresenter.addMessageControllerListener(getMessageControllerListener());
     }
 
     protected IMessageListPresenter createProsenter() {
@@ -153,9 +154,12 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
 
         return new ChatMessageListPresenterImpl(
                 bundle,
+                IMClient.getClient().getConvManager(),
+                IMClient.getClient().getRoleManager(),
                 IMClient.getClient().getResourceHelper(),
                 new DefautlMessageDataProvider(),
-                mMessageListFragment);
+                mMessageListFragment
+        );
     }
 
     protected MessageListFragment createFragment() {
@@ -177,22 +181,6 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
 
     protected MessageControllerListener getMessageControllerListener() {
         return new MessageControllerListener() {
-            @Override
-            public void createConvNo(final ConvNoCreateCallback callback) {
-
-            }
-
-            @Override
-            public void createRole(String type, int rid, RoleUpdateCallback callback) {
-                //createTargetRole(type, rid, callback);
-            }
-
-            @Override
-            public Map<String, String> getRequestHeaders() {
-                HashMap map = new HashMap();
-                map.put("Auth-Token", ApiTokenUtil.getApiToken(mContext));
-                return map;
-            }
 
             @Override
             public void onShowImage(int index, ArrayList<String> imageList) {
@@ -226,12 +214,12 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
             }
 
             @Override
-            public void selectPhoto(PhotoSelectCallback callback) {
+            public void selectPhoto() {
                 openPictureFromLocal();
             }
 
             @Override
-            public void takePhoto(PhotoSelectCallback callback) {
+            public void takePhoto() {
                 openPictureFromCamera();
             }
 
@@ -330,10 +318,12 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
     protected class ChatMessageListPresenterImpl extends MessageListPresenterImpl {
 
         public ChatMessageListPresenterImpl(Bundle params,
+                                            IMConvManager convManager,
+                                            IMRoleManager roleManager,
                                             MessageResourceHelper messageResourceHelper,
                                             IMessageDataProvider mIMessageDataProvider,
                                             IMessageListView messageListView) {
-            super(params, messageResourceHelper, mIMessageDataProvider, messageListView);
+            super(params, convManager, roleManager, messageResourceHelper, mIMessageDataProvider, messageListView);
         }
 
         @Override

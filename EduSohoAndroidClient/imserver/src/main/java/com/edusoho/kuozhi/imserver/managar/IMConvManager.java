@@ -5,7 +5,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.util.ConvDbHelper;
-
 import java.util.List;
 
 /**

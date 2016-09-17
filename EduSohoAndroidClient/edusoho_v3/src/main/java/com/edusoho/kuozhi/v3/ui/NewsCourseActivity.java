@@ -17,16 +17,13 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
-import com.edusoho.kuozhi.imserver.ui.listener.DefautlMessageDataProvider;
-import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
@@ -41,7 +38,6 @@ import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
@@ -53,10 +49,6 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoCompoundButton;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import com.google.gson.JsonObject;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.LinkedHashMap;
 
@@ -402,12 +394,14 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
         MessageControllerListener
      */
     private void initChatRoomController(MessageListFragment messageListFragment) {
-        messageListFragment.setMessageControllerListener(getMessageControllerListener());
         mIMessageListPresenter = new ChatMessageListPresenterImpl(
                 messageListFragment.getArguments(),
+                IMClient.getClient().getConvManager(),
+                IMClient.getClient().getRoleManager(),
                 IMClient.getClient().getResourceHelper(),
                 new DefautlMessageDataProvider(),
                 messageListFragment);
+        mIMessageListPresenter.addMessageControllerListener(getMessageControllerListener());
     }
 
     protected Promise createChatConvNo() {

@@ -20,4 +20,6 @@ public interface IMessageListView {
     void insertMessage(MessageEntity messageEntity);
 
     void insertMessageList(List<MessageEntity> messageEntityList);
+
+    void notifyDataSetChanged();
 }

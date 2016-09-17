@@ -1,21 +1,14 @@
 package com.edusoho.kuozhi.imserver.ui.listener;
 
 import android.os.Bundle;
-
 import com.edusoho.kuozhi.imserver.entity.Role;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by suju on 16/8/27.
  */
 public interface MessageControllerListener {
-
-    void createConvNo(ConvNoCreateCallback callback);
-
-    void createRole(String type, int rid, RoleUpdateCallback callback);
 
     void onShowImage(int index, ArrayList<String> imageList);
 
@@ -25,11 +18,9 @@ public interface MessageControllerListener {
 
     void onShowActivity(Bundle bundle);
 
-    void selectPhoto(PhotoSelectCallback callback);
+    void selectPhoto();
 
-    void takePhoto(PhotoSelectCallback callback);
-
-    Map<String, String> getRequestHeaders();
+    void takePhoto();
 
     /*
         callback
@@ -40,11 +31,4 @@ public interface MessageControllerListener {
         void onSelected(List<String> pathList);
     }
 
-    interface RoleUpdateCallback {
-        void onCreateRole(Role role);
-    }
-
-    interface ConvNoCreateCallback {
-        void onCreateConvNo(String convNo);
-    }
 }

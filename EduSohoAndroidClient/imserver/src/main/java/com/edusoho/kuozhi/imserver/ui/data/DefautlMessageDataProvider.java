@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.imserver.ui.listener;
+package com.edusoho.kuozhi.imserver.ui.data;
 
 import android.content.ContentValues;
 import android.util.Log;
@@ -6,11 +6,13 @@ import android.util.Log;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.SendEntity;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
+import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.managar.IMMessageManager;
+import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
 import java.util.List;
@@ -20,42 +22,39 @@ import java.util.List;
  */
 public class DefautlMessageDataProvider implements IMessageDataProvider {
 
-    private static final int EXPAID_TIME = 3600 * 1 * 1000;
-
-    private ConvEntity createConvNo(String convNo, Role role) {
-        ConvEntity convEntity = new ConvEntity();
-        convEntity.setTargetId(role.getRid());
-        convEntity.setTargetName(role.getNickname());
-        convEntity.setConvNo(convNo);
-        convEntity.setType(role.getType());
-        convEntity.setAvatar(role.getAvatar());
-        convEntity.setCreatedTime(System.currentTimeMillis());
-        convEntity.setUpdatedTime(0);
-        IMClient.getClient().getConvManager().createConv(convEntity);
-
-        return convEntity;
+    @Override
+    public int updateMessageFieldByUid(String uid, ContentValues cv) {
+        return IMClient.getClient().getMessageManager().updateMessageFieldByUid(uid, cv);
     }
 
     @Override
-    public void updateConvEntity(String convNo, Role role) {
-        ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByConvNo(convNo);
-        if (convEntity == null) {
-            Log.d("DefautlMessageProvider", "create ConvNo");
-            convEntity = createConvNo(convNo, role);
-        }
+    public MessageEntity getMessageByUID(String uid) {
+        return IMClient.getClient().getMessageManager().getMessageByUID(uid);
+    }
 
-        if ((System.currentTimeMillis() - convEntity.getUpdatedTime()) > EXPAID_TIME) {
-            Log.d("DefautlMessageProvider", "update ConvNo");
-            convEntity.setAvatar(role.getAvatar());
-            convEntity.setTargetName(role.getNickname());
-            convEntity.setUpdatedTime(System.currentTimeMillis());
-            IMClient.getClient().getConvManager().updateConvByConvNo(convEntity);
-        }
+    @Override
+    public int updateMessageFieldByMsgNo(String msgNo, ContentValues cv) {
+        return IMClient.getClient().getMessageManager().updateMessageFieldByMsgNo(msgNo, cv);
+    }
+
+    @Override
+    public long saveUploadEntity(String muid, String type, String source) {
+        return IMClient.getClient().getMessageManager().saveUploadEntity(muid, type, source);
+    }
+
+    @Override
+    public IMUploadEntity getUploadEntity(String muid) {
+        return IMClient.getClient().getMessageManager().getUploadEntity(muid);
     }
 
     @Override
     public List<MessageEntity> getMessageList(String convNo, int start) {
         return IMClient.getClient().getChatRoom(convNo).getMessageList(start);
+    }
+
+    @Override
+    public MessageEntity getMessage(int msgId) {
+        return IMClient.getClient().getMessageManager().getMessage(msgId);
     }
 
     @Override
@@ -93,11 +92,6 @@ public class DefautlMessageDataProvider implements IMessageDataProvider {
                 .addMsg(messageBody.toJson())
                 .addTime((int) (messageBody.getCreatedTime() / 1000))
                 .builder();
-    }
-
-    @Override
-    public IMMessageManager getMessageManager() {
-        return IMClient.getClient().getMessageManager();
     }
 
     @Override
