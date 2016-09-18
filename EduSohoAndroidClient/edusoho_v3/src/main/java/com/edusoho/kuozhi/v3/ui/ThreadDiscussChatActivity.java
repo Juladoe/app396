@@ -545,6 +545,11 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     }
 
     @Override
+    public int deleteMessageById(int msgId) {
+        return 0;
+    }
+
+    @Override
     public IMUploadEntity getUploadEntity(String muid) {
         return null;
     }

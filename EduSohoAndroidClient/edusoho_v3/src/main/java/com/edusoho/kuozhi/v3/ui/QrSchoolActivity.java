@@ -166,6 +166,10 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
 
         public void selectSchool(UserResult userResult) {
             IMClient.getClient().destory();
+            School site = userResult.site;
+            mApp.setCurrentSchool(site);
+            mApp.registDevice(null);
+
             if (userResult.token == null || "".equals(userResult.token)) {
                 //未登录二维码
                 mApp.removeToken();
@@ -174,15 +178,9 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             } else {
                 //扫描登录用户二维码
                 mApp.saveToken(userResult);
-                getAppSettingProvider().setUser(userResult.user);
                 new IMServiceProvider(mActivity.getApplicationContext()).bindServer(userResult.user.id, userResult.user.nickname);
                 mApp.sendMessage(Const.LOGIN_SUCCESS, null);
             }
-
-            School site = userResult.site;
-            mApp.setCurrentSchool(site);
-            mApp.registDevice(null);
-
             startSchoolActivity(site);
         }
 
