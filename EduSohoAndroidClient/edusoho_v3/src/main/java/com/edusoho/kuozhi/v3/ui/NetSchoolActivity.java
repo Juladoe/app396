@@ -421,7 +421,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
     }
 
     protected void bindApiToken(final School site) {
-        final RequestUrl requestUrl = app.bindNewUrl(Const.GET_API_TOKEN, false);
+        final RequestUrl requestUrl = app.bindNewUrl(site.host + Const.GET_API_TOKEN, false);
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

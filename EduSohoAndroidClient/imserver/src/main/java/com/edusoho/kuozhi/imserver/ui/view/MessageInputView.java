@@ -15,11 +15,13 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -89,6 +91,7 @@ public class MessageInputView extends FrameLayout {
         OnClickListener onClickListener = getViewOnClickListener();
         etSend = (EditText) findViewById(R.id.et_send_content);
         etSend.addTextChangedListener(mContentTextWatcher);
+        etSend.setOnEditorActionListener(getOnEditorActionListener());
         btnSend = (Button) findViewById(R.id.btn_send);
         btnSend.setOnClickListener(onClickListener);
         etSend.setOnFocusChangeListener(getContentOnFocusChangeListener());
@@ -116,6 +119,19 @@ public class MessageInputView extends FrameLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         initSpeakContainer();
+    }
+
+    private TextView.OnEditorActionListener getOnEditorActionListener() {
+        return new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEND) {
+                    sendClick();
+                    return true;
+                }
+                return false;
+            }
+        };
     }
 
     private void initSpeakContainer() {
@@ -155,6 +171,15 @@ public class MessageInputView extends FrameLayout {
         };
     }
 
+    private void sendClick() {
+        //发送消息
+        if (etSend.getText().length() == 0) {
+            return;
+        }
+        mMessageSendListener.onSendMessage(etSend.getText().toString());
+        etSend.setText("");
+    }
+
     protected OnClickListener getViewOnClickListener() {
         return new OnClickListener() {
             @Override
@@ -172,12 +197,7 @@ public class MessageInputView extends FrameLayout {
                     }
                     //lvMessage.post(mListViewSelectRunnable);
                 } else if (v.getId() == R.id.btn_send) {
-                    //发送消息
-                    if (etSend.getText().length() == 0) {
-                        return;
-                    }
-                    mMessageSendListener.onSendMessage(etSend.getText().toString());
-                    etSend.setText("");
+                    sendClick();
                 } else if (v.getId() == R.id.btn_voice) {
                     //语音
                     viewMediaLayout.setVisibility(View.GONE);
