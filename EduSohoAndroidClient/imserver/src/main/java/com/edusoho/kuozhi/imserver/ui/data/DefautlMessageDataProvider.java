@@ -108,4 +108,9 @@ public class DefautlMessageDataProvider implements IMessageDataProvider {
         cv.put("updatedTime", System.currentTimeMillis());
         IMClient.getClient().getConvManager().updateConvField(messageBody.getConvNo(), cv);
     }
+
+    @Override
+    public int deleteMessageById(int msgId) {
+        return IMClient.getClient().getMessageManager().deleteById(msgId);
+    }
 }

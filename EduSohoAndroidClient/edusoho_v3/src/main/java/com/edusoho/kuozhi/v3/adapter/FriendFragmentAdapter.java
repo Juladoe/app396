@@ -177,7 +177,6 @@ public class FriendFragmentAdapter<T extends Friend> extends BaseAdapter {
 
     public void clearList() {
         mList.clear();
-        notifyDataSetChanged();
     }
 
     public void setHeadView(View headView) {

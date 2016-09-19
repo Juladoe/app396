@@ -115,6 +115,11 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     }
 
     @Override
+    public void deleteMessageById(int msgId) {
+        mIMessageDataProvider.deleteMessageById(msgId);
+    }
+
+    @Override
     public void sendAudioMessage(File audioFile, int audioLength) {
         String content = wrapAudioMessageContent(audioFile.getAbsolutePath(), audioLength);
         MessageBody messageBody = createSendMessageBody(content, PushUtil.ChatMsgType.AUDIO);
@@ -272,7 +277,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
 
     @Override
     public void insertMessageList() {
-        List<MessageEntity> messageEntityList = mIMessageDataProvider.getMessageList(mConversationNo, mStart);
+        List<MessageEntity> messageEntityList = loadMessageList();
         mIMessageListView.insertMessageList(messageEntityList);
     }
 
@@ -378,10 +383,16 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         return convEntity;
     }
 
+    private List<MessageEntity> loadMessageList() {
+        List<MessageEntity> messageEntityList = mIMessageDataProvider.getMessageList(mConversationNo, mStart);
+        mStart += messageEntityList.size();
+        return messageEntityList;
+    }
+
     private void checkTargetRole() {
         if (mTargetRole.getRid() != 0) {
             checkConvEntity(mTargetRole);
-            mIMessageListView.setMessageList(mIMessageDataProvider.getMessageList(mConversationNo, mStart));
+            mIMessageListView.setMessageList(loadMessageList());
             return;
         }
         createRole(mTargetType, mTargetId, new RoleUpdateCallback() {
@@ -395,7 +406,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
                 mTargetRole = role;
                 mIMRoleManager.createRole(role);
                 checkConvEntity(role);
-                mIMessageListView.setMessageList(mIMessageDataProvider.getMessageList(mConversationNo, mStart));
+                mIMessageListView.setMessageList(loadMessageList());
             }
         });
     }

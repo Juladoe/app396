@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
@@ -65,6 +66,7 @@ public class FriendFragment extends BaseFragment {
     private FriendComparator friendComparator;
     private TextView dialog;
     private View mLoading;
+    private boolean mLoadLock;
 
     private FriendProvider mFriendProvider;
 
@@ -177,6 +179,7 @@ public class FriendFragment extends BaseFragment {
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
         } else {
             mFriendAdapter.clearList();
+            mFriendAdapter.notifyDataSetChanged();
         }
         loadFriend().then(new PromiseCallback() {
             @Override
@@ -187,12 +190,17 @@ public class FriendFragment extends BaseFragment {
         });
     }
 
-    public Promise loadFriend() {
+    public synchronized Promise loadFriend() {
         final Promise promise = new Promise();
+        if (mLoadLock) {
+            return promise;
+        }
+        mLoadLock = true;
         mFriendProvider.getFriendList()
                 .success(new NormalCallback<FriendResult>() {
                     @Override
                     public void success(FriendResult friendResult) {
+                        mLoadLock = false;
                         if (friendResult.data.length != 0) {
                             List<Friend> list = Arrays.asList(friendResult.data);
                             setChar(list);
@@ -204,7 +212,12 @@ public class FriendFragment extends BaseFragment {
                         setFriendsCount(friendResult.data.length + "");
                         promise.resolve(friendResult);
                     }
-                });
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                mLoadLock = false;
+            }
+        });
 
         return promise;
     }
@@ -234,6 +247,9 @@ public class FriendFragment extends BaseFragment {
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
             mActivity.setTitle(getString(R.string.title_friends));
+            if (mLoading.getVisibility() == View.GONE) {
+                loadFriend();
+            }
         }
         super.onHiddenChanged(hidden);
     }

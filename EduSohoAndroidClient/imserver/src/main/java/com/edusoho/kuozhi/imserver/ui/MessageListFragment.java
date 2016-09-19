@@ -177,6 +177,7 @@ public class MessageListFragment extends Fragment implements
         mLayoutManager.setReverseLayout(true);
         mMessageListView.setLayoutManager(mLayoutManager);
         mMessageListView.setAdapter(mListAdapter);
+        mMessageListView.setItemAnimator(null);
         Log.d(TAG, "initView");
 
         mPtrFrame.setLastUpdateTimeRelateObject(this);
@@ -275,14 +276,14 @@ public class MessageListFragment extends Fragment implements
             Bundle bundle = new Bundle();
             bundle.putString("data", data.toString());
             bundle.putString("activityName", "ChatSelectFragment");
-            //mMessageControllerListener.onShowActivity(bundle);
+            mIMessageListPresenter.onShowActivity(bundle);
         } else if (id == R.id.menu_delete) {
             MessageBody messageBody = getSelectedMessageBody();
             if (messageBody == null) {
                 return true;
             }
             mListAdapter.removeItem(messageBody.getMid());
-            //mIMessageDataProvider.getMessageManager().deleteById(messageBody.getMid());
+            mIMessageListPresenter.deleteMessageById(messageBody.getMid());
         }
         return super.onContextItemSelected(item);
     }

@@ -27,6 +27,8 @@ public interface IMessageListPresenter {
 
     void insertMessageList();
 
+    void deleteMessageById(int msgId);
+
     void uploadMedia(File file, MessageBody messageBody);
 
     void sendTextMessage(String content);

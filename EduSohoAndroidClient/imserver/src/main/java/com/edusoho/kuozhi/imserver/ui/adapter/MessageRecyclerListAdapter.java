@@ -100,7 +100,8 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         for (int i = 0; i < size; i++) {
             if (mMessageList.get(i).getId() == id) {
                 mMessageList.remove(i);
-                notifyDataSetChanged();
+                notifyItemRemoved(i);
+                notifyItemRangeChanged(i, size - i);
                 return;
             }
         }
@@ -121,13 +122,15 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
 
     public void updateItem(MessageEntity updateMessageEntity) {
         Iterator<MessageEntity> iterator = mMessageList.iterator();
+        int position = 0;
         while (iterator.hasNext()) {
             MessageEntity messageEntity = iterator.next();
             if (messageEntity.getId() == updateMessageEntity.getId()) {
                 updateMessageEntity(messageEntity, updateMessageEntity);
-                notifyDataSetChanged();
+                notifyItemRangeChanged(position, getItemCount() - position);
                 return;
             }
+            position++;
         }
     }
 
@@ -352,7 +355,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         notifyDataSetChanged();
     }
 
-    public void insertList(final List<MessageEntity> messageBodyList) {
+    public void insertList(List<MessageEntity> messageBodyList) {
         if (messageBodyList.isEmpty()) {
             return;
         }

@@ -105,6 +105,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
         mEmptyNotice.setVisibility(View.GONE);
         if (mGroupList.size() != 0) {
             mAdapter.clearList();
+            mAdapter.notifyDataSetChanged();
         }
         if (!app.getNetIsConnect()) {
             mLoading.setVisibility(View.GONE);
