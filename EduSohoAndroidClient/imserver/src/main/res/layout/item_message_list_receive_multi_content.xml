@@ -97,13 +97,16 @@
 
     <com.edusoho.kuozhi.imserver.ui.view.MessageStatusView
         android:id="@+id/tv_error_status"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="12dp"
+        android:paddingRight="0dp"
+        android:paddingLeft="12dp"
         android:layout_alignTop="@id/tv_container"
         android:layout_toRightOf="@id/tv_container"
         android:clickable="true"
         android:scaleType="fitXY"
-        android:src="@drawable/msg_state_failed_resend"
         android:visibility="gone" />
 
 </RelativeLayout>
