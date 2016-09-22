@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.util;
 
-import com.baidu.cyberplayer.utils.A;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryClassroom;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCourse;
@@ -37,7 +36,7 @@ public class DiscoveryLoadHelper
             loadTask.exectue(new DiscoveryLoadTask.TaskCallback() {
                 @Override
                 public void onResult(DiscoveryColumn discoveryColumn) {
-                    if (discoveryColumn != null) {
+                    if (discoveryColumn != null && discoveryColumn.data != null && !discoveryColumn.data.isEmpty()) {
                         mDiscoveryCardPropertieList.add(discoveryColumn);
                     }
                     mTaskCount --;
@@ -96,8 +95,8 @@ class DiscoveryLoadTask {
                         discoveryClassroomList.add(new DiscoveryClassroom(true));
                     }
                     mDiscoveryColumn.data = discoveryClassroomList;
-                    onResult(mDiscoveryColumn);
                 }
+                onResult(mDiscoveryColumn);
             }
 
             @Override
@@ -121,8 +120,8 @@ class DiscoveryLoadTask {
                     }
 
                     mDiscoveryColumn.data = discoveryCourseList;
-                    onResult(mDiscoveryColumn);
                 }
+                onResult(mDiscoveryColumn);
             }
 
             @Override
@@ -145,8 +144,8 @@ class DiscoveryLoadTask {
                         discoveryCourseList.add(new DiscoveryCourse(true));
                     }
                     mDiscoveryColumn.data = discoveryCourseList;
-                    onResult(mDiscoveryColumn);
                 }
+                onResult(mDiscoveryColumn);
             }
 
             @Override
