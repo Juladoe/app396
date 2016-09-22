@@ -64,12 +64,12 @@
 
     <com.edusoho.kuozhi.imserver.ui.view.MessageStatusView
         android:id="@+id/tv_error_status"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         android:layout_alignTop="@id/tv_container"
         android:layout_toLeftOf="@id/tv_container"
         android:clickable="true"
         android:scaleType="fitXY"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </RelativeLayout>

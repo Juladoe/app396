@@ -164,11 +164,11 @@ public class MessageHelper {
 
     public String getThumbImagePath(String path) {
         Uri uri = Uri.parse(path);
-        if (uri == null) {
+        String uriPath = uri.getLastPathSegment();
+        if (uri == null || TextUtils.isEmpty(uriPath)) {
             return path;
         }
 
-        String uriPath = uri.getLastPathSegment();
         File thumbFile = new File(getThumbImageStorage(), uriPath);
         if (thumbFile.exists()) {
             return String.format("file://%s", thumbFile.getAbsolutePath());

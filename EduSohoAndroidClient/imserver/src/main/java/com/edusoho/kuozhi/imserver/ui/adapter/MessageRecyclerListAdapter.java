@@ -709,7 +709,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
                 });
             } else {
                 try {
-                    if (IMClient.getClient().getResourceHelper().hasTask(messageBody.getMid())) {
+                    if (TextUtils.isEmpty(body) || IMClient.getClient().getResourceHelper().hasTask(messageBody.getMid())) {
                         return;
                     }
                     File realFile = mMessageHelper.createImageFile(body);

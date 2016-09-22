@@ -190,7 +190,7 @@ public class MessageListFragment extends Fragment implements
                     public void run() {
                         mIMessageListPresenter.insertMessageList();
                     }
-                }, 500);
+                }, 350);
             }
 
             @Override
@@ -203,6 +203,29 @@ public class MessageListFragment extends Fragment implements
         mMessageSendListener = getMessageSendListener();
         mMessageInputView.setMessageSendListener(mMessageSendListener);
         mMessageInputView.setMessageControllerListener(getMessageControllerListener());
+
+        mMessageListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    checkCanAutoLoad(recyclerView);
+                }
+            }
+        });
+    }
+
+    private synchronized void checkCanAutoLoad(RecyclerView recyclerView) {
+        if (!canLoadData || mPtrFrame.isAutoRefresh()) {
+            Log.d(TAG, "auto loading");
+            return;
+        }
+        int chileCount = recyclerView.getChildCount();
+        View firstView = recyclerView.getChildAt(chileCount - 1);
+        if (firstView != null && firstView.getTop() == 0) {
+            Log.d(TAG, "auto load");
+            mPtrFrame.autoRefresh();
+        }
     }
 
     protected AdapterView.OnItemLongClickListener getOnItemLongClickListener() {
