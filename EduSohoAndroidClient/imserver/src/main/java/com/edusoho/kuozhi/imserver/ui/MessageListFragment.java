@@ -228,10 +228,12 @@ public class MessageListFragment extends Fragment implements
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
         new MenuInflater(mContext).inflate(R.menu.message_list_menu, menu);
         MenuItem menuItem = menu.findItem(R.id.menu_copy);
+        MenuItem replayItem = menu.findItem(R.id.menu_replay);
         MessageBody messageBody = getSelectedMessageBody();
-        if (menuItem == null || messageBody == null) {
+        if (replayItem == null || menuItem == null || messageBody == null) {
             return;
         }
+        replayItem.setVisible(!PushUtil.ChatMsgType.AUDIO.equals(messageBody.getType()));
         menuItem.setVisible(PushUtil.ChatMsgType.TEXT.equals(messageBody.getType()));
     }
 
@@ -262,20 +264,27 @@ public class MessageListFragment extends Fragment implements
             if (messageBody == null) {
                 return true;
             }
-            JSONObject data = new JSONObject();
-            try {
-                data.put("type", messageBody.getType());
-                data.put("fromType", Destination.USER);
-                data.put("title", "确定转发给:");
-                data.put("content", messageBody.getBody());
-                data.put("source", "self");
-                data.put("id", messageBody.getDestination().getId());
-            } catch (JSONException e) {
+            String body = "";
+            if (PushUtil.ChatMsgType.MULTI.equals(messageBody.getType())) {
+                body = messageBody.getBody();
+            } else {
+                JSONObject data = new JSONObject();
+                try {
+                    data.put("type", messageBody.getType());
+                    data.put("fromType", Destination.USER);
+                    data.put("title", "确定转发给:");
+                    data.put("content", messageBody.getBody());
+                    data.put("source", "self");
+                    data.put("id", messageBody.getDestination().getId());
+                    body = data.toString();
+                } catch (JSONException e) {
+                }
             }
 
             Bundle bundle = new Bundle();
-            bundle.putString("data", data.toString());
+            bundle.putString("data", body);
             bundle.putString("activityName", "ChatSelectFragment");
+            bundle.putString("type", "relay");
             mIMessageListPresenter.onShowActivity(bundle);
         } else if (id == R.id.menu_delete) {
             MessageBody messageBody = getSelectedMessageBody();

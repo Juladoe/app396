@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.Serializable;
 
 /**

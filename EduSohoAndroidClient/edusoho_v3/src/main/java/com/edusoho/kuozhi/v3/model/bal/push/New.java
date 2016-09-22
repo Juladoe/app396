@@ -85,7 +85,7 @@ public class New implements Serializable {
                 break;
             case PushUtil.ChatMsgType.MULTI:
                 RedirectBody redirectBody = getUtilFactory().getJsonParser().fromJson(body, RedirectBody.class);
-                content = redirectBody.content;
+                content = redirectBody == null ? "" : redirectBody.content;
                 break;
             case PushUtil.ChatMsgType.PUSH:
                 content = handlePushMessageBody(messageBody);
