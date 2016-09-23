@@ -6,6 +6,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -34,6 +35,7 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
     private String mThreadType;
     private EditText mTitleEdt;
     private EditText mContenteEdt;
+    private boolean isPosting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +55,18 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
         mContenteEdt = (EditText) findViewById(R.id.tc_conten);
     }
 
-    private void createThread() {
-
+    private synchronized void createThread() {
+        if (isPosting) {
+            return;
+        }
+        isPosting = true;
+        invalidateOptionsMenu();
         String title = mTitleEdt.getText().toString();
         String content = mContenteEdt.getText().toString();
 
         if (TextUtils.isEmpty(title) || TextUtils.isEmpty(content)) {
+            isPosting = false;
+            invalidateOptionsMenu();
             ToastUtils.show(getBaseContext(), "问答标题或内容不能为空");
             return;
         }
@@ -67,11 +75,19 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
                 .success(new NormalCallback<LinkedHashMap>() {
                     @Override
                     public void success(LinkedHashMap result) {
+                        isPosting = false;
+                        invalidateOptionsMenu();
                         if (result != null && result.containsKey("threadId")) {
                             createSuccess();
                         }
                     }
-                });
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                isPosting = false;
+                invalidateOptionsMenu();
+            }
+        });
     }
 
     private void createSuccess() {
@@ -89,6 +105,15 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        MenuItem menuItem = menu.findItem(R.id.menu_thread_create);
+        if (menuItem != null) {
+            menuItem.setEnabled(!isPosting);
+        }
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
