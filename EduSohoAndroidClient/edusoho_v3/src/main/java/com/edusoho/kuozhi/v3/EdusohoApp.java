@@ -321,12 +321,12 @@ public class EdusohoApp extends Application {
 
     public void initApp() {
         runTask = new HashMap<>();
+        FactoryManager.getInstance().initContext(getBaseContext());
         File workFile = initWorkSpace();
         initImageLoaderConfig(workFile);
         loadConfig();
 
         mEngine = CoreEngine.create(this);
-        FactoryManager.getInstance().initContext(getBaseContext());
     }
 
     public void startMainService() {
@@ -474,6 +474,7 @@ public class EdusohoApp extends Application {
         app.schoolHost = school.url + "/";
         setHost(school.host);
         SchoolUtil.saveSchool(getBaseContext(), school);
+        getAppSettingProvider().setCurrentSchool(school);
     }
 
     private void loadDefaultSchool() {
