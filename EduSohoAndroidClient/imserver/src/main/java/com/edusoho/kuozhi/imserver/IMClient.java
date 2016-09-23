@@ -308,6 +308,7 @@ public class IMClient {
     }
 
     public void invokeOfflineMsgReceiver(List<MessageEntity> messageEntities) {
+        messageEntities = filterMessageEntityList(messageEntities);
         int count = mMessageReceiverList.size();
         for (int i = count - 1; i >= 0; i--) {
             IMMessageReceiver receiver = mMessageReceiverList.get(i);
@@ -316,6 +317,18 @@ public class IMClient {
         }
 
         this.mLaterIMMessageReceiver = null;
+    }
+
+    private List<MessageEntity> filterMessageEntityList(List<MessageEntity> messageEntities) {
+        Iterator<MessageEntity> iterator = messageEntities.iterator();
+        while (iterator.hasNext()) {
+            MessageEntity messageEntity = iterator.next();
+            if (filterMessageBody(new MessageBody(messageEntity))) {
+                iterator.remove();
+            }
+        }
+
+        return messageEntities;
     }
 
     private boolean filterMessageBody(MessageBody messageBody) {
