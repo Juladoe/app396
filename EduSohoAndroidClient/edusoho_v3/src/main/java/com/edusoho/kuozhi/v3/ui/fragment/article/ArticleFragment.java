@@ -23,7 +23,9 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
@@ -34,7 +36,6 @@ import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.article.Article;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
@@ -138,7 +139,6 @@ public class ArticleFragment extends BaseFragment {
         setHasOptionsMenu(true);
         setContainerView(R.layout.article_layout);
         ModelProvider.init(mContext, this);
-        mSPDataSource = new ServiceProviderDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
     }
 
     @Override
@@ -347,6 +347,20 @@ public class ArticleFragment extends BaseFragment {
 
                 MessageEntity messageEntity = createMessageEntityByBody(createArticleMessageBody(articleModel.body, PushUtil.ChatMsgType.PUSH));
                 IMClient.getClient().getMessageManager().createMessage(messageEntity);
+
+                ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByConvNo(Destination.ARTICLE);
+                if (convEntity == null) {
+                    convEntity = createConvEntity(messageEntity);
+                    Role role = IMClient.getClient().getRoleManager().getRole(convEntity.getType(), convEntity.getTargetId());
+                    if (role.getRid() != 0) {
+                        convEntity.setTargetName(role.getNickname());
+                        convEntity.setAvatar(role.getAvatar());
+                    }
+                    IMClient.getClient().getConvManager().createConv(convEntity);
+                }
+                convEntity.setLaterMsg(messageEntity.getMsg());
+                convEntity.setUpdatedTime(messageEntity.getTime() * 1000L);
+                IMClient.getClient().getConvManager().updateConvByConvNo(convEntity);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -354,6 +368,19 @@ public class ArticleFragment extends BaseFragment {
                 loadDialog.dismiss();
             }
         });
+    }
+
+    private ConvEntity createConvEntity(MessageEntity messageEntity) {
+        ConvEntity convEntity = new ConvEntity();
+
+        convEntity.setTargetName("资讯");
+        convEntity.setLaterMsg(messageEntity.getMsg());
+        convEntity.setConvNo(Destination.ARTICLE);
+        convEntity.setCreatedTime(messageEntity.getTime() * 1000L);
+        convEntity.setType(Destination.ARTICLE);
+        convEntity.setTargetId(mServiceProvierId);
+        convEntity.setUpdatedTime(messageEntity.getTime() * 1000L);
+        return convEntity;
     }
 
     protected MessageBody createArticleMessageBody(String content, String type) {
