@@ -95,7 +95,7 @@ public class ImService extends Service {
     }
 
     @Override
-        public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "onStartCommand" + intent);
         sendServiceStatusBroadCast();
         if (intent == null) {
