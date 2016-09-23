@@ -102,7 +102,7 @@ public class New implements Serializable {
             case PushUtil.ArticleType.TYPE:
                 ArticleMessageBody articleMessageBody = getUtilFactory().getJsonParser().
                         fromJson(messageBody.getBody(), ArticleMessageBody.class);
-                return articleMessageBody.getContent();
+                return articleMessageBody == null ? "" : articleMessageBody.getContent();
             case PushUtil.BulletinType.TYPE:
                 Bulletin bulletin = getUtilFactory().getJsonParser().
                         fromJson(messageBody.getBody(), Bulletin.class);
