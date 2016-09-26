@@ -98,7 +98,7 @@ public class SearchDialogFragment extends DialogFragment {
 
         view = inflater.inflate(R.layout.search_dialog, container, false);
         mSearchFrame = (EditText) view.findViewById(R.id.search_dialog_frame);
-        mSearchFrame.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_NORMAL);
+        mSearchFrame.setInputType(InputType.TYPE_CLASS_TEXT);
         mSearchFrame.setCompoundDrawablePadding(20);
 
         mCancel = (TextView) view.findViewById(R.id.cancel_search_btn);
@@ -180,7 +180,6 @@ public class SearchDialogFragment extends DialogFragment {
     public void searchFriend(final String searchStr) {
         if (TextUtils.isEmpty(searchStr)) {
             Toast.makeText(getActivity(), "请输入搜索内容！", Toast.LENGTH_SHORT).show();
-            return;
         } else {
             closeInput();
             mLoading.setVisibility(View.VISIBLE);

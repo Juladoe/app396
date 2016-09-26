@@ -1,6 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.app.Activity;;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;

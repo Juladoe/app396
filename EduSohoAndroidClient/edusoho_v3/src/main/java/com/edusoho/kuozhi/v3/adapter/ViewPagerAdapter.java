@@ -69,7 +69,7 @@ public class ViewPagerAdapter extends PagerAdapter {
         return view == object;
     }
 
-    public static interface ViewPagerAdapterListener {
+    public interface ViewPagerAdapterListener {
 
         void onFinish();
     }

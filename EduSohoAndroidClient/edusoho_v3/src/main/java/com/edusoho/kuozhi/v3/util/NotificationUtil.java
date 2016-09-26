@@ -10,18 +10,11 @@ import android.util.Log;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.article.Article;
-import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
-import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.ui.BulletinActivity;
-import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
-import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
-import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.google.gson.Gson;
 import java.util.List;
 

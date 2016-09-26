@@ -30,7 +30,6 @@ public class ResourceDownStatusReceiver extends BroadcastReceiver {
         Log.d("DownStatusReceiver", "onReceive");
         if (mStatusCallback != null) {
             mStatusCallback.invoke(intent);
-            return;
         }
     }
 }

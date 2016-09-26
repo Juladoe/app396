@@ -328,8 +328,9 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
 
         @Override
         protected Map<String, String> getRequestHeaders() {
-            HashMap map = new HashMap();
-            map.put("Auth-Token", ApiTokenUtil.getApiToken(mContext));
+            HashMap<String, String> map = new HashMap();
+            String token = ApiTokenUtil.getApiToken(mContext);
+            map.put("Auth-Token", TextUtils.isEmpty(token) ? "" : token);
             return map;
         }
 

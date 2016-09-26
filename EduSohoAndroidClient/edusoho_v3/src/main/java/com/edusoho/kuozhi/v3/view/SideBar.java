@@ -4,14 +4,11 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-
-import com.edusoho.kuozhi.R;
 
 /**
  * Created by Melomelon on 2015/8/4.
@@ -113,6 +110,6 @@ public class SideBar extends View {
     }
 
     public interface OnTouchingLetterChangedListener {
-        public void onTouchingLetterChangedListener(String string);
+        void onTouchingLetterChangedListener(String string);
     }
 }

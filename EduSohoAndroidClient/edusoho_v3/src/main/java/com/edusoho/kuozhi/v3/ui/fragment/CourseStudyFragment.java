@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.baidu.cyberplayer.utils.A;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
@@ -39,18 +38,13 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.courseDynamics.CourseDynamicsItem;
 import com.edusoho.kuozhi.v3.model.bal.courseDynamics.DynamicsProvider;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
-import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ThreadCreateActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -469,11 +463,9 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
                 if (courseDetailsResult == null) {
                     mErrorHandler = new ErrorHandler();
                     mErrorHandler.sendEmptyMessage(0);
-                    return;
                 } else {
                     Course course = courseDetailsResult.course;
                     if (dataList.size() != 0 && "course.summary".equals(dataList.get(0).getBodyType())) {
-                        return;
                     } else {
                         NewsCourseEntity entity = new NewsCourseEntity();
                         entity.setBodyType("course.summary");

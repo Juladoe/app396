@@ -24,7 +24,6 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
-import com.edusoho.kuozhi.v3.model.bal.push.BaseMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseThreadPostResult;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
@@ -51,11 +50,8 @@ import com.edusoho.kuozhi.v3.util.sql.CourseThreadPostDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import org.json.JSONObject;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
@@ -135,7 +131,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
 
         if ("classroom".equals(mTargetType)) {
             fillThreadInfoByClassRoom();
-            return;
         }
     }
 

@@ -15,11 +15,12 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
@@ -109,7 +110,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                 }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError volleyError) {
-                if (volleyError instanceof TimeoutError) {
+                if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
                     return;
                 }
                 AppConfig appConfig = getAppSettingProvider().getAppConfig();
@@ -380,7 +381,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                     }
                 }
             });
-            return;
         }
     }
 

@@ -5,5 +5,5 @@ package com.edusoho.kuozhi.v3.factory;
  */
 public interface IService {
 
-    public String getId();
+    String getId();
 }

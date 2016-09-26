@@ -171,17 +171,17 @@ public class MessageEngine {
         }
     }
 
-    public static interface MessageCallback {
-        public static final int REGIST_CLASS = 0;
-        public static final int REGIST_OBJECT = 1;
+    public interface MessageCallback {
+        int REGIST_CLASS = 0;
+         int REGIST_OBJECT = 1;
 
-        public static final int MSG_PAUSE = 0010;
-        public static final int MSG_RESUME = 0011;
+        int MSG_PAUSE = 0010;
+        int MSG_RESUME = 0011;
 
-        public void invoke(WidgetMessage message);
+        void invoke(WidgetMessage message);
 
-        public MessageType[] getMsgTypes();
+        MessageType[] getMsgTypes();
 
-        public int getMode();
+        int getMode();
     }
 }

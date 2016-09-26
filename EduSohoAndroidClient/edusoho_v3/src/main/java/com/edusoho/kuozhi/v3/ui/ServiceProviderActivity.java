@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui;
 
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.edusoho.kuozhi.v3.util.ServiceProviderUtil;
@@ -37,11 +36,8 @@ public class ServiceProviderActivity extends FragmentPageActivity {
         if (TextUtils.isEmpty(SERVICE_NAME)) {
             return false;
         }
-        if (SERVICE_NAME.equals(getFragmentNameByType(type))) {
-            return true;
-        }
 
-        return false;
+        return SERVICE_NAME.equals(getFragmentNameByType(type));
     }
 
     @Override

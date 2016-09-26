@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.util.html;
 import android.graphics.Color;
 import android.text.Editable;
 import android.text.Html;
-import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.BackgroundColorSpan;

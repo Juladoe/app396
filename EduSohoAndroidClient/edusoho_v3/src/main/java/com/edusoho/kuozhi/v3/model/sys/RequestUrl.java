@@ -4,7 +4,6 @@ import android.os.Build;
 
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.Map;
 
 /**
  * Created by howzhi on 14-9-11.

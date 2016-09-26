@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.volley.VolleyError;
@@ -16,11 +15,10 @@ import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
-import com.edusoho.kuozhi.v3.factory.UtilFactory;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.service.message.CommandFactory;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -136,6 +134,9 @@ public class IMServiceProvider extends ModelProvider {
         return new IMConnectStatusListener() {
             @Override
             public void onError() {
+                if (!AppUtil.isNetConnect(mContext)) {
+                    return;
+                }
                 reConnectServer(mClientId, mClientName);
             }
 

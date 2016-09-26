@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.webview.ESWebChromeClient;

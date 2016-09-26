@@ -9,7 +9,7 @@ import android.widget.BaseAdapter;
  */
 public interface LessonPluginCallback {
 
-    public void initPlugin(BaseAdapter adapter, int postion);
+    void initPlugin(BaseAdapter adapter, int postion);
 
-    public boolean click(AdapterView<?> parent, View view, int position);
+    boolean click(AdapterView<?> parent, View view, int position);
 }

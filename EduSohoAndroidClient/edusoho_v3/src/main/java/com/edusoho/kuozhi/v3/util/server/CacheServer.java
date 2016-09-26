@@ -25,8 +25,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import cn.trinea.android.common.util.ToastUtils;
-
 public class
 CacheServer extends Thread {
 

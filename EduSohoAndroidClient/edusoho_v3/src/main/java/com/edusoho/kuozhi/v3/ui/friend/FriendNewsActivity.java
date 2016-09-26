@@ -16,7 +16,6 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.FollowerNotification;
@@ -194,7 +193,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (isNews == true || isClick == true) {
+        if (isNews || isClick) {
             app.sendMessage(Const.REFRESH_FRIEND_LIST, null);
             isNews = false;
             isClick = false;

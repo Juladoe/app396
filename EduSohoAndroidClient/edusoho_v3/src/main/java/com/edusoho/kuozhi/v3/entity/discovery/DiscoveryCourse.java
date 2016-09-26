@@ -9,7 +9,6 @@ import java.io.Serializable;
  */
 public class DiscoveryCourse extends Course implements DiscoveryCardProperty, Serializable {
     private boolean mEmpty = false;
-    private long latestLessonStartTime = 0;
 
     @Override
     public int getId() {
@@ -41,14 +40,6 @@ public class DiscoveryCourse extends Course implements DiscoveryCardProperty, Se
         return type;
     }
 
-    public long getLatestLessonStartTime() {
-        return latestLessonStartTime;
-    }
-
-    public void setLatestLessonStartTime(long time) {
-        time = latestLessonStartTime;
-    }
-
     @Override
     public String getTeacherAvatar() {
         if (hasTeachers()) {
@@ -66,11 +57,7 @@ public class DiscoveryCourse extends Course implements DiscoveryCardProperty, Se
     }
 
     private boolean hasTeachers() {
-        if (teachers.length > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return teachers.length > 0;
     }
 
     @Override

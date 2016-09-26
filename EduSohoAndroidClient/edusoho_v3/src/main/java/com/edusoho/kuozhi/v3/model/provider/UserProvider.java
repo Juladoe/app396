@@ -1,20 +1,14 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
-
-import com.edusoho.kuozhi.v3.cache.request.model.Request;
-import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Created by 菊 on 2016/4/23.

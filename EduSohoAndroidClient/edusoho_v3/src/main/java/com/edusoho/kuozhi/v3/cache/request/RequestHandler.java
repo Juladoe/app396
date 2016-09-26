@@ -9,5 +9,5 @@ import com.edusoho.kuozhi.v3.cache.request.model.Response;
  */
 public interface RequestHandler {
 
-    public void handler(Request request, Response response);
+    void handler(Request request, Response response);
 }

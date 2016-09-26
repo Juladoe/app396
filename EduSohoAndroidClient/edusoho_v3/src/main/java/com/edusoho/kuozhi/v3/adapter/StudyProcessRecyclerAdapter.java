@@ -115,7 +115,7 @@ public class StudyProcessRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
         if (holder instanceof LessonTitleViewHolder) {
             final NewsCourseEntity entity = mDataList.get(position);
             String lessonTitle = entity.getContent();
-            if (entity.getIsLessonfinished() == true) {
+            if (entity.getIsLessonfinished()) {
                 ((LessonTitleViewHolder) holder).lessonState.setImageResource(R.drawable.icon_lesson_state_finished);
             } else {
                 ((LessonTitleViewHolder) holder).lessonState.setImageResource(R.drawable.icon_lesson_state_half);

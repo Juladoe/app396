@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.view.webview;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -28,7 +27,6 @@ import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.UtilFactory;
 import com.edusoho.kuozhi.v3.model.htmlapp.AppMeta;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -42,7 +40,6 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.AbstractJsBridgeAdapterWebView;
-import com.google.gson.reflect.TypeToken;
 import cn.trinea.android.common.util.FileUtils;
 
 /**
@@ -216,7 +213,6 @@ public class ESWebView extends RelativeLayout {
         updateApp(mAppCode);
         if (checkResourceIsExists()) {
             mWebView.loadUrl(mUrl);
-            return;
         }
     }
 

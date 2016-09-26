@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.util.volley;
 
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;

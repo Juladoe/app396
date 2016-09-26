@@ -394,7 +394,6 @@ public class M3U8Util {
             is = conn.getInputStream();
             int fileSize = conn.getContentLength();
             if (fileSize < 1 || is == null) {
-                return;
             } else {
                 ContentValues cv = new ContentValues();
                 cv.put("finish", 0);

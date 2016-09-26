@@ -383,7 +383,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                                 }.getType()
                         );
 
-                        if (true) {
+                        if (result) {
                             app.config.isPublicRegistDevice = true;
                             app.saveConfig();
                         }

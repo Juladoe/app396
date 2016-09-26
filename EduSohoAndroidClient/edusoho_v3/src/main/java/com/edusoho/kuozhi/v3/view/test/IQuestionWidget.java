@@ -8,5 +8,5 @@ import com.edusoho.kuozhi.v3.model.bal.test.QuestionTypeSeq;
  */
 public interface IQuestionWidget {
 
-    public void setData(QuestionTypeSeq questionSeq, int index);
+    void setData(QuestionTypeSeq questionSeq, int index);
 }

@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui.base;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +33,7 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     public static final String BACK = "返回";
     public ActionBar mActionBar;
     protected TextView mTitleTextView;
-    private View mTitleLayoutView;
+    private View titleLayoutView;
     private View mTitleLoading;
     protected int mRunStatus;
     private EduSohoCompoundButton switchButton;
@@ -80,13 +79,13 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     }
 
     public void setBackMode(String backTitle, String title) {
-        mTitleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
-        mTitleTextView = (TextView) mTitleLayoutView.findViewById(R.id.tv_action_bar_title);
+        titleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
+        mTitleTextView = (TextView) titleLayoutView.findViewById(R.id.tv_action_bar_title);
         mTitleTextView.setText(title);
         ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                 ActionBar.LayoutParams.MATCH_PARENT);
         layoutParams.gravity = Gravity.CENTER;
-        mActionBar.setCustomView(mTitleLayoutView, layoutParams);
+        mActionBar.setCustomView(titleLayoutView, layoutParams);
 
         if (backTitle != null) {
             mActionBar.setDisplayHomeAsUpEnabled(true);

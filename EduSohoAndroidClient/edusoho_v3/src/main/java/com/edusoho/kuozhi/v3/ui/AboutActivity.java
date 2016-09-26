@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.os.Bundle;
-import android.text.SpannableString;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;

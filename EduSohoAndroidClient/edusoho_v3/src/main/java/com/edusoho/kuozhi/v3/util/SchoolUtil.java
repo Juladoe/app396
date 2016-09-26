@@ -15,7 +15,7 @@ public class SchoolUtil {
     public static School getDefaultSchool(Context context) {
 
         School item = null;
-        SharedPreferences sp = context.getSharedPreferences("defaultSchool", context.MODE_PRIVATE);
+        SharedPreferences sp = context.getSharedPreferences("defaultSchool", Context.MODE_PRIVATE);
         Map<String, String> map = (Map<String, String>) sp.getAll();
         if (!map.isEmpty()) {
             item = new School();
@@ -30,7 +30,7 @@ public class SchoolUtil {
     }
 
     public static void saveSchool(Context context, School school) {
-        SharedPreferences sp = context.getSharedPreferences("defaultSchool", context.MODE_PRIVATE);
+        SharedPreferences sp = context.getSharedPreferences("defaultSchool", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("name", school.name);
         edit.putString("url", school.url);

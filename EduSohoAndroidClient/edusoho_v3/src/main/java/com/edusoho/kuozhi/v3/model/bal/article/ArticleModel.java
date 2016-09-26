@@ -1,11 +1,8 @@
 package com.edusoho.kuozhi.v3.model.bal.article;
 
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
-import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.v3.model.bal.push.ServiceProviderModel;
-import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

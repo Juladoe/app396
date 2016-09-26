@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.plugin.appview;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,11 +46,7 @@ public class SooonerLivePlayerAction {
     }
 
     private boolean checkLiveAppIsExist(Intent intent) {
-        if(mActivity.getBaseContext().getPackageManager().resolveActivity(intent, 0) == null) {
-            return true;
-        }
-
-        return false;
+        return mActivity.getBaseContext().getPackageManager().resolveActivity(intent, 0) == null;
     }
 
     public void installApk(String file) {

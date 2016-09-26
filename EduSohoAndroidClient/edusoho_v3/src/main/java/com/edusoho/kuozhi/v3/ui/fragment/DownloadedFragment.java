@@ -190,8 +190,6 @@ public class DownloadedFragment extends BaseFragment {
             if (mActivityContainer != null) {
                 DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
                 if (model.mLocalCourses.isEmpty()) {
-                    //mListView.setAdapter(getEmptyAdapter());
-                    return;
                 } else {
                     mDownloadedAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);
                 }

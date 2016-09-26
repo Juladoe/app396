@@ -7,9 +7,9 @@ import java.lang.reflect.Type;
  */
 public interface Parser {
 
-    public <T> T fromJson(String json, Class<T> tClass);
+    <T> T fromJson(String json, Class<T> tClass);
 
-    public <T> T fromJson(String json, Type type);
+    <T> T fromJson(String json, Type type);
 
-    public String jsonToString(Object jsonObj);
+    String jsonToString(Object jsonObj);
 }

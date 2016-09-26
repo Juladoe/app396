@@ -53,7 +53,7 @@ public class FactoryManager {
         return mFactoryManager;
     }
 
-    public static <T extends IService> T create(Class tClass) {
+    public <T extends IService> T create(Class tClass) {
         T factory = (T) mFactoryManager.getFactory(tClass.getSimpleName());
         if (factory != null) {
             Log.d(FactoryManager.class.getName(), "get from " + tClass);

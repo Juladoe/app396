@@ -27,14 +27,12 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.BuildConfig;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
-import com.edusoho.kuozhi.v3.handler.EduSohoUncaughtExceptionHandler;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
@@ -76,7 +74,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class EdusohoApp extends Application {
 
@@ -122,22 +119,16 @@ public class EdusohoApp extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "create application");
-        if (!"debug".equals(BuildConfig.BUILD_TYPE)) {
-            //EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
-        }
         init();
     }
 
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
-        //MultiDex.install(this);
     }
 
     public static void log(String msg) {
-        if (EdusohoApp.debug) {
-            System.out.println(msg);
-        }
+        Log.d(TAG, msg);
     }
 
     public EdusohoMainService getService() {
@@ -246,7 +237,7 @@ public class EdusohoApp extends Application {
         mEngine.unRegistPubMessage(messageType, messageCallback);
     }
 
-    public ConcurrentHashMap<String, MessageEngine.MessageCallback> getSourceMap() {
+    public Map<String, MessageEngine.MessageCallback> getSourceMap() {
         return mEngine.getMessageEngine().getSourceMap();
     }
 
@@ -845,10 +836,7 @@ public class EdusohoApp extends Application {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> task = manager.getRunningTasks(1);
         ComponentName componentInfo = task.get(0).topActivity;
-        if (componentInfo.getClassName().equals(activityName)) {
-            return true;
-        }
-        return false;
+        return componentInfo.getClassName().equals(activityName);
     }
 
     public String getCurrentUserRole() {
