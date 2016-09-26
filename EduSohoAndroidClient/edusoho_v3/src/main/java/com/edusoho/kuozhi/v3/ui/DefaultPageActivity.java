@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.Request;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
@@ -95,18 +96,22 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                         boolean isEnableIMChat = false;
                         if (linkedHashMap != null && linkedHashMap.containsKey("enabled")) {
                             isEnableIMChat = AppConfig.IM_OPEN.equals(linkedHashMap.get("enabled"));
-                        } else {
-                            isEnableIMChat = false;
                         }
-                        if (isEnableIMChat && appConfig.isEnableIMChat != isEnableIMChat) {
+                        if (appConfig.isEnableIMChat != isEnableIMChat) {
                             appConfig.isEnableIMChat = isEnableIMChat;
                             getAppSettingProvider().saveConfig(appConfig);
+                        }
+
+                        if(isEnableIMChat) {
                             reConnectServer();
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError volleyError) {
+                if (volleyError instanceof TimeoutError) {
+                    return;
+                }
                 AppConfig appConfig = getAppSettingProvider().getAppConfig();
                 appConfig.isEnableIMChat = false;
                 getAppSettingProvider().saveConfig(appConfig);

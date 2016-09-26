@@ -12,9 +12,11 @@ import com.edusoho.kuozhi.v3.model.bal.article.ArticleMessageBody;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Created by JesseHuang on 15/7/2.
@@ -102,7 +104,14 @@ public class New implements Serializable {
             case PushUtil.ArticleType.TYPE:
                 ArticleMessageBody articleMessageBody = getUtilFactory().getJsonParser().
                         fromJson(messageBody.getBody(), ArticleMessageBody.class);
-                return articleMessageBody == null ? "" : articleMessageBody.getContent();
+                if (articleMessageBody == null) {
+                    List<ArticleMessageBody> list = getUtilFactory().getJsonParser().
+                            fromJson(messageBody.getBody(), new TypeToken<List<ArticleMessageBody>>(){}.getType());
+                    if (list != null && !list.isEmpty()) {
+                        articleMessageBody = list.get(0);
+                    }
+                }
+                return articleMessageBody == null ? "" : articleMessageBody.getTitle();
             case PushUtil.BulletinType.TYPE:
                 Bulletin bulletin = getUtilFactory().getJsonParser().
                         fromJson(messageBody.getBody(), Bulletin.class);
