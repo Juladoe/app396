@@ -23,11 +23,6 @@ android {
         }
     }
 
-    //链接选项 移除lint检查的error
-    lintOptions {
-        abortOnError false
-    }
-
     //签名
     signingConfigs {
         debugConfig {
@@ -52,6 +47,11 @@ android {
             signingConfig signingConfigs.debugConfig
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 repositories {
