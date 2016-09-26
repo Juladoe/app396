@@ -97,7 +97,7 @@ public class EdusohoApp extends Application {
     public String apiToken;
 
     private HashMap<String, Bundle> notifyMap;
-    public static HashMap<String, Activity> runTask;
+    HashMap<String, Activity> runTask;
     private static final String TAG = "EdusohoApp";
 
     public static int screenW;
@@ -395,13 +395,13 @@ public class EdusohoApp extends Application {
                         normalCallback.success(null);
                     }
                 } catch (Exception e) {
-                    Log.e(null, e.toString());
+                    Log.e(TAG, "registDevice error");
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(null, "regist failed");
+                Log.d(TAG, "regist failed");
             }
         });
     }
@@ -444,7 +444,7 @@ public class EdusohoApp extends Application {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;
         } catch (Exception e) {
-
+            Log.d(TAG, "get apk version error");
         }
         return version;
     }
@@ -455,7 +455,7 @@ public class EdusohoApp extends Application {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionCode;
         } catch (Exception e) {
-
+            Log.d(TAG, "get apk code error");
         }
         return version;
     }
@@ -616,8 +616,8 @@ public class EdusohoApp extends Application {
 
     public void setDisplay(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
-        screenH = display.getHeight();
-        screenW = display.getWidth();
+        this.screenH = display.getHeight();
+        this.screenW = display.getWidth();
     }
 
     public String bindToken2Url(String url, boolean addToken) {
@@ -724,27 +724,6 @@ public class EdusohoApp extends Application {
         super.onLowMemory();
     }
 
-    public static int tabLeftBtnSel;
-    public static int tabRightBtnSel;
-
-    public static int popLeftBtnSel;
-    public static int popRightBtnSel;
-
-    private void loadCustomBtnStyle() {
-        int version = Build.VERSION.SDK_INT;
-        if ((version >= 8) && (version <= 10)) {
-            popRightBtnSel = R.drawable.popup_right_10_btn;
-            popLeftBtnSel = R.drawable.popup_left_10_btn;
-            tabLeftBtnSel = R.drawable.course_tab_left_10_sel;
-            tabRightBtnSel = R.drawable.course_tab_right_10_sel;
-        } else {
-            popRightBtnSel = R.drawable.popup_right_btn;
-            popLeftBtnSel = R.drawable.popup_left_btn;
-            tabRightBtnSel = R.drawable.course_tab_right_sel;
-            tabLeftBtnSel = R.drawable.course_tab_left_sel;
-        }
-    }
-
     public void startUpdateWebView(String url) {
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
@@ -754,14 +733,9 @@ public class EdusohoApp extends Application {
         startActivity(intent);
     }
 
-    private boolean mIsNotifyUpdate;
 
     public void addNotify(String type, Bundle bundle) {
         notifyMap.put(type, bundle);
-    }
-
-    public Bundle getNotify(String type) {
-        return notifyMap.get(type);
     }
 
     public Set<String> getNotifys() {
@@ -772,13 +746,6 @@ public class EdusohoApp extends Application {
         notifyMap.remove(type);
     }
 
-    public CacheServer getResouceCacheServer(ActionBarBaseActivity activity) {
-        if (mResouceCacheServer == null) {
-            mResouceCacheServer = new CacheServer(activity, Const.WEB_RES_PROT);
-        }
-
-        return mResouceCacheServer;
-    }
 
     /**
      * 启动播放器缓存server
@@ -815,12 +782,12 @@ public class EdusohoApp extends Application {
     }
 
     public <T> T parseJsonValue(String json, TypeToken<T> typeToken) {
-        T value;
+        T value = null;
         try {
             value = gson.fromJson(
                     json, typeToken.getType());
         } catch (Exception e) {
-            return null;
+            Log.d(TAG, "parse error");
         }
 
         return value;
