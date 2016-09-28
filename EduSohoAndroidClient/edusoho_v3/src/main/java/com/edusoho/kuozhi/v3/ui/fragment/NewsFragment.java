@@ -124,6 +124,7 @@ public class NewsFragment extends BaseFragment {
             mIsNeedRefresh = true;
         }
         registIMMessageReceiver();
+        updateIMConnectStatus(IMClient.getClient().getIMConnectStatus());
     }
 
     @Override
@@ -310,8 +311,6 @@ public class NewsFragment extends BaseFragment {
         lvNewsList.setMenuCreator(creator);
         lvNewsList.setOnMenuItemClickListener(mMenuItemClickListener);
         lvNewsList.setOnItemClickListener(mItemClickListener);
-
-        updateIMConnectStatus(IMClient.getClient().getIMConnectStatus());
     }
 
     private void initData() {

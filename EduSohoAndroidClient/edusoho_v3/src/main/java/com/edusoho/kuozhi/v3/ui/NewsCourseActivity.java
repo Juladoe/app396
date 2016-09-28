@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.Role;
@@ -26,6 +27,7 @@ import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.entity.error.Error;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -35,6 +37,7 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -413,21 +416,33 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             return promise;
         }
 
-        new CourseProvider(mContext).getCourse(mCourseId)
-                .success(new NormalCallback<CourseDetailsResult>() {
+        new IMProvider(mContext).joinIMConvNo(mTargetId, "classroom")
+                .success(new NormalCallback<LinkedHashMap>() {
                     @Override
-                    public void success(CourseDetailsResult courseDetailsResult) {
-                        if (courseDetailsResult == null
-                                || courseDetailsResult.course == null
-                                || courseDetailsResult.course.conversationId != null
-                                ) {
-                            ToastUtils.show(mContext, "创建聊天失败!");
+                    public void success(LinkedHashMap map) {
+                        if (map == null) {
+                            ToastUtils.show(getBaseContext(), "加入课程聊天失败!");
+                            finish();
                             return;
                         }
-                        mCourse = courseDetailsResult.course;
-                        promise.resolve(courseDetailsResult.course.conversationId);
+                        if (map.containsKey("error")) {
+                            Error error = getUtilFactory().getJsonParser().fromJson(map.get("error").toString(), Error.class);
+                            if (error != null) {
+                                ToastUtils.show(getBaseContext(), error.message);
+                            }
+                            finish();
+                            return;
+                        }
+                        String convNo = map.get("convNo").toString();
+                        promise.resolve(convNo);
                     }
-                });
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                ToastUtils.show(getBaseContext(), "加入课程聊天失败!");
+                finish();
+            }
+        });
 
         return promise;
     }

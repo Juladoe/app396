@@ -22,7 +22,7 @@ public class AboutFragment extends BaseFragment {
     public static final String CONTENT = "content";
     public static final String TYPE = "type";
     private static final int FROM_URL = 0010;
-    private static final int FROM_STR = 0020;
+    public static final int FROM_STR = 0020;
 
     private WebView mAboutWebView;
     private String mUrl;

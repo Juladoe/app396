@@ -97,7 +97,7 @@ public class EdusohoApp extends Application {
     public String apiToken;
 
     private HashMap<String, Bundle> notifyMap;
-    HashMap<String, Activity> runTask;
+    public static HashMap<String, Activity> runTask;
     private static final String TAG = "EdusohoApp";
 
     public static int screenW;

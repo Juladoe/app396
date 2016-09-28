@@ -25,6 +25,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
     private final static String TAG = "WebViewActivity";
     public final static int CLOSE = 0x01;
     public final static String SEND_EVENT = "send_event";
+    public static final int BACK = 0x02;
 
     private String url = "";
     private ESWebView mWebView;
@@ -35,7 +36,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideActionBar();
-        setBackMode(BACK, "标题");
+        setBackMode(super.BACK, "标题");
         setContentView(R.layout.webview_activity);
         initCordovaWebView();
     }

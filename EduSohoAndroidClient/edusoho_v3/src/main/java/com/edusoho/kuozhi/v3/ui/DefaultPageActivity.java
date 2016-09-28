@@ -27,6 +27,7 @@ import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.StatusCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.provider.SystemProvider;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
@@ -82,9 +83,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         if (getIntent().hasExtra(Const.INTENT_TARGET) || getIntent().hasExtra(Const.SWITCH_NEWS_TAB)) {
             processIntent(getIntent());
         }
+
+        syncSchoolIMSetting();
     }
 
-    private void syncSchoolSetting() {
+    private void syncSchoolIMSetting() {
         User user = getAppSettingProvider().getCurrentUser();
         if (user == null) {
             return;
@@ -461,8 +464,11 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     @Override
     protected void onResume() {
         super.onResume();
-        syncSchoolSetting();
         reConnectServer();
+        User user = getAppSettingProvider().getCurrentUser();
+        if (user != null) {
+            new IMProvider(mContext).syncIM();
+        }
     }
 
     private void reConnectServer() {

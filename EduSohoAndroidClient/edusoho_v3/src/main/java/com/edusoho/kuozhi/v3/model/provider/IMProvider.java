@@ -23,11 +23,18 @@ import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.result.DiscussionGroupResult;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
+import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -411,6 +418,34 @@ public class IMProvider extends ModelProvider {
             }
         });
         return promise;
+    }
+
+    public ProviderListener<LinkedHashMap> joinIMConvNo(int targetId, String targetType) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/api/im/members", school.host));
+
+        String token = ApiTokenUtil.getTokenString(mContext);
+        requestUrl.getHeads().put("Auth-Token", token);
+        requestUrl.setParams(new String[] {
+                "targetId", String.valueOf(targetId),
+                "targetType", targetType
+        });
+        RequestOption requestOption = buildSimplePostRequest(
+                requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
+    }
+
+    public ProviderListener<LinkedHashMap> syncIM() {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/api/im/sync", school.host));
+
+        String token = ApiTokenUtil.getTokenString(mContext);
+        requestUrl.getHeads().put("Auth-Token", token);
+        RequestOption requestOption = buildSimplePostRequest(
+                requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
     }
 
     protected AppSettingProvider getAppSettingProvider() {

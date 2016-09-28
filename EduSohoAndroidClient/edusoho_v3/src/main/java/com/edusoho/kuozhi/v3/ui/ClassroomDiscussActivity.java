@@ -6,21 +6,27 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.entity.error.Error;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
+import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
+
+import java.util.LinkedHashMap;
 
 import cn.trinea.android.common.util.ToastUtils;
 
@@ -54,25 +60,41 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
     protected Promise createChatConvNo() {
         final Promise promise = new Promise();
         User currentUser = getAppSettingProvider().getCurrentUser();
+
+
         if (currentUser == null || currentUser.id == 0) {
             ToastUtils.show(getBaseContext(), "用户未登录");
             promise.resolve(null);
             return promise;
         }
 
-        new ClassRoomProvider(mContext).getClassRoom(mTargetId)
-                .success(new NormalCallback<Classroom>() {
-                    @Override
-                    public void success(Classroom classroom) {
-                        if (classroom == null || TextUtils.isEmpty(classroom.conversationId)) {
-                            ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
-                            finish();
-                            return;
-                        }
-                        mClassRoom = classroom;
-                        promise.resolve(classroom.conversationId);
+        new IMProvider(mContext).joinIMConvNo(mTargetId, "classroom")
+        .success(new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap map) {
+                if (map == null) {
+                    ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
+                    finish();
+                    return;
+                }
+                if (map.containsKey("error")) {
+                    Error error = getUtilFactory().getJsonParser().fromJson(map.get("error").toString(), Error.class);
+                    if (error != null) {
+                        ToastUtils.show(getBaseContext(), error.message);
                     }
-                });
+                    finish();
+                    return;
+                }
+                String convNo = map.get("convNo").toString();
+                promise.resolve(convNo);
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
+                finish();
+            }
+        });
 
         return promise;
     }
