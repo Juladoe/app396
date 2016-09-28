@@ -107,7 +107,13 @@ public class ShareTool {
 
     private String coverShareContent(String content, String url) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(Html.fromHtml(content).toString());
+
+        String formatString  = Html.fromHtml(content).toString();
+        int contentSize = 140 - url.length() - 3;
+        if (formatString.length() > contentSize) {
+            formatString = formatString.substring(0, contentSize);
+        }
+        stringBuilder.append(formatString);
         stringBuilder.append(" \r\n").append(url);
 
         return stringBuilder.toString();
