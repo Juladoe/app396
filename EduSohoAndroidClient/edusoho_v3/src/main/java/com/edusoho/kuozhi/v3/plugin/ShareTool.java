@@ -97,12 +97,20 @@ public class ShareTool {
                 R.mipmap.ic_launcher,
                 mTitle,
                 mUrl,
-                Html.fromHtml(mAbout).toString(),
+                coverShareContent(mAbout, mUrl),
                 file,
                 EdusohoApp.app.host
                 , mDialogType
         );
         shareUtil.show(getShareHandler());
+    }
+
+    private String coverShareContent(String content, String url) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(Html.fromHtml(content).toString());
+        stringBuilder.append(" \r\n").append(url);
+
+        return stringBuilder.toString();
     }
 
     private ShareHandler getShareHandler() {
