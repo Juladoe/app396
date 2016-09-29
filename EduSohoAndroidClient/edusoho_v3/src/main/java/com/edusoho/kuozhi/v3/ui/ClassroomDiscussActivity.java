@@ -61,7 +61,6 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
         final Promise promise = new Promise();
         User currentUser = getAppSettingProvider().getCurrentUser();
 
-
         if (currentUser == null || currentUser.id == 0) {
             ToastUtils.show(getBaseContext(), "用户未登录");
             promise.resolve(null);

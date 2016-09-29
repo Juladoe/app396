@@ -377,7 +377,7 @@ public class ImServer {
     }
 
     private String getMessageConvNo(MessageBody messageBody) {
-        if ("push".equals(messageBody.getType())) {
+        if (TextUtils.isEmpty(messageBody.getConvNo()) && "push".equals(messageBody.getType())) {
             return messageBody.getSource().getType();
         }
         return messageBody.getConvNo();
@@ -429,6 +429,8 @@ public class ImServer {
         switch (type) {
             case "news":
                 return "资讯";
+            case "global":
+                return "网校公告";
         }
 
         return "";
@@ -449,6 +451,10 @@ public class ImServer {
             convEntity.setType(Destination.USER);
             convEntity.setTargetName(source.getNickname());
             convEntity.setTargetId(source.getId());
+        } else if (PushUtil.ChatMsgType.PUSH.equals(messageBody.getType())) {
+            convEntity.setTargetName(getPushTypeName(source.getType()));
+            convEntity.setTargetId(source.getId());
+            convEntity.setType(source.getType());
         } else {
             convEntity.setTargetName(destination.getNickname());
             convEntity.setType(destination.getType());
@@ -460,7 +466,7 @@ public class ImServer {
 
     private ConvEntity createConv(MessageBody messageBody) {
         ConvEntity convEntity = null;
-        if ("push".equals(messageBody.getType())) {
+        if (TextUtils.isEmpty(messageBody.getConvNo()) && "push".equals(messageBody.getType())) {
             convEntity = getConvFromPush(messageBody);
         } else {
             convEntity = getConvFromMessage(messageBody);
