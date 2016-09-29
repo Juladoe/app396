@@ -145,7 +145,7 @@ public class FriendFragment extends BaseFragment {
                 }
                 if (i == R.id.discussion_group) {
                     if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
-                        CommonUtil.longToast(mContext, "聊天功能已关闭");
+                        CommonUtil.longToast(mContext, "聊天功能已关闭,请联系管理员");
                         return;
                     }
                     app.mEngine.runNormalPlugin("GroupListActivity", mActivity, null);
