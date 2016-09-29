@@ -93,6 +93,12 @@ public class MessageListFragment extends Fragment implements
     }
 
     @Override
+    public void setEnable(boolean isEnable) {
+        mMessageInputView.setEnabled(isEnable);
+        mMessageListView.setEnabled(isEnable);
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Log.d(TAG, "onAttach");

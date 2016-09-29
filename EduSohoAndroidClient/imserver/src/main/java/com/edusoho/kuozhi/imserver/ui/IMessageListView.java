@@ -22,4 +22,6 @@ public interface IMessageListView {
     void insertMessageList(List<MessageEntity> messageEntityList);
 
     void notifyDataSetChanged();
+
+    void setEnable(boolean isEnable);
 }

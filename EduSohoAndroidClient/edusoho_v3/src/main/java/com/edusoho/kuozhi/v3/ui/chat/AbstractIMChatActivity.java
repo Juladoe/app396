@@ -347,7 +347,9 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
                 @Override
                 public Promise invoke(String convNo) {
                     loadDialog.dismiss();
-                    convNoCreateCallback.onCreateConvNo(convNo);
+                    if (!TextUtils.isEmpty(convNo)) {
+                        convNoCreateCallback.onCreateConvNo(convNo);
+                    }
                     return null;
                 }
             });

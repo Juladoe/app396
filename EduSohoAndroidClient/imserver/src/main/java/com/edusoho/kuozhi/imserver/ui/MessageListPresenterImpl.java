@@ -301,24 +301,38 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     }
 
     @Override
+    public void enableChatView() {
+        mIMessageListView.setEnable(false);
+    }
+
+    @Override
     public void start() {
         if (convNoIsEmpty(mConversationNo)) {
-            createConvNo(new ConvNoCreateCallback() {
-                @Override
-                public void onCreateConvNo(String convNo) {
-                    if (convNoIsEmpty(convNo)) {
-                        Log.d(TAG, "mConversationNo is null");
-                        return;
-                    }
-                    Log.d(TAG, "onCreateConvNo " + convNo);
-                    mConversationNo = convNo;
-                    checkTargetRole();
-                }
-            });
+            createConvNo();
             return;
         }
 
+        ConvEntity convEntity = mIMConvManager.getConvByConvNo(mConversationNo);
+        if (convEntity == null || (System.currentTimeMillis() - convEntity.getUpdatedTime() > 0)) {
+            createConvNo();
+            return;
+        }
         checkTargetRole();
+    }
+
+    private void createConvNo() {
+        createConvNo(new ConvNoCreateCallback() {
+            @Override
+            public void onCreateConvNo(String convNo) {
+                if (convNoIsEmpty(convNo)) {
+                    Log.d(TAG, "mConversationNo is null");
+                    return;
+                }
+                Log.d(TAG, "onCreateConvNo " + convNo);
+                mConversationNo = convNo;
+                checkTargetRole();
+            }
+        });
     }
 
     protected void insertMessageToList(MessageEntity messageEntity) {

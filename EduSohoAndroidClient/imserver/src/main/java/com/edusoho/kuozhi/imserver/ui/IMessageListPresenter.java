@@ -54,4 +54,6 @@ public interface IMessageListPresenter {
     void updateRole(String type, int rid);
 
     void addMessageControllerListener(MessageControllerListener listener);
+
+    void enableChatView();
 }

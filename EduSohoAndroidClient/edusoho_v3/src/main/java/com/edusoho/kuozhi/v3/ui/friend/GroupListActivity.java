@@ -77,7 +77,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
-                    CommonUtil.longToast(mContext, "聊天功能已关闭");
+                    CommonUtil.longToast(mContext, "聊天功能已关闭,请联系管理员");
                     return;
                 }
                 final DiscussionGroup discussionGroup = (DiscussionGroup) parent.getItemAtPosition(position);

@@ -134,6 +134,15 @@ public class MessageInputView extends FrameLayout {
         };
     }
 
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        mViewSpeakContainer.setEnabled(enabled);
+        etSend.setEnabled(enabled);
+        ivAddMedia.setEnabled(enabled);
+        btnVoice.setEnabled(enabled);
+    }
+
     private void initSpeakContainer() {
         mViewSpeakContainer = LayoutInflater.from(getContext()).inflate(R.layout.view_message_record_layout, null);
         ViewParent viewParent = getParent();

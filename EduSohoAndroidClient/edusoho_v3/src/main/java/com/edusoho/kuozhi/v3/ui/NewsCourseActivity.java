@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -416,21 +417,24 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             return promise;
         }
 
-        new IMProvider(mContext).joinIMConvNo(mTargetId, "classroom")
+        new IMProvider(mContext).joinIMConvNo(mCourseId, "course")
                 .success(new NormalCallback<LinkedHashMap>() {
                     @Override
                     public void success(LinkedHashMap map) {
+                        mIMessageListPresenter.enableChatView();
                         if (map == null) {
                             ToastUtils.show(getBaseContext(), "加入课程聊天失败!");
-                            finish();
+                            mIMessageListPresenter.enableChatView();
+                            promise.resolve(null);
                             return;
                         }
                         if (map.containsKey("error")) {
                             Error error = getUtilFactory().getJsonParser().fromJson(map.get("error").toString(), Error.class);
                             if (error != null) {
                                 ToastUtils.show(getBaseContext(), error.message);
+                                mIMessageListPresenter.enableChatView();
+                                promise.resolve(null);
                             }
-                            finish();
                             return;
                         }
                         String convNo = map.get("convNo").toString();
@@ -440,7 +444,8 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             @Override
             public void success(VolleyError obj) {
                 ToastUtils.show(getBaseContext(), "加入课程聊天失败!");
-                finish();
+                mIMessageListPresenter.enableChatView();
+                promise.resolve(null);
             }
         });
 
@@ -479,7 +484,6 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                     }
                 });
     }
-
 
     @Override
     public int getMode() {
