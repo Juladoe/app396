@@ -84,6 +84,7 @@ public class ArticleFragment extends BaseFragment {
 
     private int mStart;
     private int mServiceProvierId;
+    private String mConvNo;
     private SparseArray<Integer> mCategoryCacheArray;
 
     private PtrHandler mMessageListPtrHandler = new PtrHandler() {
@@ -110,7 +111,7 @@ public class ArticleFragment extends BaseFragment {
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ServiceProfileFragment.SERVICE_ID, mServiceProvierId);
                 startIntent.putExtra(ServiceProfileFragment.SERVICE_TITLE, getTitle());
-                startIntent.putExtra(ServiceProfileFragment.SERVICE_CONVNO, Destination.ARTICLE);
+                startIntent.putExtra(ServiceProfileFragment.SERVICE_CONVNO, mConvNo);
                 startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ServiceProfileFragment");
             }
         });
@@ -176,8 +177,8 @@ public class ArticleFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         initMenu();
-        getNotificationProvider().cancelNotification(Destination.ARTICLE.hashCode());
-        IMClient.getClient().getConvManager().clearReadCount(Destination.ARTICLE);
+        getNotificationProvider().cancelNotification(mConvNo.hashCode());
+        IMClient.getClient().getConvManager().clearReadCount(mConvNo);
     }
 
     private void showArticle(int id) {
@@ -192,6 +193,7 @@ public class ArticleFragment extends BaseFragment {
 
     private void initData() {
         mStart = 0;
+        mConvNo = getArguments().getString(ServiceProviderActivity.CONV_NO);
         mServiceProvierId = getArguments().getInt(ServiceProviderActivity.SERVICE_ID);
         mArticleAdapter = new ArticleCardAdapter(mContext);
         mMessageListView.setAdapter(mArticleAdapter);
@@ -297,7 +299,7 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private ArrayList<ArticleModel> getChatList(int start) {
-        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(Destination.ARTICLE).getMessageList(start);
+        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConvNo).getMessageList(start);
         ArrayList<ArticleModel> articleModels = new ArrayList<>();
         for (MessageEntity messageEntity : messageEntityList) {
             articleModels.add(new ArticleModel(messageEntity));
@@ -346,7 +348,7 @@ public class ArticleFragment extends BaseFragment {
                 MessageEntity messageEntity = createMessageEntityByBody(createArticleMessageBody(articleModel.body, PushUtil.ChatMsgType.PUSH));
                 IMClient.getClient().getMessageManager().createMessage(messageEntity);
 
-                ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByConvNo(Destination.ARTICLE);
+                ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByConvNo(mConvNo);
                 if (convEntity == null) {
                     convEntity = createConvEntity(messageEntity);
                     Role role = IMClient.getClient().getRoleManager().getRole(convEntity.getType(), convEntity.getTargetId());
@@ -373,7 +375,7 @@ public class ArticleFragment extends BaseFragment {
 
         convEntity.setTargetName("资讯");
         convEntity.setLaterMsg(messageEntity.getMsg());
-        convEntity.setConvNo(Destination.ARTICLE);
+        convEntity.setConvNo(mConvNo);
         convEntity.setCreatedTime(messageEntity.getTime() * 1000L);
         convEntity.setType(Destination.ARTICLE);
         convEntity.setTargetId(mServiceProvierId);
@@ -386,7 +388,7 @@ public class ArticleFragment extends BaseFragment {
         messageBody.setCreatedTime(System.currentTimeMillis());
         messageBody.setDestination(new Destination(0, Destination.GLOBAL));
         messageBody.setSource(new Source(mServiceProvierId, Destination.ARTICLE));
-        messageBody.setConvNo(Destination.ARTICLE);
+        messageBody.setConvNo(mConvNo);
         messageBody.setMessageId(UUID.randomUUID().toString());
         return messageBody;
     }

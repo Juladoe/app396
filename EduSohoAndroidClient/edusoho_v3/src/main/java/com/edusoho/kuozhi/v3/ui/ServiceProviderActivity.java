@@ -14,6 +14,7 @@ public class ServiceProviderActivity extends FragmentPageActivity {
     public static final String ARTICLE = "news";
     public static final String COURSE = "Course";
     public static final String SERVICE_ID = "id";
+    public static final String CONV_NO = "conv_no";
     public static final String SERVICE_TYPE = "type";
     public static String SERVICE_NAME;
 

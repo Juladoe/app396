@@ -396,7 +396,12 @@ public class NewsFragment extends BaseFragment {
                     });
                     break;
                 case PushUtil.BulletinType.TYPE:
-                    app.mEngine.runNormalPlugin("BulletinActivity", mContext, null);
+                    app.mEngine.runNormalPlugin("BulletinActivity", mContext, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra("", newItem.convNo);
+                        }
+                    });
                     break;
                 case Destination.COURSE:
                     app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
@@ -418,6 +423,7 @@ public class NewsFragment extends BaseFragment {
                         public void setIntentDate(Intent startIntent) {
                             startIntent.putExtra(ServiceProviderActivity.SERVICE_TYPE, PushUtil.ArticleType.TYPE);
                             startIntent.putExtra(ServiceProviderActivity.SERVICE_ID, newItem.fromId);
+                            startIntent.putExtra(ServiceProviderActivity.CONV_NO, newItem.convNo);
                             startIntent.putExtra(Const.ACTIONBAR_TITLE, "资讯");
                         }
                     });

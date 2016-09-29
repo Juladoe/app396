@@ -43,6 +43,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  */
 public class BulletinActivity extends ActionBarBaseActivity {
 
+    public static final String CONV_NO = "conv_no";
     private ListView mListView;
     private PtrClassicFrameLayout mPtrFrame;
     private View mEmptyView;
@@ -50,6 +51,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     private BulletinAdapter mBulletinAdapter;
     private static final int LIMIT = 15;
     private int mStart = 0;
+    private String mConvNo;
 
     private static long TIME_INTERVAL = 60 * 5;
     private Handler mHandler;
@@ -80,6 +82,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
 
     private void initData() {
         setBackMode(BACK, "网校公告");
+        mConvNo = getIntent().getStringExtra(CONV_NO);
         List<Bulletin> bulletinList = getBulletins(mStart);
         mBulletinAdapter = new BulletinAdapter(bulletinList);
         mListView.setAdapter(mBulletinAdapter);
@@ -105,14 +108,14 @@ public class BulletinActivity extends ActionBarBaseActivity {
     };
 
     private List<Bulletin> getBulletins(int start) {
-        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(Destination.GLOBAL).getMessageList(start);
+        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConvNo).getMessageList(start);
         ArrayList<Bulletin> bulletinList = new ArrayList<>();
         if (messageEntityList == null || messageEntityList.isEmpty()) {
             return bulletinList;
         }
 
         mStart = start + messageEntityList.size();
-        Role role = IMClient.getClient().getRoleManager().getRole(Destination.GLOBAL, 1);
+        Role role = IMClient.getClient().getRoleManager().getRole(mConvNo, 1);
         for (MessageEntity messageEntity : messageEntityList) {
             MessageBody messageBody = new MessageBody(messageEntity);
             Bulletin bulletin = getUtilFactory().getJsonParser().fromJson(messageBody.getBody(), Bulletin.class);
