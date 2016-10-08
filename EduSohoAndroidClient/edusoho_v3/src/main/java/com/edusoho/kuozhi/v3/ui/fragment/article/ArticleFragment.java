@@ -193,7 +193,7 @@ public class ArticleFragment extends BaseFragment {
 
     private void initData() {
         mStart = 0;
-        mConvNo = getArguments().getString(ServiceProviderActivity.CONV_NO);
+        mConvNo = Destination.ARTICLE;
         mServiceProvierId = getArguments().getInt(ServiceProviderActivity.SERVICE_ID);
         mArticleAdapter = new ArticleCardAdapter(mContext);
         mMessageListView.setAdapter(mArticleAdapter);

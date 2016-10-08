@@ -82,7 +82,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
 
     private void initData() {
         setBackMode(BACK, "网校公告");
-        mConvNo = getIntent().getStringExtra(CONV_NO);
+        mConvNo = Destination.GLOBAL;
         List<Bulletin> bulletinList = getBulletins(mStart);
         mBulletinAdapter = new BulletinAdapter(bulletinList);
         mListView.setAdapter(mBulletinAdapter);

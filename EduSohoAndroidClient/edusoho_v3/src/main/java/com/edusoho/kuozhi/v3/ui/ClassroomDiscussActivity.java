@@ -90,6 +90,7 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
+                promise.resolve(null);
                 ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
                 finish();
             }

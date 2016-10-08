@@ -243,7 +243,6 @@ public class LiveLessonFragment extends BaseFragment {
                 bundle.putString("exStr", exStr);
                 bundle.putBoolean("replayState", replayState);
                 new SooonerLivePlayerAction(getActivity()).invoke(bundle);
-                //new LiveUtil(mActivity).startLiveActivity(liveClassroomId, exStr, replayState);
             }
         }, null);
     }

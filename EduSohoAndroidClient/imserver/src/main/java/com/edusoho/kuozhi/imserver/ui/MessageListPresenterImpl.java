@@ -313,11 +313,27 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         }
 
         ConvEntity convEntity = mIMConvManager.getConvByConvNo(mConversationNo);
-        if (convEntity == null || (System.currentTimeMillis() - convEntity.getUpdatedTime() > 0)) {
+        if (convEntity == null) {
             createConvNo();
             return;
         }
+        if ((System.currentTimeMillis() - convEntity.getUpdatedTime() > 3600000)) {
+            valideConvNo();
+            return;
+        }
         checkTargetRole();
+    }
+
+    private void valideConvNo() {
+        createConvNo(new ConvNoCreateCallback() {
+            @Override
+            public void onCreateConvNo(String convNo) {
+                if (!convNoIsEmpty(convNo)) {
+                    mConversationNo = convNo;
+                }
+                checkTargetRole();
+            }
+        });
     }
 
     private void createConvNo() {

@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
@@ -133,7 +134,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     }
 
     protected void initApp() {
-        if (!app.getNetIsConnect()) {
+        if (!AppUtil.isNetConnect(mContext)) {
             CommonUtil.longToast(this, "没有网络服务！请检查网络设置。");
             startApp();
             return;

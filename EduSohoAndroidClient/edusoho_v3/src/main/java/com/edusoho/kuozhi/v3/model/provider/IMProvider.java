@@ -432,7 +432,7 @@ public class IMProvider extends ModelProvider {
         });
         RequestOption requestOption = buildSimplePostRequest(
                 requestUrl, new TypeToken<LinkedHashMap>(){});
-
+        requestOption.getRequest().setCacheMode(BaseVolleyRequest.CACHE_AUTO);
         return requestOption.build();
     }
 

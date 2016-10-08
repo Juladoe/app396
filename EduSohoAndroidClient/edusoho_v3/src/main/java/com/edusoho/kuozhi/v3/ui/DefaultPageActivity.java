@@ -337,7 +337,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                         }
                     }
                 });
-
                 break;
             default:
         }
@@ -356,6 +355,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             new Handler(getMainLooper()).post(new Runnable() {
                 @Override
                 public void run() {
+                    syncSchoolIMSetting();
                     if (getIntent().hasExtra(Const.SWITCH_NEWS_TAB)) {
                         selectDownTab(R.id.nav_tab_find);
                     } else {

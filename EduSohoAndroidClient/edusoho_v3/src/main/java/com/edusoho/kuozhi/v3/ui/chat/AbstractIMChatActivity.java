@@ -82,6 +82,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
     protected View mTitleLayoutView;
 
     private ActionBar mActionBar;
+    private LoadDialog loadDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -341,7 +342,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
 
         @Override
         protected void createConvNo(final MessageListPresenterImpl.ConvNoCreateCallback convNoCreateCallback) {
-            final LoadDialog loadDialog = LoadDialog.create(AbstractIMChatActivity.this);
+            loadDialog = LoadDialog.create(AbstractIMChatActivity.this);
             loadDialog.show();
             createChatConvNo().then(new PromiseCallback<String>() {
                 @Override
@@ -354,5 +355,14 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (loadDialog != null) {
+            loadDialog.dismiss();
+        }
+        loadDialog = null;
     }
 }

@@ -117,6 +117,53 @@ public class LoginActivity extends ActionBarBaseActivity {
         }
     }
 
+    private void login() {
+        RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("_username", etUsername.getText().toString().trim());
+        params.put("_password", etPassword.getText().toString().trim());
+
+        mBtnLogin.setLoadingState();
+
+        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
+                });
+                if (userResult != null && userResult.user != null) {
+                    app.saveToken(userResult);
+                    setResult(LoginActivity.OK);
+                    SimpleDateFormat nowfmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    Date date = new Date();
+                    String entertime = nowfmt.format(date);
+                    saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
+                    app.sendMessage(Const.LOGIN_SUCCESS, null);
+                    new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
+                    mBtnLogin.setSuccessState();
+                    mBtnLogin.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mActivity.finish();
+                        }
+                    }, 500);
+                } else {
+                    mBtnLogin.setInitState();
+                    if (!TextUtils.isEmpty(response)) {
+                        CommonUtil.longToast(mContext, response);
+                    } else {
+                        CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mBtnLogin.setInitState();
+                CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+            }
+        });
+    }
+
     private View.OnClickListener mLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -132,55 +179,12 @@ public class LoginActivity extends ActionBarBaseActivity {
                 etPassword.requestFocus();
                 return;
             }
-            RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("_username", etUsername.getText().toString().trim());
-            params.put("_password", etPassword.getText().toString().trim());
-
-            mBtnLogin.setLoadingState();
-
-            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
-                    });
-                    if (userResult != null && userResult.user != null) {
-                        app.saveToken(userResult);
-                        setResult(LoginActivity.OK);
-                        SimpleDateFormat nowfmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                        Date date = new Date();
-                        String entertime = nowfmt.format(date);
-                        saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
-                        app.sendMessage(Const.LOGIN_SUCCESS, null);
-                        new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
-                        mBtnLogin.setSuccessState();
-                        mBtnLogin.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mActivity.finish();
-                            }
-                        }, 500);
-                    } else {
-                        mBtnLogin.setInitState();
-                        if (!TextUtils.isEmpty(response)) {
-                            CommonUtil.longToast(mContext, response);
-                        } else {
-                            CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
-                        }
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    mBtnLogin.setInitState();
-                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
-                }
-            });
+            login();
         }
     };
 
     private void loginByPlatform(String type) {
-        final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);
+        final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mActivity);
         openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
             @Override
             public void success(UserResult obj) {

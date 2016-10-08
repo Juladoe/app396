@@ -319,7 +319,9 @@ public class ImServer {
                 return messageEntity;
             }
 
-            messageEntity.setConvNo(getMessageConvNo(messageBody));
+            String convNo = getConvNoFromMessage(messageBody);
+            messageBody.setConvNo(convNo);
+            messageEntity.setConvNo(convNo);
             int messageStatus = MessageEntity.StatusType.NONE;
             if (PushUtil.ChatMsgType.TEXT.equals(messageBody.getType())
                     || PushUtil.ChatMsgType.MULTI.equals(messageBody.getType())) {
@@ -376,8 +378,8 @@ public class ImServer {
         }
     }
 
-    private String getMessageConvNo(MessageBody messageBody) {
-        if (TextUtils.isEmpty(messageBody.getConvNo()) && "push".equals(messageBody.getType())) {
+    private String getConvNoFromMessage(MessageBody messageBody) {
+        if ("push".equals(messageBody.getType())) {
             return messageBody.getSource().getType();
         }
         return messageBody.getConvNo();
@@ -451,10 +453,6 @@ public class ImServer {
             convEntity.setType(Destination.USER);
             convEntity.setTargetName(source.getNickname());
             convEntity.setTargetId(source.getId());
-        } else if (PushUtil.ChatMsgType.PUSH.equals(messageBody.getType())) {
-            convEntity.setTargetName(getPushTypeName(source.getType()));
-            convEntity.setTargetId(source.getId());
-            convEntity.setType(source.getType());
         } else {
             convEntity.setTargetName(destination.getNickname());
             convEntity.setType(destination.getType());
@@ -466,7 +464,7 @@ public class ImServer {
 
     private ConvEntity createConv(MessageBody messageBody) {
         ConvEntity convEntity = null;
-        if (TextUtils.isEmpty(messageBody.getConvNo()) && "push".equals(messageBody.getType())) {
+        if ("push".equals(messageBody.getType())) {
             convEntity = getConvFromPush(messageBody);
         } else {
             convEntity = getConvFromMessage(messageBody);
