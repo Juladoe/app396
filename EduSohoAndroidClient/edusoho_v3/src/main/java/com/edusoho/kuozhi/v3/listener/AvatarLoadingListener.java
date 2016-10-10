@@ -35,6 +35,7 @@ public class AvatarLoadingListener implements ImageLoadingListener {
     @Override
     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
         ImageView imageView = (ImageView) view;
+        imageView.setBackgroundColor(Color.TRANSPARENT);
         if (TextUtils.isEmpty(imageUri)) {
             setAvatarImage(imageView);
         }

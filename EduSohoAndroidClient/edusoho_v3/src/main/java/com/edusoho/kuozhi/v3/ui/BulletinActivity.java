@@ -52,6 +52,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
     private static final int LIMIT = 15;
     private int mStart = 0;
     private String mConvNo;
+    private boolean mCanLoadMore;
 
     private static long TIME_INTERVAL = 60 * 5;
     private Handler mHandler;
@@ -82,30 +83,36 @@ public class BulletinActivity extends ActionBarBaseActivity {
 
     private void initData() {
         setBackMode(BACK, "网校公告");
+        mCanLoadMore = true;
         mConvNo = Destination.GLOBAL;
         List<Bulletin> bulletinList = getBulletins(mStart);
+        mStart += bulletinList.size();
         mBulletinAdapter = new BulletinAdapter(bulletinList);
         mListView.setAdapter(mBulletinAdapter);
-        mListView.post(mRunnable);
+        mListView.post(new ScrollRunnable(mStart));
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrDefaultHandler() {
             @Override
             public void onRefreshBegin(PtrFrameLayout ptrFrameLayout) {
-                mBulletinAdapter.addItems(getBulletins(mStart));
+                List<Bulletin> bulletinList = getBulletins(mStart);
+                mBulletinAdapter.addItems(bulletinList);
                 mPtrFrame.refreshComplete();
-                mListView.postDelayed(mRunnable, 100);
+                if (bulletinList.isEmpty()) {
+                    mCanLoadMore = false;
+                }
+                int total = mStart + bulletinList.size();
+                mListView.postDelayed(new ScrollRunnable(total > mStart ? total - mStart - 1 : 0), 100);
+                mStart = total;
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return mCanLoadMore && super.checkCanDoRefresh(frame, content, header);
             }
         });
         mHandler.postDelayed(mNotifyNewFragment2UpdateItemBadgeRunnable, 500);
         setListVisibility(mBulletinAdapter.getCount() == 0);
     }
-
-    private Runnable mRunnable = new Runnable() {
-        @Override
-        public void run() {
-            mListView.setSelection(mStart);
-        }
-    };
 
     private List<Bulletin> getBulletins(int start) {
         List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConvNo).getMessageList(start);
@@ -114,7 +121,6 @@ public class BulletinActivity extends ActionBarBaseActivity {
             return bulletinList;
         }
 
-        mStart = start + messageEntityList.size();
         Role role = IMClient.getClient().getRoleManager().getRole(mConvNo, 1);
         for (MessageEntity messageEntity : messageEntityList) {
             MessageBody messageBody = new MessageBody(messageEntity);
@@ -133,8 +139,10 @@ public class BulletinActivity extends ActionBarBaseActivity {
         super.onNewIntent(intent);
         mBulletinAdapter.clear();
         mStart = 0;
-        mBulletinAdapter.addItems(getBulletins(mStart));
-        mListView.post(mRunnable);
+        List<Bulletin> bulletinList = getBulletins(mStart);
+        mBulletinAdapter.addItems(bulletinList);
+        mStart += bulletinList.size();
+        mListView.post(new ScrollRunnable(mStart));
         mHandler.postDelayed(mNotifyNewFragment2UpdateItemBadgeRunnable, 500);
     }
 
@@ -267,5 +275,19 @@ public class BulletinActivity extends ActionBarBaseActivity {
 
     protected NotificationProvider getNotificationProvider() {
         return FactoryManager.getInstance().create(NotificationProvider.class);
+    }
+
+    private class ScrollRunnable implements Runnable {
+
+        private int position;
+
+        public ScrollRunnable(int position) {
+            this.position = position;
+        }
+
+        @Override
+        public void run() {
+            mListView.setSelection(position);
+        }
     }
 }

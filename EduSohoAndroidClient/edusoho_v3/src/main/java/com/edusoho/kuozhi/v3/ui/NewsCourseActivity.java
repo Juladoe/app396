@@ -421,7 +421,6 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                 .success(new NormalCallback<LinkedHashMap>() {
                     @Override
                     public void success(LinkedHashMap map) {
-                        mIMessageListPresenter.enableChatView();
                         if (map == null) {
                             ToastUtils.show(getBaseContext(), "加入课程聊天失败!");
                             mIMessageListPresenter.enableChatView();

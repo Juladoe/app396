@@ -467,7 +467,12 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         reConnectServer();
         User user = getAppSettingProvider().getCurrentUser();
         if (user != null) {
-            new IMProvider(mContext).syncIM();
+            new IMProvider(mContext).syncIM().fail(new NormalCallback<VolleyError>() {
+                @Override
+                public void success(VolleyError volleyError) {
+                    volleyError.printStackTrace();
+                }
+            });
         }
     }
 

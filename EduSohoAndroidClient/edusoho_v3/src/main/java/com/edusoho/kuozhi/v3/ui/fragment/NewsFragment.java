@@ -224,7 +224,7 @@ public class NewsFragment extends BaseFragment {
                     updateNetWorkStatusHeader("聊天功能已关闭, 请联系管理员");
                     return;
                 }
-                updateNetWorkStatusHeader("当前网络不可用，请检查你的网络设置");
+                updateNetWorkStatusHeader("消息服务器连接失败，请重试");
                 break;
             case IMConnectStatus.CONNECTING:
                 updateNetWorkStatusHeader("正在连接...");
