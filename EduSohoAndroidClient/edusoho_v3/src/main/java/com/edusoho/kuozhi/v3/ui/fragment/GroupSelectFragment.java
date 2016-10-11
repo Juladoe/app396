@@ -102,12 +102,12 @@ public class GroupSelectFragment extends FriendSelectFragment {
                 .success(new NormalCallback<Classroom>() {
                     @Override
                     public void success(Classroom classroom) {
-                        if (classroom == null || TextUtils.isEmpty(classroom.conversationId)) {
+                        if (classroom == null || TextUtils.isEmpty(classroom.convNo)) {
                             ToastUtils.show(mActivity.getBaseContext(), "发送失败,该讨论组不支持分享!");
                             return;
                         }
 
-                        mConvNo = classroom.conversationId;
+                        mConvNo = classroom.convNo;
                         new IMProvider(mContext).createConvInfoByClassRoom(mConvNo, fromId, classroom)
                                 .success(new NormalCallback<ConvEntity>() {
                                     @Override

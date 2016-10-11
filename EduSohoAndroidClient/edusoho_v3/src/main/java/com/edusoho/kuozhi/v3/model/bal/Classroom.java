@@ -45,5 +45,5 @@ public class Classroom implements Serializable {
     public String buyable;
     public String maxRate;
 
-    public String conversationId;
+    public String convNo;
 }

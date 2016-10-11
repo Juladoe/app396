@@ -44,5 +44,5 @@ public class Course implements Serializable {
     public User[] teachers;
     public String type;
 
-    public String conversationId;
+    public String convNo;
 }

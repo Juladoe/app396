@@ -20,7 +20,6 @@ import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMProvider;
-import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -106,7 +105,7 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
                     .success(new NormalCallback<Classroom>() {
                         @Override
                         public void success(Classroom classroom) {
-                            if (classroom == null || TextUtils.isEmpty(classroom.conversationId)) {
+                            if (classroom == null || TextUtils.isEmpty(classroom.convNo)) {
                                 ToastUtils.show(getBaseContext(), "加入班级聊天失败!");
                                 finish();
                                 return;

@@ -357,7 +357,7 @@ public class IMDiscussFragment extends BaseFragment implements
                 String conversationNo = null;
                 if (courseDetailsResult == null
                         || courseDetailsResult.course == null
-                        || convNoIsEmpty(courseDetailsResult.course.conversationId)
+                        || convNoIsEmpty(courseDetailsResult.course.convNo)
                         ) {
                     ToastUtils.show(mContext, "创建聊天失败!");
                     return;

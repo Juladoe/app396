@@ -11,7 +11,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.RemoteException;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.broadcast.IMServiceStartedBroadcastReceiver;
@@ -218,6 +217,10 @@ public class IMClient {
 
     public void addConnectStatusListener(IMConnectStatusListener listener) {
         this.mIMConnectStatusListenerList.add(listener);
+    }
+
+    public void removeConnectStatusListener(IMConnectStatusListener listener) {
+        this.mIMConnectStatusListenerList.remove(listener);
     }
 
     public void addGlobalConnectStatusListener(IMConnectStatusListener listener) {

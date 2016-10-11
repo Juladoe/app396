@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -93,6 +94,7 @@ public class NewsFragment extends BaseFragment {
     private boolean mIsNeedRefresh;
     private DefaultPageActivity mParentActivity;
     private IMMessageReceiver mIMMessageReceiver;
+    private IMConnectStatusListener mIMConnectStatusListener;
 
     @Override
     public void onAttach(Activity activity) {
@@ -111,7 +113,6 @@ public class NewsFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setHasOptionsMenu(true);
-        IMClient.getClient().addConnectStatusListener(getIMConnectStatusListener());
     }
 
     @Override
@@ -120,10 +121,11 @@ public class NewsFragment extends BaseFragment {
         if (mParentActivity.getCurrentFragment().equals(getClass().getSimpleName())) {
             getRestCourse();
         } else {
-            //延迟到fragment show去刷新数据
             mIsNeedRefresh = true;
         }
         registIMMessageReceiver();
+        mIMConnectStatusListener = getIMConnectStatusListener();
+        IMClient.getClient().addConnectStatusListener(mIMConnectStatusListener);
         updateIMConnectStatus(IMClient.getClient().getIMConnectStatus());
     }
 
@@ -133,6 +135,9 @@ public class NewsFragment extends BaseFragment {
         if (mIMMessageReceiver != null) {
             IMClient.getClient().removeReceiver(mIMMessageReceiver);
             mIMMessageReceiver = null;
+        }
+        if (mIMConnectStatusListener != null) {
+            IMClient.getClient().removeConnectStatusListener(mIMConnectStatusListener);
         }
     }
 
@@ -581,7 +586,7 @@ public class NewsFragment extends BaseFragment {
                 continue;
             }
 
-            if (TextUtils.isEmpty(course.conversationId) || "0".equals(course.conversationId)) {
+            if (TextUtils.isEmpty(course.convNo) || "0".equals(course.convNo)) {
                 continue;
             }
             long resultId = IMClient.getClient().getConvManager().createConv(createConvFromCourse(course));
@@ -605,7 +610,7 @@ public class NewsFragment extends BaseFragment {
         convEntity.setUid(app.loginUser.id);
         convEntity.setTargetId(course.id);
         convEntity.setTargetName(course.title);
-        convEntity.setConvNo(course.conversationId);
+        convEntity.setConvNo(course.convNo);
         convEntity.setAvatar(course.middlePicture);
         convEntity.setType(Destination.COURSE);
         convEntity.setCreatedTime(System.currentTimeMillis());

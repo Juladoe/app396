@@ -14,6 +14,7 @@ import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.http.AsyncHttpClient;
 import com.koushikdutta.async.http.WebSocket;
 
+import java.net.URLEncoder;
 import java.util.List;
 
 /**
@@ -110,7 +111,7 @@ public class ConnectionManager implements IConnectionManager {
         String host = mHostList.get(mCurrentHostIndex);
         Log.d(getClass().getSimpleName(), host);
         mWebSocketFuture = AsyncHttpClient.getDefaultInstance().websocket(
-                host + "&clientName=" + mClientName,
+                host + "&clientName=" + URLEncoder.encode(mClientName),
                 null,
                 getWebSocketConnectCallback()
         );
