@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,18 +29,17 @@ import java.util.List;
 public class DownloadingAdapter extends BaseExpandableListAdapter {
 
     private Context mContex;
-    private BaseActivity mActivity;
     private SparseArray<M3U8DbModel> m3u8ModelList;
     private List<Course> mGroupItems;
     private List<List<LessonItem>> mChildItems;
     private boolean mSelectedShow = false;
     private DownloadType mType;
     private int mChildLayoutId;
+    private DisplayImageOptions mOptions;
 
     public DownloadingAdapter(Context ctx, BaseActivity activity, SparseArray<M3U8DbModel> m3u8List,
                               List<Course> groupItems, HashMap<Integer, ArrayList<LessonItem>> mLocalLessons, DownloadType type, int childResId) {
         mContex = ctx;
-        mActivity = activity;
         m3u8ModelList = m3u8List;
         mGroupItems = groupItems;
 
@@ -50,6 +50,8 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         mChildItems = lessonItems;
         mType = type;
         mChildLayoutId = childResId;
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).
+                showImageOnFail(R.drawable.defaultpic).build();
     }
 
     public void updateLocalData(List<Course> groupItems, HashMap<Integer, ArrayList<LessonItem>> mLocalLessons) {
@@ -109,7 +111,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         }
 
         final Course course = mGroupItems.get(groupPosition);
-        ImageLoader.getInstance().displayImage(course.middlePicture, groupPanel.ivAvatar, mActivity.app.mOptions);
+        ImageLoader.getInstance().displayImage(course.middlePicture, groupPanel.ivAvatar, mOptions);
         groupPanel.tvCourseTitle.setText(course.title);
         groupPanel.ivVideoSum.setText(String.format("视频 %s", mChildItems.get(groupPosition).size()));
 

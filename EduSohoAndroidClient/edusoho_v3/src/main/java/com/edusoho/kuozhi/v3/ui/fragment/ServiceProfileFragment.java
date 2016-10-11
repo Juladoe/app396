@@ -1,13 +1,14 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
@@ -16,10 +17,6 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
-import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
-import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -29,6 +26,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class ServiceProfileFragment extends BaseFragment {
 
     public static final String SERVICE_ID = "id";
+    public static final String SERVICE_TITLE = "title";
+    public static final String SERVICE_CONVNO = "convNo";
 
     private SystemProvider mSystemProvider;
     private ImageView mServiceIconView;
@@ -38,12 +37,20 @@ public class ServiceProfileFragment extends BaseFragment {
     private TextView mClearView;
 
     private int mSchoolProfileId;
+    private String mConvNo;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.service_profile_layout);
         ModelProvider.init(mContext, this);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        Bundle bundle = getArguments();
+        activity.setTitle(bundle == null ? "设置" : bundle.getString(SERVICE_TITLE));
     }
 
     @Override
@@ -62,6 +69,7 @@ public class ServiceProfileFragment extends BaseFragment {
 
         Bundle bundle = getArguments();
         mSchoolProfileId = bundle != null ? bundle.getInt(SERVICE_ID, 0) : 0;
+        mConvNo = bundle == null ? "" : bundle.getString(SERVICE_CONVNO);
         RequestUrl requestUrl = app.bindNewUrl(String.format(Const.GET_SCHOOL_APP, mSchoolProfileId), true);
         mSystemProvider.getSchoolApp(requestUrl).success(new NormalCallback<SchoolApp>() {
             @Override
@@ -103,8 +111,8 @@ public class ServiceProfileFragment extends BaseFragment {
     }
 
     private void clearHistory() {
-        ServiceProviderDataSource dataSource = new ServiceProviderDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-        dataSource.deleteBySPId(mSchoolProfileId);
+        IMClient.getClient().getMessageManager().deleteByConvNo(mConvNo);
+        IMClient.getClient().getConvManager().clearLaterMsg(mConvNo);
 
         Bundle bundle = new Bundle();
         bundle.putInt(SERVICE_ID, mSchoolProfileId);

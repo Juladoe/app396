@@ -1,9 +1,7 @@
 package com.edusoho.kuozhi.v3.view.dialog;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.InputType;
-import android.view.KeyEvent;
 import android.widget.EditText;
 
 import com.edusoho.kuozhi.R;

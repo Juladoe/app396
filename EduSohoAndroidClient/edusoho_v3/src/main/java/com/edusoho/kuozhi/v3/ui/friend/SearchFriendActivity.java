@@ -101,8 +101,6 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
 
     }
 
-    ;
-
     public RequestUrl setRelationParams(ArrayList<Friend> list) {
         RequestUrl requestUrl = app.bindNewUrl(Const.USERS, true);
         StringBuffer sb = new StringBuffer(requestUrl.url.toString());
@@ -188,15 +186,11 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == END) {
-//                if(mLoadDialog != null){
-//                    mLoadDialog.dismiss();
-//                }
                 mLoading.setVisibility(View.GONE);
             }
         }
     }
 
-    ;
 
 
     public class SearchFriendAdapter extends BaseAdapter {

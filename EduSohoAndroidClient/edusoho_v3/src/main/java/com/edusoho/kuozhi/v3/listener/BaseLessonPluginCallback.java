@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.listener;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import com.android.volley.VolleyError;

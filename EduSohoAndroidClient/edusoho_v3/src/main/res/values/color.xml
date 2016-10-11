@@ -41,7 +41,8 @@
     <color name="recommend_sch_info">#8A8A8A</color>
     <color name="course_content_head">#03b884</color>
     <color name="course_content_head_pressed">#ffffff</color>
-    <color name="load_bg">#99333333</color>
+    <color name="load_bg">#fff</color>
+    <color name="load_bg_stroke">#f0f0f0</color>
     <color name="course_title">#4d4d4d</color>
     <color name="course_info_title">#03b884</color>
     <color name="course_teacher">#808080</color>
@@ -425,8 +426,11 @@
     <color name="assist">#444</color>
     <color name="error">#e96969</color>
     <color name="background">#ebebeb</color>
+
+    <!-- todo del-->
     <color name="chat_background">#F4F7F9</color>
     <color name="chat_tool_background">#FAFAFA</color>
+
     <color name="find_fragment_background">#F4F7F9</color>
     <color name="font_1">#444444</color>
     <color name="font_2">#666666</color>

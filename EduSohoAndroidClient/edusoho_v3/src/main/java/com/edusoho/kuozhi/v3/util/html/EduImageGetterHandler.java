@@ -81,8 +81,8 @@ public class EduImageGetterHandler implements Html.ImageGetter {
         private void setBitmap(Bitmap loadedImage) {
             float showMaxWidth, showMaxHeight;
             if (mImageSize == -1) {
-                showMaxWidth = EdusohoApp.app.screenW * 0.9f;
-                showMaxHeight = EdusohoApp.app.screenH * 0.3f;
+                showMaxWidth = EdusohoApp.screenW * 0.9f;
+                showMaxHeight = EdusohoApp.screenH * 0.3f;
             } else {
                 showMaxWidth = mImageSize * 0.9f;
                 showMaxHeight = mImageSize * 0.9f;

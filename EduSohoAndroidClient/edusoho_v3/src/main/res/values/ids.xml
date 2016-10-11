@@ -14,4 +14,5 @@
     <item type="id" name="expand_collapse" />
 
     <item type="id" name="question_stem" />
+    <item type="id" name="chat_content" />
 </resources>

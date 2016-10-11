@@ -27,6 +27,6 @@ public class Member implements Serializable {
 
     public enum Role
     {
-        teacher, student, admin;
+        teacher, student, admin
     }
 }

@@ -7,9 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.MyThreadAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -24,7 +21,6 @@ import com.edusoho.kuozhi.v3.view.EduSohoDivederLine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**

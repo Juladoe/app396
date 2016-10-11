@@ -10,17 +10,22 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
@@ -28,6 +33,7 @@ import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by JesseHuang on 15/5/6.
@@ -128,6 +134,54 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
             showSchSplash(site.name, site.splashs);
         }
 
+        protected AppSettingProvider getAppSettingProvider() {
+            return FactoryManager.getInstance().create(AppSettingProvider.class);
+        }
+
+        protected void bindApiToken(final UserResult userResult) {
+            School school = userResult.site;
+
+            RequestUrl requestUrl = new RequestUrl(school.host + Const.GET_API_TOKEN);
+            Map<String,String> tokenMap =  ApiTokenUtil.getToken(mActivity.getBaseContext());
+            requestUrl.heads.put("Auth-Token", tokenMap.get("token"));
+            mApp.getUrl(requestUrl, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Token token = mActivity.parseJsonValue(response, new TypeToken<Token>() {
+                    });
+                    if (token != null) {
+                        mApp.saveApiToken(token.token);
+                        selectSchool(userResult);
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    CommonUtil.longToast(mActivity.getBaseContext(), "获取网校信息失败");
+                }
+            });
+        }
+
+        public void selectSchool(UserResult userResult) {
+            IMClient.getClient().destory();
+            School site = userResult.site;
+            mApp.setCurrentSchool(site);
+            mApp.registDevice(null);
+
+            if (userResult.token == null || "".equals(userResult.token)) {
+                //未登录二维码
+                mApp.removeToken();
+                getAppSettingProvider().setUser(null);
+                mApp.sendMessage(Const.LOGOUT_SUCCESS, null);
+            } else {
+                //扫描登录用户二维码
+                mApp.saveToken(userResult);
+                new IMServiceProvider(mActivity.getApplicationContext()).bindServer(userResult.user.id, userResult.user.nickname);
+                mApp.sendMessage(Const.LOGIN_SUCCESS, null);
+            }
+            startSchoolActivity(site);
+        }
+
         public void change(String url) {
             mLoading = LoadDialog.create(mActivity);
             mLoading.show();
@@ -146,26 +200,16 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                             return;
                         }
 
-                        final School site = userResult.site;
+                        School site = userResult.site;
+                        if (site == null) {
+                            CommonUtil.longToast(mActivity.getBaseContext(), "没有识别到网校信息!");
+                            return;
+                        }
                         if (!checkMobileVersion(site, site.apiVersionRange)) {
                             return;
                         }
 
-                        if (userResult.token == null || "".equals(userResult.token)) {
-                            //未登录二维码
-                            mApp.removeToken();
-                            mApp.sendMessage(Const.LOGOUT_SUCCESS, null);
-                        } else {
-                            //扫描登录用户二维码
-                            mApp.saveToken(userResult);
-                            mApp.sendMessage(Const.LOGIN_SUCCESS, null);
-                        }
-
-                        mApp.setCurrentSchool(site);
-                        SqliteChatUtil.getSqliteChatUtil(mActivity.getBaseContext(), mApp.domain).close();
-                        mApp.registDevice(null);
-
-                        startSchoolActivity(site);
+                        bindApiToken(userResult);
 
                     } catch (Exception e) {
                         mLoading.dismiss();

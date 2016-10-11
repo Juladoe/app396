@@ -26,6 +26,17 @@ public class FindListAdapter extends BaseAdapter {
         mList = new ArrayList<>();
     }
 
+    public void addDataList(List<DiscoveryColumn> findCardEntity) {
+        mList.addAll(findCardEntity);
+        Collections.sort(mList, new Comparator<DiscoveryColumn>() {
+            @Override
+            public int compare(DiscoveryColumn lhs, DiscoveryColumn rhs) {
+                return lhs.seq.compareTo(rhs.seq);
+            }
+        });
+        notifyDataSetChanged();
+    }
+
     public void addData(DiscoveryColumn findCardEntity) {
         mList.add(findCardEntity);
         Collections.sort(mList, new Comparator<DiscoveryColumn>() {

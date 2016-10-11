@@ -44,19 +44,19 @@ public class ThreadDiscussAdapter extends ChatAdapter {
     protected final CourseThreadPostDataSource mCourseThreadPostDataSource;
     protected List<ThreadDiscussEntity> mList;
 
+    private HashMap<Integer, Integer> mDurationArray;
+
     public ThreadDiscussAdapter(Context context) {
         mContext = context;
         mCourseThreadDataSource = new CourseThreadDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
         mList = new ArrayList<>();
         mDownloadList = new HashMap<>();
+        mDurationArray = new HashMap<>();
     }
 
     public ThreadDiscussAdapter(List<CourseThreadPostEntity> list, CourseThreadEntity courseThreadEntity, Context context) {
-        mContext = context;
-        mCourseThreadDataSource = new CourseThreadDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
-        mCourseThreadPostDataSource = new CourseThreadPostDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, EdusohoApp.app.domain));
-        mList = new ArrayList<>();
+        this(context);
         int size = list.size();
         mCourseThreadModel = courseThreadEntity;
         //回复
@@ -217,7 +217,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                 holder.ivStateError.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mImageErrorClick.sendMsgAgain(model);
+                        //mImageErrorClick.sendMsgAgain(model);
                     }
                 });
                 break;
@@ -249,7 +249,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                                 model.delivery = PushUtil.MsgDeliveryType.UPLOADING;
                                 holder.pbLoading.setVisibility(View.VISIBLE);
                                 holder.ivStateError.setVisibility(View.GONE);
-                                mImageErrorClick.uploadMediaAgain(file, model, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
+                                //mImageErrorClick.uploadMediaAgain(file, model, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
                             } else {
                                 CommonUtil.longToast(mContext, "图片不存在，无法上传");
                             }
@@ -278,7 +278,12 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                 holder.pbLoading.setVisibility(View.GONE);
                 holder.tvAudioLength.setVisibility(View.VISIBLE);
                 try {
-                    int duration = getAmrDuration(model.content);
+                    int duration = 0;
+                    if (!mDurationArray.containsKey(model.id)) {
+                        duration = getMediaLength(model.content);
+                        mDurationArray.put(model.id, duration);
+                    }
+                    duration = getDuration(mDurationArray.get(model.id));
                     holder.tvAudioLength.setText(duration + "\"");
 
                     holder.ivMsgImage.getLayoutParams().width = 100 + mDurationUnit * duration < mDurationMax ? 100 + mDurationUnit * duration : mDurationMax;
@@ -308,7 +313,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                                 model.delivery = PushUtil.MsgDeliveryType.UPLOADING;
                                 holder.pbLoading.setVisibility(View.VISIBLE);
                                 holder.ivStateError.setVisibility(View.GONE);
-                                mImageErrorClick.uploadMediaAgain(file, model, PushUtil.ChatMsgType.AUDIO, Const.MEDIA_AUDIO);
+                                //mImageErrorClick.uploadMediaAgain(file, model, PushUtil.ChatMsgType.AUDIO, Const.MEDIA_AUDIO);
                                 notifyDataSetChanged();
                             } else {
                                 CommonUtil.longToast(mContext, "音频不存在，无法上传");
@@ -391,7 +396,7 @@ public class ThreadDiscussAdapter extends ChatAdapter {
                     AudioCacheUtil.getInstance().create(new AudioCacheEntity(audioFileName, model.content));
                 }
                 try {
-                    int duration = getAmrDuration(audioFileName);
+                    int duration = getDuration(getMediaLength(audioFileName));
                     holder.tvAudioLength.setText(duration + "\"");
                     holder.ivMsgImage.getLayoutParams().width = 100 + mDurationUnit * duration < mDurationMax ? 100 + mDurationUnit * duration : mDurationMax;
                     holder.ivMsgImage.requestLayout();

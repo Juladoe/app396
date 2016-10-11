@@ -1,2 +1,3 @@
-include ':kuozhiv2', ':edusoho_v3', ':homework',':custom'
+include ':kuozhiv2', ':edusoho_v3', ':imserver', ':homework'
 include ':bdvideoplayer', ':commonUtils', ':shard', ':liveEplayer', ':commonLib'
+include ':multi-image-selector'

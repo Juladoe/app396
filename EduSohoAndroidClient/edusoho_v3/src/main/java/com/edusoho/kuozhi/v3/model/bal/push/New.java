@@ -1,22 +1,35 @@
 package com.edusoho.kuozhi.v3.model.bal.push;
 
-import com.edusoho.kuozhi.v3.EdusohoApp;
+import android.text.TextUtils;
+
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.UtilFactory;
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleMessageBody;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 /**
  * Created by JesseHuang on 15/7/2.
  * 动态主页listview数据对象
  */
 public class New implements Serializable {
+
     public int id;
     public int fromId;
+    public String convNo;
     public String title;
     public String content;
-    public int createdTime;
+    public long createdTime;
 
     /**
      * 1.校友头像2.教师头像3.课程头像（图片需在本地做缓存，以便离线能显示）
@@ -31,7 +44,6 @@ public class New implements Serializable {
 
     public int sendUserId;
 
-    public int belongId;
     public int isTop = 0;
     public int parentId;
 
@@ -63,11 +75,64 @@ public class New implements Serializable {
         return content;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setContent(MessageBody messageBody) {
+        String type = messageBody.getType();
+        String body = messageBody.getBody();
+        switch (type) {
+            case PushUtil.ChatMsgType.AUDIO:
+                content = String.format("[%s]", Const.MEDIA_AUDIO);
+                break;
+            case PushUtil.ChatMsgType.IMAGE:
+                content = String.format("[%s]", Const.MEDIA_IMAGE);
+                break;
+            case PushUtil.ChatMsgType.MULTI:
+                RedirectBody redirectBody = getUtilFactory().getJsonParser().fromJson(body, RedirectBody.class);
+                content = redirectBody == null ? "" : redirectBody.content;
+                break;
+            case PushUtil.ChatMsgType.PUSH:
+                content = handlePushMessageBody(messageBody);
+                break;
+            default:
+                content = body;
+        }
+        this.content = TextUtils.isEmpty(content) ? "" : AppUtil.coverCourseAbout(content);
     }
 
-    public int getCreatedTime() {
+    private String handlePushMessageBody(MessageBody messageBody) {
+        String fromType = messageBody.getSource().getType();
+        switch (fromType) {
+            case PushUtil.ArticleType.TYPE:
+                ArticleMessageBody articleMessageBody = getUtilFactory().getJsonParser().
+                        fromJson(messageBody.getBody(), ArticleMessageBody.class);
+                if (articleMessageBody == null) {
+                    List<ArticleMessageBody> list = getUtilFactory().getJsonParser().
+                            fromJson(messageBody.getBody(), new TypeToken<List<ArticleMessageBody>>(){}.getType());
+                    if (list != null && !list.isEmpty()) {
+                        articleMessageBody = list.get(0);
+                    }
+                }
+                return articleMessageBody == null ? "" : articleMessageBody.getTitle();
+            case PushUtil.BulletinType.TYPE:
+                Bulletin bulletin = getUtilFactory().getJsonParser().
+                        fromJson(messageBody.getBody(), Bulletin.class);
+                return bulletin.title;
+            case PushUtil.CourseType.TYPE:
+                LinkedHashMap linkedHashMap = getUtilFactory().getJsonParser().
+                        fromJson(messageBody.getBody(), LinkedHashMap.class);
+                if (!linkedHashMap.containsKey("type")) {
+                    return "课程有一条新更新信息";
+                }
+                switch (linkedHashMap.get("type").toString()) {
+                    case PushUtil.CourseType.QUESTION_CREATED:
+                        return String.format("[问答]:%s", linkedHashMap.get("questionTitle").toString());
+                }
+                return "课程有一条新更新信息";
+        }
+
+        return messageBody.getBody();
+    }
+
+    public long getCreatedTime() {
         return createdTime;
     }
 
@@ -107,14 +172,6 @@ public class New implements Serializable {
         this.sendUserId = sendUserId;
     }
 
-    public int getBelongId() {
-        return belongId;
-    }
-
-    public void setBelongId(int belongId) {
-        this.belongId = belongId;
-    }
-
     public int getIsTop() {
         return isTop;
     }
@@ -124,97 +181,92 @@ public class New implements Serializable {
     }
 
     public New() {
-
     }
 
-    public New(OffLineMsgEntity offlineMsgModel) {
-        V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
-        fromId = v2CustomContent.getFrom().getId();
-        title = offlineMsgModel.getTitle();
-        createdTime = v2CustomContent.getCreatedTime();
-        imgUrl = v2CustomContent.getFrom().getImage();
-        type = v2CustomContent.getFrom().getType();
-        switch (v2CustomContent.getBody().getType()) {
-            case PushUtil.ChatMsgType.TEXT:
-                content = offlineMsgModel.getContent();
-                break;
-            case PushUtil.ChatMsgType.IMAGE:
-                content = String.format("[%s]", Const.MEDIA_IMAGE);
-                break;
-            case PushUtil.ChatMsgType.AUDIO:
-                content = String.format("[%s]", Const.MEDIA_AUDIO);
-                break;
-            case PushUtil.CourseType.TESTPAPER_REVIEWED:
-                content = String.format("【%s】%s", type, offlineMsgModel.getContent());
-                break;
-        }
-
-        belongId = EdusohoApp.app.loginUser.id;
+    protected UtilFactory getUtilFactory() {
+        return FactoryManager.getInstance().create(UtilFactory.class);
     }
 
-    public New(Chat chat) {
-        fromId = chat.fromId;
-        title = chat.nickname;
-        createdTime = chat.createdTime;
-        imgUrl = chat.headImgUrl;
-        CustomContent customContent = chat.getCustomContent();
-        type = chat.getCustomContent().getTypeBusiness();
-        if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.TEXT)) {
-            content = chat.content;
-        } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.IMAGE)) {
-            content = String.format("[%s]", Const.MEDIA_IMAGE);
-        } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.AUDIO)) {
-            content = String.format("[%s]", Const.MEDIA_AUDIO);
+    public New(MessageEntity messageEntity)
+    {
+        MessageBody messageBody = new MessageBody(messageEntity);
+        convNo = messageEntity.getConvNo();
+
+        fromId = getFromIdByType(messageBody);
+        setContent(messageBody);
+        createdTime = messageBody.getCreatedTime();
+        type = messageBody.getDestination().getType();
+        if (PushUtil.ChatMsgType.PUSH.equals(messageBody.getType())) {
+            type = messageBody.getSource().getType();
         }
-        belongId = EdusohoApp.app.loginUser.id;
+        title = getTitleNameByType(messageBody);
     }
 
-    public New(WrapperXGPushTextMessage message) {
-        V2CustomContent v2CustomContent = message.getV2CustomContent();
-        if (v2CustomContent.getFrom() != null) {
-            //新格式
-            fromId = v2CustomContent.getFrom().getId();
-            title = message.getTitle();
-            switch (v2CustomContent.getBody().getType()) {
-                case PushUtil.ChatMsgType.AUDIO:
-                    content = String.format("[%s]", Const.MEDIA_AUDIO);
-                    break;
-                case PushUtil.ChatMsgType.IMAGE:
-                    content = String.format("[%s]", Const.MEDIA_IMAGE);
-                    break;
-                case PushUtil.ChatMsgType.MULTI:
-                    RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
-                    });
-                    content = body.content;
-                    break;
-                default:
-                    content = message.getContent();
-            }
-            createdTime = v2CustomContent.getCreatedTime();
-            imgUrl = v2CustomContent.getFrom().getImage();
-            type = v2CustomContent.getFrom().getType();
-            belongId = EdusohoApp.app.loginUser.id;
-        } else {
-            CustomContent customContent = EdusohoApp.app.parseJsonValue(message.getCustomContentJson(), new TypeToken<CustomContent>() {
-            });
-            fromId = customContent.getFromId();
-            title = message.getTitle();
-            if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.IMAGE)) {
-                content = String.format("[%s]", Const.MEDIA_IMAGE);
-            } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.AUDIO)) {
-                content = String.format("[%s]", Const.MEDIA_AUDIO);
-            } else if (customContent.getTypeMsg().equals(PushUtil.ChatMsgType.MULTI)) {
-                RedirectBody body = EdusohoApp.app.parseJsonValue(message.getContent(), new TypeToken<RedirectBody>() {
-                });
-                content = body.content;
-            } else {
-                content = message.getContent();
-            }
-            createdTime = customContent.getCreatedTime();
-            imgUrl = customContent.getImgUrl();
-            //newModel.setUnread();
-            type = customContent.getTypeBusiness();
-            belongId = EdusohoApp.app.loginUser.id;
+    private int getFromIdByType(MessageBody messageBody) {
+        type = messageBody.getDestination().getType();
+        if (TextUtils.isEmpty(type)) {
+            return 0;
         }
+        switch (type) {
+            case Destination.USER:
+                return messageBody.getSource().getId();
+            case Destination.COURSE:
+            case Destination.CLASSROOM:
+                return messageBody.getDestination().getId();
+            case Destination.ARTICLE:
+            case Destination.GLOBAL:
+                return messageBody.getSource().getId();
+        }
+
+        return 0;
+    }
+
+    private String getTitleNameByType(MessageBody messageBody) {
+        switch (type) {
+            case Destination.USER:
+                return messageBody.getSource().getNickname();
+            case Destination.COURSE:
+            case Destination.CLASSROOM:
+                return messageBody.getDestination().getNickname();
+            case Destination.ARTICLE:
+                return "资讯";
+            case Destination.GLOBAL:
+                return "网校公告";
+        }
+
+        return "";
+    }
+
+    private String getTitleNameByConvEntity(ConvEntity convEntity) {
+        String fromType = convEntity.getType();
+        if (TextUtils.isEmpty(fromType)) {
+            return "";
+        }
+        switch (fromType) {
+            case Destination.USER:
+            case Destination.COURSE:
+            case Destination.CLASSROOM:
+                return convEntity.getTargetName();
+            case Destination.ARTICLE:
+                return "资讯";
+            case Destination.GLOBAL:
+                return "网校公告";
+        }
+
+        return "";
+    }
+
+    public New(ConvEntity convEntity) {
+        id = convEntity.getId();
+        convNo = convEntity.getConvNo();
+        fromId = convEntity.getTargetId();
+        MessageBody messageBody = new MessageBody(convEntity.getLaterMsg());
+        messageBody.getSource().setNickname(convEntity.getTargetName());
+        setContent(messageBody);
+        unread = convEntity.getUnRead();
+        title = getTitleNameByConvEntity(convEntity);
+        createdTime = convEntity.getUpdatedTime();
+        imgUrl = convEntity.getAvatar();
+        type = convEntity.getType() == null ? "" : convEntity.getType();
     }
 }

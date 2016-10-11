@@ -5,8 +5,17 @@ package com.edusoho.kuozhi.v3.model.bal;
  */
 public class DiscussionGroup extends Friend {
 
-    public String type;
     public String picture;
+
+    public String conversationId;
+
+    public String getConversationId() {
+        return conversationId;
+    }
+
+    public void setConversationId(String conversationId) {
+        this.conversationId = conversationId;
+    }
 
     @Override
     public String getNickname() {

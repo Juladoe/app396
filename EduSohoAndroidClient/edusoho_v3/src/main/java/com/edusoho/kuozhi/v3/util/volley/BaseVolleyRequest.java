@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.util.volley;
 
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
 import com.android.volley.DefaultRetryPolicy;
@@ -94,7 +95,9 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         String cookie = response.headers.get("Set-Cookie");
-        mRequestLocalManager.setCookie(cookie);
+        if (cookie != null) {
+            mRequestLocalManager.setCookie(cookie);
+        }
         Cache.Entry cache = handleResponseCache(response);
 
         setTag(PARSE_RESPONSE);

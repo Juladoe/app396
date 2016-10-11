@@ -37,6 +37,7 @@ public class PushUtil {
         public static final String CLASSROOM = "classroom";
         public static final String COURSE = "course";
         public static final String STUDENT = "student";
+        public static final String NEWS = "news";
     }
 
     /**
@@ -47,6 +48,7 @@ public class PushUtil {
         public static final String AUDIO = "audio";
         public static final String IMAGE = "image";
         public static final String MULTI = "multi";
+        public static final String PUSH = "push";
     }
 
     public static class ThreadMsgType {
@@ -58,10 +60,11 @@ public class PushUtil {
         public static final int SUCCESS = 1;
         public static final int FAILED = 0;
         public static final int UPLOADING = 2;
+        public static final int NONE = -1;
     }
 
     public static class BulletinType {
-        public static final String TYPE = "bulletin";
+        public static final String TYPE = "global";
     }
 
     public static class ArticleType {

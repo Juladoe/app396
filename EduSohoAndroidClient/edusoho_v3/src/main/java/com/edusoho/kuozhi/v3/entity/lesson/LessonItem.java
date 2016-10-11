@@ -50,7 +50,7 @@ public class LessonItem<T> implements Serializable {
 
     public UploadFile uploadFile;
 
-    public static enum ItemType {
+    public enum ItemType {
         LESSON, CHAPTER, UNIT, EMPTY;
 
         public static ItemType cover(String name) {
@@ -64,7 +64,7 @@ public class LessonItem<T> implements Serializable {
         }
     }
 
-    public static enum MediaSourceType {
+    public enum MediaSourceType {
         YOUKU, SELF, TUDOU, EMPTY, QQVIDEO, FALLBACK, NETEASEOPENCOURSE;
 
         public static MediaSourceType cover(String name) {

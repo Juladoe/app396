@@ -42,8 +42,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CoreEngine {
     private Context mContext;
-    private static final String PLUGIN = "plugin";
-    private static final String INSTALL = "install";
+    public static final String PLUGIN = "plugin";
+    public static final String INSTALL = "app_install";
     private static CoreEngine engine;
     private MessageEngine messageEngine;
 
@@ -300,7 +300,7 @@ public class CoreEngine {
     public void installApkPlugin() {
         try {
             copyPluginFromAsset(getAssetPlugins(PLUGIN));
-            copyInstallApkFromAsset(getAssetPlugins(INSTALL));
+            copyInstallApkFromAsset(getAssetPlugins(INSTALL), mContext.getDir(INSTALL, Context.MODE_PRIVATE).getAbsolutePath());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -361,10 +361,18 @@ public class CoreEngine {
         }
     }
 
-    private void copyInstallApkFromAsset(String[] dirPath) throws Exception {
+    public void installApkFromAssetByPlugin(String installDir) {
+        try {
+            copyInstallApkFromAsset(getAssetPlugins(INSTALL), installDir);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void copyInstallApkFromAsset(String[] dirPath, String installDir) throws Exception {
         AssetManager assetManager = mContext.getAssets();
         for (String path : dirPath) {
-            OutputStream target = mContext.openFileOutput(path, mContext.MODE_WORLD_READABLE);
+            OutputStream target = new FileOutputStream(new File(installDir, path));
             copyFile(assetManager.open(INSTALL + "/" + path), target);
         }
     }

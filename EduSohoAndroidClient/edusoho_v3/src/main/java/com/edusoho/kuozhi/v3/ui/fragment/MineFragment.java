@@ -51,11 +51,9 @@ public class MineFragment extends BaseFragment {
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) {
-            initData();
-        }
+    public void onResume() {
+        super.onResume();
+        initData();
     }
 
     @Override
@@ -134,8 +132,4 @@ public class MineFragment extends BaseFragment {
             });
         }
     };
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    }
 }

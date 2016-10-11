@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -24,8 +23,8 @@ public class WebViewActivity extends ActionBarBaseActivity {
 
     private final static String TAG = "WebViewActivity";
     public final static int CLOSE = 0x01;
-    public final static int BACK = 0x02;
     public final static String SEND_EVENT = "send_event";
+    public static final int BACK = 0x02;
 
     private String url = "";
     private ESWebView mWebView;

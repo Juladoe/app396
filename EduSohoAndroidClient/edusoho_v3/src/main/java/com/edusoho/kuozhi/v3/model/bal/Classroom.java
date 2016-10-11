@@ -44,4 +44,6 @@ public class Classroom implements Serializable {
     public String showable;
     public String buyable;
     public String maxRate;
+
+    public String convNo;
 }

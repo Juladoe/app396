@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.model.provider;
 import android.content.Context;
 
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
@@ -11,7 +12,6 @@ import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,6 +21,21 @@ public class CourseProvider extends ModelProvider {
 
     public CourseProvider(Context context) {
         super(context);
+    }
+
+    public ProviderListener<CourseResult> getLearnCourses() {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
+        String token = tokenMap.get("token").toString();
+
+        RequestUrl requestUrl = null;
+        requestUrl = new RequestUrl(String.format("%s%srelation=learn", school.host,  Const.MY_COURSES));
+        requestUrl.heads.put("X-Auth-Token", token);
+
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<CourseResult>(){});
+
+        return requestOption.build();
     }
 
     public ProviderListener createThread(
@@ -52,15 +67,15 @@ public class CourseProvider extends ModelProvider {
         return requestOption.build();
     }
 
-    public ProviderListener getCourse(RequestUrl requestUrl) {
-        RequestOption requestOption = buildSimpleGetRequest(
+    public ProviderListener<CourseDetailsResult> getCourse(RequestUrl requestUrl) {
+        RequestOption requestOption = buildSimplePostRequest(
                 requestUrl, new TypeToken<CourseDetailsResult>(){});
 
         requestOption.getRequest().setCacheUseMode(BaseVolleyRequest.ALWAYS_USE_CACHE);
         return requestOption.build();
     }
 
-    public ProviderListener getCourse(int courseId) {
+    public ProviderListener<CourseDetailsResult> getCourse(int courseId) {
         School school = SchoolUtil.getDefaultSchool(mContext);
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
         String token = tokenMap.get("token").toString();
@@ -71,5 +86,19 @@ public class CourseProvider extends ModelProvider {
         requestUrl.heads.put("token", token);
 
         return getCourse(requestUrl);
+    }
+
+    public ProviderListener<LinkedHashMap> getMembership(int courseId, int userId) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        String token = ApiTokenUtil.getTokenString(mContext);
+
+        RequestUrl requestUrl = null;
+        requestUrl = new RequestUrl(school.host + String.format(Const.ROLE_IN_COURSE, courseId, userId));
+        requestUrl.heads.put("X-Auth-Token", token);
+
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
     }
 }

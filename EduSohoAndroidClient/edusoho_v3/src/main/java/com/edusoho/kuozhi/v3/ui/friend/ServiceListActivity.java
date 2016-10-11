@@ -15,7 +15,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -71,7 +71,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 SchoolApp schoolApp = (SchoolApp) adapterView.getItemAtPosition(i);
                 switch (schoolApp.code) {
-                    case "announcement":
+                    case PushUtil.AnnouncementType.GLOBAL:
                         app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
                         break;
                     case PushUtil.ArticleType.TYPE:
@@ -88,17 +88,15 @@ public class ServiceListActivity extends ActionBarBaseActivity {
 
     public Promise loadSchoolApps() {
         mAdapter.clearList();
-        RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
-        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        requestUrl.url = stringBuffer.toString();
 
         final Promise promise = new Promise();
-        mProvider.getSchoolApps(requestUrl)
+        mProvider.getSchoolApps()
                 .success(new NormalCallback<List<SchoolApp>>() {
                     @Override
                     public void success(List<SchoolApp> schoolAppResult) {
                         if (schoolAppResult.size() != 0) {
                             mAdapter.addSchoolAppList(schoolAppResult);
+                            new IMProvider(mContext).updateRoles(schoolAppResult);
                         }
                         promise.resolve(schoolAppResult);
                     }

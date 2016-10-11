@@ -54,7 +54,6 @@
         <TextView
             android:layout_marginLeft="16dp"
             android:id="@+id/friend_name"
-            android:text="好友姓名"
             android:textSize="@dimen/medium_font_size"
             android:textColor="@color/grey"
             android:layout_toRightOf="@id/friend_avatar"

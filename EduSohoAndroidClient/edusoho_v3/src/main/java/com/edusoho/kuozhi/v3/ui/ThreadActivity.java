@@ -59,7 +59,6 @@ public class ThreadActivity extends ActionBarBaseActivity implements View.OnClic
             mLessonId = intent.getIntExtra(Const.LESSON_ID, 0);
         } else {
             CommonUtil.longToast(mContext, "课程信息获取失败");
-            return;
         }
     }
 
