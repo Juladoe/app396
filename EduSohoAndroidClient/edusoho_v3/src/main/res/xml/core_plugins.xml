@@ -394,4 +394,9 @@
         name="ThreadCreateActivity"
         package="com.edusoho.kuozhi.v3.ui.ThreadCreateActivity"
         version="1.0" />
+
+    <plugin
+        name="VideoFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.lesson.VideoLessonFragment"
+        version="1.0" />
 </plugins>
