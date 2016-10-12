@@ -7,7 +7,7 @@
     <LinearLayout
         android:id="@+id/lesson_tools_layout"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0dp"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:background="@drawable/course_details_btn_layout_bg"

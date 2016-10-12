@@ -3,14 +3,16 @@ package com.edusoho.kuozhi.shard;
 import android.content.Context;
 import android.view.View;
 import android.widget.AdapterView;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
 import cn.sharesdk.framework.Platform;
-import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.onekeyshare.OnekeyShare;
+
 import static com.mob.tools.utils.R.getBitmapRes;
 
 
@@ -32,6 +34,7 @@ public class ShareUtil {
     private ShareSDKUtil mShareSDKUtil;
     private List<ListData> mCustomList;
     private ArrayList<ListData> mList;
+    private ShardDialog.DismissEvent mDismissEvent;
 
     private ShareUtil(Context context) {
         //添加应用信息
@@ -57,7 +60,7 @@ public class ShareUtil {
     }
 
     public ShareUtil initShareParams(
-            int icon, String shareTextTitle, String shareTitleUrl, String shareText, File imageFile, String ShareSite
+            int icon, String shareTextTitle, String shareTitleUrl, String shareText, File imageFile, String ShareSite, int type
     ) {
         mOneKeyShare = new OnekeyShare();
         mNotification_icon = icon;
@@ -72,8 +75,12 @@ public class ShareUtil {
 
         mShareSite = ShareSite;
         initOneKeyShare();
-        initDialog();
+        initDialog(type);
         return this;
+    }
+
+    public void setDismissEvent(ShardDialog.DismissEvent dismissEvent) {
+        mDismissEvent = dismissEvent;
     }
 
     private boolean filterPlat(String name) {
@@ -87,8 +94,7 @@ public class ShareUtil {
         return false;
     }
 
-    private void initPlatformList()
-    {
+    private void initPlatformList() {
         Platform[] platforms = mShareSDKUtil.getPlatformList();
         mList = new ArrayList<ListData>();
 
@@ -111,8 +117,9 @@ public class ShareUtil {
         });
     }
 
-    public void initDialog() {
-        mAlertDialog = new ShardDialog(mContext);
+    public void initDialog(int type) {
+        mAlertDialog = new ShardDialog(mContext, type);
+        mAlertDialog.setDismissEvent(mDismissEvent);
         mAlertDialog.setShardDatas(mList);
         mAlertDialog.setShardItemClick(new AdapterView.OnItemClickListener() {
             @Override

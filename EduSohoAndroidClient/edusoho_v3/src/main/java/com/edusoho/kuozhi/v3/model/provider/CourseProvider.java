@@ -4,10 +4,15 @@ import android.content.Context;
 
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by su on 2015/12/22.
@@ -18,11 +23,53 @@ public class CourseProvider extends ModelProvider {
         super(context);
     }
 
+    public ProviderListener createThread(
+            int targetId, int lessonId, String targetType, String threadType, String type, String title, String content) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
+        String token = tokenMap.get("token").toString();
+        RequestUrl requestUrl = new RequestUrl(school.host + Const.CREATE_THREAD);
+        requestUrl.heads.put("X-Auth-Token", token);
+        requestUrl.setParams(new String[] {
+                "threadType", threadType,
+                "type" , type,
+                "title" , title,
+                "content", content
+        });
+
+        if ("course".equals(threadType)) {
+            requestUrl.getParams().put("courseId", String.valueOf(targetId));
+            if (lessonId != 0) {
+                requestUrl.getParams().put("lessonId", String.valueOf(lessonId));
+            }
+        } else if ("common".equals(threadType)) {
+            requestUrl.getParams().put("targetId", String.valueOf(targetId));
+            requestUrl.getParams().put("targetType", targetType);
+        }
+        RequestOption requestOption = buildSimplePostRequest(
+                requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
+    }
+
     public ProviderListener getCourse(RequestUrl requestUrl) {
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<CourseDetailsResult>(){});
 
         requestOption.getRequest().setCacheUseMode(BaseVolleyRequest.ALWAYS_USE_CACHE);
         return requestOption.build();
+    }
+
+    public ProviderListener getCourse(int courseId) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
+        String token = tokenMap.get("token").toString();
+
+        RequestUrl requestUrl = null;
+        requestUrl = new RequestUrl(school.url + String.format("/" +
+                "%s?courseId=%d", Const.COURSE, courseId));
+        requestUrl.heads.put("token", token);
+
+        return getCourse(requestUrl);
     }
 }

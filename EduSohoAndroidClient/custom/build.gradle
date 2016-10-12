@@ -25,7 +25,11 @@ android {
         zhongheedu {
             signingConfig signingConfigs.debugConfig
             applicationId "com.edusoho.zhongheedu"
-            manifestPlaceholders = [wxpkg: "com.edusoho.zhongheedu", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+            manifestPlaceholders = [wxpkg: "com.edusoho.zhongheedu", startActivity: "com.edusoho.kuozhi.CustomStartActivity"]
+            minSdkVersion 16
+            targetSdkVersion 22
+            versionCode 37
+            versionName '3.5.1'
         }
     }
 
@@ -52,8 +56,4 @@ android {
 dependencies {
     compile project(':edusoho_v3')
     compile project(':homework')
-}
-
-task newcustom (type: Copy) {
-    println "qweqweqwe"
 }

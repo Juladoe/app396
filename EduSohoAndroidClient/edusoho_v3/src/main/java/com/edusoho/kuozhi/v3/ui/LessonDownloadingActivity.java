@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -36,6 +37,7 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -150,7 +152,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 LessonItem lessonItem = mAdapter.getChild(groupPosition, childPosition);
-                lessonItem.isSelected = ! lessonItem.isSelected;
+                lessonItem.isSelected = !lessonItem.isSelected;
                 mAdapter.notifyDataSetChanged();
                 return false;
             }
@@ -326,7 +328,11 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 //非章、非节，删除
                 if (!lessonItem.itemType.toUpperCase().equals(LessonItem.ItemType.CHAPTER.toString())) {
                     lessonItemIterator.remove();
+                    continue;
                 }
+            }
+            if (lessonItem.uploadFile != null && "local".equals(lessonItem.uploadFile.storage)) {
+                lessonItemIterator.remove();
             }
         }
     }

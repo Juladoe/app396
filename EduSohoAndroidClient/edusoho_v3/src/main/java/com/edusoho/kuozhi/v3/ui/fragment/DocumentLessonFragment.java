@@ -1,10 +1,13 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
+
 import android.os.Handler;
 import android.os.Message;
+import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.TextLessonFragment;
 
@@ -19,7 +22,7 @@ public class DocumentLessonFragment extends TextLessonFragment {
 
     @Override
     protected void initWorkHandler() {
-        webViewHandler = new Handler(){
+        webViewHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
@@ -35,20 +38,25 @@ public class DocumentLessonFragment extends TextLessonFragment {
     }
 
     @Override
+    protected void initView(View view) {
+        mLessonWebview = (WebView) view.findViewById(R.id.lesson_webview);
+        initWebViewSetting(mLessonWebview);
+        mLessonWebview.loadUrl(mContent);
+    }
+
+    @Override
     protected void initWebViewSetting(WebView webView) {
         super.initWebViewSetting(webView);
         webView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
     }
 
-    private void normalScreen()
-    {
+    private void normalScreen() {
         mIsFullScreen = false;
         app.sendMsgToTarget(LessonActivity.SHOW_TOOLS, null, LessonActivity.class);
         mActivity.showActionBar();
     }
 
-    private void fullScreen()
-    {
+    private void fullScreen() {
         mIsFullScreen = true;
         app.sendMsgToTarget(LessonActivity.HIDE_TOOLS, null, LessonActivity.class);
         mActivity.hideActionBar();

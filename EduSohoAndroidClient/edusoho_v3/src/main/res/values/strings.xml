@@ -22,7 +22,7 @@
     <string name="login_success">登录成功</string>
     <string name="register">注册</string>
     <string name="register_loading">正在注册...</string>
-    <string name="register_success">正在成功</string>
+    <string name="register_success">注册成功</string>
     <string name="course_study_entrance">进入学习</string>
     <string name="study">学习</string>
     <string name="discuss">讨论</string>
@@ -97,6 +97,8 @@
     <string name="school_info_error">"无法获取网校信息"</string>
     <string name="lesson_default_title">课程简介</string>
     <string name="course_params_error">课程参数不正确</string>
+    <string name="player_exit_dialog_title">提醒</string>
+    <string name="player_exit_dialog_msg">是否退出播放</string>
 
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>
@@ -115,9 +117,9 @@
     <string name="font_mine_pressed">&#xe64b;</string>
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
-    <string name="font_downloading">下载中</string>
-    <string name="font_stop_downloading">已暂停</string>
-    <string name="font_wait_downloading">等待中</string>
+    <string name="font_downloading">&#xe614;</string>
+    <string name="font_stop_downloading">&#xe612;</string>
+    <string name="font_wait_downloading">&#xe60f;</string>
     <string name="font_download_select">&#xe610;</string>
     <string name="font_download_unselect">&#xe613;</string>
     <string name="font_less">&#xe625;</string>

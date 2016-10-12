@@ -24,10 +24,10 @@ import java.util.ArrayList;
 
 public class SqliteUtil extends SQLiteOpenHelper {
 
-    private static final int dbVersion = 10;
-    private static final int oldVersion = 9;
+    private static final int dbVersion = 11;
+    private static final int oldVersion = 10;
     private static SqliteUtil instance;
-    private static String[] INIT_SQLS = {"db_init_m3u8.sql", "db_init_lesson_resource.sql", "db_init_chat.sql", "db_int_audio_cache.sql"};
+    private static String[] INIT_SQLS = {"db_init_m3u8.sql", "db_init_lesson_resource.sql", "db_init_chat.sql", "db_int_audio_cache.sql", "db_init_donwload_item.sql"};
     private Context mContext;
 
     private SqliteUtil(Context context, String name, CursorFactory factory) {

@@ -25,6 +25,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
     private final static String TAG = "WebViewActivity";
     public final static int CLOSE = 0x01;
     public final static int BACK = 0x02;
+    public final static String SEND_EVENT = "send_event";
 
     private String url = "";
     private ESWebView mWebView;
@@ -64,6 +65,11 @@ public class WebViewActivity extends ActionBarBaseActivity {
         processMessage(message);
         MessageType messageType = message.type;
 
+        if (SEND_EVENT.equals(messageType.type)) {
+            Bundle bundle = message.data;
+            String eventName = bundle.getString("event");
+            mWebView.getWebView().execJsScript(String.format("jsBridgeAdapter.sendEvent('%s')", eventName));
+        }
         if (ESWebView.MAIN_UPDATE.equals(messageType.type)) {
             runOnUiThread(new Runnable() {
                 @Override
@@ -78,6 +84,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
                 saveMessage(message);
                 return;
             }
+
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -129,7 +136,8 @@ public class WebViewActivity extends ActionBarBaseActivity {
                 new MessageType(Const.TOKEN_LOSE),
                 new MessageType(Const.LOGIN_SUCCESS),
                 new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS),
-                new MessageType(ESWebView.MAIN_UPDATE),
+                new MessageType(SEND_EVENT),
+                new MessageType(ESWebView.MAIN_UPDATE)
         };
         return messageTypes;
     }
@@ -149,7 +157,6 @@ public class WebViewActivity extends ActionBarBaseActivity {
     private void destoryWebView() {
         if (mWebView != null) {
             mWebView.destroy();
-            mWebView = null;
         }
     }
 

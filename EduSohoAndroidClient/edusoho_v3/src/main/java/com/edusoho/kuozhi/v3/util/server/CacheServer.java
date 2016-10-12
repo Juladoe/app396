@@ -25,18 +25,22 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import cn.trinea.android.common.util.ToastUtils;
+
 public class
 CacheServer extends Thread {
 
     public static final String TAG = "CacheServer";
     private int port = Const.CACHE_PROT;
     private boolean isLoop;
+    private boolean isPause;
     private ActionBarBaseActivity mActivity;
     private ServerSocket mServerSocket;
     private HttpRequestHandlerRegistry mHttpRequestHandlerRegistry;
     private ArrayList<Thread> mThreadList;
 
     public CacheServer(ActionBarBaseActivity activity) {
+        this.port = Const.CACHE_PROT;
         this.mActivity = activity;
         this.mThreadList = new ArrayList<>();
         // 创建HTTP请求执行器注册表
@@ -104,7 +108,10 @@ CacheServer extends Thread {
             isLoop = true;
             while (isLoop && !Thread.interrupted()) {
                 // 接收客户端套接字
-                Log.d(TAG, "serverSocket.accept");
+                Log.d(TAG, "serverSocket.accept pause:" + isPause);
+                if (isPause) {
+                    continue;
+                }
                 Socket socket = mServerSocket.accept();
                 // 绑定至服务器端HTTP连接
                 DefaultHttpServerConnection conn = new DefaultHttpServerConnection();
@@ -117,6 +124,7 @@ CacheServer extends Thread {
                 Log.d(TAG, "WorkThread Start");
             }
         } catch (IOException e) {
+            ToastUtils.show(mActivity.getBaseContext(), "离线缓存加载失败!");
             isLoop = false;
         } finally {
             try {
@@ -128,6 +136,14 @@ CacheServer extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void pause() {
+        isPause = true;
+    }
+
+    public void keepOn() {
+        isPause = false;
     }
 
     public void close() {

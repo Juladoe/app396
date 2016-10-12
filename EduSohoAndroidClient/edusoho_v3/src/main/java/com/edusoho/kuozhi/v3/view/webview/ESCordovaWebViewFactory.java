@@ -22,14 +22,14 @@ public class ESCordovaWebViewFactory {
         mCacheQueue = new ArrayDeque<AbstractJsBridgeAdapterWebView>();
     }
 
-    public static void init(BaseActivity activity) {
-        JsBridgeAdapter.getInstance().init(activity.getBaseContext());
+    public static void init() {
+        JsBridgeAdapter.getInstance().init();
         factory = new ESCordovaWebViewFactory();
     }
 
     public static ESCordovaWebViewFactory getFactory() {
         if (factory == null) {
-            init(null);
+            init();
         }
         return factory;
     }

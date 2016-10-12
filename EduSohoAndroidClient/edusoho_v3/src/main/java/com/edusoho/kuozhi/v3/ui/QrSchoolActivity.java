@@ -12,11 +12,9 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.listener.SwitchNetSchoolListener;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -121,46 +119,13 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                 });
             }
             SchoolSplashActivity.start(mActivity.getBaseContext(), schoolName, splashs);
-
             mActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             mActivity.finish();
         }
 
-        protected void startSchoolActivity(School site)  {
+        protected void startSchoolActivity(School site) {
             mLoading.dismiss();
             showSchSplash(site.name, site.splashs);
-        }
-
-        protected void bindApiToken(final UserResult userResult) {
-            RequestUrl requestUrl = mApp.bindNewUrl(Const.GET_API_TOKEN, false);
-            mApp.getUrl(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    Token token = mActivity.parseJsonValue(response, new TypeToken<Token>() {
-                    });
-                    if (token != null) {
-                        final School site = userResult.site;
-                        mApp.saveApiToken(token.token);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Const.BIND_USER_ID, userResult.user == null ? "" : userResult.user.id + "");
-                        bundle.putSerializable(Const.SHOW_SCH_SPLASH, new SwitchNetSchoolListener() {
-                            @Override
-                            public void showSplash() {
-                                startSchoolActivity(site);
-                            }
-                        });
-                        mApp.pushRegister(bundle);
-                        if (userResult.user == null) {
-                            startSchoolActivity(site);
-                        }
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    CommonUtil.longToast(mActivity.getBaseContext(), "获取网校信息失败");
-                }
-            });
         }
 
         public void change(String url) {
@@ -200,7 +165,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
                         SqliteChatUtil.getSqliteChatUtil(mActivity.getBaseContext(), mApp.domain).close();
                         mApp.registDevice(null);
 
-                        bindApiToken(userResult);
+                        startSchoolActivity(site);
 
                     } catch (Exception e) {
                         mLoading.dismiss();

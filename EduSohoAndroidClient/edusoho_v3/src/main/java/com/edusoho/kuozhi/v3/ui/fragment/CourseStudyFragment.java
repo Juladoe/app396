@@ -10,10 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -30,6 +28,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.ThreadCreateActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -37,9 +36,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -461,11 +458,12 @@ public class CourseStudyFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.float_button) {
-            app.mEngine.runNormalPlugin("ThreadDiscussActivity", mActivity, new PluginRunCallback() {
+            app.mEngine.runNormalPlugin("ThreadCreateActivity", mActivity, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, mCourseId);
-                    startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
+                    startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mCourseId);
+                    startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, "course");
+                    startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, "course");
                 }
             });
         }

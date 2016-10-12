@@ -173,6 +173,9 @@ public class RegisterActivity extends ActionBarBaseActivity {
             if (TextUtils.isEmpty(strPass)) {
                 CommonUtil.longToast(mContext, "请输入密码");
                 return;
+            } else if (strPass.length() > 20) {
+                CommonUtil.longToast(mContext, "密码的长度必须小于或等于20");
+                return;
             }
             params.put("password", strPass);
 
@@ -209,7 +212,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                                 }
                             }, 500);
                         } else {
-                            btnMailReg.setInitState();
+                            btnPhoneReg.setInitState();
                             if (!TextUtils.isEmpty(response)) {
                                 CommonUtil.longToast(mContext, response);
                             } else {
@@ -224,7 +227,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data).toString());
+                    Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data));
                     btnPhoneReg.setInitState();
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
@@ -248,6 +251,9 @@ public class RegisterActivity extends ActionBarBaseActivity {
             String strPass = etMailPass.getText().toString();
             if (TextUtils.isEmpty(strPass)) {
                 CommonUtil.longToast(mContext, "请输入密码");
+                return;
+            } else if (strPass.length() > 20) {
+                CommonUtil.longToast(mContext, "密码的长度必须小于或等于20");
                 return;
             }
             if (strPass.length() < 5) {

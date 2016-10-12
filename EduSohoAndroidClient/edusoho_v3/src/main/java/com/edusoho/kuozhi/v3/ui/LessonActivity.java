@@ -17,12 +17,12 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
-import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -33,13 +33,13 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
-import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
+import com.plugin.edusoho.bdvideoplayer.StreamInfo;
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -74,6 +74,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String mTitle;
     private int[] mLessonIds;
     private LessonStatus mLessonStatus;
+    private StreamInfo[] streamInfos;
     private Bundle fragmentData;
     private boolean mFromCache;
     private MsgHandler msgHandler;
@@ -198,10 +199,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
                 }
             }
-        }, null);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        });
     }
 
-    private void changeLessonStatus(boolean isLearn) {
+    public void changeLessonStatus(boolean isLearn) {
         mLearnBtn.setEnabled(false);
         RequestUrl requestUrl = app.bindUrl(
                 isLearn ? Const.LEARN_LESSON : Const.UNLEARN_LESSON, true);
@@ -262,12 +267,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         mThreadBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                app.mEngine.runNormalPlugin("ThreadDiscussActivity", mActivity, new PluginRunCallback() {
+                app.mEngine.runNormalPlugin("ThreadCreateActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, mCourseId);
-                        startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, mLessonId);
-                        startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD);
+                        startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mCourseId);
+                        startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, "course");
+                        startIntent.putExtra(ThreadCreateActivity.LESSON_ID, mLessonId);
+                        startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, "course");
                     }
                 });
             }
@@ -339,10 +345,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem menuItem = menu.findItem(R.id.menu_homework);
-        if (mLessonType != null){
-            if (mLessonType.equals("testpaper")){
+        if (mLessonType != null) {
+            if (mLessonType.equals("testpaper")) {
                 menuItem.setVisible(false);
-            }else {
+            } else {
                 menuItem.setVisible(true);
             }
         }
@@ -389,12 +395,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private void loadLessonFromNet() {
         final LoadDialog loadDialog = LoadDialog.create(this);
         loadDialog.show();
-        RequestUrl requestUrl = EdusohoApp.app.bindUrl(Const.COURSELESSON, true);
-        requestUrl.setParams(new String[]{
-                "courseId", String.valueOf(mCourseId),
-                "lessonId", String.valueOf(mLessonId)
-        });
-        ajaxPost(requestUrl, new Response.Listener<String>() {
+        RequestUrl requestUrl = app.bindNewUrl(String.format(Const.LESSON, mLessonId), true);
+        ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 loadDialog.dismiss();
@@ -451,10 +453,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String getLocalIpAddress() {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface
-                    .getNetworkInterfaces(); en.hasMoreElements();) {
+                    .getNetworkInterfaces(); en.hasMoreElements(); ) {
                 NetworkInterface intf = en.nextElement();
                 for (Enumeration<InetAddress> enumIpAddr = intf
-                        .getInetAddresses(); enumIpAddr.hasMoreElements();) {
+                        .getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()) {
                         return inetAddress.getHostAddress().toString();
@@ -474,6 +476,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (lessonItem == null) {
             return null;
         }
+
         CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
         switch (courseLessonType) {
             case LIVE:
@@ -486,9 +489,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(LiveLessonFragment.REPLAYSTATUS, lessonItem.replayStatus);
                 return lessonItem;
             case PPT:
-                LessonItem<ArrayList<String>> pptLesson = lessonItem;
+                LessonItem<LinkedHashMap<String, ArrayList<String>>> pptLesson = lessonItem;
                 fragmentData.putString(Const.LESSON_TYPE, "ppt");
-                fragmentData.putStringArrayList(CONTENT, pptLesson.content);
+                ArrayList<String> pptContent = pptLesson.content.get("resource");
+                fragmentData.putStringArrayList(CONTENT, pptContent);
                 return pptLesson;
             case TESTPAPER:
                 LessonItem<LinkedHashMap> testpaperLesson = lessonItem;
@@ -502,7 +506,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putInt(Const.LESSON_ID, testpaperLesson.id);
                 fragmentData.putString(Const.ACTIONBAR_TITLE, testpaperLesson.title);
                 return testpaperLesson;
+            case DOCUMENT:
+                LessonItem<LinkedHashMap<String, String>> documentLessonItem = lessonItem;
+                fragmentData.putString(Const.LESSON_TYPE, courseLessonType.name());
+                fragmentData.putString(CONTENT, documentLessonItem.content.get("previewUrl"));
+                return documentLessonItem;
             case VIDEO:
+                fragmentData.putSerializable(Const.STREAM_URL, streamInfos);
             case AUDIO:
             case TEXT:
             default:
@@ -523,7 +533,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                             return null;
                         }
                     } else {
-                        String ip = getLocalIpAddress();
                         normalLesson.mediaUri = String.format("http://%s:8800/playlist/%d.m3u8", "localhost", mLessonId);
                     }
                 }
@@ -537,6 +546,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     fragmentData.putString(Const.MEDIA_SOURCE, normalLesson.mediaSource);
                     fragmentData.putInt(Const.LESSON_ID, normalLesson.id);
                     fragmentData.putInt(Const.COURSE_ID, normalLesson.courseId);
+                    fragmentData.putString(Const.LESSON_NAME, normalLesson.title);
+                    fragmentData.putString(Const.VIDEO_TYPE, normalLesson.mediaStorage);
+                    fragmentData.putString(Const.CLOUD_VIDEO_CONVERT_STATUS, normalLesson.mediaConvertStatus);
                 }
                 return normalLesson;
         }
@@ -605,11 +617,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    }
+        app.stopPlayCacheServer();
 
-    private boolean getM3U8Cache(int lessonId) {
-        M3U8DbModel model = M3U8Util.queryM3U8Model(mContext, app.loginUser.id, lessonId, app.domain, M3U8Util.FINISH);
-        return model != null;
+        Bundle bundle = new Bundle();
+        bundle.putString("event", "lessonStatusRefresh");
+        MessageEngine.getInstance().sendMsg(WebViewActivity.SEND_EVENT, bundle);
     }
 
     public static class MsgHandler extends Handler {
@@ -640,7 +652,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private void showToolsByAnim() {
         mToolsLayout.measure(0, 0);
         int height = mToolsLayout.getMeasuredHeight();
-        Log.d(null, "height->" + height);
         AppUtil.animForHeight(
                 new EduSohoAnimWrap(mToolsLayout), 0, height, 480);
     }
@@ -656,5 +667,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (mPluginDialog != null && mPluginDialog.isShowing()) {
             mPluginDialog.dismiss();
         }
+        app.resumePlayCacheServer();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        app.pausePlayCacheServer();
     }
 }

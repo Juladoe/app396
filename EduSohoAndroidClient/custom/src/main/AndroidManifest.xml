@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.edusoho"
-    android:versionCode="35"
-    android:versionName="3.4.3">
+          package="com.edusoho">
 
     <application
         android:name="com.edusoho.kuozhi.v3.EdusohoApp"
@@ -16,8 +14,8 @@
             android:label="@string/app_name"
             android:theme="@style/kuozhiV2StartTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
@@ -26,24 +24,23 @@
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme" />
-
+            android:theme="@style/SplashTheme"/>
 
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="550f8dacfd98c56a3200084f" />
+            android:value="550f8dacfd98c56a3200084f"/>
 
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="Official" />
+            android:value="Official"/>
 
         <!-- custom weixin login -->
         <activity
             android:name="${wxpkg}.wxapi.WXEntryActivity"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:exported="true" />
+            android:exported="true"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
     </application>
 

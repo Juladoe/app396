@@ -22,10 +22,12 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.plugin.appview.CourseConsultAction;
+import com.edusoho.kuozhi.v3.plugin.appview.SooonerLivePlayerAction;
+import com.edusoho.kuozhi.v3.plugin.appview.ThreadCreateAction;
+import com.edusoho.kuozhi.v3.plugin.appview.ThreadDiscussAction;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
-import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
@@ -34,7 +36,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.MultipartRequest;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.annotations.JsAnnotation;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
@@ -45,7 +46,6 @@ import com.edusoho.kuozhi.v3.view.webview.ESWebChromeClient;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BaseBridgePlugin;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgeCallback;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
-import com.edusoho.liveplayer.LiveUtil;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -53,7 +53,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -218,13 +217,13 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     }
 
     @JsAnnotation
-    public void openPlatformLogin(JSONArray args, BridgeCallback callbackContext) throws JSONException {
+    public void openPlatformLogin(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
         String type = args.getString(0);
         final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mContext);
         openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
             @Override
             public void success(UserResult obj) {
-                mActivity.finish();
+                mPluginContext.getActivity().finish();
             }
         });
         openLoginUtil.login(type).then(new PromiseCallback<String[]>() {
@@ -448,43 +447,13 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         if ("Fragment".equals(type)) {
             mActivity.app.mEngine.runPluginWithFragmentByBundle(name + "Fragment", mActivity, bundle);
         } else if ("courseConsult".equals(name)) {
-            RequestUrl requestUrl = mActivity.app.bindUrl(Const.USERINFO, false);
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("userId", bundle.getString("userId"));
-            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    User user = mActivity.parseJsonValue(response, new TypeToken<User>() {
-                    });
-                    if (user != null) {
-                        bundle.putString(Const.ACTIONBAR_TITLE, user.nickname);
-                        bundle.putInt(ChatActivity.FROM_ID, user.id);
-                        bundle.putString(ChatActivity.HEAD_IMAGE_URL, user.mediumAvatar);
-                        bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.TEACHER);
-                        mActivity.app.mEngine.runNormalPluginWithBundle("ChatActivity", mActivity, bundle);
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    CommonUtil.shortToast(mContext, "无法获取教师信息");
-                }
-            });
+            new CourseConsultAction(mActivity).invoke(bundle);
         } else if ("threadDiscuss".equals(name)) {
-            mActivity.app.mEngine.runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(ThreadDiscussActivity.COURSE_ID, Integer.valueOf(bundle.getString("courseId")));
-                    startIntent.putExtra(ThreadDiscussActivity.LESSON_ID, Integer.valueOf(bundle.getString("lessonId")));
-                    startIntent.putExtra(ThreadDiscussActivity.THREAD_ID, Integer.valueOf(bundle.getString("threadId")));
-                    startIntent.putExtra(ThreadDiscussActivity.ACTIVITY_TYPE, PushUtil.ThreadMsgType.THREAD_POST);
-                }
-            });
+            new ThreadDiscussAction(mActivity).invoke(bundle);
         } else if ("sooonerLivePlayer".equals(name)) {
-            String liveClassroomId = bundle.getString("liveClassroomId");
-            String exStr = bundle.getString("exStr");
-            boolean replayState = bundle.getBoolean("replayState");
-            new LiveUtil(mActivity).startLiveActivity(liveClassroomId, exStr, replayState);
+            new SooonerLivePlayerAction(mActivity).invoke(bundle);
+        } else if ("threadCreate".equals(name)) {
+            new ThreadCreateAction(mActivity).invoke(bundle);
         }
     }
 
