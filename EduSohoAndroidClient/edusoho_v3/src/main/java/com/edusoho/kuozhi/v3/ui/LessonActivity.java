@@ -312,6 +312,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         Resources resources = getResources();
         switch (learnStatus) {
             case learning:
+                mLearnBtn.setEnabled(true);
                 mLearnBtn.setTag(true);
                 mLearnBtn.setIcon(R.string.learning_status);
                 mLearnBtn.setTextColor(resources.getColor(R.color.lesson_learn_btn_normal));
