@@ -19,29 +19,21 @@ android {
             keyAlias "cn"
             keyPassword "10001000"
         }
-
-
     }
 
     productFlavors {
-
         zhongheedu {
             signingConfig signingConfigs.debugConfig
-
             applicationId "com.edusoho.zhongheedu"
             manifestPlaceholders = [wxpkg: "com.edusoho.zhongheedu", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
-
         }
     }
 
     sourceSets {
-
-
         zhongheedu {
             java.srcDirs = ['src/zhongheedu/java']
             res.srcDirs = ['src/zhongheedu/res']
             assets.srcDirs = ['src/zhongheedu/assets']
-
         }
     }
 
@@ -51,6 +43,9 @@ android {
             minifyEnabled false
             signingConfig signingConfigs.debugConfig
         }
+    }
+    lintOptions {
+        abortOnError false
     }
 }
 
