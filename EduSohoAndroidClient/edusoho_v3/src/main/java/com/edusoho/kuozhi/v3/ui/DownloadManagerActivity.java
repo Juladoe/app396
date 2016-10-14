@@ -300,10 +300,10 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
                 }
             });
 
-            model.m3U8DbModles = M3U8Util.getM3U8ModelList(
+            model.m3U8DbModels = M3U8Util.getM3U8ModelList(
                     mContext, ids, app.loginUser.id, this.host, isFinish);
             for (LessonItem lessonItem : lessonItems) {
-                if (model.m3U8DbModles.indexOfKey(lessonItem.id) < 0) {
+                if (model.m3U8DbModels.indexOfKey(lessonItem.id) < 0) {
                     continue;
                 }
                 if (!model.mLocalLessons.containsKey(lessonItem.courseId)) {
@@ -319,7 +319,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
                 }
             }
 
-            filterLessons(isFinish, lessonItems, model.m3U8DbModles);
+            filterLessons(isFinish, lessonItems, model.m3U8DbModels);
         } else {
             model.mLocalCourses.clear();
             model.mLocalLessons.clear();
@@ -462,7 +462,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
 
     public class LocalCourseModel {
         public ArrayList<Course> mLocalCourses;
-        public SparseArray<M3U8DbModel> m3U8DbModles;
+        public SparseArray<M3U8DbModel> m3U8DbModels;
         public HashMap<Integer, ArrayList<LessonItem>> mLocalLessons;
 
         public LocalCourseModel() {
