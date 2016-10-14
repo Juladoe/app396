@@ -44,7 +44,7 @@ public class LessonProvider extends ModelProvider {
         String token = tokenMap.get("token").toString();
 
         RequestUrl requestUrl = new RequestUrl(
-                "http://124.160.104.76:10007/live?roomNo=dc7c48429a3a67ad2571e96ae5bae0c0&role=organizer&token=or5800415b62fca&nickName=%E5%92%8C%E5%B9%B3%E7%BB%B4%E6%8A%A4%E8%80%85&uid=66666&k=1476412387bf77632cf9fb1b8a9dcf25&extrRole=support&flashDebug=1&debug=1");
+                "http://124.160.104.76:10007/live?roomNo=680d66db19640579b872bedfaf3c5abe&role=organizer&token=or580065fcb1968&nickName=%E5%92%8C%E5%B9%B3%E7%BB%B4%E6%8A%A4%E8%80%85&uid=66666&k=1476421758ce1f1c78c644912d6f9b83&extrRole=support&flashDebug=1&debug=1");
         requestUrl.heads.put("Auth-Token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(

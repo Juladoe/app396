@@ -77,6 +77,7 @@ public abstract class AbstractChatSendFragment extends BaseFragment {
             }
             SendEntity sendEntity = SendEntityBuildr.getBuilder()
                     .addToId(toId)
+                    .addCmd("send")
                     .addMsg(messageBody.toJson())
                     .builder();
             IMClient.getClient().getChatRoom(convNo).send(sendEntity);

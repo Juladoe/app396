@@ -65,8 +65,9 @@ public class LiveChatDataProvider implements IMessageDataProvider {
         try {
             String toId = "all";
             messageBody.setMsgStatus(MessageEntity.StatusType.NONE);
-            SendEntity sendEntity = SendEntityBuildr.getBuilder()∂
+            SendEntity sendEntity = SendEntityBuildr.getBuilder()
                     .addToId(toId)
+                    .addCmd("flashSend")
                     .addMsg(wrapLiveMessageBody(messageBody))
                     .builder();
             sendToServer(convNo, sendEntity);

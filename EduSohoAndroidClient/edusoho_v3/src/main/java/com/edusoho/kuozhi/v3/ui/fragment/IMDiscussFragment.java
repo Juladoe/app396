@@ -508,6 +508,7 @@ public class IMDiscussFragment extends BaseFragment implements
             }
             SendEntity sendEntity = SendEntityBuildr.getBuilder()
                     .addToId(toId)
+                    .addCmd("send")
                     .addMsg(messageBody.toJson())
                     .builder();
             IMClient.getClient().getChatRoom(mConversationNo).send(sendEntity);
