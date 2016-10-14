@@ -33,6 +33,11 @@ public class SendEntityBuildr {
         return this;
     }
 
+    public SendEntityBuildr addCmd(String cmd) {
+        sendEntity.setCmd(cmd);
+        return this;
+    }
+
     public SendEntity builder() {
         return sendEntity;
     }
