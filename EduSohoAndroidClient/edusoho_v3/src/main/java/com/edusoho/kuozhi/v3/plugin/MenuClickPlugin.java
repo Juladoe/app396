@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.v3.plugin.appview.ThreadCreateAction;
 import com.edusoho.kuozhi.v3.plugin.appview.ThreadDiscussAction;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
+import com.edusoho.kuozhi.v3.ui.LessonLivePlayerActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -457,7 +458,10 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
         } else if ("threadDiscuss".equals(name)) {
             new ThreadDiscussAction(mActivity).invoke(bundle);
         } else if ("sooonerLivePlayer".equals(name)) {
-            new SooonerLivePlayerAction(mActivity).invoke(bundle);
+            Intent intent = new Intent(mActivity, LessonLivePlayerActivity.class);
+            intent.putExtras(bundle);
+            mActivity.startActivity(intent);
+            //new SooonerLivePlayerAction(mActivity).invoke(bundle);
         } else if ("threadCreate".equals(name)) {
             new ThreadCreateAction(mActivity).invoke(bundle);
         }

@@ -63,7 +63,7 @@ public class AvatarLoadingListener implements ImageLoadingListener {
             case PushUtil.ChatUserType.NEWS:
                 imageView.setBackgroundColor(imageView.getContext().getResources().getColor(R.color.normal_reply_tag));
                 imageView.setPadding(16, 16, 16, 16);
-                imageView.setImageResource(R.drawable.article_app_icon);
+                imageView.setImageResource(R.drawable.icon_live_notice);
                 return;
 
         }

@@ -29,6 +29,7 @@ import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
@@ -325,6 +326,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
                                             IMessageDataProvider mIMessageDataProvider,
                                             IMessageListView messageListView) {
             super(params, convManager, roleManager, messageResourceHelper, mIMessageDataProvider, messageListView);
+            setClientInfo(IMClient.getClient().getClientId(), IMClient.getClient().getClientName());
         }
 
         @Override

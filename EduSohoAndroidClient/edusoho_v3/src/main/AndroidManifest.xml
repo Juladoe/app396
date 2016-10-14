@@ -207,6 +207,13 @@
             android:name=".v3.ui.friend.SearchFriendActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:name=".v3.ui.LessonLivePlayerActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".v3.ui.payCourse.PayCourseActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -254,6 +261,14 @@
             android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+
+        <service
+            android:name=".imserver.ImService">
+            <intent-filter>
+                <!--  指定调用AIDL服务的ID  -->
+                <action android:name="com.edusoho.kuozhi.liveimserver.IImServerAidlInterface"/>
+            </intent-filter>
+        </service>
 
     </application>
 
