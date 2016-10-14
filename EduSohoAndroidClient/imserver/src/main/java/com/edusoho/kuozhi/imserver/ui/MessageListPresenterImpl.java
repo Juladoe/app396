@@ -32,6 +32,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -49,12 +50,14 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     private int mTargetId;
     private String mTargetType;
     private Role mTargetRole;
+    private int mClientId;
+    private String mClientName;
 
     private IMConvManager mIMConvManager;
     private IMRoleManager mIMRoleManager;
     private MessageResourceHelper mMessageResourceHelper;
-    private IMMessageReceiver mIMMessageReceiver;
-    private IMessageListView mIMessageListView;
+    protected IMMessageReceiver mIMMessageReceiver;
+    protected IMessageListView mIMessageListView;
     private IMessageDataProvider mIMessageDataProvider;
     private MessageControllerListener mMessageControllerListener;
 
@@ -98,11 +101,17 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         sendMessageToServer(messageBody);
     }
 
+    public void setClientInfo(int clientId, String clientName) {
+        this.mClientId = clientId;
+        this.mClientName = clientName;
+    }
 
     @Override
     public void refresh() {
         mStart = 0;
-        mIMessageListView.setMessageList(mIMessageDataProvider.getMessageList(mConversationNo, mStart));
+        List<MessageEntity> messageEntityList = mIMessageDataProvider.getMessageList(mConversationNo, mStart);
+        coverMessageEntityStatus(messageEntityList);
+        mIMessageListView.setMessageList(messageEntityList);
     }
 
     @Override
@@ -147,7 +156,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
                 break;
             case PushUtil.ChatMsgType.AUDIO:
                 messageEntity.setUid(messageBody.getMessageId());
-                if (IMClient.getClient().getClientId() == messageBody.getSource().getId()) {
+                if (mClientId == messageBody.getSource().getId()) {
                     sendAudioMessageAgain(messageEntity);
                     return;
                 }
@@ -156,7 +165,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
                 break;
             case PushUtil.ChatMsgType.IMAGE:
                 messageEntity.setUid(messageBody.getMessageId());
-                if (IMClient.getClient().getClientId() == messageBody.getSource().getId()) {
+                if (mClientId == messageBody.getSource().getId()) {
                     sendImageMediaMessageAgain(messageEntity);
                     return;
                 }
@@ -168,7 +177,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         this.mMessageControllerListener = listener;
     }
 
-    private void coverMessageEntityStatus(List<MessageEntity> messageEntityList) {
+    protected void coverMessageEntityStatus(List<MessageEntity> messageEntityList) {
         for (MessageEntity messageEntity : messageEntityList) {
             if (messageEntity.getStatus() != PushUtil.MsgDeliveryType.SUCCESS
                     && mMessageResourceHelper.hasTask(messageEntity.getId())) {
@@ -278,6 +287,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     @Override
     public void insertMessageList() {
         List<MessageEntity> messageEntityList = loadMessageList();
+        coverMessageEntityStatus(messageEntityList);
         mIMessageListView.insertMessageList(messageEntityList);
     }
 
@@ -375,8 +385,8 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         messageBody.setCreatedTime(System.currentTimeMillis());
         messageBody.setDestination(new Destination(mTargetRole.getRid(), mTargetRole.getType()));
         messageBody.getDestination().setNickname(mTargetRole.getNickname());
-        messageBody.setSource(new Source(IMClient.getClient().getClientId(), Destination.USER));
-        messageBody.getSource().setNickname(IMClient.getClient().getClientName());
+        messageBody.setSource(new Source(mClientId, Destination.USER));
+        messageBody.getSource().setNickname(mClientName);
         messageBody.setConvNo(mConversationNo);
         messageBody.setMessageId(UUID.randomUUID().toString());
 
@@ -422,7 +432,10 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     private void checkTargetRole() {
         if (mTargetRole.getRid() != 0) {
             checkConvEntity(mTargetRole);
-            mIMessageListView.setMessageList(loadMessageList());
+
+            List<MessageEntity> messageEntityList = loadMessageList();
+            coverMessageEntityStatus(messageEntityList);
+            mIMessageListView.setMessageList(messageEntityList);
             return;
         }
         createRole(mTargetType, mTargetId, new RoleUpdateCallback() {
@@ -436,7 +449,10 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
                 mTargetRole = role;
                 mIMRoleManager.createRole(role);
                 checkConvEntity(role);
-                mIMessageListView.setMessageList(loadMessageList());
+
+                List<MessageEntity> messageEntityList = loadMessageList();
+                coverMessageEntityStatus(messageEntityList);
+                mIMessageListView.setMessageList(messageEntityList);
             }
         });
     }
@@ -481,11 +497,19 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         return TextUtils.isEmpty(convNo) || "0".equals(convNo);
     }
 
+    protected boolean messageEntityInFilter(MessageEntity msg) {
+        if (mConversationNo.equals(msg.getConvNo())) {
+            return false;
+        }
+
+        return true;
+    }
+
     protected IMMessageReceiver getIMMessageListener() {
         return new IMMessageReceiver() {
             @Override
             public boolean onReceiver(MessageEntity msg) {
-                if (!mConversationNo.equals(msg.getConvNo())) {
+                if (messageEntityInFilter(msg)) {
                     return true;
                 }
 
@@ -496,6 +520,12 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
 
             @Override
             public boolean onOfflineMsgReceiver(List<MessageEntity> messageEntities) {
+                Iterator<MessageEntity> iterator = messageEntities.iterator();
+                while (iterator.hasNext()) {
+                    if (messageEntityInFilter(iterator.next())) {
+                        iterator.remove();
+                    }
+                }
                 coverMessageEntityStatus(messageEntities);
                 mIMessageListView.insertMessageList(messageEntities);
                 mIMConvManager.clearReadCount(mConversationNo);
@@ -541,14 +571,14 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
 
     @Override
     public void onShowUser(int userId) {
-        Role role = IMClient.getClient().getRoleManager().getRole(Destination.USER, userId);
+        Role role = mIMRoleManager.getRole(Destination.USER, userId);
         role.setRid(userId);
         mMessageControllerListener.onShowUser(role);
     }
 
     @Override
     public void updateRole(String type, int rid) {
-        Role role = IMClient.getClient().getRoleManager().getRole(type, rid);
+        Role role = mIMRoleManager.getRole(type, rid);
         if (role.getRid() != 0) {
             return;
         }

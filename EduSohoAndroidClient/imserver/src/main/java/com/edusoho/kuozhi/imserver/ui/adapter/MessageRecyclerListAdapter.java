@@ -38,8 +38,6 @@ import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.json.JSONException;
@@ -47,7 +45,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -60,14 +57,14 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
     private static final int SEND = 0X01;
     private static final int RECEIVE = 0X02;
 
-    private static final int RECEIVE_TEXT = 0;
-    private static final int SEND_TEXT = 1;
-    private static final int RECEIVE_AUDIO = 2;
-    private static final int SEND_AUDIO = 3;
-    private static final int RECEIVE_IMAGE = 4;
-    private static final int SEND_IMAGE = 5;
-    private static final int RECEIVE_MULTI = 6;
-    private static final int SEND_MULTI = 7;
+    protected static final int RECEIVE_TEXT = 0;
+    protected static final int SEND_TEXT = 1;
+    protected static final int RECEIVE_AUDIO = 2;
+    protected static final int SEND_AUDIO = 3;
+    protected static final int RECEIVE_IMAGE = 4;
+    protected static final int SEND_IMAGE = 5;
+    protected static final int RECEIVE_MULTI = 6;
+    protected static final int SEND_MULTI = 7;
 
     protected static long TIME_INTERVAL = 60 * 5 * 1000;
     protected static final String TAG = "MessageListAdapter";
@@ -196,7 +193,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         return isSend ? SEND_TEXT : RECEIVE_TEXT;
     }
 
-    private MessageViewHolder createViewHolder(int viewType, View contentView) {
+    protected MessageViewHolder createViewHolder(int viewType, View contentView) {
         switch (viewType) {
             case SEND_AUDIO:
             case RECEIVE_AUDIO:
@@ -212,7 +209,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         return new TextViewHolder(contentView);
     }
 
-    class MessageViewHolder extends RecyclerView.ViewHolder {
+    protected class MessageViewHolder extends RecyclerView.ViewHolder {
 
         protected Direct mDirect;
 
@@ -405,35 +402,27 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         switch (type) {
             case SEND_TEXT:
                 contentView = createTextView(true);
-                contentView.setTag(new TextViewHolder(contentView));
                 break;
             case RECEIVE_TEXT:
                 contentView = createTextView(false);
-                contentView.setTag(new TextViewHolder(contentView));
                 break;
             case SEND_AUDIO:
                 contentView = createAudioView(true);
-                contentView.setTag(new AudioViewHolder(contentView));
                 break;
             case RECEIVE_AUDIO:
                 contentView = createAudioView(false);
-                contentView.setTag(new AudioViewHolder(contentView));
                 break;
             case SEND_IMAGE:
                 contentView = createImageView(true);
-                contentView.setTag(new ImageVewHolder(contentView));
                 break;
             case RECEIVE_IMAGE:
                 contentView = createImageView(false);
-                contentView.setTag(new ImageVewHolder(contentView));
                 break;
             case SEND_MULTI:
                 contentView = createMultiView(true);
-                contentView.setTag(new MultiViewHolder(contentView));
                 break;
             case RECEIVE_MULTI:
                 contentView = createMultiView(false);
-                contentView.setTag(new MultiViewHolder(contentView));
                 break;
         }
         return contentView;
@@ -582,7 +571,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         }
     }
 
-    class TextViewHolder extends MessageViewHolder {
+    protected class TextViewHolder extends MessageViewHolder {
 
         public TextView mContentView;
 

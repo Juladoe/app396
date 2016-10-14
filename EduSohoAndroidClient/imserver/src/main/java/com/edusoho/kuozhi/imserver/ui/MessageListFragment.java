@@ -98,12 +98,18 @@ public class MessageListFragment extends Fragment implements
         mMessageListView.setEnabled(isEnable);
     }
 
+    public void setAdapter(MessageRecyclerListAdapter adapter) {
+        this.mListAdapter = adapter;
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Log.d(TAG, "onAttach");
         mContext = activity.getBaseContext();
-        mListAdapter = new MessageRecyclerListAdapter(getActivity().getBaseContext());
+        if (mListAdapter == null) {
+            mListAdapter = new MessageRecyclerListAdapter(getActivity().getBaseContext());
+        }
         mListAdapter.setOnItemClickListener(this);
         mListAdapter.setCurrentId(IMClient.getClient().getClientId());
         mListAdapter.setMessageListItemController(getMessageListItemClickListener());
@@ -555,7 +561,7 @@ public class MessageListFragment extends Fragment implements
             canLoadData = false;
             return;
         }
-        coverMessageEntityStatus(messageEntityList);
+
         mListAdapter.insertList(messageEntityList);
         Message msg = mUpdateHandler.obtainMessage(MESSAGE_SELECT_POSTION);
         msg.arg1 = mStart;
@@ -575,7 +581,7 @@ public class MessageListFragment extends Fragment implements
                 return t2.getTime() - t1.getTime();
             }
         });
-        coverMessageEntityStatus(messageEntityList);
+
         mListAdapter.setList(messageEntityList);
         mStart += messageEntityList.size();
         mUpdateHandler.obtainMessage(MESSAGE_SELECT_LAST).sendToTarget();

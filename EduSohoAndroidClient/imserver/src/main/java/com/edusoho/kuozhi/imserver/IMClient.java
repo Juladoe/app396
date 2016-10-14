@@ -177,7 +177,8 @@ public class IMClient {
         return processName;
     }
 
-    private void connectService(final int clientId, final String clientName, final String[] ignoreNosList, final String[] hostList) {
+    private void connectService(
+            final int clientId, final String clientName, final String[] ignoreNosList, final String[] hostList) {
         if (mServiceConnection != null) {
             mContext.unbindService(mServiceConnection);
         }
@@ -405,7 +406,8 @@ public class IMClient {
         private String[] mHostList;
         private String[] mIgnoreNosList;
 
-        public ConnectIMServiceRunnable(int clientId, String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
+        public ConnectIMServiceRunnable(
+                int clientId, String clientName, ArrayList<String> ignoreNosList, ArrayList<String> hostList) {
             this.mClientId = clientId;
             this.mClientName = clientName;
             this.mHostList = new String[hostList.size()];

@@ -11,6 +11,7 @@ public class SendEntity implements Parcelable {
     private String toId;
     private String convNo;
     private String msg;
+    private String cmd;
 
     public SendEntity() {
     }
@@ -20,6 +21,15 @@ public class SendEntity implements Parcelable {
         this.toId = in.readString();
         this.convNo = in.readString();
         this.msg = in.readString();
+        this.cmd = in.readString();
+    }
+
+    public String getCmd() {
+        return cmd;
+    }
+
+    public void setCmd(String cmd) {
+        this.cmd = cmd;
     }
 
     public String getToId() {
@@ -52,6 +62,7 @@ public class SendEntity implements Parcelable {
         dest.writeString(toId);
         dest.writeString(convNo);
         dest.writeString(msg);
+        dest.writeString(cmd);
     }
 
     @Override
