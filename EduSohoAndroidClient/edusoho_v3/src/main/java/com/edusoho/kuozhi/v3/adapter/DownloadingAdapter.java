@@ -86,6 +86,17 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         return mGroupItems.size();
     }
 
+    public List<LessonItem> getChildrenItemsByCourseId(int courseId) {
+        int index = 0;
+        for (Course course : mGroupItems) {
+            if (course.id == courseId) {
+                break;
+            }
+            index++;
+        }
+        return mChildItems.get(index);
+    }
+
     @Override
     public int getChildrenCount(int groupPosition) {
         return mChildItems.get(groupPosition).size();
