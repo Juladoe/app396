@@ -5,6 +5,8 @@ package com.edusoho.liveplayer;
  */
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -47,6 +50,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private TextView mLiveTitleView;
     private TextView mLiveDescView;
     private Toolbar mToolBar;
+    private ViewGroup mVideoContainer;
     private int mIsLiveStreaming;
 
     @Override
@@ -75,6 +79,26 @@ public class PLVideoViewActivity extends AppCompatActivity {
             @Override
             public void onHidden() {
                 mToolBar.setBackgroundColor(0);
+            }
+        });
+        mMediaController.setOnScreenChangeListener(new MediaController.OnScreenChangeListener() {
+            @Override
+            public void onChange(int orientation) {
+                int currentOrientation = getResources().getConfiguration().orientation;
+                if (orientation == currentOrientation) {
+                    return;
+                }
+                int requestedOrientation = orientation == Configuration.ORIENTATION_PORTRAIT
+                        ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+                setRequestedOrientation(requestedOrientation);
+                ViewGroup.LayoutParams lp = mVideoContainer.getLayoutParams();
+                if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+                    float scale = getResources().getDisplayMetrics().density;
+                    lp.height = (int) (240 * scale + 0.5f);
+                } else  {
+                    lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                }
+                mVideoContainer.setLayoutParams(lp);
             }
         });
         mVideoView.setMediaController(mMediaController);
@@ -126,6 +150,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
         mVideoView = (PLVideoView) findViewById(R.id.VideoView);
+        mVideoContainer = (ViewGroup) findViewById(R.id.fl_live_container);
         mLiveTitleView = (TextView) findViewById(R.id.tv_live_title);
         mLiveDescView = (TextView) findViewById(R.id.tv_live_desc);
         mLiveCoverView = (ImageView) findViewById(R.id.tv_live_cover);

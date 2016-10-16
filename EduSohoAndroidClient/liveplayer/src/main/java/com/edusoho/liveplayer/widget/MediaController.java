@@ -6,6 +6,7 @@ package com.edusoho.liveplayer.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.media.AudioManager;
@@ -20,6 +21,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
@@ -57,10 +60,7 @@ public class MediaController extends FrameLayout implements IMediaController {
     private static final int SHOW_PROGRESS = 2;
     private boolean mFromXml = false;
     private ImageButton mPauseButton;
-    private ImageButton mFfwdButton;
-    private ImageButton mRewButton;
-    private ImageButton mNextButton;
-    private ImageButton mPrevButton;
+    private CheckBox mScreenButton;
 
     private boolean mUseFastForward;
 
@@ -152,6 +152,10 @@ public class MediaController extends FrameLayout implements IMediaController {
             mProgress.setEnabled(!mDisableProgress);
         }
 
+        mScreenButton = (CheckBox) v.findViewById(R.id.cb_controller_screen);
+        if (mScreenButton != null) {
+            mScreenButton.setOnCheckedChangeListener(mScreenCheckedChangeListener);
+        }
         v.setOnTouchListener(mStatusChangeListener);
 
         mEndTime = (TextView) v.findViewById(END_TIME_ID);
@@ -194,6 +198,16 @@ public class MediaController extends FrameLayout implements IMediaController {
      */
     public void setAnimationStyle(int animationStyle) {
         mAnimStyle = animationStyle;
+    }
+
+    private OnScreenChangeListener mOnScreenChangeListener;
+
+    public interface OnScreenChangeListener {
+        void onChange(int orientation);
+    }
+
+    public void setOnScreenChangeListener(OnScreenChangeListener l) {
+        this.mOnScreenChangeListener = l;
     }
 
     public interface OnShownListener {
@@ -349,6 +363,15 @@ public class MediaController extends FrameLayout implements IMediaController {
                 hide();
             }
             return true;
+        }
+    };
+
+    private CompoundButton.OnCheckedChangeListener mScreenCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+            if (mOnScreenChangeListener != null) {
+                mOnScreenChangeListener.onChange(isChecked ? Configuration.ORIENTATION_LANDSCAPE : Configuration.ORIENTATION_PORTRAIT);
+            }
         }
     };
 
@@ -518,11 +541,8 @@ public class MediaController extends FrameLayout implements IMediaController {
         if (mPauseButton != null) {
             mPauseButton.setEnabled(enabled);
         }
-        if (mFfwdButton != null) {
-            mFfwdButton.setEnabled(enabled);
-        }
-        if (mRewButton != null) {
-            mRewButton.setEnabled(enabled);
+        if (mScreenButton != null) {
+            mScreenButton.setEnabled(enabled);
         }
         if (mProgress != null && !mDisableProgress)
             mProgress.setEnabled(enabled);

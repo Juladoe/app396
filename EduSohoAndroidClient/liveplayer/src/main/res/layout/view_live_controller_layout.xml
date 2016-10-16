@@ -12,7 +12,7 @@
         android:padding="8dp">
 
         <CheckBox
-            android:id="@+id/full_btn"
+            android:id="@+id/cb_controller_screen"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="right"

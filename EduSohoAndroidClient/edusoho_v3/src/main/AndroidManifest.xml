@@ -211,7 +211,7 @@
         <activity
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:name=".v3.ui.LessonLivePlayerActivity"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
 
         <activity
