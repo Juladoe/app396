@@ -26,6 +26,8 @@ public class MessageBody {
 
     private String convNo;
 
+    private String cmd;
+
     public int version;
 
     /**
@@ -73,6 +75,7 @@ public class MessageBody {
     public MessageBody(MessageEntity messageEntity)
     {
         this(messageEntity.getMsg());
+        this.setCmd(messageEntity.getCmd());
         this.getSource().setNickname(messageEntity.getFromName());
         this.getDestination().setNickname(messageEntity.getToName());
         this.setMsgNo(messageEntity.getMsgNo());
@@ -87,6 +90,14 @@ public class MessageBody {
         this.version = version;
         this.type = type;
         this.body = body;
+    }
+
+    public String getCmd() {
+        return cmd;
+    }
+
+    public void setCmd(String cmd) {
+        this.cmd = cmd;
     }
 
     public int getMsgStatus() {

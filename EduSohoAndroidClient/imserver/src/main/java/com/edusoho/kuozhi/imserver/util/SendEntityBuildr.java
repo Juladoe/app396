@@ -38,6 +38,11 @@ public class SendEntityBuildr {
         return this;
     }
 
+    public SendEntityBuildr addToName(String toName) {
+        sendEntity.setToName(toName);
+        return this;
+    }
+
     public SendEntity builder() {
         return sendEntity;
     }

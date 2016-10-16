@@ -123,7 +123,6 @@ public class MsgDbHelper {
         cv.put("time", messageEntity.getTime());
         cv.put("uid", messageEntity.getUid());
         cv.put("status", messageEntity.getStatus());
-        cv.put("extend", messageEntity.getExtend());
         long resultId = mDbHelper.insert(TABLE, cv);
         if (resultId > 0 && !TextUtils.isEmpty(messageEntity.getMsgNo())) {
             if (mMsgNoArray.size() > 300) {
@@ -155,7 +154,6 @@ public class MsgDbHelper {
         cv.put("toName", messageEntity.getToName());
         cv.put("msg", messageEntity.getMsg());
         cv.put("msgNo", messageEntity.getMsgNo());
-        cv.put("extend", messageEntity.getExtend());
         cv.put("status", messageEntity.getStatus());
         return mDbHelper.update(TABLE, cv, "uid=?", new String[]{String.valueOf(messageEntity.getUid())});
     }
@@ -173,7 +171,6 @@ public class MsgDbHelper {
         return new MessageEntityBuildr()
                 .addMsgNo(arrayMap.get("msgNo"))
                 .addMsg(arrayMap.get("msg"))
-                .addExtend(arrayMap.get("extend"))
                 .addToName(arrayMap.get("toName"))
                 .addFromName(arrayMap.get("fromName"))
                 .addConvNo(arrayMap.get("convNo"))

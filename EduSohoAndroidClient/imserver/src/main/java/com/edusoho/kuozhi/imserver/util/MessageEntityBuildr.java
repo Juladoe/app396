@@ -78,11 +78,6 @@ public class MessageEntityBuildr {
         return this;
     }
 
-    public MessageEntityBuildr addExtend(String extend) {
-        messageEntity.setExtend(extend);
-        return this;
-    }
-
     public MessageEntity builder() {
         return messageEntity;
     }

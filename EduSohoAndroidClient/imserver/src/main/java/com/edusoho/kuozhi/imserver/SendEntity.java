@@ -9,6 +9,7 @@ import android.os.Parcelable;
 public class SendEntity implements Parcelable {
 
     private String toId;
+    private String toName;
     private String convNo;
     private String msg;
     private String cmd;
@@ -22,6 +23,15 @@ public class SendEntity implements Parcelable {
         this.convNo = in.readString();
         this.msg = in.readString();
         this.cmd = in.readString();
+        this.toName = in.readString();
+    }
+
+    public String getToName() {
+        return toName;
+    }
+
+    public void setToName(String toName) {
+        this.toName = toName;
     }
 
     public String getCmd() {
@@ -63,6 +73,7 @@ public class SendEntity implements Parcelable {
         dest.writeString(convNo);
         dest.writeString(msg);
         dest.writeString(cmd);
+        dest.writeString(toName);
     }
 
     @Override

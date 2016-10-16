@@ -65,6 +65,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
     protected static final int SEND_IMAGE = 5;
     protected static final int RECEIVE_MULTI = 6;
     protected static final int SEND_MULTI = 7;
+    protected static final int LABEL = 8;
 
     protected static long TIME_INTERVAL = 60 * 5 * 1000;
     protected static final String TAG = "MessageListAdapter";
@@ -189,6 +190,8 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             case PushUtil.ChatMsgType.PUSH:
             case PushUtil.ChatMsgType.MULTI:
                 return isSend ? SEND_MULTI : RECEIVE_MULTI;
+            case PushUtil.ChatMsgType.LABEL:
+                return LABEL;
         }
         return isSend ? SEND_TEXT : RECEIVE_TEXT;
     }
@@ -204,6 +207,8 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             case SEND_MULTI:
             case RECEIVE_MULTI:
                 return new MultiViewHolder(contentView);
+            case LABEL:
+                return new LabelViewHolder(contentView);
         }
 
         return new TextViewHolder(contentView);
@@ -240,6 +245,13 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         public void setContainerContent(MessageBody messageBody) {
         }
 
+        public void addViewClickListener(ViewItemClickListener onClickListener) {
+            containerView.setOnClickListener(onClickListener);
+            avatarView.setOnClickListener(onClickListener);
+            errorStatusView.setOnClickListener(onClickListener);
+            containerView.setOnLongClickListener(onClickListener);
+        }
+
         public void setMessageItemOnClickListener(MessageItemOnClickListener listener) {
             if (listener == null) {
                 return;
@@ -258,7 +270,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             this.mCurrentPosition = position;
         }
 
-        private void setMessageStatus(MessageBody messageBody) {
+        protected void setMessageStatus(MessageBody messageBody) {
             if (mDirect == Direct.RECEIVE
                     && (PushUtil.ChatMsgType.TEXT.equals(messageBody.getType()) || PushUtil.ChatMsgType.MULTI.equals(messageBody.getType()))) {
                 errorStatusView.setVisibility(View.INVISIBLE);
@@ -279,15 +291,6 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         }
 
         public void setMessageBody(MessageBody messageBody, int position) {
-            switch (messageBody.getDestination().getType()) {
-                case Destination.COURSE:
-                case Destination.CLASSROOM:
-                    nicknameView.setText(messageBody.getSource().getNickname());
-                    nicknameView.setVisibility(View.VISIBLE);
-                    break;
-                default:
-                    nicknameView.setVisibility(View.GONE);
-            }
             timeView.setVisibility(View.GONE);
             if (position < (getItemCount() - 1)) {
                 long preTime = mMessageList.get(position + 1).getTime() * 1000L;
@@ -299,9 +302,22 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             }
             timeView.setVisibility(View.VISIBLE);
             timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
+            Destination destination = messageBody.getDestination();
+            if (destination == null || TextUtils.isEmpty(destination.getType())) {
+                return;
+            }
+            switch (destination.getType()) {
+                case Destination.COURSE:
+                case Destination.CLASSROOM:
+                    nicknameView.setText(messageBody.getSource().getNickname());
+                    nicknameView.setVisibility(View.VISIBLE);
+                    break;
+                default:
+                    nicknameView.setVisibility(View.GONE);
+            }
         }
 
-        private void setAvatar(MessageBody messageBody) {
+        protected void setAvatar(MessageBody messageBody) {
             Source source = messageBody.getSource();
             String avatarSrc = mMessageHelper.getRoleAvatar(source.getType(), source.getId());
             MaskBitmap maskBitmap = ImageCache.getInstance().get(avatarSrc);
@@ -330,10 +346,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
 
     private void initClickListener(MessageViewHolder viewHolder, int position) {
         ViewItemClickListener itemClickListener = new ViewItemClickListener(position);
-        viewHolder.containerView.setOnClickListener(itemClickListener);
-        viewHolder.avatarView.setOnClickListener(itemClickListener);
-        viewHolder.errorStatusView.setOnClickListener(itemClickListener);
-        viewHolder.containerView.setOnLongClickListener(itemClickListener);
+        viewHolder.addViewClickListener(itemClickListener);
     }
 
     @Override
@@ -367,6 +380,10 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
 
     public void setMessageListItemController(MessageListItemController listItemClickListener) {
         this.mMessageListItemController = listItemClickListener;
+    }
+
+    protected View createLabelView() {
+        return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_label_layout, null);
     }
 
     protected View createTextView(boolean isSend) {
@@ -424,6 +441,8 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             case RECEIVE_MULTI:
                 contentView = createMultiView(false);
                 break;
+            case LABEL:
+                contentView = createLabelView();
         }
         return contentView;
     }
@@ -565,6 +584,53 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
                         multiTitleView.setText(jsonObject.optString("title"));
                         multiContentView.setText(jsonObject.optString("content"));
                         ImageLoader.getInstance().displayImage(jsonObject.optString("image"), mulitIconView);
+                }
+            } catch (JSONException e) {
+            }
+        }
+    }
+
+    protected class LabelViewHolder extends MessageViewHolder {
+
+        public TextView mContentView;
+        public LabelViewHolder(View view) {
+            super(view);
+            mContentView = (TextView) view.findViewById(R.id.tv_label);
+        }
+
+        @Override
+        public void addViewClickListener(ViewItemClickListener onClickListener) {
+        }
+
+        @Override
+        protected void setMessageStatus(MessageBody messageBody) {
+        }
+
+        @Override
+        public void setMessageItemOnClickListener(MessageItemOnClickListener listener) {
+        }
+
+        @Override
+        protected void setAvatar(MessageBody messageBody) {
+        }
+
+        @Override
+        public void setMessageBody(MessageBody messageBody, int position) {
+            //none
+        }
+
+        @Override
+        public void setContainerContent(MessageBody messageBody) {
+            super.setContainerContent(messageBody);
+            try {
+                JSONObject jsonObject = new JSONObject(messageBody.getBody());
+                switch (jsonObject.optString("cmd")) {
+                    case "memberJoined":
+                        mContentView.setVisibility(View.VISIBLE);
+                        mContentView.setText(String.format("%s 加入直播教师", jsonObject.optString("clientName")));
+                        break;
+                    default:
+                        mContentView.setVisibility(View.GONE);
                 }
             } catch (JSONException e) {
             }

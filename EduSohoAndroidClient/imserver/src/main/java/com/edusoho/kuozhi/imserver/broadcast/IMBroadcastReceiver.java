@@ -22,6 +22,7 @@ public class IMBroadcastReceiver extends BroadcastReceiver {
     public static final int RECEIVER = 0;
     public static final int STATUS_CHANGE = 1;
     public static final int OFFLINE_MSG = 2;
+    public static final int SIGNAL = 3;
 
     @Override
     public void onReceive(Context context, final Intent intent) {
@@ -39,10 +40,16 @@ public class IMBroadcastReceiver extends BroadcastReceiver {
                 } else if (action == STATUS_CHANGE) {
                     int status = intent.getIntExtra("status", IConnectManagerListener.OPEN);
                     boolean isConnected = intent.getBooleanExtra("isConnected", false);
-                    IMClient.getClient().invokeConnectReceiver(status, isConnected);
+                    invokeConnectReceiver(status, isConnected);
+                } else if (action == SIGNAL) {
+                    MessageEntity message = intent.getParcelableExtra("message");
+                    invokeReceiverSignal(message);
                 }
             }
         });
+    }
+
+    protected void invokeReceiverSignal(MessageEntity message) {
     }
 
     protected void invokeReceiver(MessageEntity message) {

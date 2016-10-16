@@ -20,7 +20,6 @@ public class MessageEntity implements Parcelable {
     private int status;
     private int id;
     private String uid;
-    private String extend;
 
     public MessageEntity() {
     }
@@ -38,15 +37,6 @@ public class MessageEntity implements Parcelable {
         this.cmd = in.readString();
         this.status = in.readInt();
         this.id = in.readInt();
-        this.extend = in.readString();
-    }
-
-    public String getExtend() {
-        return extend;
-    }
-
-    public void setExtend(String extend) {
-        this.extend = extend;
     }
 
     public int getId() {
@@ -158,7 +148,6 @@ public class MessageEntity implements Parcelable {
         dest.writeString(cmd);
         dest.writeInt(status);
         dest.writeInt(id);
-        dest.writeString(extend);
     }
 
     @Override

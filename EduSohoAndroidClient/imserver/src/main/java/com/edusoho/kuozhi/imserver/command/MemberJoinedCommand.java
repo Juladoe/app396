@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.imserver.command;
 
 import com.edusoho.kuozhi.imserver.ImServer;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 
 import org.json.JSONException;
@@ -21,7 +23,6 @@ public class MemberJoinedCommand extends BaseCommand {
         super.invoke(params);
         String clientId = params.optString("clientId");
         String clientName = params.optString("clientName");
-        String msg = params.optString("msg");
         String convNo = params.optString("convNo");
         int time = params.optInt("time");
         String msgNo = params.optString("msgNo");
@@ -29,8 +30,7 @@ public class MemberJoinedCommand extends BaseCommand {
 
         MessageEntity messageEntity =
                 MessageEntityBuildr.getBuilder()
-                        .addExtend(wrapExtend(clientId, clientName))
-                        .addMsg(msg)
+                        .addMsg(wrapBody(clientId, clientName))
                         .addConvNo(convNo)
                         .addTime(time)
                         .addMsgNo(msgNo)
@@ -40,11 +40,16 @@ public class MemberJoinedCommand extends BaseCommand {
         mImServer.onReceiveMessage(messageEntity);
     }
 
-    private String wrapExtend(String clientId, String clientName) {
+    private String wrapBody(String clientId, String clientName) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("clientId", clientId);
-            jsonObject.put("clientName", clientName);
+            jsonObject.put("v", MessageBody.VERSION);
+            jsonObject.put("t", PushUtil.ChatMsgType.LABEL);
+            JSONObject body = new JSONObject();
+            body.put("clientId", clientId);
+            body.put("clientName", clientName);
+            body.put("cmd", "memberJoined");
+            jsonObject.put("b", body.toString());
         } catch (JSONException e) {
         }
 

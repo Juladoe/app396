@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by su on 2016/3/17.
@@ -267,6 +268,7 @@ public class ImServer {
         send(new String[]{
                 "cmd", sendEntity.getCmd(),
                 "toId", sendEntity.getToId(),
+                "toName", sendEntity.getToName(),
                 "convNo", sendEntity.getConvNo(),
                 "msg", sendEntity.getMsg()
         });
@@ -380,6 +382,9 @@ public class ImServer {
     }
 
     private MessageEntity saveMessageEntityToDb(MessageEntity messageEntity) throws MessageSaveFailException {
+        if (TextUtils.isEmpty(messageEntity.getMsgNo())) {
+            messageEntity.setMsgNo(UUID.randomUUID().toString());
+        }
         long resultId = mMsgDbHelper.save(messageEntity);
         if (resultId != 0) {
             messageEntity = mMsgDbHelper.getMessageByMsgNo(messageEntity.getMsgNo());
@@ -389,6 +394,13 @@ public class ImServer {
             return messageEntity;
         }
         throw new MessageSaveFailException();
+    }
+
+    public void onReceiveSignal(MessageEntity messageEntity) {
+        Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
+        intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.SIGNAL);
+        intent.putExtra("message", messageEntity);
+        mContext.sendBroadcast(intent);
     }
 
     public void onReceiveMessage(MessageEntity messageEntity) {
@@ -514,7 +526,7 @@ public class ImServer {
         send(pingCmd);
     }
 
-    private void send(String[] params) {
+    public void send(String[] params) {
         try {
             JSONObject msgObj = new JSONObject();
             for (int i = 0; i < params.length; i = i + 2) {
