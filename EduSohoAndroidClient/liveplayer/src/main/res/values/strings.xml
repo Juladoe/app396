@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">livePlayer</string>
+    <string name="buffering">缓冲...</string>
+    <string name="live_uri_error">直播地址不正确</string>
+</resources>
