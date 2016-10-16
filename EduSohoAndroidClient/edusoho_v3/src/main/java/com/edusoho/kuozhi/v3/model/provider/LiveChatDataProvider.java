@@ -26,6 +26,7 @@ import java.util.List;
  */
 public class LiveChatDataProvider implements IMessageDataProvider {
 
+    private String mRole;
     private WeakReference<IImServerAidlInterface> mImBinderRef;
     private List<MessageEntity> mMessageEntityList;
 
@@ -67,6 +68,7 @@ public class LiveChatDataProvider implements IMessageDataProvider {
             messageBody.setMsgStatus(MessageEntity.StatusType.NONE);
             SendEntity sendEntity = SendEntityBuildr.getBuilder()
                     .addToId(toId)
+                    .addToName("all")
                     .addCmd("flashSend")
                     .addMsg(wrapLiveMessageBody(messageBody))
                     .builder();
@@ -82,7 +84,7 @@ public class LiveChatDataProvider implements IMessageDataProvider {
             jsonObject.put("type", "102001");
             jsonObject.put("clientId", messageBody.getSource().getId());
             jsonObject.put("clientName", messageBody.getSource().getNickname());
-            jsonObject.put("role", "");
+            jsonObject.put("role", mRole);
 
             JSONObject dataJsonObj = new JSONObject();
             dataJsonObj.put("info", messageBody.getBody());

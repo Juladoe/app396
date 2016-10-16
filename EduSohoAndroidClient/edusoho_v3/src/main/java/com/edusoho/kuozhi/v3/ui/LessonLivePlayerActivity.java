@@ -44,6 +44,7 @@ import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
@@ -56,6 +57,7 @@ import com.edusoho.kuozhi.v3.model.im.LiveMessageBody;
 import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.provider.LiveChatDataProvider;
+import com.edusoho.kuozhi.v3.model.provider.LiveRoomProvider;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
 import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
@@ -86,6 +88,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
     private LiveImClient mLiveImClient;
     protected IMessageListPresenter mIMessageListPresenter;
     protected MessageListFragment mMessageListFragment;
+    private LinkedHashMap mLiveData;
 
     private void initParams() {
         mLessonId = getIntent().getIntExtra(Const.LESSON_ID, 2127);
@@ -99,6 +102,8 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
             @Override
             public void success(LinkedHashMap data) {
                 if (data == null) {
+                    setLiveCoverStatus(View.GONE);
+                    startPlay("http://demo.edusoho.com/mapi_v2/Lesson/getLocalVideo?targetId=2887&token=sgjq2edq7k0www4kcsw04g8wg8wwook");
                     return;
                 }
                 mConversationNo = data.get("convNo").toString();
@@ -108,13 +113,9 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
                 startPlay(streamUrl + "/" + streamId);
                 setLiveCoverStatus(View.GONE);
 
-                String host = data.get("url").toString();
-                String roomNo = data.get("roomNo").toString();
-                String token = data.get("token").toString();
-                String role = data.get("role").toString();
-                mClientName = data.get("clientName").toString();
-                mClientId = data.get("clientId").toString();
-                initChatRoom(host, roomNo, token, role, mClientName, mClientId);
+                mLiveData = data;
+                initChatRoom();
+                loadLiveRoomStatus();
             }
         });
     }
@@ -127,10 +128,16 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
         }
     }
 
-    private void initChatRoom(
-            String host, String roomNo, String token, String role, final String clientName, final String clientId) {
+    private void initChatRoom() {
+        String host = mLiveData.get("url").toString();
+        String roomNo = mLiveData.get("roomNo").toString();
+        String userToken = mLiveData.get("token").toString();
+        String role = mLiveData.get("role").toString();
+        final String clientId = mLiveData.get("clientId").toString();
+        final String clientName = mLiveData.get("clientName").toString();
+
         new IMProvider(mContext).getLiveChatServer(
-                host, roomNo, token, role, clientId
+                host, roomNo, userToken, role, clientId
         ).success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap data) {
@@ -144,10 +151,25 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
                 for (String host : servers.values()) {
                     hostList.add(host + "?token=" + token);
                 }
+
                 mLiveImClient = new LiveImClient();
                 mLiveImClient.start(
                         AppUtil.parseInt(clientId), clientName, new ArrayList<String>(), hostList);
-                attachMessageListFragment();
+            }
+        });
+    }
+
+    private void loadLiveRoomStatus() {
+        String host = mLiveData.get("url").toString();
+        String roomNo = mLiveData.get("roomNo").toString();
+        String token = mLiveData.get("token").toString();
+        String role = mLiveData.get("role").toString();
+        new LiveRoomProvider(mContext).getLiveRoom(
+                host, roomNo, token, role
+        ).success(new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap data) {
+                Log.d("loadLiveRoomStatus", data.get("status").toString());
             }
         });
     }
@@ -272,6 +294,19 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
     protected class LiveChatMessageListPresenterImpl extends MessageListPresenterImpl {
 
         private IMBroadcastReceiver mReceiver;
+        String[] filterArray = {
+                "100001",
+                "100002",
+                "101001",
+                "101002",
+                "101003",
+                "103004",
+                "103005",
+                "103007",
+                "103008",
+                "103009",
+                "103010"
+        };
 
         public LiveChatMessageListPresenterImpl(Bundle params,
                                             IMConvManager convManager,
@@ -280,7 +315,10 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
                                             IMessageDataProvider mIMessageDataProvider,
                                             IMessageListView messageListView) {
             super(params, convManager, roleManager, messageResourceHelper, mIMessageDataProvider, messageListView);
-            setClientInfo(AppUtil.parseInt(mClientId), mClientName);
+
+            String clientId = mLiveData.get("clientId").toString();
+            String clientName = mLiveData.get("clientName").toString();
+            setClientInfo(AppUtil.parseInt(clientId), clientName);
         }
 
         @Override
@@ -301,17 +339,13 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
             convNoCreateCallback.onCreateConvNo(mConversationNo);
         }
 
-        @Override
-        protected boolean messageEntityInFilter(MessageEntity msg) {
-            LiveMessageBody liveMessageBody = new LiveMessageBody(msg.getMsg());
-            String type = liveMessageBody.getType();
-            String[] filterArray = { "102001", "103007" };
+        private boolean messageIsSignal(String type) {
             for (String filter : filterArray) {
                 if (type.equals(filter)) {
-                    return false;
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
 
         protected void createTargetRole(String type, int rid, final MessageListPresenterImpl.RoleUpdateCallback callback) {
@@ -333,23 +367,52 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
                     });
         }
 
+        private void joinLiveChatRoom() {
+            String host = mLiveData.get("url").toString();
+            String roomNo = mLiveData.get("roomNo").toString();
+            String token = mLiveData.get("token").toString();
+            String role = mLiveData.get("role").toString();
+            String clientId = mLiveData.get("clientId").toString();
+            new LiveRoomProvider(mContext).joinLiveChatRoom(
+                    host, roomNo, token, role, clientId
+            ).success(new NormalCallback<LinkedHashMap>() {
+                @Override
+                public void success(LinkedHashMap data) {
+                    String token = null;
+                    if (data == null || TextUtils.isEmpty((token = data.get("token").toString()))) {
+                        return;
+                    }
+
+                    try {
+                        mLiveImClient.getImBinder().joinConversation(token, mConversationNo);
+                    } catch (RemoteException e) {
+                        Log.i("joinLiveChatRoom", "join error");
+                    }
+                }
+            });
+        }
+
         @Override
         public void addMessageReceiver() {
             mReceiver = new IMBroadcastReceiver() {
 
                 @Override
-                protected void invokeReceiver(MessageEntity message) {
-                    if (messageEntityInFilter(message)) {
-                        return;
+                protected void invokeReceiverSignal(MessageEntity message) {
+                    String cmd = message.getCmd();
+                    switch (cmd) {
+                        case "connected":
+                            joinLiveChatRoom();
+                            break;
+                        case "101002":
                     }
+                }
 
-                    if ("success".equals(message.getCmd())) {
-                        MessageBody messageBody = new MessageBody(message.getMsg());
-                        if (messageBody == null) {
-                            return;
-                        }
-                        messageBody.setConvNo(mConversationNo);
-                        updateMessageSendStatus(messageBody);
+                @Override
+                protected void invokeReceiver(MessageEntity message) {
+                    LiveMessageBody liveMessageBody = new LiveMessageBody(message.getMsg());
+                    if (liveMessageBody != null && messageIsSignal(liveMessageBody.getType())) {
+                        message.setCmd(liveMessageBody.getType());
+                        invokeReceiverSignal(message);
                         return;
                     }
 
@@ -472,6 +535,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
                     mImBinder = IImServerAidlInterface.Stub.asInterface(service);
                     try {
                         Log.d(TAG, "mImBinder:" + mImBinder);
+                        attachMessageListFragment();
                         mImBinder.start(clientId, clientName, ignoreNosList, hostList);
                     } catch (RemoteException e) {
                         e.printStackTrace();
