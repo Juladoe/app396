@@ -164,13 +164,12 @@ public class DownloadedFragment extends BaseFragment {
                 @Override
                 public void onResponse(String response) {
                     CourseDetailsResult courseDetailsResult = getUtilFactory().getJsonParser().fromJson(response, CourseDetailsResult.class);
-                    if (courseDetailsResult != null) {
-                        if (courseDetailsResult.member == null) {
-                            deleteLocalCacheByCourseId(course.id);
-                        } else if (courseDetailsResult.member.deadline < 0) {
-                            course.courseDeadline = courseDetailsResult.member.deadline;
-                            mDownloadedAdapter.setCourseExpired(course);
-                        }
+                    if (courseDetailsResult == null || courseDetailsResult.member == null) {
+                        deleteLocalCacheByCourseId(course.id);
+                    }
+                    if (courseDetailsResult != null && courseDetailsResult.member != null && courseDetailsResult.member.deadline < 0) {
+                        course.courseDeadline = courseDetailsResult.member.deadline;
+                        mDownloadedAdapter.setCourseExpired(course);
                     }
                 }
             }, new Response.ErrorListener() {
