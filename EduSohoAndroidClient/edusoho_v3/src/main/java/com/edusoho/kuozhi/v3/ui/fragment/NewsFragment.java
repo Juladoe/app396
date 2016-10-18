@@ -498,7 +498,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void getLearnCourses(final NormalCallback<CourseResult> normalCallback) {
-        RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=learn", true);
+        RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=learn&limit=1000", true);
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -518,7 +518,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void getTeachingCourses(final NormalCallback<CourseResult> normalCallback) {
-        RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=teaching", true);
+        RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=teaching&limit=1000", true);
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
