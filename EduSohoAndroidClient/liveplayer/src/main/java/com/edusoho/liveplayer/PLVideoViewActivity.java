@@ -7,7 +7,6 @@ package com.edusoho.liveplayer;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,13 +15,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +36,11 @@ public class PLVideoViewActivity extends AppCompatActivity {
 
     private static final int MESSAGE_ID_RECONNECTING = 0x01;
 
+    protected static final String NOT_START = "NOT_START";
+    protected static final String LIVE = "LIVE";
+    protected static final String PAUSE = "PAUSE";
+    protected static final String CLOSE = "CLOSE";
+
     private MediaController mMediaController;
     private PLVideoView mVideoView;
     private Toast mToast = null;
@@ -47,9 +48,9 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private int mDisplayAspectRatio = PLVideoView.ASPECT_RATIO_FIT_PARENT;
     private boolean mIsActivityPaused = true;
     private View mLoadingView;
-    private ImageView mLiveCoverView;
     private TextView mLiveTitleView;
     private TextView mLiveDescView;
+    private TextView mLoadTitleView;
     private Toolbar mToolBar;
     private ViewGroup mBottomLayout;
     private ViewGroup mVideoContainer;
@@ -181,12 +182,23 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mVideoContainer = (ViewGroup) findViewById(R.id.fl_live_container);
         mLiveTitleView = (TextView) findViewById(R.id.tv_live_title);
         mLiveDescView = (TextView) findViewById(R.id.tv_live_desc);
-        mLiveCoverView = (ImageView) findViewById(R.id.tv_live_cover);
 
         mBottomLayout = (ViewGroup) findViewById(R.id.fl_live_bottom_layout);
-        mLoadingView = findViewById(R.id.LoadingView);
+        mLoadingView = findViewById(R.id.vg_live_loadingView);
+        mLoadTitleView = (TextView) findViewById(R.id.tv_live_loadtitle);
         mVideoView.setBufferingIndicator(mLoadingView);
+    }
+
+    protected void setPlayStatus(String status) {
+        switch (status) {
+            case NOT_START:
+                setPlayNotStart();
+        }
+    }
+
+    private void setPlayNotStart() {
         mLoadingView.setVisibility(View.VISIBLE);
+        mLoadTitleView.setText("直播未开始");
     }
 
     protected void setLiveTitle(String title) {
@@ -194,15 +206,10 @@ public class PLVideoViewActivity extends AppCompatActivity {
     }
 
     protected void setLiveDesc(String desc) {
+        if (TextUtils.isEmpty(desc)) {
+            mLiveDescView.setVisibility(View.GONE);
+        }
         mLiveDescView.setText(desc);
-    }
-
-    protected void setLiveCoverStatus(int status) {
-        mLiveCoverView.setVisibility(status);
-    }
-
-    protected void setLiveCover(Bitmap coverBitmap) {
-        mLiveCoverView.setImageBitmap(coverBitmap);
     }
 
     @Override
@@ -365,7 +372,6 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
         @Override
         public void onPrepared(PLMediaPlayer plMediaPlayer) {
-            setLiveCoverStatus(View.GONE);
         }
     };
 
