@@ -8,6 +8,9 @@
         android:background="@color/primary"
         android:text="暂无公告"
         android:padding="8dp"
+        android:singleLine="true"
+        android:scrollHorizontally="true"
+        android:ellipsize="marquee"
         android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

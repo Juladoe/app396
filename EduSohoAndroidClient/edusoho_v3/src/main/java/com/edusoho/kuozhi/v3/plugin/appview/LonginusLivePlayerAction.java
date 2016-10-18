@@ -3,7 +3,7 @@ package com.edusoho.kuozhi.v3.plugin.appview;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import com.edusoho.kuozhi.v3.ui.LessonLivePlayerActivity;
+import com.edusoho.kuozhi.v3.ui.live.LessonLivePlayerActivity;
 /**
  * Created by 菊 on 2016/4/11.
  */

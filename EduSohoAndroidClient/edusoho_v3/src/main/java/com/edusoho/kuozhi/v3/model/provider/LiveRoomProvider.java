@@ -24,13 +24,14 @@ public class LiveRoomProvider extends ModelProvider {
     }
 
     public ProviderListener<LinkedHashMap> getLiveRoom(
-            String host, String roomnNo, String token, String role) {
+            String host, String roomnNo, String token, String role, String clientId) {
 
         StringBuilder stringBuilder = new StringBuilder(host);
         stringBuilder.append("/live/status/")
                 .append(roomnNo)
                 .append("?token=").append(token)
-                .append("&role=").append(role);
+                .append("&role=").append(role)
+                .append("&clientId=").append(clientId);
         RequestUrl requestUrl = new RequestUrl(stringBuilder.toString());
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<LinkedHashMap>(){});
