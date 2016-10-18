@@ -38,13 +38,12 @@ public class LessonProvider extends ModelProvider {
         return requestOption.build();
     }
 
-    public ProviderListener<LinkedHashMap> getLiveRoom(int lessonId) {
+    public ProviderListener<LinkedHashMap> getLiveRoom(String roomUrl) {
         School school = SchoolUtil.getDefaultSchool(mContext);
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
         String token = tokenMap.get("token").toString();
 
-        RequestUrl requestUrl = new RequestUrl(
-                "http://pl.youku.com/playlist/m3u8?vid=XMTc2MDM5MjY4OA==&type=mp4&ts=1476606155&keyframe=0&ep=dyaTHE%252BNUM8F5ybajT8bNSmzISYIXJZ3kkyH%252FKYfBcZ%252BIezA6DPcqJ%252B1TPY%253D&sid=547660615255512b5aea7&token=2529&ctype=12&ev=1&oip=1942202945");
+        RequestUrl requestUrl = new RequestUrl(roomUrl + "&debug=1");
         requestUrl.heads.put("Auth-Token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(

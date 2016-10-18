@@ -14,7 +14,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -423,7 +422,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                     public void success(LinkedHashMap map) {
                         if (map == null) {
                             ToastUtils.show(getBaseContext(), "加入课程聊天失败!");
-                            mIMessageListPresenter.enableChatView();
+                            mIMessageListPresenter.unEnableChatView();
                             promise.resolve(null);
                             return;
                         }
@@ -431,7 +430,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                             Error error = getUtilFactory().getJsonParser().fromJson(map.get("error").toString(), Error.class);
                             if (error != null) {
                                 ToastUtils.show(getBaseContext(), error.message);
-                                mIMessageListPresenter.enableChatView();
+                                mIMessageListPresenter.unEnableChatView();
                                 promise.resolve(null);
                             }
                             return;
@@ -443,7 +442,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             @Override
             public void success(VolleyError obj) {
                 ToastUtils.show(getBaseContext(), "加入课程聊天失败!");
-                mIMessageListPresenter.enableChatView();
+                mIMessageListPresenter.unEnableChatView();
                 promise.resolve(null);
             }
         });

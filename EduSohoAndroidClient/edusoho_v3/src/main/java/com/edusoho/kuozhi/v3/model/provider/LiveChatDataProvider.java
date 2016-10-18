@@ -19,7 +19,9 @@ import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by suju on 16/10/13.
@@ -88,7 +90,7 @@ public class LiveChatDataProvider implements IMessageDataProvider {
 
             JSONObject dataJsonObj = new JSONObject();
             dataJsonObj.put("info", messageBody.getBody());
-            jsonObject.put("data", dataJsonObj.toString());
+            jsonObject.put("data", dataJsonObj);
             jsonObject.put("time", messageBody.getCreatedTime());
         } catch (JSONException e) {
         }

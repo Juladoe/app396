@@ -441,7 +441,17 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                 IMClient.getClient().destory();
                 saveSchoolHistory(site);
             }
-        }, this);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                app.setCurrentSchool(site);
+                app.removeToken();
+                app.registDevice(null);
+                getAppSettingProvider().setUser(null);
+                IMClient.getClient().destory();
+                saveSchoolHistory(site);
+            }
+        });
     }
 
     private class MyAdapter extends BaseAdapter {

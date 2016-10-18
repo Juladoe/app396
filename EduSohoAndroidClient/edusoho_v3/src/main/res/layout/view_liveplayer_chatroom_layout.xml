@@ -4,8 +4,11 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/tv_live_notice"
+        android:background="@color/primary"
         android:text="暂无公告"
         android:padding="8dp"
+        android:textColor="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,23 +16,18 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.Menu;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
-import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.ImService;
 import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.broadcast.IMServiceStartedBroadcastReceiver;
-import com.edusoho.kuozhi.imserver.entity.ConvEntity;
-import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
-import com.edusoho.kuozhi.imserver.entity.ReceiverInfo;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
-import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
@@ -42,9 +36,7 @@ import com.edusoho.kuozhi.imserver.ui.IMessageListPresenter;
 import com.edusoho.kuozhi.imserver.ui.IMessageListView;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
-import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
-import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
@@ -65,6 +57,10 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.liveplayer.PLVideoViewActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -80,30 +76,26 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
 
     private Context mContext;
     private int mLessonId;
-    private int mCourseId;
-    private String mClientId;
-    private String mClientName;
     private String mConversationNo;
-    private ViewGroup mBottomLayout;
     private LiveImClient mLiveImClient;
     protected IMessageListPresenter mIMessageListPresenter;
     protected MessageListFragment mMessageListFragment;
     private LinkedHashMap mLiveData;
 
+    private TextView mNoticeView;
+
     private void initParams() {
-        mLessonId = getIntent().getIntExtra(Const.LESSON_ID, 2127);
-        mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
+        mLessonId = AppUtil.parseInt(getIntent().getStringExtra(Const.LESSON_ID));
         mConversationNo = getIntent().getStringExtra("convNo");
     }
 
-    private void getLiveRoom() {
-        new LessonProvider(mContext).getLiveRoom(0)
+    private void getLiveRoom(String roomUrl) {
+        new LessonProvider(mContext).getLiveRoom(roomUrl)
         .success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap data) {
                 if (data == null) {
-                    setLiveCoverStatus(View.GONE);
-                    startPlay("http://demo.edusoho.com/mapi_v2/Lesson/getLocalVideo?targetId=2887&token=sgjq2edq7k0www4kcsw04g8wg8wwook");
+                    startPlay("http://demo.edusoho.com/mapi_v2/Lesson/getLocalVideo?targetId=2887&token=kp831f26ba8gcg0ks4oco4g4kwgckow");
                     return;
                 }
                 mConversationNo = data.get("convNo").toString();
@@ -111,8 +103,6 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
                 String streamUrl = playData.get("url").toString();
                 String streamId = playData.get("stream").toString();
                 startPlay(streamUrl + "/" + streamId);
-                setLiveCoverStatus(View.GONE);
-
                 mLiveData = data;
                 initChatRoom();
                 loadLiveRoomStatus();
@@ -126,6 +116,12 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
         if (mLiveImClient != null) {
             mLiveImClient.destory();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.live_menu, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void initChatRoom() {
@@ -187,7 +183,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
 
                 setLiveTitle(lessonItem.title);
                 setLiveDesc(lessonItem.summary);
-                getLiveRoom();
+                getLiveRoom(getIntent().getStringExtra("roomUrl"));
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -203,13 +199,9 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
         mContext = getBaseContext();
         initParams();
         super.initView();
-        mBottomLayout = (ViewGroup) findViewById(R.id.fl_live_bottom_layout);
         setBottomView(LayoutInflater.from(getBaseContext()).inflate(R.layout.view_liveplayer_chatroom_layout, null));
+        mNoticeView = (TextView) findViewById(R.id.tv_live_notice);
         valiteLessonInfo();
-    }
-
-    private void setBottomView(View contentView) {
-        mBottomLayout.addView(contentView);
     }
 
     protected IMessageListPresenter createProsenter() {
@@ -305,7 +297,8 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
                 "103007",
                 "103008",
                 "103009",
-                "103010"
+                "103010",
+                "102002"
         };
 
         public LiveChatMessageListPresenterImpl(Bundle params,
@@ -392,6 +385,28 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
             });
         }
 
+        private void checkLivePlayStatus(MessageEntity messageEntity) {
+            LiveMessageBody liveMessageBody = new LiveMessageBody(messageEntity.getMsg());
+            try {
+                JSONObject jsonObject = new JSONObject(liveMessageBody.getData());
+                if (jsonObject.optBoolean("isResting")) {
+                    pauseLive();
+                } else {
+                    resumeLive();
+                }
+            } catch (JSONException e) {
+            }
+        }
+
+        private void updateNoticeFromMessage(MessageEntity message) {
+            LiveMessageBody liveMessageBody = new LiveMessageBody(message.getMsg());
+            try {
+                JSONObject jsonObject = new JSONObject(liveMessageBody.getData());
+                mNoticeView.setText(jsonObject.optString("info"));
+            } catch (JSONException e) {
+            }
+        }
+
         @Override
         public void addMessageReceiver() {
             mReceiver = new IMBroadcastReceiver() {
@@ -403,7 +418,25 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
                         case "connected":
                             joinLiveChatRoom();
                             break;
+                        case "102002":
+                            updateNoticeFromMessage(message);
+                            break;
+                        case "103004":
+                        case "103005":
+                            LiveMessageBody liveMessageBody = new LiveMessageBody(message.getMsg());
+                            try {
+                                JSONObject jsonObject = new JSONObject(liveMessageBody.getData());
+                                if (jsonObject.optBoolean("isCanChat") || jsonObject.optBoolean("isAllCanChat")) {
+                                    enableChatView();
+                                } else {
+                                    unEnableChatView();
+                                }
+                            } catch (JSONException e) {
+                            }
+                            mIMessageListView.insertMessage(message);
+                            break;
                         case "101002":
+                            checkLivePlayStatus(message);
                     }
                 }
 
@@ -416,6 +449,9 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity {
                         return;
                     }
 
+                    if (mClientId == AppUtil.parseInt(message.getFromId()) && mClientName.equals(message.getFromName())) {
+                        return;
+                    }
                     mIMessageListView.insertMessage(message);
                 }
 
