@@ -22,31 +22,36 @@
             android:layout_height="match_parent" />
 
         <LinearLayout
+            android:background="@drawable/live_progressbar_bg"
             android:id="@+id/LoadingView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:gravity="center"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:orientation="vertical">
 
             <ProgressBar
+                style="?android:attr/progressBarStyleInverse"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5dp" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:text="@string/buffering"
-                android:textColor="@android:color/black"
-                android:textSize="20sp" />
+                android:textColor="@color/progressbar_title"
+                android:textSize="16sp" />
         </LinearLayout>
 
     </FrameLayout>
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
+        android:background="@drawable/toobar_mask_bg"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         app:navigationIcon="@drawable/action_bar_back"
         android:navigationIcon="@drawable/action_bar_back"
@@ -61,11 +66,13 @@
 
             <TextView
                 android:id="@+id/tv_live_title"
+                android:textColor="@color/live_toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="title" />
 
             <TextView
+                android:textColor="@color/live_toolbar_desc"
                 android:id="@+id/tv_live_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,6 +51,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private TextView mLiveTitleView;
     private TextView mLiveDescView;
     private Toolbar mToolBar;
+    private ViewGroup mBottomLayout;
     private ViewGroup mVideoContainer;
     private int mIsLiveStreaming;
 
@@ -58,7 +60,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pl_video_view);
-        mIsLiveStreaming = getIntent().getIntExtra("liveStreaming", 0);
+        mIsLiveStreaming = getIntent().getIntExtra("liveStreaming", 1);
         initView();
         AVOptions avOptions = getOptions(getIntent());
         mVideoView.setAVOptions(avOptions);
@@ -67,18 +69,32 @@ public class PLVideoViewActivity extends AppCompatActivity {
         bindListener();
     }
 
+    protected void setBottomView(View contentView) {
+        mBottomLayout.addView(contentView);
+    }
+
     protected void setMediaController() {
         mMediaController = new MediaController(this, false, mIsLiveStreaming == 1);
         mMediaController.setOnShownListener(new MediaController.OnShownListener() {
             @Override
             public void onShown() {
-                mToolBar.setBackgroundResource(R.drawable.toobar_mask_bg);
+                getSupportActionBar().show();
+                int currentOrientation = getResources().getConfiguration().orientation;
+                if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    return;
+                }
             }
         });
         mMediaController.setOnHiddenListener(new MediaController.OnHiddenListener() {
             @Override
             public void onHidden() {
-                mToolBar.setBackgroundColor(0);
+                getSupportActionBar().hide();
+                int currentOrientation = getResources().getConfiguration().orientation;
+                if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                    getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    return;
+                }
             }
         });
         mMediaController.setOnScreenChangeListener(new MediaController.OnScreenChangeListener() {
@@ -88,20 +104,31 @@ public class PLVideoViewActivity extends AppCompatActivity {
                 if (orientation == currentOrientation) {
                     return;
                 }
-                int requestedOrientation = orientation == Configuration.ORIENTATION_PORTRAIT
-                        ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT : ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-                setRequestedOrientation(requestedOrientation);
-                ViewGroup.LayoutParams lp = mVideoContainer.getLayoutParams();
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-                    float scale = getResources().getDisplayMetrics().density;
-                    lp.height = (int) (240 * scale + 0.5f);
+                    changeScreenToPortrait();
                 } else  {
-                    lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    changeScreenToLandspace();
                 }
-                mVideoContainer.setLayoutParams(lp);
             }
         });
         mVideoView.setMediaController(mMediaController);
+    }
+
+    private void changeScreenToPortrait() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        ViewGroup.LayoutParams lp = mVideoContainer.getLayoutParams();
+        float scale = getResources().getDisplayMetrics().density;
+        lp.height = (int) (240 * scale + 0.5f);
+        mBottomLayout.setVisibility(View.VISIBLE);
+        mVideoContainer.setLayoutParams(lp);
+    }
+
+    private void changeScreenToLandspace() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        ViewGroup.LayoutParams lp = mVideoContainer.getLayoutParams();
+        lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        mBottomLayout.setVisibility(View.INVISIBLE);
+        mVideoContainer.setLayoutParams(lp);
     }
 
     protected void startPlay(String videoUri) {
@@ -116,6 +143,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private void bindListener() {
         // Set some listeners
         mVideoView.setOnInfoListener(mOnInfoListener);
+        mVideoView.setOnPreparedListener(mOnPreparedListener);
         mVideoView.setOnVideoSizeChangedListener(mOnVideoSizeChangedListener);
         mVideoView.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
         mVideoView.setOnCompletionListener(mOnCompletionListener);
@@ -155,6 +183,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mLiveDescView = (TextView) findViewById(R.id.tv_live_desc);
         mLiveCoverView = (ImageView) findViewById(R.id.tv_live_cover);
 
+        mBottomLayout = (ViewGroup) findViewById(R.id.fl_live_bottom_layout);
         mLoadingView = findViewById(R.id.LoadingView);
         mVideoView.setBufferingIndicator(mLoadingView);
         mLoadingView.setVisibility(View.VISIBLE);
@@ -180,7 +209,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mIsActivityPaused = false;
-        mVideoView.start();
+        resumeLive();
     }
 
     @Override
@@ -188,22 +217,30 @@ public class PLVideoViewActivity extends AppCompatActivity {
         super.onPause();
         mToast = null;
         mIsActivityPaused = true;
+        pauseLive();
+    }
+
+    protected void pauseLive() {
         mVideoView.pause();
+    }
+
+    protected void resumeLive() {
+        mVideoView.setVideoPath(mVideoPath);
+        mVideoView.start();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
+            int currentOrientation = getResources().getConfiguration().orientation;
+            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                changeScreenToPortrait();
+                return true;
+            }
             onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.live_menu, menu);
-        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
@@ -308,7 +345,6 @@ public class PLVideoViewActivity extends AppCompatActivity {
         public void onCompletion(PLMediaPlayer plMediaPlayer) {
             Log.d(TAG, "Play Completed !");
             showToastTips("Play Completed !");
-            finish();
         }
     };
 
@@ -324,6 +360,13 @@ public class PLVideoViewActivity extends AppCompatActivity {
         public void onSeekComplete(PLMediaPlayer plMediaPlayer) {
             Log.d(TAG, "onSeekComplete !");
         };
+    };
+
+    private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
+        @Override
+        public void onPrepared(PLMediaPlayer plMediaPlayer) {
+            setLiveCoverStatus(View.GONE);
+        }
     };
 
     private PLMediaPlayer.OnVideoSizeChangedListener mOnVideoSizeChangedListener = new PLMediaPlayer.OnVideoSizeChangedListener() {

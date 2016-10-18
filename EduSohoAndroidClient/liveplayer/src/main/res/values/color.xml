@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black_60">#99000000</color>
+    <color name="live_toolbar_title">#ffffff</color>
+    <color name="live_toolbar_desc">#e0e0e0</color>
+    <color name="progressbar_title">#ffffff</color>
+    <color name="progressbar_bg">#bdbdbd</color>
 </resources>
