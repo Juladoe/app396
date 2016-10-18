@@ -50,15 +50,15 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     private int mTargetId;
     private String mTargetType;
     private Role mTargetRole;
-    private int mClientId;
-    private String mClientName;
+    protected int mClientId;
+    protected String mClientName;
 
     private IMConvManager mIMConvManager;
     private IMRoleManager mIMRoleManager;
     private MessageResourceHelper mMessageResourceHelper;
     protected IMMessageReceiver mIMMessageReceiver;
     protected IMessageListView mIMessageListView;
-    private IMessageDataProvider mIMessageDataProvider;
+    protected IMessageDataProvider mIMessageDataProvider;
     private MessageControllerListener mMessageControllerListener;
 
     public MessageListPresenterImpl(
@@ -311,8 +311,13 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     }
 
     @Override
-    public void enableChatView() {
+    public void unEnableChatView() {
         mIMessageListView.setEnable(false);
+    }
+
+    @Override
+    public void enableChatView() {
+        mIMessageListView.setEnable(true);
     }
 
     @Override
