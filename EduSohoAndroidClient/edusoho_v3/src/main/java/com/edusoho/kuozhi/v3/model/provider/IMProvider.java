@@ -455,8 +455,8 @@ public class IMProvider extends ModelProvider {
         | clientId | string   | 是     | 用户ID
      */
     public ProviderListener<LinkedHashMap> getLiveChatServer(
-            String host, String roomNo, String token, String role, String clientId) {
-        StringBuffer stringBuffer = new StringBuffer(host);
+            String roomNo, String token, String role, String clientId) {
+        StringBuffer stringBuffer = new StringBuffer(Const.LIVE_HOST);
         stringBuffer.append("/socket/token")
                 .append("?")
                 .append("roomNo=").append(roomNo).append("&")

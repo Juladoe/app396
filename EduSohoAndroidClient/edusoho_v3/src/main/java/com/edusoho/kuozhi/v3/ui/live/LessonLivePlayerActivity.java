@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.ui.IMessageListPresenter;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
+import com.edusoho.kuozhi.imserver.ui.adapter.MessageRecyclerListAdapter;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.adapter.LiveChatListAdapter;
@@ -42,17 +43,31 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     private Context mContext;
     private int mLessonId;
     private String mConversationNo;
+    private String mRole;
+    private String mToken;
+    private String mClientId;
+    private String mClientName;
+    private String mRoomNo;
+    private String mPlayUrl;
+    private String mLiveTitle;
+
     private LiveImClient mLiveImClient;
-    private ILiveChatPresenter mILiveVideoPresenter;
+    private ILiveVideoPresenter mILiveVideoPresenter;
+    private ILiveChatPresenter mILiveChatPresenter;
     protected IMessageListPresenter mIMessageListPresenter;
     protected MessageListFragment mMessageListFragment;
-    private LinkedHashMap mLiveData;
     private IMBroadcastReceiver mReceiver;
     private TextView mNoticeView;
 
     private void initParams() {
-        mLessonId = AppUtil.parseInt(getIntent().getStringExtra(Const.LESSON_ID));
         mConversationNo = getIntent().getStringExtra("convNo");
+        mRole = getIntent().getStringExtra("role");
+        mToken = getIntent().getStringExtra("token");
+        mRoomNo = getIntent().getStringExtra("roomNo");
+        mPlayUrl = getIntent().getStringExtra("playUrl");
+        mClientId = getIntent().getStringExtra("clientId");
+        mClientName = getIntent().getStringExtra("clientName");
+        mLiveTitle = getIntent().getStringExtra("title");
     }
 
     private void getLiveRoom(String roomUrl) {
@@ -64,7 +79,6 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
                     return;
                 }
                 mConversationNo = data.get("convNo").toString();
-                mLiveData = data;
                 initChatRoom();
                 loadLiveRoomStatus();
             }
@@ -82,11 +96,16 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     @Override
     protected void onResume() {
         super.onResume();
-        if (mIMessageListPresenter == null) {
+        if (mMessageListFragment == null || mLiveImClient == null) {
             return;
         }
-        ILiveVideoPresenter presenter = new LiveVideoPresenterImpl(this);
-        mReceiver = new LiveIMBroadcastReceiver(presenter, mILiveVideoPresenter);
+        registIMReceiver();
+    }
+
+    private void registIMReceiver() {
+        mILiveChatPresenter = new LiveChatPresenterImpl(mContext, getIntent().getExtras(), mLiveImClient);
+        mILiveChatPresenter.setView(mMessageListFragment);
+        mReceiver = new LiveIMBroadcastReceiver(mILiveVideoPresenter, mILiveChatPresenter);
         mContext.registerReceiver(mReceiver, new IntentFilter(IMBroadcastReceiver.ACTION_NAME));
     }
 
@@ -96,6 +115,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         if (mReceiver != null) {
             mContext.unregisterReceiver(mReceiver);
         }
+        mReceiver = null;
     }
 
     @Override
@@ -111,24 +131,17 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     }
 
     @Override
-    public void setLivePlayStatus(boolean isPlay) {
-        if (isPlay) {
-            resumeLive();
-        } else {
+    public void setLivePlayStatus(boolean isResting) {
+        if (isResting) {
             pauseLive();
+        } else {
+            resumeLive();
         }
     }
 
     private void initChatRoom() {
-        String host = mLiveData.get("url").toString();
-        String roomNo = mLiveData.get("roomNo").toString();
-        String userToken = mLiveData.get("token").toString();
-        String role = mLiveData.get("role").toString();
-        final String clientId = mLiveData.get("clientId").toString();
-        final String clientName = mLiveData.get("clientName").toString();
-
         new IMProvider(mContext).getLiveChatServer(
-                host, roomNo, userToken, role, clientId
+                mRoomNo, mToken, mRole, mClientId
         ).success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap data) {
@@ -143,6 +156,8 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
                     hostList.add(host + "?token=" + token);
                 }
 
+                mILiveVideoPresenter = new LiveVideoPresenterImpl(mContext, getIntent().getExtras(), LessonLivePlayerActivity.this);
+                mILiveVideoPresenter.handleHistorySignals();
                 mLiveImClient = new LiveImClient(mContext);
                 mLiveImClient.setOnConnectedCallback(new LiveImClient.OnConnectedCallback() {
                     @Override
@@ -151,19 +166,14 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
                     }
                 });
                 mLiveImClient.start(
-                        AppUtil.parseInt(clientId), clientName, new ArrayList<String>(), hostList);
+                        AppUtil.parseInt(mClientId), mClientName, new ArrayList<String>(), hostList);
             }
         });
     }
 
     private void loadLiveRoomStatus() {
-        String host = mLiveData.get("url").toString();
-        String roomNo = mLiveData.get("roomNo").toString();
-        String token = mLiveData.get("token").toString();
-        String role = mLiveData.get("role").toString();
-        String clientId = mLiveData.get("clientId").toString();
         new LiveRoomProvider(mContext).getLiveRoom(
-                host, roomNo, token, role, clientId
+                mRoomNo, mToken, mRole, mClientId
         ).success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap data) {
@@ -172,10 +182,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
                     setPlayStatus(NOT_START);
                     return;
                 }
-                LinkedHashMap<String, String> playData = (LinkedHashMap<String, String>) mLiveData.get("play");
-                String streamUrl = playData.get("url").toString();
-                String streamId = playData.get("stream").toString();
-                startPlay(streamUrl + "/" + streamId);
+                startPlay(mPlayUrl);
             }
         });
     }
@@ -211,7 +218,11 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         super.initView();
         setBottomView(LayoutInflater.from(getBaseContext()).inflate(R.layout.view_liveplayer_chatroom_layout, null));
         mNoticeView = (TextView) findViewById(R.id.tv_live_notice);
-        valiteLessonInfo();
+
+        setLiveTitle(mLiveTitle);
+        setLiveDesc(null);
+        initChatRoom();
+        loadLiveRoomStatus();
     }
 
     protected IMessageListPresenter createProsenter() {
@@ -229,7 +240,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
                 new LiveChatDataProvider(mLiveImClient.getImBinder()),
                 mMessageListFragment
         );
-        presenter.setLiveData(mLiveData);
+        presenter.setLiveData(getIntent().getExtras());
 
         return presenter;
     }
@@ -248,6 +259,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
 
         mIMessageListPresenter = createProsenter();
         mIMessageListPresenter.addMessageControllerListener(getMessageControllerListener());
+        registIMReceiver();
     }
 
     protected MessageControllerListener getMessageControllerListener() {
@@ -293,7 +305,9 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     protected MessageListFragment createFragment() {
         MessageListFragment messageListFragment = (MessageListFragment) Fragment.instantiate(
                 getBaseContext(), MessageListFragment.class.getName());
-        messageListFragment.setAdapter(new LiveChatListAdapter(mContext));
+        MessageRecyclerListAdapter messageRecyclerListAdapter = new LiveChatListAdapter(mContext);
+        messageRecyclerListAdapter.setCurrentId(AppUtil.parseInt(mClientId));
+        messageListFragment.setAdapter(messageRecyclerListAdapter);
         return messageListFragment;
     }
 }

@@ -95,6 +95,7 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
 
         public LiveTextViewHolder(View view) {
             super(view);
+            nicknameView.setVisibility(View.VISIBLE);
         }
 
         public void setLiveMessageBody(LiveMessageBody messageBody, int position) {
@@ -105,6 +106,7 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
             } catch (JSONException je) {
             }
             mContentView.setText(body);
+            nicknameView.setText(messageBody.getClientName());
 
             timeView.setVisibility(View.GONE);
             if (position < (getItemCount() - 1)) {

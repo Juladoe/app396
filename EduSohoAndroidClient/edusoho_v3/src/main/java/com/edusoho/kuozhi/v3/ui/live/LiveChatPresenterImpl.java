@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.live;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,17 +24,18 @@ import java.util.Map;
  */
 public class LiveChatPresenterImpl implements ILiveChatPresenter {
 
-    private Map mLiveData;
+    private Bundle mLiveData;
     private Context mContext;
     private LiveImClient mLiveImClient;
     private IMessageListView mIMessageListView;
 
-    public LiveChatPresenterImpl(Context context, Map liveData, LiveImClient liveImClient) {
+    public LiveChatPresenterImpl(Context context, Bundle liveData, LiveImClient liveImClient) {
         this.mContext = context;
         this.mLiveData = liveData;
         this.mLiveImClient = liveImClient;
     }
 
+    @Override
     public void setView(IMessageListView view) {
         this.mIMessageListView = view;
     }
@@ -65,13 +67,12 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
 
     @Override
     public void joinLiveChatRoom() {
-        String host = mLiveData.get("url").toString();
         String roomNo = mLiveData.get("roomNo").toString();
         String token = mLiveData.get("token").toString();
         String role = mLiveData.get("role").toString();
         String clientId = mLiveData.get("clientId").toString();
         new LiveRoomProvider(mContext).joinLiveChatRoom(
-                host, roomNo, token, role, clientId
+                roomNo, token, role, clientId
         ).success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap data) {

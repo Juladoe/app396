@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class LiveChatMessageListPresenterImpl extends MessageListPresenterImpl {
 
-    private Map mLiveData;
+    private Bundle mLiveData;
     private Context mContext;
     private String mConversationNo;
 
@@ -40,7 +40,7 @@ public class LiveChatMessageListPresenterImpl extends MessageListPresenterImpl {
         this.mContext = context;
     }
 
-    public void setLiveData(Map liveData) {
+    public void setLiveData(Bundle liveData) {
         this.mLiveData = liveData;
         mConversationNo = liveData.get("convNo").toString();
         String clientId = mLiveData.get("clientId").toString();
