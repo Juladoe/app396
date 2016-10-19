@@ -19,6 +19,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,10 +53,13 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private TextView mLiveTitleView;
     private TextView mLiveDescView;
     private TextView mLoadTitleView;
+    private ImageView mLoadStatusView;
+    private ProgressBar mLoadProgressBar;
     private Toolbar mToolBar;
     private ViewGroup mBottomLayout;
     private ViewGroup mVideoContainer;
     private int mIsLiveStreaming;
+    private String mLiveStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,19 +191,62 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mBottomLayout = (ViewGroup) findViewById(R.id.fl_live_bottom_layout);
         mLoadingView = findViewById(R.id.vg_live_loadingView);
         mLoadTitleView = (TextView) findViewById(R.id.tv_live_loadtitle);
+        mLoadStatusView = (ImageView) findViewById(R.id.iv_live_statusicon);
+        mLoadProgressBar = (ProgressBar) findViewById(R.id.iv_live_progressbar);
         mVideoView.setBufferingIndicator(mLoadingView);
     }
 
     protected void setPlayStatus(String status) {
+        mLiveStatus = status;
         switch (status) {
             case NOT_START:
                 setPlayNotStart();
+            case LIVE:
+                setPlayOnBuffering();
+            case PAUSE:
+                setPlayPause();
+            case CLOSE:
+                setPlayEnd();
         }
     }
 
     private void setPlayNotStart() {
+        mLoadStatusView.setImageResource(R.mipmap.icon_live_status);
+        mLoadStatusView.setVisibility(View.VISIBLE);
+        mLoadProgressBar.setVisibility(View.GONE);
+        mLoadTitleView.setText(R.string.live_no_start);
         mLoadingView.setVisibility(View.VISIBLE);
-        mLoadTitleView.setText("直播未开始");
+    }
+
+    private void setPlayOnBuffering() {
+        mLoadStatusView.setVisibility(View.GONE);
+        mLoadProgressBar.setVisibility(View.VISIBLE);
+        mLoadTitleView.setText(R.string.live_buffering);
+        mLoadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void setPlayPause() {
+        mLoadStatusView.setImageResource(R.mipmap.icon_live_status);
+        mLoadStatusView.setVisibility(View.VISIBLE);
+        mLoadProgressBar.setVisibility(View.GONE);
+        mLoadTitleView.setText(R.string.live_no_pause);
+        mLoadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void setPlayError() {
+        mLoadStatusView.setImageResource(R.mipmap.icon_live_status);
+        mLoadStatusView.setVisibility(View.VISIBLE);
+        mLoadProgressBar.setVisibility(View.GONE);
+        mLoadTitleView.setText(R.string.live_no_pause);
+        mLoadingView.setVisibility(View.VISIBLE);
+    }
+
+    private void setPlayEnd() {
+        mLoadStatusView.setImageResource(R.drawable.icon_live_close);
+        mLoadStatusView.setVisibility(View.VISIBLE);
+        mLoadProgressBar.setVisibility(View.GONE);
+        mLoadTitleView.setText(R.string.live_no_pause);
+        mLoadingView.setVisibility(View.VISIBLE);
     }
 
     protected void setLiveTitle(String title) {
@@ -229,11 +277,13 @@ public class PLVideoViewActivity extends AppCompatActivity {
 
     protected void pauseLive() {
         mVideoView.pause();
+        setPlayPause();
     }
 
     protected void resumeLive() {
         mVideoView.setVideoPath(mVideoPath);
         mVideoView.start();
+        setPlayOnBuffering();
     }
 
     @Override
@@ -291,8 +341,10 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(PLMediaPlayer plMediaPlayer, int errorCode) {
-            boolean isNeedReconnect = false;
             Log.e(TAG, "Error happened, errorCode = " + errorCode);
+            if (!LIVE.equals(mLiveStatus)) {
+                return true;
+            }
             switch (errorCode) {
                 case PLMediaPlayer.ERROR_CODE_INVALID_URI:
                     showToastTips("Invalid URL !");
@@ -302,47 +354,41 @@ public class PLVideoViewActivity extends AppCompatActivity {
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
                     showToastTips("Connection refused !");
+                    sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
                     showToastTips("Connection timeout !");
-                    isNeedReconnect = true;
+                    sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
                     showToastTips("Empty playlist !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
                     showToastTips("Stream disconnected !");
-                    isNeedReconnect = true;
+                    sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_IO_ERROR:
                     showToastTips("Network IO Error !");
-                    isNeedReconnect = true;
+                    sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
                     showToastTips("Unauthorized Error !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
                     showToastTips("Prepare timeout !");
-                    isNeedReconnect = true;
+                    sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
                     showToastTips("Read frame timeout !");
-                    isNeedReconnect = true;
+                    sendReconnectMessage();
                     break;
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
+                    showToastTips("play error !");
                     break;
                 default:
                     showToastTips("unknown error !");
                     break;
             }
-            // Todo pls handle the error status here, reconnect or call finish()
-            if (isNeedReconnect) {
-                sendReconnectMessage();
-            } else {
-                finish();
-            }
-            // Return true means the error has been handled
-            // If return false, then `onCompletion` will be called
             return true;
         }
     };
@@ -419,7 +465,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
 
     private void sendReconnectMessage() {
         showToastTips("正在重连...");
-        mLoadingView.setVisibility(View.VISIBLE);
+        setPlayOnBuffering();
         mHandler.removeCallbacksAndMessages(null);
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
     }
