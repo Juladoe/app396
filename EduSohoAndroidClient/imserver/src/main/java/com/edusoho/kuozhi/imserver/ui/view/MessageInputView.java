@@ -45,7 +45,7 @@ import java.nio.channels.OverlappingFileLockException;
 /**
  * Created by suju on 16/8/26.
  */
-public class MessageInputView extends FrameLayout {
+public class MessageInputView extends FrameLayout implements IMessageInputView {
 
     protected ESIconView btnVoice;
     protected ESIconView btnKeyBoard;
@@ -79,10 +79,12 @@ public class MessageInputView extends FrameLayout {
         initView();
     }
 
+    @Override
     public void setMessageSendListener(MessageSendListener listener) {
         this.mMessageSendListener = listener;
     }
 
+    @Override
     public void setMessageControllerListener(InputViewControllerListener listener) {
         this.mMessageControllerListener = listener;
     }

@@ -60,7 +60,7 @@ public class LiveChatDataProvider implements IMessageDataProvider {
 
     @Override
     public List<MessageEntity> getMessageList(String convNo, int start) {
-        return mMessageEntityList;
+        return new ArrayList<>();
     }
 
     @Override

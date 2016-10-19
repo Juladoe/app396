@@ -24,4 +24,6 @@ public interface IMessageListView {
     void notifyDataSetChanged();
 
     void setEnable(boolean isEnable);
+
+    void setInputTextMode(int mode);
 }

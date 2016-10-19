@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -118,6 +119,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
             }
         });
         mVideoView.setMediaController(mMediaController);
+        mMediaController.hide();
     }
 
     private void changeScreenToPortrait() {
@@ -142,8 +144,10 @@ public class PLVideoViewActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), R.string.live_uri_error, Toast.LENGTH_LONG).show();
             return;
         }
+        setPlayStatus(LIVE);
         mVideoPath = videoUri;
         mVideoView.setVideoPath(mVideoPath);
+        mVideoView.start();
     }
 
     private void bindListener() {
@@ -201,17 +205,20 @@ public class PLVideoViewActivity extends AppCompatActivity {
         switch (status) {
             case NOT_START:
                 setPlayNotStart();
+                break;
             case LIVE:
                 setPlayOnBuffering();
+                break;
             case PAUSE:
                 setPlayPause();
+                break;
             case CLOSE:
                 setPlayEnd();
         }
     }
 
     private void setPlayNotStart() {
-        mLoadStatusView.setImageResource(R.mipmap.icon_live_status);
+        mLoadStatusView.setImageResource(R.drawable.icon_live_status);
         mLoadStatusView.setVisibility(View.VISIBLE);
         mLoadProgressBar.setVisibility(View.GONE);
         mLoadTitleView.setText(R.string.live_no_start);
@@ -226,7 +233,8 @@ public class PLVideoViewActivity extends AppCompatActivity {
     }
 
     private void setPlayPause() {
-        mLoadStatusView.setImageResource(R.mipmap.icon_live_status);
+        getSupportActionBar().show();
+        mLoadStatusView.setImageResource(R.drawable.icon_live_status);
         mLoadStatusView.setVisibility(View.VISIBLE);
         mLoadProgressBar.setVisibility(View.GONE);
         mLoadTitleView.setText(R.string.live_no_pause);
@@ -242,10 +250,13 @@ public class PLVideoViewActivity extends AppCompatActivity {
     }
 
     private void setPlayEnd() {
+        mHandler.removeCallbacksAndMessages(null);
+        mVideoView.stopPlayback();
+        getSupportActionBar().show();
         mLoadStatusView.setImageResource(R.drawable.icon_live_close);
         mLoadStatusView.setVisibility(View.VISIBLE);
         mLoadProgressBar.setVisibility(View.GONE);
-        mLoadTitleView.setText(R.string.live_no_pause);
+        mLoadTitleView.setText(R.string.live_end);
         mLoadingView.setVisibility(View.VISIBLE);
     }
 
@@ -264,7 +275,10 @@ public class PLVideoViewActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mIsActivityPaused = false;
-        resumeLive();
+        if (LIVE.equals(mLiveStatus)) {
+            mVideoView.setVideoPath(mVideoPath);
+            mVideoView.start();
+        }
     }
 
     @Override
@@ -272,18 +286,30 @@ public class PLVideoViewActivity extends AppCompatActivity {
         super.onPause();
         mToast = null;
         mIsActivityPaused = true;
-        pauseLive();
+        mVideoView.pause();
     }
 
     protected void pauseLive() {
         mVideoView.pause();
-        setPlayPause();
+        setPlayStatus(PAUSE);
     }
 
     protected void resumeLive() {
+        setPlayStatus(LIVE);
         mVideoView.setVideoPath(mVideoPath);
         mVideoView.start();
-        setPlayOnBuffering();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            int currentOrientation = getResources().getConfiguration().orientation;
+            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                changeScreenToPortrait();
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -380,6 +406,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
                     break;
                 case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
                     showToastTips("Read frame timeout !");
+                    checkLivePlayStatus();
                     sendReconnectMessage();
                     break;
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
@@ -392,6 +419,9 @@ public class PLVideoViewActivity extends AppCompatActivity {
             return true;
         }
     };
+
+    public void checkLivePlayStatus() {
+    }
 
     private PLMediaPlayer.OnCompletionListener mOnCompletionListener = new PLMediaPlayer.OnCompletionListener() {
         @Override
@@ -456,6 +486,9 @@ public class PLVideoViewActivity extends AppCompatActivity {
             }
             if (!Utils.isNetworkAvailable(PLVideoViewActivity.this)) {
                 sendReconnectMessage();
+                return;
+            }
+            if (!LIVE.equals(mLiveStatus) || mVideoView.isPlaying()) {
                 return;
             }
             mVideoView.setVideoPath(mVideoPath);

@@ -11,6 +11,7 @@ import com.edusoho.kuozhi.imserver.ui.IMessageListView;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
+import com.edusoho.kuozhi.imserver.ui.view.MessageInputView;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.UserProvider;
@@ -38,6 +39,7 @@ public class LiveChatMessageListPresenterImpl extends MessageListPresenterImpl {
                                             IMessageListView messageListView) {
         super(params, convManager, roleManager, messageResourceHelper, mIMessageDataProvider, messageListView);
         this.mContext = context;
+        messageListView.setInputTextMode(MessageInputView.INPUT_TEXT);
     }
 
     public void setLiveData(Bundle liveData) {

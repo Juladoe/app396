@@ -3,5 +3,6 @@
     <string name="live_buffering">正在获取直播...</string>
     <string name="live_uri_error">直播地址不正确</string>
     <string name="live_no_start">直播尚未开始</string>
-    <string name="live_no_pause">课间休息</string>
+    <string name="live_no_pause">休息时间</string>
+    <string name="live_end">直播已结束</string>
 </resources>

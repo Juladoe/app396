@@ -60,6 +60,9 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
                 mILiveChatMessgeListPresenter.setUserCanChatStatus(message);
                 mILiveChatMessgeListPresenter.onHandleMessage(message);
                 break;
+            case "103010":
+                mILiveVideoPresenter.updateLivePlayStatus(message);
+                break;
             case "101002":
                 mILiveVideoPresenter.updateLivePlayStatus(message);
         }

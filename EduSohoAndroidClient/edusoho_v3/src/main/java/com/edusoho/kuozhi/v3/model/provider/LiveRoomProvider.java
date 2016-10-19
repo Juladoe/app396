@@ -3,13 +3,17 @@ package com.edusoho.kuozhi.v3.model.provider;
 import android.content.Context;
 
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
+import com.edusoho.kuozhi.v3.model.live.Signal;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
+import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -41,8 +45,19 @@ public class LiveRoomProvider extends ModelProvider {
         return requestOption.build();
     }
 
-    public ProviderListener<ArrayList> getLiveSignals(
-            String roomNo, String token, String role, String clientId, int startTime, int endTime) {
+    public ProviderListener<LinkedHashMap> getLiveServerTime() {
+
+        StringBuilder stringBuilder = new StringBuilder(Const.LIVE_HOST);
+        stringBuilder.append("/live/timestamp");
+        RequestUrl requestUrl = new RequestUrl(stringBuilder.toString());
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
+    }
+
+    public ProviderListener<LinkedHashMap<String, Signal>> getLiveSignals(
+            String roomNo, String token, String role, String clientId, long startTime, long endTime) {
 
         StringBuilder stringBuilder = new StringBuilder(Const.LIVE_HOST);
         stringBuilder.append("/signal")
@@ -54,7 +69,7 @@ public class LiveRoomProvider extends ModelProvider {
                 .append("&clientId=").append(clientId);
         RequestUrl requestUrl = new RequestUrl(stringBuilder.toString());
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<ArrayList>(){});
+                requestUrl, new TypeToken<LinkedHashMap<String, Signal>>(){});
 
         return requestOption.build();
     }

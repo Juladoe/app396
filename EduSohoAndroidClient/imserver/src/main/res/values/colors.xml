@@ -7,12 +7,15 @@
     <color name="grey_666666">#666666</color>
     <color name="green_alpha">#37b97d</color>
     <color name="white">#ffffff</color>
+    <color name="white_50">#88ffffff</color>
+    <color name="white_80">#ddffffff</color>
     <color name="grey_cccccc">#cccccc</color>
     <color name="background">#ebebeb</color>
     <color name="grey_feedback">#e5e5e5</color>
     <color name="grey_alpha">#999999</color>
     <color name="grey_beta">#97989a</color>
     <color name="base_black_87">#dd000000</color>
+    <color name="base_black_50">#99ffffff</color>
     <color name="base_light_red">#ff5822</color>
     <color name="transparent">@android:color/transparent</color>
 </resources>

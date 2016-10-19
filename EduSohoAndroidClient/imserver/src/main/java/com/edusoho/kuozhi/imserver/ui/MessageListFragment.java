@@ -36,7 +36,9 @@ import com.edusoho.kuozhi.imserver.ui.listener.MessageItemOnClickListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.util.MessageAudioPlayer;
+import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.imserver.ui.view.MessageInputView;
+import com.edusoho.kuozhi.imserver.ui.view.TextMessageInputView;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +66,7 @@ public class MessageListFragment extends Fragment implements
     public static final String CURRENT_ID = "currentId";
 
     private int mStart = 0;
+    private int mInputMode = IMessageInputView.INPUT_IMAGE_AND_VOICE;
     private boolean canLoadData = true;
     private Context mContext;
     private int mCurrentSelectedIndex;
@@ -75,7 +78,7 @@ public class MessageListFragment extends Fragment implements
     protected RecyclerView mMessageListView;
     protected View mContainerView;
     protected LinearLayoutManager mLayoutManager;
-    protected MessageInputView mMessageInputView;
+    protected IMessageInputView mMessageInputView;
     protected MessageRecyclerListAdapter mListAdapter;
     protected IMessageListPresenter mIMessageListPresenter;
 
@@ -98,6 +101,11 @@ public class MessageListFragment extends Fragment implements
         mMessageListView.setEnabled(isEnable);
     }
 
+    @Override
+    public void setInputTextMode(int mode) {
+        this.mInputMode = mode;
+    }
+
     public void setAdapter(MessageRecyclerListAdapter adapter) {
         this.mListAdapter = adapter;
     }
@@ -109,9 +117,9 @@ public class MessageListFragment extends Fragment implements
         mContext = activity.getBaseContext();
         if (mListAdapter == null) {
             mListAdapter = new MessageRecyclerListAdapter(getActivity().getBaseContext());
+            mListAdapter.setCurrentId(IMClient.getClient().getClientId());
         }
         mListAdapter.setOnItemClickListener(this);
-        mListAdapter.setCurrentId(IMClient.getClient().getClientId());
         mListAdapter.setMessageListItemController(getMessageListItemClickListener());
     }
 
@@ -182,7 +190,14 @@ public class MessageListFragment extends Fragment implements
     protected void initView(View view) {
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
         mMessageListView = (RecyclerView) view.findViewById(R.id.listview);
-        mMessageInputView = (MessageInputView) view.findViewById(R.id.message_input_view);
+
+        if (mInputMode == IMessageInputView.INPUT_TEXT) {
+            mMessageInputView= new TextMessageInputView(mContext);
+        } else {
+            mMessageInputView = new MessageInputView(mContext);
+        }
+        ViewGroup inputViewGroup = (ViewGroup) view.findViewById(R.id.message_input_view);
+        inputViewGroup.addView((View) mMessageInputView);
 
         mLayoutManager = new LinearLayoutManager(mContext);
         mLayoutManager.setReverseLayout(true);

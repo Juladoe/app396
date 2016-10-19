@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui.live;
 
 import android.content.Context;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -68,21 +69,6 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         mClientId = getIntent().getStringExtra("clientId");
         mClientName = getIntent().getStringExtra("clientName");
         mLiveTitle = getIntent().getStringExtra("title");
-    }
-
-    private void getLiveRoom(String roomUrl) {
-        new LessonProvider(mContext).getLiveRoom(roomUrl)
-        .success(new NormalCallback<LinkedHashMap>() {
-            @Override
-            public void success(LinkedHashMap data) {
-                if (data == null) {
-                    return;
-                }
-                mConversationNo = data.get("convNo").toString();
-                initChatRoom();
-                loadLiveRoomStatus();
-            }
-        });
     }
 
     @Override
@@ -156,8 +142,6 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
                     hostList.add(host + "?token=" + token);
                 }
 
-                mILiveVideoPresenter = new LiveVideoPresenterImpl(mContext, getIntent().getExtras(), LessonLivePlayerActivity.this);
-                mILiveVideoPresenter.handleHistorySignals();
                 mLiveImClient = new LiveImClient(mContext);
                 mLiveImClient.setOnConnectedCallback(new LiveImClient.OnConnectedCallback() {
                     @Override
@@ -171,42 +155,24 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         });
     }
 
-    private void loadLiveRoomStatus() {
+    @Override
+    public void checkLivePlayStatus() {
         new LiveRoomProvider(mContext).getLiveRoom(
                 mRoomNo, mToken, mRole, mClientId
         ).success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap data) {
                 String status = data.get("status").toString();
+                Log.d("status:", status);
+                if (CLOSE.equals(status)) {
+                    setPlayStatus(CLOSE);
+                    return;
+                }
                 if (NOT_START.equals(status)) {
                     setPlayStatus(NOT_START);
                     return;
                 }
                 startPlay(mPlayUrl);
-            }
-        });
-    }
-
-    private void valiteLessonInfo() {
-        new LessonProvider(mContext).getLesson(mLessonId)
-        .success(new NormalCallback<LessonItem>() {
-            @Override
-            public void success(LessonItem lessonItem) {
-                if (lessonItem == null || lessonItem.id == 0) {
-                    CommonUtil.longToast(mContext, "直播课时信息获取失败");
-                    finish();
-                    return;
-                }
-
-                setLiveTitle(lessonItem.title);
-                setLiveDesc(lessonItem.summary);
-                getLiveRoom(getIntent().getStringExtra("roomUrl"));
-            }
-        }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError obj) {
-                CommonUtil.longToast(mContext, "直播课时信息获取失败");
-                finish();
             }
         });
     }
@@ -222,7 +188,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         setLiveTitle(mLiveTitle);
         setLiveDesc(null);
         initChatRoom();
-        loadLiveRoomStatus();
+        checkLivePlayStatus();
     }
 
     protected IMessageListPresenter createProsenter() {
@@ -256,9 +222,12 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
             fragmentTransaction.add(R.id.chat_content, mMessageListFragment, "im_container");
             fragmentTransaction.commitAllowingStateLoss();
         }
-
         mIMessageListPresenter = createProsenter();
         mIMessageListPresenter.addMessageControllerListener(getMessageControllerListener());
+
+        mILiveVideoPresenter = new LiveVideoPresenterImpl(
+                mContext, getIntent().getExtras(), LessonLivePlayerActivity.this, mMessageListFragment);
+        mILiveVideoPresenter.handleHistorySignals();
         registIMReceiver();
     }
 

@@ -70,7 +70,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
     protected static long TIME_INTERVAL = 60 * 5 * 1000;
     protected static final String TAG = "MessageListAdapter";
 
-    private int mCurrentId;
+    protected int mCurrentId;
     private int mMaxAudioWidth;
     private MessageHelper mMessageHelper;
     private MessageItemOnClickListener mMessageItemOnClickListener;
@@ -627,7 +627,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
                 switch (jsonObject.optString("cmd")) {
                     case "memberJoined":
                         mContentView.setVisibility(View.VISIBLE);
-                        mContentView.setText(String.format("%s 加入直播教师", jsonObject.optString("clientName")));
+                        mContentView.setText(String.format("%s 加入直播教室", jsonObject.optString("clientName")));
                         break;
                     default:
                         mContentView.setVisibility(View.GONE);

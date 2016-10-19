@@ -44,7 +44,7 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
     public void onHandleMessage(MessageEntity message) {
         String clientId = mLiveData.get("clientId").toString();
         String ClientName = mLiveData.get("clientName").toString();
-        if (clientId.equals(AppUtil.parseInt(message.getFromId())) && ClientName.equals(message.getFromName())) {
+        if (clientId.equals(message.getFromId()) && ClientName.equals(message.getFromName())) {
             return;
         }
 
