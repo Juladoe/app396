@@ -235,7 +235,11 @@ public class NewsFragment extends BaseFragment {
                 updateNetWorkStatusHeader("正在连接...");
                 break;
             case IMConnectStatus.NO_READY:
-                updateNetWorkStatusHeader("消息服务器连接失败，请重试");
+                if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                    updateNetWorkStatusHeader("聊天功能已关闭, 请联系管理员");
+                    return;
+                }
+                updateNetWorkStatusHeader("消息服务未连接，请重试");
                 break;
             case IMConnectStatus.OPEN:
             default:
