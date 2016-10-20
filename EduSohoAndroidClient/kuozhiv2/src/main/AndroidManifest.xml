@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.edusoho">
+    package="com.edusoho">
+
+    <uses-sdk android:minSdkVersion="16" />
 
     <application
         android:name="com.edusoho.kuozhi.v3.EdusohoApp"
@@ -14,8 +16,8 @@
             android:label="@string/app_name"
             android:theme="@style/kuozhiV2StartTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
@@ -24,19 +26,19 @@
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleInstance"
             android:screenOrientation="portrait"
-            android:theme="@style/SplashTheme"/>
+            android:theme="@style/SplashTheme" />
 
         <meta-data
             android:name="UMENG_APPKEY"
-            android:value="550f8dacfd98c56a3200084f"/>
+            android:value="550f8dacfd98c56a3200084f" />
 
         <meta-data
             android:name="UMENG_CHANNEL"
-            android:value="Official"/>
+            android:value="Official" />
 
         <meta-data
             android:name="BUG_HD_SDK_GENERAL_KEY"
-            android:value="a3e42ce859bdc5b6017ba67a5e23fa44"/>
+            android:value="a3e42ce859bdc5b6017ba67a5e23fa44" />
     </application>
 
 </manifest>
