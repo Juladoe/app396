@@ -3,6 +3,8 @@
     package="com.edusoho.kuozhi"
     android:windowSoftInputMode="adjustResize">
 
+    <uses-sdk android:minSdkVersion="16" />
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
