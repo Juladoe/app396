@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -29,6 +30,7 @@ import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.provider.LiveChatDataProvider;
 import com.edusoho.kuozhi.v3.model.provider.LiveRoomProvider;
 import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -59,6 +61,18 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     protected MessageListFragment mMessageListFragment;
     private IMBroadcastReceiver mReceiver;
     private TextView mNoticeView;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ActivityUtil.setStatusBarTranslucent(this, getResources().getColor(R.color.base_black_normal));
+    }
+
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        super.setContentView(layoutResID);
+        ActivityUtil.setRootViewFitsWindow(this);
+    }
 
     private void initParams() {
         mConversationNo = getIntent().getStringExtra("convNo");

@@ -72,7 +72,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_net_school);
         app.addTask("NetSchoolActivity", this);
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         initView();
     }
 

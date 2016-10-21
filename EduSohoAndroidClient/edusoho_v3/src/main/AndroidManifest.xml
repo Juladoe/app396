@@ -111,9 +111,11 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".v3.ui.NetSchoolActivity"
+            android:theme="@style/AppThemeNoActionBar"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".v3.ui.ThreadDiscussActivity"
             android:screenOrientation="portrait"
@@ -224,6 +226,7 @@
             android:screenOrientation="portrait" />
 
         <activity
+            android:theme="@style/AppThemeNoActionBar"
             android:name=".v3.ui.WebViewActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />

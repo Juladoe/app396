@@ -42,6 +42,7 @@ import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
@@ -95,6 +96,13 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         initParams();
         setBackMode(BACK, TextUtils.isEmpty(mTargetName) ? "聊天" : mTargetName);
         attachMessageListFragment();
+        ActivityUtil.setStatusBarTranslucent(this, getResources().getColor(R.color.primary));
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        ActivityUtil.setRootViewFitsWindow(this);
     }
 
     @Override
