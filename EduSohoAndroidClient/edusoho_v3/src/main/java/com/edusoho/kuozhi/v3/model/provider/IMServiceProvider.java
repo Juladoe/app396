@@ -49,7 +49,7 @@ public class IMServiceProvider extends ModelProvider {
     public void reConnectServer(int clientId, String clientName) {
         setClientInfo(clientId, clientName);
         if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
-            IMClient.getClient().setIMConnectStatus(IMConnectStatus.ERROR);
+            IMClient.getClient().setIMConnectStatus(IMConnectStatus.NO_READY);
             return;
         }
         int status = IMClient.getClient().getIMConnectStatus();

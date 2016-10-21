@@ -85,7 +85,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
 
     private void startIconRotateAnim() {
         View iconBgView = findViewById(R.id.tv_start_icon_bg);
-        iconBgView.setBackgroundResource(R.drawable.app_splash);
+        iconBgView.setBackgroundResource(R.drawable.start_app_splash);
 
         Animation rotateAnimation = AnimationUtils.loadAnimation(mContext, R.anim.alpha_rotate);
         iconBgView.setAnimation(rotateAnimation);

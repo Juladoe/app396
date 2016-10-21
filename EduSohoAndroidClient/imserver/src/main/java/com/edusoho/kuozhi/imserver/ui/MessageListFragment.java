@@ -565,9 +565,12 @@ public class MessageListFragment extends Fragment implements
 
     @Override
     public void setMessageList(List<MessageEntity> messageEntityList) {
-        if (messageEntityList == null || messageEntityList.isEmpty()) {
+        if (messageEntityList == null) {
             canLoadData = false;
             return;
+        }
+        if (messageEntityList.isEmpty()) {
+            canLoadData = false;
         }
         Collections.sort(messageEntityList, new Comparator<MessageEntity>() {
             @Override
