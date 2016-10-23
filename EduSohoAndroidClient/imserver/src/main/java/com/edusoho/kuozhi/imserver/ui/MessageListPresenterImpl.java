@@ -36,6 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by suju on 16/9/16.
@@ -52,6 +53,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     private Role mTargetRole;
     protected int mClientId;
     protected String mClientName;
+    private Map<String, Boolean> mMessageFilterMap;
 
     private IMConvManager mIMConvManager;
     private IMRoleManager mIMRoleManager;
@@ -73,6 +75,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         this.mMessageResourceHelper = messageResourceHelper;
         this.mIMessageDataProvider = mIMessageDataProvider;
         this.mIMessageListView = messageListView;
+        this.mMessageFilterMap = new ConcurrentHashMap<>();
         initParams(params);
         checkConvNo();
         mIMessageListView.setPresenter(this);
@@ -144,6 +147,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     @Override
     public void removeReceiver() {
         IMClient.getClient().removeReceiver(mIMMessageReceiver);
+        mMessageFilterMap.clear();
     }
 
     @Override
@@ -502,19 +506,42 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         return TextUtils.isEmpty(convNo) || "0".equals(convNo);
     }
 
-    protected boolean messageEntityInFilter(MessageEntity msg) {
-        if (mConversationNo.equals(msg.getConvNo())) {
+    protected synchronized boolean filterReceiverdMessage(MessageEntity messageEntity) {
+        if (TextUtils.isEmpty(messageEntity.getMsgNo())) {
             return false;
         }
 
-        return true;
+        boolean result = mMessageFilterMap.containsKey(messageEntity.getMsgNo());
+        if (!result) {
+            addMessageFilter(messageEntity.getMsgNo());
+        }
+        return result;
+    }
+
+    protected List<MessageEntity> filterReceiverdMessageList(List<MessageEntity> filterList) {
+        List<MessageEntity> messageEntityList = new ArrayList<>();
+        for (MessageEntity filter : filterList) {
+            if (filterReceiverdMessage(filter)) {
+                continue;
+            }
+            messageEntityList.add(filter);
+        }
+
+        return messageEntityList;
+    }
+
+    private void addMessageFilter(String msgNo) {
+        if (mMessageFilterMap.size() > 300) {
+            mMessageFilterMap.clear();
+        }
+        mMessageFilterMap.put(msgNo, true);
     }
 
     protected IMMessageReceiver getIMMessageListener() {
         return new IMMessageReceiver() {
             @Override
             public boolean onReceiver(MessageEntity msg) {
-                if (messageEntityInFilter(msg)) {
+                if (!mConversationNo.equals(msg.getConvNo()) || filterReceiverdMessage(msg)) {
                     return true;
                 }
 
@@ -525,12 +552,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
 
             @Override
             public boolean onOfflineMsgReceiver(List<MessageEntity> messageEntities) {
-                Iterator<MessageEntity> iterator = messageEntities.iterator();
-                while (iterator.hasNext()) {
-                    if (messageEntityInFilter(iterator.next())) {
-                        iterator.remove();
-                    }
-                }
+                messageEntities = filterReceiverdMessageList(messageEntities);
                 coverMessageEntityStatus(messageEntities);
                 mIMessageListView.insertMessageList(messageEntities);
                 mIMConvManager.clearReadCount(mConversationNo);

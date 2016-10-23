@@ -65,11 +65,10 @@ public class NoteActivity extends ActionBarBaseActivity implements View.OnClickL
             return;
         }
 
-        noteModel.getNote(mCourseId, mLessonId, app.loginUser.id, new ResponseCallbackListener<List<Note>>() {
+        noteModel.getLessonNote(mCourseId, mLessonId, app.loginUser.id, new ResponseCallbackListener<Note>() {
             @Override
-            public void onSuccess(List<Note> data) {
-                if (data != null && data.size() > 0) {
-                    Note note = data.get(0);
+            public void onSuccess(Note note) {
+                if (note != null) {
                     etNoteContent.setText(Html.fromHtml(note.content).toString());
                     swShare.setChecked(note.status == 1);
                 }
@@ -77,7 +76,6 @@ public class NoteActivity extends ActionBarBaseActivity implements View.OnClickL
 
             @Override
             public void onFailure(String code, String message) {
-
             }
         });
     }

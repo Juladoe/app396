@@ -235,7 +235,11 @@ public class NewsFragment extends BaseFragment {
                 updateNetWorkStatusHeader("正在连接...");
                 break;
             case IMConnectStatus.NO_READY:
-                updateNetWorkStatusHeader("消息服务器连接失败，请重试");
+                if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                    updateNetWorkStatusHeader("聊天功能已关闭, 请联系管理员");
+                    return;
+                }
+                updateNetWorkStatusHeader("消息服务未连接，请重试");
                 break;
             case IMConnectStatus.OPEN:
             default:
@@ -498,7 +502,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void getLearnCourses(final NormalCallback<CourseResult> normalCallback) {
-        RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=learn", true);
+        RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=learn&limit=1000", true);
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -518,7 +522,7 @@ public class NewsFragment extends BaseFragment {
     }
 
     private void getTeachingCourses(final NormalCallback<CourseResult> normalCallback) {
-        RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=teaching", true);
+        RequestUrl requestUrl = app.bindNewApiUrl(Const.MY_COURSES + "relation=teaching&limit=1000", true);
         mActivity.ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

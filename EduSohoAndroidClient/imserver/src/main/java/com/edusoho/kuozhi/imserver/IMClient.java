@@ -55,7 +55,6 @@ public class IMClient {
 
     private IImServerAidlInterface mImBinder;
     private ServiceConnection mServiceConnection;
-    private IMMessageReceiver mLaterIMMessageReceiver;
     private List<IMMessageReceiver> mMessageReceiverList;
     private List<IMConnectStatusListener> mIMConnectStatusListenerList;
     private IMMessageReceiver mGlobalIMMessageReceiver;
@@ -317,10 +316,7 @@ public class IMClient {
         for (int i = count - 1; i >= 0; i--) {
             IMMessageReceiver receiver = mMessageReceiverList.get(i);
             receiver.getType().isProcessed = receiver.onOfflineMsgReceiver(messageEntities);
-            this.mLaterIMMessageReceiver = receiver;
         }
-
-        this.mLaterIMMessageReceiver = null;
     }
 
     private List<MessageEntity> filterMessageEntityList(List<MessageEntity> messageEntities) {
@@ -362,10 +358,7 @@ public class IMClient {
                 continue;
             }
             receiver.getType().isProcessed = receiver.onReceiver(messageEntity);
-            this.mLaterIMMessageReceiver = receiver;
         }
-
-        this.mLaterIMMessageReceiver = null;
     }
 
     public IMConvManager getConvManager() {
@@ -382,7 +375,12 @@ public class IMClient {
 
     public boolean isHandleMessageInFront(String msgType, String convNo) {
         ReceiverInfo receiverInfo = null;
-        if (mLaterIMMessageReceiver == null || (receiverInfo = mLaterIMMessageReceiver.getType()) == null) {
+        if (mMessageReceiverList.isEmpty()) {
+            return false;
+        }
+
+        IMMessageReceiver receiver = mMessageReceiverList.get(mMessageReceiverList.size() -  1);
+        if (receiver == null || (receiverInfo = receiver.getType()) == null) {
             return false;
         }
 
