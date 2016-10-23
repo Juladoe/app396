@@ -11,6 +11,7 @@
         android:layout_height="match_parent"></FrameLayout>
 
     <com.edusoho.kuozhi.v3.view.AlwaysMarqueeTextView
+        android:alpha="0"
         android:id="@+id/tv_live_notice"
         android:drawablePadding="15dp"
         android:gravity="center_vertical"

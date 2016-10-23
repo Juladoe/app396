@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
@@ -31,8 +32,10 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
     public void onBindViewHolder(MessageRecyclerListAdapter.MessageViewHolder viewHolder, int position) {
         LiveMessageBody messageBody = new LiveMessageBody(mMessageList.get(position).getMsg());
         if (viewHolder instanceof LiveTextViewHolder) {
-            ((LiveTextViewHolder) viewHolder).setLiveMessageBody(messageBody, position);
-            ((LiveTextViewHolder) viewHolder).setLiveAvatar(mMessageList.get(position));
+            LiveTextViewHolder liveTextViewHolder = ((LiveTextViewHolder) viewHolder);
+            liveTextViewHolder.setLiveMessageBody(messageBody, position);
+            liveTextViewHolder.setLiveAvatar(mMessageList.get(position));
+            liveTextViewHolder.setUserRole(messageBody);
             return;
         }
         super.onBindViewHolder(viewHolder, position);
@@ -115,8 +118,11 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
 
     protected class LiveTextViewHolder extends TextViewHolder {
 
+        private TextView mRoleView;
+
         public LiveTextViewHolder(View view) {
             super(view);
+            mRoleView = (TextView) view.findViewById(R.id.tv_role_label);
             nicknameView.setVisibility(View.VISIBLE);
         }
 
@@ -124,6 +130,14 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
             MessageBody messageBody = new MessageBody(messageEntity);
             messageBody.setSource(new Source(AppUtil.parseInt(messageEntity.getFromId()), Destination.USER));
             super.setAvatar(messageBody);
+        }
+
+        public void setUserRole(LiveMessageBody messageBody) {
+            mRoleView.setVisibility(View.GONE);
+            if ("organizer".equals(messageBody.getRole())) {
+                mRoleView.setText("老师");
+                mRoleView.setVisibility(View.VISIBLE);
+            }
         }
 
         public void setLiveMessageBody(LiveMessageBody messageBody, int position) {
