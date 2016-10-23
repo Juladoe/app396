@@ -453,4 +453,5 @@
     <color name="thread_type_discuss">#2DB7F5</color>
 
     <color name="live_notice_bg">#B3B3B3</color>
+    <color name="live_notice_list_bg">#e8e8e8</color>
 </resources>

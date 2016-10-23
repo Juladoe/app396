@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -137,6 +138,15 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.menu_notice) {
+            Intent intent = new Intent(mContext, LiveNoticeListActivity.class);
+            intent.putExtra(LiveNoticeListActivity.ROLE, mRole);
+            intent.putExtra(LiveNoticeListActivity.TOKEN, mToken);
+            intent.putExtra(LiveNoticeListActivity.CLIENT_ID, mClientId);
+            intent.putExtra(LiveNoticeListActivity.ROOM_NO, mRoomNo);
+            startActivity(intent);
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 

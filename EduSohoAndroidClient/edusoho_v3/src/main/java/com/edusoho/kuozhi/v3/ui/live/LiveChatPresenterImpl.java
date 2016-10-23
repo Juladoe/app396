@@ -70,7 +70,7 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
         String roomNo = mLiveData.get("roomNo").toString();
         String token = mLiveData.get("token").toString();
         String role = mLiveData.get("role").toString();
-        String clientId = mLiveData.get("clientId").toString();
+        final String clientId = mLiveData.get("clientId").toString();
         new LiveRoomProvider(mContext).joinLiveChatRoom(
                 roomNo, token, role, clientId
         ).success(new NormalCallback<LinkedHashMap>() {
