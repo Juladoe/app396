@@ -146,7 +146,7 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
             mILiveVideoView.setNotice(jsonObject.optString("info"));
             mILiveVideoView.showNoticeView();
             mHandler.removeMessages(FADE_OUT);
-            mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT), 5000);
+            mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT), 1000 * 60);
         } catch (JSONException e) {
         }
     }
