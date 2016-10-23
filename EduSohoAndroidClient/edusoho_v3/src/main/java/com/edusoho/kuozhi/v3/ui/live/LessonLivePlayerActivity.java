@@ -1,5 +1,8 @@
 package com.edusoho.kuozhi.v3.ui.live;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -10,6 +13,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -65,13 +70,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ActivityUtil.setStatusBarTranslucent(this, getResources().getColor(R.color.base_black_normal));
-    }
-
-    @Override
-    public void setContentView(@LayoutRes int layoutResID) {
-        super.setContentView(layoutResID);
-        ActivityUtil.setRootViewFitsWindow(this);
+        ActivityUtil.setStatusBarTranslucent(this);
     }
 
     private void initParams() {
@@ -128,6 +127,32 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     public void setNotice(String notice) {
         mNoticeView.setText(notice);
         mNoticeView.requestFocus();
+    }
+
+    @Override
+    public void hideNoticeView() {
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mNoticeView, "alpha",  1.0f, 0.0f);
+        objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        objectAnimator.setDuration(500);
+        objectAnimator.start();
+    }
+
+    @Override
+    public synchronized void showNoticeView() {
+        if (mNoticeView.getTag() != null) {
+            return;
+        }
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mNoticeView, "alpha",  0.0f, 1.0f);
+        objectAnimator.setInterpolator(new DecelerateInterpolator());
+        objectAnimator.setDuration(360);
+        objectAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mNoticeView.setTag(null);
+            }
+        });
+        mNoticeView.setTag(objectAnimator);
+        objectAnimator.start();
     }
 
     @Override

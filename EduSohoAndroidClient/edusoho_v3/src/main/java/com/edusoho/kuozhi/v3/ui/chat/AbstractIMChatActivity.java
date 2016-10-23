@@ -96,13 +96,13 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         initParams();
         setBackMode(BACK, TextUtils.isEmpty(mTargetName) ? "聊天" : mTargetName);
         attachMessageListFragment();
-        ActivityUtil.setStatusBarTranslucent(this, getResources().getColor(R.color.primary));
+        ActivityUtil.setStatusBarTranslucent(this);
     }
 
     @Override
     public void setContentView(View view) {
         super.setContentView(view);
-        ActivityUtil.setRootViewFitsWindow(this);
+        ActivityUtil.setRootViewFitsWindow(this, getResources().getColor(R.color.primary));
     }
 
     @Override

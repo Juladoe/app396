@@ -5,6 +5,10 @@ package com.edusoho.kuozhi.v3.ui.live;
  */
 public interface ILiveVideoView {
 
+    void showNoticeView();
+
+    void hideNoticeView();
+
     void setNotice(String notice);
 
     void setLivePlayStatus(boolean playStatus);

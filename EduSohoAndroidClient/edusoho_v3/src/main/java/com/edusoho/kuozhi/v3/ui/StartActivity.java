@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -49,6 +50,11 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         initView();
         app.registMsgSource(this);
         startAnim();
+    }
+
+    @Override
+    protected int getStatusBarColor() {
+        return Color.TRANSPARENT;
     }
 
     protected void initView() {

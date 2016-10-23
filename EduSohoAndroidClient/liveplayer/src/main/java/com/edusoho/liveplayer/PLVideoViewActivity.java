@@ -218,7 +218,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     }
 
     private void setPlayNotStart() {
-        mLoadStatusView.setImageResource(R.drawable.icon_live_status);
+        mLoadStatusView.setImageResource(R.drawable.icon_live_nostart);
         mLoadStatusView.setVisibility(View.VISIBLE);
         mLoadProgressBar.setVisibility(View.GONE);
         mLoadTitleView.setText(R.string.live_no_start);

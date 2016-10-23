@@ -57,19 +57,23 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         if (mActionBar != null) {
             mActionBar.setWindowTitle("title");
         }
-        ActivityUtil.setStatusBarTranslucent(this, getResources().getColor(R.color.primary));
+        ActivityUtil.setStatusBarTranslucent(this);
     }
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
         super.setContentView(layoutResID);
-        ActivityUtil.setRootViewFitsWindow(this);
+        ActivityUtil.setRootViewFitsWindow(this, getStatusBarColor());
+    }
+
+    protected int getStatusBarColor() {
+        return getResources().getColor(R.color.primary);
     }
 
     @Override
     public void setContentView(View view) {
         super.setContentView(view);
-        ActivityUtil.setRootViewFitsWindow(this);
+        ActivityUtil.setRootViewFitsWindow(this, getResources().getColor(R.color.primary));
     }
 
     @Override

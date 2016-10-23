@@ -118,7 +118,6 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
         public LiveTextViewHolder(View view) {
             super(view);
             nicknameView.setVisibility(View.VISIBLE);
-            mContentView.getBackground().setAlpha(60);
         }
 
         protected void setLiveAvatar(MessageEntity messageEntity) {

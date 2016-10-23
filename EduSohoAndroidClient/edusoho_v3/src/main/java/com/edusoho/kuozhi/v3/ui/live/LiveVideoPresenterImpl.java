@@ -2,8 +2,8 @@ package com.edusoho.kuozhi.v3.ui.live;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-
+import android.os.Handler;
+import android.os.Message;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.ui.IMessageListView;
@@ -14,7 +14,6 @@ import com.edusoho.kuozhi.v3.model.live.Signal;
 import com.edusoho.kuozhi.v3.model.provider.LiveRoomProvider;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,12 +25,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by suju on 16/10/18.
  */
 public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
+
+    private static final int FADE_OUT = 0x02;
 
     private Bundle mLiveData;
     private Context mContext;
@@ -74,13 +74,12 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
                 String role = mLiveData.get("role").toString();
                 String clientId = mLiveData.get("clientId").toString();
 
-                long startTime = time - 3600000 * 1;
+                long startTime = 0;
                 new LiveRoomProvider(mContext).getLiveSignals(
                         roomNo, token, role, clientId, startTime, time
                 ).success(new NormalCallback<LinkedHashMap<String, Signal>>() {
                     @Override
                     public void success(LinkedHashMap<String, Signal> signalList) {
-                        Log.d("getHistorySignals:", "" + signalList);
                         invokeSignals(signalList);
                     }
                 });
@@ -145,7 +144,21 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
         try {
             JSONObject jsonObject = new JSONObject(liveMessageBody.getData());
             mILiveVideoView.setNotice(jsonObject.optString("info"));
+            mILiveVideoView.showNoticeView();
+            mHandler.removeMessages(FADE_OUT);
+            mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT), 5000);
         } catch (JSONException e) {
         }
     }
+
+    private Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case FADE_OUT:
+                    mILiveVideoView.hideNoticeView();
+            }
+        }
+    };
 }

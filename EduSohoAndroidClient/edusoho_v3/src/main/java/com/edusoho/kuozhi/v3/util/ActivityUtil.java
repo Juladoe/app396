@@ -12,16 +12,16 @@ import android.view.WindowManager;
  */
 public class ActivityUtil {
 
-    public static void setStatusBarTranslucent(Activity activity, int color) {
+    public static void setStatusBarTranslucent(Activity activity) {
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+    }
+
+    public static void setRootViewFitsWindow(Activity activity, int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
             View statusView = createStatusView(activity, color);
             decorView.addView(statusView);
         }
-    }
-
-    public static void setRootViewFitsWindow(Activity activity) {
         ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
         ViewGroup rootView = (ViewGroup) decorView.findViewById(android.R.id.content);
         if (rootView.getChildCount() == 0) {

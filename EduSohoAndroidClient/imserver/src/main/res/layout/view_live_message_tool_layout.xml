@@ -4,7 +4,7 @@
     android:layout_height="44dp"
     android:paddingLeft="15dp"
     android:gravity="center_vertical"
-    android:background="@color/base_black_87"
+    android:background="@color/text_message_input_bg"
     android:orientation="horizontal">
 
     <EditText
@@ -15,9 +15,9 @@
         android:background="@drawable/live_chat_send_box_bg"
         android:gravity="center_vertical"
         android:hint="跟同学聊聊天吧..."
-        android:paddingLeft="22dp"
-        android:textColor="@color/white_50"
-        android:textColorHint="@color/white_50"
+        android:paddingLeft="12dp"
+        android:textColor="@color/base_black_87"
+        android:textColorHint="@color/grey_alpha"
         android:imeOptions="actionSend"
         android:inputType="text"
         android:maxLines="4"

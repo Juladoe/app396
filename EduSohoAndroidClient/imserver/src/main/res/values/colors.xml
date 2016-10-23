@@ -2,6 +2,7 @@
 <resources>
     <color name="chat_background">#F4F7F9</color>
     <color name="chat_tool_background">#FAFAFA</color>
+    <color name="text_message_input_bg">#f6f6f6</color>
 
     <color name="green_feedback">#0e9e5c</color>
     <color name="grey_666666">#666666</color>

@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/base_black_normal"
     android:paddingBottom="8dp"
     android:paddingLeft="16dp"
     android:paddingTop="8dp">
@@ -14,7 +13,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
         android:background="@drawable/message_time_bg"
-        android:textColor="@android:color/white"
+        android:textColor="@color/white"
         android:textSize="@dimen/x_small_font_size"
         android:visibility="gone" />
 
@@ -38,7 +37,7 @@
         android:layout_toRightOf="@id/tv_avatar"
         android:lineSpacingExtra="0dp"
         android:text="nickname"
-        android:textColor="@color/base_white_40"
+        android:textColor="@color/base_black_54"
         android:textSize="@dimen/x_small_font_size"
         android:visibility="gone" />
 
@@ -59,7 +58,7 @@
             android:lineSpacingExtra="1dp"
             android:lineSpacingMultiplier="1.1"
             android:maxWidth="250dip"
-            android:textColor="@color/white"
+            android:textColor="@color/base_black_normal"
             android:textSize="@dimen/medium_font_size" />
     </FrameLayout>
 
