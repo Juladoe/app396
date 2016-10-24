@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.gensee.playerdemo">
+    package="com.gensee.player">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -21,20 +21,8 @@
         android:targetSdkVersion="14" />
 
     <application
-        android:largeHeap="true"
-        android:allowBackup="true">
-        <activity
-            android:name=".PlayerDemoActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden" >
-        </activity>
-
-        <service
-            android:name=".LogCatService"
-            android:process=":message" >
-        </service>
+        android:allowBackup="false"
+        android:largeHeap="true">
         <activity
             android:name="com.gensee.voddemo.VodActivity"
             android:screenOrientation="landscape"
@@ -44,15 +32,11 @@
             android:configChanges="orientation|screenLayout|screenSize"
             android:screenOrientation="landscape" />
         <activity
-            android:name=".TestActivity"
-            android:configChanges="orientation|screenLayout|screenSize"
-            />
-        <activity
-            android:name=".MainActivity"
+            android:name=".GenseeLivePlayActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
-
-            android:label="@string/app_name" >
-        </activity>
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"></activity>
     </application>
 
 </manifest>

@@ -39,8 +39,7 @@ import com.gensee.entity.ChatMsg;
 import com.gensee.entity.InitParam;
 import com.gensee.entity.QAMsg;
 import com.gensee.entity.VodObject;
-import com.gensee.playerdemo.LogCatService;
-import com.gensee.playerdemo.R;
+import com.gensee.player.R;
 import com.gensee.taskret.OnTaskRet;
 import com.gensee.utils.GenseeLog;
 import com.gensee.utils.StringUtil;
@@ -198,7 +197,6 @@ public class VodActivity extends Activity implements OnClickListener,
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.vod_layout);
 		preferences = getPreferences(MODE_PRIVATE);
-		startLogService();
 		mMyAdapter = new MyAdapter(this);
 		mInintButton = (Button) findViewById(R.id.mbutton);
 		mListView = (ListView) findViewById(R.id.progressDoc);
@@ -556,7 +554,6 @@ public class VodActivity extends Activity implements OnClickListener,
 		// 退出下载相关的功能时，释放掉
 		mVodDownLoader.release();
 		mVodDownLoader = null;
-		stopLogService();
 		super.onBackPressed();
 
 	}
@@ -740,15 +737,5 @@ public class VodActivity extends Activity implements OnClickListener,
 			break;
 		}
 		return msg;
-	}
-
-
-	
-	private void startLogService() {
-		startService(new Intent(this, LogCatService.class));
-	}
-
-	private void stopLogService() {
-			stopService(new Intent(this, LogCatService.class));
 	}
 }

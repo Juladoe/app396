@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.gensee.entity.UserInfo;
-import com.gensee.playerdemo.R;
+import com.gensee.player.R;
 
 public class UserListAdapter extends BaseAdapter {
 	public static final long PUBLIC_CHAT_TAG = -1000;

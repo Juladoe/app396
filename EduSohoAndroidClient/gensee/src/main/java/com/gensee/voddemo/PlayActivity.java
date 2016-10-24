@@ -35,7 +35,7 @@ import com.gensee.media.VODPlayer;
 import com.gensee.media.VODPlayer.OnVodPlayListener;
 import com.gensee.pdu.GSDocView;
 import com.gensee.pdu.GSDocView.OnDocViewEventListener;
-import com.gensee.playerdemo.R;
+import com.gensee.player.R;
 import com.gensee.utils.GenseeLog;
 import com.gensee.utils.StringUtil;
 import com.gensee.view.GSDocViewGx;

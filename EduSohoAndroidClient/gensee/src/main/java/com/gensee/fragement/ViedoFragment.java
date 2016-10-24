@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.gensee.player.Player;
-import com.gensee.playerdemo.R;
+import com.gensee.player.R;
 import com.gensee.view.GSVideoView;
 
 @SuppressLint("ValidFragment")

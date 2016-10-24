@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.gensee.player.Player;
-import com.gensee.playerdemo.R;
+import com.gensee.player.R;
 import com.gensee.view.GSDocViewGx;
 
 public class DocFragment extends Fragment {

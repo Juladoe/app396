@@ -1,4 +1,4 @@
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 22
@@ -19,5 +19,6 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':genseelib')
+    compile 'com.android.support:design:22.2.1'
     compile 'com.android.support:appcompat-v7:22.2.1'
 }
