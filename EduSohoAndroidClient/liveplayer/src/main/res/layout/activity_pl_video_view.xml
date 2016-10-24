@@ -4,49 +4,49 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:background="@color/live_player_bg"
         android:id="@+id/fl_live_container"
         android:layout_width="match_parent"
-        android:layout_height="240dp">
+        android:layout_height="wrap_content"
+        android:background="@color/live_player_bg">
 
-        <com.pili.pldroid.player.widget.PLVideoView
-            android:background="@color/live_player_bg"
+        <com.edusoho.liveplayer.view.LiveVideoView
             android:id="@+id/VideoView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="top" />
+            android:layout_height="240dp"
+            android:layout_gravity="top"
+            android:background="@color/live_player_bg" />
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/vg_live_loadingView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
+            android:orientation="vertical"
+            android:paddingBottom="4dp"
             android:paddingLeft="12dp"
             android:paddingRight="12dp"
             android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:orientation="vertical">
+            android:visibility="gone">
 
             <ProgressBar
                 android:id="@+id/iv_live_progressbar"
-                android:visibility="gone"
-                android:progressDrawable="@drawable/live_progress"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:progressDrawable="@drawable/live_progress"
+                android:visibility="gone" />
 
             <ImageView
-                android:visibility="visible"
                 android:id="@+id/iv_live_statusicon"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
 
             <TextView
-                android:layout_marginTop="15dp"
                 android:id="@+id/tv_live_loadtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 android:text="@string/live_buffering"
                 android:textColor="@color/progressbar_title"
                 android:textSize="12sp" />
@@ -54,14 +54,13 @@
 
     </FrameLayout>
 
-    <android.support.v7.widget.Toolbar
+    <android.support.v7.widget.Toolbar xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/toolbar"
-        android:background="@drawable/toobar_mask_bg"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        app:navigationIcon="@drawable/action_bar_back"
-        android:navigationIcon="@drawable/action_bar_back"
         android:layout_width="match_parent"
-        android:layout_height="56dp">
+        android:layout_height="56dp"
+        android:background="@drawable/toobar_mask_bg"
+        android:navigationIcon="@drawable/action_bar_back"
+        app:navigationIcon="@drawable/action_bar_back">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -71,25 +70,25 @@
 
             <TextView
                 android:id="@+id/tv_live_title"
-                android:textColor="@color/live_toolbar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="title" />
+                android:text="title"
+                android:textColor="@color/live_toolbar_title" />
 
             <TextView
-                android:textColor="@color/live_toolbar_desc"
                 android:id="@+id/tv_live_desc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="desc" />
+                android:text="desc"
+                android:textColor="@color/live_toolbar_desc" />
 
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
+
     <FrameLayout
         android:id="@+id/fl_live_bottom_layout"
-        android:layout_marginTop="240dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="240dp"></FrameLayout>
 
 </FrameLayout>

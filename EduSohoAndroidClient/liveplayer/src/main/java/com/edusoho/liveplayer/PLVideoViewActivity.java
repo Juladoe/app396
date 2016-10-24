@@ -62,6 +62,8 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private int mIsLiveStreaming;
     private String mLiveStatus;
 
+    private int mVideoHeight;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -71,7 +73,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         initView();
         AVOptions avOptions = getOptions(getIntent());
         mVideoView.setAVOptions(avOptions);
-        mVideoView.setDisplayAspectRatio(PLVideoView.ASPECT_RATIO_PAVED_PARENT);
+        mVideoView.setDisplayAspectRatio(PLVideoView.ASPECT_RATIO_16_9);
         setMediaController();
         bindListener();
     }
@@ -124,19 +126,18 @@ public class PLVideoViewActivity extends AppCompatActivity {
 
     private void changeScreenToPortrait() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        ViewGroup.LayoutParams lp = mVideoContainer.getLayoutParams();
-        float scale = getResources().getDisplayMetrics().density;
-        lp.height = (int) (240 * scale + 0.5f);
+        ViewGroup.LayoutParams lp = mVideoView.getLayoutParams();
+        lp.height = mVideoHeight;
         mBottomLayout.setVisibility(View.VISIBLE);
-        mVideoContainer.setLayoutParams(lp);
+        mVideoView.setLayoutParams(lp);
     }
 
     private void changeScreenToLandspace() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        ViewGroup.LayoutParams lp = mVideoContainer.getLayoutParams();
+        ViewGroup.LayoutParams lp = mVideoView.getLayoutParams();
         lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
         mBottomLayout.setVisibility(View.INVISIBLE);
-        mVideoContainer.setLayoutParams(lp);
+        mVideoView.setLayoutParams(lp);
     }
 
     protected void startPlay(String videoUri) {
@@ -455,6 +456,14 @@ public class PLVideoViewActivity extends AppCompatActivity {
         @Override
         public void onVideoSizeChanged(PLMediaPlayer plMediaPlayer, int width, int height) {
             Log.d(TAG, "onVideoSizeChanged: " + width + "," + height);
+            int videoWidth = mVideoView.getWidth();
+            mVideoHeight = (int) (videoWidth / (width / (float)height));
+            if (mVideoHeight == 0) {
+                mVideoHeight = getResources().getDimensionPixelOffset(R.dimen.live_video_height);
+            }
+            ViewGroup.LayoutParams lp = mVideoView.getLayoutParams();
+            lp.height = mVideoHeight;
+            mVideoView.setLayoutParams(lp);
         }
     };
 

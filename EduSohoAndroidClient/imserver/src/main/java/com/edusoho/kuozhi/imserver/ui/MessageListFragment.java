@@ -118,8 +118,8 @@ public class MessageListFragment extends Fragment implements
         if (mListAdapter == null) {
             mListAdapter = new MessageRecyclerListAdapter(getActivity().getBaseContext());
             mListAdapter.setCurrentId(IMClient.getClient().getClientId());
+            mListAdapter.setOnItemClickListener(this);
         }
-        mListAdapter.setOnItemClickListener(this);
         mListAdapter.setMessageListItemController(getMessageListItemClickListener());
     }
 

@@ -253,13 +253,13 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         }
 
         public void setMessageItemOnClickListener(MessageItemOnClickListener listener) {
-            if (listener == null) {
-                return;
-            }
             this.mMessageItemOnClickListener = listener;
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    if (mMessageItemOnClickListener == null) {
+                        return false;
+                    }
                     mMessageItemOnClickListener.onItemClick(mCurrentPosition, itemView);
                     return false;
                 }
