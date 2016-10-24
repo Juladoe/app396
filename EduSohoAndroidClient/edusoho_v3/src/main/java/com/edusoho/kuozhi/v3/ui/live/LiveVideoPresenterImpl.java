@@ -111,6 +111,7 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
                 case "102002":
                     Map noticeData = signal.getData();
                     mILiveVideoView.setNotice(noticeData.get("info").toString());
+                    mILiveVideoView.showNoticeView();
                     break;
                 case "103005":
                     Map allCanChatData = signal.getData();
