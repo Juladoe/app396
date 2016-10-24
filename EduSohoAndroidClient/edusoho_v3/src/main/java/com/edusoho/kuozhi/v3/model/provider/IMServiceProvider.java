@@ -39,6 +39,8 @@ public class IMServiceProvider extends ModelProvider {
     private void setClientInfo(int clientId, String clientName) {
         this.mClientId = clientId;
         this.mClientName = clientName;
+        IMClient.getClient().setClientInfo(clientId, clientName);
+        IMClient.getClient().setIMDataBase(String.format("%s_%d", getDomain(), clientId));
     }
 
     public void unBindServer() {
@@ -66,8 +68,6 @@ public class IMServiceProvider extends ModelProvider {
     }
 
     private void connectServer(int clientId, String clientName) {
-        IMClient.getClient().setClientInfo(clientId, clientName);
-        IMClient.getClient().setIMDataBase(String.format("%s_%d", getDomain(), clientId));
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.CONNECTING);
         new SystemProvider(mContext).getImServerHosts().success(new NormalCallback<LinkedHashMap>() {
             @Override
