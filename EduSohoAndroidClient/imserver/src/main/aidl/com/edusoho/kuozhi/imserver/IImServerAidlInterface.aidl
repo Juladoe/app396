@@ -13,7 +13,7 @@ interface IImServerAidlInterface {
 
     void closeIMServer();
 
-    void joinConversation(String clientId, String nickname, String convNo);
+    void joinConversation(String token, String convNo);
 
     void requestConnect();
 

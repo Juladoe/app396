@@ -3,6 +3,11 @@ apply plugin: 'com.android.library'
 android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
+
+    defaultConfig {
+        minSdkVersion 16
+        targetSdkVersion 22
+    }
 }
 
 repositories {
@@ -16,12 +21,10 @@ dependencies {
     compile project(':bdvideoplayer')
     compile project(':shard')
     compile project(':commonLib')
-    //compile project(':liveEplayer')
     compile project(':multi-image-selector')
     compile project(':imserver')
+    compile project(':liveplayer')
     compile 'com.czt.mp3recorder:library:1.0.4'
-    //compile(name: 'imserver-release', ext: 'aar')
-
     compile files('libs/core-3.2.0.jar')
     compile files('libs/libammsdk.jar')
     compile files('libs/gson-2.1.jar')

@@ -234,8 +234,14 @@ public class ImService extends Service {
             return mImServer.getStatus();
         }
 
-        public void joinConversation(String clientId, String nickname, String convNo) {
-            //nothing
+        public void joinConversation(String token, String convNo) {
+            if (mImServer != null) {
+                mImServer.send(new String[] {
+                        "cmd", "add",
+                        "convNo", convNo,
+                        "token", token
+                });
+            }
         }
     }
 }

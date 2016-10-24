@@ -36,7 +36,9 @@ import com.edusoho.kuozhi.imserver.ui.listener.MessageItemOnClickListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.util.MessageAudioPlayer;
+import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.imserver.ui.view.MessageInputView;
+import com.edusoho.kuozhi.imserver.ui.view.TextMessageInputView;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +66,7 @@ public class MessageListFragment extends Fragment implements
     public static final String CURRENT_ID = "currentId";
 
     private int mStart = 0;
+    private int mInputMode = IMessageInputView.INPUT_IMAGE_AND_VOICE;
     private boolean canLoadData = true;
     private Context mContext;
     private int mCurrentSelectedIndex;
@@ -75,7 +78,7 @@ public class MessageListFragment extends Fragment implements
     protected RecyclerView mMessageListView;
     protected View mContainerView;
     protected LinearLayoutManager mLayoutManager;
-    protected MessageInputView mMessageInputView;
+    protected IMessageInputView mMessageInputView;
     protected MessageRecyclerListAdapter mListAdapter;
     protected IMessageListPresenter mIMessageListPresenter;
 
@@ -99,13 +102,24 @@ public class MessageListFragment extends Fragment implements
     }
 
     @Override
+    public void setInputTextMode(int mode) {
+        this.mInputMode = mode;
+    }
+
+    public void setAdapter(MessageRecyclerListAdapter adapter) {
+        this.mListAdapter = adapter;
+    }
+
+    @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         Log.d(TAG, "onAttach");
         mContext = activity.getBaseContext();
-        mListAdapter = new MessageRecyclerListAdapter(getActivity().getBaseContext());
+        if (mListAdapter == null) {
+            mListAdapter = new MessageRecyclerListAdapter(getActivity().getBaseContext());
+            mListAdapter.setCurrentId(IMClient.getClient().getClientId());
+        }
         mListAdapter.setOnItemClickListener(this);
-        mListAdapter.setCurrentId(IMClient.getClient().getClientId());
         mListAdapter.setMessageListItemController(getMessageListItemClickListener());
     }
 
@@ -176,7 +190,14 @@ public class MessageListFragment extends Fragment implements
     protected void initView(View view) {
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
         mMessageListView = (RecyclerView) view.findViewById(R.id.listview);
-        mMessageInputView = (MessageInputView) view.findViewById(R.id.message_input_view);
+
+        if (mInputMode == IMessageInputView.INPUT_TEXT) {
+            mMessageInputView= new TextMessageInputView(mContext);
+        } else {
+            mMessageInputView = new MessageInputView(mContext);
+        }
+        ViewGroup inputViewGroup = (ViewGroup) view.findViewById(R.id.message_input_view);
+        inputViewGroup.addView((View) mMessageInputView);
 
         mLayoutManager = new LinearLayoutManager(mContext);
         mLayoutManager.setReverseLayout(true);
@@ -555,7 +576,7 @@ public class MessageListFragment extends Fragment implements
             canLoadData = false;
             return;
         }
-        coverMessageEntityStatus(messageEntityList);
+
         mListAdapter.insertList(messageEntityList);
         Message msg = mUpdateHandler.obtainMessage(MESSAGE_SELECT_POSTION);
         msg.arg1 = mStart;
@@ -565,9 +586,12 @@ public class MessageListFragment extends Fragment implements
 
     @Override
     public void setMessageList(List<MessageEntity> messageEntityList) {
-        if (messageEntityList == null || messageEntityList.isEmpty()) {
+        if (messageEntityList == null) {
             canLoadData = false;
             return;
+        }
+        if (messageEntityList.isEmpty()) {
+            canLoadData = false;
         }
         Collections.sort(messageEntityList, new Comparator<MessageEntity>() {
             @Override
@@ -575,7 +599,7 @@ public class MessageListFragment extends Fragment implements
                 return t2.getTime() - t1.getTime();
             }
         });
-        coverMessageEntityStatus(messageEntityList);
+
         mListAdapter.setList(messageEntityList);
         mStart += messageEntityList.size();
         mUpdateHandler.obtainMessage(MESSAGE_SELECT_LAST).sendToTarget();

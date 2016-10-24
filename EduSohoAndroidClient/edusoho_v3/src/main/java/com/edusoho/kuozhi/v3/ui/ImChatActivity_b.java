@@ -416,6 +416,7 @@ public class ImChatActivity_b extends BaseChatActivity implements ChatAdapter.Im
             }
             SendEntity sendEntity = SendEntityBuildr.getBuilder()
                     .addToId(toId)
+                    .addCmd("send")
                     .addMsg(messageBody.toJson())
                     .builder();
             IMClient.getClient().getChatRoom(mConversationNo).send(sendEntity);

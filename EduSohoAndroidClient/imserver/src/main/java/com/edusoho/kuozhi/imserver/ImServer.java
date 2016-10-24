@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by su on 2016/3/17.
@@ -265,8 +266,9 @@ public class ImServer {
 
     public void sendMessage(SendEntity sendEntity) {
         send(new String[]{
-                "cmd", "send",
+                "cmd", sendEntity.getCmd(),
                 "toId", sendEntity.getToId(),
+                "toName", sendEntity.getToName(),
                 "convNo", sendEntity.getConvNo(),
                 "msg", sendEntity.getMsg()
         });
@@ -303,13 +305,35 @@ public class ImServer {
         return false;
     }
 
+    private boolean messageNeedHandle(String cmd) {
+        return "message".equals(cmd) || "offlineMsg".equals(cmd) || "flashMessage".equals(cmd);
+    }
+
+    private boolean convEntityNeedSave(String cmd) {
+        return "message".equals(cmd) || "offlineMsg".equals(cmd);
+    }
+
+    private boolean isSignalMessage(String cmd) {
+        String[] signalArray = { "memberJoined", "clientOnline", "clientOffline" };
+        for (String signal : signalArray) {
+            if (signal.equals(cmd)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private MessageEntity handleReceiveMessage(MessageEntity messageEntity) throws MessageSaveFailException {
         if (getMsgDbHelper().hasMessageByNo(messageEntity.getMsgNo())) {
             Log.d("MessageCommand", "hasMessageByNo");
             return null;
         }
 
-        if ("message".equals(messageEntity.getCmd()) || "offlineMsg".equals(messageEntity.getCmd())) {
+        if (isSignalMessage(messageEntity.getCmd())) {
+            return saveMessageEntityToDb(messageEntity);
+        }
+
+        if (messageNeedHandle(messageEntity.getCmd())) {
             MessageBody messageBody = new MessageBody(messageEntity);
             if (messageBody == null) {
                 return null;
@@ -329,18 +353,24 @@ public class ImServer {
             }
             messageEntity.setStatus(messageStatus);
             messageEntity = saveMessageEntityToDb(messageEntity);
-            ConvEntity convEntity = getConvEntityFromMessage(messageBody);
-            if (convEntity == null) {
-                convEntity = createConv(messageBody);
-                convEntity.setUnRead(convEntity.getUnRead() + 1);
-                convEntity.setUid(mClientId);
-                mConvDbHelper.save(convEntity);
-            } else {
-                updateConvEntity(convEntity, messageEntity);
-            }
         }
-
+        if (convEntityNeedSave(messageEntity.getCmd())) {
+            checkUpdateOrCreateConvEntity(messageEntity);
+        }
         return messageEntity;
+    }
+
+    private void checkUpdateOrCreateConvEntity(MessageEntity messageEntity) {
+        MessageBody messageBody = new MessageBody(messageEntity);
+        ConvEntity convEntity = getConvEntityFromMessage(messageBody);
+        if (convEntity == null) {
+            convEntity = createConv(messageBody);
+            convEntity.setUnRead(convEntity.getUnRead() + 1);
+            convEntity.setUid(mClientId);
+            mConvDbHelper.save(convEntity);
+        } else {
+            updateConvEntity(convEntity, messageEntity);
+        }
     }
 
     private ConvEntity getConvEntityFromMessage(MessageBody messageBody) {
@@ -352,6 +382,9 @@ public class ImServer {
     }
 
     private MessageEntity saveMessageEntityToDb(MessageEntity messageEntity) throws MessageSaveFailException {
+        if (TextUtils.isEmpty(messageEntity.getMsgNo())) {
+            messageEntity.setMsgNo(UUID.randomUUID().toString());
+        }
         long resultId = mMsgDbHelper.save(messageEntity);
         if (resultId != 0) {
             messageEntity = mMsgDbHelper.getMessageByMsgNo(messageEntity.getMsgNo());
@@ -361,6 +394,13 @@ public class ImServer {
             return messageEntity;
         }
         throw new MessageSaveFailException();
+    }
+
+    public void onReceiveSignal(MessageEntity messageEntity) {
+        Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
+        intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.SIGNAL);
+        intent.putExtra("message", messageEntity);
+        mContext.sendBroadcast(intent);
     }
 
     public void onReceiveMessage(MessageEntity messageEntity) {
@@ -486,7 +526,7 @@ public class ImServer {
         send(pingCmd);
     }
 
-    private void send(String[] params) {
+    public void send(String[] params) {
         try {
             JSONObject msgObj = new JSONObject();
             for (int i = 0; i < params.length; i = i + 2) {

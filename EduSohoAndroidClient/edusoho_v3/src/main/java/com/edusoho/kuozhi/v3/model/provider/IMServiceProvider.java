@@ -39,6 +39,8 @@ public class IMServiceProvider extends ModelProvider {
     private void setClientInfo(int clientId, String clientName) {
         this.mClientId = clientId;
         this.mClientName = clientName;
+        IMClient.getClient().setClientInfo(clientId, clientName);
+        IMClient.getClient().setIMDataBase(String.format("%s_%d", getDomain(), clientId));
     }
 
     public void unBindServer() {
@@ -49,7 +51,7 @@ public class IMServiceProvider extends ModelProvider {
     public void reConnectServer(int clientId, String clientName) {
         setClientInfo(clientId, clientName);
         if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
-            IMClient.getClient().setIMConnectStatus(IMConnectStatus.ERROR);
+            IMClient.getClient().setIMConnectStatus(IMConnectStatus.NO_READY);
             return;
         }
         int status = IMClient.getClient().getIMConnectStatus();
@@ -66,8 +68,6 @@ public class IMServiceProvider extends ModelProvider {
     }
 
     private void connectServer(int clientId, String clientName) {
-        IMClient.getClient().setClientInfo(clientId, clientName);
-        IMClient.getClient().setIMDataBase(String.format("%s_%d", getDomain(), clientId));
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.CONNECTING);
         new SystemProvider(mContext).getImServerHosts().success(new NormalCallback<LinkedHashMap>() {
             @Override

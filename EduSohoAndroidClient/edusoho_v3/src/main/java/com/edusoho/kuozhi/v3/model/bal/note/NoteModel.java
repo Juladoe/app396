@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.model.bal.note;
 
+import android.text.TextUtils;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -31,6 +33,32 @@ public class NoteModel {
                     callbackListener.onSuccess(apiResponse.resources);
                 } else {
                     callbackListener.onFailure(apiResponse.error.code, apiResponse.error.message);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+    }
+
+    public void getLessonNote(int courseId, int lessonId, int userId, final ResponseCallbackListener<Note> callbackListener) {
+        String url = String.format("Course/getLessonNote?courseId=%d&lessonId=%d", courseId, lessonId);
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (TextUtils.isEmpty(response) || "[]".equals(response)) {
+                    callbackListener.onFailure("200", "note is empty");
+                    return;
+                }
+                Note note = ModelDecor.getInstance().decor(response, new TypeToken<Note>() {
+                });
+                if (note!= null) {
+                    callbackListener.onSuccess(note);
+                } else {
+                    callbackListener.onFailure("500", "get note error");
                 }
             }
         }, new Response.ErrorListener() {

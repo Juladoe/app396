@@ -29,6 +29,7 @@ import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
@@ -41,6 +42,7 @@ import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
@@ -94,6 +96,13 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         initParams();
         setBackMode(BACK, TextUtils.isEmpty(mTargetName) ? "聊天" : mTargetName);
         attachMessageListFragment();
+        ActivityUtil.setStatusBarTranslucent(this);
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        ActivityUtil.setRootViewFitsWindow(this, getResources().getColor(R.color.primary));
     }
 
     @Override
@@ -325,6 +334,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
                                             IMessageDataProvider mIMessageDataProvider,
                                             IMessageListView messageListView) {
             super(params, convManager, roleManager, messageResourceHelper, mIMessageDataProvider, messageListView);
+            setClientInfo(IMClient.getClient().getClientId(), IMClient.getClient().getClientName());
         }
 
         @Override

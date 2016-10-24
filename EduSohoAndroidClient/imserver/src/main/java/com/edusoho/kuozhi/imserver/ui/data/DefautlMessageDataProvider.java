@@ -72,6 +72,7 @@ public class DefautlMessageDataProvider implements IMessageDataProvider {
             messageBody.setMsgStatus(MessageEntity.StatusType.NONE);
             SendEntity sendEntity = SendEntityBuildr.getBuilder()
                     .addToId(toId)
+                    .addCmd("send")
                     .addMsg(messageBody.toJson())
                     .builder();
             IMClient.getClient().getChatRoom(convNo).send(sendEntity);

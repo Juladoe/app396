@@ -49,6 +49,7 @@ public class PushUtil {
         public static final String IMAGE = "image";
         public static final String MULTI = "multi";
         public static final String PUSH = "push";
+        public static final String LABEL = "label";
     }
 
     public static class ThreadMsgType {

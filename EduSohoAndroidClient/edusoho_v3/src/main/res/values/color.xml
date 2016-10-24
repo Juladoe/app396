@@ -9,6 +9,7 @@
     <color name="base_white_normal">#ffffff</color>
     <color name="base_black_normal">#000000</color>
     <color name="base_black_35">#35000000</color>
+    <color name="base_white_40">#35ffffff</color>
     <color name="base_black_87">#dd000000</color>
     <color name="base_black_54">#8a000000</color>
     <color name="base_black_26">#66000000</color>
@@ -450,4 +451,7 @@
 
     <color name="thread_type_question">#FF8A0C</color>
     <color name="thread_type_discuss">#2DB7F5</color>
+
+    <color name="live_notice_bg">#B3B3B3</color>
+    <color name="live_notice_list_bg">#e8e8e8</color>
 </resources>

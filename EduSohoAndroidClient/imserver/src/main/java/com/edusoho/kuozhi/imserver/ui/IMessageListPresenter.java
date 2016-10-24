@@ -55,5 +55,7 @@ public interface IMessageListPresenter {
 
     void addMessageControllerListener(MessageControllerListener listener);
 
+    void unEnableChatView();
+
     void enableChatView();
 }
