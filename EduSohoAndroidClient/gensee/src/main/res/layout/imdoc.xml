@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <!--
-          <com.gensee.pdu.GSDocView
-        android:id="@+id/imdocview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    -->
-
     <com.gensee.view.GSDocViewGx
+        android:background="@color/white"
         android:id="@+id/imGlDocView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </com.gensee.view.GSDocViewGx>
 
-</LinearLayout>
+    <ProgressBar
+        android:id="@+id/iv_live_progressbar"
+        android:visibility="visible"
+        android:indeterminateDrawable="@drawable/live_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:gravity="center"
+        android:text="暂无文档"
+        android:textColor="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</FrameLayout>

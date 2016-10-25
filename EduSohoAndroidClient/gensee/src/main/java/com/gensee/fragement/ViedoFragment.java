@@ -3,11 +3,14 @@ package com.gensee.fragement;
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gensee.player.Player;
@@ -17,11 +20,21 @@ import com.gensee.view.GSVideoView;
 @SuppressLint("ValidFragment")
 public class ViedoFragment extends Fragment implements OnClickListener {
 
+	public static final int LIVE = 0;
+	public static final int PAUSE = 1;
+	public static final int CLOSE = 2;
+	public static final int BUFFERING = 3;
+	public static final int RECONNECTING = 4;
+	public static final int ERROR = 5;
+	public static final int NO_START = 6;
+
 	private Player mPlayer;
 	private View mView;
+	private ProgressBar mLoadView;
+	private TextView mTitleView;
+	private ImageView mStatusView;
 	private GSVideoView mGSViedoView;
 	private TextView txtVideo, txtAudio,txtMic,txtHand;
-	
 	private Runnable handRun = null;
 
 	public ViedoFragment(Player player) {
@@ -33,21 +46,90 @@ public class ViedoFragment extends Fragment implements OnClickListener {
 			Bundle savedInstanceState) {
 
 		mView = inflater.inflate(R.layout.imviedo, null);
+		mGSViedoView = (GSVideoView) mView.findViewById(R.id.imvideoview);
+		mLoadView = (ProgressBar) mView.findViewById(R.id.iv_live_progressbar);
+		mTitleView = (TextView) mView.findViewById(R.id.tv_live_load_title);
+		mStatusView = (ImageView) mView.findViewById(R.id.iv_live_status);
+		mGSViedoView = (GSVideoView) mView.findViewById(R.id.imvideoview);
+		mGSViedoView.setRenderMode(GSVideoView.RenderMode.RM_FILL_XY);
+		mPlayer.setGSVideoView(mGSViedoView);
+		return mView;
+	}
+
+	@Override
+	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		setPlayStatus(BUFFERING);
+	}
+
+	public void setPlayStatus(int status) {
+		switch (status) {
+			case RECONNECTING:
+				setPlayBufferingStatus("正在重连...");
+				break;
+			case BUFFERING:
+				setPlayBufferingStatus("正在加载...");
+				break;
+			case LIVE:
+				setPlayLiveStatus();
+				break;
+			case PAUSE:
+				setPlayPauseStatus();
+				break;
+			case CLOSE:
+				break;
+			case ERROR:
+				setPlayErrorStatus();
+				break;
+			case NO_START:
+				setPlayNoStartStatus();
+		}
+	}
+
+	private void setPlayBufferingStatus(String title) {
+		mLoadView.setVisibility(View.VISIBLE);
+		mTitleView.setVisibility(View.VISIBLE);
+		mTitleView.setText(title);
+	}
+
+	private void setPlayErrorStatus() {
+		mLoadView.setVisibility(View.GONE);
+		mTitleView.setVisibility(View.VISIBLE);
+		mTitleView.setText("加载失败");
+	}
+
+	private void setPlayNoStartStatus() {
+		mStatusView.setVisibility(View.VISIBLE);
+		mStatusView.setImageResource(R.drawable.icon_live_status);
+		mLoadView.setVisibility(View.GONE);
+		mTitleView.setVisibility(View.VISIBLE);
+		mTitleView.setText("直播尚未开始");
+	}
+
+	private void setPlayPauseStatus() {
+		mStatusView.setVisibility(View.VISIBLE);
+		mStatusView.setImageResource(R.drawable.icon_live_status);
+		mLoadView.setVisibility(View.GONE);
+		mTitleView.setVisibility(View.VISIBLE);
+		mTitleView.setText("休息时间");
+	}
+
+	private void setPlayLiveStatus() {
+		mLoadView.setVisibility(View.GONE);
+		mTitleView.setVisibility(View.GONE);
+	}
+
+	private void showController() {
 		txtVideo = (TextView) mView.findViewById(R.id.txtVideo);
 		txtAudio = (TextView) mView.findViewById(R.id.txtAudio);
 		txtMic = (TextView) mView.findViewById(R.id.txtMic);
 		txtHand = (TextView) mView.findViewById(R.id.txtHand);
 		txtHand.setText("举手");
-		
-		mGSViedoView = (GSVideoView) mView.findViewById(R.id.imvideoview);
-		mGSViedoView.setOnClickListener(this);
+
 		txtVideo.setOnClickListener(this);
 		txtAudio.setOnClickListener(this);
 		txtMic.setOnClickListener(this);
 		txtHand.setOnClickListener(this);
-
-		mPlayer.setGSVideoView(mGSViedoView);
-		return mView;
 	}
 	
 	public void onJoin(boolean isJoined) {
@@ -56,7 +138,6 @@ public class ViedoFragment extends Fragment implements OnClickListener {
 			txtVideo.setEnabled(isJoined);
 		}
 	}
-	
 
 	public void setVideoViewVisible(boolean bVisible) {
 		if (isAdded()) {
@@ -67,6 +148,7 @@ public class ViedoFragment extends Fragment implements OnClickListener {
 			}
 		}
 	}
+
 	@Override
 	public void onClick(View v) {
 		int id = v.getId();

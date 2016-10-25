@@ -32,6 +32,7 @@
             android:configChanges="orientation|screenLayout|screenSize"
             android:screenOrientation="landscape" />
         <activity
+            android:theme="@style/LivePlayActionBarTheme"
             android:name=".GenseeLivePlayActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"

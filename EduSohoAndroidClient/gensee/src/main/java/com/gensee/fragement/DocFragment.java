@@ -14,7 +14,6 @@ public class DocFragment extends Fragment {
 
 	private Player mPlayer;
 	private View mView;
-	//private GSDocView mGSDocView;
 	private GSDocViewGx mGlDocView;
 
 	public DocFragment(Player player) {
@@ -29,10 +28,15 @@ public class DocFragment extends Fragment {
 		mView = inflater.inflate(R.layout.imdoc, null);
 		mGlDocView = (GSDocViewGx) mView.findViewById(R.id.imGlDocView);
 		mPlayer.setGSDocViewGx(mGlDocView);
-//		AnnoFreepenEx.setFreepenExDrawable(new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.freepen_ex)));
-//		AnnoPointerEx.setPointerCircleDrawable(new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.anno_pointer)));
-//		AnnoPointerEx.setPointerCrossDrawable(new BitmapDrawable(getResources(), BitmapFactory.decodeResource(getResources(), R.drawable.anno_arrow)));
+		mGlDocView.showFillView();
 		return mView;
+	}
+
+	public void showLoadView() {
+
+	}
+
+	public void showDocView() {
 
 	}
 }

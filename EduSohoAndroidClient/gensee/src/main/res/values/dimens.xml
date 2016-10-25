@@ -10,6 +10,6 @@
     
     
     <dimen name="doc_padding">5dp</dimen>
-    <dimen name="video_height">240dp</dimen>
+    <dimen name="video_height">200dp</dimen>
 
 </resources>

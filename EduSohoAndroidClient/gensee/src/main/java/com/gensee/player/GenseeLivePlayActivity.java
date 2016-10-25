@@ -21,6 +21,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -51,9 +52,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     private Drawable mMarkDrawable = null;
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private SharedPreferences preferences;
-    private Intent serviceIntent;
-
     private ServiceType serviceType = ServiceType.ST_TRAINING;
 
     /**
@@ -75,21 +73,22 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     private String mDomain;
     private String mRoomNumber;
     private String mToken;
+    private String mLoginAccount;
+    private String mLoginPwd;
     private String mNickname;
     private String mKey;
+    private String mServiceType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gensee_live_player);
-        preferences = getPreferences(MODE_PRIVATE);
         mFragmentManager = getSupportFragmentManager();
-        setActionBarBackground();
         initWidget();
 
         Bundle liveBundle = getIntent().getExtras();
         if (liveBundle == null || liveBundle.isEmpty()) {
-            //ToastUtils.show(getBaseContext(), "直播课时信息不存在!");
+            Toast.makeText(getBaseContext(), "直播课时信息不存在", Toast.LENGTH_LONG).show();
             return;
         }
         getLiveInfo(getIntent().getExtras());
@@ -98,8 +97,12 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     protected void getLiveInfo(Bundle liveBundle) {
         mDomain = liveBundle.getString("domain");
         mRoomNumber = liveBundle.getString("roomNumber");
-        mToken = liveBundle.getString("token");
-        mNickname = liveBundle.getString("nickname");
+        mToken = liveBundle.getString("joinPwd");
+        mLoginAccount = liveBundle.getString("loginAccount");
+        mLoginPwd = liveBundle.getString("loginPwd");
+        mToken = liveBundle.getString("joinPwd");
+        mNickname = liveBundle.getString("nickName");
+        mServiceType = liveBundle.getString("serviceType");
         mKey = liveBundle.getString("k");
         initInitParam();
     }
@@ -122,15 +125,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         mTabLayout.setTabsFromPagerAdapter(mSectionsPagerAdapter);
 
         initPlayFrameContainer();
-    }
-
-    private void setActionBarBackground() {
-        mMarkDrawable = getResources().getDrawable(R.drawable.action_bar_bg_mark);
-        mColorDrawable = getResources().getDrawable(R.drawable.action_bar_bg);
-        LayerDrawable ld = new LayerDrawable(new Drawable[]{mColorDrawable, mMarkDrawable});
-
-        mColorDrawable.setAlpha(0);
-        getSupportActionBar().setBackgroundDrawable(ld);
     }
 
     private void initPlayFrameContainer() {
@@ -162,20 +156,20 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         // 如果只有直播间id（混合字符串）可以使用setLiveId("")代替setNumber()
         //initParam.setLiveId("a4f3c8cb2b094c369617888917bf221e");
         // 设置站点登录帐号（根据配置可选）
-        initParam.setLoginAccount("admin@bowen.com");
+        initParam.setLoginAccount(mLoginAccount);
         // 设置站点登录密码（根据配置可选）
-        initParam.setLoginPwd("bowen123");
+        initParam.setLoginPwd(mLoginPwd);
         // 设置显示昵称，如果设置为空，请确保
         initParam.setNickName(mNickname);
         // 设置加入口令（根据配置可选）
         initParam.setJoinPwd(mToken);
         // 设置服务类型，如果站点是webcast类型则设置为ServiceType.ST_CASTLINE，
         // training类型则设置为ServiceType.ST_TRAINING
-        initParam.setServiceType(ServiceType.ST_TRAINING);
-        //站点 系统设置 的 第三方集成 中直播模块 “认证“  启用时请确保”第三方K值“（你们的k值）的正确性 ；如果没有启用则忽略这个参数
-        //initParam.setK(mkey);
-
-        showTip(true, "正在玩命加入...");
+        initParam.setServiceType("webcast".equals(mServiceType) ? ServiceType.ST_CASTLINE : ServiceType.ST_TRAINING);
+        if (!TextUtils.isEmpty(mKey)) {
+            //站点 系统设置 的 第三方集成 中直播模块 “认证“  启用时请确保”第三方K值“（你们的k值）的正确性 ；如果没有启用则忽略这个参数
+            initParam.setK(mKey);
+        }
 
         initPlayer(initParam);
     }
@@ -204,16 +198,11 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == android.R.id.home) {
+            onBackPressed();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -237,10 +226,8 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         public static Fragment newInstance(Player player, int sectionNumber) {
             switch (sectionNumber) {
                 case 0:
-                    //return new CustomDocFragment(player);
+                    return new DocFragment(player);
                 case 1:
-                    return new QaFragment(player);
-                case 2:
                     return new ChatFragment(player);
             }
             return null;
@@ -250,7 +237,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_gensee_live_player, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             return rootView;
         }
     }
@@ -284,8 +270,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                 case 0:
                     return "文档";
                 case 1:
-                    return "问答";
-                case 2:
                     return "聊天";
             }
             return null;
@@ -301,6 +285,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         int CACHING = 6;
         int CACHING_END = 7;
         int RECONNECTING = 8;
+        int VIDEO_CLOSE = 9;
     }
 
     private AlertDialog dialog;
@@ -313,18 +298,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         public void handleMessage(Message msg) {
 
             switch (msg.what) {
-
-                case HANDlER.USERINCREASE:
-                    //mChatAdapter.addInfo((UserInfo) (msg.obj));
-                    break;
-                case HANDlER.USERDECREASE:
-                    //mChatAdapter.leaveInfo((UserInfo) (msg.obj));
-                    break;
-                case HANDlER.USERUPDATE:
-                    //mChatAdapter.addInfo((UserInfo) (msg.obj));
-                    break;
                 case HANDlER.SUCCESSJOIN:
-                    //mProgressBar.setVisibility(View.GONE);
                     bJoinSuccess = true;
                     if (mViedoFragment != null) {
                         mViedoFragment.onJoin(bJoinSuccess);
@@ -334,15 +308,16 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                     dialog();
                     break;
                 case HANDlER.CACHING:
-                    showTip(true, "正在缓冲...");
-                    relTip.setVisibility(View.VISIBLE);
+                    mViedoFragment.setPlayStatus(ViedoFragment.BUFFERING);
                     break;
                 case HANDlER.CACHING_END:
-                    showTip(false, "");
+                    mViedoFragment.setPlayStatus(ViedoFragment.LIVE);
                     break;
                 case HANDlER.RECONNECTING:
-                    showTip(true, "正在重连...");
+                    mViedoFragment.setPlayStatus(ViedoFragment.BUFFERING);
                     break;
+                case HANDlER.VIDEO_CLOSE:
+                    mViedoFragment.setPlayStatus(ViedoFragment.CLOSE);
                 default:
                     break;
             }
@@ -350,15 +325,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         }
 
     };
-
-    @Override
-    public void onBackPressed() {
-        if (bJoinSuccess) {
-            dialogLeave();
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     private void dialogLeave() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -545,7 +511,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                 mPlayer.openMic(this, false, null);
                 mPlayer.inviteAck(inviteMediaType, false, null);
                 break;
-
             default:
                 break;
         }
@@ -554,27 +519,22 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     @Override
     public void onVideoEnd() {
         GenseeLog.d(TAG, "onVideoEnd");
-        toastMsg("视频已停止");
-
+        mHandler.sendEmptyMessage(HANDlER.RECONNECTING);
     }
 
     @Override
     public void onLottery(int cmd, String info) {
-        //cmd 1:start, 2: stop, 3: abort
         toastMsg("抽奖\n指令：" + (cmd == 1 ? "开始" : (cmd == 2 ? "结束" : "取消"))
                 + "\n结果：" + info);
-
     }
 
     @Override
     public void onFileShare(int i, String s, String s1) {
-
     }
 
     @Override
     public void onLiveText(String language, String text) {
         toastMsg("文字直播\n语言：" + language + "\n内容：" + text);
-
     }
 
     @Override
@@ -595,12 +555,15 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                 break;
             case JOIN_CONNECT_FAILED:
                 msg = "连接失败";
+                mViedoFragment.setPlayStatus(ViedoFragment.ERROR);
                 break;
             case JOIN_RTMP_FAILED:
                 msg = "连接服务器失败";
+                mViedoFragment.setPlayStatus(ViedoFragment.ERROR);
                 break;
             case JOIN_TOO_EARLY:
                 msg = "直播还未开始";
+                mViedoFragment.setPlayStatus(ViedoFragment.NO_START);
                 break;
             case JOIN_LICENSE:
                 msg = "人数已满";
@@ -609,19 +572,17 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                 msg = "加入返回错误" + result;
                 break;
         }
-        showTip(false, "");
         toastMsg(msg);
     }
 
     @Override
     public void onDocSwitch(int i, String s) {
-
     }
 
     @Override
     public void onVideoBegin() {
         GenseeLog.d(TAG, "onVideoBegin");
-        toastMsg("视频开始");
+        mHandler.sendEmptyMessage(HANDlER.CACHING_END);
     }
 
     @Override
@@ -670,7 +631,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     @Override
     public void onInvite(final int type, final boolean isOpen) {
         runOnUiThread(new Runnable() {
-
             @Override
             public void run() {
                 postInvite(type, isOpen);
@@ -681,7 +641,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     private void postInvite(int type, boolean isOpen) {
         if (isOpen) {
             inviteMediaType = type;
-            String media = "音频";
+            String media = null;
             if (type == INVITE_AUIDO) {
                 media = "音频";
             } else if (type == INVITE_VIDEO) {
@@ -736,7 +696,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public void onAudioLevel(int i) {
-
     }
 
     @Override
@@ -746,11 +705,9 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public void onCaching(boolean isCaching) {
-
         GenseeLog.d(TAG, "onCaching isCaching = " + isCaching);
         mHandler.sendEmptyMessage(isCaching ? HANDlER.CACHING
                 : HANDlER.CACHING_END);
-        toastMsg(isCaching ? "正在缓冲" : "缓冲完成");
     }
 
     @Override
@@ -768,9 +725,11 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                 break;
             case AbsRtAction.ErrCode.ERR_UN_NET:
                 msg = "网络不可用，请检查网络连接正常后再试";
+                mViedoFragment.setPlayStatus(ViedoFragment.ERROR);
                 break;
             case AbsRtAction.ErrCode.ERR_SERVICE:
                 msg = "service  错误，请确认是webcast还是training";
+                mViedoFragment.setPlayStatus(ViedoFragment.ERROR);
                 break;
             case AbsRtAction.ErrCode.ERR_PARAM:
                 msg = "initparam参数不全";
@@ -791,7 +750,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                 msg = "错误：errCode = " + errCode;
                 break;
         }
-        showTip(false, "");
         if (msg != null) {
             toastMsg(msg);
         }
@@ -799,11 +757,11 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public void onFileShareDl(int i, String s, String s1) {
-
     }
 
     @Override
     public void onPublish(boolean isPlaying) {
+        mViedoFragment.setPlayStatus(isPlaying ? ViedoFragment.LIVE : ViedoFragment.PAUSE);
         toastMsg(isPlaying ? "直播（上课）中" : "直播暂停（下课）");
     }
 
@@ -841,8 +799,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         }
     }
 
-    ;
-
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -868,6 +824,5 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
             }
             initInitParam();
         }
-
     }
 }

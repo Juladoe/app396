@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-
 import java.io.File;
 
 /**
@@ -23,26 +21,20 @@ public class GenseeLivePlayerAction {
     }
 
     public void invoke(Bundle bundle) {
-        String liveClassroomId = bundle.getString("liveClassroomId");
-        String exStr = bundle.getString("exStr");
-        boolean replayState = bundle.getBoolean("replayState");
-
         Intent intent = new Intent();
-        intent.setClassName("com.gensee.player", "com.gensee.playerdemo.GenseeLivePlayActivity");
+        intent.setClassName(mActivity.getPackageName(), "com.gensee.player.GenseeLivePlayActivity");
         if (checkLiveAppIsExist(intent)) {
             installLiveApp();
             return;
         }
-        intent.putExtra("liveClassroomId", liveClassroomId);
-        intent.putExtra("exStr", exStr);
-        intent.putExtra("replayState", replayState);
+        intent.putExtras(bundle);
         mActivity.startActivity(intent);
     }
 
     private void installLiveApp() {
         File installDir = AppUtil.getAppInstallStorage();
         CoreEngine.create(mActivity).installApkFromAssetByPlugin(installDir.getAbsolutePath());
-        installApk(new File(installDir, "liveEplayer.apk").getAbsolutePath());
+        installApk(new File(installDir, "genseeLivePlayer-1.0.apk").getAbsolutePath());
     }
 
     private boolean checkLiveAppIsExist(Intent intent) {

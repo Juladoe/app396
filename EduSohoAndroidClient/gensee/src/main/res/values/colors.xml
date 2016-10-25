@@ -4,4 +4,6 @@
    <color name="white">#ffffff</color>
    <color name="transparent">#00000000</color>
    <color name="primary">#00000000</color>
+    <color name="black_60">#99000000</color>
+    <color name="live_toolbar_title">#ffffff</color>
 </resources>
