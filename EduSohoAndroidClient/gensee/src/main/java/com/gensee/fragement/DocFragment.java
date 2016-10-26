@@ -38,7 +38,12 @@ public class DocFragment extends Fragment {
 		mGlDocView.setOnPageOpenListener(new GSDocViewEx.OnPageOpenListener() {
 			@Override
 			public void onPageOpenComplete(int i, int i1) {
-				showDocView();
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						showDocView();
+					}
+				});
 			}
 		});
 		return mView;
