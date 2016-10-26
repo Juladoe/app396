@@ -107,9 +107,9 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mTabLayout = (TabLayout) findViewById(R.id.tablayout);
-        mTabLayout.addTab(mTabLayout.newTab().setText("第一个"), true);//添加 Tab,默认选中
-        mTabLayout.addTab(mTabLayout.newTab().setText("第二个"), false);//添加 Tab,默认不选中
-        mTabLayout.addTab(mTabLayout.newTab().setText("第三个"), false);
+        mTabLayout.addTab(mTabLayout.newTab().setText("文档"), true);//添加 Tab,默认选中
+        mTabLayout.addTab(mTabLayout.newTab().setText("聊天"), false);//添加 Tab,默认不选中
+        mTabLayout.addTab(mTabLayout.newTab().setText("问答"), false);
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.setTabsFromPagerAdapter(mSectionsPagerAdapter);
 
@@ -203,8 +203,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
          * The fragment argument representing the section number for this
          * fragment.
          */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
         public PlaceholderFragment() {
         }
 
@@ -227,8 +225,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_gensee_live_player, container, false);
-            return rootView;
+            return inflater.inflate(R.layout.fragment_gensee_live_player, container, false);
         }
     }
 
@@ -454,41 +451,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     @Override
     public void onMicNotify(int notify) {
         GenseeLog.d(TAG, "onMicNotify notify = " + notify);
-        switch (notify) {
-            case MicNotify.MIC_COLSED:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mViedoFragment.onMicColesed();
-                    }
-                });
-                mPlayer.inviteAck(inviteMediaType, false, null);
-                break;
-            case MicNotify.MIC_OPENED:
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        mViedoFragment.onMicOpened(inviteMediaType);
-                    }
-                });
-                mPlayer.inviteAck(inviteMediaType, true, null);
-
-                break;
-            case MicNotify.MIC_OPEN_FAILED:
-                runOnUiThread(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        toastMsg("麦克风打开失败，请重试并允许程序打开麦克风");
-                    }
-                });
-                mPlayer.openMic(this, false, null);
-                mPlayer.inviteAck(inviteMediaType, false, null);
-                break;
-            default:
-                break;
-        }
     }
 
     @Override
@@ -653,7 +615,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         }
     }
 
-
     private void accept(boolean isAccept) {
         mPlayer.openMic(this, isAccept, null);
     }
@@ -661,7 +622,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     @Override
     public void onPageSize(int pos, int w, int h) {
         Log.d(TAG, "文档分辨率 w = " + w + " h = " + h);
-
     }
 
     @Override

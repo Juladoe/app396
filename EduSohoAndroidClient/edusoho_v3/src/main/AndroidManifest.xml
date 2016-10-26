@@ -217,7 +217,7 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:name=".v3.ui.live.LessonLivePlayerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"
             android:screenOrientation="portrait" />
 
         <activity

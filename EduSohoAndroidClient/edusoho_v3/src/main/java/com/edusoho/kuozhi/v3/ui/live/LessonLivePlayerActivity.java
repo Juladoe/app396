@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
@@ -68,7 +69,6 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     protected IMessageListPresenter mIMessageListPresenter;
     protected MessageListFragment mMessageListFragment;
     private IMBroadcastReceiver mReceiver;
-    private TextView mNoticeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,9 +254,6 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         mContext = getBaseContext();
         initParams();
         super.initView();
-        setBottomView(LayoutInflater.from(getBaseContext()).inflate(R.layout.view_liveplayer_chatroom_layout, null));
-        mNoticeView = (TextView) findViewById(R.id.tv_live_notice);
-
         setLiveTitle(mLiveTitle);
         setLiveDesc(null);
         initChatRoom();

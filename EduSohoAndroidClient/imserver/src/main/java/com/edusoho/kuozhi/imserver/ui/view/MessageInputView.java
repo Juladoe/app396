@@ -176,7 +176,6 @@ public class MessageInputView extends FrameLayout implements IMessageInputView {
                 if (hasFocus) {
                     viewMediaLayout.setVisibility(View.GONE);
                     SystemUtil.setSoftKeyBoard(etSend, getContext(), SystemUtil.SHOW_KEYBOARD);
-                    //lvMessage.post(mListViewSelectRunnable);
                 }
             }
         };

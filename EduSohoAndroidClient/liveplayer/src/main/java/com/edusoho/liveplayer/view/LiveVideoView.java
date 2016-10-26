@@ -34,7 +34,11 @@ public class LiveVideoView extends PLVideoView {
         Canvas canvas = null;
         try{
             canvas = getSurfaceView().getHolder().lockCanvas(null);
-            canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
+            if (canvas == null) {
+                getSurfaceView().setBackgroundColor(Color.BLACK);
+            } else {
+                canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
+            }
         }catch(Exception e){
             Log.d("LiveVideoView", "clear error");
         }finally{

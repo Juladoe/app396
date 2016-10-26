@@ -56,10 +56,17 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
         LiveMessageBody liveMessageBody = new LiveMessageBody(message.getMsg());
         try {
             JSONObject jsonObject = new JSONObject(liveMessageBody.getData());
-            if (jsonObject.optBoolean("isCanChat") || jsonObject.optBoolean("isAllCanChat")) {
-                mIMessageListView.setEnable(true);
-            } else {
-                mIMessageListView.setEnable(false);
+            if (jsonObject.has("isAllCanChat")) {
+                mIMessageListView.setEnable(jsonObject.optBoolean("isAllCanChat"));
+                return;
+            }
+            if (jsonObject.has("isCanChat")) {
+                String clientId = mLiveData.get("clientId").toString();
+                if (!clientId.equals(jsonObject.optInt("clientId"))) {
+                    return;
+                }
+                mIMessageListView.setEnable(jsonObject.optBoolean("isCanChat"));
+                return;
             }
         } catch (JSONException e) {
         }

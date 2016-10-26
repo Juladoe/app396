@@ -28,13 +28,11 @@ public class ChatFragment extends Fragment {
 
 	@Override
 	public void onDestroy() {
-
 		super.onDestroy();
 	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
-
 		super.onCreate(savedInstanceState);
 	}
 
@@ -44,22 +42,19 @@ public class ChatFragment extends Fragment {
 
 		mView = inflater.inflate(R.layout.imchat, null);
 		mGSImplChatView = (GSImplChatView) mView.findViewById(R.id.impchatview);
-	//	mGSImplChatView.setChatTarget(mUserInfo);
 		mPlayer.setGSChatView(mGSImplChatView);
+		mGSImplChatView.onRoomMute(true);
 		return mView;
 	}
 
 	@Override
 	public void onAttach(Activity activity) {
-
 		super.onAttach(activity);
 	}
 
 	public void setChatPerson(UserInfo userInfo) {
-		
 		mUserInfo = userInfo;
 		if (mGSImplChatView != null) {
-			// mGSImplChatView.setChatTarget(userInfo);
 			mPlayer.setGSChatView(mGSImplChatView);
 		}
 	}
