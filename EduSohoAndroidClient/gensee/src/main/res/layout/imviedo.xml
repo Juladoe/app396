@@ -2,68 +2,75 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <com.gensee.view.GSVideoView
         android:id="@+id/imvideoview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ProgressBar
+    <LinearLayout
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:id="@+id/iv_live_progressbar"
-        android:visibility="gone"
-        android:progressDrawable="@drawable/live_progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_centerVertical="true">
 
-    <TextView
-        android:visibility="gone"
-        android:textColor="@color/white"
-        android:layout_below="@id/iv_live_progressbar"
-        android:layout_centerHorizontal="true"
-        android:id="@+id/tv_live_load_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <ProgressBar
+            android:id="@+id/iv_live_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:progressDrawable="@drawable/live_progress"
+            android:visibility="gone" />
 
-    <ImageView
-        android:visibility="gone"
-        android:id="@+id/iv_live_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/iv_live_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_marginTop="8dp"
+            android:id="@+id/tv_live_load_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
     <Button
-        android:visibility="gone"
         android:id="@+id/txtVideo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:enabled="false"
-        android:text="@string/video_close" />
+        android:text="@string/video_close"
+        android:visibility="gone" />
 
     <Button
-        android:visibility="gone"
         android:id="@+id/txtAudio"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:enabled="false"
-        android:text="@string/audio_close" />
-    
+        android:text="@string/audio_close"
+        android:visibility="gone" />
+
     <Button
         android:id="@+id/txtMic"
-        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@id/txtAudio"
-        android:text="@string/mic_close" />
-    
+        android:text="@string/mic_close"
+        android:visibility="gone" />
+
     <Button
-        android:visibility="gone"
         android:id="@+id/txtHand"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/txtVideo" />
+        android:layout_below="@id/txtVideo"
+        android:visibility="gone" />
 
 </RelativeLayout>

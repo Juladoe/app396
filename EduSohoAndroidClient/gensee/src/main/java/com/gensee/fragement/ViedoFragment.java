@@ -2,6 +2,12 @@ package com.gensee.fragement;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -77,9 +83,15 @@ public class ViedoFragment extends Fragment implements OnClickListener {
 					break;
 				case LIVE:
 					setPlayLiveStatus();
+					mGSViedoView.setBackgroundColor(Color.TRANSPARENT);
 					break;
 				case PAUSE:
 					setPlayPauseStatus();
+					mGSViedoView.setDefColor(Color.BLACK);
+					Bitmap bitmap = Bitmap.createBitmap(mGSViedoView.getWidth(), mGSViedoView.getHeight(), Bitmap.Config.ALPHA_8);
+					Canvas canvas = new Canvas(bitmap);
+					canvas.drawColor(Color.BLACK);
+					mGSViedoView.renderDrawble(bitmap, true);
 					break;
 				case CLOSE:
 					break;

@@ -456,7 +456,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     @Override
     public void onVideoEnd() {
         GenseeLog.d(TAG, "onVideoEnd");
-        mHandler.sendEmptyMessage(HANDlER.RECONNECTING);
+        //mHandler.sendEmptyMessage(HANDlER.RECONNECTING);
     }
 
     @Override

@@ -7,8 +7,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.gensee.entity.UserInfo;
+import com.gensee.player.OnChatListener;
 import com.gensee.player.Player;
 import com.gensee.player.R;
 import com.gensee.view.GSImplChatView;
@@ -43,7 +45,6 @@ public class ChatFragment extends Fragment {
 		mView = inflater.inflate(R.layout.imchat, null);
 		mGSImplChatView = (GSImplChatView) mView.findViewById(R.id.impchatview);
 		mPlayer.setGSChatView(mGSImplChatView);
-		mGSImplChatView.onRoomMute(true);
 		return mView;
 	}
 
@@ -51,12 +52,4 @@ public class ChatFragment extends Fragment {
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 	}
-
-	public void setChatPerson(UserInfo userInfo) {
-		mUserInfo = userInfo;
-		if (mGSImplChatView != null) {
-			mPlayer.setGSChatView(mGSImplChatView);
-		}
-	}
-
 }
