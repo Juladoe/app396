@@ -6,12 +6,9 @@ package com.gensee.player;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -229,6 +226,8 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                     return new DocFragment(player);
                 case 1:
                     return new ChatFragment(player);
+                case 2:
+                    return new QaFragment(player);
             }
             return null;
         }
@@ -271,6 +270,8 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                     return "文档";
                 case 1:
                     return "聊天";
+                case 2:
+                    return "问答";
             }
             return null;
         }
@@ -286,6 +287,8 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         int CACHING_END = 7;
         int RECONNECTING = 8;
         int VIDEO_CLOSE = 9;
+        int VIDEO_ERROR = 10;
+        int VIDEO_NOSTART = 11;
     }
 
     private AlertDialog dialog;
@@ -318,6 +321,12 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                     break;
                 case HANDlER.VIDEO_CLOSE:
                     mViedoFragment.setPlayStatus(ViedoFragment.CLOSE);
+                    break;
+                case HANDlER.VIDEO_ERROR:
+                    mViedoFragment.setPlayStatus(ViedoFragment.ERROR);
+                    break;
+                case HANDlER.VIDEO_NOSTART:
+                    mViedoFragment.setPlayStatus(ViedoFragment.NO_START);
                 default:
                     break;
             }
@@ -326,31 +335,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     };
 
-    private void dialogLeave() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("确定离开");
-        builder.setTitle("提示");
-        builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                finish();
-            }
-        });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.show();
-    }
-
     protected void dialog() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("你已经被踢出");
         builder.setTitle("提示");
@@ -480,10 +465,8 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         switch (notify) {
             case MicNotify.MIC_COLSED:
                 runOnUiThread(new Runnable() {
-
                     @Override
                     public void run() {
-
                         mViedoFragment.onMicColesed();
                     }
                 });
@@ -555,15 +538,15 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                 break;
             case JOIN_CONNECT_FAILED:
                 msg = "连接失败";
-                mViedoFragment.setPlayStatus(ViedoFragment.ERROR);
+                mHandler.sendEmptyMessage(HANDlER.VIDEO_ERROR);
                 break;
             case JOIN_RTMP_FAILED:
                 msg = "连接服务器失败";
-                mViedoFragment.setPlayStatus(ViedoFragment.ERROR);
+                mHandler.sendEmptyMessage(HANDlER.VIDEO_ERROR);
                 break;
             case JOIN_TOO_EARLY:
                 msg = "直播还未开始";
-                mViedoFragment.setPlayStatus(ViedoFragment.NO_START);
+                mHandler.sendEmptyMessage(HANDlER.VIDEO_NOSTART);
                 break;
             case JOIN_LICENSE:
                 msg = "人数已满";
@@ -686,6 +669,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     @Override
     public void onPageSize(int pos, int w, int h) {
         Log.d(TAG, "文档分辨率 w = " + w + " h = " + h);
+
     }
 
     @Override
@@ -725,11 +709,11 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                 break;
             case AbsRtAction.ErrCode.ERR_UN_NET:
                 msg = "网络不可用，请检查网络连接正常后再试";
-                mViedoFragment.setPlayStatus(ViedoFragment.ERROR);
+                mHandler.sendEmptyMessage(HANDlER.VIDEO_ERROR);
                 break;
             case AbsRtAction.ErrCode.ERR_SERVICE:
                 msg = "service  错误，请确认是webcast还是training";
-                mViedoFragment.setPlayStatus(ViedoFragment.ERROR);
+                mHandler.sendEmptyMessage(HANDlER.VIDEO_ERROR);
                 break;
             case AbsRtAction.ErrCode.ERR_PARAM:
                 msg = "initparam参数不全";

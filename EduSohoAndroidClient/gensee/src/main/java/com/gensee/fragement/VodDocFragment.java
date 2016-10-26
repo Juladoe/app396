@@ -6,21 +6,20 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.gensee.player.Player;
+import com.gensee.media.VODPlayer;
 import com.gensee.player.R;
 import com.gensee.view.GSDocViewEx;
 import com.gensee.view.GSDocViewGx;
 
-public class DocFragment extends Fragment {
+public class VodDocFragment extends Fragment {
 
-	private Player mPlayer;
+	private VODPlayer mPlayer;
 	private View mView;
 	private View mLoadView;
 	private View mDocEnptyView;
 	private GSDocViewGx mGlDocView;
 
-	public DocFragment(Player player) {
+	public VodDocFragment(VODPlayer player) {
 		this.mPlayer = player;
 	}
 

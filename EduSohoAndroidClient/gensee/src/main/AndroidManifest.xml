@@ -24,20 +24,25 @@
         android:allowBackup="false"
         android:largeHeap="true">
         <activity
-            android:name="com.gensee.voddemo.VodActivity"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name="com.gensee.voddemo.PlayActivity"
+            android:name="GenseePlayActivity"
             android:configChanges="orientation|screenLayout|screenSize"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="portrait" />
         <activity
-            android:theme="@style/LivePlayActionBarTheme"
             android:name=".GenseeLivePlayActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            android:theme="@style/LivePlayActionBarTheme"
             android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"></activity>
+
+        <activity
+            android:name=".GenseeVodPlayerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/LivePlayActionBarTheme"
+            android:windowSoftInputMode="adjustPan|adjustResize|stateHidden"></activity>
+
     </application>
 
 </manifest>

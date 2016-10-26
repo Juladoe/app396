@@ -10,6 +10,7 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,7 +47,7 @@ import com.gensee.utils.StringUtil;
 import com.gensee.vod.VodSite;
 import com.gensee.vod.VodSite.OnVodListener;
 
-public class VodActivity extends Activity implements OnClickListener,
+public class VodActivity extends AppCompatActivity implements OnClickListener,
 		OnDownloadListener, OnItemClickListener, OnVodListener {
 
 	private String TAG = "MainActivity";
