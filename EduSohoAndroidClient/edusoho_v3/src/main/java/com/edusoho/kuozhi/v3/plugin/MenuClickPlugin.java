@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.appview.CourseConsultAction;
+import com.edusoho.kuozhi.v3.plugin.appview.GenseeLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.LonginusLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.SooonerLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.ThreadCreateAction;
@@ -463,6 +464,8 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
             new ThreadCreateAction(mActivity).invoke(bundle);
         } else if ("longinusLivePlayer".equals(name)) {
             new LonginusLivePlayerAction(mActivity).invoke(bundle);
+        } else if ("genseeLivePlayer".equals(name)) {
+            new GenseeLivePlayerAction(mActivity).invoke(bundle);
         }
     }
 
