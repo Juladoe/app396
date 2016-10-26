@@ -4,6 +4,15 @@
     android:layout_height="match_parent">
 
     <FrameLayout
+        android:fitsSystemWindows="true"
+        android:clipToPadding="true"
+        android:layout_marginTop="@dimen/live_video_height"
+        android:background="#ebebeb"
+        android:id="@+id/chat_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></FrameLayout>
+
+    <FrameLayout
         android:id="@+id/fl_live_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -85,14 +94,6 @@
 
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
-
-    <FrameLayout
-        android:fitsSystemWindows="true"
-        android:layout_below="@id/fl_live_container"
-        android:background="#ebebeb"
-        android:id="@+id/chat_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
 
     <com.edusoho.kuozhi.v3.view.AlwaysMarqueeTextView
         android:alpha="0"

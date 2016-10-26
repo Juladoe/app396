@@ -1,10 +1,6 @@
 package com.edusoho.liveplayer.view;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
-import android.util.Log;
-
 import com.pili.pldroid.player.widget.PLVideoView;
 
 /**
@@ -30,21 +26,13 @@ public class LiveVideoView extends PLVideoView {
         clearDraw();
     }
 
+    @Override
+    public void start() {
+        super.start();
+        getSurfaceView().setBackgroundColor(Color.TRANSPARENT);
+    }
+
     public void clearDraw(){
-        Canvas canvas = null;
-        try{
-            canvas = getSurfaceView().getHolder().lockCanvas(null);
-            if (canvas == null) {
-                getSurfaceView().setBackgroundColor(Color.BLACK);
-            } else {
-                canvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR);
-            }
-        }catch(Exception e){
-            Log.d("LiveVideoView", "clear error");
-        }finally{
-            if(canvas != null){
-                getSurfaceView().getHolder().unlockCanvasAndPost(canvas);
-            }
-        }
+        getSurfaceView().setBackgroundColor(Color.BLACK);
     }
 }

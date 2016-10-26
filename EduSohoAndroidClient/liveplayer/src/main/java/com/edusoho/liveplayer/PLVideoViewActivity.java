@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -62,6 +63,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private int mIsLiveStreaming;
     private String mLiveStatus;
     private int mVideoHeight;
+    private long mTimeoutLength;
 
     protected TextView mNoticeView;
 
@@ -133,7 +135,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private void changeScreenToLandspace() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         ViewGroup.LayoutParams lp = mVideoView.getLayoutParams();
-        lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = getWindowManager().getDefaultDisplay().getHeight();
         mBottomLayout.setVisibility(View.GONE);
         mNoticeView.setVisibility(View.GONE);
         mVideoView.setLayoutParams(lp);
@@ -365,6 +367,14 @@ public class PLVideoViewActivity extends AppCompatActivity {
         }
     };
 
+    private View.OnClickListener mVideoErrorClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            mTimeoutLength = 0;
+            sendReconnectMessage();
+        }
+    };
+
     private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(PLMediaPlayer plMediaPlayer, int errorCode) {
@@ -449,6 +459,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
         @Override
         public void onPrepared(PLMediaPlayer plMediaPlayer) {
+            mTimeoutLength = 0;
         }
     };
 
@@ -456,6 +467,10 @@ public class PLVideoViewActivity extends AppCompatActivity {
         @Override
         public void onVideoSizeChanged(PLMediaPlayer plMediaPlayer, int width, int height) {
             Log.d(TAG, "onVideoSizeChanged: " + width + "," + height);
+            int currentOrientation = getResources().getConfiguration().orientation;
+            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
+                return;
+            }
             int videoWidth = mVideoView.getWidth();
             mVideoHeight = (int) (videoWidth / (width / (float)height));
             if (mVideoHeight == 0) {
@@ -464,6 +479,10 @@ public class PLVideoViewActivity extends AppCompatActivity {
             ViewGroup.LayoutParams lp = mVideoView.getLayoutParams();
             lp.height = mVideoHeight;
             mVideoView.setLayoutParams(lp);
+
+            RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) mBottomLayout.getLayoutParams();
+            rlp.topMargin = mVideoHeight;
+            mBottomLayout.setLayoutParams(rlp);
         }
     };
 
@@ -477,7 +496,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
                 if (mToast != null) {
                     mToast.cancel();
                 }
-                mToast = Toast.makeText(PLVideoViewActivity.this, tips, Toast.LENGTH_SHORT);
+                mToast = Toast.makeText(getBaseContext(), tips, Toast.LENGTH_SHORT);
                 mToast.show();
             }
         });
@@ -503,7 +522,16 @@ public class PLVideoViewActivity extends AppCompatActivity {
     };
 
     private void sendReconnectMessage() {
-        showToastTips("正在重连...");
+        if (mTimeoutLength != 0 && (System.currentTimeMillis() - mTimeoutLength) > 10000) {
+            setPlayError();
+            mVideoView.pause();
+            mLoadingView.setOnClickListener(mVideoErrorClickListener);
+            return;
+        }
+        if (mTimeoutLength == 0) {
+            mTimeoutLength = System.currentTimeMillis();
+        }
+        Log.d(TAG, "TimeoutCount :" + mTimeoutLength);
         setPlayOnBuffering();
         mHandler.removeCallbacksAndMessages(null);
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MESSAGE_ID_RECONNECTING), 500);
