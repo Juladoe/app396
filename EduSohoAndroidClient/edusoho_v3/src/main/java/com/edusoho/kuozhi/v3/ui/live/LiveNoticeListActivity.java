@@ -51,7 +51,7 @@ public class LiveNoticeListActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_live_notices_layout);
-        setBackMode(BACK, "公告历史");
+        setBackMode(BACK, "公告");
 
         initView();
         checkParams();
@@ -116,6 +116,7 @@ public class LiveNoticeListActivity extends ActionBarBaseActivity {
                         }
                         LiveNoticeListAdapter listAdapter = new LiveNoticeListAdapter(mContext, mNoticeList);
                         mListView.setAdapter(listAdapter);
+                        mListView.scrollToPosition(mNoticeList.size() - 1);
                     }
                 });
                 return null;
@@ -126,12 +127,6 @@ public class LiveNoticeListActivity extends ActionBarBaseActivity {
     private List<NoticeEntity> getNoticeListFromSignals(LinkedHashMap<String, Signal> signalMap) {
         List<String> keyArray = new ArrayList<>(signalMap.keySet());
         List<NoticeEntity> noticeList = new ArrayList<>();
-        Collections.sort(keyArray, new Comparator<String>() {
-            @Override
-            public int compare(String s, String s2) {
-                return (int) (AppUtil.parseLong(s2) - AppUtil.parseLong(s));
-            }
-        });
         for (String key : keyArray) {
             Signal signal = signalMap.get(key);
             if ("102002".equals(signal.getType())) {
