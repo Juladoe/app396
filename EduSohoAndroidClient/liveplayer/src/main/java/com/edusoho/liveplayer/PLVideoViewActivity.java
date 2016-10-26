@@ -61,8 +61,9 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private ViewGroup mVideoContainer;
     private int mIsLiveStreaming;
     private String mLiveStatus;
-
     private int mVideoHeight;
+
+    protected TextView mNoticeView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -190,10 +191,11 @@ public class PLVideoViewActivity extends AppCompatActivity {
         setSupportActionBar(mToolBar);
         mVideoView = (PLVideoView) findViewById(R.id.VideoView);
         mVideoContainer = (ViewGroup) findViewById(R.id.fl_live_container);
+        mBottomLayout = (ViewGroup) findViewById(R.id.chat_content);
         mLiveTitleView = (TextView) findViewById(R.id.tv_live_title);
         mLiveDescView = (TextView) findViewById(R.id.tv_live_desc);
+        mNoticeView = (TextView) findViewById(R.id.tv_live_notice);
 
-        mBottomLayout = (ViewGroup) findViewById(R.id.fl_live_bottom_layout);
         mLoadingView = findViewById(R.id.vg_live_loadingView);
         mLoadTitleView = (TextView) findViewById(R.id.tv_live_loadtitle);
         mLoadStatusView = (ImageView) findViewById(R.id.iv_live_statusicon);
@@ -368,7 +370,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private PLMediaPlayer.OnErrorListener mOnErrorListener = new PLMediaPlayer.OnErrorListener() {
         @Override
         public boolean onError(PLMediaPlayer plMediaPlayer, int errorCode) {
-            Log.e(TAG, "Error happened, errorCode = " + errorCode);
+            Log.e(TAG, String.format("Error happened, errorCode = %d, %s", errorCode, mLiveStatus));
             if (!LIVE.equals(mLiveStatus)) {
                 return true;
             }
