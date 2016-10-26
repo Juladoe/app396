@@ -45,9 +45,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     static final String TAG = "GenseeLivePlayActivity";
 
-    private Drawable mColorDrawable = null;
-    private Drawable mMarkDrawable = null;
-
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ServiceType serviceType = ServiceType.ST_TRAINING;
 
@@ -58,12 +55,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     private TabLayout mTabLayout;
     private RelativeLayout relTip;
     private TextView txtTip;
-
-    private ChatFragment mChatFragment;
-    private DocFragment mDocFragment;
     private ViedoFragment mViedoFragment;
-    private QaFragment mQaFragment;
-    private VoteFragment mVoteFragment;
     private Player mPlayer;
     private FragmentManager mFragmentManager;
 

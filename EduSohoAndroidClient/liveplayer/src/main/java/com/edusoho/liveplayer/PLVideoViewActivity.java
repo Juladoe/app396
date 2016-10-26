@@ -243,10 +243,10 @@ public class PLVideoViewActivity extends AppCompatActivity {
     }
 
     private void setPlayError() {
-        mLoadStatusView.setImageResource(R.mipmap.icon_live_status);
+        mLoadStatusView.setImageResource(R.drawable.live_load_error);
         mLoadStatusView.setVisibility(View.VISIBLE);
         mLoadProgressBar.setVisibility(View.GONE);
-        mLoadTitleView.setText(R.string.live_no_pause);
+        mLoadTitleView.setText(R.string.live_load_error);
         mLoadingView.setVisibility(View.VISIBLE);
     }
 
@@ -489,11 +489,8 @@ public class PLVideoViewActivity extends AppCompatActivity {
             if (msg.what != MESSAGE_ID_RECONNECTING) {
                 return;
             }
-            if (mIsActivityPaused || !Utils.isLiveStreamingAvailable()) {
-                finish();
-                return;
-            }
-            if (!Utils.isNetworkAvailable(PLVideoViewActivity.this)) {
+
+            if (!Utils.isNetworkAvailable(getBaseContext())) {
                 sendReconnectMessage();
                 return;
             }

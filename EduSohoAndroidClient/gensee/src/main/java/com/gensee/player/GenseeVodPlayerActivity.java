@@ -121,7 +121,7 @@ public class GenseeVodPlayerActivity extends AppCompatActivity implements
         mVodDocFragment = new VodDocFragment(mVodPlayer);
         // Set up the ViewPager with the sections adapter
         mGSVideoView = (GSVideoView) findViewById(R.id.gsvideoview);
-        mGSVideoView.setRenderMode(GSVideoView.RenderMode.RM_FILL_XY);
+        mGSVideoView.setRenderMode(GSVideoView.RenderMode.RM_FILL_CENTER_CROP);
         mSeekBar = (SeekBar) findViewById(R.id.media_progress);
         mTimeView = (TextView) findViewById(R.id.time_current);
         mTotalView = (TextView) findViewById(R.id.time_total);

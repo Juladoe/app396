@@ -3,6 +3,8 @@ package com.gensee.fragement;
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -51,7 +53,7 @@ public class ViedoFragment extends Fragment implements OnClickListener {
 		mTitleView = (TextView) mView.findViewById(R.id.tv_live_load_title);
 		mStatusView = (ImageView) mView.findViewById(R.id.iv_live_status);
 		mGSViedoView = (GSVideoView) mView.findViewById(R.id.imvideoview);
-		mGSViedoView.setRenderMode(GSVideoView.RenderMode.RM_FILL_XY);
+		mGSViedoView.setRenderMode(GSVideoView.RenderMode.RM_FILL_CENTER_CROP);
 		mPlayer.setGSVideoView(mGSViedoView);
 		return mView;
 	}
@@ -62,28 +64,36 @@ public class ViedoFragment extends Fragment implements OnClickListener {
 		setPlayStatus(BUFFERING);
 	}
 
-	public void setPlayStatus(int status) {
-		switch (status) {
-			case RECONNECTING:
-				setPlayBufferingStatus("正在重连...");
-				break;
-			case BUFFERING:
-				setPlayBufferingStatus("正在加载...");
-				break;
-			case LIVE:
-				setPlayLiveStatus();
-				break;
-			case PAUSE:
-				setPlayPauseStatus();
-				break;
-			case CLOSE:
-				break;
-			case ERROR:
-				setPlayErrorStatus();
-				break;
-			case NO_START:
-				setPlayNoStartStatus();
+	private Handler mUpdateHandler = new Handler() {
+
+		@Override
+		public void handleMessage(Message msg) {
+			switch (msg.what) {
+				case RECONNECTING:
+					setPlayBufferingStatus("正在重连...");
+					break;
+				case BUFFERING:
+					setPlayBufferingStatus("正在加载...");
+					break;
+				case LIVE:
+					setPlayLiveStatus();
+					break;
+				case PAUSE:
+					setPlayPauseStatus();
+					break;
+				case CLOSE:
+					break;
+				case ERROR:
+					setPlayErrorStatus();
+					break;
+				case NO_START:
+					setPlayNoStartStatus();
+			}
 		}
+	};
+
+	public void setPlayStatus(int status) {
+		mUpdateHandler.sendEmptyMessage(status);
 	}
 
 	private void setPlayBufferingStatus(String title) {
@@ -115,6 +125,7 @@ public class ViedoFragment extends Fragment implements OnClickListener {
 	}
 
 	private void setPlayLiveStatus() {
+		mStatusView.setVisibility(View.GONE);
 		mLoadView.setVisibility(View.GONE);
 		mTitleView.setVisibility(View.GONE);
 	}
