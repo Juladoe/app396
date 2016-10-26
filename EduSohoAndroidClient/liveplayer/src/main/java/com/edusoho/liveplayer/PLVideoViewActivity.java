@@ -79,10 +79,6 @@ public class PLVideoViewActivity extends AppCompatActivity {
         bindListener();
     }
 
-    protected void setBottomView(View contentView) {
-        mBottomLayout.addView(contentView);
-    }
-
     protected void setMediaController() {
         mMediaController = new MediaController(this, false, mIsLiveStreaming == 1);
         mMediaController.setOnShownListener(new MediaController.OnShownListener() {
@@ -130,6 +126,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         ViewGroup.LayoutParams lp = mVideoView.getLayoutParams();
         lp.height = mVideoHeight;
         mBottomLayout.setVisibility(View.VISIBLE);
+        mNoticeView.setVisibility(View.VISIBLE);
         mVideoView.setLayoutParams(lp);
     }
 
@@ -137,7 +134,8 @@ public class PLVideoViewActivity extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         ViewGroup.LayoutParams lp = mVideoView.getLayoutParams();
         lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        mBottomLayout.setVisibility(View.INVISIBLE);
+        mBottomLayout.setVisibility(View.GONE);
+        mNoticeView.setVisibility(View.GONE);
         mVideoView.setLayoutParams(lp);
     }
 
@@ -245,7 +243,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     }
 
     private void setPlayError() {
-        mLoadStatusView.setImageResource(R.mipmap.icon_live_status);
+        mLoadStatusView.setImageResource(R.drawable.live_progress);
         mLoadStatusView.setVisibility(View.VISIBLE);
         mLoadProgressBar.setVisibility(View.GONE);
         mLoadTitleView.setText(R.string.live_no_pause);
