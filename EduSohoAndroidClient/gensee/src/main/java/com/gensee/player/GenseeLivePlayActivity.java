@@ -481,7 +481,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
                 break;
             case JOIN_TOO_EARLY:
                 msg = "直播还未开始";
-                mHandler.sendEmptyMessage(HANDlER.VIDEO_NOSTART);
+                finish();
                 break;
             case JOIN_LICENSE:
                 msg = "人数已满";

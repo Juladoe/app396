@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,35 @@ public class ChatFragment extends Fragment {
 		mView = inflater.inflate(R.layout.imchat, null);
 		mGSImplChatView = (GSImplChatView) mView.findViewById(R.id.impchatview);
 		mPlayer.setGSChatView(mGSImplChatView);
+
+		mPlayer.setOnChatListener(new OnChatListener() {
+			@Override
+			public void onChatWithPerson(long l, String s, String s1, String s2, int i) {
+			}
+
+			@Override
+			public void onChatWithPublic(long l, String s, String s1, String s2, int i) {
+			}
+
+			@Override
+			public void onMute(boolean isMute) {
+				mGSImplChatView.onMute(isMute);
+			}
+
+			@Override
+			public void onRoomMute(boolean isMute) {
+				mGSImplChatView.onMute(isMute);
+				mGSImplChatView.onRoomMute(isMute);
+			}
+
+			@Override
+			public void onReconnection() {
+			}
+
+			@Override
+			public void onPublish(boolean b) {
+			}
+		});
 		return mView;
 	}
 
