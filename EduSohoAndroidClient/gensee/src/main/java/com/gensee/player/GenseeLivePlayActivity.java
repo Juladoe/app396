@@ -167,24 +167,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
         mPlayer.join(getApplicationContext(), p, this);
     }
 
-    private void showTip(final boolean isShow, final String tip) {
-        runOnUiThread(new Runnable() {
-
-            @Override
-            public void run() {
-                if (isShow) {
-                    if (relTip.getVisibility() != View.VISIBLE) {
-                        relTip.setVisibility(View.VISIBLE);
-                    }
-                    txtTip.setText(tip);
-                } else {
-                    relTip.setVisibility(View.GONE);
-                }
-
-            }
-        });
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -415,8 +397,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public void onLeave(int reason) {
-        // 当前用户退出
-        // bJoinSuccess = false;
         String msg = null;
         switch (reason) {
             case LEAVE_NORMAL:
@@ -445,18 +425,18 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public void onUserUpdate(UserInfo info) {
+        Log.d(TAG, "onUserUpdate");
         mHandler.sendMessage(mHandler.obtainMessage(HANDlER.USERUPDATE, info));
     }
 
     @Override
     public void onMicNotify(int notify) {
-        GenseeLog.d(TAG, "onMicNotify notify = " + notify);
+        Log.d(TAG, "onMicNotify notify = " + notify);
     }
 
     @Override
     public void onVideoEnd() {
-        GenseeLog.d(TAG, "onVideoEnd");
-        //mHandler.sendEmptyMessage(HANDlER.RECONNECTING);
+        Log.d(TAG, "onVideoEnd");
     }
 
     @Override
@@ -481,6 +461,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public void onJoin(int result) {
+        Log.d(TAG, "onJoin");
         String msg = null;
         switch (result) {
             case JOIN_OK:
@@ -518,12 +499,13 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public void onVideoBegin() {
-        GenseeLog.d(TAG, "onVideoBegin");
+        Log.d(TAG, "onVideoBegin");
         mHandler.sendEmptyMessage(HANDlER.CACHING_END);
     }
 
     @Override
     public void onRollcall(final int timeOut) {
+        Log.d(TAG, "onRollcall");
         mHandler.post(new Runnable() {
             private AlertDialog dialog = null;
             private int itimeOut;
@@ -567,56 +549,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public void onInvite(final int type, final boolean isOpen) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                postInvite(type, isOpen);
-            }
-        });
-    }
-
-    private void postInvite(int type, boolean isOpen) {
-        if (isOpen) {
-            inviteMediaType = type;
-            String media = null;
-            if (type == INVITE_AUIDO) {
-                media = "音频";
-            } else if (type == INVITE_VIDEO) {
-                media = "视频";
-            } else {
-                media = "音视频";
-            }
-            if (dialog == null) {
-                dialog = new AlertDialog.Builder(this)
-                        .setPositiveButton("接受",
-                                new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        accept(true);
-                                    }
-                                })
-                        .setNegativeButton("拒绝",
-                                new DialogInterface.OnClickListener() {
-
-                                    @Override
-                                    public void onClick(DialogInterface dialog,
-                                                        int which) {
-                                        accept(false);
-                                    }
-                                }).create();
-            }
-            dialog.setMessage("老师邀请你打开" + media);
-            dialog.show();
-        } else {
-            if (dialog != null && dialog.isShowing()) {
-                dialog.dismiss();
-            }
-            accept(false);
-        }
-    }
-
-    private void accept(boolean isAccept) {
-        mPlayer.openMic(this, isAccept, null);
+        Log.d(TAG, "onInvite");
     }
 
     @Override
@@ -626,16 +559,18 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public void onReconnecting() {
-        GenseeLog.d(TAG, "onReconnecting");
+        Log.d(TAG, "onReconnecting");
         mHandler.sendEmptyMessage(HANDlER.RECONNECTING);
     }
 
     @Override
     public void onAudioLevel(int i) {
+        Log.d(TAG, "onAudioLevel");
     }
 
     @Override
     public void onUserJoin(UserInfo info) {
+        Log.d(TAG, "onUserJoin");
         mHandler.sendMessage(mHandler.obtainMessage(HANDlER.USERINCREASE, info));
     }
 
@@ -648,6 +583,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public void onErr(int errCode) {
+        Log.d(TAG, "errCode");
         String msg = null;
         switch (errCode) {
             case AbsRtAction.ErrCode.ERR_DOMAIN:
@@ -697,6 +633,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
     @Override
     public void onPublish(boolean isPlaying) {
+        Log.d(TAG, "onPublish");
         mViedoFragment.setPlayStatus(isPlaying ? ViedoFragment.LIVE : ViedoFragment.PAUSE);
         toastMsg(isPlaying ? "直播（上课）中" : "直播暂停（下课）");
     }
