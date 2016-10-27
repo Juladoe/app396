@@ -49,11 +49,13 @@ public class ChatFragment extends Fragment {
 
 		mPlayer.setOnChatListener(new OnChatListener() {
 			@Override
-			public void onChatWithPerson(long l, String s, String s1, String s2, int i) {
+			public void onChatWithPerson(long userId, String sSendName, String text, String rich, int onChatID) {
+				mGSImplChatView.onChatWithPerson(userId, sSendName, text, rich, onChatID);
 			}
 
 			@Override
-			public void onChatWithPublic(long l, String s, String s1, String s2, int i) {
+			public void onChatWithPublic(long userId, java.lang.String sSendName, java.lang.String text, java.lang.String rich, int onChatID) {
+				mGSImplChatView.onChatWithPublic(userId, sSendName, text, rich, onChatID);
 			}
 
 			@Override
@@ -69,10 +71,12 @@ public class ChatFragment extends Fragment {
 
 			@Override
 			public void onReconnection() {
+				mGSImplChatView.onReconnection();
 			}
 
 			@Override
-			public void onPublish(boolean b) {
+			public void onPublish(boolean isPlay) {
+				mGSImplChatView.onPublish(isPlay);
 			}
 		});
 		return mView;
