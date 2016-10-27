@@ -101,6 +101,9 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         if (mMessageListFragment == null || mLiveImClient == null) {
             return;
         }
+        if (mILiveVideoPresenter != null) {
+            mILiveVideoPresenter.handleHistorySignals();
+        }
         registIMReceiver();
     }
 

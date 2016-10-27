@@ -112,6 +112,7 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
                     Map noticeData = signal.getData();
                     mILiveVideoView.setNotice(noticeData.get("info").toString());
                     mILiveVideoView.showNoticeView();
+                    autoHideNoticeView();
                     break;
                 case "103005":
                     Map allCanChatData = signal.getData();
@@ -146,10 +147,14 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
             JSONObject jsonObject = new JSONObject(liveMessageBody.getData());
             mILiveVideoView.setNotice(jsonObject.optString("info"));
             mILiveVideoView.showNoticeView();
-            mHandler.removeMessages(FADE_OUT);
-            mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT), 1000 * 60);
+            autoHideNoticeView();
         } catch (JSONException e) {
         }
+    }
+
+    private void autoHideNoticeView() {
+        mHandler.removeMessages(FADE_OUT);
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(FADE_OUT), 1000 * 60);
     }
 
     private Handler mHandler = new Handler() {
