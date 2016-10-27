@@ -15,6 +15,7 @@ import com.gensee.player.OnChatListener;
 import com.gensee.player.Player;
 import com.gensee.player.R;
 import com.gensee.view.GSImplChatView;
+import com.gensee.view.xlistview.XListView;
 
 @SuppressLint("ValidFragment")
 public class ChatFragment extends Fragment {
@@ -22,7 +23,7 @@ public class ChatFragment extends Fragment {
 	private Player mPlayer;
 	private GSImplChatView mGSImplChatView;
 	private View mView;
-	private UserInfo mUserInfo;
+	private XListView mChatView;
 
 	public ChatFragment(Player player) {
 
@@ -45,8 +46,14 @@ public class ChatFragment extends Fragment {
 
 		mView = inflater.inflate(R.layout.imchat, null);
 		mGSImplChatView = (GSImplChatView) mView.findViewById(R.id.impchatview);
+		mChatView = (XListView) mGSImplChatView.findViewById(R.id.talkingcontext);
 		mPlayer.setGSChatView(mGSImplChatView);
-
+		container.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+			@Override
+			public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
+				mChatView.setSelection(mChatView.getAdapter().getCount() - 1);
+			}
+		});
 		mPlayer.setOnChatListener(new OnChatListener() {
 			@Override
 			public void onChatWithPerson(long userId, String sSendName, String text, String rich, int onChatID) {
