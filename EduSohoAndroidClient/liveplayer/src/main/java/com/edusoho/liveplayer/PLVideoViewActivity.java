@@ -380,6 +380,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         public boolean onError(PLMediaPlayer plMediaPlayer, int errorCode) {
             Log.e(TAG, String.format("Error happened, errorCode = %d, %s", errorCode, mLiveStatus));
             if (!LIVE.equals(mLiveStatus)) {
+                setPlayStatus(mLiveStatus);
                 return true;
             }
             switch (errorCode) {
@@ -438,7 +439,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         @Override
         public void onCompletion(PLMediaPlayer plMediaPlayer) {
             Log.d(TAG, "Play Completed !");
-            showToastTips("Play Completed !");
+            showToastTips("直播完成");
         }
     };
 
