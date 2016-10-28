@@ -53,7 +53,7 @@ public class LiveRoomProvider extends ModelProvider {
     }
 
     public ProviderListener<LinkedHashMap> getLiveServerTime(String liveHost, String token) {
-        RequestUrl requestUrl = new RequestUrl(String.format("%s/live/timestamp", liveHost));
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/timestamp", liveHost));
         requestUrl.setHeads(new String[] {
                 "Auth-Token", token
         });
@@ -65,7 +65,7 @@ public class LiveRoomProvider extends ModelProvider {
 
     public ProviderListener<LinkedHashMap<String, Signal>> getLiveSignals(
             String liveHost, String token, long startTime, long endTime) {
-        RequestUrl requestUrl = new RequestUrl(String.format("%s/signal", liveHost));
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/signals", liveHost));
         requestUrl.setHeads(new String[] {
                 "Auth-Token", token
         });

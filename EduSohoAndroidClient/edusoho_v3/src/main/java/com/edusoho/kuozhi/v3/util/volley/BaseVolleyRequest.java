@@ -34,6 +34,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     public static final String PARSE_RESPONSE = "parseResponse";
 
     protected Response.Listener<T> mListener;
+    protected Response.ErrorListener mErrorListener;
     protected RequestUrl mRequestUrl;
     protected int mIsCache = CACHE_NONE;
     protected int mCacheUseMode = AUTO_USE_CACHE;
@@ -49,6 +50,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
 
         this.mRequestUrl = requestUrl;
         mListener = listener;
+        mErrorListener = errorListener;
         initRequest(method);
         mRequestLocalManager = RequestLocalManager.getManager();
     }

@@ -1,6 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.base;
 
-import android.os.Build;
+
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.v7.app.ActionBar;
@@ -8,9 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -41,12 +38,14 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     protected TextView mTitleTextView;
     private View titleLayoutView;
     private View mTitleLoading;
-    protected int mRunStatus;
     private EduSohoCompoundButton switchButton;
     private RadioButton rbStudyRadioButton;
     private RadioButton rbDiscussRadioButton;
     private CircleImageView civBadgeView;
     private Queue<WidgetMessage> mUIMessageQueue;
+
+    protected int mRunStatus;
+    protected PopupDialog mNoticeDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +161,10 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         super.onDestroy();
         app.unRegistMsgSource(this);
         mUIMessageQueue.clear();
+        if (mNoticeDialog != null) {
+            mNoticeDialog.dismiss();
+            mNoticeDialog = null;
+        }
     }
 
     protected void invokeUIMessage() {
@@ -186,15 +189,19 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     protected void processMessage(WidgetMessage message) {
         MessageType messageType = message.type;
         if (Const.TOKEN_LOSE.equals(messageType.type)) {
-            PopupDialog dialog = PopupDialog.createNormal(mActivity, "提示", getString(R.string.token_lose_notice));
-            dialog.setOkListener(new PopupDialog.PopupClickListener() {
+            if (mNoticeDialog != null) {
+                mNoticeDialog.dismiss();
+            }
+            mNoticeDialog = PopupDialog.createNormal(mActivity, "提示", getString(R.string.token_lose_notice));
+            mNoticeDialog.setOkListener(new PopupDialog.PopupClickListener() {
                 @Override
                 public void onClick(int button) {
                     handleTokenLostMsg();
                     finish();
                 }
             });
-            dialog.show();
+
+            mNoticeDialog.show();
         }
     }
 
@@ -202,6 +209,7 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         Bundle bundle = new Bundle();
         bundle.putString(Const.BIND_USER_ID, "");
 
+        getAppSettingProvider().setUser(null);
         new IMServiceProvider(getBaseContext()).unBindServer();
         app.removeToken();
         MessageEngine.getInstance().sendMsg(Const.LOGOUT_SUCCESS, null);

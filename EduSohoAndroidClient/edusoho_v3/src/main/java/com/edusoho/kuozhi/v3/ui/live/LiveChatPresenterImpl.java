@@ -8,9 +8,12 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.ui.IMessageListView;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.im.LiveMessageBody;
 import com.edusoho.kuozhi.v3.model.provider.LiveRoomProvider;
+import com.edusoho.kuozhi.v3.util.Const;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.LinkedHashMap;
@@ -70,6 +73,7 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
 
     @Override
     public void onReplace() {
+        MessageEngine.getInstance().sendMsg(Const.TOKEN_LOSE, null);
         mIMessageListView.onUserKicked();
     }
 

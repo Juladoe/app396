@@ -50,6 +50,7 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
         String cmd = message.getCmd();
         switch (cmd) {
             case "replace":
+                mILiveChatMessgeListPresenter.onReplace();
                 break;
             case "connected":
                 mILiveChatMessgeListPresenter.joinLiveChatRoom();

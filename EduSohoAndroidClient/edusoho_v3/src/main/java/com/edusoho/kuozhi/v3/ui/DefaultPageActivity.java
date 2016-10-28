@@ -111,15 +111,15 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError volleyError) {
-                if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
-                    return;
-                }
-                AppConfig appConfig = getAppSettingProvider().getAppConfig();
-                appConfig.isEnableIMChat = false;
-                getAppSettingProvider().saveConfig(appConfig);
-            }
+                    @Override
+                    public void success(VolleyError volleyError) {
+                        if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
+                            return;
+                        }
+                        AppConfig appConfig = getAppSettingProvider().getAppConfig();
+                        appConfig.isEnableIMChat = false;
+                        getAppSettingProvider().saveConfig(appConfig);
+                    }
         });
     }
 

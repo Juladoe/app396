@@ -138,6 +138,10 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
 
     @Override
     public void updateLivePlayStatus(MessageEntity messageEntity) {
+        if ("replace".equals(messageEntity.getCmd())) {
+            mILiveVideoView.setLivePlayStatus(true);
+            return;
+        }
         if ("103010".equals(messageEntity.getCmd())) {
             mILiveVideoView.checkLivePlayStatus();
             return;

@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.v3.util.RequestUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
+import com.edusoho.kuozhi.v3.util.volley.ModelVolleyRequest;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -118,39 +119,7 @@ public abstract class ModelProvider {
             int method, final RequestUrl requestUrl, final TypeToken<T> typeToken, Response.Listener<T> responseListener, final Response.ErrorListener errorListener
     ) {
         mVolley.getRequestQueue();
-        BaseVolleyRequest request = new BaseVolleyRequest(
-                method, requestUrl, responseListener, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                errorListener.onErrorResponse(error);
-                if (error.networkResponse == null) {
-                    return;
-                }
-                try {
-                    if (TextUtils.isEmpty(RequestUtil.handleRequestError(error.networkResponse.data))) {
-                        return;
-                    }
-                } catch (RequestUtil.RequestErrorException re) {
-
-                }
-                if (errorListener != null) {
-                    errorListener.onErrorResponse(error);
-                }
-            }
-        }) {
-            @Override
-            protected T getResponseData(NetworkResponse response) {
-                try {
-                    String jsonStr = RequestUtil.handleRequestError(response.data);
-                    return mGson.fromJson(jsonStr, typeToken.getType());
-                } catch (RequestUtil.RequestErrorException e) {
-                    String errorStr = new String(response.data);
-                    errorListener.onErrorResponse(new VolleyError(errorStr));
-                }
-                return null;
-            }
-        };
-
+        BaseVolleyRequest request = new ModelVolleyRequest<T>(method, requestUrl, typeToken, responseListener, errorListener);
         request.setTag(requestUrl.url);
         return request;
     }
