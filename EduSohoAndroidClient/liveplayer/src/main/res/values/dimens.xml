@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="live_video_height">200dp</dimen>
+    <dimen name="live_chat_top">180dp</dimen>
 </resources>

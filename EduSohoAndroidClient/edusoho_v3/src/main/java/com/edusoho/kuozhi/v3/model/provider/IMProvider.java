@@ -448,30 +448,6 @@ public class IMProvider extends ModelProvider {
         return requestOption.build();
     }
 
-    /*
-        roomNo      | string   | 是     | 教室NO               |
-        | token           | string   | 是     | 用户token           |
-        | role  | string   | 是     | 用户角色          |
-        | clientId | string   | 是     | 用户ID
-     */
-    public ProviderListener<LinkedHashMap> getLiveChatServer(
-            String roomNo, String token, String role, String clientId) {
-        StringBuffer stringBuffer = new StringBuffer(Const.LIVE_HOST);
-        stringBuffer.append("/socket/token")
-                .append("?")
-                .append("roomNo=").append(roomNo).append("&")
-                .append("token=").append(token).append("&")
-                .append("role=").append(role).append("&")
-                .append("clientId=").append(clientId);
-        RequestUrl requestUrl = new RequestUrl(stringBuffer.toString());
-
-        requestUrl.getHeads().put("Auth-Token", token);
-        RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<LinkedHashMap>(){});
-
-        return requestOption.build();
-    }
-
     protected AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
     }

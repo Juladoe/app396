@@ -47,7 +47,9 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
 
     private Promise getServerTime() {
         final Promise promise = new Promise();
-        new LiveRoomProvider(mContext).getLiveServerTime()
+        String token = mLiveData.get("token").toString();
+        String liveHost = mLiveData.get("liveHost").toString();
+        new LiveRoomProvider(mContext).getLiveServerTime(liveHost, token)
         .success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap data) {
@@ -57,7 +59,7 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                promise.resolve(0);
+                promise.resolve((long)0);
             }
         });
 
@@ -69,14 +71,12 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
         getServerTime().then(new PromiseCallback<Long>() {
             @Override
             public Promise invoke(Long time) {
-                String roomNo = mLiveData.get("roomNo").toString();
                 String token = mLiveData.get("token").toString();
-                String role = mLiveData.get("role").toString();
-                String clientId = mLiveData.get("clientId").toString();
+                String liveHost = mLiveData.get("liveHost").toString();
 
                 long startTime = 0;
                 new LiveRoomProvider(mContext).getLiveSignals(
-                        roomNo, token, role, clientId, startTime, time
+                        liveHost, token, startTime, time
                 ).success(new NormalCallback<LinkedHashMap<String, Signal>>() {
                     @Override
                     public void success(LinkedHashMap<String, Signal> signalList) {
@@ -84,6 +84,22 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
                     }
                 });
                 return null;
+            }
+        });
+    }
+
+    @Override
+    public void updateLiveNotice() {
+        String token = mLiveData.get("token").toString();
+        String liveHost = mLiveData.get("liveHost").toString();
+        String roomNo = mLiveData.get("roomNo").toString();
+        new LiveRoomProvider(mContext).getLasterLiveNotice(liveHost, token, roomNo)
+        .success(new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap notice) {
+                mILiveVideoView.setNotice(notice.get("notice").toString());
+                mILiveVideoView.showNoticeView();
+                autoHideNoticeView();
             }
         });
     }
@@ -107,12 +123,6 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
                 case "101002":
                     Map data = signal.getData();
                     mILiveVideoView.setLivePlayStatus(Boolean.TRUE.equals(data.get("isResting")));
-                    break;
-                case "102002":
-                    Map noticeData = signal.getData();
-                    mILiveVideoView.setNotice(noticeData.get("info").toString());
-                    mILiveVideoView.showNoticeView();
-                    autoHideNoticeView();
                     break;
                 case "103005":
                     Map allCanChatData = signal.getData();

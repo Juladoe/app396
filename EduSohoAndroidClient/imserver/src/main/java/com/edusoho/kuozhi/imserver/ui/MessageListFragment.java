@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.imserver.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -99,6 +101,22 @@ public class MessageListFragment extends Fragment implements
     public void setEnable(boolean isEnable) {
         mMessageInputView.setEnabled(isEnable);
         mMessageListView.setEnabled(isEnable);
+    }
+
+    @Override
+    public void onUserKicked() {
+        AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setTitle("异地登录")
+                .setMessage("当前帐号已在其他设备上登录，直播课程不能多端同时学习")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        getActivity().finish();
+                    }
+                })
+                .create();
+        dialog.show();
     }
 
     @Override

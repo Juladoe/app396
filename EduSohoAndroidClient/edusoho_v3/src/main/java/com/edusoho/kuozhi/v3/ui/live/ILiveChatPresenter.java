@@ -15,4 +15,6 @@ public interface ILiveChatPresenter {
     void joinLiveChatRoom();
 
     void setView(IMessageListView view);
+
+    void onReplace();
 }

@@ -7,19 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
@@ -32,16 +27,12 @@ import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.adapter.LiveChatListAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
-import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.provider.IMProvider;
-import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.provider.LiveChatDataProvider;
 import com.edusoho.kuozhi.v3.model.provider.LiveRoomProvider;
 import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.liveplayer.PLVideoViewActivity;
 import java.util.ArrayList;
@@ -61,6 +52,8 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     private String mClientName;
     private String mRoomNo;
     private String mPlayUrl;
+    private String mLiveHost;
+    private String mJoinToken;
     private String mLiveTitle;
 
     private LiveImClient mLiveImClient;
@@ -85,6 +78,8 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         mClientId = getIntent().getStringExtra("clientId");
         mClientName = getIntent().getStringExtra("clientName");
         mLiveTitle = getIntent().getStringExtra("title");
+        mLiveHost = getIntent().getStringExtra("liveHost");
+        mLessonId = AppUtil.parseInt(getIntent().getStringExtra("lessonId"));
     }
 
     @Override
@@ -103,12 +98,15 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         }
         if (mILiveVideoPresenter != null) {
             mILiveVideoPresenter.handleHistorySignals();
+            mILiveVideoPresenter.updateLiveNotice();
         }
         registIMReceiver();
     }
 
     private void registIMReceiver() {
-        mILiveChatPresenter = new LiveChatPresenterImpl(mContext, getIntent().getExtras(), mLiveImClient);
+        Bundle params = getIntent().getExtras();
+        params.putString("joinToken", mJoinToken);
+        mILiveChatPresenter = new LiveChatPresenterImpl(mContext, params, mLiveImClient);
         mILiveChatPresenter.setView(mMessageListFragment);
         mReceiver = new LiveIMBroadcastReceiver(mILiveVideoPresenter, mILiveChatPresenter);
         mContext.registerReceiver(mReceiver, new IntentFilter(IMBroadcastReceiver.ACTION_NAME));
@@ -143,9 +141,8 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_notice) {
             Intent intent = new Intent(mContext, LiveNoticeListActivity.class);
-            intent.putExtra(LiveNoticeListActivity.ROLE, mRole);
             intent.putExtra(LiveNoticeListActivity.TOKEN, mToken);
-            intent.putExtra(LiveNoticeListActivity.CLIENT_ID, mClientId);
+            intent.putExtra(LiveNoticeListActivity.LIVE_HOST, mLiveHost);
             intent.putExtra(LiveNoticeListActivity.ROOM_NO, mRoomNo);
             startActivity(intent);
             return true;
@@ -201,44 +198,46 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     }
 
     private void initChatRoom() {
-        new IMProvider(mContext).getLiveChatServer(
-                mRoomNo, mToken, mRole, mClientId
-        ).success(new NormalCallback<LinkedHashMap>() {
-            @Override
-            public void success(LinkedHashMap data) {
-                if (data == null) {
-                    return;
-                }
-
-                String token = data.get("token").toString();
-                LinkedHashMap<String, String> servers = (LinkedHashMap<String, String>) data.get("servers");
-                ArrayList<String> hostList = new ArrayList<>();
-                for (String host : servers.values()) {
-                    hostList.add(host + "?token=" + token);
-                }
-
-                mLiveImClient = new LiveImClient(mContext);
-                mLiveImClient.setOnConnectedCallback(new LiveImClient.OnConnectedCallback() {
+        new LiveRoomProvider(mContext).getLiveChatServer(mLiveHost, mRoomNo, mToken)
+                .success(new NormalCallback<LinkedHashMap>() {
                     @Override
-                    public void onConnected() {
-                        attachMessageListFragment();
+                    public void success(LinkedHashMap data) {
+                        if (data == null) {
+                            return;
+                        }
+
+                        mJoinToken = data.get("joinToken").toString();
+                        String token = data.get("loginToken").toString();
+                        LinkedHashMap<String, String> servers = (LinkedHashMap<String, String>) data.get("servers");
+                        ArrayList<String> hostList = new ArrayList<>();
+                        for (String host : servers.values()) {
+                            hostList.add(host + "?token=" + token);
+                        }
+
+                        mLiveImClient = new LiveImClient(mContext);
+                        mLiveImClient.setOnConnectedCallback(new LiveImClient.OnConnectedCallback() {
+                            @Override
+                            public void onConnected() {
+                                attachMessageListFragment();
+                            }
+                        });
+                        mLiveImClient.start(
+                                AppUtil.parseInt(mClientId), mClientName, new ArrayList<String>(), hostList);
                     }
-                });
-                mLiveImClient.start(
-                        AppUtil.parseInt(mClientId), mClientName, new ArrayList<String>(), hostList);
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError volleyError) {
+                Log.d("LessonLivePlayer", volleyError.getMessage());
             }
         });
     }
 
     @Override
     public void checkLivePlayStatus() {
-        new LiveRoomProvider(mContext).getLiveRoom(
-                mRoomNo, mToken, mRole, mClientId
-        ).success(new NormalCallback<LinkedHashMap>() {
+        new LiveRoomProvider(mContext).getLiveRoom(mLiveHost, mToken, mRoomNo).success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap data) {
                 String status = data.get("status").toString();
-                Log.d("status:", status);
                 if (CLOSE.equals(status)) {
                     setPlayStatus(CLOSE);
                     return;

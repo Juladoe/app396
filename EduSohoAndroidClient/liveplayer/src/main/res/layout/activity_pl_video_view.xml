@@ -6,7 +6,7 @@
     <FrameLayout
         android:fitsSystemWindows="true"
         android:clipToPadding="true"
-        android:layout_marginTop="@dimen/live_video_height"
+        android:layout_marginTop="@dimen/live_chat_top"
         android:background="#ebebeb"
         android:id="@+id/chat_content"
         android:layout_width="match_parent"

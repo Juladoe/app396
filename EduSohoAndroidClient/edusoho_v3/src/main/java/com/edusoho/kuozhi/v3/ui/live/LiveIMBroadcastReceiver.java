@@ -49,6 +49,8 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
     protected void invokeReceiverSignal(MessageEntity message) {
         String cmd = message.getCmd();
         switch (cmd) {
+            case "replace":
+                break;
             case "connected":
                 mILiveChatMessgeListPresenter.joinLiveChatRoom();
                 break;

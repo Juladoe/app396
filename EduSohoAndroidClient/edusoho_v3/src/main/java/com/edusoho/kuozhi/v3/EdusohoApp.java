@@ -166,7 +166,10 @@ public class EdusohoApp extends Application {
         return new StringVolleyRequest(method, requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                response = RequestUtil.handleRequestError(response);
+                try {
+                    response = RequestUtil.handleRequestError(response);
+                } catch (RequestUtil.RequestErrorException re) {
+                }
                 responseListener.onResponse(response);
             }
         }, new Response.ErrorListener() {
@@ -179,9 +182,13 @@ public class EdusohoApp extends Application {
                 if (error.networkResponse == null) {
                     return;
                 }
-                if (TextUtils.isEmpty(RequestUtil.handleRequestError(error.networkResponse.data))) {
-                    return;
+                try {
+                    if (TextUtils.isEmpty(RequestUtil.handleRequestError(error.networkResponse.data))) {
+                        return;
+                    }
+                } catch (RequestUtil.RequestErrorException re) {
                 }
+
                 if (errorListener == null) {
                     return;
                 }

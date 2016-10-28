@@ -126,8 +126,12 @@ public abstract class ModelProvider {
                 if (error.networkResponse == null) {
                     return;
                 }
-                if (TextUtils.isEmpty(RequestUtil.handleRequestError(error.networkResponse.data))) {
-                    return;
+                try {
+                    if (TextUtils.isEmpty(RequestUtil.handleRequestError(error.networkResponse.data))) {
+                        return;
+                    }
+                } catch (RequestUtil.RequestErrorException re) {
+
                 }
                 if (errorListener != null) {
                     errorListener.onErrorResponse(error);
@@ -136,10 +140,12 @@ public abstract class ModelProvider {
         }) {
             @Override
             protected T getResponseData(NetworkResponse response) {
-                String jsonStr = RequestUtil.handleRequestError(response.data);
                 try {
+                    String jsonStr = RequestUtil.handleRequestError(response.data);
                     return mGson.fromJson(jsonStr, typeToken.getType());
-                } catch (Exception e) {
+                } catch (RequestUtil.RequestErrorException e) {
+                    String errorStr = new String(response.data);
+                    errorListener.onErrorResponse(new VolleyError(errorStr));
                 }
                 return null;
             }

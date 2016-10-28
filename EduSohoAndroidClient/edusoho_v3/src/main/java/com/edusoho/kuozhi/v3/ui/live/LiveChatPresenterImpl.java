@@ -11,13 +11,9 @@ import com.edusoho.kuozhi.imserver.ui.IMessageListView;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.im.LiveMessageBody;
 import com.edusoho.kuozhi.v3.model.provider.LiveRoomProvider;
-import com.edusoho.kuozhi.v3.util.AppUtil;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Created by suju on 16/10/18.
@@ -73,28 +69,38 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
     }
 
     @Override
+    public void onReplace() {
+        mIMessageListView.onUserKicked();
+    }
+
+    @Override
     public void joinLiveChatRoom() {
+        String joinToken = mLiveData.get("joinToken").toString();
+        if (!TextUtils.isEmpty(joinToken)) {
+            joinConversation(joinToken);
+            return;
+        }
         String roomNo = mLiveData.get("roomNo").toString();
         String token = mLiveData.get("token").toString();
-        String role = mLiveData.get("role").toString();
-        final String clientId = mLiveData.get("clientId").toString();
-        new LiveRoomProvider(mContext).joinLiveChatRoom(
-                roomNo, token, role, clientId
-        ).success(new NormalCallback<LinkedHashMap>() {
+        String liveHost = mLiveData.get("liveHost").toString();
+        new LiveRoomProvider(mContext).getLiveChatServer(liveHost, token, roomNo).success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap data) {
-                String token = null;
-                if (data == null || TextUtils.isEmpty((token = data.get("token").toString()))) {
+                String joinToken = null;
+                if (data == null || TextUtils.isEmpty((joinToken = data.get("joinToken").toString()))) {
                     return;
                 }
-
-                try {
-                    String conversationNo = mLiveData.get("convNo").toString();
-                    mLiveImClient.getImBinder().joinConversation(token, conversationNo);
-                } catch (RemoteException e) {
-                    Log.i("joinLiveChatRoom", "join error");
-                }
+                joinConversation(joinToken);
             }
         });
+    }
+
+    private void joinConversation(String joinToken) {
+        try {
+            String conversationNo = mLiveData.get("convNo").toString();
+            mLiveImClient.getImBinder().joinConversation(joinToken, conversationNo);
+        } catch (RemoteException e) {
+            Log.i("joinLiveChatRoom", "join error");
+        }
     }
 }

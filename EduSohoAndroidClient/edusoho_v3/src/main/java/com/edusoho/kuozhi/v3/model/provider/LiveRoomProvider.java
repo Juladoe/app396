@@ -1,24 +1,11 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
-
-import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
 import com.edusoho.kuozhi.v3.model.live.Signal;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.SchoolUtil;
-import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
-import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by howzhi on 15/9/9.
@@ -29,27 +16,47 @@ public class LiveRoomProvider extends ModelProvider {
         super(context);
     }
 
-    public ProviderListener<LinkedHashMap> getLiveRoom(
-            String roomnNo, String token, String role, String clientId) {
-
-        StringBuilder stringBuilder = new StringBuilder(Const.LIVE_HOST);
-        stringBuilder.append("/live/status/")
-                .append(roomnNo)
-                .append("?token=").append(token)
-                .append("&role=").append(role)
-                .append("&clientId=").append(clientId);
-        RequestUrl requestUrl = new RequestUrl(stringBuilder.toString());
+    /*
+        liveHost contain http://
+     */
+    public ProviderListener<LinkedHashMap> getLiveRoom(String liveHost, String token, String roomNo) {
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/rooms/%s/status", liveHost, roomNo));
+        requestUrl.setHeads(new String[] {
+                "Auth-Token", token
+        });
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<LinkedHashMap>(){});
 
         return requestOption.build();
     }
 
-    public ProviderListener<LinkedHashMap> getLiveServerTime() {
+    public ProviderListener<LinkedHashMap> getLasterLiveNotice(String liveHost, String token, String roomNo) {
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/rooms/%s/public_notices", liveHost, roomNo));
+        requestUrl.setHeads(new String[] {
+                "Auth-Token", token
+        });
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<LinkedHashMap>(){});
 
-        StringBuilder stringBuilder = new StringBuilder(Const.LIVE_HOST);
-        stringBuilder.append("/live/timestamp");
-        RequestUrl requestUrl = new RequestUrl(stringBuilder.toString());
+        return requestOption.build();
+    }
+
+    public ProviderListener<LinkedHashMap> getLiveNoticeList(String liveHost, String token, String roomNo) {
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/rooms/%s/public_notices_history", liveHost, roomNo));
+        requestUrl.setHeads(new String[] {
+                "Auth-Token", token
+        });
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
+    }
+
+    public ProviderListener<LinkedHashMap> getLiveServerTime(String liveHost, String token) {
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/live/timestamp", liveHost));
+        requestUrl.setHeads(new String[] {
+                "Auth-Token", token
+        });
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<LinkedHashMap>(){});
 
@@ -57,33 +64,41 @@ public class LiveRoomProvider extends ModelProvider {
     }
 
     public ProviderListener<LinkedHashMap<String, Signal>> getLiveSignals(
-            String roomNo, String token, String role, String clientId, long startTime, long endTime) {
-
-        StringBuilder stringBuilder = new StringBuilder(Const.LIVE_HOST);
-        stringBuilder.append("/signal")
-                .append("?token=").append(token)
-                .append("&roomNo=").append(roomNo)
-                .append("&role=").append(role)
-                .append("&endTime=").append(endTime)
-                .append("&startTime=").append(startTime)
-                .append("&clientId=").append(clientId);
-        RequestUrl requestUrl = new RequestUrl(stringBuilder.toString());
+            String liveHost, String token, long startTime, long endTime) {
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/signal", liveHost));
+        requestUrl.setHeads(new String[] {
+                "Auth-Token", token
+        });
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<LinkedHashMap<String, Signal>>(){});
 
         return requestOption.build();
     }
 
+    /*
+        roomNo      | string   | 是     | 教室NO               |
+        | token           | string   | 是     | 用户token           |
+        | role  | string   | 是     | 用户角色          |
+        | clientId | string   | 是     | 用户ID
+     */
+    public ProviderListener<LinkedHashMap> getLiveChatServer(
+            String liveHost, String roomNo, String token) {
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/rooms/%s/socket_token", liveHost, roomNo));
+
+        requestUrl.getHeads().put("Auth-Token", token);
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
+    }
+
     public ProviderListener<LinkedHashMap> joinLiveChatRoom(
-            String roomnNo, String token, String role, String clientId
-    ) {
-        StringBuilder stringBuilder = new StringBuilder(Const.LIVE_HOST);
-        stringBuilder.append("/socket/join_token")
-                .append("?roomNo=").append(roomnNo)
-                .append("&token=").append(token)
-                .append("&clientId=").append(clientId)
-                .append("&role=").append(role);
-        RequestUrl requestUrl = new RequestUrl(stringBuilder.toString());
+            String liveHost, String token, String roomNo) {
+
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/rooms/%s/socket_token", liveHost, roomNo));
+        requestUrl.setHeads(new String[] {
+                "Auth-Token", token
+        });
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<LinkedHashMap>(){});
 

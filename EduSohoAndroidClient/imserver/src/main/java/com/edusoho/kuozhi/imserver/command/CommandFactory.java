@@ -29,6 +29,7 @@ public class CommandFactory {
         mCommandMap.put("memberJoined", MemberJoinedCommand.class);
         mCommandMap.put("connected", ConnectedCommand.class);
         mCommandMap.put("error", ErrorCommand.class);
+        mCommandMap.put("replace", ReplaceCommand.class);
     }
 
     public static synchronized CommandFactory getInstance() {

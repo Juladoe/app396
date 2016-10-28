@@ -13,4 +13,6 @@ public interface ILiveVideoPresenter {
     void updateNotice(MessageEntity messageEntity);
 
     void handleHistorySignals();
+
+    void updateLiveNotice();
 }

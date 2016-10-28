@@ -26,4 +26,6 @@ public interface IMessageListView {
     void setEnable(boolean isEnable);
 
     void setInputTextMode(int mode);
+
+    void onUserKicked();
 }
