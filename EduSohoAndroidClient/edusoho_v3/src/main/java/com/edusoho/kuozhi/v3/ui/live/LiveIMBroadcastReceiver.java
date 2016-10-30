@@ -28,7 +28,10 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
             "103008",
             "103009",
             "103010",
-            "102002"
+            "102002",
+            "104004",
+            "104002",
+            "104001"
     };
 
     public LiveIMBroadcastReceiver(ILiveVideoPresenter presenter, ILiveChatPresenter liveChatMessgeListPresenter) {
@@ -63,10 +66,7 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
                 mILiveChatMessgeListPresenter.setUserCanChatStatus(message);
                 mILiveChatMessgeListPresenter.onHandleMessage(message);
                 break;
-            case "103010":
-                mILiveVideoPresenter.updateLivePlayStatus(message);
-                break;
-            case "101002":
+            case "100001":
                 mILiveVideoPresenter.updateLivePlayStatus(message);
         }
     }

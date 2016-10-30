@@ -40,10 +40,10 @@ public class PLVideoViewActivity extends AppCompatActivity {
 
     private static final int MESSAGE_ID_RECONNECTING = 0x01;
 
-    protected static final String NOT_START = "NOT_START";
-    protected static final String LIVE = "LIVE";
-    protected static final String PAUSE = "PAUSE";
-    protected static final String CLOSE = "CLOSE";
+    protected static final String NOT_START = "init";
+    protected static final String LIVE = "start";
+    protected static final String PAUSE = "pause";
+    protected static final String CLOSE = "close";
 
     private MediaController mMediaController;
     private PLVideoView mVideoView;

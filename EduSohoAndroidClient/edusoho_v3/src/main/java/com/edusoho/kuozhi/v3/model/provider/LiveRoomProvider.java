@@ -5,6 +5,8 @@ import com.edusoho.kuozhi.v3.model.live.Signal;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
+
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 /**
@@ -31,7 +33,7 @@ public class LiveRoomProvider extends ModelProvider {
     }
 
     public ProviderListener<LinkedHashMap> getLasterLiveNotice(String liveHost, String token, String roomNo) {
-        RequestUrl requestUrl = new RequestUrl(String.format("%s/rooms/%s/public_notices", liveHost, roomNo));
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/rooms/%s/announcements/latest", liveHost, roomNo));
         requestUrl.setHeads(new String[] {
                 "Auth-Token", token
         });
@@ -41,13 +43,13 @@ public class LiveRoomProvider extends ModelProvider {
         return requestOption.build();
     }
 
-    public ProviderListener<LinkedHashMap> getLiveNoticeList(String liveHost, String token, String roomNo) {
-        RequestUrl requestUrl = new RequestUrl(String.format("%s/rooms/%s/public_notices_history", liveHost, roomNo));
+    public ProviderListener<ArrayList> getLiveNoticeList(String liveHost, String token, String roomNo) {
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/rooms/%s/announcements", liveHost, roomNo));
         requestUrl.setHeads(new String[] {
                 "Auth-Token", token
         });
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<LinkedHashMap>(){});
+                requestUrl, new TypeToken<ArrayList>(){});
 
         return requestOption.build();
     }
@@ -65,7 +67,7 @@ public class LiveRoomProvider extends ModelProvider {
 
     public ProviderListener<LinkedHashMap<String, Signal>> getLiveSignals(
             String liveHost, String token, long startTime, long endTime) {
-        RequestUrl requestUrl = new RequestUrl(String.format("%s/signals", liveHost));
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/signals?startTime=%d&endTime=%d", liveHost, startTime, endTime));
         requestUrl.setHeads(new String[] {
                 "Auth-Token", token
         });

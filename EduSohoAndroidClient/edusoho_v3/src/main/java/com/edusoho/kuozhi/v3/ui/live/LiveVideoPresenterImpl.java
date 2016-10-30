@@ -97,7 +97,10 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
         .success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap notice) {
-                mILiveVideoView.setNotice(notice.get("notice").toString());
+                if (notice == null || !notice.containsKey("content")) {
+                    return;
+                }
+                mILiveVideoView.setNotice(notice.get("content").toString());
                 mILiveVideoView.showNoticeView();
                 autoHideNoticeView();
             }
@@ -149,7 +152,7 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
         LiveMessageBody liveMessageBody = new LiveMessageBody(messageEntity.getMsg());
         try {
             JSONObject jsonObject = new JSONObject(liveMessageBody.getData());
-            mILiveVideoView.setLivePlayStatus(jsonObject.optBoolean("isResting"));
+            mILiveVideoView.setLivePlayStatus("pause".equals(jsonObject.getString("status")));
         } catch (JSONException e) {
         }
     }

@@ -88,11 +88,11 @@ public class LiveNoticeListActivity extends ActionBarBaseActivity {
 
     private void loadNoticeList() {
         new LiveRoomProvider(mContext).getLiveNoticeList(mLiveHost, mToken, mRoomNo
-        ).success(new NormalCallback<LinkedHashMap>() {
+        ).success(new NormalCallback<ArrayList>() {
             @Override
-            public void success(LinkedHashMap noticesMap) {
+            public void success(ArrayList noticeList) {
                 mLoadView.setVisibility(View.GONE);
-                mNoticeList = getNoticeListFromSignals(noticesMap);
+                mNoticeList = getNoticeListFromSignals(noticeList);
                 if (mNoticeList == null || mNoticeList.isEmpty()) {
                     mEmptyView.setVisibility(View.VISIBLE);
                     return;
@@ -104,20 +104,16 @@ public class LiveNoticeListActivity extends ActionBarBaseActivity {
         });
     }
 
-    private List<NoticeEntity> getNoticeListFromSignals(LinkedHashMap noticesMap) {
+    private List<NoticeEntity> getNoticeListFromSignals(ArrayList<LinkedHashMap> notices) {
         List<NoticeEntity> noticeList = new ArrayList<>();
-        if (noticesMap.get("history") instanceof ArrayList) {
-            return noticeList;
-        }
-        LinkedHashMap<String, String> notices = (LinkedHashMap<String, String>) noticesMap.get("history");
         if (notices == null || notices.isEmpty()) {
             return noticeList;
         }
 
-        for (Map.Entry<String, String> entity : notices.entrySet()) {
+        for (Map<String, String> entity : notices) {
             NoticeEntity noticeEntity = new NoticeEntity();
-            noticeEntity.setContent(entity.getValue());
-            noticeEntity.setCreateTime(AppUtil.parseLong(entity.getKey()));
+            noticeEntity.setContent(entity.get("content"));
+            noticeEntity.setCreateTime(AppUtil.parseLong(entity.get("time")));
             noticeList.add(noticeEntity);
         }
 
