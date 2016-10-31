@@ -94,6 +94,17 @@ public class LiveRoomProvider extends ModelProvider {
         return requestOption.build();
     }
 
+    public ProviderListener<ArrayList> getLiveChatBannedList(
+            String liveHost, String token, String roomNo) {
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/rooms/%s/banned_clients", liveHost, roomNo));
+
+        requestUrl.getHeads().put("Auth-Token", token);
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<ArrayList>(){});
+
+        return requestOption.build();
+    }
+
     public ProviderListener<LinkedHashMap> joinLiveChatRoom(
             String liveHost, String token, String roomNo) {
 

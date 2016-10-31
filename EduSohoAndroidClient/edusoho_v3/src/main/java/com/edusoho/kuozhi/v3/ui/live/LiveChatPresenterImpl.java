@@ -12,10 +12,13 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.im.LiveMessageBody;
 import com.edusoho.kuozhi.v3.model.provider.LiveRoomProvider;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 /**
@@ -61,7 +64,7 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
             }
             if (jsonObject.has("isCanChat")) {
                 String clientId = mLiveData.get("clientId").toString();
-                if (!clientId.equals(jsonObject.optInt("clientId"))) {
+                if (AppUtil.parseInt(clientId) != jsonObject.optInt("clientId")) {
                     return;
                 }
                 mIMessageListView.setEnable(jsonObject.optBoolean("isCanChat"));
@@ -77,10 +80,35 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
         mIMessageListView.onUserKicked();
     }
 
+    public void checkClientIsBan(final String clientId) {
+        String roomNo = mLiveData.get("roomNo").toString();
+        String token = mLiveData.get("token").toString();
+        String liveHost = mLiveData.get("liveHost").toString();
+        new LiveRoomProvider(mContext).getLiveChatBannedList(liveHost, token, roomNo)
+        .success(new NormalCallback<ArrayList>() {
+            @Override
+            public void success(ArrayList bannedList) {
+                mIMessageListView.setEnable(!findClientIdInArray(clientId, bannedList));
+            }
+        });
+    }
+
+    private boolean findClientIdInArray(String clientId, ArrayList<LinkedHashMap> bannedList) {
+        for (LinkedHashMap bannedMap : bannedList) {
+            if (clientId.equals(bannedMap.get("clientId").toString())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @Override
     public void joinLiveChatRoom() {
         String joinToken = mLiveData.get("joinToken").toString();
+        final String clientId = mLiveData.get("clientId").toString();
         if (!TextUtils.isEmpty(joinToken)) {
+            checkClientIsBan(clientId);
             joinConversation(joinToken);
             return;
         }
@@ -94,6 +122,7 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
                 if (data == null || TextUtils.isEmpty((joinToken = data.get("joinToken").toString()))) {
                     return;
                 }
+                checkClientIsBan(clientId);
                 joinConversation(joinToken);
             }
         });

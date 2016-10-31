@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import com.android.volley.VolleyError;
@@ -55,6 +56,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     private String mLiveHost;
     private String mJoinToken;
     private String mLiveTitle;
+    private boolean mIsBan;
 
     private LiveImClient mLiveImClient;
     private ILiveVideoPresenter mILiveVideoPresenter;
@@ -98,7 +100,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         }
         if (mILiveVideoPresenter != null) {
             mILiveVideoPresenter.handleHistorySignals();
-            mILiveVideoPresenter.updateLiveNotice();
+            mILiveVideoPresenter.updateLiveNotice(false);
         }
         registIMReceiver();
     }
@@ -189,11 +191,13 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     }
 
     @Override
-    public void setLivePlayStatus(boolean isResting) {
-        if (isResting) {
+    public void setLivePlayStatus(String staus) {
+        if (PAUSE.equals(staus)) {
             pauseLive();
-        } else {
+        } else if (LIVE.equals(staus)) {
             resumeLive();
+        } else if (CLOSE.equals(staus)) {
+            setPlayStatus(CLOSE);
         }
     }
 
@@ -218,6 +222,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
                         mLiveImClient.setOnConnectedCallback(new LiveImClient.OnConnectedCallback() {
                             @Override
                             public void onConnected() {
+                                findViewById(R.id.iv_chat_progressbar).setVisibility(View.GONE);
                                 attachMessageListFragment();
                             }
                         });
@@ -227,7 +232,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError volleyError) {
-                Log.d("LessonLivePlayer", volleyError.getMessage());
+                volleyError.printStackTrace();
             }
         });
     }
@@ -238,6 +243,12 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
             @Override
             public void success(LinkedHashMap data) {
                 String status = data.get("status").toString();
+                if (data.containsKey("ban")) {
+                    mIsBan = (boolean) data.get("ban");
+                    if (mMessageListFragment != null) {
+                        mMessageListFragment.setEnable(!mIsBan);
+                    }
+                }
                 if (CLOSE.equals(status)) {
                     setPlayStatus(CLOSE);
                     return;
@@ -303,6 +314,8 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         mILiveVideoPresenter = new LiveVideoPresenterImpl(
                 mContext, getIntent().getExtras(), LessonLivePlayerActivity.this, mMessageListFragment);
         mILiveVideoPresenter.handleHistorySignals();
+        mILiveVideoPresenter.updateLiveNotice(true);
+        mMessageListFragment.setEnable(!mIsBan);
         registIMReceiver();
     }
 

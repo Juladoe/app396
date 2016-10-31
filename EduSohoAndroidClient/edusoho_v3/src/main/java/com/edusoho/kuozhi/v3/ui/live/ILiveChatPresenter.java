@@ -17,4 +17,6 @@ public interface ILiveChatPresenter {
     void setView(IMessageListView view);
 
     void onReplace();
+
+    void checkClientIsBan(String clientId);
 }

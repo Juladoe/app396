@@ -8,7 +8,7 @@
         android:layout_gravity="bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/black_60"
+        android:background="@drawable/live_controller_bottom_bg"
         android:padding="8dp">
 
         <CheckBox

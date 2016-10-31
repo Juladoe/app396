@@ -37,12 +37,14 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
     private Context mContext;
     private ILiveVideoView mILiveVideoView;
     private IMessageListView mIMessageListView;
+    private Map<Long, Boolean> mNoticeCacheMap;
 
     public LiveVideoPresenterImpl(Context context, Bundle liveData, ILiveVideoView videoView, IMessageListView messageListView) {
         this.mContext = context;
         this.mLiveData = liveData;
         this.mILiveVideoView = videoView;
         this.mIMessageListView = messageListView;
+        this.mNoticeCacheMap = new HashMap<>();
     }
 
     private Promise getServerTime() {
@@ -89,7 +91,7 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
     }
 
     @Override
-    public void updateLiveNotice() {
+    public void updateLiveNotice(final boolean alawsShow) {
         String token = mLiveData.get("token").toString();
         String liveHost = mLiveData.get("liveHost").toString();
         String roomNo = mLiveData.get("roomNo").toString();
@@ -100,11 +102,24 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
                 if (notice == null || !notice.containsKey("content")) {
                     return;
                 }
-                mILiveVideoView.setNotice(notice.get("content").toString());
-                mILiveVideoView.showNoticeView();
-                autoHideNoticeView();
+                if (!alawsShow && notice.containsKey("time")) {
+                    long time = AppUtil.convertTimeZone2Millisecond(notice.get("time").toString());
+                    if (mNoticeCacheMap.containsKey(time)) {
+                        return;
+                    }
+                    mNoticeCacheMap.put(time, true);
+                    showNotice(notice.get("content").toString());
+                    return;
+                }
+                showNotice(notice.get("content").toString());
             }
         });
+    }
+
+    private void showNotice(String content) {
+        mILiveVideoView.setNotice(content);
+        mILiveVideoView.showNoticeView();
+        autoHideNoticeView();
     }
 
     private void invokeSignals(LinkedHashMap<String, Signal> signalMap) {
@@ -125,7 +140,8 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
             switch (signal.getType()) {
                 case "101002":
                     Map data = signal.getData();
-                    mILiveVideoView.setLivePlayStatus(Boolean.TRUE.equals(data.get("isResting")));
+                    String status = Boolean.TRUE.equals(data.get("isResting")) ? "pause" : "start";
+                    mILiveVideoView.setLivePlayStatus(status);
                     break;
                 case "103005":
                     Map allCanChatData = signal.getData();
@@ -142,7 +158,7 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
     @Override
     public void updateLivePlayStatus(MessageEntity messageEntity) {
         if ("replace".equals(messageEntity.getCmd())) {
-            mILiveVideoView.setLivePlayStatus(true);
+            mILiveVideoView.setLivePlayStatus("pause");
             return;
         }
         if ("103010".equals(messageEntity.getCmd())) {
@@ -152,7 +168,7 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
         LiveMessageBody liveMessageBody = new LiveMessageBody(messageEntity.getMsg());
         try {
             JSONObject jsonObject = new JSONObject(liveMessageBody.getData());
-            mILiveVideoView.setLivePlayStatus("pause".equals(jsonObject.getString("status")));
+            mILiveVideoView.setLivePlayStatus(jsonObject.getString("status"));
         } catch (JSONException e) {
         }
     }

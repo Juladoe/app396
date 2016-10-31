@@ -71,6 +71,7 @@ public class MessageListFragment extends Fragment implements
     private int mInputMode = IMessageInputView.INPUT_IMAGE_AND_VOICE;
     private boolean canLoadData = true;
     private Context mContext;
+    private boolean mIsEnable;
     private int mCurrentSelectedIndex;
     private MessageAudioPlayer mAudioPlayer;
     private MessageSendListener mMessageSendListener;
@@ -99,6 +100,10 @@ public class MessageListFragment extends Fragment implements
 
     @Override
     public void setEnable(boolean isEnable) {
+        this.mIsEnable = isEnable;
+        if (mMessageInputView == null) {
+            return;
+        }
         mMessageInputView.setEnabled(isEnable);
         mMessageListView.setEnabled(isEnable);
     }
@@ -206,6 +211,7 @@ public class MessageListFragment extends Fragment implements
     };
 
     protected void initView(View view) {
+        Log.d(TAG, "initView");
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
         mMessageListView = (RecyclerView) view.findViewById(R.id.listview);
 
@@ -222,7 +228,6 @@ public class MessageListFragment extends Fragment implements
         mMessageListView.setLayoutManager(mLayoutManager);
         mMessageListView.setAdapter(mListAdapter);
         mMessageListView.setItemAnimator(null);
-        Log.d(TAG, "initView");
 
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrHandler() {
@@ -244,10 +249,10 @@ public class MessageListFragment extends Fragment implements
             }
         });
 
+        setEnable(mIsEnable);
         mMessageSendListener = getMessageSendListener();
         mMessageInputView.setMessageSendListener(mMessageSendListener);
         mMessageInputView.setMessageControllerListener(getMessageControllerListener());
-
         mMessageListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {

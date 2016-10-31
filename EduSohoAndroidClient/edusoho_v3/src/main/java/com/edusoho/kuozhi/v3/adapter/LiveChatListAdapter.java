@@ -97,9 +97,9 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
                     case "103004":
                         mContentView.setVisibility(View.VISIBLE);
                         if (jsonObject.optBoolean("isCanChat")) {
-                            mContentView.setText(String.format("管理员将 %s 解除禁言", liveMessageBody.getClientName()));
+                            mContentView.setText(String.format("管理员将 %s 解除禁言", jsonObject.optString("clientName")));
                         } else {
-                            mContentView.setText(String.format("管理员将 %s 禁言", liveMessageBody.getClientName()));
+                            mContentView.setText(String.format("管理员将 %s 禁言", jsonObject.optString("clientName")));
                         }
                         break;
                     case "103005":
@@ -134,11 +134,17 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
 
         public void setUserRole(LiveMessageBody messageBody) {
             mRoleView.setVisibility(View.GONE);
-            if ("organizer".equals(messageBody.getRole())) {
+            if ("master".equals(messageBody.getRole())) {
                 mRoleView.setText("管理员");
                 mRoleView.setVisibility(View.VISIBLE);
-            } else if ("panelist".equals(messageBody.getRole())) {
+            } else if ("teacher".equals(messageBody.getRole())) {
+                mRoleView.setText("讲师");
+                mRoleView.setVisibility(View.VISIBLE);
+            } else if ("assist".equals(messageBody.getRole())) {
                 mRoleView.setText("助教");
+                mRoleView.setVisibility(View.VISIBLE);
+            } else if ("support".equals(messageBody.getRole())) {
+                mRoleView.setText("技术支持");
                 mRoleView.setVisibility(View.VISIBLE);
             }
         }

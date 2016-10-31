@@ -67,25 +67,6 @@ public class LiveNoticeListActivity extends ActionBarBaseActivity {
         mLiveHost = dataIntent.getStringExtra(LIVE_HOST);
     }
 
-    private Promise getServerTime() {
-        final Promise promise = new Promise();
-        new LiveRoomProvider(mContext).getLiveServerTime(mLiveHost, mToken)
-                .success(new NormalCallback<LinkedHashMap>() {
-                    @Override
-                    public void success(LinkedHashMap data) {
-                        Double time = (Double) data.get("time");
-                        promise.resolve(time.longValue());
-                    }
-                }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError obj) {
-                promise.resolve((long)0);
-            }
-        });
-
-        return promise;
-    }
-
     private void loadNoticeList() {
         new LiveRoomProvider(mContext).getLiveNoticeList(mLiveHost, mToken, mRoomNo
         ).success(new NormalCallback<ArrayList>() {
@@ -113,7 +94,9 @@ public class LiveNoticeListActivity extends ActionBarBaseActivity {
         for (Map<String, String> entity : notices) {
             NoticeEntity noticeEntity = new NoticeEntity();
             noticeEntity.setContent(entity.get("content"));
-            noticeEntity.setCreateTime(AppUtil.parseLong(entity.get("time")));
+
+            long time = AppUtil.convertTimeZone2Millisecond(entity.get("time"));
+            noticeEntity.setCreateTime(time * 1000);
             noticeList.add(noticeEntity);
         }
 

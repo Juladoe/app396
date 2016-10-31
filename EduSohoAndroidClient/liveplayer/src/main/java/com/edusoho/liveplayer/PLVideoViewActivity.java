@@ -386,47 +386,41 @@ public class PLVideoViewActivity extends AppCompatActivity {
             }
             switch (errorCode) {
                 case PLMediaPlayer.ERROR_CODE_INVALID_URI:
-                    showToastTips("Invalid URL !");
+                    showToastTips("加载直播错误");
                     break;
                 case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
-                    showToastTips("404 resource not found !");
+                    showToastTips("加载直播错误");
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
-                    showToastTips("Connection refused !");
                     sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
-                    showToastTips("Connection timeout !");
                     sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
-                    showToastTips("Empty playlist !");
+                    showToastTips("直播课列表为空!");
                     break;
                 case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
-                    showToastTips("Stream disconnected !");
                     sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_IO_ERROR:
-                    showToastTips("Network IO Error !");
                     sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
                     showToastTips("Unauthorized Error !");
                     break;
                 case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
-                    showToastTips("Prepare timeout !");
                     sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
-                    showToastTips("Read frame timeout !");
                     checkLivePlayStatus();
                     sendReconnectMessage();
                     break;
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
-                    showToastTips("play error !");
+                    showToastTips("加载直播错误");
                     break;
                 default:
-                    showToastTips("unknown error !");
+                    showToastTips("加载直播错误");
                     break;
             }
             return true;

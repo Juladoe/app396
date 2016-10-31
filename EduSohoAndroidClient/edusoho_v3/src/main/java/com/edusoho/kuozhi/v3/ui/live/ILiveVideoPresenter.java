@@ -14,5 +14,5 @@ public interface ILiveVideoPresenter {
 
     void handleHistorySignals();
 
-    void updateLiveNotice();
+    void updateLiveNotice(boolean alawsShow);
 }

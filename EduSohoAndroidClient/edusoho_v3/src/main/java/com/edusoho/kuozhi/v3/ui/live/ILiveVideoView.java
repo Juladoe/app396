@@ -11,7 +11,7 @@ public interface ILiveVideoView {
 
     void setNotice(String notice);
 
-    void setLivePlayStatus(boolean playStatus);
+    void setLivePlayStatus(String playStatus);
 
     void checkLivePlayStatus();
 }

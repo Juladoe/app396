@@ -10,7 +10,16 @@
         android:background="#ebebeb"
         android:id="@+id/chat_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:layout_gravity="center"
+            android:id="@+id/iv_chat_progressbar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:progressDrawable="@drawable/live_progress" />
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/fl_live_container"
@@ -68,7 +77,7 @@
         android:layout_width="match_parent"
         android:layout_height="59dp"
         android:paddingTop="13dp"
-        android:background="@drawable/toobar_mask_bg"
+        android:background="@drawable/live_controller_top_bg"
         android:navigationIcon="@drawable/action_bar_back"
         app:navigationIcon="@drawable/action_bar_back">
 

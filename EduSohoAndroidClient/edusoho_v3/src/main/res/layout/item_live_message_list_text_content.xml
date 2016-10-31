@@ -20,7 +20,7 @@
         android:visibility="visible" />
 
     <com.makeramen.roundedimageview.RoundedImageView
-        app:riv_corner_radius="3dp"
+        app:riv_corner_radius="5dp"
         android:id="@+id/tv_avatar"
         android:layout_width="@dimen/head_icon_medium"
         android:layout_height="@dimen/head_icon_medium"
