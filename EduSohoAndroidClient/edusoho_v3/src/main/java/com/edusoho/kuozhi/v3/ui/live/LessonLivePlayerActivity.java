@@ -246,6 +246,10 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
                     setPlayStatus(NOT_START);
                     return;
                 }
+                if (PAUSE.equals(status)) {
+                    setPlayStatus(PAUSE);
+                    return;
+                }
                 startPlay(mPlayUrl);
             }
         });
