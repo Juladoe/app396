@@ -314,7 +314,7 @@ public class ImServer {
     }
 
     private boolean isSignalMessage(String cmd) {
-        String[] signalArray = { "memberJoined", "clientOnline", "clientOffline", "replace" };
+        String[] signalArray = { "memberJoined", "clientOnline", "clientOffline" };
         for (String signal : signalArray) {
             if (signal.equals(cmd)) {
                 return true;

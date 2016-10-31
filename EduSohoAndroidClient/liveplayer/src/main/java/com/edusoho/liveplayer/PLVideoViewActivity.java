@@ -254,6 +254,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
 
     private void setPlayEnd() {
         mHandler.removeCallbacksAndMessages(null);
+        mVideoView.pause();
         mVideoView.stopPlayback();
         getSupportActionBar().show();
         mLoadStatusView.setImageResource(R.drawable.icon_live_close);
@@ -482,7 +483,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
             mVideoView.setLayoutParams(lp);
 
             RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) mBottomLayout.getLayoutParams();
-            rlp.topMargin = mVideoHeight;
+            rlp.topMargin = mVideoHeight - 40;
             mBottomLayout.setLayoutParams(rlp);
         }
     };
