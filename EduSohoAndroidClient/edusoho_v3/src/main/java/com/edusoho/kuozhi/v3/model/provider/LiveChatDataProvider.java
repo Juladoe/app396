@@ -71,6 +71,7 @@ public class LiveChatDataProvider implements IMessageDataProvider {
             SendEntity sendEntity = SendEntityBuildr.getBuilder()
                     .addToId(toId)
                     .addToName("all")
+                    .addK(messageBody.getMessageId())
                     .addCmd("flashSend")
                     .addMsg(wrapLiveMessageBody(messageBody))
                     .builder();

@@ -43,6 +43,11 @@ public class SendEntityBuildr {
         return this;
     }
 
+    public SendEntityBuildr addK(String k) {
+        sendEntity.setK(k);
+        return this;
+    }
+
     public SendEntity builder() {
         return sendEntity;
     }

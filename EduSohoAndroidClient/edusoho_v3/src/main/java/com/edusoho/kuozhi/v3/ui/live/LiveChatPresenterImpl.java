@@ -19,7 +19,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by suju on 16/10/18.
@@ -30,11 +32,13 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
     private Context mContext;
     private LiveImClient mLiveImClient;
     private IMessageListView mIMessageListView;
+    private Map<Long, Boolean> mMessageFilterMap;
 
     public LiveChatPresenterImpl(Context context, Bundle liveData, LiveImClient liveImClient) {
         this.mContext = context;
         this.mLiveData = liveData;
         this.mLiveImClient = liveImClient;
+        mMessageFilterMap = new HashMap<>();
     }
 
     @Override
@@ -45,11 +49,17 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
     @Override
     public void onHandleMessage(MessageEntity message) {
         String clientId = mLiveData.get("clientId").toString();
-        String ClientName = mLiveData.get("clientName").toString();
-        if (clientId.equals(message.getFromId()) && ClientName.equals(message.getFromName())) {
+        String clientName = mLiveData.get("clientName").toString();
+
+        if (clientId.equals(message.getFromId()) && clientName.equals(message.getFromName())) {
             return;
         }
-
+        LiveMessageBody messageBody = new LiveMessageBody(message.getMsg());
+        long messageTime = messageBody.getTime();
+        if (mMessageFilterMap.containsKey(messageTime)) {
+            return;
+        }
+        mMessageFilterMap.put(messageTime, true);
         mIMessageListView.insertMessage(message);
     }
 
