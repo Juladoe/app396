@@ -141,7 +141,7 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
                 mRoleView.setText("讲师");
                 mRoleView.setVisibility(View.VISIBLE);
             } else if ("assist".equals(messageBody.getRole())) {
-                mRoleView.setText("助教");
+                mRoleView.setText("老师");
                 mRoleView.setVisibility(View.VISIBLE);
             } else if ("support".equals(messageBody.getRole())) {
                 mRoleView.setText("技术支持");

@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.live;
 
+import android.text.TextUtils;
+
 import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.v3.model.im.LiveMessageBody;
@@ -18,20 +20,21 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
 
     String[] filterArray = {
             "100001",
-            "100002",
-            "101001",
-            "101002",
+            "102001",
             "101003",
+            "102002",
             "103004",
             "103005",
-            "103007",
-            "103008",
-            "103009",
-            "103010",
+            "103007"
+    };
+
+    String[] signalArray = {
+            "100001",
+            "101003",
             "102002",
-            "104004",
-            "104002",
-            "104001"
+            "103004",
+            "103005",
+            "103007"
     };
 
     public LiveIMBroadcastReceiver(ILiveVideoPresenter presenter, ILiveChatPresenter liveChatMessgeListPresenter) {
@@ -39,7 +42,7 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
         this.mILiveChatMessgeListPresenter = liveChatMessgeListPresenter;
     }
 
-    private boolean messageIsSignal(String type) {
+    private boolean messageIsFilter(String type) {
         for (String filter : filterArray) {
             if (type.equals(filter)) {
                 return true;
@@ -47,6 +50,16 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
         }
         return false;
     }
+
+    private boolean messageIsSignal(String type) {
+        for (String filter : signalArray) {
+            if (type.equals(filter)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 
     @Override
     protected void invokeReceiverSignal(MessageEntity message) {
@@ -64,7 +77,9 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
             case "103004":
             case "103005":
                 mILiveChatMessgeListPresenter.setUserCanChatStatus(message);
-                mILiveChatMessgeListPresenter.onHandleMessage(message);
+                break;
+            case "103007":
+                mILiveVideoPresenter.onKill(message);
                 break;
             case "100001":
                 mILiveVideoPresenter.updateLivePlayStatus(message);
@@ -74,12 +89,27 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
     @Override
     protected void invokeReceiver(MessageEntity message) {
         LiveMessageBody liveMessageBody = new LiveMessageBody(message.getMsg());
+        if (liveMessageBody != null && !messageIsFilter(liveMessageBody.getType())) {
+            return;
+        }
         if (liveMessageBody != null && messageIsSignal(liveMessageBody.getType())) {
             message.setCmd(liveMessageBody.getType());
             invokeReceiverSignal(message);
             return;
         }
-        mILiveChatMessgeListPresenter.onHandleMessage(message);
+
+        if (TextUtils.isEmpty(message.getCmd())) {
+            mILiveChatMessgeListPresenter.onHandleMessage(message);
+            return;
+        }
+        switch (message.getCmd()) {
+            case "102001":
+            case "103004":
+            case "103005":
+            case "memberJoined":
+                mILiveChatMessgeListPresenter.onHandleMessage(message);
+                break;
+        }
     }
 
     @Override

@@ -65,6 +65,9 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private int mVideoHeight;
     private long mTimeoutLength;
 
+    protected View mChatLoadLayout;
+    protected ProgressBar mChatLoadProgressBar;
+    protected TextView mChatLoadTitleView;
     protected TextView mNoticeView;
 
     @Override
@@ -132,6 +135,12 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mVideoView.setLayoutParams(lp);
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mMediaController.updateStatus(newConfig.orientation);
+    }
+
     private void changeScreenToLandspace() {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         ViewGroup.LayoutParams lp = mVideoView.getLayoutParams();
@@ -195,12 +204,24 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mLiveTitleView = (TextView) findViewById(R.id.tv_live_title);
         mLiveDescView = (TextView) findViewById(R.id.tv_live_desc);
         mNoticeView = (TextView) findViewById(R.id.tv_live_notice);
+        mChatLoadLayout = findViewById(R.id.ll_chat_load);
+        mChatLoadTitleView = (TextView) findViewById(R.id.tv_chat_load_title);
+        mChatLoadProgressBar = (ProgressBar) findViewById(R.id.pb_chat_load);
 
         mLoadingView = findViewById(R.id.vg_live_loadingView);
         mLoadTitleView = (TextView) findViewById(R.id.tv_live_loadtitle);
         mLoadStatusView = (ImageView) findViewById(R.id.iv_live_statusicon);
         mLoadProgressBar = (ProgressBar) findViewById(R.id.iv_live_progressbar);
         mVideoView.setBufferingIndicator(mLoadingView);
+    }
+
+    protected void setLiveChatLoadContentStatus(int visibility, String title) {
+        mChatLoadProgressBar.setVisibility(visibility);
+        mChatLoadTitleView.setText(title);
+    }
+
+    protected void setLiveChatLoadShowStatus(int visibility) {
+        mChatLoadLayout.setVisibility(visibility);
     }
 
     protected void setPlayStatus(String status) {
@@ -226,6 +247,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mLoadProgressBar.setVisibility(View.GONE);
         mLoadTitleView.setText(R.string.live_no_start);
         mLoadingView.setVisibility(View.VISIBLE);
+        mLoadingView.setOnClickListener(null);
     }
 
     private void setPlayOnBuffering() {
@@ -233,6 +255,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mLoadProgressBar.setVisibility(View.VISIBLE);
         mLoadTitleView.setText(R.string.live_buffering);
         mLoadingView.setVisibility(View.VISIBLE);
+        mLoadingView.setOnClickListener(null);
     }
 
     private void setPlayPause() {
@@ -242,6 +265,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mLoadProgressBar.setVisibility(View.GONE);
         mLoadTitleView.setText(R.string.live_no_pause);
         mLoadingView.setVisibility(View.VISIBLE);
+        mLoadingView.setOnClickListener(null);
     }
 
     private void setPlayError() {
@@ -262,6 +286,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mLoadProgressBar.setVisibility(View.GONE);
         mLoadTitleView.setText(R.string.live_end);
         mLoadingView.setVisibility(View.VISIBLE);
+        mLoadingView.setOnClickListener(null);
     }
 
     protected void setLiveTitle(String title) {
@@ -302,6 +327,10 @@ public class PLVideoViewActivity extends AppCompatActivity {
         setPlayStatus(LIVE);
         mVideoView.setVideoPath(mVideoPath);
         mVideoView.start();
+    }
+
+    protected String getViewPath() {
+        return mVideoPath;
     }
 
     @Override

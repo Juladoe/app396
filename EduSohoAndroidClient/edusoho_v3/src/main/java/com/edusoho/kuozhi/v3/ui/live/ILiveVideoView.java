@@ -14,4 +14,6 @@ public interface ILiveVideoView {
     void setLivePlayStatus(String playStatus);
 
     void checkLivePlayStatus();
+
+    void onLeaveRoom();
 }

@@ -91,6 +91,19 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
     }
 
     @Override
+    public void onKill(MessageEntity messageEntity) {
+        LiveMessageBody liveMessageBody = new LiveMessageBody(messageEntity.getMsg());
+        if (liveMessageBody == null) {
+            return;
+        }
+        String clientId = mLiveData.get("clientId").toString();
+        if (clientId.equals(liveMessageBody.getData())) {
+            mILiveVideoView.onLeaveRoom();
+            updateLivePlayStatus(messageEntity);
+        }
+    }
+
+    @Override
     public void updateLiveNotice(final boolean alawsShow) {
         String token = mLiveData.get("token").toString();
         String liveHost = mLiveData.get("liveHost").toString();
@@ -102,8 +115,8 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
                 if (notice == null || !notice.containsKey("content")) {
                     return;
                 }
+                long time = AppUtil.convertTimeZone2Millisecond(notice.get("time").toString());
                 if (!alawsShow && notice.containsKey("time")) {
-                    long time = AppUtil.convertTimeZone2Millisecond(notice.get("time").toString());
                     if (mNoticeCacheMap.containsKey(time)) {
                         return;
                     }
@@ -112,6 +125,7 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
                     return;
                 }
                 showNotice(notice.get("content").toString());
+                mNoticeCacheMap.put(time, true);
             }
         });
     }
@@ -165,6 +179,12 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
             mILiveVideoView.checkLivePlayStatus();
             return;
         }
+
+        if ("103007".equals(messageEntity.getCmd())) {
+            mILiveVideoView.setLivePlayStatus("close");
+            return;
+        }
+
         LiveMessageBody liveMessageBody = new LiveMessageBody(messageEntity.getMsg());
         try {
             JSONObject jsonObject = new JSONObject(liveMessageBody.getData());

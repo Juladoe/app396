@@ -53,9 +53,11 @@
         <TextView
             android:visibility="gone"
             android:id="@+id/tv_role_label"
-            android:layout_width="28dp"
+            android:layout_width="wrap_content"
             android:layout_height="12dp"
             android:layout_marginLeft="7dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:background="@drawable/chat_role_label_bg"
             android:gravity="center"
             android:textColor="@color/white"

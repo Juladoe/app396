@@ -3,13 +3,16 @@ package com.edusoho.kuozhi.v3.ui.live;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -159,6 +162,23 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     }
 
     @Override
+    public void onLeaveRoom() {
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("退出教室")
+                .setMessage("您已被移出直播教室")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        finish();
+                    }
+                })
+                .setCancelable(false)
+                .create();
+        dialog.show();
+    }
+
+    @Override
     public void setNotice(String notice) {
         mNoticeView.setText(notice);
         mNoticeView.requestFocus();
@@ -195,6 +215,10 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         if (PAUSE.equals(staus)) {
             pauseLive();
         } else if (LIVE.equals(staus)) {
+            if (TextUtils.isEmpty(getViewPath())) {
+                checkLivePlayStatus();
+                return;
+            }
             resumeLive();
         } else if (CLOSE.equals(staus)) {
             setPlayStatus(CLOSE);
@@ -222,7 +246,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
                         mLiveImClient.setOnConnectedCallback(new LiveImClient.OnConnectedCallback() {
                             @Override
                             public void onConnected() {
-                                findViewById(R.id.iv_chat_progressbar).setVisibility(View.GONE);
+                                setLiveChatLoadShowStatus(View.GONE);
                                 attachMessageListFragment();
                             }
                         });
@@ -232,7 +256,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError volleyError) {
-                volleyError.printStackTrace();
+                setLiveChatLoadContentStatus(View.GONE, "加载聊天讨论组失败");
             }
         });
     }

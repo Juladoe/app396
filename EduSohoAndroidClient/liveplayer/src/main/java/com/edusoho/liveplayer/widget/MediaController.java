@@ -206,6 +206,11 @@ public class MediaController extends FrameLayout implements IMediaController {
         void onChange(int orientation);
     }
 
+    public void updateStatus(int orientation) {
+        boolean isChecked = orientation == Configuration.ORIENTATION_LANDSCAPE;
+        mScreenButton.setChecked(isChecked);
+    }
+
     public void setOnScreenChangeListener(OnScreenChangeListener l) {
         this.mOnScreenChangeListener = l;
     }

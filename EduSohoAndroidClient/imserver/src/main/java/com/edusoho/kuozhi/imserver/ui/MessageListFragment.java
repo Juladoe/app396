@@ -120,6 +120,7 @@ public class MessageListFragment extends Fragment implements
                         getActivity().finish();
                     }
                 })
+                .setCancelable(false)
                 .create();
         dialog.show();
     }
