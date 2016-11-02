@@ -48,6 +48,10 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
 
     @Override
     public void onHandleMessage(MessageEntity message) {
+        String conversationNo = mLiveData.get("convNo").toString();
+        if (TextUtils.isEmpty(conversationNo) || !conversationNo.equals(message.getConvNo())) {
+            return;
+        }
         String clientId = mLiveData.get("clientId").toString();
         String clientName = mLiveData.get("clientName").toString();
 

@@ -19,6 +19,7 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -158,7 +159,6 @@ public class MessageListFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (mContainerView == null) {
             mContainerView = inflater.inflate(R.layout.fragment_message_list_layout, null);
-            initView(mContainerView);
         }
 
         ViewGroup parent = (ViewGroup) mContainerView.getParent();
@@ -263,6 +263,16 @@ public class MessageListFragment extends Fragment implements
                 }
             }
         });
+        ((View)(view.getParent())).setOnClickListener(getListOnClickListener());
+    }
+
+    private View.OnClickListener getListOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SystemUtil.setSoftKeyBoard(v, getContext(), SystemUtil.HIDE_KEYBOARD);
+            }
+        };
     }
 
     private synchronized void checkCanAutoLoad(RecyclerView recyclerView) {
@@ -577,6 +587,7 @@ public class MessageListFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated");
+        initView(view);
         mIMessageListPresenter.start();
     }
 

@@ -39,6 +39,9 @@ import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.liveplayer.PLVideoViewActivity;
+
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -80,6 +83,10 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         mToken = getIntent().getStringExtra("token");
         mRoomNo = getIntent().getStringExtra("roomNo");
         mPlayUrl = getIntent().getStringExtra("playUrl");
+
+        if (!TextUtils.isEmpty(mPlayUrl)) {
+            mPlayUrl = URLDecoder.decode(mPlayUrl);
+        }
         mClientId = getIntent().getStringExtra("clientId");
         mClientName = getIntent().getStringExtra("clientName");
         mLiveTitle = getIntent().getStringExtra("title");

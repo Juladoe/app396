@@ -139,7 +139,9 @@ public class MessageInputView extends FrameLayout implements IMessageInputView {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        mViewSpeakContainer.setEnabled(enabled);
+        if (mViewSpeakContainer != null) {
+            mViewSpeakContainer.setEnabled(enabled);
+        }
         etSend.setEnabled(enabled);
         ivAddMedia.setEnabled(enabled);
         btnVoice.setEnabled(enabled);
