@@ -30,6 +30,7 @@ public class CommandFactory {
         mCommandMap.put("connected", ConnectedCommand.class);
         mCommandMap.put("error", ErrorCommand.class);
         mCommandMap.put("replace", ReplaceCommand.class);
+        mCommandMap.put("flashSended", FlashSendedCommand.class);
     }
 
     public static synchronized CommandFactory getInstance() {

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
+
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.ui.IMessageListView;
@@ -96,10 +98,14 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
         if (liveMessageBody == null) {
             return;
         }
-        String clientId = mLiveData.get("clientId").toString();
-        if (clientId.equals(liveMessageBody.getData())) {
-            mILiveVideoView.onLeaveRoom();
-            updateLivePlayStatus(messageEntity);
+        try {
+            String clientId = mLiveData.get("clientId").toString();
+            JSONObject jsonObject = new JSONObject(liveMessageBody.getData());
+            if (!TextUtils.isEmpty(clientId) && AppUtil.parseInt(clientId) == jsonObject.optInt("clientId")) {
+                mILiveVideoView.onLeaveRoom();
+                updateLivePlayStatus(messageEntity);
+            }
+        } catch (JSONException e) {
         }
     }
 
@@ -121,19 +127,19 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
                         return;
                     }
                     mNoticeCacheMap.put(time, true);
-                    showNotice(notice.get("content").toString());
+                    showNotice(notice.get("content").toString(), time);
                     return;
                 }
-                showNotice(notice.get("content").toString());
-                mNoticeCacheMap.put(time, true);
+                showNotice(notice.get("content").toString(), time);
             }
         });
     }
 
-    private void showNotice(String content) {
+    private void showNotice(String content, long time) {
         mILiveVideoView.setNotice(content);
         mILiveVideoView.showNoticeView();
         autoHideNoticeView();
+        mNoticeCacheMap.put(time, true);
     }
 
     private void invokeSignals(LinkedHashMap<String, Signal> signalMap) {
@@ -198,9 +204,7 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
         LiveMessageBody liveMessageBody = new LiveMessageBody(message.getMsg());
         try {
             JSONObject jsonObject = new JSONObject(liveMessageBody.getData());
-            mILiveVideoView.setNotice(jsonObject.optString("info"));
-            mILiveVideoView.showNoticeView();
-            autoHideNoticeView();
+            showNotice(jsonObject.optString("info"), jsonObject.optLong("time"));
         } catch (JSONException e) {
         }
     }

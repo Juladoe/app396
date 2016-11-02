@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.ui.IMessageListView;
+import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.im.LiveMessageBody;
@@ -31,13 +33,15 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
     private Bundle mLiveData;
     private Context mContext;
     private LiveImClient mLiveImClient;
+    private IMessageDataProvider mIMessageDataProvider;
     private IMessageListView mIMessageListView;
     private Map<Long, Boolean> mMessageFilterMap;
 
-    public LiveChatPresenterImpl(Context context, Bundle liveData, LiveImClient liveImClient) {
+    public LiveChatPresenterImpl(Context context, Bundle liveData, LiveImClient liveImClient, IMessageDataProvider dataProvider) {
         this.mContext = context;
         this.mLiveData = liveData;
         this.mLiveImClient = liveImClient;
+        this.mIMessageDataProvider = dataProvider;
         mMessageFilterMap = new HashMap<>();
     }
 
@@ -48,10 +52,6 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
 
     @Override
     public void onHandleMessage(MessageEntity message) {
-        String conversationNo = mLiveData.get("convNo").toString();
-        if (TextUtils.isEmpty(conversationNo) || !conversationNo.equals(message.getConvNo())) {
-            return;
-        }
         String clientId = mLiveData.get("clientId").toString();
         String clientName = mLiveData.get("clientName").toString();
 
@@ -65,6 +65,16 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
         }
         mMessageFilterMap.put(messageTime, true);
         mIMessageListView.insertMessage(message);
+    }
+
+    public void onSuccess(MessageEntity successEntity) {
+        int index = AppUtil.parseInt(successEntity.getUid());
+        MessageEntity messageEntity = mIMessageDataProvider.getMessageByUID(String.valueOf(index));
+        if (messageEntity == null) {
+            return;
+        }
+        messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
+        mIMessageListView.updateMessageEntity(messageEntity);
     }
 
     @Override

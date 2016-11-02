@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
 import com.edusoho.kuozhi.imserver.SendEntity;
@@ -13,6 +14,7 @@ import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -71,7 +73,7 @@ public class LiveChatDataProvider implements IMessageDataProvider {
             SendEntity sendEntity = SendEntityBuildr.getBuilder()
                     .addToId(toId)
                     .addToName("all")
-                    .addK(messageBody.getMessageId())
+                    .addK(String.valueOf(messageBody.getMid()))
                     .addCmd("flashSend")
                     .addMsg(wrapLiveMessageBody(messageBody))
                     .builder();
@@ -124,7 +126,10 @@ public class LiveChatDataProvider implements IMessageDataProvider {
 
     @Override
     public MessageEntity getMessageByUID(String uid) {
-        return null;
+        if (TextUtils.isEmpty(uid)) {
+            return null;
+        }
+        return mMessageEntityList.get(AppUtil.parseInt(uid));
     }
 
     @Override

@@ -270,7 +270,8 @@ public class ImServer {
                 "toId", sendEntity.getToId(),
                 "toName", sendEntity.getToName(),
                 "convNo", sendEntity.getConvNo(),
-                "msg", sendEntity.getMsg()
+                "msg", sendEntity.getMsg(),
+                "key", sendEntity.getK()
         });
     }
 
@@ -387,10 +388,12 @@ public class ImServer {
         }
         long resultId = mMsgDbHelper.save(messageEntity);
         if (resultId != 0) {
+            String cmd = messageEntity.getCmd();
             messageEntity = mMsgDbHelper.getMessageByMsgNo(messageEntity.getMsgNo());
             if (messageEntity == null) {
                 throw new MessageSaveFailException();
             }
+            messageEntity.setCmd(cmd);
             return messageEntity;
         }
         throw new MessageSaveFailException();

@@ -70,6 +70,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     protected IMessageListPresenter mIMessageListPresenter;
     protected MessageListFragment mMessageListFragment;
     private IMBroadcastReceiver mReceiver;
+    private LiveChatDataProvider mLiveChatDataProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,9 +119,9 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     private void registIMReceiver() {
         Bundle params = getIntent().getExtras();
         params.putString("joinToken", mJoinToken);
-        mILiveChatPresenter = new LiveChatPresenterImpl(mContext, params, mLiveImClient);
+        mILiveChatPresenter = new LiveChatPresenterImpl(mContext, params, mLiveImClient, mLiveChatDataProvider);
         mILiveChatPresenter.setView(mMessageListFragment);
-        mReceiver = new LiveIMBroadcastReceiver(mILiveVideoPresenter, mILiveChatPresenter);
+        mReceiver = new LiveIMBroadcastReceiver(mConversationNo, mILiveVideoPresenter, mILiveChatPresenter);
         mContext.registerReceiver(mReceiver, new IntentFilter(IMBroadcastReceiver.ACTION_NAME));
     }
 
@@ -314,13 +315,14 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         bundle.putInt(MessageListFragment.TARGET_ID, mLessonId);
         bundle.putString(MessageListFragment.TARGET_TYPE, "live_chatroom");
 
+        mLiveChatDataProvider = new LiveChatDataProvider(mLiveImClient.getImBinder());
         LiveChatMessageListPresenterImpl presenter = new LiveChatMessageListPresenterImpl(
                 mContext,
                 bundle,
                 new LiveChatDataProvider.MockConvManager(mContext),
                 new IMRoleManager(mContext),
                 new MessageResourceHelper(mContext),
-                new LiveChatDataProvider(mLiveImClient.getImBinder()),
+                mLiveChatDataProvider,
                 mMessageListFragment
         );
         presenter.setLiveData(getIntent().getExtras());

@@ -19,4 +19,6 @@ public interface ILiveChatPresenter {
     void onReplace();
 
     void checkClientIsBan(String clientId);
+
+    void onSuccess(MessageEntity messageEntity);
 }

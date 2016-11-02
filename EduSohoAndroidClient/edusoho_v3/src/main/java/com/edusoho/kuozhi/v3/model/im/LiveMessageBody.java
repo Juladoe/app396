@@ -1,5 +1,9 @@
 package com.edusoho.kuozhi.v3.model.im;
 
+import android.text.TextUtils;
+
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,6 +19,14 @@ public class LiveMessageBody {
     private String role;
     private String data;
     private long time;
+    private int msgStatus;
+
+    public LiveMessageBody(MessageEntity messageEntity) {
+        this(messageEntity.getMsg());
+        if (TextUtils.isEmpty(type)) {
+            setType(messageEntity.getCmd());
+        }
+    }
 
     public LiveMessageBody(String body) {
         JSONObject jsonObject = null;
@@ -30,6 +42,14 @@ public class LiveMessageBody {
         setConvNo(jsonObject.optString("convNo"));
         setData(jsonObject.optString("data"));
         setTime(jsonObject.optLong("time"));
+    }
+
+    public int getMsgStatus() {
+        return msgStatus;
+    }
+
+    public void setMsgStatus(int msgStatus) {
+        this.msgStatus = msgStatus;
     }
 
     public String getConvNo() {

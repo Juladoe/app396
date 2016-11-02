@@ -12,6 +12,8 @@ import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.ui.adapter.MessageRecyclerListAdapter;
+import com.edusoho.kuozhi.imserver.ui.entity.Direct;
+import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
 import com.edusoho.kuozhi.v3.model.im.LiveMessageBody;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -30,15 +32,28 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
 
     @Override
     public void onBindViewHolder(MessageRecyclerListAdapter.MessageViewHolder viewHolder, int position) {
-        LiveMessageBody messageBody = new LiveMessageBody(mMessageList.get(position).getMsg());
+        MessageEntity messageEntity = mMessageList.get(position);
+        LiveMessageBody messageBody = new LiveMessageBody(messageEntity.getMsg());
         if (viewHolder instanceof LiveTextViewHolder) {
             LiveTextViewHolder liveTextViewHolder = ((LiveTextViewHolder) viewHolder);
             liveTextViewHolder.setLiveMessageBody(messageBody, position);
             liveTextViewHolder.setLiveAvatar(mMessageList.get(position));
             liveTextViewHolder.setUserRole(messageBody);
+            liveTextViewHolder.setMessageStatus(messageEntity.getStatus());
             return;
         }
         super.onBindViewHolder(viewHolder, position);
+    }
+
+    private boolean checkItemTypeIsLabel(MessageEntity messageEntity) {
+        switch (messageEntity.getCmd()) {
+            case "103004":
+            case "103005":
+            case "memberJoined":
+                return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -149,6 +164,21 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
             }
         }
 
+        protected void setMessageStatus(int status) {
+            switch (status) {
+                case MessageEntity.StatusType.SUCCESS:
+                    errorStatusView.setVisibility(View.INVISIBLE);
+                    break;
+                case MessageEntity.StatusType.UPLOADING:
+                    errorStatusView.setVisibility(View.VISIBLE);
+                    errorStatusView.setProgressStatus();
+                    break;
+                case MessageEntity.StatusType.FAILED:
+                    errorStatusView.setVisibility(View.VISIBLE);
+                    errorStatusView.setErrorStatus();
+            }
+        }
+
         public void setLiveMessageBody(LiveMessageBody messageBody, int position) {
             String body = "";
             try {
@@ -161,8 +191,9 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
 
             timeView.setVisibility(View.GONE);
             if (position < (getItemCount() - 1)) {
-                long preTime = mMessageList.get(position + 1).getTime() * 1000L;
-                if (messageBody.getTime() - preTime > TIME_INTERVAL) {
+                MessageEntity messageEntity = mMessageList.get(position + 1);
+                long preTime = messageEntity.getTime() * 1000L;
+                if (checkItemTypeIsLabel(messageEntity) || messageBody.getTime() - preTime > TIME_INTERVAL) {
                     timeView.setVisibility(View.VISIBLE);
                     timeView.setText(TimeUtil.convertMills2Date(messageBody.getTime()));
                 }

@@ -21,7 +21,7 @@ public class ConnectedCommand extends BaseCommand {
     @Override
     public void invoke(JSONObject params) {
         Log.d("ConnectedCommand", "invoke");
-        mImServer.requestOfflineMsg();
+        //mImServer.requestOfflineMsg();
         mImServer.getHeartManager().start();
 
         params.remove("cmd");

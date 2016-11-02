@@ -51,7 +51,7 @@ public class FlashMessageCommand extends BaseCommand {
                         .addTime(time)
                         .addMsgNo(msgNo)
                         .addCmd(cmd)
-                        .addStatus(MessageEntity.StatusType.NONE)
+                        .addStatus(MessageEntity.StatusType.UPLOADING)
                         .builder();
         mImServer.onReceiveMessage(messageEntity);
     }
