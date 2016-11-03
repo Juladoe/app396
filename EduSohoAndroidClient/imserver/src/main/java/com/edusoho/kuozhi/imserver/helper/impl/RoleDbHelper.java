@@ -1,10 +1,13 @@
-package com.edusoho.kuozhi.imserver.util;
+package com.edusoho.kuozhi.imserver.helper.impl;
 
 import android.content.ContentValues;
 import android.content.Context;
 
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
+import com.edusoho.kuozhi.imserver.util.DbHelper;
+import com.edusoho.kuozhi.imserver.util.DbUtil;
+import com.edusoho.kuozhi.imserver.util.MessageUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;

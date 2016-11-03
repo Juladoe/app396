@@ -25,11 +25,9 @@ import com.edusoho.kuozhi.imserver.service.IHeartManager;
 import com.edusoho.kuozhi.imserver.service.IMsgManager;
 import com.edusoho.kuozhi.imserver.service.Impl.ConnectionManager;
 import com.edusoho.kuozhi.imserver.service.Impl.HeartManagerImpl;
-import com.edusoho.kuozhi.imserver.service.Impl.MsgManager;
+import com.edusoho.kuozhi.imserver.service.Impl.DbMsgManager;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
-import com.edusoho.kuozhi.imserver.util.ConvDbHelper;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
-import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 
 import org.json.JSONException;
@@ -72,8 +70,6 @@ public class ImServer {
             "lastMsgNo", ""
     };
 
-    private MsgDbHelper mMsgDbHelper;
-    private ConvDbHelper mConvDbHelper;
     private Context mContext;
     private String mClientName;
     private int mClientId;
@@ -88,11 +84,10 @@ public class ImServer {
         this.mContext = context;
         this.flag = CONNECT_NONE;
         initHeartManager();
-        initMsgManager();
     }
 
-    private void initMsgManager() {
-        this.mIMsgManager = new MsgManager();
+    protected void setMsgManager(IMsgManager msgManager) {
+        this.mIMsgManager = msgManager;
     }
 
     private void initHeartManager() {
@@ -167,7 +162,7 @@ public class ImServer {
 
     public void requestOfflineMsg() {
         offlineMsgCmd[3] = "";
-        offlineMsgCmd[3] = mMsgDbHelper.getLaterNo();
+        offlineMsgCmd[3] = mIMsgManager.getLaterNo();
         send(offlineMsgCmd);
         Log.d(TAG, "requestOfflineMsg:" + offlineMsgCmd[3]);
     }
@@ -186,8 +181,7 @@ public class ImServer {
         this.mHostList = host;
         this.mClientId = clientId;
 
-        this.mMsgDbHelper = new MsgDbHelper(mContext);
-        this.mConvDbHelper = new ConvDbHelper(mContext);
+        this.mIMsgManager.reset();
     }
 
     public boolean isConnected() {
@@ -228,8 +222,7 @@ public class ImServer {
     public void stop() {
         pause();
         sendConnectStatusBroadcast(IConnectManagerListener.CLOSE);
-        this.mMsgDbHelper = null;
-        this.mConvDbHelper = null;
+        this.mIMsgManager.clear();
     }
 
     public boolean isCancel() {
@@ -306,6 +299,10 @@ public class ImServer {
         return false;
     }
 
+    public IMsgManager getIMsgManager() {
+        return mIMsgManager;
+    }
+
     private boolean messageNeedHandle(String cmd) {
         return "message".equals(cmd) || "offlineMsg".equals(cmd) || "flashMessage".equals(cmd);
     }
@@ -325,7 +322,7 @@ public class ImServer {
     }
 
     private MessageEntity handleReceiveMessage(MessageEntity messageEntity) throws MessageSaveFailException {
-        if (getMsgDbHelper().hasMessageByNo(messageEntity.getMsgNo())) {
+        if (mIMsgManager.hasMessageByNo(messageEntity.getMsgNo())) {
             Log.d("MessageCommand", "hasMessageByNo");
             return null;
         }
@@ -368,7 +365,7 @@ public class ImServer {
             convEntity = createConv(messageBody);
             convEntity.setUnRead(convEntity.getUnRead() + 1);
             convEntity.setUid(mClientId);
-            mConvDbHelper.save(convEntity);
+            mIMsgManager.createConvNoEntity(convEntity);
         } else {
             updateConvEntity(convEntity, messageEntity);
         }
@@ -376,20 +373,20 @@ public class ImServer {
 
     private ConvEntity getConvEntityFromMessage(MessageBody messageBody) {
         if (TextUtils.isEmpty(messageBody.getConvNo())) {
-            return mConvDbHelper.getConvByTypeAndId(messageBody.getSource().getType(), messageBody.getSource().getId());
+            return mIMsgManager.getConvByTypeAndId(messageBody.getSource().getType(), messageBody.getSource().getId());
         }
 
-        return mConvDbHelper.getConvByConvNo(messageBody.getConvNo());
+        return mIMsgManager.getConvByConvNo(messageBody.getConvNo());
     }
 
     private MessageEntity saveMessageEntityToDb(MessageEntity messageEntity) throws MessageSaveFailException {
         if (TextUtils.isEmpty(messageEntity.getMsgNo())) {
             messageEntity.setMsgNo(UUID.randomUUID().toString());
         }
-        long resultId = mMsgDbHelper.save(messageEntity);
+        long resultId = mIMsgManager.createMessageEntity(messageEntity);
         if (resultId != 0) {
             String cmd = messageEntity.getCmd();
-            messageEntity = mMsgDbHelper.getMessageByMsgNo(messageEntity.getMsgNo());
+            messageEntity = mIMsgManager.getMessageByMsgNo(messageEntity.getMsgNo());
             if (messageEntity == null) {
                 throw new MessageSaveFailException();
             }
@@ -439,10 +436,10 @@ public class ImServer {
         }
 
         if (checkPushConvEntityCanUpdate(convEntity.getConvNo(), messageEntity.getConvNo())) {
-            mConvDbHelper.update(convEntity);
+            mIMsgManager.updateConvEntityById(convEntity);
             return;
         }
-        mConvDbHelper.updateByConvNo(convEntity);
+        mIMsgManager.updateConvEntityByConvNo(convEntity);
     }
 
     /*
@@ -519,10 +516,6 @@ public class ImServer {
             convEntity.setAvatar(role.getAvatar());
         }
         return convEntity;
-    }
-
-    public MsgDbHelper getMsgDbHelper() {
-        return mMsgDbHelper;
     }
 
     private void ping() {

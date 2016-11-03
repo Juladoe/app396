@@ -24,6 +24,15 @@
                 <action android:name="com.edusoho.kuozhi.imserver.IImServerAidlInterface"/>
             </intent-filter>
         </service>
+
+        <service
+            android:name=".MemIMService"
+            android:process=":im_mem_server">
+            <intent-filter>
+                <!--  指定调用AIDL服务的ID  -->
+                <action android:name="com.edusoho.kuozhi.imserver.IImMemServerAidlInterface"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

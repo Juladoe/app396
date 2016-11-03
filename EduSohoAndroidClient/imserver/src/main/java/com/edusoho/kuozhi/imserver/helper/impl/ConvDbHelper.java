@@ -1,10 +1,13 @@
-package com.edusoho.kuozhi.imserver.util;
+package com.edusoho.kuozhi.imserver.helper.impl;
 
 import android.content.ContentValues;
 import android.content.Context;
 
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
+import com.edusoho.kuozhi.imserver.helper.IConvDbHelper;
+import com.edusoho.kuozhi.imserver.util.DbHelper;
+import com.edusoho.kuozhi.imserver.util.MessageUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,7 +16,7 @@ import java.util.List;
 /**
  * Created by 菊 on 2016/4/29.
  */
-public class ConvDbHelper {
+public class ConvDbHelper implements IConvDbHelper {
 
     private static final String TABLE = "im_conv";
     private DbHelper mDbHelper;

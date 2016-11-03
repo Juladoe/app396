@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.imserver.util;
+package com.edusoho.kuozhi.imserver.helper.impl;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,6 +9,10 @@ import android.util.SparseArray;
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
+import com.edusoho.kuozhi.imserver.helper.IMsgDbHelper;
+import com.edusoho.kuozhi.imserver.util.DbHelper;
+import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
+import com.edusoho.kuozhi.imserver.util.MessageUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by 菊 on 2016/4/29.
  */
-public class MsgDbHelper {
+public class MsgDbHelper implements IMsgDbHelper {
 
     private static final String TABLE = "im_message";
 

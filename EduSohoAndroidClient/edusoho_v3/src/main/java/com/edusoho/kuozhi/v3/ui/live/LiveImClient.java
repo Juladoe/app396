@@ -111,7 +111,7 @@ public class LiveImClient {
     }
 
     private Intent getIMServiceIntent() {
-        Intent intent = new Intent("com.edusoho.kuozhi.liveimserver.IImServerAidlInterface");
+        Intent intent = new Intent("com.edusoho.kuozhi.imserver.IImMemServerAidlInterface");
         intent.setPackage(mContext.getPackageName());
         return intent;
     }
@@ -141,7 +141,7 @@ public class LiveImClient {
             }
         };
         boolean result = mContext.bindService(
-                new Intent("com.edusoho.kuozhi.liveimserver.IImServerAidlInterface")
+                new Intent("com.edusoho.kuozhi.imserver.IImMemServerAidlInterface")
                         .setPackage(mContext.getPackageName()),
                 mServiceConnection,
                 Context.BIND_AUTO_CREATE

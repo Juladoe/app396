@@ -35,12 +35,12 @@ public class SuccessCommand extends BaseCommand {
 
     private void updateMessageStatus(String msg) throws JSONException {
         JSONObject jsonObject = new JSONObject(msg);
-        MessageEntity messageEntity = mImServer.getMsgDbHelper().getMessageByUID(jsonObject.optString("uid"));
+        MessageEntity messageEntity = mImServer.getIMsgManager().getMessageByUID(jsonObject.optString("uid"));
         if (messageEntity == null) {
             return;
         }
 
         messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
-        mImServer.getMsgDbHelper().update(messageEntity);
+        mImServer.getIMsgManager().updateMessageEntityByUID(messageEntity);
     }
 }

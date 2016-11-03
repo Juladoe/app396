@@ -274,14 +274,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
 
-        <service
-            android:name=".imserver.ImService">
-            <intent-filter>
-                <!--  指定调用AIDL服务的ID  -->
-                <action android:name="com.edusoho.kuozhi.liveimserver.IImServerAidlInterface"/>
-            </intent-filter>
-        </service>
-
     </application>
 
 </manifest>

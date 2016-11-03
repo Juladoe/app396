@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.broadcast.IMServiceStartedBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.broadcast.NetWorkStatusBroadcastReceiver;
+import com.edusoho.kuozhi.imserver.service.Impl.DbMsgManager;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.imserver.util.NetTypeConst;
 
@@ -46,8 +47,14 @@ public class ImService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "onCreate");
-        mImServer = new ImServer(getBaseContext());
+        mImServer = getIMServer();
         registNetWorkStatusBroadcastReceiver();
+    }
+
+    protected ImServer getIMServer() {
+        ImServer imServer = new ImServer(getBaseContext());
+        imServer.setMsgManager(new DbMsgManager(getBaseContext()));
+        return imServer;
     }
 
     private void registNetWorkStatusBroadcastReceiver() {

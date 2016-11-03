@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.edusoho.kuozhi.imserver.entity.Role;
-import com.edusoho.kuozhi.imserver.util.RoleDbHelper;
+import com.edusoho.kuozhi.imserver.helper.impl.RoleDbHelper;
 import java.util.Map;
 
 /**
