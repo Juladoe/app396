@@ -26,6 +26,9 @@ public class LiveMessageBody {
         if (TextUtils.isEmpty(type)) {
             setType(messageEntity.getCmd());
         }
+        if (time == 0) {
+            setTime(messageEntity.getTime());
+        }
     }
 
     public LiveMessageBody(String body) {

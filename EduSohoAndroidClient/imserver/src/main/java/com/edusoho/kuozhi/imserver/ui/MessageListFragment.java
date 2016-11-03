@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -22,6 +23,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.R;
@@ -263,16 +265,6 @@ public class MessageListFragment extends Fragment implements
                 }
             }
         });
-        ((View)(view.getParent())).setOnClickListener(getListOnClickListener());
-    }
-
-    private View.OnClickListener getListOnClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SystemUtil.setSoftKeyBoard(v, getContext(), SystemUtil.HIDE_KEYBOARD);
-            }
-        };
     }
 
     private synchronized void checkCanAutoLoad(RecyclerView recyclerView) {
@@ -589,16 +581,6 @@ public class MessageListFragment extends Fragment implements
         Log.d(TAG, "onViewCreated");
         initView(view);
         mIMessageListPresenter.start();
-    }
-
-    private void coverMessageEntityStatus(List<MessageEntity> messageEntityList) {
-        MessageResourceHelper messageResourceHelper = IMClient.getClient().getResourceHelper();
-        for (MessageEntity messageEntity : messageEntityList) {
-            if (messageEntity.getStatus() != PushUtil.MsgDeliveryType.SUCCESS
-                    && messageResourceHelper.hasTask(messageEntity.getId())) {
-                messageEntity.setStatus(PushUtil.MsgDeliveryType.UPLOADING);
-            }
-        }
     }
 
     public void updateListByEntity(MessageEntity messageEntity) {

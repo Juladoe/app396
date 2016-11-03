@@ -67,7 +67,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
     protected static final int SEND_MULTI = 7;
     protected static final int LABEL = 8;
 
-    protected static long TIME_INTERVAL = 60 * 5 * 1000;
+    protected static long TIME_INTERVAL = 60 * 3 * 1000;
     protected static final String TAG = "MessageListAdapter";
 
     protected int mCurrentId;

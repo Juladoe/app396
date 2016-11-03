@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_live_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -141,6 +142,14 @@
         android:scrollHorizontally="true"
         android:singleLine="true"
         android:text="暂无公告"
-        android:textColor="@color/white_80" />
+        android:textSize="@dimen/live_notice"
+        android:textColor="@color/live_notice_title" />
 
+    <View
+        android:layout_marginTop="59dp"
+        android:layout_marginBottom="48dp"
+        android:visibility="visible"
+        android:id="@+id/view_live_mask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </RelativeLayout>

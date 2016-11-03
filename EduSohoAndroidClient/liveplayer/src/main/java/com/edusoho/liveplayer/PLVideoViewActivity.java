@@ -7,6 +7,8 @@ package com.edusoho.liveplayer;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,11 +16,14 @@ import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -32,7 +37,7 @@ import com.pili.pldroid.player.PLMediaPlayer;
 import com.pili.pldroid.player.widget.PLVideoView;
 
 /**
- *  This is a demo activity of PLVideoView
+ * This is a demo activity of PLVideoView
  */
 public class PLVideoViewActivity extends AppCompatActivity {
 
@@ -65,6 +70,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
     private int mVideoHeight;
     private long mTimeoutLength;
 
+    private View mMaskView;
     protected View mChatLoadLayout;
     protected ProgressBar mChatLoadProgressBar;
     protected TextView mChatLoadTitleView;
@@ -117,7 +123,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
                 }
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                     changeScreenToPortrait();
-                } else  {
+                } else {
                     changeScreenToLandspace();
                 }
             }
@@ -208,11 +214,57 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mChatLoadTitleView = (TextView) findViewById(R.id.tv_chat_load_title);
         mChatLoadProgressBar = (ProgressBar) findViewById(R.id.pb_chat_load);
 
+        mMaskView = findViewById(R.id.view_live_mask);
         mLoadingView = findViewById(R.id.vg_live_loadingView);
         mLoadTitleView = (TextView) findViewById(R.id.tv_live_loadtitle);
         mLoadStatusView = (ImageView) findViewById(R.id.iv_live_statusicon);
         mLoadProgressBar = (ProgressBar) findViewById(R.id.iv_live_progressbar);
         mVideoView.setBufferingIndicator(mLoadingView);
+
+        initTouchListener();
+    }
+
+    private void initTouchListener() {
+        View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+        rootView.getViewTreeObserver().addOnGlobalLayoutListener(getOnGlobalLayoutListener());
+    }
+
+    private ViewTreeObserver.OnGlobalLayoutListener getOnGlobalLayoutListener() {
+        return new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                View rootView = getWindow().getDecorView().findViewById(android.R.id.content);
+                final int softKeyboardHeight = 100;
+                Rect r = new Rect();
+                rootView.getWindowVisibleDisplayFrame(r);
+                DisplayMetrics dm = rootView.getResources().getDisplayMetrics();
+                int heightDiff = rootView.getBottom() - r.bottom;
+                if (heightDiff > softKeyboardHeight * dm.density) {
+                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    showMaskView();
+                }
+            }
+        };
+    }
+
+    private void showMaskView() {
+        mMaskView.setVisibility(View.VISIBLE);
+        Rect r = new Rect();
+        mMaskView.getWindowVisibleDisplayFrame(r);
+
+        ViewGroup.LayoutParams lp = mMaskView.getLayoutParams();
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        lp.height = r.bottom - r.top - (int)((48 + 25) * dm.density);
+        mMaskView.setLayoutParams(lp);
+        mMaskView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mMaskView.setVisibility(View.INVISIBLE);
+                Utils.setSoftKeyBoard(v, getBaseContext(), Utils.HIDE_KEYBOARD);
+                initTouchListener();
+                return false;
+            }
+        });
     }
 
     protected void setLiveChatLoadContentStatus(int visibility, String title) {
@@ -478,7 +530,9 @@ public class PLVideoViewActivity extends AppCompatActivity {
         @Override
         public void onSeekComplete(PLMediaPlayer plMediaPlayer) {
             Log.d(TAG, "onSeekComplete !");
-        };
+        }
+
+        ;
     };
 
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
@@ -497,7 +551,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
                 return;
             }
             int videoWidth = mVideoView.getWidth();
-            mVideoHeight = (int) (videoWidth / (width / (float)height));
+            mVideoHeight = (int) (videoWidth / (width / (float) height));
             if (mVideoHeight == 0) {
                 mVideoHeight = getResources().getDimensionPixelOffset(R.dimen.live_video_height);
             }

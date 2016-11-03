@@ -58,7 +58,7 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
         if (clientId.equals(message.getFromId()) && clientName.equals(message.getFromName())) {
             return;
         }
-        LiveMessageBody messageBody = new LiveMessageBody(message.getMsg());
+        LiveMessageBody messageBody = new LiveMessageBody(message);
         long messageTime = messageBody.getTime();
         if (mMessageFilterMap.containsKey(messageTime)) {
             return;

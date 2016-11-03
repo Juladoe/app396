@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.live;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.baidu.cyberplayer.utils.P;
 import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
@@ -138,6 +139,11 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
                 mILiveChatMessgeListPresenter.onHandleMessage(message);
                 break;
         }
+    }
+
+    @Override
+    protected void invokeConnectReceiver(int status, boolean isConnected) {
+        Log.d("LiveIMBroadcastReceiver", "s:" + status);
     }
 
     @Override

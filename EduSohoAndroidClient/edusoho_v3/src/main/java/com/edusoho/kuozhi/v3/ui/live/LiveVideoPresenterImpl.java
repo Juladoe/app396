@@ -204,7 +204,7 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
         LiveMessageBody liveMessageBody = new LiveMessageBody(message.getMsg());
         try {
             JSONObject jsonObject = new JSONObject(liveMessageBody.getData());
-            showNotice(jsonObject.optString("info"), jsonObject.optLong("time"));
+            showNotice(jsonObject.optString("info"), liveMessageBody.getTime() / 1000);
         } catch (JSONException e) {
         }
     }

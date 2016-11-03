@@ -9,5 +9,6 @@
     <color name="white_80">#ddffffff</color>
 
     <color name="live_notice_bg">#FFF9CD</color>
+    <color name="live_notice_title">#FF9053</color>
     <color name="live_notice_list_bg">#e8e8e8</color>
 </resources>
