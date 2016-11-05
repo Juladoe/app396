@@ -13,7 +13,7 @@ public interface IMMessageReceiver {
 
     boolean onOfflineMsgReceiver(List<MessageEntity> messageEntities);
 
-    void onSuccess(String extr);
+    void onSuccess(MessageEntity messageEntity);
 
     ReceiverInfo getType();
 }

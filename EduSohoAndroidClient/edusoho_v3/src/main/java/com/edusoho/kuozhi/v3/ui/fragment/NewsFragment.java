@@ -170,7 +170,7 @@ public class NewsFragment extends BaseFragment {
             }
 
             @Override
-            public void onSuccess(String extr) {
+            public void onSuccess(MessageEntity extr) {
             }
 
             @Override

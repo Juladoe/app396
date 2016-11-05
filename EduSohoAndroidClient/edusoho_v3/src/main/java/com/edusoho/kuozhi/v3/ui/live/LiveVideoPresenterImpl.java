@@ -71,6 +71,11 @@ public class LiveVideoPresenterImpl implements ILiveVideoPresenter {
     }
 
     @Override
+    public void setChatRoomNetWorkStatus(int status) {
+        mILiveVideoView.setRoomPrepareStatus(status);
+    }
+
+    @Override
     public void handleHistorySignals() {
         getServerTime().then(new PromiseCallback<Long>() {
             @Override

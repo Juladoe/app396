@@ -58,4 +58,12 @@ public interface IMessageListPresenter {
     void unEnableChatView();
 
     void enableChatView();
+
+    boolean canRefresh();
+
+    void onMessageSuccess(MessageEntity messageEntity);
+
+    boolean onReceiverMessageEntity(MessageEntity msg);
+
+    void reSendMessageList();
 }

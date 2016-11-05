@@ -106,13 +106,13 @@ public class IMServiceProvider extends ModelProvider {
             }
 
             @Override
-            public void onSuccess(String extr) {
-                MessageBody messageBody = new MessageBody(extr);
+            public void onSuccess(MessageEntity messageEntity) {
+                MessageBody messageBody = new MessageBody(messageEntity);
                 if (messageBody == null) {
                     return;
                 }
                 updateMessageStatus(messageBody);
-                Log.d(getClass().getSimpleName(), "onSuccess:" + extr);
+                Log.d(getClass().getSimpleName(), "onSuccess:" + messageEntity);
             }
 
             @Override

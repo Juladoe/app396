@@ -21,4 +21,8 @@ public interface ILiveChatPresenter {
     void checkClientIsBan(String clientId);
 
     void onSuccess(MessageEntity messageEntity);
+
+    void connectLiveChatServer();
+
+    void reConnectChatServer();
 }

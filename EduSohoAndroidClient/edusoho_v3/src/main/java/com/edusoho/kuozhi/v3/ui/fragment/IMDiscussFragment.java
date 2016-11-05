@@ -189,8 +189,8 @@ public class IMDiscussFragment extends BaseFragment implements
             }
 
             @Override
-            public void onSuccess(String extr) {
-                MessageBody messageBody = new MessageBody(extr);
+            public void onSuccess(MessageEntity messageEntity) {
+                MessageBody messageBody = new MessageBody(messageEntity);
                 if (messageBody == null) {
                     return;
                 }

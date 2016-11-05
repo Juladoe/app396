@@ -11,6 +11,10 @@ import org.json.JSONObject;
  */
 public class ErrorCommand extends BaseCommand {
 
+    /*
+        code 1406 超时
+             1407 token过期
+     */
     public ErrorCommand(ImServer imServer)
     {
         super(imServer);
@@ -26,7 +30,7 @@ public class ErrorCommand extends BaseCommand {
     @Override
     public void invoke(JSONObject params) {
         Log.d("ErrorCommand", "invoke");
-        mImServer.stop();
+        mImServer.setServerInValid();
     }
 
 }

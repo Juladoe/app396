@@ -16,4 +16,12 @@ public interface ILiveVideoView {
     void checkLivePlayStatus();
 
     void onLeaveRoom();
+
+    void setRoomPrepareStatus(int status);
+
+    void showChatRoomLoadView(String title);
+
+    void hideChatRoomLoadView();
+
+    void addChatRoomView();
 }

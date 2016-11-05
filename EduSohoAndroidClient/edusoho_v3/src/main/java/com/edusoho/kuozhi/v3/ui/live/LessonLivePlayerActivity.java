@@ -13,16 +13,15 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
-import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.entity.Role;
+import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
 import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.ui.IMessageListPresenter;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
@@ -39,9 +38,7 @@ import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.liveplayer.PLVideoViewActivity;
-
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -60,17 +57,14 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     private String mRoomNo;
     private String mPlayUrl;
     private String mLiveHost;
-    private String mJoinToken;
     private String mLiveTitle;
     private boolean mIsBan;
 
-    private LiveImClient mLiveImClient;
     private ILiveVideoPresenter mILiveVideoPresenter;
     private ILiveChatPresenter mILiveChatPresenter;
     protected IMessageListPresenter mIMessageListPresenter;
     protected MessageListFragment mMessageListFragment;
     private IMBroadcastReceiver mReceiver;
-    private LiveChatDataProvider mLiveChatDataProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,16 +91,14 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
 
     @Override
     protected void onDestroy() {
+        LiveImClient.getIMClient(mContext).destory();
         super.onDestroy();
-        if (mLiveImClient != null) {
-            mLiveImClient.destory();
-        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (mMessageListFragment == null || mLiveImClient == null) {
+        if (mMessageListFragment == null) {
             return;
         }
         if (mILiveVideoPresenter != null) {
@@ -117,11 +109,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     }
 
     private void registIMReceiver() {
-        Bundle params = getIntent().getExtras();
-        params.putString("joinToken", mJoinToken);
-        mILiveChatPresenter = new LiveChatPresenterImpl(mContext, params, mLiveImClient, mLiveChatDataProvider);
-        mILiveChatPresenter.setView(mMessageListFragment);
-        mReceiver = new LiveIMBroadcastReceiver(mConversationNo, mILiveVideoPresenter, mILiveChatPresenter);
+        mReceiver = new LiveIMBroadcastReceiver(mConversationNo, mILiveVideoPresenter, mILiveChatPresenter, mIMessageListPresenter);
         mContext.registerReceiver(mReceiver, new IntentFilter(IMBroadcastReceiver.ACTION_NAME));
     }
 
@@ -167,6 +155,11 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     public void onConfigurationChanged(Configuration newConfig) {
         invalidateOptionsMenu();
         super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void setRoomPrepareStatus(int status) {
+        setLiveChatLoadShowStatus(status != IConnectManagerListener.OPEN ? View.VISIBLE : View.INVISIBLE);
     }
 
     @Override
@@ -234,39 +227,30 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     }
 
     private void initChatRoom() {
-        new LiveRoomProvider(mContext).getLiveChatServer(mLiveHost, mRoomNo, mToken)
-                .success(new NormalCallback<LinkedHashMap>() {
-                    @Override
-                    public void success(LinkedHashMap data) {
-                        if (data == null) {
-                            return;
-                        }
+        Bundle params = getIntent().getExtras();
+        mILiveChatPresenter = new LiveChatPresenterImpl(mContext, this, params);
+        mILiveChatPresenter.connectLiveChatServer();
+    }
 
-                        mJoinToken = data.get("joinToken").toString();
-                        String token = data.get("loginToken").toString();
-                        LinkedHashMap<String, String> servers = (LinkedHashMap<String, String>) data.get("servers");
-                        ArrayList<String> hostList = new ArrayList<>();
-                        for (String host : servers.values()) {
-                            hostList.add(host + "?token=" + token);
-                        }
+    @Override
+    public void showChatRoomLoadView(String title) {
+        setLiveChatLoadContentStatus(View.VISIBLE, title);
+    }
 
-                        mLiveImClient = new LiveImClient(mContext);
-                        mLiveImClient.setOnConnectedCallback(new LiveImClient.OnConnectedCallback() {
-                            @Override
-                            public void onConnected() {
-                                setLiveChatLoadShowStatus(View.GONE);
-                                attachMessageListFragment();
-                            }
-                        });
-                        mLiveImClient.start(
-                                AppUtil.parseInt(mClientId), mClientName, new ArrayList<String>(), hostList);
-                    }
-        }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError volleyError) {
-                setLiveChatLoadContentStatus(View.GONE, "加载聊天讨论组失败");
-            }
-        });
+    @Override
+    public void hideChatRoomLoadView() {
+        setLiveChatLoadShowStatus(View.INVISIBLE);
+    }
+
+    @Override
+    public void addChatRoomView() {
+        attachMessageListFragment();
+        mILiveVideoPresenter = new LiveVideoPresenterImpl(
+                mContext, getIntent().getExtras(), this, mMessageListFragment);
+        mILiveVideoPresenter.handleHistorySignals();
+        mILiveVideoPresenter.updateLiveNotice(true);
+
+        registIMReceiver();
     }
 
     @Override
@@ -309,21 +293,21 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         checkLivePlayStatus();
     }
 
-    protected IMessageListPresenter createProsenter() {
+    protected IMessageListPresenter createProsenter(MessageListFragment messageListFragment) {
         Bundle bundle = new Bundle();
         bundle.putString(MessageListFragment.CONV_NO, mConversationNo);
         bundle.putInt(MessageListFragment.TARGET_ID, mLessonId);
         bundle.putString(MessageListFragment.TARGET_TYPE, "live_chatroom");
 
-        mLiveChatDataProvider = new LiveChatDataProvider(mLiveImClient.getImBinder());
+        LiveChatDataProvider liveChatDataProvider = new LiveChatDataProvider(LiveImClient.getIMClient(mContext).getImBinder());
         LiveChatMessageListPresenterImpl presenter = new LiveChatMessageListPresenterImpl(
                 mContext,
                 bundle,
                 new LiveChatDataProvider.MockConvManager(mContext),
                 new IMRoleManager(mContext),
                 new MessageResourceHelper(mContext),
-                mLiveChatDataProvider,
-                mMessageListFragment
+                liveChatDataProvider,
+                messageListFragment
         );
         presenter.setLiveData(getIntent().getExtras());
 
@@ -341,15 +325,11 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
             fragmentTransaction.add(R.id.chat_content, mMessageListFragment, "im_container");
             fragmentTransaction.commitAllowingStateLoss();
         }
-        mIMessageListPresenter = createProsenter();
+        mIMessageListPresenter = createProsenter(mMessageListFragment);
         mIMessageListPresenter.addMessageControllerListener(getMessageControllerListener());
-
-        mILiveVideoPresenter = new LiveVideoPresenterImpl(
-                mContext, getIntent().getExtras(), LessonLivePlayerActivity.this, mMessageListFragment);
-        mILiveVideoPresenter.handleHistorySignals();
-        mILiveVideoPresenter.updateLiveNotice(true);
         mMessageListFragment.setEnable(!mIsBan);
-        registIMReceiver();
+
+        mILiveChatPresenter.setView(mMessageListFragment);
     }
 
     protected MessageControllerListener getMessageControllerListener() {

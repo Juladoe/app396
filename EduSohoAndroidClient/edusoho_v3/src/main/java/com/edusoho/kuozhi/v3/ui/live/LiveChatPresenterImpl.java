@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
+import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.ui.IMessageListView;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
@@ -13,6 +16,7 @@ import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.im.LiveMessageBody;
+import com.edusoho.kuozhi.v3.model.provider.LiveChatDataProvider;
 import com.edusoho.kuozhi.v3.model.provider.LiveRoomProvider;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -32,17 +36,13 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
 
     private Bundle mLiveData;
     private Context mContext;
-    private LiveImClient mLiveImClient;
-    private IMessageDataProvider mIMessageDataProvider;
+    private ILiveVideoView mILiveVideoView;
     private IMessageListView mIMessageListView;
-    private Map<Long, Boolean> mMessageFilterMap;
 
-    public LiveChatPresenterImpl(Context context, Bundle liveData, LiveImClient liveImClient, IMessageDataProvider dataProvider) {
+    public LiveChatPresenterImpl(Context context, ILiveVideoView liveVideoView, Bundle liveData) {
         this.mContext = context;
         this.mLiveData = liveData;
-        this.mLiveImClient = liveImClient;
-        this.mIMessageDataProvider = dataProvider;
-        mMessageFilterMap = new HashMap<>();
+        this.mILiveVideoView = liveVideoView;
     }
 
     @Override
@@ -52,29 +52,9 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
 
     @Override
     public void onHandleMessage(MessageEntity message) {
-        String clientId = mLiveData.get("clientId").toString();
-        String clientName = mLiveData.get("clientName").toString();
-
-        if (clientId.equals(message.getFromId()) && clientName.equals(message.getFromName())) {
-            return;
-        }
-        LiveMessageBody messageBody = new LiveMessageBody(message);
-        long messageTime = messageBody.getTime();
-        if (mMessageFilterMap.containsKey(messageTime)) {
-            return;
-        }
-        mMessageFilterMap.put(messageTime, true);
-        mIMessageListView.insertMessage(message);
     }
 
     public void onSuccess(MessageEntity successEntity) {
-        int index = AppUtil.parseInt(successEntity.getUid());
-        MessageEntity messageEntity = mIMessageDataProvider.getMessageByUID(String.valueOf(index));
-        if (messageEntity == null) {
-            return;
-        }
-        messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
-        mIMessageListView.updateMessageEntity(messageEntity);
     }
 
     @Override
@@ -109,12 +89,12 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
         String token = mLiveData.get("token").toString();
         String liveHost = mLiveData.get("liveHost").toString();
         new LiveRoomProvider(mContext).getLiveChatBannedList(liveHost, token, roomNo)
-        .success(new NormalCallback<ArrayList>() {
-            @Override
-            public void success(ArrayList bannedList) {
-                mIMessageListView.setEnable(!findClientIdInArray(clientId, bannedList));
-            }
-        });
+                .success(new NormalCallback<ArrayList>() {
+                    @Override
+                    public void success(ArrayList bannedList) {
+                        mIMessageListView.setEnable(!findClientIdInArray(clientId, bannedList));
+                    }
+                });
     }
 
     private boolean findClientIdInArray(String clientId, ArrayList<LinkedHashMap> bannedList) {
@@ -125,6 +105,85 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
         }
 
         return false;
+    }
+
+    public void reConnectChatServer() {
+        LiveImClient.getIMClient(mContext).destory();
+        NormalCallback<LinkedHashMap> callback = new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap data) {
+                if (data == null) {
+                    return;
+                }
+
+                String joinToken = data.get("joinToken").toString();
+                mLiveData.putString("joinToken", joinToken);
+                String token = data.get("loginToken").toString();
+                LinkedHashMap<String, String> servers = (LinkedHashMap<String, String>) data.get("servers");
+                ArrayList<String> hostList = new ArrayList<>();
+                for (String host : servers.values()) {
+                    hostList.add(host + "?token=" + token);
+                }
+
+                LiveImClient liveImClient = LiveImClient.getIMClient(mContext);
+                String clientId = mLiveData.get("clientId").toString();
+                String clientName = mLiveData.get("clientName").toString();
+                liveImClient.start(
+                        AppUtil.parseInt(clientId), clientName, new ArrayList<String>(), hostList);
+            }
+        };
+        getLiveChatServer(callback, null);
+    }
+
+    private void getLiveChatServer(NormalCallback<LinkedHashMap> callback, NormalCallback<VolleyError> errorNormalCallback) {
+        String roomNo = mLiveData.get("roomNo").toString();
+        String token = mLiveData.get("token").toString();
+        String liveHost = mLiveData.get("liveHost").toString();
+        new LiveRoomProvider(mContext)
+                .getLiveChatServer(liveHost, roomNo, token)
+                .success(callback)
+                .fail(errorNormalCallback);
+    }
+
+    @Override
+    public void connectLiveChatServer() {
+        NormalCallback<LinkedHashMap> callback = new NormalCallback<LinkedHashMap>() {
+            @Override
+            public void success(LinkedHashMap data) {
+                if (data == null) {
+                    return;
+                }
+
+                String joinToken = data.get("joinToken").toString();
+                mLiveData.putString("joinToken", joinToken);
+                String token = data.get("loginToken").toString();
+                LinkedHashMap<String, String> servers = (LinkedHashMap<String, String>) data.get("servers");
+                ArrayList<String> hostList = new ArrayList<>();
+                for (String host : servers.values()) {
+                    hostList.add(host + "?token=" + token);
+                }
+
+                LiveImClient liveImClient = LiveImClient.getIMClient(mContext);
+                liveImClient.setOnConnectedCallback(new LiveImClient.OnConnectedCallback() {
+                    @Override
+                    public void onConnected() {
+                        mILiveVideoView.hideChatRoomLoadView();
+                        mILiveVideoView.addChatRoomView();
+                    }
+                });
+
+                String clientId = mLiveData.get("clientId").toString();
+                String clientName = mLiveData.get("clientName").toString();
+                liveImClient.start(
+                        AppUtil.parseInt(clientId), clientName, new ArrayList<String>(), hostList);
+            }
+        };
+        getLiveChatServer(callback, new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError volleyError) {
+                mILiveVideoView.showChatRoomLoadView("加载聊天讨论组失败");
+            }
+        });
     }
 
     @Override
@@ -155,7 +214,11 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
     private void joinConversation(String joinToken) {
         try {
             String conversationNo = mLiveData.get("convNo").toString();
-            mLiveImClient.getImBinder().joinConversation(joinToken, conversationNo);
+            IImServerAidlInterface aidlInterface = LiveImClient.getIMClient(mContext).getImBinder();
+            if (aidlInterface == null) {
+                return;
+            }
+            aidlInterface.joinConversation(joinToken, conversationNo);
         } catch (RemoteException e) {
             Log.i("joinLiveChatRoom", "join error");
         }

@@ -111,6 +111,10 @@ public class MessageListFragment extends Fragment implements
         mMessageListView.setEnabled(isEnable);
     }
 
+    protected boolean canRefresh() {
+        return mIMessageListPresenter.canRefresh();
+    }
+
     @Override
     public void onUserKicked() {
         AlertDialog dialog = new AlertDialog.Builder(getActivity())
@@ -248,7 +252,7 @@ public class MessageListFragment extends Fragment implements
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
                 boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                return canLoadData && canDoRefresh;
+                return canRefresh() && canDoRefresh;
             }
         });
 
@@ -268,7 +272,7 @@ public class MessageListFragment extends Fragment implements
     }
 
     private synchronized void checkCanAutoLoad(RecyclerView recyclerView) {
-        if (!canLoadData || mPtrFrame.isAutoRefresh()) {
+        if (!canRefresh() || mPtrFrame.isAutoRefresh()) {
             Log.d(TAG, "auto loading");
             return;
         }

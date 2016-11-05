@@ -17,4 +17,6 @@ public interface ILiveVideoPresenter {
     void updateLiveNotice(boolean alawsShow);
 
     void onKill(MessageEntity messageEntity);
+
+    void setChatRoomNetWorkStatus(int status);
 }

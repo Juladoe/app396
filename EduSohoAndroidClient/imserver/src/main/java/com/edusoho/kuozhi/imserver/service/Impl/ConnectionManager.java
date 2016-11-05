@@ -141,9 +141,9 @@ public class ConnectionManager implements IConnectionManager {
                 if (ex != null) {
                     ex.printStackTrace();
                     Log.d(TAG, "onCompleted error:" + ex.getMessage());
-                    mStatus = IConnectManagerListener.END;
+                    mStatus = IConnectManagerListener.INVALID;
                     if (mIConnectStatusListener != null) {
-                        mIConnectStatusListener.onStatusChange(IConnectManagerListener.END, ex.getMessage());
+                        mIConnectStatusListener.onStatusChange(IConnectManagerListener.INVALID, ex.getMessage());
                     }
                     return;
                 }

@@ -350,7 +350,7 @@ public class IMClient {
         for (int i = count - 1; i >= 0; i--) {
             IMMessageReceiver receiver = mMessageReceiverList.get(i);
             if ("success".equals(messageEntity.getCmd())) {
-                receiver.onSuccess(messageEntity.getMsg());
+                receiver.onSuccess(messageEntity);
                 continue;
             }
             if (!Destination.GLOBAL.equals(receiver.getType().msgType)

@@ -25,7 +25,6 @@ import com.edusoho.kuozhi.imserver.service.IHeartManager;
 import com.edusoho.kuozhi.imserver.service.IMsgManager;
 import com.edusoho.kuozhi.imserver.service.Impl.ConnectionManager;
 import com.edusoho.kuozhi.imserver.service.Impl.HeartManagerImpl;
-import com.edusoho.kuozhi.imserver.service.Impl.DbMsgManager;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
@@ -133,6 +132,8 @@ public class ImServer {
                     case IConnectManagerListener.END:
                         mIConnectionManager.switchConnect();
                         break;
+                    case IConnectManagerListener.INVALID:
+                        break;
                     case IConnectManagerListener.ERROR:
                         flag = CONNECT_ERROR;
                         pause();
@@ -200,8 +201,7 @@ public class ImServer {
             return false;
         }
 
-        if (mHostList == null || mHostList.isEmpty()
-                || mIgnoreNosList == null || mIgnoreNosList.isEmpty()) {
+        if (mHostList == null || mHostList.isEmpty()) {
             return false;
         }
 
@@ -217,6 +217,11 @@ public class ImServer {
             this.mIConnectionManager.stop();
         }
         this.mIConnectionManager = null;
+    }
+
+    public void setServerInValid() {
+        pause();
+        sendConnectStatusBroadcast(IConnectManagerListener.INVALID);
     }
 
     public void stop() {
@@ -412,7 +417,7 @@ public class ImServer {
             Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
             intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.RECEIVER);
             intent.putExtra("message", messageEntity);
-                mContext.sendBroadcast(intent);
+            mContext.sendBroadcast(intent);
         } catch (MessageSaveFailException e) {
             Log.d(TAG, e.getMessage());
         }

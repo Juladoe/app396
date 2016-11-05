@@ -32,7 +32,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -107,6 +106,11 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     public void setClientInfo(int clientId, String clientName) {
         this.mClientId = clientId;
         this.mClientName = clientName;
+    }
+
+    @Override
+    public boolean canRefresh() {
+        return true;
     }
 
     @Override
@@ -541,13 +545,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
         return new IMMessageReceiver() {
             @Override
             public boolean onReceiver(MessageEntity msg) {
-                if (!mConversationNo.equals(msg.getConvNo()) || filterReceiverdMessage(msg)) {
-                    return true;
-                }
-
-                mIMessageListView.insertMessage(msg);
-                mIMConvManager.clearReadCount(mConversationNo);
-                return true;
+                return onReceiverMessageEntity(msg);
             }
 
             @Override
@@ -560,13 +558,8 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
             }
 
             @Override
-            public void onSuccess(String extr) {
-                MessageBody messageBody = new MessageBody(extr);
-                if (messageBody == null) {
-                    return;
-                }
-                messageBody.setConvNo(mConversationNo);
-                updateMessageSendStatus(messageBody);
+            public void onSuccess(MessageEntity messageEntity) {
+                onMessageSuccess(messageEntity);
             }
 
             @Override
@@ -574,6 +567,27 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
                 return new ReceiverInfo(mTargetType, mConversationNo);
             }
         };
+    }
+
+    @Override
+    public boolean onReceiverMessageEntity(MessageEntity msg) {
+        if (!mConversationNo.equals(msg.getConvNo()) || filterReceiverdMessage(msg)) {
+            return true;
+        }
+
+        mIMessageListView.insertMessage(msg);
+        mIMConvManager.clearReadCount(mConversationNo);
+        return true;
+    }
+
+    @Override
+    public void onMessageSuccess(MessageEntity messageEntity) {
+        MessageBody messageBody = new MessageBody(messageEntity);
+        if (messageBody == null) {
+            return;
+        }
+        messageBody.setConvNo(mConversationNo);
+        updateMessageSendStatus(messageBody);
     }
 
     @Override
@@ -662,5 +676,9 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
 
     public interface ConvNoCreateCallback {
         void onCreateConvNo(String convNo);
+    }
+
+    @Override
+    public void reSendMessageList() {
     }
 }

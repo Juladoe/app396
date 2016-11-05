@@ -40,13 +40,21 @@ public class LiveImClient {
     private ServiceConnection mServiceConnection;
     private OnConnectedCallback mOnConnectedCallback;
     private ConnectIMServiceRunnable mConnectIMServiceRunnable;
+    private static LiveImClient liveImClient;
 
-    public LiveImClient(Context context) {
+    private LiveImClient(Context context) {
         this.mContext = context;
         this.mIMConnectStatus = IMConnectStatus.NO_READY;
         mMessageReceiverList = new LinkedList<>();
         mIMConnectStatusListenerList = new LinkedList<>();
         registIMServiceStatusBroadcastReceiver();
+    }
+
+    public static LiveImClient getIMClient(Context context) {
+        if (liveImClient == null) {
+            liveImClient = new LiveImClient(context);
+        }
+        return liveImClient;
     }
 
     public IImServerAidlInterface getImBinder() {
@@ -76,6 +84,7 @@ public class LiveImClient {
 
         mIMConnectStatusListenerList.clear();
         mMessageReceiverList.clear();
+        liveImClient = null;
     }
 
     private void unRegistIMServiceStatusBroadcastReceiver() {

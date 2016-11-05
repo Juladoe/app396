@@ -129,6 +129,10 @@ public class LiveChatDataProvider implements IMessageDataProvider {
         if (TextUtils.isEmpty(uid)) {
             return null;
         }
+        int index = AppUtil.parseInt(uid);
+        if (index >= mMessageEntityList.size()) {
+            return null;
+        }
         return mMessageEntityList.get(AppUtil.parseInt(uid));
     }
 

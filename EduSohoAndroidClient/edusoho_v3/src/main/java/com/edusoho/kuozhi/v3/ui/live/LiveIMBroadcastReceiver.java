@@ -2,14 +2,11 @@ package com.edusoho.kuozhi.v3.ui.live;
 
 import android.text.TextUtils;
 import android.util.Log;
-
-import com.baidu.cyberplayer.utils.P;
 import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
+import com.edusoho.kuozhi.imserver.ui.IMessageListPresenter;
 import com.edusoho.kuozhi.v3.model.im.LiveMessageBody;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.util.List;
 
 /**
@@ -20,6 +17,7 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
     private String mConvNo;
     private ILiveChatPresenter mILiveChatMessgeListPresenter;
     private ILiveVideoPresenter mILiveVideoPresenter;
+    private IMessageListPresenter mIMessageListPresenter;
 
     String[] filterArray = {
             "100001",
@@ -45,9 +43,11 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
     public LiveIMBroadcastReceiver(
             String convNo,
             ILiveVideoPresenter presenter,
-            ILiveChatPresenter liveChatMessgeListPresenter) {
+            ILiveChatPresenter liveChatMessgeListPresenter,
+            IMessageListPresenter MessageListPresenter) {
         this.mConvNo = convNo;
         this.mILiveVideoPresenter = presenter;
+        this.mIMessageListPresenter = MessageListPresenter;
         this.mILiveChatMessgeListPresenter = liveChatMessgeListPresenter;
     }
 
@@ -127,23 +127,32 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
             return;
         }
         switch (message.getCmd()) {
-            case "102001":
             case "103004":
             case "103005":
-            case "success":
-                mILiveChatMessgeListPresenter.onSuccess(message);
                 break;
+            case "success":
+                mIMessageListPresenter.onMessageSuccess(message);
+                break;
+            case "102001":
             case "memberJoined":
             case "flashMessage":
             case "message":
-                mILiveChatMessgeListPresenter.onHandleMessage(message);
+                mIMessageListPresenter.onReceiverMessageEntity(message);
                 break;
         }
     }
 
     @Override
     protected void invokeConnectReceiver(int status, boolean isConnected) {
-        Log.d("LiveIMBroadcastReceiver", "s:" + status);
+        Log.d("LiveIMBroadcastReceiver", "status:" + status);
+        switch (status) {
+            case IConnectManagerListener.INVALID:
+                mILiveChatMessgeListPresenter.reConnectChatServer();
+                break;
+            case IConnectManagerListener.OPEN:
+                mIMessageListPresenter.reSendMessageList();
+
+        }
     }
 
     @Override
