@@ -545,6 +545,15 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     }
 
     @Override
+    public void sendMessage(MessageEntity messageEntity) {
+    }
+
+    @Override
+    public MessageEntity insertMessageEntity(MessageEntity messageEntity) {
+        return null;
+    }
+
+    @Override
     public int deleteMessageById(int msgId) {
         return 0;
     }

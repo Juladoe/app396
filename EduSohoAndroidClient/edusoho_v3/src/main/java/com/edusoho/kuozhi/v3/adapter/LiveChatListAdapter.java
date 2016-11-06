@@ -40,6 +40,7 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
             liveTextViewHolder.setLiveAvatar(mMessageList.get(position));
             liveTextViewHolder.setUserRole(messageBody);
             liveTextViewHolder.setMessageStatus(messageEntity.getStatus());
+            liveTextViewHolder.addViewClickListener(new ViewItemClickListener(position));
             return;
         }
         super.onBindViewHolder(viewHolder, position);
@@ -177,6 +178,10 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
                     errorStatusView.setVisibility(View.VISIBLE);
                     errorStatusView.setErrorStatus();
             }
+        }
+
+        public void addViewClickListener(ViewItemClickListener onClickListener) {
+            errorStatusView.setOnClickListener(onClickListener);
         }
 
         public void setLiveMessageBody(LiveMessageBody messageBody, int position) {

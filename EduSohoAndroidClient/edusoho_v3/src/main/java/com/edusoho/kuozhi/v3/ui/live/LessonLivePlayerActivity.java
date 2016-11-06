@@ -31,7 +31,6 @@ import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.adapter.LiveChatListAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.provider.LiveChatDataProvider;
 import com.edusoho.kuozhi.v3.model.provider.LiveRoomProvider;
 import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;

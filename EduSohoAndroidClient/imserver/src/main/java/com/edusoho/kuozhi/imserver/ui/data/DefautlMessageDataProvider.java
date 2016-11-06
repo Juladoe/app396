@@ -114,4 +114,13 @@ public class DefautlMessageDataProvider implements IMessageDataProvider {
     public int deleteMessageById(int msgId) {
         return IMClient.getClient().getMessageManager().deleteById(msgId);
     }
+
+    @Override
+    public void sendMessage(MessageEntity messageEntity) {
+    }
+
+    @Override
+    public MessageEntity insertMessageEntity(MessageEntity messageEntity) {
+        return null;
+    }
 }

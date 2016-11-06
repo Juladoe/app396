@@ -5,18 +5,14 @@ import android.os.Bundle;
 import android.os.RemoteException;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.ui.IMessageListView;
-import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
-import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.im.LiveMessageBody;
-import com.edusoho.kuozhi.v3.model.provider.LiveChatDataProvider;
 import com.edusoho.kuozhi.v3.model.provider.LiveRoomProvider;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -25,9 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Created by suju on 16/10/18.

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.model.provider;
+package com.edusoho.kuozhi.v3.ui.live;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,16 +14,15 @@ import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.SendEntityBuildr;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by suju on 16/10/13.
@@ -33,9 +32,11 @@ public class LiveChatDataProvider implements IMessageDataProvider {
     private String mRole;
     private WeakReference<IImServerAidlInterface> mImBinderRef;
     private List<MessageEntity> mMessageEntityList;
+    private Map<String, Integer> mMessageUIDMap;
 
     public LiveChatDataProvider(IImServerAidlInterface imBinder) {
         mMessageEntityList = new ArrayList<>();
+        mMessageUIDMap = new ConcurrentHashMap<>();
         mImBinderRef = new WeakReference<IImServerAidlInterface>(imBinder);
     }
 
@@ -54,15 +55,46 @@ public class LiveChatDataProvider implements IMessageDataProvider {
                 .addTime((int) (messageBody.getCreatedTime() / 1000))
                 .builder();
 
-        messageEntity.setId(mMessageEntityList.size());
-        messageBody.setMid(mMessageEntityList.size());
+        int messageIndex = mMessageEntityList.size();
+        messageEntity.setId(messageIndex);
+        messageBody.setMid(messageIndex);
         mMessageEntityList.add(messageEntity);
+        mMessageUIDMap.put(messageEntity.getUid(), messageIndex);
+        return messageEntity;
+    }
+
+    public MessageEntity insertMessageEntity(MessageEntity messageEntity) {
+        String msgNo = messageEntity.getMsgNo();
+        if (TextUtils.isEmpty(msgNo) || mMessageUIDMap.containsKey(msgNo)) {
+            return null;
+        }
+
+        int messageIndex = mMessageEntityList.size();
+        messageEntity.setId(messageIndex);
+        mMessageEntityList.add(messageEntity);
+        mMessageUIDMap.put(msgNo, messageIndex);
+
         return messageEntity;
     }
 
     @Override
     public List<MessageEntity> getMessageList(String convNo, int start) {
         return new ArrayList<>();
+    }
+
+    public void sendMessage(MessageEntity messageEntity) {
+        try {
+            String toId = "all";
+            SendEntity sendEntity = SendEntityBuildr.getBuilder()
+                    .addToId(toId)
+                    .addToName("all")
+                    .addK(messageEntity.getUid())
+                    .addCmd("flashSend")
+                    .addMsg(messageEntity.getMsg())
+                    .builder();
+            sendToServer(messageEntity.getConvNo(), sendEntity);
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -73,7 +105,7 @@ public class LiveChatDataProvider implements IMessageDataProvider {
             SendEntity sendEntity = SendEntityBuildr.getBuilder()
                     .addToId(toId)
                     .addToName("all")
-                    .addK(String.valueOf(messageBody.getMid()))
+                    .addK(messageBody.getMessageId())
                     .addCmd("flashSend")
                     .addMsg(wrapLiveMessageBody(messageBody))
                     .builder();
@@ -126,14 +158,11 @@ public class LiveChatDataProvider implements IMessageDataProvider {
 
     @Override
     public MessageEntity getMessageByUID(String uid) {
-        if (TextUtils.isEmpty(uid)) {
+        if (TextUtils.isEmpty(uid) || !mMessageUIDMap.containsKey(uid)) {
             return null;
         }
-        int index = AppUtil.parseInt(uid);
-        if (index >= mMessageEntityList.size()) {
-            return null;
-        }
-        return mMessageEntityList.get(AppUtil.parseInt(uid));
+        int index = mMessageUIDMap.get(uid);
+        return mMessageEntityList.get(index);
     }
 
     @Override
@@ -143,11 +172,21 @@ public class LiveChatDataProvider implements IMessageDataProvider {
 
     @Override
     public int updateMessageFieldByMsgNo(String msgNo, ContentValues cv) {
+
         return 0;
     }
 
     @Override
     public int updateMessageFieldByUid(String uid, ContentValues cv) {
+        if (!mMessageUIDMap.containsKey(uid)) {
+            return 0;
+        }
+        int index = mMessageUIDMap.get(uid);
+        if (index >= mMessageEntityList.size()) {
+            return 0;
+        }
+        MessageEntity messageEntity = mMessageEntityList.get(index);
+        messageEntity.setStatus(cv.getAsInteger("status"));
         return 0;
     }
 

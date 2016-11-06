@@ -124,12 +124,13 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         while (iterator.hasNext()) {
             MessageEntity messageEntity = iterator.next();
             if (messageEntity.getId() == updateMessageEntity.getId()) {
-                updateMessageEntity(messageEntity, updateMessageEntity);
-                notifyItemRangeChanged(position, getItemCount() - position);
-                return;
+                mMessageList.set(position, updateMessageEntity);
+                break;
             }
             position++;
         }
+
+        notifyItemRangeChanged(position, getItemCount() - position);
     }
 
     public void setCurrentId(int currentId) {
@@ -450,7 +451,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
     /**
      * ViewItemClickListener
      */
-    class ViewItemClickListener implements View.OnClickListener, View.OnLongClickListener {
+    protected class ViewItemClickListener implements View.OnClickListener, View.OnLongClickListener {
 
         private int mPosition;
 

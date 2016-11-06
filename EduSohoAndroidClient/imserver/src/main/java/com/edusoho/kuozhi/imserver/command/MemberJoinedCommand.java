@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.imserver.command;
 
+import android.text.TextUtils;
+
 import com.edusoho.kuozhi.imserver.ImServer;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
@@ -28,8 +30,10 @@ public class MemberJoinedCommand extends BaseCommand {
         String msgNo = params.optString("msgNo");
         String cmd = params.optString("cmd");
 
-        MessageEntity messageEntity =
-                MessageEntityBuildr.getBuilder()
+        if (TextUtils.isEmpty(msgNo)) {
+            msgNo = String.format("%s-%s-%d", clientId, clientName, time);
+        }
+        MessageEntity messageEntity = MessageEntityBuildr.getBuilder()
                         .addMsg(wrapBody(clientId, clientName))
                         .addConvNo(convNo)
                         .addTime(time)
