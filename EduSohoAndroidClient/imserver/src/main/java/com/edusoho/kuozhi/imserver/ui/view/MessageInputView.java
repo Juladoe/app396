@@ -149,7 +149,7 @@ public class MessageInputView extends FrameLayout implements IMessageInputView {
 
     private void initSpeakContainer() {
         mViewSpeakContainer = LayoutInflater.from(getContext()).inflate(R.layout.view_message_record_layout, null);
-        ViewParent viewParent = getParent();
+        ViewParent viewParent = getParent().getParent();
         if (viewParent != null) {
             if (viewParent instanceof FrameLayout) {
                 FrameLayout.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
