@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.SendEntity;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
@@ -30,14 +31,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public class LiveChatDataProvider implements IMessageDataProvider {
 
     private String mRole;
-    private WeakReference<IImServerAidlInterface> mImBinderRef;
+    private Context mContext;
     private List<MessageEntity> mMessageEntityList;
     private Map<String, Integer> mMessageUIDMap;
 
-    public LiveChatDataProvider(IImServerAidlInterface imBinder) {
+    public LiveChatDataProvider(Context context) {
+        this.mContext = context;
         mMessageEntityList = new ArrayList<>();
         mMessageUIDMap = new ConcurrentHashMap<>();
-        mImBinderRef = new WeakReference<IImServerAidlInterface>(imBinder);
     }
 
     @Override
@@ -136,8 +137,9 @@ public class LiveChatDataProvider implements IMessageDataProvider {
     private void sendToServer(String convNo, SendEntity sendEntity) {
         try {
             sendEntity.setConvNo(convNo);
-            mImBinderRef.get().send(sendEntity);
+            LiveImClient.getIMClient(mContext).getImBinder().send(sendEntity);
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

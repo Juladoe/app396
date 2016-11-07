@@ -298,7 +298,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         bundle.putInt(MessageListFragment.TARGET_ID, mLessonId);
         bundle.putString(MessageListFragment.TARGET_TYPE, "live_chatroom");
 
-        LiveChatDataProvider liveChatDataProvider = new LiveChatDataProvider(LiveImClient.getIMClient(mContext).getImBinder());
+        LiveChatDataProvider liveChatDataProvider = new LiveChatDataProvider(mContext);
         LiveChatMessageListPresenterImpl presenter = new LiveChatMessageListPresenterImpl(
                 mContext,
                 bundle,

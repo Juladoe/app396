@@ -102,6 +102,7 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
     }
 
     public void reConnectChatServer() {
+        Log.d("LiveChatPresenter", "reConnectChatServer");
         LiveImClient.getIMClient(mContext).destory();
         NormalCallback<LinkedHashMap> callback = new NormalCallback<LinkedHashMap>() {
             @Override

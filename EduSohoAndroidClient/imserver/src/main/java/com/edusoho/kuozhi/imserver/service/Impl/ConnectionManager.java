@@ -71,6 +71,9 @@ public class ConnectionManager implements IConnectionManager {
 
     @Override
     public void send(String content) {
+        if (mWebSocketFuture == null) {
+            return;
+        }
         WebSocket webSocket = mWebSocketFuture.tryGet();
         if (webSocket == null) {
             return;
@@ -139,11 +142,10 @@ public class ConnectionManager implements IConnectionManager {
             @Override
             public void onCompleted(Exception ex, WebSocket webSocket) {
                 if (ex != null) {
-                    ex.printStackTrace();
                     Log.d(TAG, "onCompleted error:" + ex.getMessage());
-                    mStatus = IConnectManagerListener.INVALID;
+                    mStatus = IConnectManagerListener.CLOSE;
                     if (mIConnectStatusListener != null) {
-                        mIConnectStatusListener.onStatusChange(IConnectManagerListener.INVALID, ex.getMessage());
+                        mIConnectStatusListener.onStatusChange(IConnectManagerListener.CLOSE, ex.getMessage());
                     }
                     return;
                 }
