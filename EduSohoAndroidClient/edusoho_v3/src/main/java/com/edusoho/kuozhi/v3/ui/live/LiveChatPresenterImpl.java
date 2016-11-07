@@ -45,13 +45,6 @@ public class LiveChatPresenterImpl implements ILiveChatPresenter {
     }
 
     @Override
-    public void onHandleMessage(MessageEntity message) {
-    }
-
-    public void onSuccess(MessageEntity successEntity) {
-    }
-
-    @Override
     public void setUserCanChatStatus(MessageEntity message) {
         LiveMessageBody liveMessageBody = new LiveMessageBody(message.getMsg());
         try {

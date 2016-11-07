@@ -83,13 +83,14 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
             mILiveChatMessgeListPresenter.joinLiveChatRoom();
             return;
         }
+        if ("replace".equals(cmd)) {
+            mILiveChatMessgeListPresenter.onReplace();
+            return;
+        }
         if (TextUtils.isEmpty(mConvNo) || !mConvNo.equals(message.getConvNo())) {
             return;
         }
         switch (cmd) {
-            case "replace":
-                mILiveChatMessgeListPresenter.onReplace();
-                break;
             case "102002":
                 mILiveVideoPresenter.updateNotice(message);
                 break;
@@ -123,7 +124,6 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
         }
 
         if (TextUtils.isEmpty(message.getCmd())) {
-            mILiveChatMessgeListPresenter.onHandleMessage(message);
             return;
         }
         switch (message.getCmd()) {
