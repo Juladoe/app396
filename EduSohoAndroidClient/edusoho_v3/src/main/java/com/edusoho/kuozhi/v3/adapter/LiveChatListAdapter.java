@@ -153,15 +153,19 @@ public class LiveChatListAdapter extends MessageRecyclerListAdapter {
             if ("master".equals(messageBody.getRole())) {
                 mRoleView.setText("管理员");
                 mRoleView.setVisibility(View.VISIBLE);
+                mRoleView.setBackground(mContext.getResources().getDrawable(R.drawable.chat_role_label_bg));
             } else if ("teacher".equals(messageBody.getRole())) {
                 mRoleView.setText("讲师");
                 mRoleView.setVisibility(View.VISIBLE);
+                mRoleView.setBackground(mContext.getResources().getDrawable(R.drawable.chat_role_label_yellow_bg));
             } else if ("assist".equals(messageBody.getRole())) {
                 mRoleView.setText("老师");
                 mRoleView.setVisibility(View.VISIBLE);
+                mRoleView.setBackground(mContext.getResources().getDrawable(R.drawable.chat_role_label_yellow_bg));
             } else if ("support".equals(messageBody.getRole())) {
                 mRoleView.setText("技术支持");
                 mRoleView.setVisibility(View.VISIBLE);
+                mRoleView.setBackground(mContext.getResources().getDrawable(R.drawable.chat_role_label_red_bg));
             }
         }
 
