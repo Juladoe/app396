@@ -30,6 +30,8 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.HashMap;
 
 
@@ -42,6 +44,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MobclickAgent.setDebugMode(true);
         mCurrentIntent = getIntent();
         if (mCurrentIntent != null && mCurrentIntent.hasExtra(NotificationProvider.ACTION_TAG)) {
             startApp();

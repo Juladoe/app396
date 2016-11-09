@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.imserver.R;
 import com.edusoho.kuozhi.imserver.ui.listener.InputViewControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by suju on 16/10/19.
@@ -123,8 +124,10 @@ public class TextMessageInputView extends FrameLayout implements IMessageInputVi
             @Override
             public void onClick(View v) {
                 if (v.getId() == R.id.et_send_content) {
+                    MobclickAgent.onEvent(getContext(), "liveRoom_inputBox");
                     mMessageControllerListener.onInputViewFocus(true);
                 }else if (v.getId() == R.id.btn_send) {
+                    MobclickAgent.onEvent(getContext(), "liveRoom_messageSendButton");
                     sendClick();
                 }
             }

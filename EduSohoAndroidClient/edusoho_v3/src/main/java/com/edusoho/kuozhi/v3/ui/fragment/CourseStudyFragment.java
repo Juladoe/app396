@@ -45,6 +45,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -514,6 +515,7 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
             CoreEngine.create(mContext).runNormalPlugin("ThreadCreateActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
+                    MobclickAgent.onEvent(mContext, "dynamic_learn_questionButton");
                     startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mCourseId);
                     startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, "course");
                     startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, "course");

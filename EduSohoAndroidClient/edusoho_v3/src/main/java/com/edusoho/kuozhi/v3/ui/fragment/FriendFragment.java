@@ -41,6 +41,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.SideBar;
+import com.umeng.analytics.MobclickAgent;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -141,6 +142,7 @@ public class FriendFragment extends BaseFragment {
             public void onClick(View v) {
                 int i = v.getId();
                 if (i == R.id.search_friend_btn) {
+                    MobclickAgent.onEvent(mContext, "alumni_searchBar");
                     showSearchDialog();
                 }
                 if (i == R.id.discussion_group) {
@@ -148,9 +150,11 @@ public class FriendFragment extends BaseFragment {
                         CommonUtil.longToast(mContext, "聊天功能已关闭,请联系管理员");
                         return;
                     }
+                    MobclickAgent.onEvent(mContext, "alumni_discussionGroup");
                     app.mEngine.runNormalPlugin("GroupListActivity", mActivity, null);
                 }
                 if (i == R.id.service) {
+                    MobclickAgent.onEvent(mContext, "alumni_serviceBulletin");
                     app.mEngine.runNormalPlugin("ServiceListActivity", mActivity, null);
 
                 }
@@ -274,6 +278,7 @@ public class FriendFragment extends BaseFragment {
             app.saveConfig();
             item.setIcon(R.drawable.icon_menu_notification);
             mActivity.supportInvalidateOptionsMenu();
+            MobclickAgent.onEvent(mContext, "alumni_friendsNotificationBellButton");
             app.mEngine.runNormalPlugin("FriendNewsActivity", mActivity, null);
         }
         return super.onOptionsItemSelected(item);

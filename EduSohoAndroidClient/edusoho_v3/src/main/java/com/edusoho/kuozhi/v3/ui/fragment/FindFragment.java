@@ -30,6 +30,8 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.DiscoveryLoadHelper;
 import com.edusoho.kuozhi.v3.view.EduSohoBanner;
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.List;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
@@ -166,6 +168,7 @@ public class FindFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.find_search) {
+            MobclickAgent.onEvent(mContext, "find_searchButton");
             EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {

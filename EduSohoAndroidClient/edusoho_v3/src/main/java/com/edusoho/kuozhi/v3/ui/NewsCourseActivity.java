@@ -52,6 +52,7 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoCompoundButton;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.LinkedHashMap;
 
@@ -257,6 +258,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                     showFragment(mFragmentTags[2]);
                 }
             } else if (checkedId == R.id.rb_discuss) {
+                MobclickAgent.onEvent(mContext, "dynamic_discussion");
                 if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
                     CommonUtil.longToast(mContext, "聊天功能已关闭");
                     return;
@@ -302,6 +304,8 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             CoreEngine.create(mContext).runNormalPlugin("CourseDetailActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
+                    MobclickAgent.onEvent(mContext, "dynamic_topRightCourseDetailsButton");
+                    MobclickAgent.onEvent(mContext, "chatWindow_topRightCourseDetailsButton");
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
                     startIntent.putExtra(ChatItemBaseDetail.CONV_NO, getIntent().getStringExtra(CONV_NO));

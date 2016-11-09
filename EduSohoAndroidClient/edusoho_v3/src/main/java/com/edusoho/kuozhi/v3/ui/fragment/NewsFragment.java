@@ -63,6 +63,7 @@ import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuCreator;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuItem;
 import com.edusoho.kuozhi.v3.view.swipemenulistview.SwipeMenuListView;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -287,6 +288,7 @@ public class NewsFragment extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.news_search) {
+            MobclickAgent.onEvent(mContext, "dynamic_sweepButton");
             app.mEngine.runNormalPlugin("QrSearchActivity", mContext, null);
             return true;
         }
