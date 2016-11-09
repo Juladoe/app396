@@ -161,7 +161,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
         public void onClick(View v) {
             RequestUrl url = app.bindUrl(Const.REGIST, false);
             HashMap<String, String> params = url.getParams();
-
+            params.put("registeredWay","android");
             String strPhone = etPhone.getText().toString().trim();
             if (TextUtils.isEmpty(strPhone)) {
                 CommonUtil.longToast(mContext, String.format("请输入手机号"));
@@ -240,7 +240,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
         public void onClick(View v) {
             RequestUrl url = app.bindUrl(Const.REGIST, false);
             HashMap<String, String> params = url.getParams();
-
+            params.put("registeredWay","android");
             String strMail = etMail.getText().toString().trim();
             if (TextUtils.isEmpty(strMail)) {
                 CommonUtil.longToast(mContext, "请输入邮箱地址");
