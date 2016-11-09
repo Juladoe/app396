@@ -44,7 +44,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MobclickAgent.setDebugMode(true);
         mCurrentIntent = getIntent();
         if (mCurrentIntent != null && mCurrentIntent.hasExtra(NotificationProvider.ACTION_TAG)) {
             startApp();
