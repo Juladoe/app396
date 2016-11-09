@@ -2,6 +2,7 @@ package com.gensee.fragement;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -48,12 +49,19 @@ public class ChatFragment extends Fragment {
 		mGSImplChatView = (GSImplChatView) mView.findViewById(R.id.impchatview);
 		mChatView = (XListView) mGSImplChatView.findViewById(R.id.talkingcontext);
 		mPlayer.setGSChatView(mGSImplChatView);
-		container.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+		mChatView.getAdapter().registerDataSetObserver(new DataSetObserver() {
 			@Override
-			public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
-				mChatView.setSelection(mChatView.getAdapter().getCount() - 1);
+			public void onChanged() {
+				super.onChanged();
+				getActivity().runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						mChatView.smoothScrollToPosition(mChatView.getAdapter().getCount() - 1);
+					}
+				});
 			}
 		});
+
 		mPlayer.setOnChatListener(new OnChatListener() {
 			@Override
 			public void onChatWithPerson(long userId, String sSendName, String text, String rich, int onChatID) {
