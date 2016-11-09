@@ -125,6 +125,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                     changeScreenToPortrait();
                 } else {
+                    MobclickAgent.onEvent(getBaseContext(), "liveRoom_fullScreenButton");
                     changeScreenToLandspace();
                 }
             }
