@@ -22,11 +22,18 @@
 
     <application
         android:allowBackup="false"
+        android:icon="@drawable/icon"
+        android:label="@string/app_name"
         android:largeHeap="true">
         <activity
-            android:name="GenseePlayActivity"
+            android:name=".GenseePlayActivity"
             android:configChanges="orientation|screenLayout|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/LivePlayActionBarTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".GenseeLivePlayActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

@@ -1,5 +1,6 @@
 package com.gensee.fragement;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import com.gensee.player.Player;
 import com.gensee.player.R;
 import com.gensee.view.GSImplQaView;
 
+@SuppressLint("ValidFragment")
 public class QaFragment extends Fragment {
 
 	private Player mPlayer;

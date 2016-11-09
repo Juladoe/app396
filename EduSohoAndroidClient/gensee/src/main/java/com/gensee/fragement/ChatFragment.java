@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.database.DataSetObserver;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,12 +55,12 @@ public class ChatFragment extends Fragment {
 			@Override
 			public void onChanged() {
 				super.onChanged();
-				getActivity().runOnUiThread(new Runnable() {
+				new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
 					@Override
 					public void run() {
 						mChatView.smoothScrollToPosition(mChatView.getAdapter().getCount() - 1);
 					}
-				});
+				}, 100);
 			}
 		});
 
