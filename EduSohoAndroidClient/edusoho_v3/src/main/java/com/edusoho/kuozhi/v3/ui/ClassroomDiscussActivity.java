@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.LinkedHashMap;
 
@@ -137,6 +138,7 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
             CoreEngine.create(mContext).runNormalPlugin("ClassroomDetailActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
+                    MobclickAgent.onEvent(mContext, "chatWindow_topRightCourseDetailsButton");
                     startIntent.putExtra(Const.ACTIONBAR_TITLE, mTargetName);
                     startIntent.putExtra(ChatItemBaseDetail.CONV_NO, mConversationNo);
                     startIntent.putExtra(Const.FROM_ID, mTargetId);

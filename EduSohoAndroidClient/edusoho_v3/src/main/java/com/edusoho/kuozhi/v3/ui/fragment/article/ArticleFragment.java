@@ -55,6 +55,8 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -106,6 +108,7 @@ public class ArticleFragment extends BaseFragment {
     };
 
     private void showArticleProfile() {
+        MobclickAgent.onEvent(mContext, "alumni_serviceBulletin_informationFloorButton");
         app.mEngine.runNormalPlugin("FragmentPageActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
