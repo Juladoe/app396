@@ -680,7 +680,7 @@ public class M3U8Util {
                 }
                 try {
                     String playListStr = createLocalM3U8File(m3U8DbModel);
-                    Log.d(TAG, "m3U8DbModle-> finish");
+                    Log.d(TAG, "finish");
                     cv.put("play_list", playListStr);
                     mSqliteUtil.update(
                             "data_m3u8",
@@ -692,6 +692,7 @@ public class M3U8Util {
                                     String.valueOf(mUserId)
                             }
                     );
+                    sendSuccessBroadcast();
                 } catch (FileNotFoundException fe) {
                     Log.d(TAG, fe.getMessage());
                 }
@@ -735,7 +736,7 @@ public class M3U8Util {
         mContext.sendBroadcast(intent);
     }
 
-    private M3U8DbModel updateM3U8DownloadNum() {
+    private synchronized M3U8DbModel updateM3U8DownloadNum() {
         //更新总计数器
         M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, mUserId, mLessonId, mTargetHost, UN_FINISH);
         if (m3U8DbModel == null || m3U8DbModel.finish == FINISH) {
