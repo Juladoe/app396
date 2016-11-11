@@ -231,7 +231,7 @@ public class MessageInputView extends FrameLayout implements IMessageInputView {
                 } else if (v.getId() == R.id.rl_btn_press_to_speak) {
                     viewMediaLayout.setVisibility(View.GONE);
                 } else if (v.getId() == R.id.iv_image) {
-                    MobclickAgent.onEvent(getContext(), "");
+                    MobclickAgent.onEvent(getContext(), "chatWindow_PlusButton_picture");
                     mMessageControllerListener.onSelectPhoto();
                 } else if (v.getId() == R.id.iv_camera) {
                     mMessageControllerListener.onTakePhoto();
