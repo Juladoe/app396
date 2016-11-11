@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.baidu.cyberplayer.utils.A;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.bal.push.Notify;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -31,6 +30,7 @@ public class NofityListAdapter extends RecyclerView.Adapter<NofityListAdapter.Vi
 
     private Context mContext;
     private List<Notify> mList;
+    private OnItemClickListener mOnItemClickListener;
 
     public NofityListAdapter(Context context) {
         this.mContext = context;
@@ -59,6 +59,9 @@ public class NofityListAdapter extends RecyclerView.Adapter<NofityListAdapter.Vi
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.setData(mList.get(position));
+        if (mOnItemClickListener != null) {
+            holder.addOnItemClickListener(mOnItemClickListener);
+        }
     }
 
     @Override
@@ -69,6 +72,10 @@ public class NofityListAdapter extends RecyclerView.Adapter<NofityListAdapter.Vi
                 return LIVE_START;
         }
         return NORMAL;
+    }
+
+    public void addOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.mOnItemClickListener = onItemClickListener;
     }
 
     private ViewHolder createViewHolder(View view, int viewType) {
@@ -90,6 +97,15 @@ public class NofityListAdapter extends RecyclerView.Adapter<NofityListAdapter.Vi
             timeView = (TextView) view.findViewById(R.id.tv_nofity_time);
             titleView = (TextView) view.findViewById(R.id.tv_nofity_title);
             contentView = (TextView) view.findViewById(R.id.tv_nofity_content);
+        }
+
+        public void addOnItemClickListener(final OnItemClickListener onItemClickListener) {
+            this.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    onItemClickListener.onItemClick(view, mList.get(getAdapterPosition()), getAdapterPosition());
+                }
+            });
         }
 
         public void setData(Notify notify) {
@@ -118,7 +134,7 @@ public class NofityListAdapter extends RecyclerView.Adapter<NofityListAdapter.Vi
             int start = stringBuffer.length();
             stringBuffer.append(" 点击消息 ");
             int end = stringBuffer.length();
-            stringBuffer.append("进入直播间哦~!");
+            stringBuffer.append("进入直播间哦~!" + getAdapterPosition());
             SpannableString spannableString = new SpannableString(stringBuffer);
             int color = mContext.getResources().getColor(R.color.primary);
             spannableString.setSpan(
@@ -128,4 +144,8 @@ public class NofityListAdapter extends RecyclerView.Adapter<NofityListAdapter.Vi
         }
     }
 
+    public static interface OnItemClickListener<T> {
+
+        void onItemClick(View view, T item, int position);
+    }
 }

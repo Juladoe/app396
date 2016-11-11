@@ -53,7 +53,7 @@ public abstract class AbstractCommand {
                 mMessageBody.getConvNo().hashCode(),
                 content[0],
                 content[1],
-                getNotifyIntent()
+                notifyIntent
         );
     }
 
