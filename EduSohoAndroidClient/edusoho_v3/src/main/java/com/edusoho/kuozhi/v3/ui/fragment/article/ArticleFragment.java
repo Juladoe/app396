@@ -58,6 +58,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
@@ -293,10 +294,12 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private class MenuClickListener implements View.OnClickListener {
-
         @Override
         public void onClick(View v) {
             MenuItem menuItem = (MenuItem) v.getTag();
+            HashMap<String,String> map = new HashMap<String, String>();
+            map.put("title",menuItem.title);
+            MobclickAgent.onEvent(mContext,"alumni_serviceBulletin_information_bottomButton",map);
             handleClick(v, menuItem);
         }
     }

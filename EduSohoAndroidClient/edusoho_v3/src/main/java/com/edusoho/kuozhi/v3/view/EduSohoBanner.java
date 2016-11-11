@@ -98,7 +98,7 @@ public class EduSohoBanner extends RelativeLayout {
         mHackyViewPager.setOffscreenPageLimit(count);
 
         mPointLayout.addPointImages(count);
-        mHackyViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mHackyViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }

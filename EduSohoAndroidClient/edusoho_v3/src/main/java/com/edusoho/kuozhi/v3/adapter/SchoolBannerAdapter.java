@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -78,6 +79,7 @@ public class SchoolBannerAdapter extends PagerAdapter {
             public void onClick(View view) {
                 try {
                     final SchoolBanner banner = mSchoolBanners.get(position);
+                    MobclickAgent.onEvent(mContext, String.format("find_topPoster%d",position));
                     if ("webview".equals(banner.action)) {
                         final String url;
                         Pattern CLASSROOM_PAT = Pattern.compile("/classroom/(\\d+)", Pattern.DOTALL);

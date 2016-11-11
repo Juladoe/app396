@@ -125,7 +125,7 @@ public class SettingActivity extends ActionBarBaseActivity {
             if (cbOfflineType.isChecked()) {
                 MobclickAgent.onEvent(mContext, "i_mySetting_4gCachESwitch_on");
             } else {
-                MobclickAgent.onEvent(mContext, "i_mySetting_4gCachESwitch_off");
+                MobclickAgent.onEvent(mContext, "i_mySetting_4gCacheSwitch_off");
             }
             app.config.offlineType = cbOfflineType.isChecked() ? 1 : 0;
             app.saveConfig();
