@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +13,7 @@ import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.v3.adapter.NofityListAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.model.bal.push.Notify;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -42,6 +42,7 @@ public class NotifyActivity extends ActionBarBaseActivity implements NofityListA
     private NotifyDbHelper mNotifyDbHelper;
     private NofityListAdapter mListAdapter;
     private int mStart = 0;
+    private static final int LIMIT = 10;
     private boolean canLoad = true;
 
     @Override
@@ -56,6 +57,7 @@ public class NotifyActivity extends ActionBarBaseActivity implements NofityListA
     @Override
     protected void onResume() {
         super.onResume();
+        getNotificationProvider().cancelNotification(Destination.NOTIFY.hashCode());
         IMClient.getClient().getConvManager().clearReadCount(Destination.NOTIFY);
     }
 
@@ -70,7 +72,7 @@ public class NotifyActivity extends ActionBarBaseActivity implements NofityListA
             @Override
             public void onRefreshBegin(PtrFrameLayout frame) {
                 frame.refreshComplete();
-                final List<Notify> notifyList =  mNotifyDbHelper.getNofityList(mStart, 6);
+                final List<Notify> notifyList =  mNotifyDbHelper.getNofityList(mStart, LIMIT);
                 if (notifyList.isEmpty()) {
                     canLoad = false;
                     return;
@@ -80,10 +82,12 @@ public class NotifyActivity extends ActionBarBaseActivity implements NofityListA
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mListView.smoothScrollToPosition(mStart);
+                        View childView = mListView.getChildAt(0);
+                        int scrollY = childView == null ? -100 : -(childView.getHeight() / 2);
+                        mListView.smoothScrollBy(0, scrollY);
                         mStart += notifyList.size();
                     }
-                }, 300);
+                }, 350);
             }
 
             @Override
@@ -112,14 +116,14 @@ public class NotifyActivity extends ActionBarBaseActivity implements NofityListA
         View firstView = recyclerView.getChildAt(chileCount - 1);
         if (firstView != null && firstView.getTop() == 0) {
             Log.d(TAG, "auto load");
-            mPtrFrame.autoRefresh();
+            mPtrFrame.autoRefresh(true, 200);
         }
     }
 
     private void initData() {
         School school = getAppSettingProvider().getCurrentSchool();
         mNotifyDbHelper= new NotifyDbHelper(mContext, new ESDbManager(mContext, school.getDomain()));
-        List<Notify> notifyList =  mNotifyDbHelper.getNofityList(mStart, 6);
+        List<Notify> notifyList =  mNotifyDbHelper.getNofityList(mStart, LIMIT);
         mStart += notifyList.size();
 
         mListAdapter = new NofityListAdapter(mContext);
@@ -144,5 +148,9 @@ public class NotifyActivity extends ActionBarBaseActivity implements NofityListA
 
     protected AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    protected NotificationProvider getNotificationProvider() {
+        return FactoryManager.getInstance().create(NotificationProvider.class);
     }
 }

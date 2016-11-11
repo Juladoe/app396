@@ -43,7 +43,7 @@ public class NotifyDbHelper {
 
     public List<Notify> getNofityList(int start, int limit) {
         ArrayList<HashMap<String, String>> arrayList = mDbHelper.queryBySortAndLimit(
-                TABLE, null, null, "createdTime", String.format("%d, %d", start, limit));
+                TABLE, null, null, "createdTime desc", String.format("%d, %d", start, limit));
 
         List<Notify> notifyList = new ArrayList<>();
         if (arrayList == null || arrayList.isEmpty()) {

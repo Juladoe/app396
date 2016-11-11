@@ -4,10 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
-import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.helper.IDbManager;
@@ -38,6 +36,7 @@ public class LessonPushProcessor implements IPushProcessor {
     public LessonPushProcessor(Context context, MessageBody messageBody) {
         this.mContext = context;
         this.mMessageBody = messageBody;
+        this.mMessageBody.setConvNo(Destination.NOTIFY);
     }
 
     @Override

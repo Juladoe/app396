@@ -134,7 +134,7 @@ public class NofityListAdapter extends RecyclerView.Adapter<NofityListAdapter.Vi
             int start = stringBuffer.length();
             stringBuffer.append(" 点击消息 ");
             int end = stringBuffer.length();
-            stringBuffer.append("进入直播间哦~!" + getAdapterPosition());
+            stringBuffer.append("前去学习吧~");
             SpannableString spannableString = new SpannableString(stringBuffer);
             int color = mContext.getResources().getColor(R.color.primary);
             spannableString.setSpan(

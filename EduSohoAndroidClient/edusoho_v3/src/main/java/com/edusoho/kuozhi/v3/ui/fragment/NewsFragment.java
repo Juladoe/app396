@@ -331,6 +331,24 @@ public class NewsFragment extends BaseFragment {
         lvNewsList.setMenuCreator(creator);
         lvNewsList.setOnMenuItemClickListener(mMenuItemClickListener);
         lvNewsList.setOnItemClickListener(mItemClickListener);
+        lvNewsList.setOnSwipeListener(getOnSwipeListener());
+    }
+
+    private SwipeMenuListView.OnSwipeListener getOnSwipeListener() {
+        return new SwipeMenuListView.OnSwipeListener() {
+            @Override
+            public void onSwipeStart(int position) {
+            }
+
+            @Override
+            public void onSwipeEnd(int position) {
+            }
+
+            @Override
+            public boolean canSwipe(int position) {
+                return !Destination.NOTIFY.equals(mSwipeAdapter.getItem(position).getType());
+            }
+        };
     }
 
     private void initData() {
@@ -454,10 +472,6 @@ public class NewsFragment extends BaseFragment {
             }
         }
     };
-
-    private void setItemToTop(New newModel) {
-        mSwipeAdapter.setItemToTop(newModel);
-    }
 
     @Override
     public void invoke(WidgetMessage message) {

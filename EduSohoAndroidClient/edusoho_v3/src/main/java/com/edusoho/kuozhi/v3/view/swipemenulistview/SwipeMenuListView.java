@@ -55,6 +55,10 @@ public class SwipeMenuListView extends ListView {
         mTouchState = TOUCH_STATE_NONE;
     }
 
+    public void setOnSwipeListener(OnSwipeListener onSwipeListener) {
+        this.mOnSwipeListener = onSwipeListener;
+    }
+
     @Override
     public void setAdapter(ListAdapter adapter) {
         super.setAdapter(new SwipeMenuAdapter(getContext(), adapter) {
@@ -197,6 +201,9 @@ public class SwipeMenuListView extends ListView {
                 mTouchPosition = pointToPosition((int) ev.getX(), (int) ev.getY()) - getHeaderViewsCount();
                 //如果滑动了一下没完全展现，就收回去，这时候mTouchView已经赋值，再滑动另外一个不可以swip的view
                 //会导致mTouchView swip 。 所以要用位置判断是否滑动的是一个view
+                if (mOnSwipeListener != null && !mOnSwipeListener.canSwipe(mTouchPosition)) {
+                    break;
+                }
                 if (!mTouchView.getSwipEnable() || mTouchPosition != mTouchView.getPosition()) {
                     break;
                 }
@@ -295,6 +302,8 @@ public class SwipeMenuListView extends ListView {
         void onSwipeStart(int position);
 
         void onSwipeEnd(int position);
+
+        boolean canSwipe(int position);
     }
 
     public interface OnMenuStateChangeListener {
