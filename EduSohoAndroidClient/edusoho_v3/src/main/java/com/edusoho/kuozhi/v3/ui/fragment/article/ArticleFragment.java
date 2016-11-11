@@ -435,6 +435,9 @@ public class ArticleFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MenuItem menuItem = (MenuItem) parent.getItemAtPosition(position);
+                HashMap<String,String> map = new HashMap<String, String>();
+                map.put("title",menuItem.title);
+                MobclickAgent.onEvent(mContext,"alumni_serviceBulletin_information_bottomButton",map);
                 handleClick(view, menuItem);
                 hideMenuPop();
             }
