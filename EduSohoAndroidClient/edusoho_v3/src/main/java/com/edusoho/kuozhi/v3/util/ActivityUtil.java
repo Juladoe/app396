@@ -6,6 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import com.edusoho.kuozhi.R;
+
 
 /**
  * Created by suju on 16/10/21.
@@ -32,11 +34,20 @@ public class ActivityUtil {
         contentView.setClipToPadding(true);
     }
 
+    public static void setStatusViewBackgroud(Activity activity, int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
+            View statusView  = decorView.findViewById(R.id.custom_status_view);
+            statusView.setBackgroundColor(color);
+        }
+    }
+
     private static View createStatusView(Activity activity, int color) {
         int resourceId = activity.getResources().getIdentifier("status_bar_height", "dimen", "android");
         int statusBarHeight = activity.getResources().getDimensionPixelSize(resourceId);
 
         View statusView = new View(activity.getBaseContext());
+        statusView.setId(R.id.custom_status_view);
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 statusBarHeight);
         statusView.setLayoutParams(params);

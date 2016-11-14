@@ -299,7 +299,6 @@ public class BdVideoPlayerFragment extends Fragment implements OnPreparedListene
                 return false;
             }
         });
-        //autoHideTimer.schedule(autoHideTimerTask, 1000, 1000);
     }
 
     // region handler

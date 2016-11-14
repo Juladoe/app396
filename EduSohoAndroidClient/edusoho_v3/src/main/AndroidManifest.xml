@@ -169,10 +169,13 @@
             android:name=".v3.ui.DownloadManagerActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
+
         <activity
+            android:theme="@style/AppThemeNoActionBar"
             android:name=".v3.ui.LessonActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
+
         <activity
             android:name=".v3.ui.NewsCourseActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
