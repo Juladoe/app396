@@ -5,6 +5,8 @@ import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.helper.IConvDbHelper;
 import com.edusoho.kuozhi.imserver.helper.IMsgDbHelper;
 import com.edusoho.kuozhi.imserver.service.IMsgManager;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by suju on 16/11/3.
@@ -13,10 +15,22 @@ public abstract class AbstractMsgManager implements IMsgManager {
 
     protected IMsgDbHelper mMsgDbHelper;
     protected IConvDbHelper mConvDbHelper;
+    private Map<String, String> mMsgNoArray;
 
+    public AbstractMsgManager() {
+        this.mMsgNoArray = new ConcurrentHashMap<>();
+    }
     @Override
     public boolean hasMessageByNo(String msgNo) {
-        return mMsgDbHelper.hasMessageByNo(msgNo);
+        if (mMsgNoArray.containsKey(msgNo)) {
+            return true;
+        }
+        boolean hasMessageByNo = mMsgDbHelper.hasMessageByNo(msgNo);
+        if (hasMessageByNo) {
+            mMsgNoArray.put(msgNo, "");
+        }
+
+        return hasMessageByNo;
     }
 
     public String getLaterNo() {

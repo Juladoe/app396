@@ -12,6 +12,7 @@ public class DbMsgManager extends AbstractMsgManager {
     private Context mContext;
 
     public DbMsgManager(Context context) {
+        super();
         this.mContext = context;
         reset();
     }

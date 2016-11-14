@@ -13,6 +13,7 @@ public class MemMsgManager extends AbstractMsgManager {
     private Context mContext;
 
     public MemMsgManager(Context context) {
+        super();
         this.mContext = context;
         reset();
     }
