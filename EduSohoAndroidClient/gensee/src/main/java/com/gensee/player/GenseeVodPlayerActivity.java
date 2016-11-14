@@ -299,7 +299,7 @@ public class GenseeVodPlayerActivity extends AppCompatActivity implements
         // webcast - ST_CASTLINE
         // training - ST_TRAINING
         // meeting - ST_MEETING
-        initParam.setServiceType(serviceType);
+        initParam.setServiceType("webcast".equals(mServiceType) ? ServiceType.ST_CASTLINE : ServiceType.ST_TRAINING);
         //站点 系统设置 的 第三方集成 中直播模块 “认证“  启用时请确保”第三方K值“（你们的k值）的正确性 ；如果没有启用则忽略这个参数
         //initParam.setK(k);
         if (!TextUtils.isEmpty(mKey)) {

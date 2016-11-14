@@ -123,7 +123,6 @@ public class IMProvider extends ModelProvider {
         }
 
         if (convEntity == null) {
-            //createConvEntityByType(convNo, type, targetId);
             return providerListener;
         }
         updateConvEntityByType(type, targetId, convEntity);
@@ -170,7 +169,6 @@ public class IMProvider extends ModelProvider {
         ConvEntity convEntity = imConvManager.getConvByConvNo(convNo);
 
         if (convEntity == null) {
-            //createConvEntityByType(convNo, type, targetId);
             return providerListener;
         }
         updateConvEntityByType(type, targetId, convEntity);

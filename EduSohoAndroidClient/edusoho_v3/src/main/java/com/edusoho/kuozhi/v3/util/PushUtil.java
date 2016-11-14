@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.v3.util;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by JesseHuang on 15/9/16.
@@ -38,6 +36,7 @@ public class PushUtil {
         public static final String COURSE = "course";
         public static final String STUDENT = "student";
         public static final String NEWS = "news";
+        public static final String NOTIFY = "notify";
     }
 
     /**
@@ -72,6 +71,11 @@ public class PushUtil {
         public static final String NEWS_CREATE = "news.create";
     }
 
+    public static class LessonType {
+        public static final String TYPE = "lesson";
+        public static final String LIVE_START = "live_start";
+    }
+
     public static class FriendVerified {
         public static final String TYPE = "verified";
     }
@@ -81,30 +85,5 @@ public class PushUtil {
         public static final String DISCOUNT_FREE = "discount.free";
         public static final String DISCOUNT_DISCOUNT = "discount.discount";
         public static final String DISCOUNT_GLOBAL = "discount.global";
-    }
-
-    /**
-     * 处理公告消息，替换<img>标签为[图片]
-     *
-     * @param source html代码
-     * @return
-     */
-    public static String replaceImgTag(String source) {
-        Pattern pattern = Pattern.compile("<img[^>]+>", Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(source);
-        return matcher.replaceAll("[图片]");
-    }
-
-    public static String getNotificationContent(String type) {
-        String result = null;
-        switch (type) {
-            case ChatMsgType.IMAGE:
-                result = "[图片]";
-                break;
-            case ChatMsgType.AUDIO:
-                result = "[语音]";
-                break;
-        }
-        return result;
     }
 }

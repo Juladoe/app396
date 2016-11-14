@@ -37,6 +37,7 @@ import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.adapter.SwipeAdapter;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
@@ -158,9 +159,19 @@ public class NewsFragment extends BaseFragment {
 
     protected IMMessageReceiver getIMMessageListener() {
         return new IMMessageReceiver() {
+
+            private boolean filterMessageEntity(MessageEntity messageEntity) {
+                if (Destination.LESSON.equals(messageEntity.getConvNo())) {
+                    return false;
+                }
+                return true;
+            }
+
             @Override
             public boolean onReceiver(MessageEntity msg) {
-                handleMessage(msg);
+                if (filterMessageEntity(msg)) {
+                    handleMessage(msg);
+                }
                 return false;
             }
 
@@ -322,6 +333,24 @@ public class NewsFragment extends BaseFragment {
         lvNewsList.setMenuCreator(creator);
         lvNewsList.setOnMenuItemClickListener(mMenuItemClickListener);
         lvNewsList.setOnItemClickListener(mItemClickListener);
+        lvNewsList.setOnSwipeListener(getOnSwipeListener());
+    }
+
+    private SwipeMenuListView.OnSwipeListener getOnSwipeListener() {
+        return new SwipeMenuListView.OnSwipeListener() {
+            @Override
+            public void onSwipeStart(int position) {
+            }
+
+            @Override
+            public void onSwipeEnd(int position) {
+            }
+
+            @Override
+            public boolean canSwipe(int position) {
+                return !Destination.NOTIFY.equals(mSwipeAdapter.getItem(position).getType());
+            }
+        };
     }
 
     private void initData() {
@@ -376,6 +405,9 @@ public class NewsFragment extends BaseFragment {
             final New newItem = (New) parent.getItemAtPosition(position);
             TypeBusinessEnum.getName(newItem.type);
             switch (newItem.type) {
+                case Destination.NOTIFY:
+                    CoreEngine.create(mContext).runNormalPlugin("NotifyActivity", mContext, null);
+                    break;
                 case Destination.USER:
                     if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
                         CommonUtil.longToast(mContext, "聊天功能已关闭");
@@ -442,10 +474,6 @@ public class NewsFragment extends BaseFragment {
             }
         }
     };
-
-    private void setItemToTop(New newModel) {
-        mSwipeAdapter.setItemToTop(newModel);
-    }
 
     @Override
     public void invoke(WidgetMessage message) {

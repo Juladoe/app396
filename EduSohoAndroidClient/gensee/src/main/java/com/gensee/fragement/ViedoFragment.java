@@ -1,18 +1,16 @@
 package com.gensee.fragement;
 
 import android.annotation.SuppressLint;
-import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -67,6 +65,7 @@ public class ViedoFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		mGSViedoView.setOnClickListener(this);
 		setPlayStatus(BUFFERING);
 	}
 
@@ -176,14 +175,16 @@ public class ViedoFragment extends Fragment implements OnClickListener {
 	public void onClick(View v) {
 		int id = v.getId();
 		if (id == R.id.imvideoview) {
-			int orientation = getActivity().getRequestedOrientation();
-			if (orientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-					|| orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-				orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
-			} else {
-				orientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
+			ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+			if (actionBar == null) {
+				return;
 			}
-			getActivity().setRequestedOrientation(orientation);
+			if (actionBar.isShowing()) {
+				actionBar.hide();
+			} else {
+				actionBar.show();
+			}
+
 		} else if (id == R.id.txtAudio) {
 			if (mPlayer != null) {
 				// isSelect 代表关闭状态，默认非关闭状态 即false

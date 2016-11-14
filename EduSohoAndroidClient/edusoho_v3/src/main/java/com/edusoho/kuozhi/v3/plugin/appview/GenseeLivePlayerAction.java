@@ -22,7 +22,7 @@ public class GenseeLivePlayerAction {
 
     public void invoke(Bundle bundle) {
         Intent intent = new Intent();
-        intent.setClassName(mActivity.getPackageName(), "com.gensee.player.GenseePlayActivity");
+        intent.setClassName("com.gensee.player", "com.gensee.player.GenseePlayActivity");
         if (checkLiveAppIsExist(intent)) {
             installLiveApp();
             return;
