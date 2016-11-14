@@ -45,6 +45,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -265,38 +266,6 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
         return dataList;
     }
 
-    private List<NewsCourseEntity> getNewsCourseList() {
-        List<MessageEntity> messageEntityList = IMClient.getClient().getMessageManager().
-                getMessageListByConvNo(Destination.COURSE, 0, 1000);
-        List<NewsCourseEntity> entities = new ArrayList<>();
-        for (MessageEntity messageEntity : messageEntityList) {
-            NewsCourseEntity entity = new NewsCourseEntity();
-            MessageBody messageBody = new MessageBody(messageEntity);
-            try {
-                JSONObject bodyJsonObj = new JSONObject(messageBody.getBody());
-                entity.setId(messageEntity.getId());
-                entity.setCourseId(bodyJsonObj.optInt("courseId"));
-                entity.setTitle(bodyJsonObj.optString("questionTitle"));
-                entity.setContent(bodyJsonObj.optString("title"));
-                entity.setFromType(messageBody.getSource().getType());
-                entity.setBodyType(bodyJsonObj.optString("type"));
-                entity.setLessonType(bodyJsonObj.optString("lessonType"));
-                entity.setUserId(messageBody.getSource().getId());
-                entity.setCreatedTime(bodyJsonObj.optInt("questionCreatedTime"));
-                entity.setLessonId(bodyJsonObj.optInt("lessonId"));
-                entity.setHomworkResultId(bodyJsonObj.optInt("homeworkResultId"));
-                entity.setThreadId(bodyJsonObj.optInt("threadId"));
-                entity.setLearnStartTime(bodyJsonObj.optInt("startTime"));
-                entity.setLearnFinishTime(bodyJsonObj.optInt("finishTime"));
-
-                entities.add(entity);
-            } catch (JSONException e) {
-            }
-        }
-
-        return entities;
-    }
-
     public List filterList(List<NewsCourseEntity> list) {
         for (int i = 0; i < list.size(); i++) {
             NewsCourseEntity entity = list.get(i);
@@ -514,6 +483,7 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
             CoreEngine.create(mContext).runNormalPlugin("ThreadCreateActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
+                    MobclickAgent.onEvent(mContext, "dynamic_learn_questionButton");
                     startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mCourseId);
                     startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, "course");
                     startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, "course");

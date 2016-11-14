@@ -34,6 +34,7 @@ import com.edusoho.kuozhi.imserver.ui.listener.InputViewControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.util.MediaRecorderTask;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -149,7 +150,7 @@ public class MessageInputView extends FrameLayout implements IMessageInputView {
 
     private void initSpeakContainer() {
         mViewSpeakContainer = LayoutInflater.from(getContext()).inflate(R.layout.view_message_record_layout, null);
-        ViewParent viewParent = getParent();
+        ViewParent viewParent = getParent().getParent();
         if (viewParent != null) {
             if (viewParent instanceof FrameLayout) {
                 FrameLayout.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -211,6 +212,7 @@ public class MessageInputView extends FrameLayout implements IMessageInputView {
                 } else if (v.getId() == R.id.btn_send) {
                     sendClick();
                 } else if (v.getId() == R.id.btn_voice) {
+                    MobclickAgent.onEvent(getContext(), "chatWindow_voiceButton");
                     //语音
                     viewMediaLayout.setVisibility(View.GONE);
                     btnVoice.setVisibility(View.GONE);
@@ -229,6 +231,7 @@ public class MessageInputView extends FrameLayout implements IMessageInputView {
                 } else if (v.getId() == R.id.rl_btn_press_to_speak) {
                     viewMediaLayout.setVisibility(View.GONE);
                 } else if (v.getId() == R.id.iv_image) {
+                    MobclickAgent.onEvent(getContext(), "chatWindow_PlusButton_picture");
                     mMessageControllerListener.onSelectPhoto();
                 } else if (v.getId() == R.id.iv_camera) {
                     mMessageControllerListener.onTakePhoto();

@@ -11,4 +11,6 @@
     <color name="live_notice_bg">#FFF9CD</color>
     <color name="live_notice_title">#FF9053</color>
     <color name="live_notice_list_bg">#e8e8e8</color>
+    <color name="live_chat_role_label_yellow_bg">#fd8a29</color>
+    <color name="live_chat_role_label_red_bg">#e53f34</color>
 </resources>

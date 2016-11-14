@@ -10,8 +10,10 @@ public class Destination {
      */
 
     public static final String COURSE = "course";
+    public static final String LESSON = "lesson";
     public static final String CLASSROOM = "classroom";
     public static final String USER = "user";
+    public static final String NOTIFY = "notify";
     public static final String ARTICLE = "news";
     public static final String LIST = "list";
     public static final String GLOBAL = "global";

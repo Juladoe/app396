@@ -10,8 +10,6 @@ public interface ILiveChatPresenter {
 
     void setUserCanChatStatus(MessageEntity message);
 
-    void onHandleMessage(MessageEntity messageEntity);
-
     void joinLiveChatRoom();
 
     void setView(IMessageListView view);
@@ -19,8 +17,6 @@ public interface ILiveChatPresenter {
     void onReplace();
 
     void checkClientIsBan(String clientId);
-
-    void onSuccess(MessageEntity messageEntity);
 
     void connectLiveChatServer();
 

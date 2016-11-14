@@ -1,5 +1,6 @@
 package com.gensee.fragement;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import com.gensee.player.R;
 import com.gensee.view.GSDocViewEx;
 import com.gensee.view.GSDocViewGx;
 
+@SuppressLint("ValidFragment")
 public class DocFragment extends Fragment {
 
 	private Player mPlayer;

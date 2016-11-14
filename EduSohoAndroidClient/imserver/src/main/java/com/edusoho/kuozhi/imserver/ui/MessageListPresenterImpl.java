@@ -582,7 +582,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
 
     @Override
     public void onMessageSuccess(MessageEntity messageEntity) {
-        MessageBody messageBody = new MessageBody(messageEntity);
+        MessageBody messageBody = new MessageBody(messageEntity.getMsg());
         if (messageBody == null) {
             return;
         }

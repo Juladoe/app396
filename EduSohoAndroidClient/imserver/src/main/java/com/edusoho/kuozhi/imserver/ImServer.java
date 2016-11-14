@@ -54,6 +54,7 @@ public class ImServer {
     };
 
     private int flag;
+    private int reConnectCount;
 
     private String[] pingCmd = {
             "cmd", "ping"
@@ -149,12 +150,17 @@ public class ImServer {
         if (flag == CONNECT_WAIT || flag == CONNECT_OPEN) {
             return;
         }
+        if (reConnectCount > 1) {
+            sendConnectStatusBroadcast(IConnectManagerListener.INVALID);
+            return;
+        }
         flag = CONNECT_WAIT;
         new Handler(Looper.getMainLooper()).postAtTime(new Runnable() {
             @Override
             public void run() {
                 if (isCancel()) {
                     Log.d(TAG, "reConnect");
+                    reConnectCount ++;
                     start();
                 }
             }
@@ -181,6 +187,7 @@ public class ImServer {
         this.mClientName = clientName;
         this.mHostList = host;
         this.mClientId = clientId;
+        this.reConnectCount = 0;
 
         this.mIMsgManager.reset();
     }

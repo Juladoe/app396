@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 
@@ -121,6 +122,11 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener setOfflineTypeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (cbOfflineType.isChecked()) {
+                MobclickAgent.onEvent(mContext, "i_mySetting_4gCachESwitch_on");
+            } else {
+                MobclickAgent.onEvent(mContext, "i_mySetting_4gCacheSwitch_off");
+            }
             app.config.offlineType = cbOfflineType.isChecked() ? 1 : 0;
             app.saveConfig();
         }
@@ -147,6 +153,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener scanClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext,"i_mySetting_sweep");
             mActivity.app.mEngine.runNormalPlugin("QrSchoolActivity", mActivity, null);
         }
     };
@@ -154,6 +161,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener msgClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "i_mySetting_newMessageNotification");
             mActivity.app.mEngine.runNormalPlugin("MsgReminderActivity", mActivity, null);
         }
     };
@@ -161,6 +169,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener aboutClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "i_mySetting_about");
             mActivity.app.mEngine.runNormalPlugin("AboutActivity", mActivity, null);
         }
     };
@@ -168,6 +177,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener logoutClickLister = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "i_my_Setting_logout");
             if (TextUtils.isEmpty(app.loginUser.thirdParty)) {
                 RequestUrl requestUrl = app.bindUrl(Const.LOGOUT, true);
                 mActivity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {

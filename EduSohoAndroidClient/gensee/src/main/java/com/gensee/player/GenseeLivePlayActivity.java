@@ -16,6 +16,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -53,8 +54,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
      */
     private ViewPager mViewPager;
     private TabLayout mTabLayout;
-    private RelativeLayout relTip;
-    private TextView txtTip;
     private ViedoFragment mViedoFragment;
     private Player mPlayer;
     private FragmentManager mFragmentManager;
@@ -100,15 +99,12 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
 
         mPlayer = new Player();
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), mPlayer);
-
-        relTip = (RelativeLayout) findViewById(R.id.rl_tip);
-        txtTip = (TextView) findViewById(R.id.tv_tip);
         mViewPager = (ViewPager) findViewById(R.id.viewpager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mTabLayout = (TabLayout) findViewById(R.id.tablayout);
-        mTabLayout.addTab(mTabLayout.newTab().setText("文档"), true);//添加 Tab,默认选中
-        mTabLayout.addTab(mTabLayout.newTab().setText("聊天"), false);//添加 Tab,默认不选中
+        mTabLayout.addTab(mTabLayout.newTab().setText("文档"), true);
+        mTabLayout.addTab(mTabLayout.newTab().setText("聊天"), false);
         mTabLayout.addTab(mTabLayout.newTab().setText("问答"), false);
         mTabLayout.setupWithViewPager(mViewPager);
         mTabLayout.setTabsFromPagerAdapter(mSectionsPagerAdapter);
@@ -117,7 +113,7 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     }
 
     private void initPlayFrameContainer() {
-        android.support.v4.app.FragmentTransaction ft = mFragmentManager.beginTransaction();
+        FragmentTransaction ft = mFragmentManager.beginTransaction();
         if (mViedoFragment == null) {
             mViedoFragment = new ViedoFragment(mPlayer);
             ft.add(R.id.frame_container, mViedoFragment);

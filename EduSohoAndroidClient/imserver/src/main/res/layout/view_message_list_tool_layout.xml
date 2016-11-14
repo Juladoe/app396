@@ -88,7 +88,6 @@
                 android:gravity="center_vertical"
                 android:inputType="text"
                 android:maxLines="4"
-                android:hint="跟同学聊聊天吧..."
                 android:imeOptions="actionSend"
                 android:textSize="@dimen/medium_font_size" />
 

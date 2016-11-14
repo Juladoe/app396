@@ -17,6 +17,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by JesseHuang on 15/7/2.
@@ -101,6 +102,10 @@ public class New implements Serializable {
     private String handlePushMessageBody(MessageBody messageBody) {
         String fromType = messageBody.getSource().getType();
         switch (fromType) {
+            case PushUtil.LessonType.TYPE:
+                Map<String, String> body = getUtilFactory().getJsonParser().
+                        fromJson(messageBody.getBody(), LinkedHashMap.class);
+                return body.get("message");
             case PushUtil.ArticleType.TYPE:
                 ArticleMessageBody articleMessageBody = getUtilFactory().getJsonParser().
                         fromJson(messageBody.getBody(), ArticleMessageBody.class);
@@ -253,7 +258,7 @@ public class New implements Serializable {
                 return "网校公告";
         }
 
-        return "";
+        return convEntity.getTargetName();
     }
 
     public New(ConvEntity convEntity) {

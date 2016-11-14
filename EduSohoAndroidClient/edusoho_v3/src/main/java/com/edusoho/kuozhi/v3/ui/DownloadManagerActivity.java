@@ -39,6 +39,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -118,6 +119,20 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
         mViewPagers.setPageMargin(pageMargin);
+        mViewPagers.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1) {
+                    MobclickAgent.onEvent(mContext, "i_cache_caching");
+                }
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
         mPagerTab.setViewPager(mViewPagers);
 
         mSqliteUtil = SqliteUtil.getUtil(mContext);

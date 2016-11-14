@@ -35,6 +35,7 @@ import com.edusoho.liveplayer.widget.MediaController;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
 import com.pili.pldroid.player.widget.PLVideoView;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * This is a demo activity of PLVideoView
@@ -124,6 +125,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
                 if (orientation == Configuration.ORIENTATION_PORTRAIT) {
                     changeScreenToPortrait();
                 } else {
+                    MobclickAgent.onEvent(getBaseContext(), "liveRoom_fullScreenButton");
                     changeScreenToLandspace();
                 }
             }
@@ -210,6 +212,12 @@ public class PLVideoViewActivity extends AppCompatActivity {
         mLiveTitleView = (TextView) findViewById(R.id.tv_live_title);
         mLiveDescView = (TextView) findViewById(R.id.tv_live_desc);
         mNoticeView = (TextView) findViewById(R.id.tv_live_notice);
+        mNoticeView.setOnClickListener(new TextView.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MobclickAgent.onEvent(getBaseContext(), "liveRoom_1minuteDisplayArea");
+            }
+        });
         mChatLoadLayout = findViewById(R.id.ll_chat_load);
         mChatLoadTitleView = (TextView) findViewById(R.id.tv_chat_load_title);
         mChatLoadProgressBar = (ProgressBar) findViewById(R.id.pb_chat_load);

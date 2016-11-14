@@ -31,13 +31,14 @@ import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.adapter.LiveChatListAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.provider.LiveChatDataProvider;
 import com.edusoho.kuozhi.v3.model.provider.LiveRoomProvider;
 import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.liveplayer.PLVideoViewActivity;
+import com.umeng.analytics.MobclickAgent;
+
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -141,6 +142,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_notice) {
+            MobclickAgent.onEvent(mContext, "liverRoom_announcementButton");
             Intent intent = new Intent(mContext, LiveNoticeListActivity.class);
             intent.putExtra(LiveNoticeListActivity.TOKEN, mToken);
             intent.putExtra(LiveNoticeListActivity.LIVE_HOST, mLiveHost);
@@ -299,7 +301,7 @@ public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILi
         bundle.putInt(MessageListFragment.TARGET_ID, mLessonId);
         bundle.putString(MessageListFragment.TARGET_TYPE, "live_chatroom");
 
-        LiveChatDataProvider liveChatDataProvider = new LiveChatDataProvider(LiveImClient.getIMClient(mContext).getImBinder());
+        LiveChatDataProvider liveChatDataProvider = new LiveChatDataProvider(mContext);
         LiveChatMessageListPresenterImpl presenter = new LiveChatMessageListPresenterImpl(
                 mContext,
                 bundle,

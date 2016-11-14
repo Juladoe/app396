@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,6 +83,7 @@ public class QrSchoolActivity extends ActionBarBaseActivity {
     private View.OnClickListener mOtherClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext,"i_mySetting_otherWaysEnter");
             app.mEngine.runNormalPlugin("NetSchoolActivity", mContext, null);
         }
     };

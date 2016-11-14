@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.live;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.RemoteException;
@@ -37,6 +38,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -47,7 +50,6 @@ public class LiveChatMessageListPresenterImpl extends MessageListPresenterImpl {
     private Bundle mLiveData;
     private Context mContext;
     private String mConversationNo;
-    private Map<Long, Boolean> mMessageFilterMap;
     private Map<String, MessageBody> mNotSendMessageMap;
 
     public LiveChatMessageListPresenterImpl(
@@ -60,7 +62,6 @@ public class LiveChatMessageListPresenterImpl extends MessageListPresenterImpl {
                                             IMessageListView messageListView) {
         super(params, convManager, roleManager, messageResourceHelper, mIMessageDataProvider, messageListView);
         this.mContext = context;
-        mMessageFilterMap = new HashMap<>();
         mNotSendMessageMap = new ConcurrentHashMap<>();
         messageListView.setInputTextMode(MessageInputView.INPUT_TEXT);
     }
@@ -125,7 +126,7 @@ public class LiveChatMessageListPresenterImpl extends MessageListPresenterImpl {
 
     @Override
     public void sendMessageToServer(MessageBody messageBody) {
-        mNotSendMessageMap.put(String.valueOf(messageBody.getMid()), messageBody);
+        mNotSendMessageMap.put(messageBody.getMessageId(), messageBody);
         super.sendMessageToServer(messageBody);
     }
 
@@ -135,9 +136,27 @@ public class LiveChatMessageListPresenterImpl extends MessageListPresenterImpl {
             return;
         }
         for (MessageBody messageBody : mNotSendMessageMap.values()) {
-            Log.d("MessageListPresenter", "resend:" + messageBody.getMessageId());
-            sendMessageToServer(messageBody);
+            MessageEntity messageEntity = mIMessageDataProvider.getMessageByUID(messageBody.getMessageId());
+            updateMessageReceiveStatus(messageEntity, MessageEntity.StatusType.FAILED);
         }
+    }
+
+    protected void updateMessageSendStatus(MessageEntity messageEntity, int status) {
+        ContentValues cv = new ContentValues();
+        cv.put("status", status);
+        mIMessageDataProvider.updateMessageFieldByUid(messageEntity.getUid(), cv);
+
+        messageEntity = mIMessageDataProvider.getMessageByUID(messageEntity.getUid());
+        mIMessageListView.updateMessageEntity(messageEntity);
+    }
+
+    @Override
+    public void onSendMessageAgain(MessageEntity messageEntity) {
+        mNotSendMessageMap.put(messageEntity.getUid(), new MessageBody(messageEntity));
+
+        messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
+        updateMessageSendStatus(messageEntity, MessageEntity.StatusType.UPLOADING);
+        mIMessageDataProvider.sendMessage(messageEntity);
     }
 
     @Override
@@ -148,24 +167,22 @@ public class LiveChatMessageListPresenterImpl extends MessageListPresenterImpl {
         if (clientId.equals(message.getFromId()) && clientName.equals(message.getFromName())) {
             return true;
         }
-        LiveMessageBody messageBody = new LiveMessageBody(message);
-        long messageTime = messageBody.getTime();
-        if (mMessageFilterMap.containsKey(messageTime)) {
+
+        message = mIMessageDataProvider.insertMessageEntity(message);
+        if (message == null) {
             return true;
         }
-        mMessageFilterMap.put(messageTime, true);
         mIMessageListView.insertMessage(message);
         return true;
     }
 
     @Override
     public void onMessageSuccess(MessageEntity successEntity) {
-        int index = AppUtil.parseInt(successEntity.getUid());
-        MessageEntity messageEntity = mIMessageDataProvider.getMessageByUID(String.valueOf(index));
+        MessageEntity messageEntity = mIMessageDataProvider.getMessageByUID(successEntity.getUid());
         if (messageEntity == null) {
             return;
         }
-        mNotSendMessageMap.remove(String.valueOf(index));
+        mNotSendMessageMap.remove(successEntity.getUid());
         messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
         mIMessageListView.updateMessageEntity(messageEntity);
     }

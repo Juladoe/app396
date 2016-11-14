@@ -74,7 +74,7 @@ public class MessageListFragment extends Fragment implements
     private int mInputMode = IMessageInputView.INPUT_IMAGE_AND_VOICE;
     private boolean canLoadData = true;
     private Context mContext;
-    private boolean mIsEnable;
+    private boolean mIsEnable = true;
     private int mCurrentSelectedIndex;
     private MessageAudioPlayer mAudioPlayer;
     private MessageSendListener mMessageSendListener;

@@ -399,4 +399,9 @@
         name="VideoFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.lesson.VideoLessonFragment"
         version="1.0" />
+
+    <plugin
+        name="NotifyActivity"
+        package="com.edusoho.kuozhi.v3.ui.NotifyActivity"
+        version="1.0" />
 </plugins>
