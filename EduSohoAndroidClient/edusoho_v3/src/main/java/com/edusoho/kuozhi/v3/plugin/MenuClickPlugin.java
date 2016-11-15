@@ -118,6 +118,9 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         dlg.setOkListener(new PopupDialog.PopupClickListener() {
             @Override
             public void onClick(int button) {
+                if (button == PopupDialog.CANCEL) {
+                    return;
+                }
                 callbackContext.success(dlg.getInputString());
             }
         });
