@@ -160,10 +160,12 @@ public class GenseeVodPlayerActivity extends AppCompatActivity implements
         mControllerView.setVisibility(View.VISIBLE);
         mHandler.removeMessages(RESULT.HIDE_CONTROLLER);
         mHandler.sendEmptyMessageDelayed(RESULT.HIDE_CONTROLLER, 5000);
+        getSupportActionBar().show();
     }
 
     private void hideControllerView() {
         mControllerView.setVisibility(View.GONE);
+        getSupportActionBar().hide();
     }
 
     private View.OnClickListener mVideoViewClickListener = new View.OnClickListener() {
