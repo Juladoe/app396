@@ -427,9 +427,9 @@ public class ImServer {
 
     public void onReceiveMessage(MessageEntity messageEntity) {
         try {
-            int invokeResult = mMessageInvokedMap.get(messageEntity.getMsgNo());
-            if (invokeResult == INVOKE_EXISTS) {
-                return;
+            if (mMessageInvokedMap.containsKey(messageEntity.getMsgNo())
+                    && mMessageInvokedMap.get(messageEntity.getMsgNo()) == INVOKE_EXISTS) {
+             return;
             }
             mMessageInvokedMap.put(messageEntity.getMsgNo(), INVOKE_EXISTS);
             messageEntity = handleReceiveMessage(messageEntity);
