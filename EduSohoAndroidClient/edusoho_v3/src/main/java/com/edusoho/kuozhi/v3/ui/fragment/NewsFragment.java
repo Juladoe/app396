@@ -348,7 +348,11 @@ public class NewsFragment extends BaseFragment {
 
             @Override
             public boolean canSwipe(int position) {
-                return !Destination.NOTIFY.equals(mSwipeAdapter.getItem(position).getType());
+                New item = mSwipeAdapter.getItem(position);
+                if (item == null) {
+                    return false;
+                }
+                return !Destination.NOTIFY.equals(item.getType());
             }
         };
     }
