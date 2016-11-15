@@ -112,7 +112,6 @@ public class IMServiceProvider extends ModelProvider {
                     return;
                 }
                 updateMessageStatus(messageBody);
-                Log.d(getClass().getSimpleName(), "onSuccess:" + messageEntity);
             }
 
             @Override

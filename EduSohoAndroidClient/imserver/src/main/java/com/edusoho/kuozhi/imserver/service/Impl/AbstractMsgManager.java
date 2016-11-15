@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.imserver.service.Impl;
 
+import android.text.TextUtils;
+
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.helper.IConvDbHelper;
@@ -22,6 +24,9 @@ public abstract class AbstractMsgManager implements IMsgManager {
     }
     @Override
     public boolean hasMessageByNo(String msgNo) {
+        if (TextUtils.isEmpty(msgNo)) {
+            return false;
+        }
         if (mMsgNoArray.containsKey(msgNo)) {
             return true;
         }

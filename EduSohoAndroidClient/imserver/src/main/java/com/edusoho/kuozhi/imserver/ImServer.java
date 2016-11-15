@@ -425,13 +425,27 @@ public class ImServer {
         mContext.sendBroadcast(intent);
     }
 
+    private boolean validMessageCanLose(MessageEntity messageEntity) {
+        String msgNo = messageEntity.getMsgNo();
+        if (TextUtils.isEmpty(msgNo)) {
+            return false;
+        }
+        if (mMessageInvokedMap.containsKey(msgNo)
+                && mMessageInvokedMap.get(msgNo) == INVOKE_EXISTS) {
+            return true;
+        }
+
+        return false;
+    }
+
     public void onReceiveMessage(MessageEntity messageEntity) {
         try {
-            if (mMessageInvokedMap.containsKey(messageEntity.getMsgNo())
-                    && mMessageInvokedMap.get(messageEntity.getMsgNo()) == INVOKE_EXISTS) {
-             return;
+            if (validMessageCanLose(messageEntity)) {
+                return;
             }
-            mMessageInvokedMap.put(messageEntity.getMsgNo(), INVOKE_EXISTS);
+            if (!TextUtils.isEmpty(messageEntity.getMsgNo())) {
+                mMessageInvokedMap.put(messageEntity.getMsgNo(), INVOKE_EXISTS);
+            }
             messageEntity = handleReceiveMessage(messageEntity);
             if (messageEntity == null) {
                 return;
