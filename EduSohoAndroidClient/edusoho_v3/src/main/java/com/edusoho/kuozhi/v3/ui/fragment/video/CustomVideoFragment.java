@@ -45,6 +45,8 @@ import com.google.gson.reflect.TypeToken;
 import com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment;
 import com.plugin.edusoho.bdvideoplayer.StreamInfo;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -524,7 +526,12 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
             return;
         }
         dataUsageUploadUtil.stopTimer();
-        String uploadUrl = dataUsageUploadUtil.getUploadUrl();
+        String uploadUrl = null;
+        try {
+            uploadUrl = URLEncoder.encode(dataUsageUploadUtil.getUploadUrl(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         if (uploadUrl != null && !("").equals(uploadUrl)) {
             lessonActivity.ajaxGet(String.format(Const.UPLOAD_SAVED_DATA_USAGE, dataUsageUploadUtil.getDataUsageSave(), uploadUrl), new Response.Listener<String>() {
                 @Override
