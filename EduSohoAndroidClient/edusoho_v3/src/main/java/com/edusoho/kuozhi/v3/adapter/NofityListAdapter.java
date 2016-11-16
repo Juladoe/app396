@@ -50,7 +50,7 @@ public class NofityListAdapter extends RecyclerView.Adapter<NofityListAdapter.Vi
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View contentView = LayoutInflater.from(mContext).inflate(R.layout.item_nofity_layout, null);
+        View contentView = LayoutInflater.from(mContext).inflate(R.layout.item_notify_layout, null);
         RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         contentView.setLayoutParams(lp);
@@ -128,7 +128,21 @@ public class NofityListAdapter extends RecyclerView.Adapter<NofityListAdapter.Vi
             Map<String, String> contentData = new Gson().fromJson(notify.getContent(), LinkedHashMap.class);
             String title = contentData.get("lessonTitle");
             titleView.setText(TextUtils.isEmpty(title) ? notify.getTitle() : title);
-            contentView.setText(contentData.get("message"));
+            contentView.setText(coverContentColor(contentData.get("message"), "点击学习"));
+        }
+
+        private SpannableString coverContentColor(String content, String doChange) {
+            StringBuffer stringBuffer = new StringBuffer(content);
+            int start = content.indexOf(doChange);
+            SpannableString spannableString = new SpannableString(stringBuffer);
+            if (start == -1) {
+                return spannableString;
+            }
+            int color = mContext.getResources().getColor(R.color.primary);
+            spannableString.setSpan(
+                    new ForegroundColorSpan(color), start, start + doChange.length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+
+            return spannableString;
         }
     }
 

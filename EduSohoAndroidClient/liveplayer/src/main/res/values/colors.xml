@@ -9,6 +9,8 @@
     <color name="white_80">#ddffffff</color>
 
     <color name="live_notice_bg">#FFF9CD</color>
+    <color name="live_list_item_bg_primary">#ebebeb</color>
+    <color name="live_list_item_bg">#999999</color>
     <color name="live_notice_title">#FF9053</color>
     <color name="live_role_nickname">#999999</color>
     <color name="live_notice_time">#8f8394</color>
