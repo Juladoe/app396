@@ -27,7 +27,7 @@ public class RoleManagerTest {
 
     @Before
     public void setUp() {
-        IMClient.getClient().init(ShadowApplication.getInstance().getApplicationContext(), "test");
+        IMClient.getClient().init(ShadowApplication.getInstance().getApplicationContext());
         IMRoleManager roleManager = IMClient.getClient().getRoleManager();
         roleManager.createRole(createRole(1, "test1"));
         roleManager.createRole(createRole(2, "test2"));
