@@ -32,9 +32,13 @@ import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by su on 2016/3/17.
@@ -42,10 +46,14 @@ import java.util.UUID;
 public class ImServer {
 
     private static final String TAG = "ImServer";
+
     private static final int CONNECT_NONE = 0001;
     private static final int CONNECT_WAIT = 0002;
     private static final int CONNECT_OPEN = 0003;
     private static final int CONNECT_ERROR = 0004;
+
+    private static final int INVOKE_EXISTS = 0011;
+
     private static String[] PUSH_TYPE = {
             Destination.ARTICLE,
             Destination.COURSE,
@@ -79,10 +87,12 @@ public class ImServer {
     private IConnectionManager mIConnectionManager;
     private IHeartManager mIHeartManager;
     private IMsgManager mIMsgManager;
+    private Map<String, Integer> mMessageInvokedMap;
 
     public ImServer(Context context) {
         this.mContext = context;
         this.flag = CONNECT_NONE;
+        this.mMessageInvokedMap = new ConcurrentHashMap<>();
         initHeartManager();
     }
 
@@ -335,7 +345,7 @@ public class ImServer {
 
     private MessageEntity handleReceiveMessage(MessageEntity messageEntity) throws MessageSaveFailException {
         if (mIMsgManager.hasMessageByNo(messageEntity.getMsgNo())) {
-            Log.d("MessageCommand", "hasMessageByNo");
+            Log.d(TAG, "hasMessageByNo");
             return null;
         }
 
@@ -415,8 +425,27 @@ public class ImServer {
         mContext.sendBroadcast(intent);
     }
 
+    private boolean validMessageCanLose(MessageEntity messageEntity) {
+        String msgNo = messageEntity.getMsgNo();
+        if (TextUtils.isEmpty(msgNo)) {
+            return false;
+        }
+        if (mMessageInvokedMap.containsKey(msgNo)
+                && mMessageInvokedMap.get(msgNo) == INVOKE_EXISTS) {
+            return true;
+        }
+
+        return false;
+    }
+
     public void onReceiveMessage(MessageEntity messageEntity) {
         try {
+            if (validMessageCanLose(messageEntity)) {
+                return;
+            }
+            if (!TextUtils.isEmpty(messageEntity.getMsgNo())) {
+                mMessageInvokedMap.put(messageEntity.getMsgNo(), INVOKE_EXISTS);
+            }
             messageEntity = handleReceiveMessage(messageEntity);
             if (messageEntity == null) {
                 return;

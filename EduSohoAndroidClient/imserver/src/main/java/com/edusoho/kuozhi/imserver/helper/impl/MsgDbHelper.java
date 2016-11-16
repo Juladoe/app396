@@ -3,9 +3,6 @@ package com.edusoho.kuozhi.imserver.helper.impl;
 import android.content.ContentValues;
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.ArrayMap;
-import android.util.SparseArray;
-
 import com.edusoho.kuozhi.imserver.entity.IMUploadEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.factory.DbManagerFactory;
@@ -13,13 +10,9 @@ import com.edusoho.kuozhi.imserver.helper.IMsgDbHelper;
 import com.edusoho.kuozhi.imserver.util.DbHelper;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.imserver.util.MessageUtil;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * Created by 菊 on 2016/4/29.
  */
@@ -28,10 +21,8 @@ public class MsgDbHelper implements IMsgDbHelper {
     private static final String TABLE = "im_message";
 
     private DbHelper mDbHelper;
-    private ConcurrentHashMap<String, String> mMsgNoArray;
 
     public MsgDbHelper(Context context) {
-        mMsgNoArray = new ConcurrentHashMap<>();
         mDbHelper = new DbHelper(context, DbManagerFactory.getDefaultFactory().createIMDbManager(context));
     }
 
@@ -105,9 +96,6 @@ public class MsgDbHelper implements IMsgDbHelper {
         if (msgNo == null || "".equals(msgNo)) {
             return false;
         }
-        if (mMsgNoArray.containsKey(msgNo)) {
-            return true;
-        }
         return mDbHelper.querySingle(TABLE, "msgNo=?", new String[]{msgNo}) != null;
     }
 
@@ -127,14 +115,7 @@ public class MsgDbHelper implements IMsgDbHelper {
         cv.put("time", messageEntity.getTime());
         cv.put("uid", messageEntity.getUid());
         cv.put("status", messageEntity.getStatus());
-        long resultId = mDbHelper.insert(TABLE, cv);
-        if (resultId > 0 && !TextUtils.isEmpty(messageEntity.getMsgNo())) {
-            if (mMsgNoArray.size() > 300) {
-                mMsgNoArray.clear();
-            }
-            mMsgNoArray.put(messageEntity.getMsgNo(), "");
-        }
-        return resultId;
+        return mDbHelper.insert(TABLE, cv);
     }
 
     public int updateFiledByMsgNo(String msgNo, ContentValues cv) {

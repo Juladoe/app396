@@ -66,15 +66,6 @@ public class SwipeAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public boolean getContainItem(New compareModel) {
-        for (New newModel : mList) {
-            if (newModel.fromId == compareModel.fromId) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void addItem(New newModel) {
         mList.add(0, newModel);
         notifyDataSetChanged();
@@ -87,18 +78,6 @@ public class SwipeAdapter extends BaseAdapter {
             if (item.fromId == newModel.fromId) {
                 mList.remove(i);
                 mList.add(i, newModel);
-                notifyDataSetChanged();
-                break;
-            }
-        }
-    }
-
-    public void updateItem(int fromId, String type) {
-        Iterator<New> iterator = mList.iterator();
-        while (iterator.hasNext()) {
-            New item = iterator.next();
-            if (item.fromId == fromId && type.equals(item.getType())) {
-                item.setUnread(0);
                 notifyDataSetChanged();
                 break;
             }
@@ -118,24 +97,6 @@ public class SwipeAdapter extends BaseAdapter {
         }
     }
 
-    public void deleteItemByFromIds(List<Integer> fromIds, String type) {
-        try {
-            Iterator<New> iterator = mList.iterator();
-            while (iterator.hasNext()) {
-                New item = iterator.next();
-                for (int fromId : fromIds) {
-                    if (fromId == item.fromId && type.equals(item.type)) {
-                        iterator.remove();
-                        break;
-                    }
-                }
-            }
-            notifyDataSetChanged();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
     @Override
     public int getCount() {
         return mList.size();
@@ -143,6 +104,9 @@ public class SwipeAdapter extends BaseAdapter {
 
     @Override
     public New getItem(int position) {
+        if (position < 0 || position > mList.size()) {
+            return null;
+        }
         return mList.get(position) != null ? mList.get(position) : null;
     }
 

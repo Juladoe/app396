@@ -23,6 +23,8 @@ import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,6 +74,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
                 SchoolApp schoolApp = (SchoolApp) adapterView.getItemAtPosition(i);
                 switch (schoolApp.code) {
                     case PushUtil.AnnouncementType.GLOBAL:
+                        MobclickAgent.onEvent(mContext, "alumni_serviceBulletin_information");
                         app.mEngine.runNormalPlugin("BulletinActivity", mActivity, null);
                         break;
                     case PushUtil.ArticleType.TYPE:
@@ -79,6 +82,7 @@ public class ServiceListActivity extends ActionBarBaseActivity {
                         bundle.putString(ServiceProviderActivity.SERVICE_TYPE, PushUtil.ArticleType.TYPE);
                         bundle.putInt(ServiceProviderActivity.SERVICE_ID, schoolApp.id);
                         bundle.putString(Const.ACTIONBAR_TITLE, "资讯");
+                        MobclickAgent.onEvent(mContext, "alumni_serviceBulletin_schoolNotice");
                         app.mEngine.runNormalPluginWithBundle("ServiceProviderActivity", mActivity, bundle);
                         break;
                 }

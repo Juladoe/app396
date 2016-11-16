@@ -7,4 +7,6 @@
     <string name="live_no_pause">休息时间</string>
     <string name="live_end">直播已结束</string>
     <string name="live_load_error">加载失败,请点击重试</string>
+
+    <string name="live_notice_empty">还未发布过公告</string>
 </resources>

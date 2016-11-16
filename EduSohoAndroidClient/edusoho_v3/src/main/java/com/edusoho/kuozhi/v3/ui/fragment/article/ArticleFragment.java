@@ -55,7 +55,10 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
@@ -106,6 +109,7 @@ public class ArticleFragment extends BaseFragment {
     };
 
     private void showArticleProfile() {
+        MobclickAgent.onEvent(mContext, "alumni_serviceBulletin_informationFloorButton");
         app.mEngine.runNormalPlugin("FragmentPageActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
@@ -290,10 +294,12 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private class MenuClickListener implements View.OnClickListener {
-
         @Override
         public void onClick(View v) {
             MenuItem menuItem = (MenuItem) v.getTag();
+            HashMap<String,String> map = new HashMap<String, String>();
+            map.put("title",menuItem.title);
+            MobclickAgent.onEvent(mContext,"alumni_serviceBulletin_information_bottomButton",map);
             handleClick(v, menuItem);
         }
     }
@@ -429,6 +435,9 @@ public class ArticleFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MenuItem menuItem = (MenuItem) parent.getItemAtPosition(position);
+                HashMap<String,String> map = new HashMap<String, String>();
+                map.put("title",menuItem.title);
+                MobclickAgent.onEvent(mContext,"alumni_serviceBulletin_information_bottomButton",map);
                 handleClick(view, menuItem);
                 hideMenuPop();
             }

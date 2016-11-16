@@ -470,7 +470,17 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
     }
 
     @JsAnnotation
-    public void showCourseSetting(JSONArray args, BridgeCallback callbackContext) throws JSONException{
+    public JSONArray getSupportLiveClients(JSONArray args, BridgeCallback callbackContext) throws JSONException{
+        JSONArray result = new JSONArray();
+        result.put("gensee");
+        result.put("sooner");
+        result.put("longinus");
+
+        return result;
+    }
+
+    @JsAnnotation
+    public void showCourseSetting(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         final int chatRoomId = args.getInt(0);
         final String type = args.getString(1);
         if (type.equals("classroom")) {

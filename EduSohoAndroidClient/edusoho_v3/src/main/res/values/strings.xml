@@ -232,10 +232,7 @@
     <string name="token_lose_notice">账号登录失效，或已在别处登录\n请重新登录</string>
     <string name="find_card_student_num"> 人参与</string>
 
-    <!-- label -->
     <string name="label_classroom">班级</string>
     <string name="label_course">课程</string>
     <string name="label_teacher">教师</string>
-
-    <string name="live_notice_empty">还未发布过公告</string>
 </resources>

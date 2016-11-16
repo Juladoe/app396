@@ -212,6 +212,15 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         }
     }
 
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+        } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
+        }
+    }
+
     @Override
     protected void resumePlay() {
         /**

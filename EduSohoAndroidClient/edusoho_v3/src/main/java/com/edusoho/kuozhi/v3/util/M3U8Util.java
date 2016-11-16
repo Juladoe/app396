@@ -318,7 +318,9 @@ public class M3U8Util {
             return false;
         }
 
-        if (m3U8DbModel.finish == FINISH || m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
+        if (m3U8DbModel.finish == FINISH
+                || TextUtils.isEmpty(m3U8DbModel.playList)
+                || (m3U8DbModel.downloadNum > 0 && m3U8DbModel.downloadNum == m3U8DbModel.totalNum)) {
             return false;
         }
 

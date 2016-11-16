@@ -55,6 +55,7 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        Log.d("SqliteChatUtil", String.format("ov:%d, nv:%d", oldVersion, newVersion));
         List<String> sqlList = getInitSql(String.format("db_init_chat.%s.sql", newVersion + ""));
         for (int i = oldVersion; i < newVersion; i++) {
             sqlList.addAll(getInitSql(String.format("db_init_chat.%s.sql", i + "")));
@@ -64,7 +65,7 @@ public class SqliteChatUtil extends SQLiteOpenHelper {
                 db.execSQL(sql);
             }
         } catch (Exception ex) {
-            Log.d("onUpgrade", "onUpgrade: " + ex.getMessage());
+            Log.d("SqliteChatUtil", "onUpgrade: " + ex.getMessage());
         }
     }
 

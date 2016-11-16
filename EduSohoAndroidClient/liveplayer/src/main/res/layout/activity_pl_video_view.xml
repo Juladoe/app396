@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:background="@color/live_player_bg">
 
-        <com.edusoho.liveplayer.view.LiveVideoView
+        <com.edusoho.longinus.view.LiveVideoView
             android:id="@+id/VideoView"
             android:layout_width="match_parent"
             android:layout_height="@dimen/live_video_height"
