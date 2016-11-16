@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -124,23 +125,10 @@ public class NofityListAdapter extends RecyclerView.Adapter<NofityListAdapter.Vi
         @Override
         public void setData(Notify notify) {
             timeView.setText(AppUtil.convertMills2Date(notify.getCreatedTime()));
-            titleView.setText(notify.getTitle());
             Map<String, String> contentData = new Gson().fromJson(notify.getContent(), LinkedHashMap.class);
-            contentView.setText(getContent(contentData.get("message")));
-        }
-
-        private SpannableString getContent(String content) {
-            StringBuffer stringBuffer = new StringBuffer(content);
-            int start = stringBuffer.length();
-            stringBuffer.append(" 点击消息 ");
-            int end = stringBuffer.length();
-            stringBuffer.append("前去学习吧~");
-            SpannableString spannableString = new SpannableString(stringBuffer);
-            int color = mContext.getResources().getColor(R.color.primary);
-            spannableString.setSpan(
-                    new ForegroundColorSpan(color), start, end, Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-
-            return spannableString;
+            String title = contentData.get("lessonTitle");
+            titleView.setText(TextUtils.isEmpty(title) ? notify.getTitle() : title);
+            contentView.setText(contentData.get("message"));
         }
     }
 

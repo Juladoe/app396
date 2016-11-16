@@ -224,18 +224,6 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".v3.ui.live.LessonLivePlayerActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
-        <activity
-            android:name=".v3.ui.live.LiveNoticeListActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
-
-        <activity
             android:name=".v3.ui.payCourse.PayCourseActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
