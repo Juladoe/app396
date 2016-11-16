@@ -97,6 +97,8 @@ public class IMServiceProvider extends ModelProvider {
                 new ArrayList(hostMap.values())
         );
 
+        IMClient.getClient().removeGlobalIMMessageReceiver();
+        IMClient.getClient().removeGlobalIMConnectStatusListener();
         IMClient.getClient().addGlobalConnectStatusListener(getIMConnectStatusListener());
         IMClient.getClient().addGlobalIMMessageReceiver(new IMMessageReceiver() {
             @Override

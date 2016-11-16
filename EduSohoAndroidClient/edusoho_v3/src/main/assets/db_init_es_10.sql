@@ -3,5 +3,6 @@ create table if not exists school_nofity (
     title varchar(1024),
     createdTime integer,
     content text,
-    type varchar(64)
+    type varchar(64),
+    msgNo varchar(64)
 );

@@ -41,7 +41,6 @@ public class LessonPushProcessor implements IPushProcessor {
 
     @Override
     public void processor() {
-
         School school = getAppSettingProvider().getCurrentSchool();
         if (school == null) {
             Log.d(TAG, "createNotify: no school host");
@@ -49,6 +48,10 @@ public class LessonPushProcessor implements IPushProcessor {
         }
         IDbManager dbManager = new ESDbManager(mContext, school.getDomain());
         NotifyDbHelper notifyDbHelper = new NotifyDbHelper(mContext, dbManager);
+        if (notifyDbHelper.hasNotifyByMsgNo(mMessageBody.getMsgNo())) {
+            Log.d(TAG, "has notify");
+            return;
+        }
         Map<String, String> dataMap = new Gson().fromJson(mMessageBody.getBody(), LinkedHashMap.class);
         Notify notify = new Notify();
         notify.setCreatedTime(mMessageBody.getCreatedTime());

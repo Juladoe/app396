@@ -178,11 +178,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             msgHandler.obtainMessage(SHOW_TOOLS).sendToTarget();
             showActionBar();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.primary_color));
         } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             msgHandler.obtainMessage(HIDE_TOOLS).sendToTarget();
             hideActionBar();
-            ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.base_black_normal));
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.transparent));
         }
         super.onConfigurationChanged(newConfig);
     }

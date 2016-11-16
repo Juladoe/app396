@@ -2,10 +2,13 @@ package com.edusoho.kuozhi.v3.service.message.push;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.text.TextUtils;
+
 import com.edusoho.kuozhi.imserver.helper.IDbManager;
 import com.edusoho.kuozhi.imserver.util.DbHelper;
 import com.edusoho.kuozhi.v3.model.bal.push.Notify;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,12 +25,21 @@ public class NotifyDbHelper {
         mDbHelper = new DbHelper(context, dbManager);
     }
 
+    public boolean hasNotifyByMsgNo(String msgNo) {
+        if (TextUtils.isEmpty(msgNo)) {
+            return false;
+        }
+        HashMap resultMap = mDbHelper.querySingle(TABLE, "msgNo=?", new String[]{msgNo});
+        return resultMap != null && !resultMap.isEmpty();
+    }
+
     public void createNotify(Notify notify) {
         ContentValues cv = new ContentValues();
         cv.put("content", notify.getContent());
         cv.put("title", notify.getTitle());
         cv.put("type", notify.getType());
         cv.put("createdTime", notify.getCreatedTime());
+        cv.put("msgNo", notify.getMsgNo());
         mDbHelper.insert(TABLE, cv);
     }
 
@@ -36,6 +48,7 @@ public class NotifyDbHelper {
         notify.setContent(dataMap.get("content"));
         notify.setTitle(dataMap.get("title"));
         notify.setType(dataMap.get("type"));
+        notify.setMsgNo(dataMap.get("msgNo"));
         notify.setCreatedTime(AppUtil.parseLong(dataMap.get("createdTime")));
 
         return notify;

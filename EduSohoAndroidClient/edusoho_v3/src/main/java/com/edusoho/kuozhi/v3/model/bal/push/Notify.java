@@ -5,6 +5,8 @@ package com.edusoho.kuozhi.v3.model.bal.push;
  */
 public class Notify {
 
+    private String msgNo;
+
     private String title;
 
     private String content;
@@ -12,6 +14,14 @@ public class Notify {
     private String type;
 
     private long createdTime;
+
+    public String getMsgNo() {
+        return msgNo;
+    }
+
+    public void setMsgNo(String msgNo) {
+        this.msgNo = msgNo;
+    }
 
     public String getTitle() {
         return title;
