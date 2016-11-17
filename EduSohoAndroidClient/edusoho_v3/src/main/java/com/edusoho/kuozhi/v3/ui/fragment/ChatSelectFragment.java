@@ -144,7 +144,9 @@ public class ChatSelectFragment extends AbstractChatSendFragment {
     private List<New> filterChatSelectList(List<ConvEntity> convEntityList) {
         List<New> news = new ArrayList<>();
         for (ConvEntity item : convEntityList) {
-            if (Destination.ARTICLE.equals(item.getType()) || Destination.GLOBAL.equals(item.getType())) {
+            if (Destination.ARTICLE.equals(item.getType())
+                    || Destination.GLOBAL.equals(item.getType())
+                    || Destination.NOTIFY.equals(item.getType())) {
                 continue;
             }
             news.add(new New(item));
