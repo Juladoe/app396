@@ -390,7 +390,9 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
      * @param listItem
      */
     private void downloadLesson(final LessonItem listItem) {
-
+        if (!"lesson".equals(listItem.itemType)) {
+            return;
+        }
         RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
         requestUrl.setParams(new String[]{
                 "courseId", String.valueOf(listItem.courseId),

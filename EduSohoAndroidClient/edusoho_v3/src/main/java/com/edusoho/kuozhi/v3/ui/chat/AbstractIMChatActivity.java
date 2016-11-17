@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
@@ -145,7 +146,6 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
 
         if (fragment != null) {
             mMessageListFragment = (MessageListFragment) fragment;
-            //fragmentTransaction.show(fragment);
         } else {
             mMessageListFragment = createFragment();
             fragmentTransaction.add(R.id.chat_content, mMessageListFragment, "im_container");
@@ -187,6 +187,11 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         mConversationNo = dataIntent.getStringExtra(CONV_NO);
         mTargetType = dataIntent.getStringExtra(TARGET_TYPE);
         mTargetName = dataIntent.getStringExtra(FROM_NAME);
+
+        if (TextUtils.isEmpty(mConversationNo)) {
+            ConvEntity convEntity = new IMConvManager(mContext).getConvByTypeAndId(mTargetType, mTargetId);
+            mConversationNo = convEntity == null ? null : convEntity.getConvNo();
+        }
     }
 
     protected MessageControllerListener getMessageControllerListener() {

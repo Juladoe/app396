@@ -20,8 +20,10 @@ import android.widget.RadioGroup;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
@@ -308,7 +310,13 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                     MobclickAgent.onEvent(mContext, "chatWindow_topRightCourseDetailsButton");
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
-                    startIntent.putExtra(ChatItemBaseDetail.CONV_NO, getIntent().getStringExtra(CONV_NO));
+
+                    String convNo = getIntent().getStringExtra(CONV_NO);
+                    if (TextUtils.isEmpty(convNo)) {
+                        ConvEntity convEntity = new IMConvManager(mContext).getConvByTypeAndId(mTargetType, mCourseId);
+                        convNo = convEntity == null ? null : convEntity.getConvNo();
+                    }
+                    startIntent.putExtra(ChatItemBaseDetail.CONV_NO, convNo);
                 }
             });
         }
