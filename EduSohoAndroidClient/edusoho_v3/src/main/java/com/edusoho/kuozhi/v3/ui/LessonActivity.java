@@ -220,7 +220,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                         mLessonStatus.learnStatus = LearnStatus.learning;
                     }
                     mToolsLayout.setVisibility(View.VISIBLE);
-                    showToolsByAnim();
                     setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
                 }
             }
@@ -440,6 +439,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mLessonType = mLessonItem.type;
                 setBackMode(BACK, mLessonItem.title);
                 if (!mLessonType.equals("testpaper")) {
+                    showToolsByAnim();
                     loadLessonStatus();
                     bindListener();
                 }
@@ -475,6 +475,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         mLessonType = mLessonItem.type;
         setBackMode(BACK, mLessonItem.title);
         if (!mLessonType.equals("testpaper")) {
+            showToolsByAnim();
             loadLessonStatus();
             bindListener();
         }
