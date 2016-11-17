@@ -291,18 +291,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             }
         }
 
-        public void setMessageBody(MessageBody messageBody, int position) {
-            timeView.setVisibility(View.GONE);
-            if (position < (getItemCount() - 1)) {
-                long preTime = mMessageList.get(position + 1).getTime() * 1000L;
-                if (messageBody.getCreatedTime() - preTime > TIME_INTERVAL) {
-                    timeView.setVisibility(View.VISIBLE);
-                    timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
-                }
-                return;
-            }
-            timeView.setVisibility(View.VISIBLE);
-            timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
+        private void setNickNameFromMessage(MessageBody messageBody) {
             Destination destination = messageBody.getDestination();
             if (destination == null || TextUtils.isEmpty(destination.getType())) {
                 return;
@@ -316,6 +305,21 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
                 default:
                     nicknameView.setVisibility(View.GONE);
             }
+        }
+
+        public void setMessageBody(MessageBody messageBody, int position) {
+            setNickNameFromMessage(messageBody);
+            timeView.setVisibility(View.GONE);
+            if (position < (getItemCount() - 1)) {
+                long preTime = mMessageList.get(position + 1).getTime() * 1000L;
+                if (messageBody.getCreatedTime() - preTime > TIME_INTERVAL) {
+                    timeView.setVisibility(View.VISIBLE);
+                    timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
+                }
+                return;
+            }
+            timeView.setVisibility(View.VISIBLE);
+            timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
         }
 
         protected void setAvatar(MessageBody messageBody) {

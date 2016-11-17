@@ -61,36 +61,42 @@ public class ThreadActivity extends ActionBarBaseActivity implements View.OnClic
         }
     }
 
+    private synchronized void createThread() {
+        RequestUrl requestUrl = app.bindNewApiUrl(Const.CREATE_THREAD, true);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("threadType", "course");
+        params.put("courseId", mCourseId + "");
+        if (mLessonId != 0) {
+            params.put("lessonId", mLessonId + "");
+        }
+        params.put("type", "question");
+        params.put("title", etThreadTitle.getText().toString().trim());
+        params.put("content", etThreadContent.getText().toString().trim());
+        ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                tvPost.setEnabled(true);
+                if (response.contains("threadId")) {
+                    CommonUtil.longToast(mContext, "问题提交成功");
+                    finish();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                tvPost.setEnabled(true);
+                CommonUtil.longToast(mContext, "问题提交失败");
+            }
+        });
+    }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == tvCancel.getId()) {
             finish();
         } else if (v.getId() == tvPost.getId()) {
-            RequestUrl requestUrl = app.bindNewApiUrl(Const.CREATE_THREAD, true);
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("threadType", "course");
-            params.put("courseId", mCourseId + "");
-            if (mLessonId != 0) {
-                params.put("lessonId", mLessonId + "");
-            }
-            params.put("type", "question");
-            params.put("title", etThreadTitle.getText().toString().trim());
-            params.put("content", etThreadContent.getText().toString().trim());
-            ajaxPost(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    if (response.contains("threadId")) {
-                        CommonUtil.longToast(mContext, "问题提交成功");
-                        finish();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    CommonUtil.longToast(mContext, "问题提交失败");
-                }
-            });
+            tvPost.setEnabled(false);
+            createThread();
         }
     }
 }
