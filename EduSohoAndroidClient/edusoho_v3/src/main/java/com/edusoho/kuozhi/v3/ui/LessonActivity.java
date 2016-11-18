@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -315,7 +314,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             fragmentTransaction.commit();
         }
 
-        hieToolsByAnim();
+        hideToolsByAnim();
         loadLesson();
     }
 
@@ -676,20 +675,19 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     mActivity.showToolsByAnim();
                     break;
                 case HIDE_TOOLS:
-                    mActivity.hieToolsByAnim();
+                    mActivity.hideToolsByAnim();
                     break;
             }
         }
     }
 
     private void showToolsByAnim() {
-        mToolsLayout.measure(0, 0);
-        int height = mToolsLayout.getMeasuredHeight();
+        int height = getResources().getDimensionPixelOffset(R.dimen.lesson_tool_height);
         AppUtil.animForHeight(
                 new EduSohoAnimWrap(mToolsLayout), 0, height, 480);
     }
 
-    private void hieToolsByAnim() {
+    private void hideToolsByAnim() {
         AppUtil.animForHeight(
                 new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
     }

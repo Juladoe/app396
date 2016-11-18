@@ -297,6 +297,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
                 return;
             }
             switch (destination.getType()) {
+                case Destination.GROUP:
                 case Destination.COURSE:
                 case Destination.CLASSROOM:
                     nicknameView.setText(messageBody.getSource().getNickname());

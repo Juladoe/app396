@@ -125,6 +125,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
     public void sendTextMessage(String content) {
         MessageBody messageBody = createSendMessageBody(content, PushUtil.ChatMsgType.TEXT);
         MessageEntity messageEntity = mIMessageDataProvider.createMessageEntity(messageBody);
+        mStart++;
         messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
         insertMessageToList(messageEntity);
         sendMessageToServer(messageBody);
@@ -272,8 +273,9 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
 
     @Override
     public void uploadMedia(File file, MessageBody messageBody) {
-        try {
+        try {`
             MessageEntity messageEntity = mIMessageDataProvider.createMessageEntity(messageBody);
+            mStart++;
             messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
 
             if (messageEntity.getStatus() != PushUtil.MsgDeliveryType.SUCCESS

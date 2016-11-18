@@ -733,32 +733,6 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
                 courseThreadPostEntity.createdTime);
     }
 
-    private V2CustomContent getV2CustomContent(CourseThreadPostEntity postModel, String msgType, String type) {
-        V2CustomContent v2CustomContent = new V2CustomContent();
-        v2CustomContent.setType(type);
-        V2CustomContent.FromEntity fromEntity = new V2CustomContent.FromEntity();
-        fromEntity.setId(app.loginUser.id);
-        fromEntity.setImage(app.loginUser.mediumAvatar);
-        fromEntity.setNickname(app.loginUser.nickname);
-        fromEntity.setType(mRoleType);
-        v2CustomContent.setFrom(fromEntity);
-        V2CustomContent.ToEntity toEntity = new V2CustomContent.ToEntity();
-        toEntity.setId(mToUserId);
-        toEntity.setType(PushUtil.ChatUserType.USER);
-        v2CustomContent.setTo(toEntity);
-        V2CustomContent.BodyEntity bodyEntity = new V2CustomContent.BodyEntity();
-        bodyEntity.setType(msgType);
-        bodyEntity.setContent(postModel.content);
-        bodyEntity.setPostId(postModel.postId);
-        bodyEntity.setThreadId(mThreadId);
-        bodyEntity.setCourseId(mTargetId);
-        bodyEntity.setLessonId(mLessonId);
-        v2CustomContent.setBody(bodyEntity);
-        v2CustomContent.setV(Const.PUSH_VERSION);
-        //v2CustomContent.setCreatedTime(mSendTime);
-        return v2CustomContent;
-    }
-
     @Override
     public MessageType[] getMsgTypes() {
         return new MessageType[]{new MessageType(Const.ADD_THREAD_POST, getClass().getSimpleName())};
