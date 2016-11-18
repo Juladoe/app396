@@ -682,14 +682,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void showToolsByAnim() {
-        int height = getResources().getDimensionPixelOffset(R.dimen.lesson_tool_height);
-        AppUtil.animForHeight(
-                new EduSohoAnimWrap(mToolsLayout), 0, height, 480);
+        mToolsLayout.setVisibility(View.VISIBLE);
     }
 
     private void hideToolsByAnim() {
-        AppUtil.animForHeight(
-                new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
+        mToolsLayout.setVisibility(View.GONE);
     }
 
     @Override

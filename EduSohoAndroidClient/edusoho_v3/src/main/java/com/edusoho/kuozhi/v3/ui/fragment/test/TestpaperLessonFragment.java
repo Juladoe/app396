@@ -196,9 +196,7 @@ public class TestpaperLessonFragment extends BaseFragment {
     }
 
     private void showToolsByAnim() {
-        int height = getResources().getDimensionPixelOffset(R.dimen.testpaper_tool_height);
-        AppUtil.animForHeight(
-                new EduSohoAnimWrap(mToolsLayout), 0, height, 480);
+        mToolsLayout.setVisibility(View.VISIBLE);
     }
 
     private void loadTestpaperInfo() {

@@ -273,7 +273,7 @@ public abstract class MessageListPresenterImpl implements IMessageListPresenter 
 
     @Override
     public void uploadMedia(File file, MessageBody messageBody) {
-        try {`
+        try {
             MessageEntity messageEntity = mIMessageDataProvider.createMessageEntity(messageBody);
             mStart++;
             messageEntity.setStatus(MessageEntity.StatusType.UPLOADING);
