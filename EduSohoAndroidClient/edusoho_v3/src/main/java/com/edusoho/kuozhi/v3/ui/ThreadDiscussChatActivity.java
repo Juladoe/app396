@@ -25,12 +25,15 @@ import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.entity.message.Source;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
+import com.edusoho.kuozhi.imserver.managar.IMRoleManager;
 import com.edusoho.kuozhi.imserver.ui.IMessageListPresenter;
+import com.edusoho.kuozhi.imserver.ui.IMessageListView;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.entity.AudioBody;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -89,6 +92,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     private int mHeaderViewHeight;
     private View mHeaderView;
     private View mContentLayout;
+    private int mStart;
 
     //讨论组目标类型:course 或classroom
     private String mThreadTargetType;
@@ -155,7 +159,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         bundle.putInt(MessageListFragment.TARGET_ID, mTargetId);
         bundle.putString(MessageListFragment.TARGET_TYPE, getTargetType());
 
-        return new ChatMessageListPresenterImpl(
+        return new ThreadChatMessageListPresenterImpl(
                 bundle,
                 new MockConvManager(mContext),
                 IMClient.getClient().getRoleManager(),
@@ -200,6 +204,11 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         };
     }
 
+    @Override
+    protected String getTargetType() {
+        return Destination.GROUP;
+    }
+
     protected void initParams() {
         super.initParams();
         Intent dataIntent = getIntent();
@@ -230,7 +239,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         if (mThreadInfo != null) {
             Role role = new Role();
             role.setRid(AppUtil.parseInt(mThreadInfo.get("id").toString()));
-            role.setType(mThreadInfo.get("type").toString());
+            role.setType(getTargetType());
             role.setNickname(mThreadInfo.get("title").toString());
             callback.onCreateRole(role);
             return;
@@ -244,7 +253,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
                 mThreadInfo = linkedHashMap;
                 Role role = new Role();
                 role.setRid(AppUtil.parseInt(linkedHashMap.get("id").toString()));
-                role.setType(linkedHashMap.get("type").toString());
+                role.setType(getTargetType());
                 role.setNickname(linkedHashMap.get("title").toString());
                 callback.onCreateRole(role);
             }
@@ -353,6 +362,10 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
 
     @Override
     public List<MessageEntity> getMessageList(String convNo, int start) {
+        if (mStart > 0) {
+            return new ArrayList<>();
+        }
+        mStart += mMessageEntityList.size();
         return mMessageEntityList;
     }
 
@@ -420,7 +433,7 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         String messageType = parseBodyType(postEntity.content);
         MessageBody messageBody = new MessageBody(MessageBody.VERSION, messageType, getBodyContent(postEntity.content));
         messageBody.setDestination(new Destination(
-                AppUtil.parseInt(mThreadInfo.get("id").toString()), mThreadInfo.get("type").toString()));
+                AppUtil.parseInt(mThreadInfo.get("id").toString()), getTargetType()));
         messageBody.setSource(new Source(user.id, Destination.USER));
         messageEntity.setMsg(messageBody.toJson());
         messageEntity.setTime((int) AppUtil.convertUTCTimeToMilliSecond(postEntity.createdTime));
@@ -545,6 +558,15 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
     }
 
     @Override
+    public void sendMessage(MessageEntity messageEntity) {
+    }
+
+    @Override
+    public MessageEntity insertMessageEntity(MessageEntity messageEntity) {
+        return null;
+    }
+
+    @Override
     public int deleteMessageById(int msgId) {
         return 0;
     }
@@ -608,6 +630,23 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         @Override
         public int clearReadCount(String convNo) {
             return 0;
+        }
+    }
+
+    class ThreadChatMessageListPresenterImpl extends ChatMessageListPresenterImpl {
+
+        public ThreadChatMessageListPresenterImpl(Bundle params,
+                                            IMConvManager convManager,
+                                            IMRoleManager roleManager,
+                                            MessageResourceHelper messageResourceHelper,
+                                            IMessageDataProvider mIMessageDataProvider,
+                                            IMessageListView messageListView) {
+            super(params, convManager, roleManager, messageResourceHelper, mIMessageDataProvider, messageListView);
+        }
+
+        @Override
+        public boolean canRefresh() {
+            return false;
         }
     }
 }

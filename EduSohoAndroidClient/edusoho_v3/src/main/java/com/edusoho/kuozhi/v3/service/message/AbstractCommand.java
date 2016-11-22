@@ -47,10 +47,14 @@ public abstract class AbstractCommand {
         return FactoryManager.getInstance().create(NotificationProvider.class);
     }
 
-    protected void showNotification() {
-        String[] content = getNotificationContent();
+    protected void showNotification(String[] content, Intent notifyIntent) {
         getNotificationProvider().showNotification(
-                "offlineMsg".equals(cmd), mMessageBody.getConvNo().hashCode(), content[0], content[1], getNotifyIntent());
+                "offlineMsg".equals(cmd),
+                mMessageBody.getConvNo().hashCode(),
+                content[0],
+                content[1],
+                notifyIntent
+        );
     }
 
     protected Intent getNotifyIntent() {

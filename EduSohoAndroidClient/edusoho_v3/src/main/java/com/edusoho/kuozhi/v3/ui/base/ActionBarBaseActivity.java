@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.ui.base;
 
+
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -15,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoCompoundButton;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
@@ -35,12 +38,14 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     protected TextView mTitleTextView;
     private View titleLayoutView;
     private View mTitleLoading;
-    protected int mRunStatus;
     private EduSohoCompoundButton switchButton;
     private RadioButton rbStudyRadioButton;
     private RadioButton rbDiscussRadioButton;
     private CircleImageView civBadgeView;
     private Queue<WidgetMessage> mUIMessageQueue;
+
+    protected int mRunStatus;
+    protected PopupDialog mNoticeDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +56,23 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         if (mActionBar != null) {
             mActionBar.setWindowTitle("title");
         }
+        ActivityUtil.setStatusBarTranslucent(this);
+    }
+
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        super.setContentView(layoutResID);
+        ActivityUtil.setRootViewFitsWindow(this, getStatusBarColor());
+    }
+
+    protected int getStatusBarColor() {
+        return getResources().getColor(R.color.primary);
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        ActivityUtil.setRootViewFitsWindow(this, getResources().getColor(R.color.primary));
     }
 
     @Override
@@ -139,6 +161,10 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         super.onDestroy();
         app.unRegistMsgSource(this);
         mUIMessageQueue.clear();
+        if (mNoticeDialog != null) {
+            mNoticeDialog.dismiss();
+            mNoticeDialog = null;
+        }
     }
 
     protected void invokeUIMessage() {
@@ -163,15 +189,19 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     protected void processMessage(WidgetMessage message) {
         MessageType messageType = message.type;
         if (Const.TOKEN_LOSE.equals(messageType.type)) {
-            PopupDialog dialog = PopupDialog.createNormal(mActivity, "提示", getString(R.string.token_lose_notice));
-            dialog.setOkListener(new PopupDialog.PopupClickListener() {
+            if (mNoticeDialog != null) {
+                mNoticeDialog.dismiss();
+            }
+            mNoticeDialog = PopupDialog.createNormal(mActivity, "提示", getString(R.string.token_lose_notice));
+            mNoticeDialog.setOkListener(new PopupDialog.PopupClickListener() {
                 @Override
                 public void onClick(int button) {
                     handleTokenLostMsg();
                     finish();
                 }
             });
-            dialog.show();
+
+            mNoticeDialog.show();
         }
     }
 
@@ -179,6 +209,7 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         Bundle bundle = new Bundle();
         bundle.putString(Const.BIND_USER_ID, "");
 
+        getAppSettingProvider().setUser(null);
         new IMServiceProvider(getBaseContext()).unBindServer();
         app.removeToken();
         MessageEngine.getInstance().sendMsg(Const.LOGOUT_SUCCESS, null);

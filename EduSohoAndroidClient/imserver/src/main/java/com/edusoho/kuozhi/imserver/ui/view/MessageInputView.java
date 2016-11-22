@@ -34,6 +34,7 @@ import com.edusoho.kuozhi.imserver.ui.listener.InputViewControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.util.MediaRecorderTask;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,7 +46,7 @@ import java.nio.channels.OverlappingFileLockException;
 /**
  * Created by suju on 16/8/26.
  */
-public class MessageInputView extends FrameLayout {
+public class MessageInputView extends FrameLayout implements IMessageInputView {
 
     protected ESIconView btnVoice;
     protected ESIconView btnKeyBoard;
@@ -79,10 +80,12 @@ public class MessageInputView extends FrameLayout {
         initView();
     }
 
+    @Override
     public void setMessageSendListener(MessageSendListener listener) {
         this.mMessageSendListener = listener;
     }
 
+    @Override
     public void setMessageControllerListener(InputViewControllerListener listener) {
         this.mMessageControllerListener = listener;
     }
@@ -137,7 +140,9 @@ public class MessageInputView extends FrameLayout {
     @Override
     public void setEnabled(boolean enabled) {
         super.setEnabled(enabled);
-        mViewSpeakContainer.setEnabled(enabled);
+        if (mViewSpeakContainer != null) {
+            mViewSpeakContainer.setEnabled(enabled);
+        }
         etSend.setEnabled(enabled);
         ivAddMedia.setEnabled(enabled);
         btnVoice.setEnabled(enabled);
@@ -145,7 +150,7 @@ public class MessageInputView extends FrameLayout {
 
     private void initSpeakContainer() {
         mViewSpeakContainer = LayoutInflater.from(getContext()).inflate(R.layout.view_message_record_layout, null);
-        ViewParent viewParent = getParent();
+        ViewParent viewParent = getParent().getParent();
         if (viewParent != null) {
             if (viewParent instanceof FrameLayout) {
                 FrameLayout.LayoutParams lp = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -174,7 +179,6 @@ public class MessageInputView extends FrameLayout {
                 if (hasFocus) {
                     viewMediaLayout.setVisibility(View.GONE);
                     SystemUtil.setSoftKeyBoard(etSend, getContext(), SystemUtil.SHOW_KEYBOARD);
-                    //lvMessage.post(mListViewSelectRunnable);
                 }
             }
         };
@@ -208,6 +212,7 @@ public class MessageInputView extends FrameLayout {
                 } else if (v.getId() == R.id.btn_send) {
                     sendClick();
                 } else if (v.getId() == R.id.btn_voice) {
+                    MobclickAgent.onEvent(getContext(), "chatWindow_voiceButton");
                     //语音
                     viewMediaLayout.setVisibility(View.GONE);
                     btnVoice.setVisibility(View.GONE);
@@ -226,6 +231,7 @@ public class MessageInputView extends FrameLayout {
                 } else if (v.getId() == R.id.rl_btn_press_to_speak) {
                     viewMediaLayout.setVisibility(View.GONE);
                 } else if (v.getId() == R.id.iv_image) {
+                    MobclickAgent.onEvent(getContext(), "chatWindow_PlusButton_picture");
                     mMessageControllerListener.onSelectPhoto();
                 } else if (v.getId() == R.id.iv_camera) {
                     mMessageControllerListener.onTakePhoto();

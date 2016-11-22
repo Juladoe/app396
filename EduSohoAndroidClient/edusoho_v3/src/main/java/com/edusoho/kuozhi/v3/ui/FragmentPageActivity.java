@@ -41,7 +41,7 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
             Fragment fragment = app.mEngine.runPluginWithFragmentByBundle(
                     fragmentName, mActivity, bundle);
-            fragmentTransaction.replace(android.R.id.content, fragment);
+            fragmentTransaction.replace(R.id.fragment_container, fragment);
             fragmentTransaction.commit();
         } catch (Exception ex) {
             Log.d("FragmentPageActivity", ex.toString());

@@ -22,7 +22,7 @@ public class MessageManagerTest {
 
     @Before
     public void setUp() {
-        IMClient.getClient().init(ShadowApplication.getInstance().getApplicationContext(), "test");
+        IMClient.getClient().init(ShadowApplication.getInstance().getApplicationContext());
     }
 
     private MessageEntity createMessage(String fromId, String fromName, String toId, String toName, String msg) {

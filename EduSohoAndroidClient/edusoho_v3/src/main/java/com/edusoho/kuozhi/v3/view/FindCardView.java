@@ -21,6 +21,7 @@ import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
 
@@ -99,6 +100,7 @@ public class FindCardView extends LinearLayout {
         tvMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "find_moreButton");
                 EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {

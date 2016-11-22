@@ -318,7 +318,9 @@ public class M3U8Util {
             return false;
         }
 
-        if (m3U8DbModel.finish == FINISH || m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
+        if (m3U8DbModel.finish == FINISH
+                || TextUtils.isEmpty(m3U8DbModel.playList)
+                || (m3U8DbModel.downloadNum > 0 && m3U8DbModel.downloadNum == m3U8DbModel.totalNum)) {
             return false;
         }
 
@@ -469,7 +471,7 @@ public class M3U8Util {
     /**
      * 获取网络的m3u8 file
      */
-    private M3U8File getM3U8FileFromUrl(String url) {
+    public M3U8File getM3U8FileFromUrl(String url) {
         M3U8File m3U8File = null;
 
         int type = M3U8File.STREAM_LIST;
@@ -794,8 +796,10 @@ public class M3U8Util {
                 if (!new File(m3u8Dir, key).exists()) {
                     throw new FileNotFoundException(key + "file not exists");
                 }
+//                matcher.appendReplacement(
+//                        stringBuffer, replaceStr + key);
                 matcher.appendReplacement(
-                        stringBuffer, replaceStr + key);
+                        stringBuffer, replaceStr + key + "?" + url.split("[?]")[1]);
             }
         }
         matcher.appendTail(stringBuffer);

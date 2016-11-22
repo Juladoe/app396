@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.imserver.command;
 import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.ImServer;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 
 import org.json.JSONObject;
 
@@ -19,8 +21,17 @@ public class ConnectedCommand extends BaseCommand {
     @Override
     public void invoke(JSONObject params) {
         Log.d("ConnectedCommand", "invoke");
-        mImServer.requestOfflineMsg();
+        //mImServer.requestOfflineMsg();
         mImServer.getHeartManager().start();
+
+        params.remove("cmd");
+        MessageEntity messageEntity =
+                MessageEntityBuildr.getBuilder()
+                        .addMsg(params.toString())
+                        .addCmd("connected")
+                        .addStatus(MessageEntity.StatusType.NONE)
+                        .builder();
+        mImServer.onReceiveSignal(messageEntity);
     }
 
 }

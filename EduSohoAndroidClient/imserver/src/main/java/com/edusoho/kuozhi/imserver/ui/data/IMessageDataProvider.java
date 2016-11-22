@@ -34,4 +34,8 @@ public interface IMessageDataProvider {
     int updateMessageFieldByUid(String uid, ContentValues cv);
 
     int deleteMessageById(int msgId);
+
+    void sendMessage(MessageEntity messageEntity);
+
+    MessageEntity insertMessageEntity(MessageEntity messageEntity);
 }

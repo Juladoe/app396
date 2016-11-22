@@ -21,7 +21,7 @@ public class MessageCommand extends AbstractCommand {
     public void invoke() {
         if (!isInBlackList(mMessageBody.getConvNo())
                 && !IMClient.getClient().isHandleMessageInFront(Destination.USER, mMessageBody.getConvNo())) {
-            showNotification();
+            showNotification(getNotificationContent(), getNotifyIntent());
         }
 
         String type = mMessageBody.getSource().getType();

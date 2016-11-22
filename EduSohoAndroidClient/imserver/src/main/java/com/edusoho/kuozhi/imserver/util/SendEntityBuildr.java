@@ -33,6 +33,21 @@ public class SendEntityBuildr {
         return this;
     }
 
+    public SendEntityBuildr addCmd(String cmd) {
+        sendEntity.setCmd(cmd);
+        return this;
+    }
+
+    public SendEntityBuildr addToName(String toName) {
+        sendEntity.setToName(toName);
+        return this;
+    }
+
+    public SendEntityBuildr addK(String k) {
+        sendEntity.setK(k);
+        return this;
+    }
+
     public SendEntity builder() {
         return sendEntity;
     }

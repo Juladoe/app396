@@ -16,7 +16,7 @@ public class Course implements Serializable {
     public int id;
     public int parentId;
     public String subtitle;
-    public int expiryDay;
+    public String expiryDay;
     public String showStudentNumType;
     public String income;
     public String status;

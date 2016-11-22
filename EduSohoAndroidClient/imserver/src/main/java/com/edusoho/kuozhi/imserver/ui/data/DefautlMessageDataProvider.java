@@ -72,6 +72,7 @@ public class DefautlMessageDataProvider implements IMessageDataProvider {
             messageBody.setMsgStatus(MessageEntity.StatusType.NONE);
             SendEntity sendEntity = SendEntityBuildr.getBuilder()
                     .addToId(toId)
+                    .addCmd("send")
                     .addMsg(messageBody.toJson())
                     .builder();
             IMClient.getClient().getChatRoom(convNo).send(sendEntity);
@@ -112,5 +113,14 @@ public class DefautlMessageDataProvider implements IMessageDataProvider {
     @Override
     public int deleteMessageById(int msgId) {
         return IMClient.getClient().getMessageManager().deleteById(msgId);
+    }
+
+    @Override
+    public void sendMessage(MessageEntity messageEntity) {
+    }
+
+    @Override
+    public MessageEntity insertMessageEntity(MessageEntity messageEntity) {
+        return null;
     }
 }

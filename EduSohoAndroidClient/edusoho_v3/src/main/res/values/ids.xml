@@ -15,4 +15,5 @@
 
     <item type="id" name="question_stem" />
     <item type="id" name="chat_content" />
+    <item type="id" name="custom_status_view" />
 </resources>

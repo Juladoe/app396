@@ -14,15 +14,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
@@ -53,6 +54,7 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoCompoundButton;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.LinkedHashMap;
 
@@ -258,6 +260,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                     showFragment(mFragmentTags[2]);
                 }
             } else if (checkedId == R.id.rb_discuss) {
+                MobclickAgent.onEvent(mContext, "dynamic_discussion");
                 if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
                     CommonUtil.longToast(mContext, "聊天功能已关闭");
                     return;
@@ -303,9 +306,17 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             CoreEngine.create(mContext).runNormalPlugin("CourseDetailActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
+                    MobclickAgent.onEvent(mContext, "dynamic_topRightCourseDetailsButton");
+                    MobclickAgent.onEvent(mContext, "chatWindow_topRightCourseDetailsButton");
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
-                    startIntent.putExtra(ChatItemBaseDetail.CONV_NO, getIntent().getStringExtra(CONV_NO));
+
+                    String convNo = getIntent().getStringExtra(CONV_NO);
+                    if (TextUtils.isEmpty(convNo)) {
+                        ConvEntity convEntity = new IMConvManager(mContext).getConvByTypeAndId(mTargetType, mCourseId);
+                        convNo = convEntity == null ? null : convEntity.getConvNo();
+                    }
+                    startIntent.putExtra(ChatItemBaseDetail.CONV_NO, convNo);
                 }
             });
         }
@@ -423,7 +434,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                     public void success(LinkedHashMap map) {
                         if (map == null) {
                             ToastUtils.show(getBaseContext(), "加入课程聊天失败!");
-                            mIMessageListPresenter.enableChatView();
+                            mIMessageListPresenter.unEnableChatView();
                             promise.resolve(null);
                             return;
                         }
@@ -431,7 +442,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                             Error error = getUtilFactory().getJsonParser().fromJson(map.get("error").toString(), Error.class);
                             if (error != null) {
                                 ToastUtils.show(getBaseContext(), error.message);
-                                mIMessageListPresenter.enableChatView();
+                                mIMessageListPresenter.unEnableChatView();
                                 promise.resolve(null);
                             }
                             return;
@@ -443,7 +454,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             @Override
             public void success(VolleyError obj) {
                 ToastUtils.show(getBaseContext(), "加入课程聊天失败!");
-                mIMessageListPresenter.enableChatView();
+                mIMessageListPresenter.unEnableChatView();
                 promise.resolve(null);
             }
         });

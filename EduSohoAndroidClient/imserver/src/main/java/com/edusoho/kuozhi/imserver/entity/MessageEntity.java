@@ -37,6 +37,7 @@ public class MessageEntity implements Parcelable {
         this.cmd = in.readString();
         this.status = in.readInt();
         this.id = in.readInt();
+        this.uid = in.readString();
     }
 
     public int getId() {
@@ -148,6 +149,7 @@ public class MessageEntity implements Parcelable {
         dest.writeString(cmd);
         dest.writeInt(status);
         dest.writeInt(id);
+        dest.writeString(uid);
     }
 
     @Override

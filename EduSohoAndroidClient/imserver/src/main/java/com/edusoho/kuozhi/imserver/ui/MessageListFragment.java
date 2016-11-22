@@ -1,10 +1,13 @@
 package com.edusoho.kuozhi.imserver.ui;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,8 +20,10 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.R;
@@ -36,7 +41,9 @@ import com.edusoho.kuozhi.imserver.ui.listener.MessageItemOnClickListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageListItemController;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.util.MessageAudioPlayer;
+import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.imserver.ui.view.MessageInputView;
+import com.edusoho.kuozhi.imserver.ui.view.TextMessageInputView;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,8 +71,10 @@ public class MessageListFragment extends Fragment implements
     public static final String CURRENT_ID = "currentId";
 
     private int mStart = 0;
+    private int mInputMode = IMessageInputView.INPUT_IMAGE_AND_VOICE;
     private boolean canLoadData = true;
     private Context mContext;
+    private boolean mIsEnable = true;
     private int mCurrentSelectedIndex;
     private MessageAudioPlayer mAudioPlayer;
     private MessageSendListener mMessageSendListener;
@@ -75,7 +84,7 @@ public class MessageListFragment extends Fragment implements
     protected RecyclerView mMessageListView;
     protected View mContainerView;
     protected LinearLayoutManager mLayoutManager;
-    protected MessageInputView mMessageInputView;
+    protected IMessageInputView mMessageInputView;
     protected MessageRecyclerListAdapter mListAdapter;
     protected IMessageListPresenter mIMessageListPresenter;
 
@@ -94,8 +103,42 @@ public class MessageListFragment extends Fragment implements
 
     @Override
     public void setEnable(boolean isEnable) {
+        this.mIsEnable = isEnable;
+        if (mMessageInputView == null) {
+            return;
+        }
         mMessageInputView.setEnabled(isEnable);
         mMessageListView.setEnabled(isEnable);
+    }
+
+    protected boolean canRefresh() {
+        return mIMessageListPresenter.canRefresh();
+    }
+
+    @Override
+    public void onUserKicked() {
+        AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                .setTitle("异地登录")
+                .setMessage("当前帐号已在其他设备上登录，直播课程不能多端同时学习")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        getActivity().finish();
+                    }
+                })
+                .setCancelable(false)
+                .create();
+        dialog.show();
+    }
+
+    @Override
+    public void setInputTextMode(int mode) {
+        this.mInputMode = mode;
+    }
+
+    public void setAdapter(MessageRecyclerListAdapter adapter) {
+        this.mListAdapter = adapter;
     }
 
     @Override
@@ -103,9 +146,11 @@ public class MessageListFragment extends Fragment implements
         super.onAttach(activity);
         Log.d(TAG, "onAttach");
         mContext = activity.getBaseContext();
-        mListAdapter = new MessageRecyclerListAdapter(getActivity().getBaseContext());
-        mListAdapter.setOnItemClickListener(this);
-        mListAdapter.setCurrentId(IMClient.getClient().getClientId());
+        if (mListAdapter == null) {
+            mListAdapter = new MessageRecyclerListAdapter(getActivity().getBaseContext());
+            mListAdapter.setCurrentId(IMClient.getClient().getClientId());
+            mListAdapter.setOnItemClickListener(this);
+        }
         mListAdapter.setMessageListItemController(getMessageListItemClickListener());
     }
 
@@ -120,7 +165,6 @@ public class MessageListFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (mContainerView == null) {
             mContainerView = inflater.inflate(R.layout.fragment_message_list_layout, null);
-            initView(mContainerView);
         }
 
         ViewGroup parent = (ViewGroup) mContainerView.getParent();
@@ -174,16 +218,23 @@ public class MessageListFragment extends Fragment implements
     };
 
     protected void initView(View view) {
+        Log.d(TAG, "initView");
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(R.id.rotate_header_list_view_frame);
         mMessageListView = (RecyclerView) view.findViewById(R.id.listview);
-        mMessageInputView = (MessageInputView) view.findViewById(R.id.message_input_view);
+
+        if (mInputMode == IMessageInputView.INPUT_TEXT) {
+            mMessageInputView= new TextMessageInputView(mContext);
+        } else {
+            mMessageInputView = new MessageInputView(mContext);
+        }
+        ViewGroup inputViewGroup = (ViewGroup) view.findViewById(R.id.message_input_view);
+        inputViewGroup.addView((View) mMessageInputView);
 
         mLayoutManager = new LinearLayoutManager(mContext);
         mLayoutManager.setReverseLayout(true);
         mMessageListView.setLayoutManager(mLayoutManager);
         mMessageListView.setAdapter(mListAdapter);
         mMessageListView.setItemAnimator(null);
-        Log.d(TAG, "initView");
 
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrHandler() {
@@ -201,14 +252,14 @@ public class MessageListFragment extends Fragment implements
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
                 boolean canDoRefresh = PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-                return canLoadData && canDoRefresh;
+                return canRefresh() && canDoRefresh;
             }
         });
 
+        setEnable(mIsEnable);
         mMessageSendListener = getMessageSendListener();
         mMessageInputView.setMessageSendListener(mMessageSendListener);
         mMessageInputView.setMessageControllerListener(getMessageControllerListener());
-
         mMessageListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -221,7 +272,7 @@ public class MessageListFragment extends Fragment implements
     }
 
     private synchronized void checkCanAutoLoad(RecyclerView recyclerView) {
-        if (!canLoadData || mPtrFrame.isAutoRefresh()) {
+        if (!canRefresh() || mPtrFrame.isAutoRefresh()) {
             Log.d(TAG, "auto loading");
             return;
         }
@@ -532,17 +583,8 @@ public class MessageListFragment extends Fragment implements
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated");
+        initView(view);
         mIMessageListPresenter.start();
-    }
-
-    private void coverMessageEntityStatus(List<MessageEntity> messageEntityList) {
-        MessageResourceHelper messageResourceHelper = IMClient.getClient().getResourceHelper();
-        for (MessageEntity messageEntity : messageEntityList) {
-            if (messageEntity.getStatus() != PushUtil.MsgDeliveryType.SUCCESS
-                    && messageResourceHelper.hasTask(messageEntity.getId())) {
-                messageEntity.setStatus(PushUtil.MsgDeliveryType.UPLOADING);
-            }
-        }
     }
 
     public void updateListByEntity(MessageEntity messageEntity) {
@@ -555,7 +597,7 @@ public class MessageListFragment extends Fragment implements
             canLoadData = false;
             return;
         }
-        coverMessageEntityStatus(messageEntityList);
+
         mListAdapter.insertList(messageEntityList);
         Message msg = mUpdateHandler.obtainMessage(MESSAGE_SELECT_POSTION);
         msg.arg1 = mStart;
@@ -565,9 +607,12 @@ public class MessageListFragment extends Fragment implements
 
     @Override
     public void setMessageList(List<MessageEntity> messageEntityList) {
-        if (messageEntityList == null || messageEntityList.isEmpty()) {
+        if (messageEntityList == null) {
             canLoadData = false;
             return;
+        }
+        if (messageEntityList.isEmpty()) {
+            canLoadData = false;
         }
         Collections.sort(messageEntityList, new Comparator<MessageEntity>() {
             @Override
@@ -575,7 +620,7 @@ public class MessageListFragment extends Fragment implements
                 return t2.getTime() - t1.getTime();
             }
         });
-        coverMessageEntityStatus(messageEntityList);
+
         mListAdapter.setList(messageEntityList);
         mStart += messageEntityList.size();
         mUpdateHandler.obtainMessage(MESSAGE_SELECT_LAST).sendToTarget();

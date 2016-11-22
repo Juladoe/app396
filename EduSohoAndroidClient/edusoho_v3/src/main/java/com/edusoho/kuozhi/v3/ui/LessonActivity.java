@@ -8,10 +8,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -29,6 +33,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LiveLessonFragment;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -87,6 +92,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private EduSohoTextBtn mLessonNextBtn;
     private EduSohoTextBtn mLessonPreviousBtn;
     private EduSohoTextBtn mThreadBtn;
+    private Toolbar mToolBar;
+    private TextView mToolBarTitle;
 
     private ExerciseOptionDialog mPluginDialog;
 
@@ -137,12 +144,15 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private void initView() {
         try {
             Intent data = getIntent();
+            mToolBar = (Toolbar) findViewById(R.id.toolbar);
+            mToolBarTitle = (TextView) findViewById(R.id.tv_toolbar_title);
             mToolsLayout = findViewById(R.id.lesson_tools_layout);
             mLessonNextBtn = (EduSohoTextBtn) findViewById(R.id.lesson_next);
             mLessonPreviousBtn = (EduSohoTextBtn) findViewById(R.id.lesson_previous);
             mThreadBtn = (EduSohoTextBtn) findViewById(R.id.lesson_thread_btn);
             mLearnBtn = (EduSohoTextBtn) findViewById(R.id.lesson_learn_btn);
 
+            setSupportActionBar(mToolBar);
             if (data != null) {
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
@@ -164,14 +174,28 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             msgHandler.obtainMessage(SHOW_TOOLS).sendToTarget();
             showActionBar();
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.primary_color));
         } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             msgHandler.obtainMessage(HIDE_TOOLS).sendToTarget();
             hideActionBar();
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.transparent));
         }
+        super.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void showActionBar() {
+        getSupportActionBar().show();
+    }
+
+    @Override
+    public void hideActionBar() {
+        getSupportActionBar().hide();
     }
 
     /**
@@ -195,7 +219,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                         mLessonStatus.learnStatus = LearnStatus.learning;
                     }
                     mToolsLayout.setVisibility(View.VISIBLE);
-                    showToolsByAnim();
                     setLearnStatus(mLessonStatus == null ? LearnStatus.learning : mLessonStatus.learnStatus);
                 }
             }
@@ -291,7 +314,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             fragmentTransaction.commit();
         }
 
-        hieToolsByAnim();
+        hideToolsByAnim();
         loadLesson();
     }
 
@@ -312,6 +335,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         Resources resources = getResources();
         switch (learnStatus) {
             case learning:
+                mLearnBtn.setEnabled(true);
                 mLearnBtn.setTag(true);
                 mLearnBtn.setIcon(R.string.learning_status);
                 mLearnBtn.setTextColor(resources.getColor(R.color.lesson_learn_btn_normal));
@@ -323,6 +347,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mLearnBtn.setTextColor(resources.getColor(R.color.lesson_learned_btn_normal));
                 break;
         }
+    }
+
+    @Override
+    public void setBackMode(String backTitle, String title) {
+        super.setBackMode(backTitle, title);
+        mToolBarTitle.setText(title);
     }
 
     @Override
@@ -408,6 +438,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mLessonType = mLessonItem.type;
                 setBackMode(BACK, mLessonItem.title);
                 if (!mLessonType.equals("testpaper")) {
+                    showToolsByAnim();
                     loadLessonStatus();
                     bindListener();
                 }
@@ -443,6 +474,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         mLessonType = mLessonItem.type;
         setBackMode(BACK, mLessonItem.title);
         if (!mLessonType.equals("testpaper")) {
+            showToolsByAnim();
             loadLessonStatus();
             bindListener();
         }
@@ -643,22 +675,18 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     mActivity.showToolsByAnim();
                     break;
                 case HIDE_TOOLS:
-                    mActivity.hieToolsByAnim();
+                    mActivity.hideToolsByAnim();
                     break;
             }
         }
     }
 
     private void showToolsByAnim() {
-        mToolsLayout.measure(0, 0);
-        int height = mToolsLayout.getMeasuredHeight();
-        AppUtil.animForHeight(
-                new EduSohoAnimWrap(mToolsLayout), 0, height, 480);
+        mToolsLayout.setVisibility(View.VISIBLE);
     }
 
-    private void hieToolsByAnim() {
-        AppUtil.animForHeight(
-                new EduSohoAnimWrap(mToolsLayout), mToolsLayout.getHeight(), 0, 240);
+    private void hideToolsByAnim() {
+        mToolsLayout.setVisibility(View.GONE);
     }
 
     @Override

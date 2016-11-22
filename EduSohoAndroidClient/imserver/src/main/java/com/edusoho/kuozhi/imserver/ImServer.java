@@ -25,18 +25,20 @@ import com.edusoho.kuozhi.imserver.service.IHeartManager;
 import com.edusoho.kuozhi.imserver.service.IMsgManager;
 import com.edusoho.kuozhi.imserver.service.Impl.ConnectionManager;
 import com.edusoho.kuozhi.imserver.service.Impl.HeartManagerImpl;
-import com.edusoho.kuozhi.imserver.service.Impl.MsgManager;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
-import com.edusoho.kuozhi.imserver.util.ConvDbHelper;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
-import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by su on 2016/3/17.
@@ -44,10 +46,14 @@ import java.util.List;
 public class ImServer {
 
     private static final String TAG = "ImServer";
+
     private static final int CONNECT_NONE = 0001;
     private static final int CONNECT_WAIT = 0002;
     private static final int CONNECT_OPEN = 0003;
     private static final int CONNECT_ERROR = 0004;
+
+    private static final int INVOKE_EXISTS = 0011;
+
     private static String[] PUSH_TYPE = {
             Destination.ARTICLE,
             Destination.COURSE,
@@ -56,6 +62,7 @@ public class ImServer {
     };
 
     private int flag;
+    private int reConnectCount;
 
     private String[] pingCmd = {
             "cmd", "ping"
@@ -71,8 +78,6 @@ public class ImServer {
             "lastMsgNo", ""
     };
 
-    private MsgDbHelper mMsgDbHelper;
-    private ConvDbHelper mConvDbHelper;
     private Context mContext;
     private String mClientName;
     private int mClientId;
@@ -82,16 +87,17 @@ public class ImServer {
     private IConnectionManager mIConnectionManager;
     private IHeartManager mIHeartManager;
     private IMsgManager mIMsgManager;
+    private Map<String, Integer> mMessageInvokedMap;
 
     public ImServer(Context context) {
         this.mContext = context;
         this.flag = CONNECT_NONE;
+        this.mMessageInvokedMap = new ConcurrentHashMap<>();
         initHeartManager();
-        initMsgManager();
     }
 
-    private void initMsgManager() {
-        this.mIMsgManager = new MsgManager();
+    protected void setMsgManager(IMsgManager msgManager) {
+        this.mIMsgManager = msgManager;
     }
 
     private void initHeartManager() {
@@ -137,6 +143,8 @@ public class ImServer {
                     case IConnectManagerListener.END:
                         mIConnectionManager.switchConnect();
                         break;
+                    case IConnectManagerListener.INVALID:
+                        break;
                     case IConnectManagerListener.ERROR:
                         flag = CONNECT_ERROR;
                         pause();
@@ -152,12 +160,17 @@ public class ImServer {
         if (flag == CONNECT_WAIT || flag == CONNECT_OPEN) {
             return;
         }
+        if (reConnectCount > 1) {
+            sendConnectStatusBroadcast(IConnectManagerListener.INVALID);
+            return;
+        }
         flag = CONNECT_WAIT;
         new Handler(Looper.getMainLooper()).postAtTime(new Runnable() {
             @Override
             public void run() {
                 if (isCancel()) {
                     Log.d(TAG, "reConnect");
+                    reConnectCount ++;
                     start();
                 }
             }
@@ -166,7 +179,7 @@ public class ImServer {
 
     public void requestOfflineMsg() {
         offlineMsgCmd[3] = "";
-        offlineMsgCmd[3] = mMsgDbHelper.getLaterNo();
+        offlineMsgCmd[3] = mIMsgManager.getLaterNo();
         send(offlineMsgCmd);
         Log.d(TAG, "requestOfflineMsg:" + offlineMsgCmd[3]);
     }
@@ -184,9 +197,9 @@ public class ImServer {
         this.mClientName = clientName;
         this.mHostList = host;
         this.mClientId = clientId;
+        this.reConnectCount = 0;
 
-        this.mMsgDbHelper = new MsgDbHelper(mContext);
-        this.mConvDbHelper = new ConvDbHelper(mContext);
+        this.mIMsgManager.reset();
     }
 
     public boolean isConnected() {
@@ -205,8 +218,7 @@ public class ImServer {
             return false;
         }
 
-        if (mHostList == null || mHostList.isEmpty()
-                || mIgnoreNosList == null || mIgnoreNosList.isEmpty()) {
+        if (mHostList == null || mHostList.isEmpty()) {
             return false;
         }
 
@@ -224,11 +236,15 @@ public class ImServer {
         this.mIConnectionManager = null;
     }
 
+    public void setServerInValid() {
+        pause();
+        sendConnectStatusBroadcast(IConnectManagerListener.INVALID);
+    }
+
     public void stop() {
         pause();
         sendConnectStatusBroadcast(IConnectManagerListener.CLOSE);
-        this.mMsgDbHelper = null;
-        this.mConvDbHelper = null;
+        this.mIMsgManager.clear();
     }
 
     public boolean isCancel() {
@@ -265,10 +281,12 @@ public class ImServer {
 
     public void sendMessage(SendEntity sendEntity) {
         send(new String[]{
-                "cmd", "send",
+                "cmd", sendEntity.getCmd(),
                 "toId", sendEntity.getToId(),
+                "toName", sendEntity.getToName(),
                 "convNo", sendEntity.getConvNo(),
-                "msg", sendEntity.getMsg()
+                "msg", sendEntity.getMsg(),
+                "key", sendEntity.getK()
         });
     }
 
@@ -303,13 +321,39 @@ public class ImServer {
         return false;
     }
 
+    public IMsgManager getIMsgManager() {
+        return mIMsgManager;
+    }
+
+    private boolean messageNeedHandle(String cmd) {
+        return "message".equals(cmd) || "offlineMsg".equals(cmd) || "flashMessage".equals(cmd);
+    }
+
+    private boolean convEntityNeedSave(String cmd) {
+        return "message".equals(cmd) || "offlineMsg".equals(cmd);
+    }
+
+    private boolean isSignalMessage(String cmd) {
+        String[] signalArray = { "memberJoined" };
+        for (String signal : signalArray) {
+            if (signal.equals(cmd)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private MessageEntity handleReceiveMessage(MessageEntity messageEntity) throws MessageSaveFailException {
-        if (getMsgDbHelper().hasMessageByNo(messageEntity.getMsgNo())) {
-            Log.d("MessageCommand", "hasMessageByNo");
+        if (mIMsgManager.hasMessageByNo(messageEntity.getMsgNo())) {
+            Log.d(TAG, "hasMessageByNo");
             return null;
         }
 
-        if ("message".equals(messageEntity.getCmd()) || "offlineMsg".equals(messageEntity.getCmd())) {
+        if (isSignalMessage(messageEntity.getCmd())) {
+            return saveMessageEntityToDb(messageEntity);
+        }
+
+        if (messageNeedHandle(messageEntity.getCmd())) {
             MessageBody messageBody = new MessageBody(messageEntity);
             if (messageBody == null) {
                 return null;
@@ -329,42 +373,79 @@ public class ImServer {
             }
             messageEntity.setStatus(messageStatus);
             messageEntity = saveMessageEntityToDb(messageEntity);
-            ConvEntity convEntity = getConvEntityFromMessage(messageBody);
-            if (convEntity == null) {
-                convEntity = createConv(messageBody);
-                convEntity.setUnRead(convEntity.getUnRead() + 1);
-                convEntity.setUid(mClientId);
-                mConvDbHelper.save(convEntity);
-            } else {
-                updateConvEntity(convEntity, messageEntity);
-            }
         }
-
+        if (convEntityNeedSave(messageEntity.getCmd())) {
+            checkUpdateOrCreateConvEntity(messageEntity);
+        }
         return messageEntity;
+    }
+
+    private void checkUpdateOrCreateConvEntity(MessageEntity messageEntity) {
+        MessageBody messageBody = new MessageBody(messageEntity);
+        ConvEntity convEntity = getConvEntityFromMessage(messageBody);
+        if (convEntity == null) {
+            convEntity = createConv(messageBody);
+            convEntity.setUnRead(convEntity.getUnRead() + 1);
+            convEntity.setUid(mClientId);
+            mIMsgManager.createConvNoEntity(convEntity);
+        } else {
+            updateConvEntity(convEntity, messageEntity);
+        }
     }
 
     private ConvEntity getConvEntityFromMessage(MessageBody messageBody) {
         if (TextUtils.isEmpty(messageBody.getConvNo())) {
-            return mConvDbHelper.getConvByTypeAndId(messageBody.getSource().getType(), messageBody.getSource().getId());
+            return mIMsgManager.getConvByTypeAndId(messageBody.getSource().getType(), messageBody.getSource().getId());
         }
 
-        return mConvDbHelper.getConvByConvNo(messageBody.getConvNo());
+        return mIMsgManager.getConvByConvNo(messageBody.getConvNo());
     }
 
     private MessageEntity saveMessageEntityToDb(MessageEntity messageEntity) throws MessageSaveFailException {
-        long resultId = mMsgDbHelper.save(messageEntity);
+        if (TextUtils.isEmpty(messageEntity.getMsgNo())) {
+            messageEntity.setMsgNo(UUID.randomUUID().toString());
+        }
+        long resultId = mIMsgManager.createMessageEntity(messageEntity);
         if (resultId != 0) {
-            messageEntity = mMsgDbHelper.getMessageByMsgNo(messageEntity.getMsgNo());
+            String cmd = messageEntity.getCmd();
+            messageEntity = mIMsgManager.getMessageByMsgNo(messageEntity.getMsgNo());
             if (messageEntity == null) {
                 throw new MessageSaveFailException();
             }
+            messageEntity.setCmd(cmd);
             return messageEntity;
         }
         throw new MessageSaveFailException();
     }
 
+    public void onReceiveSignal(MessageEntity messageEntity) {
+        Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
+        intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.SIGNAL);
+        intent.putExtra("message", messageEntity);
+        mContext.sendBroadcast(intent);
+    }
+
+    private boolean validMessageCanLose(MessageEntity messageEntity) {
+        String msgNo = messageEntity.getMsgNo();
+        if (TextUtils.isEmpty(msgNo)) {
+            return false;
+        }
+        if (mMessageInvokedMap.containsKey(msgNo)
+                && mMessageInvokedMap.get(msgNo) == INVOKE_EXISTS) {
+            return true;
+        }
+
+        return false;
+    }
+
     public void onReceiveMessage(MessageEntity messageEntity) {
         try {
+            if (validMessageCanLose(messageEntity)) {
+                return;
+            }
+            if (!TextUtils.isEmpty(messageEntity.getMsgNo())) {
+                mMessageInvokedMap.put(messageEntity.getMsgNo(), INVOKE_EXISTS);
+            }
             messageEntity = handleReceiveMessage(messageEntity);
             if (messageEntity == null) {
                 return;
@@ -372,7 +453,7 @@ public class ImServer {
             Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
             intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.RECEIVER);
             intent.putExtra("message", messageEntity);
-                mContext.sendBroadcast(intent);
+            mContext.sendBroadcast(intent);
         } catch (MessageSaveFailException e) {
             Log.d(TAG, e.getMessage());
         }
@@ -396,10 +477,10 @@ public class ImServer {
         }
 
         if (checkPushConvEntityCanUpdate(convEntity.getConvNo(), messageEntity.getConvNo())) {
-            mConvDbHelper.update(convEntity);
+            mIMsgManager.updateConvEntityById(convEntity);
             return;
         }
-        mConvDbHelper.updateByConvNo(convEntity);
+        mIMsgManager.updateConvEntityByConvNo(convEntity);
     }
 
     /*
@@ -478,15 +559,11 @@ public class ImServer {
         return convEntity;
     }
 
-    public MsgDbHelper getMsgDbHelper() {
-        return mMsgDbHelper;
-    }
-
     private void ping() {
         send(pingCmd);
     }
 
-    private void send(String[] params) {
+    public void send(String[] params) {
         try {
             JSONObject msgObj = new JSONObject();
             for (int i = 0; i < params.length; i = i + 2) {

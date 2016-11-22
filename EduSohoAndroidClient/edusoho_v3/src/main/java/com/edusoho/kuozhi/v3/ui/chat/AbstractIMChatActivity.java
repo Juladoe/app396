@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
@@ -29,6 +30,7 @@ import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
@@ -41,6 +43,7 @@ import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
@@ -94,6 +97,13 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         initParams();
         setBackMode(BACK, TextUtils.isEmpty(mTargetName) ? "聊天" : mTargetName);
         attachMessageListFragment();
+        ActivityUtil.setStatusBarTranslucent(this);
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        ActivityUtil.setRootViewFitsWindow(this, getResources().getColor(R.color.primary));
     }
 
     @Override
@@ -136,7 +146,6 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
 
         if (fragment != null) {
             mMessageListFragment = (MessageListFragment) fragment;
-            //fragmentTransaction.show(fragment);
         } else {
             mMessageListFragment = createFragment();
             fragmentTransaction.add(R.id.chat_content, mMessageListFragment, "im_container");
@@ -178,6 +187,11 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         mConversationNo = dataIntent.getStringExtra(CONV_NO);
         mTargetType = dataIntent.getStringExtra(TARGET_TYPE);
         mTargetName = dataIntent.getStringExtra(FROM_NAME);
+
+        if (TextUtils.isEmpty(mConversationNo)) {
+            ConvEntity convEntity = new IMConvManager(mContext).getConvByTypeAndId(mTargetType, mTargetId);
+            mConversationNo = convEntity == null ? null : convEntity.getConvNo();
+        }
     }
 
     protected MessageControllerListener getMessageControllerListener() {
@@ -325,6 +339,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
                                             IMessageDataProvider mIMessageDataProvider,
                                             IMessageListView messageListView) {
             super(params, convManager, roleManager, messageResourceHelper, mIMessageDataProvider, messageListView);
+            setClientInfo(IMClient.getClient().getClientId(), IMClient.getClient().getClientName());
         }
 
         @Override

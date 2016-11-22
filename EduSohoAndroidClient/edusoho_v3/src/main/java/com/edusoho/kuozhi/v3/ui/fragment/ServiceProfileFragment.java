@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by howzhi on 15/9/23.
@@ -95,6 +96,7 @@ public class ServiceProfileFragment extends BaseFragment {
                     @Override
                     public void onClick(int button) {
                         if (button == PopupDialog.OK) {
+                            MobclickAgent.onEvent(mContext, "alumni_serviceBulletin_information_deleteHistory");
                             clearHistory();
                         }
                     }

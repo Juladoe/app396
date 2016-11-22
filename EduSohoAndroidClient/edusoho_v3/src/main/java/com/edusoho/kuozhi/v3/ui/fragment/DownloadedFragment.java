@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by JesseHuang on 15/6/22.
@@ -71,6 +72,7 @@ public class DownloadedFragment extends BaseFragment {
             public void onClick(View v) {
                 TextView tv = (TextView) v;
                 if (tv.getText().equals("全选")) {
+                    MobclickAgent.onEvent(mContext, "i_cache_seleceAll");
                     tv.setText("取消");
                     mDownloadedAdapter.isSelectAll(true);
                 } else {
@@ -84,6 +86,7 @@ public class DownloadedFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 if (mActivityContainer != null) {
+                    MobclickAgent.onEvent(mContext, "i_cache_edit_delete");
                     mActivityContainer.clearLocalCache(mDownloadedAdapter.getSelectLessonId());
                     DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
                     mDownloadedAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);
@@ -156,6 +159,7 @@ public class DownloadedFragment extends BaseFragment {
                 item.setTitle("编辑");
                 mDownloadedAdapter.setSelectShow(false);
             } else {
+                MobclickAgent.onEvent(mContext, "i_cache_edit");
                 showBtnLayout();
                 item.setTitle("取消");
                 mDownloadedAdapter.setSelectShow(true);

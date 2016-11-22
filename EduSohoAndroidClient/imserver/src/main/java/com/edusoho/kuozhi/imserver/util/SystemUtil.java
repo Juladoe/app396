@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.imserver.util;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -29,7 +30,7 @@ public class SystemUtil {
         return false;
     }
 
-    public static void setSoftKeyBoard(EditText editText, Context context, int status) {
+    public static void setSoftKeyBoard(View editText, Context context, int status) {
         InputMethodManager inputMethodManager = (InputMethodManager) context.getApplicationContext().
                 getSystemService(Context.INPUT_METHOD_SERVICE);
         if (SHOW_KEYBOARD == status) {

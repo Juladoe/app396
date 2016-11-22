@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="red">#ff0000</color>
+   <color name="white">#ffffff</color>
+   <color name="transparent">#00000000</color>
+    <color name="primary">#37b97d</color>
+    <color name="black_60">#99000000</color>
+    <color name="live_toolbar_title">#ffffff</color>
+
+    <color name="video_sk_bg_gradient">#808080</color>
+    <color name="video_sk_bg_2_gradient">#4d4d4d</color>
+    <color name="video_sk_gradient">#38bf6c</color>
+    <color name="video_thum_gradient">#38bf6c</color>
+    <color name="video_thum_gradient_pressed">#9938bf6c</color>
+</resources>

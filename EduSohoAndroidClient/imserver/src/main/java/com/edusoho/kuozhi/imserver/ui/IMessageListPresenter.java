@@ -55,5 +55,15 @@ public interface IMessageListPresenter {
 
     void addMessageControllerListener(MessageControllerListener listener);
 
+    void unEnableChatView();
+
     void enableChatView();
+
+    boolean canRefresh();
+
+    void onMessageSuccess(MessageEntity messageEntity);
+
+    boolean onReceiverMessageEntity(MessageEntity msg);
+
+    void reSendMessageList();
 }

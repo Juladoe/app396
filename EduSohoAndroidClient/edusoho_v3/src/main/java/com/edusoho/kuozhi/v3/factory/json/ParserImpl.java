@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.factory.json;
 
+import android.util.Log;
+
 import com.edusoho.kuozhi.v3.factory.converter.StringConverter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -20,7 +22,7 @@ public class ParserImpl implements Parser {
         try {
             return mGson.fromJson(json, tClass);
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d("Parser", "parse error:" + tClass);
         }
 
         return null;

@@ -34,6 +34,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     public static final String PARSE_RESPONSE = "parseResponse";
 
     protected Response.Listener<T> mListener;
+    protected Response.ErrorListener mErrorListener;
     protected RequestUrl mRequestUrl;
     protected int mIsCache = CACHE_NONE;
     protected int mCacheUseMode = AUTO_USE_CACHE;
@@ -44,6 +45,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
         super(method, requestUrl.url, errorListener);
         this.mRequestUrl = requestUrl;
         mListener = listener;
+        mErrorListener = errorListener;
         initRequest(method);
         mRequestLocalManager = RequestLocalManager.getManager();
         this.setRetryPolicy(new DefaultRetryPolicy(DEFUALT_TIME_OUT, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

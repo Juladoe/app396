@@ -5,7 +5,7 @@ import android.content.Context;
 import com.edusoho.kuozhi.imserver.IImServerAidlInterface;
 import com.edusoho.kuozhi.imserver.SendEntity;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
-import com.edusoho.kuozhi.imserver.util.MsgDbHelper;
+import com.edusoho.kuozhi.imserver.helper.impl.MsgDbHelper;
 
 import java.lang.ref.WeakReference;
 import java.util.Collections;

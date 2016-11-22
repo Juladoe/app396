@@ -38,8 +38,6 @@ import com.edusoho.kuozhi.imserver.util.SystemUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import org.json.JSONException;
@@ -47,7 +45,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -60,19 +57,20 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
     private static final int SEND = 0X01;
     private static final int RECEIVE = 0X02;
 
-    private static final int RECEIVE_TEXT = 0;
-    private static final int SEND_TEXT = 1;
-    private static final int RECEIVE_AUDIO = 2;
-    private static final int SEND_AUDIO = 3;
-    private static final int RECEIVE_IMAGE = 4;
-    private static final int SEND_IMAGE = 5;
-    private static final int RECEIVE_MULTI = 6;
-    private static final int SEND_MULTI = 7;
+    protected static final int RECEIVE_TEXT = 0;
+    protected static final int SEND_TEXT = 1;
+    protected static final int RECEIVE_AUDIO = 2;
+    protected static final int SEND_AUDIO = 3;
+    protected static final int RECEIVE_IMAGE = 4;
+    protected static final int SEND_IMAGE = 5;
+    protected static final int RECEIVE_MULTI = 6;
+    protected static final int SEND_MULTI = 7;
+    protected static final int LABEL = 8;
 
-    protected static long TIME_INTERVAL = 60 * 5 * 1000;
+    protected static long TIME_INTERVAL = 60 * 3 * 1000;
     protected static final String TAG = "MessageListAdapter";
 
-    private int mCurrentId;
+    protected int mCurrentId;
     private int mMaxAudioWidth;
     private MessageHelper mMessageHelper;
     private MessageItemOnClickListener mMessageItemOnClickListener;
@@ -126,12 +124,13 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         while (iterator.hasNext()) {
             MessageEntity messageEntity = iterator.next();
             if (messageEntity.getId() == updateMessageEntity.getId()) {
-                updateMessageEntity(messageEntity, updateMessageEntity);
-                notifyItemRangeChanged(position, getItemCount() - position);
-                return;
+                mMessageList.set(position, updateMessageEntity);
+                break;
             }
             position++;
         }
+
+        notifyItemRangeChanged(position, getItemCount() - position);
     }
 
     public void setCurrentId(int currentId) {
@@ -192,11 +191,13 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             case PushUtil.ChatMsgType.PUSH:
             case PushUtil.ChatMsgType.MULTI:
                 return isSend ? SEND_MULTI : RECEIVE_MULTI;
+            case PushUtil.ChatMsgType.LABEL:
+                return LABEL;
         }
         return isSend ? SEND_TEXT : RECEIVE_TEXT;
     }
 
-    private MessageViewHolder createViewHolder(int viewType, View contentView) {
+    protected MessageViewHolder createViewHolder(int viewType, View contentView) {
         switch (viewType) {
             case SEND_AUDIO:
             case RECEIVE_AUDIO:
@@ -207,12 +208,14 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             case SEND_MULTI:
             case RECEIVE_MULTI:
                 return new MultiViewHolder(contentView);
+            case LABEL:
+                return new LabelViewHolder(contentView);
         }
 
         return new TextViewHolder(contentView);
     }
 
-    class MessageViewHolder extends RecyclerView.ViewHolder {
+    protected class MessageViewHolder extends RecyclerView.ViewHolder {
 
         protected Direct mDirect;
 
@@ -243,14 +246,21 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         public void setContainerContent(MessageBody messageBody) {
         }
 
+        public void addViewClickListener(ViewItemClickListener onClickListener) {
+            containerView.setOnClickListener(onClickListener);
+            avatarView.setOnClickListener(onClickListener);
+            errorStatusView.setOnClickListener(onClickListener);
+            containerView.setOnLongClickListener(onClickListener);
+        }
+
         public void setMessageItemOnClickListener(MessageItemOnClickListener listener) {
-            if (listener == null) {
-                return;
-            }
             this.mMessageItemOnClickListener = listener;
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    if (mMessageItemOnClickListener == null) {
+                        return false;
+                    }
                     mMessageItemOnClickListener.onItemClick(mCurrentPosition, itemView);
                     return false;
                 }
@@ -261,7 +271,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             this.mCurrentPosition = position;
         }
 
-        private void setMessageStatus(MessageBody messageBody) {
+        protected void setMessageStatus(MessageBody messageBody) {
             if (mDirect == Direct.RECEIVE
                     && (PushUtil.ChatMsgType.TEXT.equals(messageBody.getType()) || PushUtil.ChatMsgType.MULTI.equals(messageBody.getType()))) {
                 errorStatusView.setVisibility(View.INVISIBLE);
@@ -281,8 +291,13 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             }
         }
 
-        public void setMessageBody(MessageBody messageBody, int position) {
-            switch (messageBody.getDestination().getType()) {
+        private void setNickNameFromMessage(MessageBody messageBody) {
+            Destination destination = messageBody.getDestination();
+            if (destination == null || TextUtils.isEmpty(destination.getType())) {
+                return;
+            }
+            switch (destination.getType()) {
+                case Destination.GROUP:
                 case Destination.COURSE:
                 case Destination.CLASSROOM:
                     nicknameView.setText(messageBody.getSource().getNickname());
@@ -291,6 +306,10 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
                 default:
                     nicknameView.setVisibility(View.GONE);
             }
+        }
+
+        public void setMessageBody(MessageBody messageBody, int position) {
+            setNickNameFromMessage(messageBody);
             timeView.setVisibility(View.GONE);
             if (position < (getItemCount() - 1)) {
                 long preTime = mMessageList.get(position + 1).getTime() * 1000L;
@@ -304,7 +323,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
             timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
         }
 
-        private void setAvatar(MessageBody messageBody) {
+        protected void setAvatar(MessageBody messageBody) {
             Source source = messageBody.getSource();
             String avatarSrc = mMessageHelper.getRoleAvatar(source.getType(), source.getId());
             MaskBitmap maskBitmap = ImageCache.getInstance().get(avatarSrc);
@@ -333,10 +352,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
 
     private void initClickListener(MessageViewHolder viewHolder, int position) {
         ViewItemClickListener itemClickListener = new ViewItemClickListener(position);
-        viewHolder.containerView.setOnClickListener(itemClickListener);
-        viewHolder.avatarView.setOnClickListener(itemClickListener);
-        viewHolder.errorStatusView.setOnClickListener(itemClickListener);
-        viewHolder.containerView.setOnLongClickListener(itemClickListener);
+        viewHolder.addViewClickListener(itemClickListener);
     }
 
     @Override
@@ -372,6 +388,10 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         this.mMessageListItemController = listItemClickListener;
     }
 
+    protected View createLabelView() {
+        return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_label_layout, null);
+    }
+
     protected View createTextView(boolean isSend) {
         if (isSend) {
             return LayoutInflater.from(mContext).inflate(R.layout.item_message_list_text_content, null);
@@ -405,36 +425,30 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         switch (type) {
             case SEND_TEXT:
                 contentView = createTextView(true);
-                contentView.setTag(new TextViewHolder(contentView));
                 break;
             case RECEIVE_TEXT:
                 contentView = createTextView(false);
-                contentView.setTag(new TextViewHolder(contentView));
                 break;
             case SEND_AUDIO:
                 contentView = createAudioView(true);
-                contentView.setTag(new AudioViewHolder(contentView));
                 break;
             case RECEIVE_AUDIO:
                 contentView = createAudioView(false);
-                contentView.setTag(new AudioViewHolder(contentView));
                 break;
             case SEND_IMAGE:
                 contentView = createImageView(true);
-                contentView.setTag(new ImageVewHolder(contentView));
                 break;
             case RECEIVE_IMAGE:
                 contentView = createImageView(false);
-                contentView.setTag(new ImageVewHolder(contentView));
                 break;
             case SEND_MULTI:
                 contentView = createMultiView(true);
-                contentView.setTag(new MultiViewHolder(contentView));
                 break;
             case RECEIVE_MULTI:
                 contentView = createMultiView(false);
-                contentView.setTag(new MultiViewHolder(contentView));
                 break;
+            case LABEL:
+                contentView = createLabelView();
         }
         return contentView;
     }
@@ -442,7 +456,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
     /**
      * ViewItemClickListener
      */
-    class ViewItemClickListener implements View.OnClickListener, View.OnLongClickListener {
+    protected class ViewItemClickListener implements View.OnClickListener, View.OnLongClickListener {
 
         private int mPosition;
 
@@ -582,7 +596,54 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         }
     }
 
-    class TextViewHolder extends MessageViewHolder {
+    protected class LabelViewHolder extends MessageViewHolder {
+
+        public TextView mContentView;
+        public LabelViewHolder(View view) {
+            super(view);
+            mContentView = (TextView) view.findViewById(R.id.tv_label);
+        }
+
+        @Override
+        public void addViewClickListener(ViewItemClickListener onClickListener) {
+        }
+
+        @Override
+        protected void setMessageStatus(MessageBody messageBody) {
+        }
+
+        @Override
+        public void setMessageItemOnClickListener(MessageItemOnClickListener listener) {
+        }
+
+        @Override
+        protected void setAvatar(MessageBody messageBody) {
+        }
+
+        @Override
+        public void setMessageBody(MessageBody messageBody, int position) {
+            //none
+        }
+
+        @Override
+        public void setContainerContent(MessageBody messageBody) {
+            super.setContainerContent(messageBody);
+            try {
+                JSONObject jsonObject = new JSONObject(messageBody.getBody());
+                switch (jsonObject.optString("cmd")) {
+                    case "memberJoined":
+                        mContentView.setVisibility(View.VISIBLE);
+                        mContentView.setText(String.format("%s 加入直播教室", jsonObject.optString("clientName")));
+                        break;
+                    default:
+                        mContentView.setVisibility(View.GONE);
+                }
+            } catch (JSONException e) {
+            }
+        }
+    }
+
+    protected class TextViewHolder extends MessageViewHolder {
 
         public TextView mContentView;
 

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -29,6 +30,8 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.HashMap;
 
 
@@ -49,6 +52,11 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         initView();
         app.registMsgSource(this);
         startAnim();
+    }
+
+    @Override
+    protected int getStatusBarColor() {
+        return Color.TRANSPARENT;
     }
 
     protected void initView() {
@@ -85,7 +93,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
 
     private void startIconRotateAnim() {
         View iconBgView = findViewById(R.id.tv_start_icon_bg);
-        iconBgView.setBackgroundResource(R.drawable.app_splash);
+        iconBgView.setBackgroundResource(R.drawable.start_app_splash);
 
         Animation rotateAnimation = AnimationUtils.loadAnimation(mContext, R.anim.alpha_rotate);
         iconBgView.setAnimation(rotateAnimation);

@@ -24,9 +24,13 @@ public class CommandFactory {
         mCommandMap.put("add", AddCommand.class);
         mCommandMap.put("success", SuccessCommand.class);
         mCommandMap.put("message", MessageCommand.class);
+        mCommandMap.put("flashMessage", FlashMessageCommand.class);
         mCommandMap.put("offlineMsg", OfflineMsgCommand.class);
+        mCommandMap.put("memberJoined", MemberJoinedCommand.class);
         mCommandMap.put("connected", ConnectedCommand.class);
         mCommandMap.put("error", ErrorCommand.class);
+        mCommandMap.put("replace", ReplaceCommand.class);
+        mCommandMap.put("flashSended", FlashSendedCommand.class);
     }
 
     public static synchronized CommandFactory getInstance() {
