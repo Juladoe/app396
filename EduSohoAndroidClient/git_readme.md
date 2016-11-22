@@ -7,7 +7,7 @@
 |master|一直保持产品稳定|永远处在即将发布(production-ready)状态|
 |develop|最新的开发状态||
 |release|发布版本分支|基于develop或者master, 完成后merge回develop和master|
-|fix|修复bug分支|比如:fix/xxx-login，xxx是redmine版本号
+|fix|修复bug分支|比如:fix/xxx-login，xxx是redmine上的bug号
 |feature|迭代某一新功能|在develop分支上分出来，比如：feature/replace_new_find_module|
 |custom|客户订制||
 
