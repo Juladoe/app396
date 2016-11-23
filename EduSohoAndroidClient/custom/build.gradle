@@ -4,10 +4,16 @@ android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
 
+    dexOptions {
+        incremental true
+        javaMaxHeapSize "4g"
+    }
+
     defaultConfig {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
+        multiDexEnabled true
         manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi",startActivity:"com.edusoho.kuozhi.KuozhiActivity"]
     }
 
@@ -48,7 +54,7 @@ android {
 
     buildTypes {
         debug {
-            zipAlignEnabled true
+            zipAlignEnabled false
             minifyEnabled false
             signingConfig signingConfigs.debugConfig
         }
@@ -56,6 +62,5 @@ android {
 }
 
 dependencies {
-    compile project(':edusoho_v3')
     compile project(':homework')
 }

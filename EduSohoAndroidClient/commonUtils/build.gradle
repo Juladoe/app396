@@ -18,5 +18,4 @@ android {
 }
 
 dependencies {
-    compile files('libs/dexmaker-1.1.jar')
 }

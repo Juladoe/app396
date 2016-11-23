@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.plugin;
 
 import android.app.Activity;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -427,6 +428,30 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
                     }
                 }
         );
+    }
+
+    @JsAnnotation
+    public void showCopyContentDialog(JSONArray args, BridgeCallback callbackContext) throws JSONException {
+        String title = args.optString(0);
+        String content = args.optString(1);
+        final String copyContent = args.optString(2);
+        PopupDialog popupDialog = PopupDialog.createMuilt(
+                mActivity, title, content, new PopupDialog.PopupClickListener() {
+            @Override
+            public void onClick(int button) {
+                if (button == PopupDialog.OK) {
+                    copyDataToClipboard(copyContent);
+                }
+            }
+        });
+        popupDialog.setOkText("复制微信号");
+        popupDialog.show();
+    }
+
+    private void copyDataToClipboard(String text) {
+        ClipboardManager cm = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+        cm.setText(text);
+        CommonUtil.longToast(mContext, "微信号已复制");
     }
 
     @JsAnnotation
