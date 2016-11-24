@@ -48,7 +48,7 @@
                     style="@style/edittext_style"
                     android:layout_centerVertical="false"
                     android:layout_marginTop="45dp"
-                    android:hint="@string/login_username_hint"
+                    android:hint="@string/reg_username_hint"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:textSize="@dimen/x_medium_font_size" />
@@ -72,8 +72,9 @@
                     style="@style/edittext_style"
                     android:layout_centerVertical="false"
                     android:layout_marginTop="15dp"
-                    android:hint="@string/login_password_hint"
+                    android:hint="@string/reg_password_hint"
                     android:paddingBottom="5dp"
+                    android:inputType="textPassword"
                     android:paddingTop="5dp"
                     android:textSize="@dimen/x_medium_font_size" />
 
@@ -135,7 +136,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="13dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="175dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp">
@@ -165,13 +166,53 @@
                     android:layout_toRightOf="@+id/txt_three"
                     android:background="#D8D8D8" />
             </RelativeLayout>
-            
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="21dp">
 
+                <ImageView
+                    android:id="@+id/iv_qq"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginLeft="70dp"
+                    android:layout_toRightOf="@+id/iv_weibo"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/qq"
+                    android:visibility="visible" />
 
+                <ImageView
+                    android:id="@+id/iv_weibo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/weibo"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/iv_weixin"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginRight="70dp"
+                    android:layout_toLeftOf="@+id/iv_weibo"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/weixin"
+                    android:visibility="visible" />
             </RelativeLayout>
+
+            <TextView
+                android:id="@+id/txt_netclass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/netclass"
+                android:textSize="@dimen/_x_small_font_size"
+                android:layout_gravity="center_horizontal"
+                android:textColor="#BDC2C6"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                />
         </LinearLayout>
     </RelativeLayout>
 </ScrollView>
