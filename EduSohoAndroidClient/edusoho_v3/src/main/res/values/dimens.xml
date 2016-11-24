@@ -25,9 +25,11 @@
     <dimen name="large_font_size">20sp</dimen>
     <!--中字-->
     <dimen name="medium_font_size">16sp</dimen>
+    <dimen name="x_medium_font_size">15sp</dimen>
     <!--小一/二字-->
     <dimen name="small_font_size">14sp</dimen>
     <!--超小字-->
+    <dimen name="_x_small_font_size">13sp</dimen>
     <dimen name="x_small_font_size">12sp</dimen>
 
     <dimen name="xx_small_font_size">10sp</dimen>
