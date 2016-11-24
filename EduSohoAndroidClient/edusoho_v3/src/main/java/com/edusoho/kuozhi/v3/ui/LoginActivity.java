@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,8 +21,6 @@ import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -61,6 +57,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private ImageView ivQQ;
     private ImageView ivWeixin;
     private TextView tvMore;
+    private TextView tvRegister;
     private String mAuthCancel;
 
     @Override
@@ -84,15 +81,23 @@ public class LoginActivity extends BaseNoTitleActivity {
         ivQQ.setOnClickListener(mQQLoginClickListener);
         ivWeixin = (ImageView) findViewById(R.id.iv_weixin);
         ivWeixin.setOnClickListener(mWeChatLoginClickListener);
-//        tvMore = (TextView) findViewById(R.id.tv_more);
-//        tvMore.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent settingIntent = new Intent();
-//                settingIntent.setComponent(new ComponentName(getPackageName(), "SettingActivity"));
-//                startActivity(settingIntent);
-//            }
-//        });
+        tvMore = (TextView) findViewById(R.id.tv_more);
+        tvRegister = (TextView) findViewById(R.id.txt_register);
+
+        tvMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent settingIntent = new Intent();
+                settingIntent.setComponent(new ComponentName(getPackageName(), "SettingActivity"));
+                startActivity(settingIntent);
+            }
+        });
+        tvRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
+            }
+        });
         initThirdLoginBtns();
     }
 

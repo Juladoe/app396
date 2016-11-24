@@ -26,7 +26,7 @@
             android:id="@+id/input_email_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/iv_back"
+            android:layout_below="@+id/back"
             android:orientation="vertical">
 
             <TextView
@@ -137,18 +137,9 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="175dp"
+                android:layout_marginTop="80dp"
                 android:paddingLeft="15dp"
                 android:paddingRight="15dp">
-
-                <TextView
-                    android:id="@+id/txt_three"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:text="@string/txt_three"
-                    android:textColor="#BDC2C6"
-                    android:textSize="@dimen/_x_small_font_size" />
 
                 <View
                     android:layout_width="match_parent"
@@ -165,6 +156,16 @@
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@+id/txt_three"
                     android:background="#D8D8D8" />
+
+                <TextView
+                    android:id="@+id/txt_three"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/txt_three"
+                    android:textColor="#BDC2C6"
+                    android:textSize="@dimen/_x_small_font_size"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -203,7 +204,7 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/txt_netclass"
+                android:id="@+id/tv_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/netclass"

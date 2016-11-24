@@ -16,11 +16,12 @@ public class BaseNoTitleActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setSupportActionBar(null);
+//        setSupportActionBar(null);
         super.onCreate(savedInstanceState);
     }
 
     protected void initView() {
+        hideActionBar();
         View back = findViewById(R.id.back);
         if (back != null) {
             back.setOnClickListener(new View.OnClickListener() {
