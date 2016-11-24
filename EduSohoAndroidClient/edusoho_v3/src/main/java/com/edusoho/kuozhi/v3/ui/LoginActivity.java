@@ -71,7 +71,9 @@ public class LoginActivity extends BaseNoTitleActivity {
         initView();
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
+        super.initView();
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
         mBtnLogin = (EduSohoLoadingButton) findViewById(R.id.btn_login);

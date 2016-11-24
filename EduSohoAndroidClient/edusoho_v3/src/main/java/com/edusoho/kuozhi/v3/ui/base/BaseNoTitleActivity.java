@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.edusoho.kuozhi.R;
+
 /**
  * Created by DEL on 2016/11/24.
  */
@@ -18,7 +20,15 @@ public class BaseNoTitleActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
     }
 
-    protected void initView(){
-        View 
+    protected void initView() {
+        View back = findViewById(R.id.back);
+        if (back != null) {
+            back.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
     }
 }
