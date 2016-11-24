@@ -24,6 +24,11 @@ android {
             applicationId "com.edusoho.kuozhi"
         }
     }
+    
+    freeline {
+        hack true
+        productFlavor 'edusoho'
+    }
 
     //签名
     signingConfigs {
