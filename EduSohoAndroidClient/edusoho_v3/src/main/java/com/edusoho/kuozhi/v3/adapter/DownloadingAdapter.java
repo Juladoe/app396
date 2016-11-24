@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
@@ -19,6 +20,7 @@ import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +66,16 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
         notifyDataSetChanged();
     }
 
+    public void setCourseExpired(Course expiredCourse) {
+        for (Course localCourse : mGroupItems) {
+            if (localCourse.id == expiredCourse.id) {
+                localCourse.title = localCourse.title + "--(已过期)";
+                notifyDataSetChanged();
+                break;
+            }
+        }
+    }
+
     public void updateProgress(int lessonId, M3U8DbModel model) {
         m3u8ModelList.put(lessonId, model);
         notifyDataSetChanged();
@@ -72,6 +84,17 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
     @Override
     public int getGroupCount() {
         return mGroupItems.size();
+    }
+
+    public List<LessonItem> getChildrenItemsByCourseId(int courseId) {
+        int index = 0;
+        for (Course course : mGroupItems) {
+            if (course.id == courseId) {
+                break;
+            }
+            index++;
+        }
+        return mChildItems.get(index);
     }
 
     @Override
