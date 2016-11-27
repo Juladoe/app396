@@ -69,6 +69,11 @@
     <string name="notification">提示</string>
     <string name="yes">是</string>
     <string name="no">否</string>
+    <string name="find_password">找回密码</string>
+    <string name="input_phone_or_mail">请输入手机号／邮箱号</string>
+    <string name="input_reset_password">请输入密码</string>
+    <string name="find_password_next">下一步</string>
+    <string name="find_password_submit">确定</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
