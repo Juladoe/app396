@@ -85,7 +85,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                                 startActivity(registerIntent);
                             } else {
                                 if (response.equals("该手机号码已被其他用户绑定")) {
-                                    showToast();
+                                    CommonUtil.shortCenterToast(CompletePhoneActivity.this,"当前手机号已被注册，请直接登录");
                                 }
                             }
                         } catch (Exception e) {
@@ -98,15 +98,6 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
             }
         }
     };
-
-    /**
-     * 弹Toast提示已注册
-     */
-    private void showToast() {
-        Toast toast = Toast.makeText(CompletePhoneActivity.this, "当前手机号已被注册，请直接登陆",Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER,0,0);
-        toast.show();
-    }
 
     /**
      * 判断是否为手机号

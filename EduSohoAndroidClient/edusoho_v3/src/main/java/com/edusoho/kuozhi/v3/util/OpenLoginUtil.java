@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
@@ -16,6 +17,8 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.CompletePhoneActivity;
+import com.edusoho.kuozhi.v3.ui.StartActivity;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
@@ -80,28 +83,37 @@ public class OpenLoginUtil {
         final String thirdPartyType = params.length > 4 ? params[4] : "";
         Looper.prepare();
         final LoadDialog loadDialog = LoadDialog.create(activity);
-        loadDialog.setMessage("登录中...");
-        loadDialog.show();
+//        loadDialog.setMessage("登录中...");
+//        loadDialog.show();
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                loadDialog.dismiss();
-                UserResult userResult = app.parseJsonValue(
-                        response, new TypeToken<UserResult>() {
-                        });
-                app.saveToken(userResult);
-                app.loginUser.thirdParty = thirdPartyType;
-                app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                Bundle bundle = new Bundle();
-                bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUser.id));
+//                loadDialog.dismiss();
+//                UserResult userResult = app.parseJsonValue(
+//                        response, new TypeToken<UserResult>() {
+//                        });
+//                app.saveToken(userResult);
+//                app.loginUser.thirdParty = thirdPartyType;
+//                app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
+//                Bundle bundle = new Bundle();
+//                bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUser.id));
+//
+//                User user = app.loginUser;
+//                new IMServiceProvider(activity.getBaseContext()).bindServer(user.id, user.nickname);
+//                mLoginhandler.success(userResult);
+//                SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
+//                Date date = new Date();
+//                String entertime = nowfmt.format(date);
+//                saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
 
-                User user = app.loginUser;
-                new IMServiceProvider(activity.getBaseContext()).bindServer(user.id, user.nickname);
-                mLoginhandler.success(userResult);
-                SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
-                Date date = new Date();
-                String entertime = nowfmt.format(date);
-                saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
+//                app.mEngine.runNormalPlugin("CompletePhoneActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                //此处接口待处理
+                Intent intent = new Intent(mContext, CompletePhoneActivity.class);
+                mContext.startActivity(intent);
+                CommonUtil.shortToast(mContext,"应该跳转到绑定界面");
+
+
             }
         }, null);
         Looper.loop();

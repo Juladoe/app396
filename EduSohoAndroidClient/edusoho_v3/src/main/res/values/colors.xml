@@ -453,4 +453,6 @@
     <color name="thread_type_discuss">#2DB7F5</color>
 
     <color name="live_notice_list_bg">#e8e8e8</color>
+    <color name="register_send">#ffaa00</color>
+    <color name="register_send_auth">#2b333b</color>
 </resources>
