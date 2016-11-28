@@ -71,11 +71,16 @@
     <string name="no">否</string>
     <string name="find_password">找回密码</string>
     <string name="input_phone_or_mail">请输入手机号／邮箱号</string>
-    <string name="input_reset_password">请输入密码</string>
+    <string name="reset_password_hint">请输入密码</string>
     <string name="find_password_next">下一步</string>
     <string name="find_password_submit">确定</string>
     <string name="find_password_text_not_null">手机号或邮箱不能为空</string>
     <string name="phone_or_mail_format_error">手机号或邮箱格式不正确</string>
+    <string name="phone_code_input_hint">验证码已经发送到：</string>
+    <string name="phone_sms_code_hint">请输入短信验证码</string>
+    <string name="sms_code_not_null">验证码不能为空</string>
+    <string name="reset_password_not_null">重置密码不能为空</string>
+    <string name="password_more_than_six_digit_number">密码不能小于6位</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
@@ -243,4 +248,5 @@
     <string name="label_classroom">班级</string>
     <string name="label_course">课程</string>
     <string name="label_teacher">教师</string>
+
 </resources>

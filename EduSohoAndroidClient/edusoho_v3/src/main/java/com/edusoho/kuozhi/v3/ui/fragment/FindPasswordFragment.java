@@ -45,15 +45,23 @@ public class FindPasswordFragment extends BaseFragment {
                 }
                 if (getActivity() != null && getActivity() instanceof ForgetPasswordActivity) {
                     ForgetPasswordActivity forgetPasswordActivity = (ForgetPasswordActivity) getActivity();
+                    Bundle bundle = new Bundle();
+
                     if (Validator.isMail(etPhoneOrMail.getText().toString().trim())) {
-                        forgetPasswordActivity.switchFragment("FindPasswordByMailFragment");
+                        bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
+                        forgetPasswordActivity.switchFragment("FindPasswordByMailFragment", bundle);
                     } else if (Validator.isPhone(etPhoneOrMail.getText().toString().trim())) {
-                        forgetPasswordActivity.switchFragment("FindPasswordByPhoneFragment");
+                        bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
+                        forgetPasswordActivity.switchFragment("FindPasswordByPhoneFragment", bundle);
                     } else {
                         ToastUtil.getInstance(mContext).makeText(getString(R.string.phone_or_mail_format_error), Toast.LENGTH_LONG).show();
                     }
                 }
             }
         };
+    }
+
+    public String getResetInfo() {
+        return etPhoneOrMail.getText().toString().trim();
     }
 }

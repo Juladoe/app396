@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByPhoneFragment;
 
 /**
  * Created by JesseHuang on 2016/11/25.
@@ -16,6 +17,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 
 public class ForgetPasswordActivity extends ActionBarBaseActivity {
 
+    public static final String RESET_INFO = "reset_info";
     private ImageView ivBack;
     private String mCurrentTag;
 
@@ -24,7 +26,7 @@ public class ForgetPasswordActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_forget_password);
         initView();
-        showFragment("FindPasswordFragment");
+        showFragment("FindPasswordFragment", null);
     }
 
     private void initView() {
@@ -32,7 +34,7 @@ public class ForgetPasswordActivity extends ActionBarBaseActivity {
         ivBack.setOnClickListener(getBackClickListener());
     }
 
-    public void showFragment(String fragmentTag) {
+    public void showFragment(String fragmentTag, final Bundle fragmentBundle) {
         Fragment fragment;
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         fragment = mFragmentManager.findFragmentByTag(fragmentTag);
@@ -42,7 +44,9 @@ public class ForgetPasswordActivity extends ActionBarBaseActivity {
             fragment = app.mEngine.runPluginWithFragment(fragmentTag, mActivity, new PluginFragmentCallback() {
                 @Override
                 public void setArguments(Bundle bundle) {
-
+                    if (fragmentBundle != null) {
+                        bundle.putString(RESET_INFO, fragmentBundle.getString(ForgetPasswordActivity.RESET_INFO));
+                    }
                 }
             });
             fragmentTransaction.add(R.id.fl_container, fragment, fragmentTag);
@@ -60,10 +64,19 @@ public class ForgetPasswordActivity extends ActionBarBaseActivity {
         fragmentTransaction.commit();
     }
 
-    public void switchFragment(String fragmentTag) {
+    public void removeFragment(String fragmentTag) {
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        Fragment fragment = mFragmentManager.findFragmentByTag(fragmentTag);
+        if (fragment != null) {
+            fragmentTransaction.remove(fragment);
+        }
+        fragmentTransaction.commit();
+    }
+
+    public void switchFragment(String fragmentTag, Bundle bundle) {
         if (mCurrentTag != null) {
             hideFragment(mCurrentTag);
-            showFragment(fragmentTag);
+            showFragment(fragmentTag, bundle);
         }
     }
 
@@ -71,8 +84,17 @@ public class ForgetPasswordActivity extends ActionBarBaseActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (mCurrentTag != null) {
+                    if ("FindPasswordFragment".equals(mCurrentTag)) {
+                        onBackPressed();
+                    } else {
+                        removeFragment(mCurrentTag);
+                        showFragment("FindPasswordFragment", null);
+                    }
+                }
             }
         };
     }
+
+
 }
