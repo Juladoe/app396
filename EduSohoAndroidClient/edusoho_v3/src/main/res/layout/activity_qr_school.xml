@@ -3,14 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <View
+    <ImageView
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="230dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/shape_search_color" />
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_search_school"/>
 
     <TextView
         android:id="@+id/tv_background"

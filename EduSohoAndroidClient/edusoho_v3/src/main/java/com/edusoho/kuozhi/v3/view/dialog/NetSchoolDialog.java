@@ -75,7 +75,6 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
     private ListView mListView;
     private List<Map<String, Object>> mList;
     private MyAdapter adapter;
-    private TextView mtv;
     private View mCancel;
     private BaseActivity mContext;
     public EdusohoApp app;
@@ -97,7 +96,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
 
     private void init(Context context) {
         mContext = (BaseActivity) context;
-
+        getWindow().setWindowAnimations(R.style.DialogWindowAnimationAlpha);
         app = (EdusohoApp) mContext.getApplication();
     }
 
@@ -111,7 +110,6 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
 
     private void initView() {
         mCancel = findViewById(R.id.net_school_cancel_search_btn);
-        mtv = (TextView) findViewById(R.id.net_school_tv);
         mSearchEdt = (EdusohoAutoCompleteTextView) findViewById(R.id.school_url_edit);
         mListView = (ListView) findViewById(R.id.net_school_listview);
         List<Map<String, Object>> list = SchoolUtil.loadEnterSchool(mContext);
@@ -119,7 +117,6 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
             Collections.reverse(list);
             mList = list;
         } else {
-            mtv.setVisibility(View.GONE);
             mList = new ArrayList<>();
         }
         adapter = new MyAdapter(mContext);
@@ -417,6 +414,11 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
         if (mContext instanceof QrSchoolActivity) {
             ((QrSchoolActivity) mContext).onMessageEvent();
         }
+    }
+
+    @Override
+    public void show() {
+        super.show();
     }
 }
 
