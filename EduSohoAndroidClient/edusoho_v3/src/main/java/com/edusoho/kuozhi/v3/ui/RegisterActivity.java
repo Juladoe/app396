@@ -1,56 +1,43 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.view.animation.FastOutLinearInInterpolator;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.register.MsgCode;
-import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.google.gson.reflect.TypeToken;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.google.gson.internal.UnsafeAllocator.create;
-
 /**
- * Created by JesseHuang on 15/6/8.
+ * Created by DF on 2016/11/28.
  */
+
 public class RegisterActivity extends ActionBarBaseActivity {
     private EditText etAccount;
     private EduSohoLoadingButton btnNext;
     private ImageView ivBack;
+    private TextView tvInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +50,8 @@ public class RegisterActivity extends ActionBarBaseActivity {
     }
 
     private void initView() {
+        tvInfo = (TextView) findViewById(R.id.tv_info);
+        tvInfo.setText("完善信息");
         etAccount = (EditText) findViewById(R.id.et_phone_num);
         btnNext = (EduSohoLoadingButton) findViewById(R.id.btn_next);
         btnNext.setOnClickListener(nextClickListener);
@@ -100,7 +89,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                                 startActivity(registerIntent);
                             } else {
                                 if (response.equals("该手机号码已被其他用户绑定")) {
-                                    showDialogrem();
+                                    showDialog();
                                 }
                             }
                         } catch (Exception e) {
@@ -117,7 +106,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
     /**
      * 弹窗提示已注册
      */
-    private void showDialogrem() {
+    private void showDialog() {
         final Dialog dialog = new Dialog(this, R.style.RegisterDialogStyle);
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_register, null);
         dialog.setContentView(view);
@@ -126,14 +115,16 @@ public class RegisterActivity extends ActionBarBaseActivity {
         tvCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.cancel();
-                CommonUtil.longToast(mContext,"请更换手机号码");
-            }
+                 dialog.cancel();
+                 CommonUtil.longToast(mContext,"请更换手机号码");
+
+                }
         });
         tvConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 app.mEngine.runNormalPlugin("LoginActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
             }
         });
         dialog.show();
@@ -148,6 +139,3 @@ public class RegisterActivity extends ActionBarBaseActivity {
         return m.matches();
     }
 }
-
-
-
