@@ -22,6 +22,8 @@
     <string name="login_loading">正在登录...</string>
     <string name="login_success">登录成功</string>
     <string name="register">注册</string>
+    <string name="register_next">下一步</string>
+    <string name="register_confirm">确定</string>
     <string name="register_loading">正在注册...</string>
     <string name="register_success">正在成功</string>
     <string name="course_study_entrance">进入学习</string>
@@ -82,7 +84,7 @@
     <!--Button-->
     <string name="reg_phone_reg">手机注册</string>
     <string name="reg_mail_reg">邮箱注册</string>
-    <string name="reg_send_code">发送验证码</string>
+    <string name="reg_send_code">重新获取验证码</string>
     <string name="del_record_and_quit_classroom">删除并退出班级</string>
     <string name="del_record_and_quit_course">删除并退出学习</string>
 
@@ -101,6 +103,7 @@
     <string name="course_params_error">课程参数不正确</string>
     <string name="player_exit_dialog_title">提醒</string>
     <string name="player_exit_dialog_msg">是否退出播放</string>
+    <string name="register_hint">该手机号码已被其他用户绑定</string>
 
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>
