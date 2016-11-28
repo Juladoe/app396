@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <include layout="@layout/common_layout"/>
+
+    <TextView
+        android:textSize="@dimen/base_x_large_size"
+        android:text="账号注册"
+        android:layout_marginTop="15dp"
+        android:layout_gravity="center_horizontal"
+        android:textColor="#2b333b"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        >
+
+        <EditText
+            android:id="@+id/et_register_account"
+            style="@style/edittext_style"
+            android:hint="@string/reg_phone_hint"
+            android:maxLength="11"
+            />
+
+        <View
+            android:background="#d8d8d8"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginTop="30dp"
+            android:layout_below="@id/et_register_account"/>
+
+    </RelativeLayout>
+
+    <com.edusoho.kuozhi.v3.view.EduSohoLoadingButton
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="30dp"
+        app:init_background="@drawable/login_btn_normal"
+        app:init_text="@string/register_next" />
+
+</LinearLayout>
