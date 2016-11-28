@@ -417,7 +417,8 @@
     <color name="red_primary">#ea3329</color>
     <color name="green_primary">#70d445</color>
     <color name="blue_primary">#0099ff</color>
-    <color name="find_password_color">#2B333B</color>
+    <color name="edit_text_color">#2B333B</color>
+    <color name="underline_color">#D8D8D8</color>
 
     <!-- pym color -->
     <color name="btn_bg">#ff884a</color>

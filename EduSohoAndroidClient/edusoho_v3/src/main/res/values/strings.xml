@@ -74,6 +74,8 @@
     <string name="input_reset_password">请输入密码</string>
     <string name="find_password_next">下一步</string>
     <string name="find_password_submit">确定</string>
+    <string name="find_password_text_not_null">手机号或邮箱不能为空</string>
+    <string name="phone_or_mail_format_error">手机号或邮箱格式不正确</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
