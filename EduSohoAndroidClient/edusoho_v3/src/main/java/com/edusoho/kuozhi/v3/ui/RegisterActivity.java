@@ -56,14 +56,14 @@ public class RegisterActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
-        setContentView(R.layout.activity_new_register);
+        setContentView(R.layout.activity_register);
         setBackMode(BACK, "");
         hideActionBar();
         initView();
     }
 
     private void initView() {
-        etAccount = (EditText) findViewById(R.id.et_register_account);
+        etAccount = (EditText) findViewById(R.id.et_phone_num);
         btnNext = (EduSohoLoadingButton) findViewById(R.id.btn_next);
         btnNext.setOnClickListener(nextClickListener);
         ivBack = (ImageView) findViewById(R.id.iv_back);
@@ -147,8 +147,6 @@ public class RegisterActivity extends ActionBarBaseActivity {
         Matcher m = p.matcher(str);
         return m.matches();
     }
-
-
 }
 
 
