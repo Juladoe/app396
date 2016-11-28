@@ -124,9 +124,10 @@ public class TestpaperCardFragment extends DialogFragment {
                             continue;
                         }
 
+                        int position = 0;
                         for (Object object : answer.data) {
                             params.put(
-                                    String.format("data[%d][]", questionTypeSeq.questionId),
+                                    String.format("data[%d][%d]", questionTypeSeq.questionId, position++),
                                     object.toString());
                         }
                     }
