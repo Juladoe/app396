@@ -177,8 +177,8 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         });
         mAnimatorUpSet = new AnimatorSet();
         mAnimatorDownSet = new AnimatorSet();
-        mAnimatorUpSet.setDuration(400);
-        mAnimatorDownSet.setDuration(400);
+        mAnimatorUpSet.setDuration(300);
+        mAnimatorDownSet.setDuration(300);
         mAnimatorUpSet.play(mAnimatorUp);
         mAnimatorDownSet.play(mAnimatorDown);
     }

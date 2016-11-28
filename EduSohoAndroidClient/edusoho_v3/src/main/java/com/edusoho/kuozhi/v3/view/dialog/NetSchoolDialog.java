@@ -27,8 +27,11 @@ import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
+import com.edusoho.kuozhi.v3.model.provider.NetSchoolProvider;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.Error;
 import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
@@ -158,8 +161,19 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                     return true;
                 }
                 String searchStr = mSearchEdt.getText().toString();
-                saveSearchHistory(searchStr);
-                searchSchool(searchStr);
+                if(searchStr.length()>0){
+                    new NetSchoolProvider(mContext).getNetSchool("").success(
+                            new NormalCallback<Object>() {
+                                @Override
+                                public void success(Object obj) {
+
+                                }
+                            }
+                    );
+                }
+//                saveSearchHistory(searchStr);
+//                searchSchool(searchStr);
+
                 return true;
             }
         });
