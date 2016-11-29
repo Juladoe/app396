@@ -103,12 +103,7 @@ public class M3U8DownService extends Service {
             if (downloadModel == null) {
                 return;
             }
-            M3U8Util m3U8Util = mM3U8UitlList.get(downloadModel.targetId);
-            if (m3U8Util == null) {
-                return;
-            }
-            m3U8Util.updateDownloadStatus(downloadModel, DownloadManager.STATUS_SUCCESSFUL);
-            updateM3U8DownloadStatus(m3U8Util, downloadModel.targetId);
+            mThreadPoolExecutor.submit(new UpdateRunnable(reference, downloadModel));
         }
     };
 
@@ -369,6 +364,32 @@ public class M3U8DownService extends Service {
                 continue;
             }
             startTask(m3U8DbModel.lessonId, lessonItem.courseId, lessonItem.title);
+        }
+    }
+
+    /*
+        update thread task
+     */
+    class UpdateRunnable implements Runnable {
+
+        private long reference;
+        private DownloadModel downloadModel;
+
+        public UpdateRunnable(long reference, DownloadModel downloadModel) {
+            this.reference = reference;
+            this.downloadModel = downloadModel;
+        }
+
+        @Override
+        public void run() {
+            Log.d(TAG, "update thread:" + Thread.currentThread());
+
+            M3U8Util m3U8Util = mM3U8UitlList.get(downloadModel.targetId);
+            if (m3U8Util == null) {
+                return;
+            }
+            m3U8Util.updateDownloadStatus(downloadModel, DownloadManager.STATUS_SUCCESSFUL);
+            updateM3U8DownloadStatus(m3U8Util, downloadModel.targetId);
         }
     }
 }
