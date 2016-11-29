@@ -46,7 +46,6 @@ public class FindPasswordFragment extends BaseFragment {
                 if (getActivity() != null && getActivity() instanceof ForgetPasswordActivity) {
                     ForgetPasswordActivity forgetPasswordActivity = (ForgetPasswordActivity) getActivity();
                     Bundle bundle = new Bundle();
-
                     if (Validator.isMail(etPhoneOrMail.getText().toString().trim())) {
                         bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
                         forgetPasswordActivity.switchFragment("FindPasswordByMailFragment", bundle);
