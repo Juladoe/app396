@@ -14,7 +14,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
  * Created by DEL on 2016/11/24.
  */
 
-public class BaseNoTitleActivity extends BaseActivity  implements MessageEngine.MessageCallback  {
+public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.MessageCallback  {
 
     protected int mRunStatus;
 
@@ -70,6 +70,5 @@ public class BaseNoTitleActivity extends BaseActivity  implements MessageEngine.
     protected void onDestroy() {
         super.onDestroy();
         app.unRegistMsgSource(this);
-
     }
 }
