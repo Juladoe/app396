@@ -1,10 +1,7 @@
 package com.edusoho.kuozhi.v3.view.dialog;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -25,23 +21,20 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.entity.site.Site;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.Classroom;
+import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
-import com.edusoho.kuozhi.v3.model.provider.NetSchoolProvider;
+import com.edusoho.kuozhi.v3.model.bal.site.SiteModel;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.sys.Error;
 import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.Token;
-import com.edusoho.kuozhi.v3.ui.QrSchoolActivity;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
@@ -49,16 +42,10 @@ import com.edusoho.kuozhi.v3.view.EdusohoAutoCompleteTextView;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -73,8 +60,8 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
     protected LoadDialog mLoading;
     private ArrayList<String> mSchoolList;
     private ListView mListView;
-    private List<Map<String, Object>> mList;
-    private MyAdapter adapter;
+    private List<Site> mList = new ArrayList<>();
+    private MyAdapter mAdapter;
     private View mCancel;
     private BaseActivity mContext;
     public EdusohoApp app;
@@ -112,15 +99,8 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
         mCancel = findViewById(R.id.net_school_cancel_search_btn);
         mSearchEdt = (EdusohoAutoCompleteTextView) findViewById(R.id.school_url_edit);
         mListView = (ListView) findViewById(R.id.net_school_listview);
-        List<Map<String, Object>> list = SchoolUtil.loadEnterSchool(mContext);
-        if (list != null && list.size() != 0) {
-            Collections.reverse(list);
-            mList = list;
-        } else {
-            mList = new ArrayList<>();
-        }
-        adapter = new MyAdapter(mContext);
-        mListView.setAdapter(adapter);
+        mAdapter = new MyAdapter(mContext);
+        mListView.setAdapter(mAdapter);
         mSearchEdt.setKeyDownCallback(new EdusohoAutoCompleteTextView.KeyDownCallback() {
             @Override
             public void invoke(int length) {
@@ -159,18 +139,26 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 }
                 String searchStr = mSearchEdt.getText().toString();
                 if (searchStr.length() > 0) {
-//                    new NetSchoolProvider(mContext).getNetSchool("").success(
-//                            new NormalCallback<Object>() {
-//                                @Override
-//                                public void success(Object obj) {
-//
-//                                }
-//                            }
-//                    );
-                }
-                saveSearchHistory(searchStr);
-                searchSchool(searchStr);
+                    mLoading = LoadDialog.create(mContext);
+                    mLoading.show();
+                    SiteModel.getSite(searchStr, new ResponseCallbackListener<List<Site>>() {
+                        @Override
+                        public void onSuccess(List<Site> data) {
+                            mLoading.hide();
+                            mList.clear();
+                            mList.addAll(data);
+                            mAdapter.notifyDataSetChanged();
+                        }
 
+                        @Override
+                        public void onFailure(String code, String message) {
+                            mLoading.hide();
+                        }
+                    });
+                    mSearchEdt.setText("");
+                }
+//                saveSearchHistory(searchStr);
+//                searchSchool(searchStr);
                 return true;
             }
         });
@@ -380,7 +368,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            holder.schoolTv.setText((String) mList.get(position).get("schoolname"));
+            holder.schoolTv.setText(mList.get(position).getSiteName());
             convertView.setTag(R.id.net_school_tv, position);
             convertView.setOnClickListener(mOnClickListener);
             return convertView;
@@ -391,8 +379,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
             @Override
             public void onClick(View v) {
                 int position = (int) v.getTag(R.id.net_school_tv);
-                HashMap map = (HashMap) mList.get(position);
-                String schoolhost = map.get("schoolhost").toString();
+                String schoolhost = mList.get(position).getSiteUrl();
                 searchSchool(schoolhost);
             }
         };
@@ -410,8 +397,8 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
     public void dismiss() {
         super.dismiss();
         Bundle bundle = new Bundle();
-        bundle.putString("class","QrSchoolActivity");
-        app.sendMessage(Const.DIALOG_DISMISS,bundle);
+        bundle.putString("class", "QrSchoolActivity");
+        app.sendMessage(Const.DIALOG_DISMISS, bundle);
     }
 
     @Override

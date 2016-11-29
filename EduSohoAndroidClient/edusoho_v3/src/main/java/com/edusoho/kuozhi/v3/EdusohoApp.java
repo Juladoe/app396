@@ -688,6 +688,14 @@ public class EdusohoApp extends Application {
         return requestUrl;
     }
 
+    public RequestUrl bindNewHostUrl(String url, boolean addToken) {
+        RequestUrl requestUrl = new RequestUrl(url);
+        if (addToken) {
+            requestUrl.heads.put("X-Auth-Token", token);
+        }
+        return requestUrl;
+    }
+
     public RequestUrl bindPushUrl(String url) {
         StringBuffer sb = new StringBuffer(Const.PUSH_HOST);
         sb.append(url);
