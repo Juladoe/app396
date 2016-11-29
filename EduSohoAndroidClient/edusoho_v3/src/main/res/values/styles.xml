@@ -109,6 +109,10 @@
         <item name="android:activityOpenExitAnimation">@anim/activity_open_exit</item>
         <item name="android:activityCloseEnterAnimation">@anim/activity_open_exit</item>
         <item name="android:activityCloseExitAnimation">@anim/activity_open_enter</item>
+        <item name="android:fragmentOpenEnterAnimation">@anim/in_from_right</item>
+        <item name="android:fragmentOpenExitAnimation">@anim/out_from_left</item>
+        <item name="android:fragmentCloseEnterAnimation">@anim/in_from_left</item>
+        <item name="android:fragmentCloseExitAnimation">@anim/out_from_left</item>
     </style>
 
     <style name="SlideToWindowAnimTheme">
@@ -116,6 +120,10 @@
         <item name="android:activityOpenExitAnimation">@anim/out_from_left</item>
         <item name="android:activityCloseEnterAnimation">@anim/in_from_left</item>
         <item name="android:activityCloseExitAnimation">@anim/out_from_right</item>
+        <item name="android:fragmentOpenEnterAnimation">@anim/in_from_right</item>
+        <item name="android:fragmentOpenExitAnimation">@anim/out_from_left</item>
+        <item name="android:fragmentCloseEnterAnimation">@anim/in_from_left</item>
+        <item name="android:fragmentCloseExitAnimation">@anim/out_from_left</item>
     </style>
 
     <style name="EdusohoActionBarMenuTextStyle" parent="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu">

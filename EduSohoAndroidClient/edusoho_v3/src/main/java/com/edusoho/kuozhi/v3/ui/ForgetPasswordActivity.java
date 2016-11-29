@@ -1,15 +1,14 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByPhoneFragment;
 
 /**
  * Created by JesseHuang on 2016/11/25.
@@ -37,6 +36,11 @@ public class ForgetPasswordActivity extends ActionBarBaseActivity {
     public void showFragment(String fragmentTag, final Bundle fragmentBundle) {
         Fragment fragment;
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        fragmentTransaction.setCustomAnimations(R.anim.fragment_slide_left_enter,
+                R.anim.fragment_slide_left_exit,
+                R.anim.fragment_slide_right_enter,
+                R.anim.fragment_slide_right_exit);
         fragment = mFragmentManager.findFragmentByTag(fragmentTag);
         if (fragment != null) {
             fragmentTransaction.show(fragment);
@@ -59,7 +63,7 @@ public class ForgetPasswordActivity extends ActionBarBaseActivity {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         Fragment fragment = mFragmentManager.findFragmentByTag(fragmentTag);
         if (fragment != null) {
-            fragmentTransaction.hide(fragment);
+            fragmentTransaction.remove(fragment);
         }
         fragmentTransaction.commit();
     }
