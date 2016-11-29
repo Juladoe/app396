@@ -22,6 +22,16 @@
             android:textColor="#71777D"
             android:textSize="@dimen/medium_font_size" />
 
+        <ImageView
+            android:id="@+id/saoyisao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:paddingBottom="13dp"
+            android:paddingRight="15dp"
+            android:paddingTop="13dp"
+            android:src="@drawable/icon_saoyisao_light" />
+
         <LinearLayout
             android:id="@+id/input_email_layout"
             android:layout_width="match_parent"
@@ -73,8 +83,8 @@
                     android:layout_centerVertical="false"
                     android:layout_marginTop="15dp"
                     android:hint="@string/reg_password_hint"
-                    android:paddingBottom="5dp"
                     android:inputType="textPassword"
+                    android:paddingBottom="5dp"
                     android:paddingTop="5dp"
                     android:textSize="@dimen/x_medium_font_size" />
 
@@ -161,11 +171,11 @@
                     android:id="@+id/txt_three"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerHorizontal="true"
                     android:text="@string/txt_three"
                     android:textColor="#BDC2C6"
-                    android:textSize="@dimen/_x_small_font_size"
-                    android:layout_alignParentTop="true"
-                    android:layout_centerHorizontal="true" />
+                    android:textSize="@dimen/_x_small_font_size" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -207,13 +217,12 @@
                 android:id="@+id/tv_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/netclass"
-                android:textSize="@dimen/_x_small_font_size"
                 android:layout_gravity="center_horizontal"
-                android:textColor="#BDC2C6"
-                android:layout_marginTop="30dp"
                 android:layout_marginBottom="30dp"
-                />
+                android:layout_marginTop="30dp"
+                android:text="@string/netclass"
+                android:textColor="#BDC2C6"
+                android:textSize="@dimen/_x_small_font_size" />
         </LinearLayout>
     </RelativeLayout>
 </ScrollView>

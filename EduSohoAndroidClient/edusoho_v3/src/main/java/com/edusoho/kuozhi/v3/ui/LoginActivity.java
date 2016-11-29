@@ -27,6 +27,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
+import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -40,6 +41,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static com.edusoho.kuozhi.v3.ui.QrSchoolActivity.REQUEST_QR;
 
 /**
  * Created by JesseHuang on 15/5/22.
@@ -59,6 +62,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private TextView tvMore;
     private TextView tvRegister;
     private String mAuthCancel;
+    private View vSao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +87,16 @@ public class LoginActivity extends BaseNoTitleActivity {
         ivWeixin.setOnClickListener(mWeChatLoginClickListener);
         tvMore = (TextView) findViewById(R.id.tv_more);
         tvRegister = (TextView) findViewById(R.id.txt_register);
+        vSao = findViewById(R.id.saoyisao);
 
+        vSao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent qrIntent = new Intent();
+                qrIntent.setClass(LoginActivity.this, CaptureActivity.class);
+                startActivityForResult(qrIntent, REQUEST_QR);
+            }
+        });
         tvMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
