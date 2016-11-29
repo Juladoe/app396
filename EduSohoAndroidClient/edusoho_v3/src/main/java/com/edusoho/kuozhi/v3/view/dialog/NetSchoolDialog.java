@@ -158,18 +158,18 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                     return true;
                 }
                 String searchStr = mSearchEdt.getText().toString();
-                if(searchStr.length()>0){
-                    new NetSchoolProvider(mContext).getNetSchool("").success(
-                            new NormalCallback<Object>() {
-                                @Override
-                                public void success(Object obj) {
-
-                                }
-                            }
-                    );
+                if (searchStr.length() > 0) {
+//                    new NetSchoolProvider(mContext).getNetSchool("").success(
+//                            new NormalCallback<Object>() {
+//                                @Override
+//                                public void success(Object obj) {
+//
+//                                }
+//                            }
+//                    );
                 }
-//                saveSearchHistory(searchStr);
-//                searchSchool(searchStr);
+                saveSearchHistory(searchStr);
+                searchSchool(searchStr);
 
                 return true;
             }
@@ -381,10 +381,11 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 holder = (ViewHolder) convertView.getTag();
             }
             holder.schoolTv.setText((String) mList.get(position).get("schoolname"));
-            convertView.setTag(R.id.net_school_tv,position);
+            convertView.setTag(R.id.net_school_tv, position);
             convertView.setOnClickListener(mOnClickListener);
             return convertView;
         }
+
         private ViewHolder holder;
         View.OnClickListener mOnClickListener = new View.OnClickListener() {
             @Override
@@ -408,12 +409,9 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
     @Override
     public void dismiss() {
         super.dismiss();
-        /**
-         * 需解耦
-         */
-        if (mContext instanceof QrSchoolActivity) {
-            ((QrSchoolActivity) mContext).onMessageEvent();
-        }
+        Bundle bundle = new Bundle();
+        bundle.putString("class","QrSchoolActivity");
+        app.sendMessage(Const.DIALOG_DISMISS,bundle);
     }
 
     @Override

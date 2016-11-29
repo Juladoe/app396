@@ -6,18 +6,24 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 
 /**
  * Created by DEL on 2016/11/24.
  */
 
-public class BaseNoTitleActivity extends BaseActivity {
+public class BaseNoTitleActivity extends BaseActivity  implements MessageEngine.MessageCallback  {
+
+    protected int mRunStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        setSupportActionBar(null);
         super.onCreate(savedInstanceState);
+        app.registMsgSource(this);
     }
 
     protected void initView() {
@@ -31,5 +37,39 @@ public class BaseNoTitleActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[0];
+    }
+
+    @Override
+    public int getMode() {
+        return REGIST_CLASS;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mRunStatus = MSG_RESUME;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mRunStatus = MSG_PAUSE;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        app.unRegistMsgSource(this);
+
     }
 }

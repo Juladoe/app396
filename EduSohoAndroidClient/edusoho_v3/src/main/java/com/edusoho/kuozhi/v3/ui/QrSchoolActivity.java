@@ -32,9 +32,11 @@ import com.edusoho.kuozhi.v3.model.result.SchoolResult;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.Error;
 import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.Token;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
@@ -137,16 +139,20 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         mAnimatorUp.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
+
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
+//                if(!isShow){
                 netSchoolDialog.show();
+//                }
+//                isShow = false;
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
-
+//                isShow = false;
             }
 
             @Override
@@ -157,17 +163,19 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         mAnimatorDown.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-
+//                isShow = true;
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 mSearchLayout.setEnabled(true);
+//                isShow = false;
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
                 mSearchLayout.setEnabled(true);
+//                isShow = false;
             }
 
             @Override
@@ -182,6 +190,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         mAnimatorUpSet.play(mAnimatorUp);
         mAnimatorDownSet.play(mAnimatorDown);
     }
+//    private boolean isShow = false;
 
     ValueAnimator.AnimatorUpdateListener mBottomListener =
             new ValueAnimator.AnimatorUpdateListener() {
@@ -193,12 +202,18 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                     params.height = value;
                     mBackground.setLayoutParams(params);
                     float scale = (float) (AppUtil.px2dp(QrSchoolActivity.this, value) - 52) / 178f;
+//                    if(!isShow){
+//                        if(scale < 0.8f){
+//                            netSchoolDialog.show();
+//                            isShow = true;
+//                        }
+//                    }
                     mBottomLayout.setAlpha(scale);
                     RelativeLayout.LayoutParams searchParams =
                             (RelativeLayout.LayoutParams) mSearchAllLayout.getLayoutParams();
-                    float bottom = (1f - scale) * 40f;
+                    float bottom = (1f - scale) * 38f;
                     searchParams.height = AppUtil
-                            .dp2px(QrSchoolActivity.this, 34f + scale * 26f);
+                            .dp2px(QrSchoolActivity.this, 36f + scale * 24f);
                     searchParams.setMargins(AppUtil.dp2px(QrSchoolActivity.this, 13),
                             0,
                             AppUtil.dp2px(QrSchoolActivity.this, 13f + (1f - scale) * 42f),
@@ -207,7 +222,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                     RelativeLayout.LayoutParams txtParams =
                             (RelativeLayout.LayoutParams) mSearchTv.getLayoutParams();
                     txtParams.setMargins(
-                            AppUtil.dp2px(QrSchoolActivity.this, 13f * scale),0,0,0);
+                            AppUtil.dp2px(QrSchoolActivity.this, 13f * scale), 0, 0, 0);
                     mSearchTv.setLayoutParams(txtParams);
                 }
             };
@@ -609,6 +624,22 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
      */
     //@Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent() {
+//        isShow = true;
         mAnimatorDownSet.start();
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        Bundle bundle = message.data;
+        String clazz = bundle.getString("class");
+        if (clazz != null && clazz.equals(getClass().getSimpleName())) {
+            mAnimatorDownSet.start();
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{
+                new MessageType(Const.DIALOG_DISMISS)};
     }
 }
