@@ -84,17 +84,20 @@ public class ForgetPasswordActivity extends ActionBarBaseActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCurrentTag != null) {
-                    if ("FindPasswordFragment".equals(mCurrentTag)) {
-                        onBackPressed();
-                    } else {
-                        removeFragment(mCurrentTag);
-                        showFragment("FindPasswordFragment", null);
-                    }
-                }
+                onBackPressed();
             }
         };
     }
 
-
+    @Override
+    public void onBackPressed() {
+        if (mCurrentTag != null) {
+            if ("FindPasswordFragment".equals(mCurrentTag)) {
+                super.onBackPressed();
+            } else {
+                removeFragment(mCurrentTag);
+                showFragment("FindPasswordFragment", null);
+            }
+        }
+    }
 }
