@@ -32,8 +32,11 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by howzhi on 14-9-19.
@@ -106,7 +109,7 @@ public class TestpaperCardFragment extends DialogFragment {
                 PaperResult paperResult = mTestpaperActivity.getTestpaperResult();
                 RequestUrl requestUrl = mTestpaperActivity.app.bindUrl(
                         Const.FINISH_TESTPAPER, true);
-                IdentityHashMap<String, String> params = requestUrl.initKeysMap();
+                Map<String, String> params = requestUrl.getParams();
                 params.put("usedTime", mTestpaperActivity.getUsedTime() + "");
                 params.put("id", paperResult.id + "");
 

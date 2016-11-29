@@ -85,6 +85,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import cn.trinea.android.common.util.ToastUtils;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
@@ -614,7 +615,7 @@ public class IMDiscussFragment extends BaseFragment implements
     public void saveUploadResult(String putUrl, String getUrl, int fromId) {
         String path = String.format(Const.SAVE_UPLOAD_INFO, fromId);
         RequestUrl url = app.bindPushUrl(path);
-        HashMap<String, String> hashMap = url.getParams();
+        Map<String, String> hashMap = url.getParams();
         hashMap.put("putUrl", putUrl);
         hashMap.put("getUrl", getUrl);
         mActivity.ajaxPost(url, new Response.Listener<String>() {

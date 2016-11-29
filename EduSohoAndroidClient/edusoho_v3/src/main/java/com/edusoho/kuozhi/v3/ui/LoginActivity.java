@@ -119,7 +119,7 @@ public class LoginActivity extends ActionBarBaseActivity {
 
     private void login() {
         RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
-        HashMap<String, String> params = requestUrl.getParams();
+        Map<String, String> params = requestUrl.getParams();
         params.put("_username", etUsername.getText().toString().trim());
         params.put("_password", etPassword.getText().toString().trim());
 

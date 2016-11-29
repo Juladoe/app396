@@ -36,6 +36,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -287,7 +288,7 @@ public class FriendNewsActivity extends ActionBarBaseActivity {
                 public void onClick(View view) {
                     RequestUrl requestUrl = app.bindNewUrl(Const.ADD_FRIEND, true);
                     requestUrl.url = String.format(requestUrl.url, Integer.parseInt(fn.content.userId));
-                    HashMap<String, String> params = requestUrl.getParams();
+                    Map<String, String> params = requestUrl.getParams();
                     params.put("method", "follow");
                     params.put("userId", app.loginUser.id + "");
                     ajaxPost(requestUrl, new Response.Listener<String>() {
