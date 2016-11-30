@@ -1,6 +1,6 @@
 <resources>
 
-    <!--kuozhi 4.0 color guideline-->
+    <!--kuozhi 4.0 font size guideline-->
 
     <dimen name="font_xxl">20sp</dimen>
     <dimen name="font_xl">17sp</dimen>
