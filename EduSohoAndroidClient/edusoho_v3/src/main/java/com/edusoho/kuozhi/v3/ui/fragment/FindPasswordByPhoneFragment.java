@@ -1,11 +1,16 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -19,18 +24,28 @@ import com.edusoho.kuozhi.v3.ui.ForgetPasswordActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.ToastUtil;
 
+import java.lang.ref.WeakReference;
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by JesseHuang on 2016/11/27.
  */
 
 public class FindPasswordByPhoneFragment extends BaseFragment {
 
-
+    private static final int PHONE_RETRIEVE_TIME = 120;
     private TextView tvPhoneSmsCodeHint;
     private EditText etSmsCode;
     private EditText etResetPassword;
     private Button btnSubmit;
     private CheckBox cbShowOrHidePassword;
+    private TextView tvPhoneCodeTimer;
+    private TextView tvRetrievePhoneCode;
+    private ImageView ivErasePhoneCode;
+    private ImageView ivErasePassword;
+    private Timer mTimer;
+    private TimerHandler mTimerHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,6 +57,18 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initData();
+        mTimer = new Timer();
+        mTimerHandler = new TimerHandler(this);
+        mTimer.schedule(getTimerTimerTask(), 0, 1000);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
     }
 
     @Override
@@ -52,15 +79,31 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
         etResetPassword = (EditText) view.findViewById(R.id.et_reset_password);
         cbShowOrHidePassword = (CheckBox) view.findViewById(R.id.cb_show_or_hide_password);
         btnSubmit = (Button) view.findViewById(R.id.btn_submit);
-
+        tvPhoneCodeTimer = (TextView) view.findViewById(R.id.tv_code_timer);
+        tvRetrievePhoneCode = (TextView) view.findViewById(R.id.tv_retrieve_phone_code);
+        ivErasePhoneCode = (ImageView) view.findViewById(R.id.iv_erase_phone_code);
+        ivErasePassword = (ImageView) view.findViewById(R.id.iv_erase_password);
+        ivErasePhoneCode.setOnClickListener(getEraseInfoClickListener());
+        ivErasePassword.setOnClickListener(getEraseInfoClickListener());
         btnSubmit.setOnClickListener(getSubmitClickListener());
         cbShowOrHidePassword.setOnCheckedChangeListener(getShowOrHidePasswordChangeListener());
+        tvRetrievePhoneCode.setOnClickListener(getRetrievePhoneCodeClickListener());
     }
 
     private void initData() {
         if (getArguments() != null && getArguments().getString(ForgetPasswordActivity.RESET_INFO) != null) {
             tvPhoneSmsCodeHint.setText(getString(R.string.phone_code_input_hint) + getArguments().getString(ForgetPasswordActivity.RESET_INFO));
         }
+    }
+
+    private TimerTask getTimerTimerTask() {
+        return new TimerTask() {
+            @Override
+            public void run() {
+                Message msg = mTimerHandler.obtainMessage();
+                msg.sendToTarget();
+            }
+        };
     }
 
     private View.OnClickListener getSubmitClickListener() {
@@ -85,6 +128,37 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
         };
     }
 
+    private View.OnClickListener getRetrievePhoneCodeClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (tvPhoneCodeTimer.getVisibility() != View.VISIBLE) {
+                    // TODO: 2016/11/30
+                    if (mTimer == null) {
+                        mTimer = new Timer();
+                    }
+                    mTimer.schedule(getTimerTimerTask(), 0, 1000);
+                    tvRetrievePhoneCode.setText(getString(R.string.after_retrieve_phone_code));
+                    tvRetrievePhoneCode.setTextColor(getResources().getColor(R.color.secondary2_font_color));
+                    tvPhoneCodeTimer.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+    }
+
+    private View.OnClickListener getEraseInfoClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (v.getId() == R.id.iv_erase_password) {
+                    etResetPassword.setText("");
+                } else if (v.getId() == R.id.iv_erase_phone_code) {
+                    etSmsCode.setText("");
+                }
+            }
+        };
+    }
+
     private CompoundButton.OnCheckedChangeListener getShowOrHidePasswordChangeListener() {
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -97,5 +171,33 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                 etResetPassword.setSelection(etResetPassword.getText().toString().length());
             }
         };
+    }
+
+
+    private static class TimerHandler extends Handler {
+        private final WeakReference<FindPasswordByPhoneFragment> mFragment;
+        int limitTime = PHONE_RETRIEVE_TIME;
+
+        public TimerHandler(FindPasswordByPhoneFragment fragment) {
+            mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            FindPasswordByPhoneFragment fragment = mFragment.get();
+            if (fragment != null) {
+                if (limitTime > 0) {
+                    limitTime = limitTime - 1;
+                    fragment.tvPhoneCodeTimer.setText(limitTime + "s");
+                } else {
+                    fragment.tvRetrievePhoneCode.setText(fragment.getString(R.string.retrieve_phone_code));
+                    fragment.tvRetrievePhoneCode.setTextColor(fragment.getResources().getColor(R.color.secondary2_color));
+                    fragment.tvPhoneCodeTimer.setVisibility(View.INVISIBLE);
+                    limitTime = PHONE_RETRIEVE_TIME;
+                    fragment.mTimer.cancel();
+                    fragment.mTimer = null;
+                }
+            }
+        }
     }
 }
