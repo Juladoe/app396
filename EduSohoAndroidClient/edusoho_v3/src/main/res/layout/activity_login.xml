@@ -19,7 +19,7 @@
             android:paddingTop="14dp"
             android:privateImeOptions="15dp"
             android:text="@string/font_wrong"
-            android:textColor="#71777D"
+            android:textColor="@color/secondary_font_color"
             android:textSize="@dimen/medium_font_size" />
 
         <ImageView
@@ -44,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/txt_login"
-                android:textColor="#2B333B"
+                android:textColor="@color/primary_font_color"
                 android:textSize="@dimen/large_font_size" />
 
             <RelativeLayout
@@ -68,7 +68,7 @@
                     android:layout_height="1dp"
                     android:layout_below="@+id/et_username"
                     android:layout_marginTop="10dp"
-                    android:background="#D8D8D8" />
+                    android:background="@color/disabled_hint_color" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -93,7 +93,7 @@
                     android:layout_height="1dp"
                     android:layout_below="@+id/et_password"
                     android:layout_marginTop="10dp"
-                    android:background="#D8D8D8" />
+                    android:background="@color/disabled_hint_color" />
             </RelativeLayout>
 
             <com.edusoho.kuozhi.v3.view.EduSohoLoadingButton
@@ -121,7 +121,7 @@
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
-                    android:background="#D8D8D8" />
+                    android:background="@color/disabled_hint_color" />
 
                 <TextView
                     android:id="@+id/txt_forget"
@@ -130,7 +130,7 @@
                     android:layout_marginRight="13dp"
                     android:layout_toLeftOf="@+id/line_center"
                     android:text="@string/login_forget_password"
-                    android:textColor="#BDC2C6"
+                    android:textColor="@color/secondary2_font_color"
                     android:textSize="@dimen/_x_small_font_size" />
 
                 <TextView
@@ -140,7 +140,7 @@
                     android:layout_marginLeft="13dp"
                     android:layout_toRightOf="@+id/line_center"
                     android:text="@string/login_register2"
-                    android:textColor="#03C777"
+                    android:textColor="@color/primary_color"
                     android:textSize="@dimen/_x_small_font_size" />
             </RelativeLayout>
 
@@ -157,7 +157,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
                     android:layout_toLeftOf="@+id/txt_three"
-                    android:background="#D8D8D8" />
+                    android:background="@color/disabled_hint_color" />
 
                 <View
                     android:layout_width="match_parent"
@@ -165,7 +165,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@+id/txt_three"
-                    android:background="#D8D8D8" />
+                    android:background="@color/disabled_hint_color" />
 
                 <TextView
                     android:id="@+id/txt_three"
@@ -174,7 +174,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
                     android:text="@string/txt_three"
-                    android:textColor="#BDC2C6"
+                    android:textColor="@color/secondary2_font_color"
                     android:textSize="@dimen/_x_small_font_size" />
             </RelativeLayout>
 
@@ -221,7 +221,7 @@
                 android:layout_marginBottom="30dp"
                 android:layout_marginTop="30dp"
                 android:text="@string/netclass"
-                android:textColor="#BDC2C6"
+                android:textColor="@color/secondary2_font_color"
                 android:textSize="@dimen/_x_small_font_size" />
         </LinearLayout>
     </RelativeLayout>
