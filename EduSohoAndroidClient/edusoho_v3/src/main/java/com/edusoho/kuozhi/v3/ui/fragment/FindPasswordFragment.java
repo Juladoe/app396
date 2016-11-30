@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
@@ -20,6 +21,7 @@ public class FindPasswordFragment extends BaseFragment {
 
     private Button btnNext;
     private EditText etPhoneOrMail;
+    private ImageView ivErase;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,9 @@ public class FindPasswordFragment extends BaseFragment {
         super.initView(view);
         btnNext = (Button) view.findViewById(R.id.btn_next);
         etPhoneOrMail = (EditText) view.findViewById(R.id.et_phone_or_mail);
+        ivErase = (ImageView) view.findViewById(R.id.iv_erase);
         btnNext.setOnClickListener(getNextClickListener());
+        ivErase.setOnClickListener(getEraseInfoClickListener());
     }
 
     private View.OnClickListener getNextClickListener() {
@@ -56,6 +60,15 @@ public class FindPasswordFragment extends BaseFragment {
                         ToastUtil.getInstance(mContext).makeText(getString(R.string.phone_or_mail_format_error), Toast.LENGTH_LONG).show();
                     }
                 }
+            }
+        };
+    }
+
+    private View.OnClickListener getEraseInfoClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etPhoneOrMail.setText("");
             }
         };
     }

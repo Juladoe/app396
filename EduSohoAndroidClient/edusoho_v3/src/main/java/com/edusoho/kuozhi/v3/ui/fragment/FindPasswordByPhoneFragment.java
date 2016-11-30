@@ -2,10 +2,15 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +30,7 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
     private EditText etSmsCode;
     private EditText etResetPassword;
     private Button btnSubmit;
+    private CheckBox cbShowOrHidePassword;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,10 +48,13 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
         tvPhoneSmsCodeHint = (TextView) view.findViewById(R.id.tv_sms_code);
-        etSmsCode = (EditText) view.findViewById(R.id.et_sms_code);
+        etSmsCode = (EditText) view.findViewById(R.id.et_phone_code);
         etResetPassword = (EditText) view.findViewById(R.id.et_reset_password);
+        cbShowOrHidePassword = (CheckBox) view.findViewById(R.id.cb_show_or_hide_password);
         btnSubmit = (Button) view.findViewById(R.id.btn_submit);
+
         btnSubmit.setOnClickListener(getSubmitClickListener());
+        cbShowOrHidePassword.setOnCheckedChangeListener(getShowOrHidePasswordChangeListener());
     }
 
     private void initData() {
@@ -72,6 +81,20 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                     ToastUtil.getInstance(mContext).makeText(getString(R.string.password_more_than_six_digit_number), Toast.LENGTH_LONG).show();
                     return;
                 }
+            }
+        };
+    }
+
+    private CompoundButton.OnCheckedChangeListener getShowOrHidePasswordChangeListener() {
+        return new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    etResetPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                } else {
+                    etResetPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                }
+                etResetPassword.setSelection(etResetPassword.getText().toString().length());
             }
         };
     }
