@@ -68,6 +68,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private ViewGroup mSearchLayout;
     private ViewGroup mSearchAllLayout;
     private TextView mSearchTv;
+    private View mHelpTv;
     private View mBackground;
     private ViewGroup mBottomLayout;
     private ListView mLoginNearLv;
@@ -101,6 +102,8 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     protected void initView() {
         super.initView();
         mQrSearchBtn = findViewById(R.id.qr_search_btn);
+        mHelpTv = findViewById(R.id.tv_help);
+        mHelpTv.setOnClickListener(mHelpClickListener);
         mQrSearchBtn.setOnClickListener(mSearchClickListener);
         mSearchLayout = (ViewGroup) findViewById(R.id.search_layout);
         mSearchLayout.setOnClickListener(mOtherClickListener);
@@ -245,6 +248,16 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
             mSearchLayout.setEnabled(false);
         }
     };
+
+    private View.OnClickListener mHelpClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            /**
+             * todo 用户帮助
+             */
+        }
+    };
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
