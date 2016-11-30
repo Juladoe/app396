@@ -21,7 +21,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="110dp"
         android:text="@string/txt_search"
-        android:textColor="#FFFFFF"
+        android:textColor="@color/disabled2_hint_color"
         android:textSize="@dimen/xxxx_large_font_size" />
 
     <RelativeLayout
@@ -32,7 +32,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_below="@+id/background"
-        android:background="#f5f5f5"
+        android:background="@color/disabled1_hint_color"
         android:paddingTop="60dp">
 
         <TextView
@@ -43,7 +43,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="40dp"
             android:text="@string/txt_help"
-            android:textColor="#03C777"
+            android:textColor="@color/primary_color"
             android:textSize="@dimen/x_medium_font_size" />
 
         <TextView
@@ -54,7 +54,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
             android:text="@string/apk_version"
-            android:textColor="#BDC2C6"
+            android:textColor="@color/secondary2_font_color"
             android:textSize="@dimen/_x_small_font_size" />
 
         <LinearLayout
@@ -69,7 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:text="@string/txt_login_near"
-                android:textColor="#000000"
+                android:textColor="@color/base_black_normal"
                 android:textSize="@dimen/x_medium_font_size" />
 
             <com.edusoho.kuozhi.v3.view.FixHeightListView
@@ -101,7 +101,7 @@
         <View
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="#D8D8D8" />
+            android:background="@color/disabled_hint_color" />
 
         <RelativeLayout
             android:id="@+id/search_layout"
@@ -115,8 +115,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="15dp"
                 android:text="@string/txt_search"
-                android:textColor="#D8D8D8"
-                android:textSize="15sp" />
+                android:textColor="@color/disabled_hint_color"
+                android:textSize="@dimen/font_l" />
 
             <ImageView
                 android:layout_width="wrap_content"

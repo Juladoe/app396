@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="52dp"
-        android:background="#03C777">
+        android:background="@color/primary_color">
 
         <com.edusoho.kuozhi.v3.view.EdusohoAutoCompleteTextView
             android:id="@+id/school_url_edit"
@@ -22,53 +22,51 @@
             android:drawableLeft="@drawable/icon_search_light"
             android:drawablePadding="11dp"
             android:hint="@string/txt_search"
-            android:textColorHint="#D8D8D8"
             android:imeOptions="actionSearch"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
             android:singleLine="true"
-            android:textColor="#CCCCCC"
-            android:textSize="15sp" />
+            android:textColor="@color/secondary2_font_color"
+            android:textColorHint="@color/disabled_hint_color"
+            android:textSize="@dimen/font_l" />
 
         <TextView
             android:id="@+id/net_school_cancel_search_btn"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingRight="14dp"
-            android:paddingLeft="10dp"
-            android:includeFontPadding="false"
-            android:text="取消"
-            android:textColor="#FFFFFF"
-            android:textSize="15sp"
-            android:gravity="center"
             android:layout_alignParentRight="true"
-             />
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:paddingLeft="10dp"
+            android:paddingRight="14dp"
+            android:text="取消"
+            android:textColor="@color/disabled2_hint_color"
+            android:textSize="@dimen/font_l" />
     </RelativeLayout>
 
 
     <!--<TextView-->
-        <!--android:id="@+id/net_school_tv"-->
-        <!--android:layout_width="103dp"-->
-        <!--android:layout_height="17dp"-->
-        <!--android:layout_gravity="left"-->
-        <!--android:layout_marginLeft="16dp"-->
-        <!--android:layout_marginTop="16dp"-->
-        <!--android:includeFontPadding="false"-->
-        <!--android:text="近期登录网校"-->
-        <!--android:textColor="#000000"-->
-        <!--android:textSize="17sp" />-->
+    <!--android:id="@+id/net_school_tv"-->
+    <!--android:layout_width="103dp"-->
+    <!--android:layout_height="17dp"-->
+    <!--android:layout_gravity="left"-->
+    <!--android:layout_marginLeft="16dp"-->
+    <!--android:layout_marginTop="16dp"-->
+    <!--android:includeFontPadding="false"-->
+    <!--android:text="近期登录网校"-->
+    <!--android:textColor="#000000"-->
+    <!--android:textSize="17sp" />-->
 
     <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"-->
-        <!--android:layout_marginTop="16dp"-->
-        <!--android:background="#efeff4"></View>-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1dp"-->
+    <!--android:layout_marginTop="16dp"-->
+    <!--android:background="#efeff4"></View>-->
 
     <ListView
         android:id="@+id/net_school_listview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:divider="#00000000"
-        />
+        android:divider="@color/transparent" />
 
 </LinearLayout>
