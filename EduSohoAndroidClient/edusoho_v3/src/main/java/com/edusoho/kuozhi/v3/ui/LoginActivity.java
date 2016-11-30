@@ -100,9 +100,7 @@ public class LoginActivity extends BaseNoTitleActivity {
         tvMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent settingIntent = new Intent();
-                settingIntent.setComponent(new ComponentName(getPackageName(), "SettingActivity"));
-                startActivity(settingIntent);
+                QrSchoolActivity.start(mActivity);
             }
         });
         tvRegister.setOnClickListener(new View.OnClickListener() {

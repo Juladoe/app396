@@ -48,6 +48,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by zhang
@@ -94,6 +96,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
         initView();
     }
 
+    private Pattern mPattern;
 
     private void initView() {
         mCancel = findViewById(R.id.net_school_cancel_search_btn);
@@ -130,7 +133,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 dismiss();
             }
         });
-
+        mPattern = Pattern.compile("([a-z]([a-z0-9\\-]*[\\.。])+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&]*)?)?(#[a-z][a-z0-9_]*)?$");
         mSearchEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -141,24 +144,27 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 if (searchStr.length() > 0) {
                     mLoading = LoadDialog.create(mContext);
                     mLoading.show();
-                    SiteModel.getSite(searchStr, new ResponseCallbackListener<List<Site>>() {
-                        @Override
-                        public void onSuccess(List<Site> data) {
-                            mLoading.hide();
-                            mList.clear();
-                            mList.addAll(data);
-                            mAdapter.notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void onFailure(String code, String message) {
-                            mLoading.hide();
-                        }
-                    });
+                    Matcher matcher = mPattern.matcher(searchStr);
+                    if (matcher.matches()) {
+                        saveSearchHistory(searchStr);
+                        searchSchool(searchStr);
+                    } else {
+                        SiteModel.getSite(searchStr, new ResponseCallbackListener<List<Site>>() {
+                            @Override
+                            public void onSuccess(List<Site> data) {
+                                mLoading.hide();
+                                mList.clear();
+                                mList.addAll(data);
+                                mAdapter.notifyDataSetChanged();
+                            }
+                            @Override
+                            public void onFailure(String code, String message) {
+                                mLoading.hide();
+                            }
+                        });
+                    }
                     mSearchEdt.setText("");
                 }
-//                saveSearchHistory(searchStr);
-//                searchSchool(searchStr);
                 return true;
             }
         });

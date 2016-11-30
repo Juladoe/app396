@@ -10,7 +10,7 @@
     <color name="secondary2_font_color">#BDC2C6</color>
     <color name="disabled_hint_color">#D8D8D8</color>
     <color name="disabled1_hint_color">#F9F9F9</color>
-    <color name="font_l">#FFFFFF</color>
+    <color name="disabled2_hint_color">#FFFFFF</color>
 
     <!-- end -->
     <color name="base_card_bg">#ffffff</color>
