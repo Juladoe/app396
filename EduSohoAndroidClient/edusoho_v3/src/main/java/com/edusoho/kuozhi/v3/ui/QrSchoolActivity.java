@@ -70,6 +70,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private TextView mSearchTv;
     private View mHelpTv;
     private View mBackground;
+    private View mSchoolIv;
     private ViewGroup mBottomLayout;
     private ListView mLoginNearLv;
     private ViewGroup mLoginNearLlayout;
@@ -110,6 +111,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         mSearchAllLayout = (ViewGroup) findViewById(R.id.search_all_layout);
         mSearchTv = (TextView) findViewById(R.id.search_tv);
         mBackground = findViewById(R.id.background);
+        mSchoolIv = findViewById(R.id.iv_school);
         mBottomLayout = (ViewGroup) findViewById(R.id.bottom_layout);
         mLoginNearLlayout = (ViewGroup) findViewById(R.id.login_near_layout);
         mLoginNearLv = (ListView) findViewById(R.id.login_near_lv);
@@ -205,13 +207,8 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                     params.height = value;
                     mBackground.setLayoutParams(params);
                     float scale = (float) (AppUtil.px2dp(QrSchoolActivity.this, value) - 52) / 178f;
-//                    if(!isShow){
-//                        if(scale < 0.8f){
-//                            netSchoolDialog.show();
-//                            isShow = true;
-//                        }
-//                    }
                     mBottomLayout.setAlpha(scale);
+                    mSchoolIv.setAlpha(scale);
                     RelativeLayout.LayoutParams searchParams =
                             (RelativeLayout.LayoutParams) mSearchAllLayout.getLayoutParams();
                     float bottom = (1f - scale) * 38f;
@@ -242,8 +239,6 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private View.OnClickListener mOtherClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            MobclickAgent.onEvent(mContext,"i_mySetting_otherWaysEnter");
-//            app.mEngine.runNormalPlugin("NetSchoolActivity", mContext, null);
             mAnimatorUpSet.start();
             mSearchLayout.setEnabled(false);
         }
@@ -630,15 +625,6 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         SchoolSplashActivity.start(mContext, schoolName, splashs);
 
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-    }
-
-    /**
-     * 需解耦
-     */
-    //@Subscribe(threadMode = ThreadMode.MAIN)
-    public void onMessageEvent() {
-//        isShow = true;
-        mAnimatorDownSet.start();
     }
 
     @Override

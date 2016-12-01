@@ -324,21 +324,6 @@ public class LoginActivity extends BaseNoTitleActivity {
         return datas;
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        super.onCreateOptionsMenu(menu);
-//        getMenuInflater().inflate(R.menu.login_menu, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.item_register) {
-//            mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
