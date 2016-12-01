@@ -88,8 +88,8 @@ public class LoginActivity extends BaseNoTitleActivity {
         ivWeixin = (ImageView) findViewById(R.id.iv_weixin);
         ivWeixin.setOnClickListener(mWeChatLoginClickListener);
         tvMore = (TextView) findViewById(R.id.tv_more);
-        tvRegister = (TextView) findViewById(R.id.txt_register);
-        tvForgetPassword = (TextView) findViewById(R.id.txt_forget);
+        tvRegister = (TextView) findViewById(R.id.tv_register);
+        tvForgetPassword = (TextView) findViewById(R.id.tv_forget);
         vSao = findViewById(R.id.saoyisao);
 
         tvForgetPassword.setOnClickListener(getForgetPasswordClickListener());
