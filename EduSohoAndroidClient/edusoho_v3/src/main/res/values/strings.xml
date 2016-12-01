@@ -6,7 +6,7 @@
     <string name="app_name">阔知学堂</string>
     <string name="app_title">将学校装进口袋</string>
     <string name="api_version">3.0.0</string>
-    <string name="apk_version">3.4.2</string>
+    <string name="apk_version">3.7.2</string>
     <string name="apk_code">34</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
@@ -52,6 +52,7 @@
     <string name="mine_nickname">立即登录</string>
     <string name="chat_profile">聊天信息</string>
     <string name="login_register">注册</string>
+    <string name="login_register2">注册账号</string>
     <string name="news_course_profile">课程信息</string>
     <string name="news_course_share">分享</string>
     <string name="study_entrance">进入学习</string>
@@ -69,6 +70,12 @@
     <string name="notification">提示</string>
     <string name="yes">是</string>
     <string name="no">否</string>
+    <string name="txt_login">账号登录</string>
+    <string name="txt_three">第三方登录</string>
+    <string name="netclass">选择网校 ></string>
+    <string name="txt_search">搜索网校</string>
+    <string name="txt_help">使用帮助</string>
+    <string name="txt_login_near">近期登录</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
@@ -77,6 +84,7 @@
     <string name="reg_phone_hint">请输入手机号</string>
     <string name="reg_mail_hint">请输入邮箱地址</string>
     <string name="reg_code_hint">请输入验证码</string>
+    <string name="reg_username_hint">请输入手机号／邮箱号／用户名</string>
     <string name="reg_password_hint">请输入密码</string>
 
     <!--Button-->
@@ -126,6 +134,9 @@
     <string name="font_download_unselect">&#xe613;</string>
     <string name="font_less">&#xe625;</string>
     <string name="font_more">&#xe624;</string>
+    <string name="font_wrong">&#xe655;</string>
+    <string name="font_scan_code">&#xe608;</string>
+    <string name="font_search">&#xe603;</string>
 
     <!-- todo del -->
     <string name="font_chat_add_media">&#xe611;</string>

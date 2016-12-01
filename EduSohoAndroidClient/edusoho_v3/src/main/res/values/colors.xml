@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary_color">#37b97d</color>
-    <!-- base color -->
+    <!--kuozhi 4.0 color guideline-->
+
+    <color name="primary_color">#03C777</color>
+    <color name="secondary_color">#FD4852</color>
+    <color name="secondary2_color">#FFAA00</color>
+    <color name="primary_font_color">#2B333B</color>
+    <color name="secondary_font_color">#71777D</color>
+    <color name="secondary2_font_color">#BDC2C6</color>
+    <color name="disabled_hint_color">#D8D8D8</color>
+    <color name="disabled1_hint_color">#F9F9F9</color>
+    <color name="disabled2_hint_color">#FFFFFF</color>
+
+    <!-- end -->
     <color name="base_card_bg">#ffffff</color>
     <color name="base_light">#fdb933</color>
     <color name="base_light_red">#ff5822</color>
@@ -265,6 +276,7 @@
     <color name="action_bar_bg">#38bf6c</color>
     <color name="action_bar_bg_alpha">#0038bf6c</color>
     <color name="system_bg">#ffffff</color>
+    <color name="system_bg_f5f5f5">#f5f5f5</color>
     <color name="nav_layout_bg">#494a4d</color>
     <color name="nav_layout_bg_stroke">#000000</color>
     <color name="material_dlg_bg">#ffffff</color>

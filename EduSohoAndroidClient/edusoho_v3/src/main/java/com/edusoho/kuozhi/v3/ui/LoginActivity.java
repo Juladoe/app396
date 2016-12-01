@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,12 +21,13 @@ import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
+import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -43,10 +42,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static com.edusoho.kuozhi.v3.ui.QrSchoolActivity.REQUEST_QR;
+
 /**
  * Created by JesseHuang on 15/5/22.
  */
-public class LoginActivity extends ActionBarBaseActivity {
+public class LoginActivity extends BaseNoTitleActivity {
 
     public static final int TYPE_LOGIN = 1;
     public static final int OK = 1003;
@@ -59,18 +60,21 @@ public class LoginActivity extends ActionBarBaseActivity {
     private ImageView ivQQ;
     private ImageView ivWeixin;
     private TextView tvMore;
+    private TextView tvRegister;
     private String mAuthCancel;
+    private View vSao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        setBackMode(BACK, "登录");
         mAuthCancel = mContext.getResources().getString(R.string.authorize_cancelled);
         initView();
     }
 
-    private void initView() {
+    @Override
+    protected void initView() {
+        super.initView();
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
         mBtnLogin = (EduSohoLoadingButton) findViewById(R.id.btn_login);
@@ -82,12 +86,27 @@ public class LoginActivity extends ActionBarBaseActivity {
         ivWeixin = (ImageView) findViewById(R.id.iv_weixin);
         ivWeixin.setOnClickListener(mWeChatLoginClickListener);
         tvMore = (TextView) findViewById(R.id.tv_more);
+        tvRegister = (TextView) findViewById(R.id.txt_register);
+        vSao = findViewById(R.id.saoyisao);
+
+        vSao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent qrIntent = new Intent();
+                qrIntent.setClass(LoginActivity.this, CaptureActivity.class);
+                startActivityForResult(qrIntent, REQUEST_QR);
+            }
+        });
         tvMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent settingIntent = new Intent();
-                settingIntent.setComponent(new ComponentName(getPackageName(), "SettingActivity"));
-                startActivity(settingIntent);
+                QrSchoolActivity.start(mActivity);
+            }
+        });
+        tvRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
             }
         });
         initThirdLoginBtns();
@@ -305,20 +324,20 @@ public class LoginActivity extends ActionBarBaseActivity {
         return datas;
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.login_menu, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        super.onCreateOptionsMenu(menu);
+//        getMenuInflater().inflate(R.menu.login_menu, menu);
+//        return true;
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.item_register) {
-            mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
-        }
-        return super.onOptionsItemSelected(item);
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (item.getItemId() == R.id.item_register) {
+//            mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
 
     @Override
     public void onBackPressed() {

@@ -146,7 +146,7 @@ public class NotifyActivity extends ActionBarBaseActivity implements NofityListA
         CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
     }
 
-    protected AppSettingProvider getAppSettingProvider() {
+    public AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 
