@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -86,7 +85,7 @@ public class LoginActivity extends BaseNoTitleActivity {
         ivWeixin = (ImageView) findViewById(R.id.iv_weixin);
         ivWeixin.setOnClickListener(mWeChatLoginClickListener);
         tvMore = (TextView) findViewById(R.id.tv_more);
-        tvRegister = (TextView) findViewById(R.id.txt_register);
+        tvRegister = (TextView) findViewById(R.id.tv_register);
         vSao = findViewById(R.id.saoyisao);
 
         vSao.setOnClickListener(new View.OnClickListener() {
