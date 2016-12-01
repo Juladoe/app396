@@ -30,7 +30,7 @@
         android:layout_alignBottom="@+id/background"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="110dp"
-        android:text="@string/txt_search"
+        android:text="@string/txt_search_school"
         android:textColor="@color/disabled2_hint_color"
         android:textSize="@dimen/xxxx_large_font_size" />
 
