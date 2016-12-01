@@ -18,7 +18,7 @@
         android:src="@drawable/bg_search_school"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:layout_alignBottom="@id/background"
         android:layout_alignTop="@+id/background"
         />
@@ -96,8 +96,8 @@
         android:layout_height="60dp"
         android:layout_alignBottom="@+id/background"
         android:layout_marginBottom="-30dp"
-        android:layout_marginLeft="13dp"
-        android:layout_marginRight="13dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:background="@drawable/search_netschool_bg"
         android:orientation="horizontal">
 
@@ -109,7 +109,7 @@
             android:src="@drawable/icon_saoyisao" />
 
         <View
-            android:layout_width="1dp"
+            android:layout_width="0.5dp"
             android:layout_height="match_parent"
             android:background="@color/disabled_hint_color" />
 

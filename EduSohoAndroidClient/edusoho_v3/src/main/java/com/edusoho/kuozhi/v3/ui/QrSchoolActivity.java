@@ -214,9 +214,9 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                     float bottom = (1f - scale) * 38f;
                     searchParams.height = AppUtil
                             .dp2px(QrSchoolActivity.this, 36f + scale * 24f);
-                    searchParams.setMargins(AppUtil.dp2px(QrSchoolActivity.this, 13),
+                    searchParams.setMargins(AppUtil.dp2px(QrSchoolActivity.this, 15),
                             0,
-                            AppUtil.dp2px(QrSchoolActivity.this, 13f + (1f - scale) * 42f),
+                            AppUtil.dp2px(QrSchoolActivity.this, 15f + (1f - scale) * 39f),
                             AppUtil.dp2px(QrSchoolActivity.this, bottom - 30f));
                     mSearchAllLayout.setLayoutParams(searchParams);
                     RelativeLayout.LayoutParams txtParams =
