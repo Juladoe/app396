@@ -65,6 +65,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
     private List<Site> mList = new ArrayList<>();
     private MyAdapter mAdapter;
     private View mCancel;
+    private View mUrlCancel;
     private BaseActivity mContext;
     public EdusohoApp app;
 
@@ -100,6 +101,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
 
     private void initView() {
         mCancel = findViewById(R.id.net_school_cancel_search_btn);
+        mUrlCancel = findViewById(R.id.url_cancel_iv);
         mSearchEdt = (EdusohoAutoCompleteTextView) findViewById(R.id.school_url_edit);
         mListView = (ListView) findViewById(R.id.net_school_listview);
         mAdapter = new MyAdapter(mContext);
@@ -108,7 +110,11 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
             @Override
             public void invoke(int length) {
                 if (length < 1) {
+                    mUrlCancel.setVisibility(View.INVISIBLE);
                     return;
+                }
+                if (mUrlCancel.getVisibility() != View.VISIBLE) {
+                    mUrlCancel.setVisibility(View.VISIBLE);
                 }
                 Editable text = mSearchEdt.getText();
                 char input = text.charAt(length - 1);
@@ -126,7 +132,12 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 }
             }
         });
-
+        mUrlCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSearchEdt.setText("");
+            }
+        });
         mCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,6 +168,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                                 mList.addAll(data);
                                 mAdapter.notifyDataSetChanged();
                             }
+
                             @Override
                             public void onFailure(String code, String message) {
                                 mLoading.hide();

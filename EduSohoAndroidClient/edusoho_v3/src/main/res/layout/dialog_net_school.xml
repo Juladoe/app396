@@ -24,11 +24,21 @@
             android:hint="@string/txt_search"
             android:imeOptions="actionSearch"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:paddingRight="40dp"
             android:singleLine="true"
-            android:textColor="@color/secondary2_font_color"
+            android:textColor="@color/primary_font_color"
             android:textColorHint="@color/disabled_hint_color"
             android:textSize="@dimen/font_l" />
+
+        <ImageView
+            android:id="@+id/url_cancel_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignRight="@+id/school_url_edit"
+            android:layout_marginRight="15dp"
+            android:visibility="invisible"
+            android:src="@drawable/icon_cancel" />
 
         <TextView
             android:id="@+id/net_school_cancel_search_btn"
