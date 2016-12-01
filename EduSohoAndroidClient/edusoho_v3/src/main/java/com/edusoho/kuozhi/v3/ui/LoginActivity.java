@@ -346,6 +346,12 @@ public class LoginActivity extends BaseNoTitleActivity {
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.none,R.anim.up_to_down);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         isRun = false;
