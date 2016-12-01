@@ -73,7 +73,8 @@
     <string name="txt_login">账号登录</string>
     <string name="txt_three">第三方登录</string>
     <string name="netclass">选择网校 ></string>
-    <string name="txt_search">搜索网校</string>
+    <string name="txt_search">请输入网校网址或名称</string>
+    <string name="txt_search_school">搜索网校</string>
     <string name="txt_help">使用帮助</string>
     <string name="txt_login_near">近期登录</string>
 
