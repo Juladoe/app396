@@ -411,11 +411,6 @@
         version="1.0" />
 
     <plugin
-        name="FindPasswordFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.FindPasswordFragment"
-        version="1.0" />
-
-    <plugin
         name="FindPasswordByPhoneFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByPhoneFragment"
         version="1.0" />

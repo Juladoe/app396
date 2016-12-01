@@ -63,6 +63,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private ImageView ivWeixin;
     private TextView tvMore;
     private TextView tvRegister;
+    private TextView tvForgetPassword;
     private String mAuthCancel;
     private View vSao;
 
@@ -89,8 +90,10 @@ public class LoginActivity extends BaseNoTitleActivity {
         ivWeixin.setOnClickListener(mWeChatLoginClickListener);
         tvMore = (TextView) findViewById(R.id.tv_more);
         tvRegister = (TextView) findViewById(R.id.txt_register);
+        tvForgetPassword = (TextView) findViewById(R.id.txt_forget);
         vSao = findViewById(R.id.saoyisao);
 
+        tvForgetPassword.setOnClickListener(getForgetPasswordClickListener());
         vSao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,6 +128,15 @@ public class LoginActivity extends BaseNoTitleActivity {
                 ivWeibo.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private View.OnClickListener getForgetPasswordClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.app.mEngine.runNormalPlugin("ForgetPasswordActivity", mContext, null);
+            }
+        };
     }
 
     public static void startLogin(Activity activity) {
