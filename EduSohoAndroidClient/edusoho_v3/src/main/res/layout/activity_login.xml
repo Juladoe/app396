@@ -60,8 +60,24 @@
                     android:layout_marginTop="45dp"
                     android:hint="@string/reg_username_hint"
                     android:paddingBottom="5dp"
+                    android:layout_toLeftOf="@+id/iv_username_cancel"
                     android:paddingTop="5dp"
-                    android:textSize="@dimen/x_medium_font_size" />
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
+
+                <ImageView
+                    android:id="@+id/iv_username_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="false"
+                    android:layout_marginTop="45dp"
+                    android:layout_alignParentRight="true"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="10dp"
+                    android:visibility="invisible"
+                    android:paddingLeft="10dp"
+                    android:src="@drawable/icon_cancel" />
 
                 <View
                     android:layout_width="match_parent"
@@ -86,7 +102,23 @@
                     android:inputType="textPassword"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
-                    android:textSize="@dimen/x_medium_font_size" />
+                    android:layout_toLeftOf="@+id/iv_password_cancel"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
+
+                <ImageView
+                    android:id="@+id/iv_password_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="false"
+                    android:layout_marginTop="15dp"
+                    android:layout_alignParentRight="true"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingRight="10dp"
+                    android:visibility="invisible"
+                    android:paddingLeft="10dp"
+                    android:src="@drawable/icon_cancel" />
 
                 <View
                     android:layout_width="match_parent"
@@ -190,7 +222,7 @@
                     android:layout_marginLeft="70dp"
                     android:layout_toRightOf="@+id/iv_weibo"
                     android:scaleType="fitXY"
-                    android:src="@drawable/qq"
+                    android:src="@drawable/icon_qq"
                     android:visibility="visible" />
 
                 <ImageView
@@ -199,7 +231,7 @@
                     android:layout_height="48dp"
                     android:layout_centerHorizontal="true"
                     android:scaleType="fitXY"
-                    android:src="@drawable/weibo"
+                    android:src="@drawable/icon_weibo"
                     android:visibility="visible" />
 
                 <ImageView
@@ -209,7 +241,7 @@
                     android:layout_marginRight="70dp"
                     android:layout_toLeftOf="@+id/iv_weibo"
                     android:scaleType="fitXY"
-                    android:src="@drawable/weixin"
+                    android:src="@drawable/icon_wechat"
                     android:visibility="visible" />
             </RelativeLayout>
 
