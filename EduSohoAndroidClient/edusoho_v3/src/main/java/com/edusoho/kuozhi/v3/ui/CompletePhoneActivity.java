@@ -1,17 +1,13 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
@@ -27,6 +23,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 /**
  * Created by DF on 2016/11/28.
  */
@@ -40,8 +37,8 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_complete_phone);
         hideActionBar();
+        setContentView(R.layout.activity_complete_phone);
         initView();
     }
 
@@ -65,13 +62,13 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
     private View.OnClickListener nextClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            final String st = etAccount.getText().toString().trim();
-            if (TextUtils.isEmpty(st)) {
-                CommonUtil.longToast(mContext, "请输入手机号");
-            } else if (isPhone(st)) {
+            final String phoneNum = etAccount.getText().toString().trim();
+            if (TextUtils.isEmpty(phoneNum)) {
+                CommonUtil.shortCenterToast(mContext, "请输入手机号");
+            } else if (isPhone(phoneNum)) {
                 RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
                 HashMap<String, String> params = requestUrl.getParams();
-                params.put("phoneNumber", String.valueOf(st));
+                params.put("phoneNumber", String.valueOf(phoneNum));
                 mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -81,12 +78,10 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                             if (result != null && result.code == 200) {
 
                                 Intent registerIntent = new Intent(mContext,CompletePhoneConfActivity.class);
-                                registerIntent.putExtra("num", st);
+                                registerIntent.putExtra("phoneNum", phoneNum);
                                 startActivity(registerIntent);
                             } else {
-                                if (response.equals("该手机号码已被其他用户绑定")) {
                                     CommonUtil.shortCenterToast(CompletePhoneActivity.this,"当前手机号已被注册，请直接登录");
-                                }
                             }
                         } catch (Exception e) {
                             Log.d(TAG, "phone reg error");
@@ -94,7 +89,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                     }
                 }, null);
             } else {
-                CommonUtil.longToast(mContext, "你输入的手机号格式有误");
+                CommonUtil.shortCenterToast(mContext, "你输入的手机号格式有误");
             }
         }
     };

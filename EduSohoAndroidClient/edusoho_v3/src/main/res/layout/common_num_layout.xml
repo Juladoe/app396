@@ -10,12 +10,11 @@
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_marginLeft="@dimen/view_register_margin"
             android:layout_centerVertical="true"
-            android:layout_width="@dimen/iv_register_width"
-            android:layout_height="@dimen/iv_register_height"
-            android:scaleType="fitXY"
-            android:src="@drawable/back"/>
+            android:layout_width="@dimen/iv_register"
+            android:layout_height="@dimen/iv_register"
+            android:scaleType="center"
+            android:src="@drawable/action_icon_back"/>
 
     </RelativeLayout>
 
@@ -40,6 +39,7 @@
         <EditText
             android:id="@+id/et_phone_num"
             style="@style/edittext_style"
+            android:textSize="@dimen/learn_status_widget_learnbtn"
             android:hint="@string/reg_phone_hint"
             android:maxLength="11"
             />

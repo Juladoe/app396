@@ -157,14 +157,13 @@
     <!--3.8-->
     <dimen name="tv_register_size">16sp</dimen>
     <dimen name="rl_register_margingTop">50dp</dimen>
+    <dimen name="iv_register">48dp</dimen>
     <dimen name="view_marginTop">45dp</dimen>
     <dimen name="head_register_height">44dp</dimen>
-    <dimen name="rl_register_margin">30dp</dimen>
+    <dimen name="rl_register_margin">31dp</dimen>
     <dimen name="btn_register_width">21dp</dimen>
-    <dimen name="iv_register_height">17dp</dimen>
     <dimen name="btn_register_height">16dp</dimen>
     <dimen name="view_register_margin">15dp</dimen>
-    <dimen name="iv_register_width">10dp</dimen>
     <dimen name="view_register_height">1px</dimen>
 
 
