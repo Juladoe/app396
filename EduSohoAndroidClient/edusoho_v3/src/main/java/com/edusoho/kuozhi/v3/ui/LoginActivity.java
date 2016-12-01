@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -58,6 +60,8 @@ public class LoginActivity extends BaseNoTitleActivity {
     private ImageView ivWeibo;
     private ImageView ivQQ;
     private ImageView ivWeixin;
+    private ImageView ivUserCancel;
+    private ImageView ivPwCancel;
     private TextView tvMore;
     private TextView tvRegister;
     private String mAuthCancel;
@@ -86,6 +90,8 @@ public class LoginActivity extends BaseNoTitleActivity {
         ivWeixin.setOnClickListener(mWeChatLoginClickListener);
         tvMore = (TextView) findViewById(R.id.tv_more);
         tvRegister = (TextView) findViewById(R.id.tv_register);
+        ivPwCancel = (ImageView) findViewById(R.id.iv_password_cancel);
+        ivUserCancel = (ImageView) findViewById(R.id.iv_username_cancel);
         vSao = findViewById(R.id.saoyisao);
 
         vSao.setOnClickListener(new View.OnClickListener() {
@@ -108,7 +114,50 @@ public class LoginActivity extends BaseNoTitleActivity {
                 mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
             }
         });
+        ivPwCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etPassword.setText("");
+            }
+        });
+        ivUserCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etUsername.setText("");
+            }
+        });
+        initEdit();
         initThirdLoginBtns();
+    }
+
+    private void initEdit() {
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (etUsername.getText().length() == 0) {
+                    ivUserCancel.setVisibility(View.INVISIBLE);
+                } else {
+                    ivUserCancel.setVisibility(View.VISIBLE);
+                }
+                if (etPassword.getText().length() == 0) {
+                    ivPwCancel.setVisibility(View.INVISIBLE);
+                } else {
+                    ivPwCancel.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+        etPassword.addTextChangedListener(watcher);
+        etUsername.addTextChangedListener(watcher);
     }
 
     private void initThirdLoginBtns() {
@@ -323,25 +372,16 @@ public class LoginActivity extends BaseNoTitleActivity {
         return datas;
     }
 
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        super.onCreateOptionsMenu(menu);
-//        getMenuInflater().inflate(R.menu.login_menu, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.item_register) {
-//            mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
         //overridePendingTransition(R.anim.up_to_down, R.anim.none);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(R.anim.none, R.anim.up_to_down);
     }
 
     @Override
