@@ -124,7 +124,7 @@
                     android:background="@color/disabled_hint_color" />
 
                 <TextView
-                    android:id="@+id/txt_forget"
+                    android:id="@+id/tv_forget"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="13dp"
@@ -134,7 +134,7 @@
                     android:textSize="@dimen/_x_small_font_size" />
 
                 <TextView
-                    android:id="@+id/txt_register"
+                    android:id="@+id/tv_register"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="13dp"
