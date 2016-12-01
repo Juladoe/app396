@@ -200,10 +200,13 @@ public class UpYunUploadTask implements IResourceTask {
         }
     }
 
-    public void saveUploadResult(String putUrl, String getUrl, int fromId) {
+    public void saveUploadResult(String putUrl, String getUrl, int fromId, Map<String, String> headers) {
 
         String path = String.format(ApiConst.PUSH_HOST + ApiConst.SAVE_UPLOAD_INFO, fromId);
         AsyncHttpPost post = new AsyncHttpPost(path);
+        for (Map.Entry<String, String> entry : headers.entrySet()) {
+            post.setHeader(entry.getKey(), entry.getValue());
+        }
         JSONObject params = new JSONObject();
         try {
             params.put("putUrl", putUrl);
@@ -256,7 +259,7 @@ public class UpYunUploadTask implements IResourceTask {
                     return;
                 }
 
-                saveUploadResult(result.putUrl, result.getUrl, mTargetId);
+                saveUploadResult(result.putUrl, result.getUrl, mTargetId, mHeaders);
                 mTaskFeature.success(result.getUrl);
             }
         });

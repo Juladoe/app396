@@ -51,6 +51,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.trinea.android.common.util.DigestUtils;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
@@ -215,7 +216,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
     public void saveUploadResult(String putUrl, String getUrl, int fromId) {
         String path = String.format(Const.SAVE_UPLOAD_INFO, fromId);
         RequestUrl url = app.bindPushUrl(path);
-        HashMap<String, String> hashMap = url.getParams();
+        Map<String, String> hashMap = url.getParams();
         hashMap.put("putUrl", putUrl);
         hashMap.put("getUrl", getUrl);
         ajaxPost(url, new Response.Listener<String>() {

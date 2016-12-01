@@ -42,6 +42,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by JesseHuang on 15/12/10.
@@ -145,7 +146,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                 public void onClick(int button) {
                     if (button == PopupDialog.OK) {
                         RequestUrl requestUrl = app.bindUrl(Const.UN_LEARN_COURSE, true);
-                        HashMap<String, String> params = requestUrl.getParams();
+                        Map<String, String> params = requestUrl.getParams();
                         params.put("courseId", mFromId + "");
                         ajaxPost(requestUrl, new Response.Listener<String>() {
                             @Override
@@ -194,7 +195,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
             loadDialog.setTextVisible(View.GONE);
             loadDialog.show();
             RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
-            HashMap<String, String> params = requestUrl.getParams();
+            Map<String, String> params = requestUrl.getParams();
             params.put("courseId", mFromId + "");
             app.postUrl(requestUrl, new Response.Listener<String>() {
                 @Override
