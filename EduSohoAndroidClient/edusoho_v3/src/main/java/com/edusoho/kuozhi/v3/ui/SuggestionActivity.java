@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by JesseHuang on 15/7/7.
@@ -70,7 +71,7 @@ public class SuggestionActivity extends ActionBarBaseActivity {
 
     private void sendSuggesion(String info, String type, String contact) {
         RequestUrl requestUrl = app.bindUrl(Const.SUGGESTION, false);
-        HashMap<String, String> params = requestUrl.getParams();
+        Map<String, String> params = requestUrl.getParams();
         params.put("info", info);
         params.put("type", type);
         params.put("contact", contact);

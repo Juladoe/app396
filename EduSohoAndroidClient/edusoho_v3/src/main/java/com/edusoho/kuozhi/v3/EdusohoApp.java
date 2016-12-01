@@ -58,10 +58,12 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.RequestUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
+import com.edusoho.kuozhi.v3.util.json.GsonEnumTypeAdapter;
 import com.edusoho.kuozhi.v3.util.server.CacheServer;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -283,9 +285,15 @@ public class EdusohoApp extends Application {
         SqliteUtil.getUtil(this).close();
     }
 
+    private Gson createGson() {
+        return new GsonBuilder()
+                .registerTypeAdapter(UserRole.class, new GsonEnumTypeAdapter<>(UserRole.NO_SUPPORT))
+                .create();
+    }
+
     private void init() {
         app = this;
-        gson = new Gson();
+        gson = createGson();
         apiVersion = getString(R.string.api_version);
         setHost(getString(R.string.app_host));
         notifyMap = new HashMap<>();
@@ -822,10 +830,18 @@ public class EdusohoApp extends Application {
     }
 
     public String getCurrentUserRole() {
+        if (loginUser == null || loginUser.roles == null) {
+            return "";
+        }
+
+        UserRole[] userRoles = app.loginUser.roles;
         if (TextUtils.isEmpty(loginUser.role)) {
-            String[] roles = new String[app.loginUser.roles.length];
-            for (int i = 0; i < app.loginUser.roles.length; i++) {
-                roles[i] = app.loginUser.roles[i].toString();
+            String[] roles = new String[userRoles.length];
+            for (int i = 0; i < userRoles.length; i++) {
+                UserRole role = userRoles[i];
+                if (role != null) {
+                    roles[i] = role.toString();
+                }
             }
             if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
                 loginUser.role = PushUtil.ChatUserType.TEACHER;

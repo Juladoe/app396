@@ -65,7 +65,7 @@ public class FindCardItemAdapter extends BaseAdapter {
         this.mList = list;
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
                 .showImageForEmptyUri(R.drawable.default_course).
-                showImageOnFail(R.drawable.default_course)
+                        showImageOnFail(R.drawable.default_course)
                 .build();
         mClassRoomOptions = new DisplayImageOptions.Builder().cacheOnDisk(true)
                 .showImageForEmptyUri(R.drawable.default_classroom).
@@ -176,8 +176,14 @@ public class FindCardItemAdapter extends BaseAdapter {
         DiscoveryCardProperty discoveryCardEntity = mList.get(position);
 
         if (discoveryCardEntity.isEmpty()) {
-            AbsListView.LayoutParams lp = new AbsListView.LayoutParams(
-                    parent.getWidth() / 2, getItemHeight(parent));
+            ViewGroup.LayoutParams lp = convertView.getLayoutParams();
+            if (lp == null) {
+                lp = new AbsListView.LayoutParams(
+                        parent.getWidth() / 2, getItemHeight(parent));
+            } else {
+                lp.width = parent.getWidth() / 2;
+                lp.height = getItemHeight(parent);
+            }
             convertView.setLayoutParams(lp);
             return convertView;
         }
@@ -301,19 +307,22 @@ public class FindCardItemAdapter extends BaseAdapter {
             default:
                 url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.CLASSROOM_COURSES, id));
         }
-
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.WEB_URL, url);
-                    }
-                });
-            }
-        });
+        view.setTag(R.id.card_cover, url);
+        view.setOnClickListener(mViewOnClickListener);
     }
+
+    View.OnClickListener mViewOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final String url = v.getTag(R.id.card_cover).toString();
+            EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(Const.WEB_URL, url);
+                }
+            });
+        }
+    };
 
     class ViewHolder {
         public ImageView coverView;
