@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by JesseHuang on 16/5/8.
@@ -63,7 +64,7 @@ public class ThreadActivity extends ActionBarBaseActivity implements View.OnClic
 
     private synchronized void createThread() {
         RequestUrl requestUrl = app.bindNewApiUrl(Const.CREATE_THREAD, true);
-        HashMap<String, String> params = requestUrl.getParams();
+        Map<String, String> params = requestUrl.getParams();
         params.put("threadType", "course");
         params.put("courseId", mCourseId + "");
         if (mLessonId != 0) {

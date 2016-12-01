@@ -29,6 +29,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -121,7 +122,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
 
             RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
 
-            HashMap<String, String> params = requestUrl.getParams();
+            Map<String, String> params = requestUrl.getParams();
             params.put("phoneNumber", String.valueOf(phoneNumber));
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
@@ -160,7 +161,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             RequestUrl url = app.bindUrl(Const.REGIST, false);
-            HashMap<String, String> params = url.getParams();
+            Map<String, String> params = url.getParams();
             params.put("registeredWay","android");
             String strPhone = etPhone.getText().toString().trim();
             if (TextUtils.isEmpty(strPhone)) {
@@ -239,7 +240,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             RequestUrl url = app.bindUrl(Const.REGIST, false);
-            HashMap<String, String> params = url.getParams();
+            Map<String, String> params = url.getParams();
             params.put("registeredWay","android");
             String strMail = etMail.getText().toString().trim();
             if (TextUtils.isEmpty(strMail)) {
