@@ -59,6 +59,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -435,7 +436,7 @@ public class ThreadDiscussActivity extends BaseChatActivity implements ChatAdapt
             return;
         }
         RequestUrl requestUrl = app.bindNewApiUrl(Const.CREATE_THREAD, true);
-        HashMap<String, String> params = requestUrl.getParams();
+        Map<String, String> params = requestUrl.getParams();
         params.put("threadType", "course".equals(mTargetType) ? "course" : "common");
         params.put("courseId", mTargetId + "");
 

@@ -48,6 +48,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -395,7 +396,7 @@ public class SearchDialogFragment extends DialogFragment {
 
         RequestUrl requestUrl = mApp.bindNewUrl(Const.ADD_FRIEND, true);
         requestUrl.url = String.format(requestUrl.url, friend.id);
-        final HashMap<String, String> params = requestUrl.getParams();
+        final Map<String, String> params = requestUrl.getParams();
         params.put("method", "follow");
         params.put("userId", mApp.loginUser.id + "");
 

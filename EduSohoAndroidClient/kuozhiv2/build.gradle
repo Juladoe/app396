@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.antfortune.freeline'
 
 android {
     compileSdkVersion 22
@@ -22,6 +23,11 @@ android {
         edusoho {
             applicationId "com.edusoho.kuozhi"
         }
+    }
+    
+    freeline {
+        hack true
+        productFlavor 'edusoho'
     }
 
     //签名

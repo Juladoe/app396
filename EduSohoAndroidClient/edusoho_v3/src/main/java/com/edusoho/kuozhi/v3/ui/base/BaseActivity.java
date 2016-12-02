@@ -252,6 +252,7 @@ public class BaseActivity extends ActionBarActivity {
             value = mActivity.gson.fromJson(
                     json, typeToken.getType());
         } catch (Exception e) {
+            e.printStackTrace();
             return value;
         }
 

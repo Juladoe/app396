@@ -50,6 +50,7 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.trinea.android.common.util.PreferencesUtils;
 
@@ -442,7 +443,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
             backActivity();
         } else if (v.getId() == ivShare.getId()) {
             RequestUrl requestUrl = lessonActivity.app.bindUrl(Const.COURSE, false);
-            HashMap<String, String> params = requestUrl.getParams();
+            Map<String, String> params = requestUrl.getParams();
             params.put("courseId", lessonActivity.getCourseId() + "");
             lessonActivity.app.postUrl(requestUrl, new Response.Listener<String>() {
                 @Override
