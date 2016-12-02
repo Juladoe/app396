@@ -79,7 +79,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         tvTime = (TextView) findViewById(R.id.tv_show_time);
 
         num = getIntent().getStringExtra("num");
-        tvShow.setText("验证码已经发送到:"+ num);
+        tvShow.setText(getString(R.string.phone_code_input_hint)+ num);
 
         mSmsCodeHandler = new SmsCodeHandler(this);
 
@@ -147,21 +147,21 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             RequestUrl url = app.bindUrl(Const.REGIST, false);
-            HashMap<String, String> params = url.getParams();
+            HashMap<String, String> params = (HashMap<String, String>) url.getParams();
             params.put("registeredWay","android");
 
             params.put("phone", num);
 
             String strCode = etAuth.getText().toString().trim();
             if (TextUtils.isEmpty(strCode)) {
-                CommonUtil.longToast(mContext, "请输入验证码");
+                CommonUtil.longToast(mContext, getString(R.string.reg_code_hint));
                 return;
             } else {
                 params.put("smsCode", strCode);
             }
             String strPass = etPwd.getText().toString();
             if (TextUtils.isEmpty(strPass)) {
-                CommonUtil.longToast(mContext, "请输入密码");
+                CommonUtil.longToast(mContext, getString(R.string.reg_password_hint));
                 return;
             }
             params.put("password", strPass);
@@ -212,7 +212,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
-            HashMap<String, String> params = requestUrl.getParams();
+            HashMap<String, String> params = (HashMap<String, String>) requestUrl.getParams();
             params.put("phoneNumber", String.valueOf(num));
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override

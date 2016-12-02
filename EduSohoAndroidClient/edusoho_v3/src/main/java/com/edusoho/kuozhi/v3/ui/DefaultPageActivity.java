@@ -484,7 +484,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         new IMServiceProvider(getBaseContext()).reConnectServer(user.id, user.nickname);
     }
 
-    protected AppSettingProvider getAppSettingProvider() {
+    public AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 }

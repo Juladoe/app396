@@ -23,6 +23,16 @@
         <item name="android:windowExitAnimation">@anim/dialog_window_exit</item>
     </style>
 
+    <style name="DialogWindowAnimationAlpha">
+        <item name="android:windowEnterAnimation">@anim/dialog_window_enter_a</item>
+        <item name="android:windowExitAnimation">@anim/dialog_window_exit_a</item>
+    </style>
+
+    <style name="DialogFullscreen">
+        <!--<item name="android:windowFullscreen">true</item>-->
+        <item name="android:windowNoTitle">false</item>
+    </style>
+
     <style name="CategoryListPopWindowAnimationShow">
         <item name="android:windowEnterAnimation">@anim/category_list_popwindow_open</item>
         <item name="android:windowExitAnimation">@anim/category_list_popwindow_hide</item>
@@ -95,7 +105,7 @@
         <item name="android:windowAnimationStyle">@style/SlideToWindowAnimTheme</item>
         <item name="actionBarSize">44dp</item>
         <item name="android:actionBarSize">44dp</item>
-        <item name="colorAccent">@color/primary</item>
+        <item name="colorAccent">@color/underline_color</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_fb</item>
         <item name="windowActionBar">true</item>

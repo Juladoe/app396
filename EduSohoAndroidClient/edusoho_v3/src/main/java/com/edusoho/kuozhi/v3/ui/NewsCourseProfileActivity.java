@@ -34,6 +34,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by JesseHuang on 15/9/21.
@@ -128,7 +129,7 @@ public class NewsCourseProfileActivity extends ActionBarBaseActivity {
         });
 
         RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
-        HashMap<String, String> params = requestUrl.getParams();
+        Map<String, String> params = requestUrl.getParams();
         params.put("courseId", mCourseId + "");
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override

@@ -506,6 +506,17 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
         }
     }
 
+    @JsAnnotation
+    public void originalLogin(JSONArray args, BridgeCallback callbackContext) throws JSONException {
+        EdusohoApp app = (EdusohoApp) mActivity.getApplication();
+        app.mEngine.runNormalPluginWithAnim("LoginActivity", mContext, null, new NormalCallback() {
+            @Override
+            public void success(Object obj) {
+                mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
+            }
+        });
+    }
+
     private int[] coverJsonArrayToIntArray(JSONArray jsonArray) {
         int length = jsonArray.length();
         int[] array = new int[length];

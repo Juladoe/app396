@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
 /**
  * Created by DF on 2016/11/28.
  */
@@ -82,6 +83,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             RegisterActivity.this.finish();
+
         }
     };
 
@@ -89,6 +91,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             etAccount.setText("");
+
         }
     };
 
@@ -98,7 +101,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
             final String st = etAccount.getText().toString().trim();
             if (isPhone(st)) {
                 RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
-                HashMap<String, String> params = requestUrl.getParams();
+                HashMap<String,String> params = (HashMap<String, String>) requestUrl.getParams();
                 params.put("phoneNumber", String.valueOf(st));
                 mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                     @Override
@@ -111,8 +114,10 @@ public class RegisterActivity extends ActionBarBaseActivity {
                                 registerIntent.putExtra("num", st);
                                 startActivity(registerIntent);
                             } else {
-                                if (response.equals("该手机号码已被其他用户绑定")) {
+                                if (response.equals(getString(R.string.register_hint))) {
                                     showDialog();
+                                }else{
+                                    CommonUtil.longToast(mContext, response);
                                 }
                             }
                         } catch (Exception e) {
@@ -121,7 +126,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                     }
                 }, null);
             } else {
-                CommonUtil.longToast(mContext, "你输入的手机号格式有误");
+                CommonUtil.longToast(mContext, getString(R.string.register_error));
             }
         }
     };
@@ -139,7 +144,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
             @Override
             public void onClick(View v) {
                 dialog.cancel();
-                CommonUtil.longToast(mContext,"请更换手机号码");
+                CommonUtil.longToast(mContext,getString(R.string.register_modify_phone));
             }
         });
         tvConfirm.setOnClickListener(new View.OnClickListener() {

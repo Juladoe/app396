@@ -6,7 +6,7 @@
     <string name="app_name">阔知学堂</string>
     <string name="app_title">将学校装进口袋</string>
     <string name="api_version">3.0.0</string>
-    <string name="apk_version">3.4.2</string>
+    <string name="apk_version">3.7.2</string>
     <string name="apk_code">34</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
@@ -22,6 +22,7 @@
     <string name="login_loading">正在登录...</string>
     <string name="login_success">登录成功</string>
     <string name="register">注册</string>
+    <string name="register_resend">重新发送</string>
     <string name="register_next">下一步</string>
     <string name="register_confirm">确定</string>
     <string name="register_loading">正在注册...</string>
@@ -54,6 +55,7 @@
     <string name="mine_nickname">立即登录</string>
     <string name="chat_profile">聊天信息</string>
     <string name="login_register">注册</string>
+    <string name="login_register2">注册账号</string>
     <string name="news_course_profile">课程信息</string>
     <string name="news_course_share">分享</string>
     <string name="study_entrance">进入学习</string>
@@ -71,6 +73,30 @@
     <string name="notification">提示</string>
     <string name="yes">是</string>
     <string name="no">否</string>
+    <string name="find_password">找回密码</string>
+    <string name="input_phone_or_mail">请输入手机号／邮箱号</string>
+    <string name="reset_password_hint">请输入密码</string>
+    <string name="find_password_next">下一步</string>
+    <string name="find_password_submit">确定</string>
+    <string name="find_password_text_not_null">手机号或邮箱不能为空</string>
+    <string name="phone_or_mail_format_error">手机号或邮箱格式不正确</string>
+    <string name="phone_code_input_hint">验证码已经发送到:</string>
+    <string name="phone_sms_code_hint">请输入短信验证码</string>
+    <string name="sms_code_not_null">验证码不能为空</string>
+    <string name="reset_password_not_null">重置密码不能为空</string>
+    <string name="password_more_than_six_digit_number">密码不能小于6位</string>
+    <string name="retrieve_phone_code">重新获取验证码</string>
+    <string name="after_retrieve_phone_code">后重新获取验证码</string>
+    <string name="reg_set_password">请设置密码</string>
+    <string name="reset_password_success">密码重置成功</string>
+    <string name="sms_code_success">验证码发送成功</string>
+    <string name="txt_login">账号登录</string>
+    <string name="txt_three">第三方登录</string>
+    <string name="netclass">选择网校 ></string>
+    <string name="txt_search">请输入网校网址或名称</string>
+    <string name="txt_search_school">搜索网校</string>
+    <string name="txt_help">使用帮助</string>
+    <string name="txt_login_near">近期登录</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>
@@ -79,9 +105,11 @@
     <string name="reg_phone_hint">请输入手机号</string>
     <string name="reg_mail_hint">请输入邮箱地址</string>
     <string name="reg_code_hint">请输入验证码</string>
+    <string name="reg_username_hint">请输入手机号／邮箱号／用户名</string>
     <string name="reg_password_hint">请输入密码</string>
 
     <!--Button-->
+    <string name="reg_account_reg">账号注册</string>
     <string name="reg_phone_reg">手机注册</string>
     <string name="reg_mail_reg">邮箱注册</string>
     <string name="reg_send_code">重新获取验证码</string>
@@ -104,7 +132,8 @@
     <string name="player_exit_dialog_title">提醒</string>
     <string name="player_exit_dialog_msg">是否退出播放</string>
     <string name="register_hint">该手机号码已被其他用户绑定</string>
-
+    <string name="register_error">你输入的手机号格式有误</string>
+    <string name="register_modify_phone">请更换手机号码</string>
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>
     <string name="font_my_download">&#xe63e;</string>
@@ -129,8 +158,10 @@
     <string name="font_download_unselect">&#xe613;</string>
     <string name="font_less">&#xe625;</string>
     <string name="font_more">&#xe624;</string>
+    <string name="font_wrong">&#xe655;</string>
+    <string name="font_scan_code">&#xe608;</string>
+    <string name="font_search">&#xe603;</string>
 
-    <!-- todo del -->
     <string name="font_chat_add_media">&#xe611;</string>
     <string name="font_chat_keyboard">&#xe60d;</string>
     <string name="font_chat_voice">&#xe641;</string>
@@ -239,4 +270,5 @@
     <string name="label_classroom">班级</string>
     <string name="label_course">课程</string>
     <string name="label_teacher">教师</string>
+
 </resources>

@@ -58,6 +58,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -448,8 +449,14 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
             public void success(CourseThreadPostResult threadPostResult) {
                 if (threadPostResult != null && threadPostResult.resources != null) {
                     List<CourseThreadPostEntity> posts = threadPostResult.resources;
-                    Collections.reverse(posts);
-                    mMessageEntityList.addAll(coverPostListToMessageEntity(posts));
+                    List<MessageEntity> messageEntityList = coverPostListToMessageEntity(posts);
+                    Collections.sort(messageEntityList, new Comparator<MessageEntity>() {
+                        @Override
+                        public int compare(MessageEntity t1, MessageEntity t2) {
+                            return t2.getTime() - t1.getTime();
+                        }
+                    });
+                    mMessageEntityList.addAll(messageEntityList);
                     mIMessageListPresenter.refresh();
                 }
             }
@@ -647,6 +654,16 @@ public class ThreadDiscussChatActivity extends AbstractIMChatActivity implements
         @Override
         public boolean canRefresh() {
             return false;
+        }
+
+        @Override
+        public void processResourceDownload(int resId, String resUri) {
+            super.processResourceDownload(resId, resUri);
+            MessageEntity messageEntity = mMessageEntityList.get(resId);
+            if (messageEntity != null) {
+                messageEntity.setStatus(MessageEntity.StatusType.SUCCESS);
+                mMessageListFragment.updateListByEntity(messageEntity);
+            }
         }
     }
 }

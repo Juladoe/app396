@@ -26,7 +26,7 @@ public class Course implements Serializable {
     public String ratingNum;
     public String categoryId;
     public String serializeMode;
-    public String[] tags;
+    //    public String[] tags;
     public String middlePicture;
     public String largePicture;
     public String about;

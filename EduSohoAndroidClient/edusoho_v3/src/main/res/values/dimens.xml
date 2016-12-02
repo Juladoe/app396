@@ -1,4 +1,16 @@
 <resources>
+    <!--kuozhi 4.0 font size guideline-->
+
+    <dimen name="font_xxl">20sp</dimen>
+    <dimen name="font_xl">17sp</dimen>
+    <dimen name="font_l">15sp</dimen>
+    <dimen name="font_m">14sp</dimen>
+    <dimen name="font_s">13sp</dimen>
+    <dimen name="font_xs">11sp</dimen>
+    <dimen name="font_xxs">10sp</dimen>
+
+    <!-- end -->
+
     <dimen name="font_size_l">20sp</dimen>
     <dimen name="font_size_m">18sp</dimen>
     <dimen name="font_size_s">16sp</dimen>
@@ -18,21 +30,25 @@
     <dimen name="base_xx_large_size">24sp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="xxxx_large_font_size">36sp</dimen>
     <dimen name="xxx_large_font_size">32sp</dimen>
     <dimen name="xx_large_font_size">28sp</dimen>
     <dimen name="x_large_font_size">24sp</dimen>
     <!--大字-->
     <dimen name="large_font_size">20sp</dimen>
+    <dimen name="_large_font_size">18sp</dimen>
+
     <!--中字-->
     <dimen name="medium_font_size">16sp</dimen>
+    <dimen name="x_medium_font_size">15sp</dimen>
     <!--小一/二字-->
     <dimen name="small_font_size">14sp</dimen>
     <!--超小字-->
+    <dimen name="_x_small_font_size">13sp</dimen>
     <dimen name="x_small_font_size">12sp</dimen>
 
     <dimen name="xx_small_font_size">10sp</dimen>
     <dimen name="xxx_small_font_size">8sp</dimen>
-
 
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>

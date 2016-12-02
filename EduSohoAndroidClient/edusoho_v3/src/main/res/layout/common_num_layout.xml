@@ -20,7 +20,7 @@
     <TextView
         android:id="@+id/tv_info"
         android:textSize="@dimen/base_x_large_size"
-        android:text="账号注册"
+        android:text="@string/reg_account_reg"
         android:layout_marginTop="@dimen/view_register_margin"
         android:layout_gravity="center_horizontal"
         android:textColor="@color/primary_font_color"
@@ -72,6 +72,6 @@
         android:enabled="false"
         android:textColor="@color/white"
         android:textSize="@dimen/register_btn_next"
-        android:text="下一步"/>
+        android:text="@string/register_next"/>
 
 </LinearLayout>
