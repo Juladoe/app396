@@ -21,8 +21,10 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.entity.error.Error;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ForgetPasswordActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
@@ -30,6 +32,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.ToastUtil;
+import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
 import java.util.Map;
@@ -184,7 +187,12 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        ToastUtils.show(mContext, R.string.reset_password_success, Toast.LENGTH_LONG);
+                        if (error != null && error.networkResponse != null && error.networkResponse.data != null) {
+                            String errorResult = new String(error.networkResponse.data);
+                            Error errorModel = ModelDecor.getInstance().decor(errorResult, new TypeToken<Error>() {
+                            });
+                            ToastUtils.show(mContext, errorModel.message, Toast.LENGTH_LONG);
+                        }
                     }
                 });
             }
@@ -196,7 +204,6 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 if (tvPhoneCodeTimer.getVisibility() != View.VISIBLE) {
-                    // TODO: 2016/11/30
                     if (mTimer == null) {
                         mTimer = new Timer();
                     }
