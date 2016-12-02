@@ -17,7 +17,7 @@
             android:layout_width="10dp"
             android:layout_height="17dp"
             android:scaleType="fitXY"
-            android:src="@drawable/back"/>
+            android:src="@drawable/action_icon_back"/>
 
     </RelativeLayout>
 
@@ -99,7 +99,7 @@
             android:layout_height="16dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:background="@drawable/pwd_unshow"/>
+            android:background="@drawable/register_pwd_unshow"/>
 
         <View
             android:background="#d8d8d8"

@@ -99,10 +99,10 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         public void onClick(View v) {
             if (isShowPwd) {
                 etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                btnShow.setBackgroundResource(R.drawable.pwd_unshow);
+                btnShow.setBackgroundResource(R.drawable.register_pwd_unshow);
             }else{
                 etPwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                btnShow.setBackgroundResource(R.drawable.pwd_show);
+                btnShow.setBackgroundResource(R.drawable.register_pwd_show);
             }
             isShowPwd = !isShowPwd;
         }
