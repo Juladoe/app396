@@ -82,7 +82,23 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         tvShow.setText("验证码已经发送到:"+ num);
 
         mSmsCodeHandler = new SmsCodeHandler(this);
-        mSmsSendClickListener.onClick(tvSend);
+
+        sendSms();
+    }
+
+    private void sendSms() {
+        tvSend.setEnabled(false);
+        mClockTime = 120;
+        mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Message message = mSmsCodeHandler.obtainMessage();
+                message.what = 0;
+                mSmsCodeHandler.sendMessage(message);
+
+            }
+        }, 0, 1000);
     }
 
     View.OnClickListener mBackClickListener = new View.OnClickListener() {
@@ -196,7 +212,6 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
-
             HashMap<String, String> params = requestUrl.getParams();
             params.put("phoneNumber", String.valueOf(num));
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {

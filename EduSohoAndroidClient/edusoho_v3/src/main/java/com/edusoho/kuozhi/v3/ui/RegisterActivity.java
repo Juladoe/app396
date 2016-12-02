@@ -123,9 +123,6 @@ public class RegisterActivity extends ActionBarBaseActivity {
             } else {
                 CommonUtil.longToast(mContext, "你输入的手机号格式有误");
             }
-            app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            app.sendMessage(Const.LOGIN_SUCCESS, null);
-            RegisterActivity.this.finish();
         }
     };
 

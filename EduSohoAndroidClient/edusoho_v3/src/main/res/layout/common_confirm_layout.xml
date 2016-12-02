@@ -65,7 +65,7 @@
                 android:textColor="@color/register_send"
                 android:textSize="@dimen/learn_status_widget_learnbtn"
                 android:clickable="true"
-                android:text="120S"/>
+                android:text=""/>
 
             <TextView
                 android:id="@+id/tv_show_time"
