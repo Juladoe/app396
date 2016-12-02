@@ -152,7 +152,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                     return true;
                 }
                 String searchStr = mSearchEdt.getText().toString();
-                if (searchStr.length() > 0) {
+                if (searchStr.trim().length() > 0) {
                     mLoading = LoadDialog.create(mContext);
                     mLoading.show();
                     Matcher matcher = mPattern.matcher(searchStr);
@@ -175,8 +175,8 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                             }
                         });
                     }
-                    mSearchEdt.setText("");
                 }
+                mSearchEdt.setText("");
                 return true;
             }
         });
