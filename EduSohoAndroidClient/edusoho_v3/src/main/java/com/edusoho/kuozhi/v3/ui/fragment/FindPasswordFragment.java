@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.entity.error.Error;
 import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
@@ -81,14 +82,22 @@ public class FindPasswordFragment extends BaseFragment {
                         bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
                         forgetPasswordActivity.switchFragment("FindPasswordByMailFragment", bundle);
                     } else if (Validator.isPhone(etPhoneOrMail.getText().toString().trim())) {
-                        sendSmsToPhone(new NormalCallback<FindPasswordSmsCode>() {
+                        sendSmsToPhone(new NormalCallback<String>() {
                             @Override
-                            public void success(FindPasswordSmsCode result) {
-                                if (result != null) {
-                                    ToastUtils.show(mContext, getString(R.string.sms_code_success), Toast.LENGTH_LONG);
-                                    bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
-                                    bundle.putString(SMS_TOKEN, result.smsToken);
-                                    forgetPasswordActivity.switchFragment("FindPasswordByPhoneFragment", bundle);
+                            public void success(String response) {
+                                if (response != null) {
+                                    FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
+                                    });
+                                    if (smsCode.mobile != null && smsCode.smsToken != null) {
+                                        ToastUtils.show(mContext, getString(R.string.sms_code_success), Toast.LENGTH_LONG);
+                                        bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
+                                        bundle.putString(SMS_TOKEN, smsCode.smsToken);
+                                        forgetPasswordActivity.switchFragment("FindPasswordByPhoneFragment", bundle);
+                                    } else {
+                                        Error error = ModelDecor.getInstance().decor(response, new TypeToken<Error>() {
+                                        });
+                                        ToastUtils.show(mContext, error.message, Toast.LENGTH_LONG);
+                                    }
                                 }
                             }
                         });
@@ -109,7 +118,7 @@ public class FindPasswordFragment extends BaseFragment {
         };
     }
 
-    private void sendSmsToPhone(final NormalCallback<FindPasswordSmsCode> callback) {
+    private void sendSmsToPhone(final NormalCallback<String> callback) {
         RequestUrl requestUrl = app.bindNewUrl(Const.SMS_CODES, false);
         Map<String, String> params = requestUrl.getParams();
         params.put("type", "sms_change_password");
@@ -117,14 +126,13 @@ public class FindPasswordFragment extends BaseFragment {
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
-                });
-                callback.success(smsCode);
+                callback.success(response);
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                callback.success(null);
+                String as = new String(error.networkResponse.data);
+                callback.success(as);
             }
         });
     }
