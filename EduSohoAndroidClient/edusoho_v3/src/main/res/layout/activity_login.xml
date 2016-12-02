@@ -128,20 +128,20 @@
                     android:background="@color/disabled_hint_color" />
             </RelativeLayout>
 
-            <com.edusoho.kuozhi.v3.view.EduSohoLoadingButton
+            <TextView
                 android:id="@+id/btn_login"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_height="45dp"
+                android:gravity="center"
                 android:layout_marginBottom="@dimen/login_widget_margin_bottom"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="30dp"
-                app:init_background="@drawable/login_btn_normal"
-                app:init_text="@string/login"
-                app:loading_background="@drawable/login_btn_press"
-                app:loading_text="@string/login_loading"
-                app:success_text="@string/login_success" />
+                android:text="@string/login"
+                android:background="@color/primary_color"
+                android:textColor="@color/disabled2_hint_color"
+                android:textSize="@dimen/font_xl"
+                />
 
             <RelativeLayout
                 android:layout_width="match_parent"

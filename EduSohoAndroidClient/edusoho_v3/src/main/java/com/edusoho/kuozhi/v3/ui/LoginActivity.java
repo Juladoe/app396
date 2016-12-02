@@ -56,7 +56,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private static boolean isRun;
     private EditText etUsername;
     private EditText etPassword;
-    private EduSohoLoadingButton mBtnLogin;
+    private View mBtnLogin;
     private ImageView ivWeibo;
     private ImageView ivQQ;
     private ImageView ivWeixin;
@@ -80,7 +80,7 @@ public class LoginActivity extends BaseNoTitleActivity {
         super.initView();
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
-        mBtnLogin = (EduSohoLoadingButton) findViewById(R.id.btn_login);
+        mBtnLogin = findViewById(R.id.btn_login);
         mBtnLogin.setOnClickListener(mLoginClickListener);
         ivWeibo = (ImageView) findViewById(R.id.iv_weibo);
         ivWeibo.setOnClickListener(mWeiboLoginClickListener);
@@ -190,8 +190,6 @@ public class LoginActivity extends BaseNoTitleActivity {
         params.put("_username", etUsername.getText().toString().trim());
         params.put("_password", etPassword.getText().toString().trim());
 
-        mBtnLogin.setLoadingState();
-
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -206,7 +204,6 @@ public class LoginActivity extends BaseNoTitleActivity {
                     saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
                     new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
-                    mBtnLogin.setSuccessState();
                     mBtnLogin.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -214,7 +211,6 @@ public class LoginActivity extends BaseNoTitleActivity {
                         }
                     }, 500);
                 } else {
-                    mBtnLogin.setInitState();
                     if (!TextUtils.isEmpty(response)) {
                         CommonUtil.longToast(mContext, response);
                     } else {
@@ -225,7 +221,6 @@ public class LoginActivity extends BaseNoTitleActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mBtnLogin.setInitState();
                 CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
             }
         });
