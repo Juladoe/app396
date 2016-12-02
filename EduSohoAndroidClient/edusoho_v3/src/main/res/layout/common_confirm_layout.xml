@@ -8,15 +8,14 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="44dp">
+        android:layout_height="@dimen/head_register_height">
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_marginLeft="15dp"
             android:layout_centerVertical="true"
-            android:layout_width="10dp"
-            android:layout_height="17dp"
-            android:scaleType="fitXY"
+            android:layout_width="@dimen/iv_register"
+            android:layout_height="@dimen/iv_register"
+            android:scaleType="center"
             android:src="@drawable/action_icon_back"/>
 
     </RelativeLayout>
@@ -25,99 +24,153 @@
         android:id="@+id/tv_info"
         android:textSize="@dimen/base_x_large_size"
         android:text="账号注册"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="@dimen/view_register_margin"
         android:layout_gravity="center_horizontal"
-        android:textColor="#2b333b"
+        android:textColor="@color/primary_font_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tv_show"
         android:textSize="@dimen/base_large_size"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/btn_loading_margin"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
-        android:textColor="#bdc2c6"
+        android:textColor="@color/register_tv_show_hint"
         android:layout_height="wrap_content"
         android:text="验证码已经发送到:"/>
 
     <RelativeLayout
-        android:layout_marginTop="30dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginTop="@dimen/rl_register_margin"
+        android:layout_marginLeft="@dimen/view_register_margin"
+        android:layout_marginRight="@dimen/view_register_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/rl_auth"
+            android:paddingLeft="@dimen/view_register_margin"
+            android:orientation="horizontal"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true">
+
+            <TextView
+                android:id="@+id/tv_send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:textColor="@color/register_send"
+                android:textSize="@dimen/learn_status_widget_learnbtn"
+                android:clickable="true"
+                android:text="120S"/>
+
+            <TextView
+                android:id="@+id/tv_show_time"
+                android:text="重新发送"
+                android:textColor="@color/primary_font_color"
+                android:textSize="@dimen/learn_status_widget_learnbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_clear_auth"
+            android:scaleType="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/rl_auth"
+            android:layout_centerVertical="true"
+            android:src="@drawable/register_clear_content"/>
 
         <EditText
             android:id="@+id/et_auth"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             style="@style/edittext_style"
             android:hint="请输入短信验证码"
-            android:gravity="center_vertical"
-            android:textSize="@dimen/base_large_size"
-            android:textColorHint="#bdc2d6"/>
-
-        <Button
-            android:id="@+id/btn_send"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@android:color/white"
-            android:text="60S"/>
+            android:gravity="center_vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@id/iv_clear_auth"
+            android:textSize="@dimen/tv_register_size"
+            android:layout_below="@+id/iv_clear_auth"
+            android:textColorHint="@color/register_tv_show_hint" />
 
         <View
-            android:background="#d8d8d8"
+            android:background="@color/register_view"
             android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="45dp"/>
+            android:layout_height="@dimen/view_register_height"
+            android:layout_marginTop="@dimen/view_marginTop"/>
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginRight="@dimen/view_register_margin"
+        android:layout_marginLeft="@dimen/view_register_margin"
+        android:layout_marginTop="@dimen/btn_loading_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <LinearLayout
+            android:id="@+id/rl_pwd"
+            android:paddingLeft="@dimen/view_register_margin"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true">
+
+            <ImageView
+                android:id="@+id/iv_show_pwd"
+                android:layout_width="@dimen/btn_register_width"
+                android:layout_height="@dimen/btn_register_height"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:scaleType="center"
+                android:src="@drawable/register_pwd_unshow"/>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_clear_pwd"
+            android:scaleType="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/rl_pwd"
+            android:layout_centerVertical="true"
+            android:src="@drawable/register_clear_content"/>
+
         <EditText
             android:id="@+id/et_pwd"
+            android:maxLength="20"
+            android:hint="请设置密码"
+            style="@style/edittext_style"
+            android:inputType="textPassword"
+            android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/edittext_style"
-            android:hint="请设置密码"
-            android:gravity="center_vertical"
+            android:layout_toLeftOf="@id/iv_clear_pwd"
             android:textSize="@dimen/base_large_size"
-            android:textColorHint="#bdc2d6"
-            android:inputType="textPassword"
-            android:maxLength="20"/>
-
-        <Button
-            android:id="@+id/btn_show"
-            android:layout_width="21dp"
-            android:layout_height="16dp"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/register_pwd_unshow"/>
+            android:textColorHint="@color/register_tv_show_hint" />
 
         <View
-            android:background="#d8d8d8"
+            android:background="@color/register_view"
             android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="45dp"/>
+            android:layout_height="@dimen/view_register_height"
+            android:layout_marginTop="@dimen/view_marginTop"/>
     </RelativeLayout>
 
-    <com.edusoho.kuozhi.v3.view.EduSohoLoadingButton
+    <Button
         android:id="@+id/btn_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="30dp"
-        app:init_background="@drawable/login_btn_normal"
-        app:init_text="@string/register_confirm"
-        app:loading_background="@drawable/login_btn_press"
-        app:loading_text="@string/register_loading"
-        app:success_text="@string/register_success"/>
+        android:layout_marginRight="@dimen/view_register_margin"
+        android:layout_marginLeft="@dimen/view_register_margin"
+        android:layout_marginTop="@dimen/rl_register_margin"
+        android:background="@drawable/login_btn_normal"
+        android:textColor="@color/white"
+        android:textSize="@dimen/register_btn_next"
+        android:text="确定"/>
 </LinearLayout>

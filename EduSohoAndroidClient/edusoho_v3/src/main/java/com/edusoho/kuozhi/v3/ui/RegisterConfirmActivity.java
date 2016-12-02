@@ -22,7 +22,6 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
@@ -40,46 +39,50 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
     private TextView tvShow;
     private EditText etPwd;
     private EditText etAuth;
-    private Button btnSend;
+    private TextView tvSend;
 
     private int mClockTime;
     private Timer mTimer;
     private SmsCodeHandler mSmsCodeHandler;
     private String num;
-    private Button btnShow;
-    private EduSohoLoadingButton btnConfirm;
+    private ImageView ivShowPwd;
+    private Button btnConfirm;
     private String mCookie = "";
     private ImageView iv;
+    private ImageView ivClearAuth;
+    private ImageView ivClearPwd;
+    private TextView tvTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_confirm);
-        hideActionBar();
         initView();
     }
 
     private void initView() {
         tvShow = (TextView) findViewById(R.id.tv_show);
-        btnSend = (Button) findViewById(R.id.btn_send);
-        btnSend.setOnClickListener(mSmsSendClickListener);
+        tvSend = (TextView) findViewById(R.id.tv_send);
+        tvSend.setOnClickListener(mSmsSendClickListener);
         etAuth = (EditText) findViewById(R.id.et_auth);
         etPwd = (EditText) findViewById(R.id.et_pwd);
-        btnShow = (Button) findViewById(R.id.btn_show);
-        btnShow.setOnClickListener(nShowPwdClickListener);
-        btnConfirm = (EduSohoLoadingButton) findViewById(R.id.btn_confirm);
+        ivShowPwd = (ImageView) findViewById(R.id.iv_show_pwd);
+        ivShowPwd.setOnClickListener(nShowPwdClickListener);
+        btnConfirm = (Button) findViewById(R.id.btn_confirm);
         btnConfirm.setOnClickListener(mConfirmRegClickListener);
-        iv = (ImageView) findViewById(R.id.iv_back);   //后期抽取
+        iv = (ImageView) findViewById(R.id.iv_back);
         iv.setOnClickListener(mBackClickListener);
+        ivClearAuth = (ImageView) findViewById(R.id.iv_clear_auth);
+        ivClearAuth.setOnClickListener(mClearContentListener);
+        ivClearPwd = (ImageView) findViewById(R.id.iv_clear_pwd);
+        ivClearPwd.setOnClickListener(mClearContentListener);
+        tvTime = (TextView) findViewById(R.id.tv_show_time);
 
         num = getIntent().getStringExtra("num");
         tvShow.setText("验证码已经发送到:"+ num);
 
         mSmsCodeHandler = new SmsCodeHandler(this);
-
-        mSmsSendClickListener.onClick(btnSend);
-
-        firstReq();
+        mSmsSendClickListener.onClick(tvSend);
     }
 
     View.OnClickListener mBackClickListener = new View.OnClickListener() {
@@ -88,6 +91,18 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             RegisterConfirmActivity.this.finish();
         }
     };
+
+    View.OnClickListener mClearContentListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (v.getId() == R.id.iv_clear_auth) {
+                etAuth.setText("");
+            }else {
+                etPwd.setText("");
+            }
+        }
+    };
+
 
     /**
      * 处理隐藏pwd
@@ -99,12 +114,13 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         public void onClick(View v) {
             if (isShowPwd) {
                 etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                btnShow.setBackgroundResource(R.drawable.register_pwd_unshow);
+                ivShowPwd.setImageResource(R.drawable.register_pwd_unshow);
             }else{
                 etPwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                btnShow.setBackgroundResource(R.drawable.register_pwd_show);
+                ivShowPwd.setImageResource(R.drawable.register_pwd_show);
             }
             isShowPwd = !isShowPwd;
+            etPwd.setSelection(etPwd.getText().toString().length());
         }
     };
 
@@ -140,8 +156,6 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                 headers.put("Cookie", mCookie);
             }
 
-            btnConfirm.setLoadingState();
-
             mActivity.ajaxPost(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -152,23 +166,19 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                                 });
                         if (userResult != null && userResult.user != null) {
                             app.saveToken(userResult);
-                            btnConfirm.setSuccessState();
                             btnConfirm.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
-                                    RegisterConfirmActivity.this.finish();
+//                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
                                 }
                             }, 500);
                         } else {
-                            btnConfirm.setInitState();
                             if (!TextUtils.isEmpty(response)) {
                                 CommonUtil.longToast(mContext, response);
                             }
                         }
                     } catch (Exception e) {
-                        btnConfirm.setInitState();
                         e.printStackTrace();
                     }
                 }
@@ -176,32 +186,11 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data).toString());
-                    btnConfirm.setInitState();
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
             });
         }
     };
-
-    /**
-     * 处理验证码
-     */
-    private void firstReq(){
-        btnSend.setEnabled(false);
-        btnSend.setTextColor(mActivity.getResources().getColor(R.color.register_send));
-        mClockTime = 60;
-        mTimer = new Timer();
-        mTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Message message = mSmsCodeHandler.obtainMessage();
-                message.what = 0;
-                mSmsCodeHandler.sendMessage(message);
-
-            }
-        }, 0, 1000);
-        CommonUtil.longToast(mContext, "短信已发送");
-    }
 
     View.OnClickListener mSmsSendClickListener = new View.OnClickListener() {
         @Override
@@ -217,9 +206,9 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                         MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>() {
                         });
                         if (result != null && result.code == 200) {
-                            btnSend.setEnabled(false);
-                            btnSend.setTextColor(mActivity.getResources().getColor(R.color.register_send));
-                            mClockTime = 60;
+                            tvTime.setVisibility(View.VISIBLE);
+                            tvSend.setEnabled(false);
+                            mClockTime = 120;
                             mTimer = new Timer();
                             mTimer.schedule(new TimerTask() {
                                 @Override
@@ -231,7 +220,6 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                                 }
                             }, 0, 1000);
                             CommonUtil.longToast(mContext, result.msg);
-
                         } else {
                             CommonUtil.longToast(mContext, response);
                         }
@@ -254,15 +242,16 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         @Override
         public void handleMessage(Message msg) {
             mActivity = mWeakReference.get();
-            mActivity.btnSend.setText(mActivity.mClockTime + "S后重发");
+            mActivity.tvSend.setText(mActivity.mClockTime + "S");
             mActivity.mClockTime--;
             if (mActivity.mClockTime < 0) {
                 mActivity.mTimer.cancel();
                 mActivity.mTimer = null;
-                mActivity.btnSend.setTextColor(mActivity.getResources().getColor(R.color.register_send_auth));
-                mActivity.btnSend.setText(mActivity.getResources().getString(R.string.reg_send_code));
-                mActivity.btnSend.setEnabled(true);
+                mActivity.tvSend.setText(mActivity.getResources().getString(R.string.reg_send_code));
+                mActivity.tvSend.setEnabled(true);
+                mActivity.tvTime.setVisibility(View.GONE);
             }
         }
     }
+
 }
