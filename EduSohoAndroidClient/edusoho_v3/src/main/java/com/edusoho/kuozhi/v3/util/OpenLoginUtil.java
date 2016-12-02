@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
 
@@ -13,22 +12,16 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.bal.User;
-import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CompletePhoneActivity;
-import com.edusoho.kuozhi.v3.ui.StartActivity;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -88,6 +81,7 @@ public class OpenLoginUtil {
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.d("test",response);
 //                loadDialog.dismiss();
 //                UserResult userResult = app.parseJsonValue(
 //                        response, new TypeToken<UserResult>() {
@@ -112,6 +106,7 @@ public class OpenLoginUtil {
                 Intent intent = new Intent(mContext, CompletePhoneActivity.class);
                 mContext.startActivity(intent);
                 CommonUtil.shortToast(mContext,"应该跳转到绑定界面");
+
 
 
             }

@@ -275,11 +275,13 @@
         <activity android:name=".v3.ui.CompletePhoneActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
 
         <activity android:name=".v3.ui.CompletePhoneConfActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
 
     </application>

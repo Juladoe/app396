@@ -77,14 +77,14 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         ivClearPwd = (ImageView) findViewById(R.id.iv_clear_pwd);
         ivClearPwd.setOnClickListener(mClearContent);
 
-        num = getIntent().getStringExtra("phoneNum");
+        num = getIntent().getExtras().getString("phoneNum");
         tvShow.setText("验证码已经发送到:"+ num);
 
         mSmsCodeHandler = new SmsCodeHandler(this);
 
         mSmsSendClickListener.onClick(tvSend);
 
-        firstReq();
+//        firstReq();
     }
 
     View.OnClickListener mBackClickListener = new View.OnClickListener() {
@@ -94,7 +94,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         }
     };
 
-    View.OnClickListener mClearContent = new View.OnClickListener() {
+    View.OnClickListener mClearContent = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
             int id = v.getId();
@@ -111,7 +111,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
      */
     private boolean isShowPwd = true;
 
-    View.OnClickListener nShowPwdClickListener = new View.OnClickListener() {
+    View.OnClickListener nShowPwdClickListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
             if (isShowPwd) {
@@ -238,7 +238,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                         if (result != null && result.code == 200) {
                             tvSend.setEnabled(false);
                             tvSend.setTextColor(mActivity.getResources().getColor(R.color.register_send));
-                            mClockTime = 60;
+                            mClockTime = 120;
                             mTimer = new Timer();
                             mTimer.schedule(new TimerTask() {
                                 @Override

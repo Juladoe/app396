@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -76,10 +75,9 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                             MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>() {
                             });
                             if (result != null && result.code == 200) {
-
-                                Intent registerIntent = new Intent(mContext,CompletePhoneConfActivity.class);
-                                registerIntent.putExtra("phoneNum", phoneNum);
-                                startActivity(registerIntent);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("phoneNum",phoneNum);
+                                app.mEngine.runNormalPluginWithBundle("CompletePhoneConfActivity",mActivity,bundle);
                             } else {
                                     CommonUtil.shortCenterToast(CompletePhoneActivity.this,"当前手机号已被注册，请直接登录");
                             }
