@@ -8,7 +8,10 @@ import android.widget.ImageView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.FindPasswordFragment;
 
 /**
  * Created by JesseHuang on 2016/11/25.
@@ -50,6 +53,7 @@ public class ForgetPasswordActivity extends ActionBarBaseActivity {
                 public void setArguments(Bundle bundle) {
                     if (fragmentBundle != null) {
                         bundle.putString(RESET_INFO, fragmentBundle.getString(ForgetPasswordActivity.RESET_INFO));
+                        bundle.putString(FindPasswordFragment.SMS_TOKEN, fragmentBundle.getString(FindPasswordFragment.SMS_TOKEN));
                     }
                 }
             });
@@ -63,7 +67,7 @@ public class ForgetPasswordActivity extends ActionBarBaseActivity {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         Fragment fragment = mFragmentManager.findFragmentByTag(fragmentTag);
         if (fragment != null) {
-            fragmentTransaction.remove(fragment);
+            fragmentTransaction.hide(fragment);
         }
         fragmentTransaction.commit();
     }

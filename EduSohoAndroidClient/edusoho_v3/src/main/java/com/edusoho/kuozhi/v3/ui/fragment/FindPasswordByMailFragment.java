@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
 import android.widget.Button;
@@ -10,7 +11,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.InputUtils;
 
 /**
  * Created by JesseHuang on 2016/11/27.
@@ -39,6 +42,18 @@ public class FindPasswordByMailFragment extends BaseFragment {
         btnSubmit.setOnClickListener(getSubmitClickListener());
         ivErase.setOnClickListener(getEraseInfoClickListener());
         cbShowOrHidePassword.setOnCheckedChangeListener(getShowOrHidePasswordChangeListener());
+        etResetPassword.requestFocus();
+        InputUtils.showKeyBoard(etResetPassword, mContext);
+        InputUtils.addTextChangedListener(etResetPassword, new NormalCallback<Editable>() {
+            @Override
+            public void success(Editable editable) {
+                if (editable.length() == 0) {
+                    ivErase.setVisibility(View.INVISIBLE);
+                } else {
+                    ivErase.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private View.OnClickListener getSubmitClickListener() {

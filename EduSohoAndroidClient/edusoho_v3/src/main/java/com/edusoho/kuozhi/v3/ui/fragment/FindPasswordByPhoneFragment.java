@@ -1,16 +1,15 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -19,14 +18,25 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ForgetPasswordActivity;
+import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.ToastUtil;
 
 import java.lang.ref.WeakReference;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import cn.trinea.android.common.util.ToastUtils;
 
 /**
  * Created by JesseHuang on 2016/11/27.
@@ -35,6 +45,7 @@ import java.util.TimerTask;
 public class FindPasswordByPhoneFragment extends BaseFragment {
 
     private static final int PHONE_RETRIEVE_TIME = 120;
+    public static final String FIND_PASSWORD_USERNAME = "find_password_username";
     private TextView tvPhoneSmsCodeHint;
     private EditText etSmsCode;
     private EditText etResetPassword;
@@ -46,6 +57,8 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
     private ImageView ivErasePassword;
     private Timer mTimer;
     private TimerHandler mTimerHandler;
+    private String mSmsToken;
+    private String mUsername;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,11 +101,38 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
         btnSubmit.setOnClickListener(getSubmitClickListener());
         cbShowOrHidePassword.setOnCheckedChangeListener(getShowOrHidePasswordChangeListener());
         tvRetrievePhoneCode.setOnClickListener(getRetrievePhoneCodeClickListener());
+        etSmsCode.requestFocus();
+        InputUtils.showKeyBoard(etSmsCode, mContext);
+
+        InputUtils.addTextChangedListener(etSmsCode, new NormalCallback<Editable>() {
+            @Override
+            public void success(Editable editable) {
+                if (editable.length() == 0) {
+                    ivErasePhoneCode.setVisibility(View.INVISIBLE);
+                } else {
+                    ivErasePhoneCode.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        InputUtils.addTextChangedListener(etResetPassword, new NormalCallback<Editable>() {
+            @Override
+            public void success(Editable editable) {
+                if (editable.length() == 0) {
+                    ivErasePassword.setVisibility(View.INVISIBLE);
+                } else {
+                    ivErasePassword.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     private void initData() {
         if (getArguments() != null && getArguments().getString(ForgetPasswordActivity.RESET_INFO) != null) {
-            tvPhoneSmsCodeHint.setText(getString(R.string.phone_code_input_hint) + getArguments().getString(ForgetPasswordActivity.RESET_INFO));
+            mUsername = getArguments().getString(ForgetPasswordActivity.RESET_INFO);
+            tvPhoneSmsCodeHint.setText(getString(R.string.phone_code_input_hint) + mUsername);
+            mSmsToken = getArguments().getString(FindPasswordFragment.SMS_TOKEN);
+            Log.d("mSmsToken", "mSmsToken: " + mSmsToken);
         }
     }
 
@@ -124,6 +164,29 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                     ToastUtil.getInstance(mContext).makeText(getString(R.string.password_more_than_six_digit_number), Toast.LENGTH_LONG).show();
                     return;
                 }
+                RequestUrl requestUrl = app.bindNewUrl(Const.FIND_PASSWORD, false);
+                Map<String, String> params = requestUrl.getParams();
+                params.put("password", etResetPassword.getText().toString());
+                params.put("sms_code", etSmsCode.getText().toString());
+                params.put("sms_token", mSmsToken);
+                params.put("type", "sms");
+                app.postUrl(requestUrl, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        ToastUtils.show(mContext, R.string.reset_password_success, Toast.LENGTH_LONG);
+                        app.mEngine.runNormalPlugin("LoginActivity", mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(LoginActivity.FIND_PASSWORD_ACCOUNT, mUsername);
+                            }
+                        }, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        ToastUtils.show(mContext, R.string.reset_password_success, Toast.LENGTH_LONG);
+                    }
+                });
             }
         };
     }

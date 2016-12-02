@@ -18,15 +18,17 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByPhoneFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
@@ -54,6 +56,7 @@ public class LoginActivity extends BaseNoTitleActivity {
 
     public static final int TYPE_LOGIN = 1;
     public static final int OK = 1003;
+    public static final String FIND_PASSWORD_ACCOUNT = "find_password_account";
     private static final String EnterSchool = "enter_school";
     private static boolean isRun;
     private EditText etUsername;
@@ -76,6 +79,16 @@ public class LoginActivity extends BaseNoTitleActivity {
         setContentView(R.layout.activity_login);
         mAuthCancel = mContext.getResources().getString(R.string.authorize_cancelled);
         initView();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            etUsername.setText(intent.getStringExtra(FIND_PASSWORD_ACCOUNT));
+            etPassword.requestFocus();
+            InputUtils.showKeyBoard(etPassword, mContext);
+        }
     }
 
     @Override
@@ -387,9 +400,17 @@ public class LoginActivity extends BaseNoTitleActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        //overridePendingTransition(R.anim.up_to_down, R.anim.none);
+    public void invoke(WidgetMessage message) {
+        switch (message.type.type) {
+            case FIND_PASSWORD_ACCOUNT:
+                etUsername.setText(message.data.getString(FindPasswordByPhoneFragment.FIND_PASSWORD_USERNAME));
+                break;
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{new MessageType(FIND_PASSWORD_ACCOUNT)};
     }
 
     @Override
