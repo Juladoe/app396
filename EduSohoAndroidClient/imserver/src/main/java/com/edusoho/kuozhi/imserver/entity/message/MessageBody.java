@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.imserver.entity.message;
 
+import android.text.TextUtils;
+
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 
 import org.json.JSONArray;
@@ -80,7 +82,7 @@ public class MessageBody {
         this.getDestination().setNickname(messageEntity.getToName());
         this.setMsgNo(messageEntity.getMsgNo());
         this.setConvNo(messageEntity.getConvNo());
-        this.setMessageId(messageEntity.getUid());
+        this.setMessageId(TextUtils.isEmpty(messageEntity.getUid()) ? uid : messageEntity.getUid());
         this.setMsgStatus(messageEntity.getStatus());
         this.setCreatedTime(messageEntity.getTime() * 1000L);
         this.setMid(messageEntity.getId());
