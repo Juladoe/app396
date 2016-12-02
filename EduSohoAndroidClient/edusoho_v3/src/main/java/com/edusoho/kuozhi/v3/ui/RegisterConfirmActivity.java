@@ -30,9 +30,6 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static android.R.id.input;
-import static com.edusoho.kuozhi.R.color.error;
-
 
 /**
  * Created by DF on 2016/11/24.
@@ -58,7 +55,6 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_confirm);
-        setBackMode(BACK, "");
         hideActionBar();
         initView();
     }

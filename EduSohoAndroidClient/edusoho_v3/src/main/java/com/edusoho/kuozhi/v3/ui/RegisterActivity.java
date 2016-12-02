@@ -2,18 +2,14 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
@@ -42,9 +38,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
         setContentView(R.layout.activity_register);
-        setBackMode(BACK, "");
         hideActionBar();
         initView();
     }
