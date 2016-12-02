@@ -21,10 +21,14 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByPhoneFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
@@ -52,6 +56,7 @@ public class LoginActivity extends BaseNoTitleActivity {
 
     public static final int TYPE_LOGIN = 1;
     public static final int OK = 1003;
+    public static final String FIND_PASSWORD_ACCOUNT = "find_password_account";
     private static final String EnterSchool = "enter_school";
     private static boolean isRun;
     private EditText etUsername;
@@ -64,6 +69,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private ImageView ivPwCancel;
     private TextView tvMore;
     private TextView tvRegister;
+    private TextView tvForgetPassword;
     private String mAuthCancel;
     private View vSao;
 
@@ -73,6 +79,16 @@ public class LoginActivity extends BaseNoTitleActivity {
         setContentView(R.layout.activity_login);
         mAuthCancel = mContext.getResources().getString(R.string.authorize_cancelled);
         initView();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            etUsername.setText(intent.getStringExtra(FIND_PASSWORD_ACCOUNT));
+            etPassword.requestFocus();
+            InputUtils.showKeyBoard(etPassword, mContext);
+        }
     }
 
     @Override
@@ -90,10 +106,12 @@ public class LoginActivity extends BaseNoTitleActivity {
         ivWeixin.setOnClickListener(mWeChatLoginClickListener);
         tvMore = (TextView) findViewById(R.id.tv_more);
         tvRegister = (TextView) findViewById(R.id.tv_register);
+        tvForgetPassword = (TextView) findViewById(R.id.tv_forget);
         ivPwCancel = (ImageView) findViewById(R.id.iv_password_cancel);
         ivUserCancel = (ImageView) findViewById(R.id.iv_username_cancel);
         vSao = findViewById(R.id.saoyisao);
 
+        tvForgetPassword.setOnClickListener(getForgetPasswordClickListener());
         vSao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,6 +189,15 @@ public class LoginActivity extends BaseNoTitleActivity {
                 ivWeibo.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private View.OnClickListener getForgetPasswordClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mActivity.app.mEngine.runNormalPlugin("ForgetPasswordActivity", mContext, null);
+            }
+        };
     }
 
     public static void startLogin(Activity activity) {
@@ -368,9 +395,17 @@ public class LoginActivity extends BaseNoTitleActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        //overridePendingTransition(R.anim.up_to_down, R.anim.none);
+    public void invoke(WidgetMessage message) {
+        switch (message.type.type) {
+            case FIND_PASSWORD_ACCOUNT:
+                etUsername.setText(message.data.getString(FindPasswordByPhoneFragment.FIND_PASSWORD_USERNAME));
+                break;
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{new MessageType(FIND_PASSWORD_ACCOUNT)};
     }
 
     @Override

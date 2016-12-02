@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="base_size">10sp</dimen>
-    <dimen name="base_small_size">8sp</dimen>
-    <dimen name="base_x_small_size">6sp</dimen>
-    <dimen name="base_large_size">12sp</dimen>
-    <dimen name="base_x_large_size">16sp</dimen>
-    <dimen name="base_xx_large_size">20sp</dimen>
+    <!--<dimen name="base_size">10sp</dimen>-->
+    <!--<dimen name="base_small_size">8sp</dimen>-->
+    <!--<dimen name="base_x_small_size">6sp</dimen>-->
+    <!--<dimen name="base_large_size">12sp</dimen>-->
+    <!--<dimen name="base_x_large_size">16sp</dimen>-->
+    <!--<dimen name="base_xx_large_size">20sp</dimen>-->
 
-    <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="xxxx_large_font_size">30sp</dimen>
-    <dimen name="xxx_large_font_size">26sp</dimen>
-    <dimen name="xx_large_font_size">22sp</dimen>
+    <!--&lt;!&ndash; Default screen margins, per the Android Design guidelines. &ndash;&gt;-->
+    <!--<dimen name="xxxx_large_font_size">30sp</dimen>-->
+    <!--<dimen name="xxx_large_font_size">26sp</dimen>-->
+    <!--<dimen name="xx_large_font_size">22sp</dimen>-->
 
-    <dimen name="large_font_size">16sp</dimen>
-    <dimen name="x_large_font_size">18sp</dimen>
-    <!--中字-->
-    <dimen name="medium_font_size">14sp</dimen>
-    <!--小一/二字-->
-    <dimen name="small_font_size">12sp</dimen>
-    <!--超小字-->
-    <dimen name="x_small_font_size">10sp</dimen>
+    <!--<dimen name="large_font_size">16sp</dimen>-->
+    <!--<dimen name="x_large_font_size">18sp</dimen>-->
+    <!--&lt;!&ndash;中字&ndash;&gt;-->
+    <!--<dimen name="medium_font_size">14sp</dimen>-->
+    <!--&lt;!&ndash;小一/二字&ndash;&gt;-->
+    <!--<dimen name="small_font_size">12sp</dimen>-->
+    <!--&lt;!&ndash;超小字&ndash;&gt;-->
+    <!--<dimen name="x_small_font_size">10sp</dimen>-->
 
-    <dimen name="xx_small_font_size">6sp</dimen>
-    <dimen name="xxx_small_font_size">4sp</dimen>
+    <!--<dimen name="xx_small_font_size">6sp</dimen>-->
+    <!--<dimen name="xxx_small_font_size">4sp</dimen>-->
 
     <dimen name="chat_media_size">34sp</dimen>
 

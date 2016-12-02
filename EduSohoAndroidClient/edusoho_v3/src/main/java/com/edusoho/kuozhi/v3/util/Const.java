@@ -461,6 +461,8 @@ public class Const {
      * api
      */
 
+    public static final String SMS_CODES = "/api/sms_codes";
+    public static final String FIND_PASSWORD = "/api/users/password";
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String USERS = "/api/users";
     public static final String MY_FRIEND = "/api/me/friends";

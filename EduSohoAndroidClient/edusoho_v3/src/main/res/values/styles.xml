@@ -105,7 +105,7 @@
         <item name="android:windowAnimationStyle">@style/SlideToWindowAnimTheme</item>
         <item name="actionBarSize">44dp</item>
         <item name="android:actionBarSize">44dp</item>
-        <item name="colorAccent">@color/primary</item>
+        <item name="colorAccent">@color/underline_color</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_fb</item>
         <item name="windowActionBar">true</item>
