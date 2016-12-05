@@ -6,6 +6,6 @@
     android:orientation="vertical"
     android:background="@android:color/white">
 
-    <include layout="@layout/common_num_layout"/>
+    <include layout="@layout/common_confirm_layout"/>
 
 </LinearLayout>

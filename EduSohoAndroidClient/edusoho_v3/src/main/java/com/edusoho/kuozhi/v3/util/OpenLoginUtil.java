@@ -79,6 +79,8 @@ public class OpenLoginUtil {
         });
         final String thirdPartyType = params.length > 4 ? params[4] : "";
         Looper.prepare();
+        CommonUtil.longToast(mContext,"测试中");
+
         final LoadDialog loadDialog = LoadDialog.create(activity);
         loadDialog.setMessage("登录中...");
         loadDialog.show();
@@ -104,6 +106,7 @@ public class OpenLoginUtil {
                 saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
             }
         }, null);
+
         Looper.loop();
     }
 

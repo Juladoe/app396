@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/head_register_height">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/iv_register"
+            android:layout_height="@dimen/iv_register"
+            android:scaleType="center"
+            android:src="@drawable/action_icon_back"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_info"
+        android:textSize="@dimen/base_x_large_size"
+        android:text="@string/reg_account_reg"
+        android:layout_marginTop="@dimen/view_register_margin"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/primary_font_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/rl_register_margingTop"
+        android:layout_marginRight="@dimen/view_register_margin"
+        android:layout_marginLeft="@dimen/view_register_margin"
+        >
+
+        <ImageView
+            android:id="@+id/iv_clear_num"
+            android:scaleType="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/register_clear_content"/>
+
+        <EditText
+            android:id="@+id/et_phone_num"
+            style="@style/edittext_style"
+            android:hint="@string/reg_phone_hint"
+            android:layout_toLeftOf="@id/iv_clear_num"
+            android:maxLength="11"
+            />
+
+        <View
+            android:background="@color/register_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_register_height"
+            android:layout_marginTop="@dimen/rl_register_margin"
+            android:layout_below="@id/et_phone_num"/>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/view_register_margin"
+        android:layout_marginLeft="@dimen/view_register_margin"
+        android:layout_marginTop="@dimen/rl_register_margin"
+        android:background="@drawable/login_btn_normal"
+        android:enabled="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/register_btn_next"
+        android:text="@string/register_next"/>
+
+</LinearLayout>
