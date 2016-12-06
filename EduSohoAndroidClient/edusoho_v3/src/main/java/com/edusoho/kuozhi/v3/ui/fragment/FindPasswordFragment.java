@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Response;
@@ -35,7 +36,7 @@ import cn.trinea.android.common.util.ToastUtils;
 public class FindPasswordFragment extends BaseFragment {
 
     public static final String SMS_TOKEN = "sms_token";
-    private Button btnNext;
+    private TextView tvNext;
     private EditText etPhoneOrMail;
     private ImageView ivErase;
 
@@ -48,10 +49,10 @@ public class FindPasswordFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
-        btnNext = (Button) view.findViewById(R.id.btn_next);
+        tvNext = (TextView) view.findViewById(R.id.tv_next);
         etPhoneOrMail = (EditText) view.findViewById(R.id.et_phone_or_mail);
         ivErase = (ImageView) view.findViewById(R.id.iv_erase);
-        btnNext.setOnClickListener(getNextClickListener());
+        tvNext.setOnClickListener(getNextClickListener());
         ivErase.setOnClickListener(getEraseInfoClickListener());
         etPhoneOrMail.requestFocus();
         InputUtils.showKeyBoard(etPhoneOrMail, mContext);
@@ -60,8 +61,10 @@ public class FindPasswordFragment extends BaseFragment {
             public void success(Editable editable) {
                 if (editable.length() == 0) {
                     ivErase.setVisibility(View.INVISIBLE);
+                    tvNext.setAlpha(0.6f);
                 } else {
                     ivErase.setVisibility(View.VISIBLE);
+                    tvNext.setAlpha(1.0f);
                 }
             }
         });
@@ -71,6 +74,9 @@ public class FindPasswordFragment extends BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (etPhoneOrMail.length() == 0) {
+                    return;
+                }
                 if ("".equals(etPhoneOrMail.getText().toString().trim())) {
                     ToastUtil.getInstance(mContext).makeText(getString(R.string.find_password_text_not_null), Toast.LENGTH_LONG).show();
                     return;

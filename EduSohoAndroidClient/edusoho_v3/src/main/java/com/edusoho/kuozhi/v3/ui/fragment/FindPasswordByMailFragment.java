@@ -91,7 +91,7 @@ public class FindPasswordByMailFragment extends BaseFragment {
                                     }
                                 }, Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             }
-                        }).show();
+                        }).setCancelable(false).show();
             }
         };
     }
