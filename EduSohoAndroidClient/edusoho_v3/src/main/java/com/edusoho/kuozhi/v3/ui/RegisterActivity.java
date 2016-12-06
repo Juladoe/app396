@@ -52,7 +52,6 @@ public class RegisterActivity extends ActionBarBaseActivity {
         etAccount.addTextChangedListener(mTextChangeListener);
         tvNext = (TextView) findViewById(R.id.tv_next);
         tvNext.setOnClickListener(nextClickListener);
-        tvNext.setClickable(false);
         ivBack = (ImageView) findViewById(R.id.iv_back);
         ivBack.setOnClickListener(mBackClickListener);
         ivClear = (ImageView) findViewById(R.id.iv_clear_phone);

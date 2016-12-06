@@ -110,11 +110,14 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         InputUtils.addTextChangedListener(etAuth, new NormalCallback<Editable>() {
             @Override
             public void success(Editable editable) {
-                if (etAuth.length() == 0 || etPwd.length() == 0) {
+                if (etAuth.length() == 0) {
                     ivClearAuth.setVisibility(View.INVISIBLE);
+                }else {
+                    ivClearAuth.setVisibility(View.VISIBLE);
+                }
+                if (etAuth.length() == 0 || etPwd.length() == 0) {
                     tvConfirm.setAlpha(0.6f);
                 } else {
-                    ivClearAuth.setVisibility(View.VISIBLE);
                     tvConfirm.setAlpha(1.0f);
                 }
             }
@@ -123,8 +126,12 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         InputUtils.addTextChangedListener(etPwd, new NormalCallback<Editable>() {
             @Override
             public void success(Editable editable) {
-                if (etAuth.length() == 0 || etPwd.length() == 0) {
+                if (etPwd.length() == 0) {
                     ivClearPwd.setVisibility(View.INVISIBLE);
+                }else {
+                    ivClearPwd.setVisibility(View.VISIBLE);
+                }
+                if (etAuth.length() == 0 || etPwd.length() == 0) {
                     tvConfirm.setAlpha(0.6f);
                 } else {
                     ivClearPwd.setVisibility(View.VISIBLE);
@@ -195,7 +202,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             } else {
                 params.put("smsCode", strCode);
             }
-            String strPass = etPwd.getText().toString();
+            String strPass = etPwd.getText().toString().trim();
             if (TextUtils.isEmpty(strPass)) {
                 CommonUtil.longToast(mContext, getString(R.string.reg_password_hint));
                 return;
