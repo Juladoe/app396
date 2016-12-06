@@ -1,12 +1,12 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.app.Dialog;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -137,27 +137,46 @@ public class RegisterActivity extends ActionBarBaseActivity {
      * 弹窗提示已注册
      */
     private void showDialog() {
-        final Dialog dialog = new Dialog(this, R.style.RegisterDialogStyle);
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_register, null);
-        dialog.setContentView(view);
-        TextView tvCancel = (TextView) view.findViewById(R.id.tv_cancel);
-        TextView tvConfirm = (TextView) view.findViewById(R.id.tv_confirm);
-        tvCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-                CommonUtil.longToast(mContext,getString(R.string.register_modify_phone));
-            }
-        });
-        tvConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-                RegisterActivity.this.finish();
-            }
-        });
-        dialog.show();
+       new AlertDialog.Builder(RegisterActivity.this)
+            .setTitle(R.string.notification)
+            .setMessage(R.string.register_hint)
+            .setPositiveButton(R.string.register_confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    RegisterActivity.this.finish();
+                }
+            })
+            .setNegativeButton(R.string.register_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    CommonUtil.longToast(mContext,getString(R.string.register_modify_phone));
+                }
+            }).show();
     }
+
+
+
+//        final Dialog dialog = new Dialog(this, R.style.RegisterDialogStyle);
+//        View view = LayoutInflater.from(this).inflate(R.layout.dialog_register, null);
+//        dialog.setContentView(view);
+//        TextView tvCancel = (TextView) view.findViewById(R.id.tv_cancel);
+//        TextView tvConfirm = (TextView) view.findViewById(R.id.tv_confirm);
+//        tvCancel.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.cancel();
+//                CommonUtil.longToast(mContext,getString(R.string.register_modify_phone));
+//            }
+//        });
+//        tvConfirm.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                dialog.cancel();
+//                RegisterActivity.this.finish();
+//            }
+//        });
+//        dialog.show();
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

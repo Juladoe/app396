@@ -271,4 +271,5 @@
     <string name="label_course">课程</string>
     <string name="label_teacher">教师</string>
 
+    <string name="register_cancel">取消</string>
 </resources>
