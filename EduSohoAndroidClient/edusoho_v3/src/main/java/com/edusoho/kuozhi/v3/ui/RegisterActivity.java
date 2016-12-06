@@ -20,11 +20,10 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.Validator;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -52,9 +51,10 @@ public class RegisterActivity extends ActionBarBaseActivity {
         etAccount.addTextChangedListener(mTextChangeListener);
         btnNext = (Button) findViewById(R.id.btn_next);
         btnNext.setOnClickListener(nextClickListener);
+        btnNext.setClickable(false);
         ivBack = (ImageView) findViewById(R.id.iv_back);
         ivBack.setOnClickListener(mBackClickListener);
-        ivClear = (ImageView) findViewById(R.id.iv_clear_num);
+        ivClear = (ImageView) findViewById(R.id.iv_clear_phone);
         ivClear.setOnClickListener(mClearClickListener);
     }
 
@@ -72,9 +72,11 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void afterTextChanged(Editable s) {
             if (s.length() > 0) {
-                btnNext.setEnabled(true);
+                btnNext.setClickable(true);
+                ivClear.setVisibility(View.VISIBLE);
             }else {
-                btnNext.setEnabled(false);
+                btnNext.setClickable(false);
+                ivClear.setVisibility(View.INVISIBLE);
             }
         }
     };
@@ -99,7 +101,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             final String st = etAccount.getText().toString().trim();
-            if (isPhone(st)) {
+            if (Validator.isPhone(st)) {
                 RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
                 HashMap<String,String> params = (HashMap<String, String>) requestUrl.getParams();
                 params.put("phoneNumber", String.valueOf(st));
@@ -157,17 +159,9 @@ public class RegisterActivity extends ActionBarBaseActivity {
         dialog.show();
     }
 
-    /**
-     * 判断是否为手机号
-     */
-    private boolean isPhone(String str) {
-        Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
-        Matcher m = p.matcher(str);
-        return m.matches();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
     }
 }

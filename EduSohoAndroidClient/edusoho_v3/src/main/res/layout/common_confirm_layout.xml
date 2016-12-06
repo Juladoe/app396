@@ -36,7 +36,7 @@
         android:layout_marginTop="@dimen/btn_loading_margin"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
-        android:textColor="@color/register_tv_show_hint"
+        android:textColor="@color/secondary2_font_color"
         android:layout_height="wrap_content"
         android:text="@string/phone_code_input_hint"/>
 
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:textColor="@color/register_send"
+                android:textColor="@color/secondary2_color"
                 android:textSize="@dimen/learn_status_widget_learnbtn"
                 android:clickable="true"
                 android:text=""/>
@@ -84,6 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/rl_auth"
             android:layout_centerVertical="true"
+            android:visibility="invisible"
             android:src="@drawable/register_clear_content"/>
 
         <EditText
@@ -98,7 +99,7 @@
             android:layout_toLeftOf="@id/iv_clear_auth"
             android:textSize="@dimen/tv_register_size"
             android:layout_below="@+id/iv_clear_auth"
-            android:textColorHint="@color/register_tv_show_hint" />
+            android:textColorHint="@color/secondary2_font_color" />
 
         <View
             android:background="@color/register_view"
@@ -140,6 +141,7 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/rl_pwd"
             android:layout_centerVertical="true"
+            android:visibility="invisible"
             android:src="@drawable/register_clear_content"/>
 
         <EditText
@@ -153,7 +155,7 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/iv_clear_pwd"
             android:textSize="@dimen/base_large_size"
-            android:textColorHint="@color/register_tv_show_hint" />
+            android:textColorHint="@color/secondary2_font_color" />
 
         <View
             android:background="@color/register_view"
@@ -169,8 +171,8 @@
         android:layout_marginRight="@dimen/view_register_margin"
         android:layout_marginLeft="@dimen/view_register_margin"
         android:layout_marginTop="@dimen/rl_register_margin"
-        android:background="@drawable/login_btn_normal"
-        android:textColor="@color/white"
+        android:background="@color/primary_color"
+        android:textColor="@color/disabled2_hint_color"
         android:textSize="@dimen/register_btn_next"
         android:text="@string/register_confirm"/>
 </LinearLayout>

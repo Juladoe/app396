@@ -166,7 +166,7 @@
             android:name=".v3.ui.RegisterActivity"
             android:configChanges="keyboardHidden|orientation"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
        <activity
            android:name=".v3.ui.RegisterConfirmActivity"
            android:configChanges="keyboardHidden|orientation"
@@ -274,7 +274,6 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-        <activity android:name=".v3.ui.test.RegisterConfirmActivity"></activity>
     </application>
 
 </manifest>
