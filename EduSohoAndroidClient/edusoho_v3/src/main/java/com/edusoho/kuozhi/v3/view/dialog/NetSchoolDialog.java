@@ -397,7 +397,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
             @Override
             public void onClick(View v) {
                 int position = (int) v.getTag(R.id.net_school_tv);
-                String schoolhost = mList.get(position).getSiteUrl();
+                String schoolhost = mList.get(position).getLicenseDomains();
                 searchSchool(schoolhost);
             }
         };

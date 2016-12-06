@@ -31,7 +31,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 
@@ -61,7 +60,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private static boolean isRun;
     private EditText etUsername;
     private EditText etPassword;
-    private View mBtnLogin;
+    private View mTvLogin;
     private ImageView ivWeibo;
     private ImageView ivQQ;
     private ImageView ivWeixin;
@@ -96,8 +95,8 @@ public class LoginActivity extends BaseNoTitleActivity {
         super.initView();
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
-        mBtnLogin = findViewById(R.id.btn_login);
-        mBtnLogin.setOnClickListener(mLoginClickListener);
+        mTvLogin = findViewById(R.id.tv_login);
+        mTvLogin.setOnClickListener(mLoginClickListener);
         ivWeibo = (ImageView) findViewById(R.id.iv_weibo);
         ivWeibo.setOnClickListener(mWeiboLoginClickListener);
         ivQQ = (ImageView) findViewById(R.id.iv_qq);
@@ -162,13 +161,19 @@ public class LoginActivity extends BaseNoTitleActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                mTvLogin.setAlpha(1f);
+                mTvLogin.setEnabled(true);
                 if (etUsername.getText().length() == 0) {
                     ivUserCancel.setVisibility(View.INVISIBLE);
+                    mTvLogin.setAlpha(0.6f);
+                    mTvLogin.setEnabled(false);
                 } else {
                     ivUserCancel.setVisibility(View.VISIBLE);
                 }
                 if (etPassword.getText().length() == 0) {
                     ivPwCancel.setVisibility(View.INVISIBLE);
+                    mTvLogin.setAlpha(0.6f);
+                    mTvLogin.setEnabled(false);
                 } else {
                     ivPwCancel.setVisibility(View.VISIBLE);
                 }
@@ -231,7 +236,7 @@ public class LoginActivity extends BaseNoTitleActivity {
                     saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
                     new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
-                    mBtnLogin.postDelayed(new Runnable() {
+                    mTvLogin.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             mActivity.finish();

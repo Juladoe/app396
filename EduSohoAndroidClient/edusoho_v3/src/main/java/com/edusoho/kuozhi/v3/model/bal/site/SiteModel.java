@@ -21,7 +21,7 @@ import java.util.List;
 public class SiteModel {
 
     public static final String HOST =
-            "http://open.prod.dev.qiqiuyun.cn:9071";
+            "http://open.edusoho.com";
 
     public static void getSite(String searchKey, final ResponseCallbackListener<List<Site>> callbackListener) {
         RequestUrl requestUrl = EdusohoApp.app.bindNewHostUrl(HOST + Api.SCHOOLS
