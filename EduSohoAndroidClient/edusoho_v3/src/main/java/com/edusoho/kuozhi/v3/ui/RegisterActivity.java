@@ -8,7 +8,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +19,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.Validator;
 import com.google.gson.reflect.TypeToken;
 
@@ -32,7 +32,7 @@ import java.util.HashMap;
 
 public class RegisterActivity extends ActionBarBaseActivity {
     private EditText etAccount;
-    private Button btnNext;
+    private TextView tvNext;
     private ImageView ivBack;
     private TextView tvInfo;
     private ImageView ivClear;
@@ -43,19 +43,22 @@ public class RegisterActivity extends ActionBarBaseActivity {
         setContentView(R.layout.activity_register);
         hideActionBar();
         initView();
+
     }
 
     private void initView() {
         tvInfo = (TextView) findViewById(R.id.tv_info);
         etAccount = (EditText) findViewById(R.id.et_phone_num);
         etAccount.addTextChangedListener(mTextChangeListener);
-        btnNext = (Button) findViewById(R.id.btn_next);
-        btnNext.setOnClickListener(nextClickListener);
-        btnNext.setClickable(false);
+        tvNext = (TextView) findViewById(R.id.tv_next);
+        tvNext.setOnClickListener(nextClickListener);
+        tvNext.setClickable(false);
         ivBack = (ImageView) findViewById(R.id.iv_back);
         ivBack.setOnClickListener(mBackClickListener);
         ivClear = (ImageView) findViewById(R.id.iv_clear_phone);
         ivClear.setOnClickListener(mClearClickListener);
+
+        InputUtils.showKeyBoard(etAccount, mContext);
     }
 
     TextWatcher mTextChangeListener = new TextWatcher() {
@@ -72,10 +75,10 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void afterTextChanged(Editable s) {
             if (s.length() > 0) {
-                btnNext.setClickable(true);
+                tvNext.setAlpha(1f);
                 ivClear.setVisibility(View.VISIBLE);
             }else {
-                btnNext.setClickable(false);
+                tvNext.setAlpha(0.6f);
                 ivClear.setVisibility(View.INVISIBLE);
             }
         }
@@ -85,7 +88,6 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             RegisterActivity.this.finish();
-
         }
     };
 
@@ -100,6 +102,13 @@ public class RegisterActivity extends ActionBarBaseActivity {
     private View.OnClickListener nextClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (etAccount.length() == 0) {
+                return;
+            }
+            if ("".equals(etAccount.getText().toString().trim())) {
+                CommonUtil.longToast(mContext, getString(R.string.complete_phone_empty));
+                return;
+            }
             final String st = etAccount.getText().toString().trim();
             if (Validator.isPhone(st)) {
                 RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
@@ -154,33 +163,4 @@ public class RegisterActivity extends ActionBarBaseActivity {
             }).show();
     }
 
-
-
-//        final Dialog dialog = new Dialog(this, R.style.RegisterDialogStyle);
-//        View view = LayoutInflater.from(this).inflate(R.layout.dialog_register, null);
-//        dialog.setContentView(view);
-//        TextView tvCancel = (TextView) view.findViewById(R.id.tv_cancel);
-//        TextView tvConfirm = (TextView) view.findViewById(R.id.tv_confirm);
-//        tvCancel.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.cancel();
-//                CommonUtil.longToast(mContext,getString(R.string.register_modify_phone));
-//            }
-//        });
-//        tvConfirm.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                dialog.cancel();
-//                RegisterActivity.this.finish();
-//            }
-//        });
-//        dialog.show();
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-    }
 }

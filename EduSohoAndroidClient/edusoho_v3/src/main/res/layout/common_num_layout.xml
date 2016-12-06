@@ -64,17 +64,19 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/btn_next"
+    <TextView
+        android:id="@+id/tv_next"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/view_register_margin"
+        android:layout_height="45dp"
+        android:layout_marginBottom="@dimen/login_widget_margin_bottom"
         android:layout_marginLeft="@dimen/view_register_margin"
+        android:layout_marginRight="@dimen/view_register_margin"
         android:layout_marginTop="@dimen/rl_register_margin"
+        android:alpha="0.6"
         android:background="@color/primary_color"
-        android:clickable="false"
+        android:gravity="center"
+        android:text="@string/register_next"
         android:textColor="@color/disabled2_hint_color"
-        android:textSize="@dimen/register_btn_next"
-        android:text="@string/register_next"/>
+        android:textSize="@dimen/font_xl" />
 
 </LinearLayout>

@@ -136,6 +136,8 @@
     <string name="register_hint">该手机号码已被其他用户绑定</string>
     <string name="register_error">你输入的手机号格式有误</string>
     <string name="register_modify_phone">请更换手机号码</string>
+    <string name="complete_phone_empty">手机号不能为空</string>
+
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>
     <string name="font_my_download">&#xe63e;</string>
