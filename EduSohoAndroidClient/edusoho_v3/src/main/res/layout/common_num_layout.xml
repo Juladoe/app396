@@ -50,7 +50,7 @@
             style="@style/edittext_style"
             android:hint="@string/reg_phone_hint"
             android:textSize="@dimen/x_medium_font_size"
-            android:textColor="@color/secondary2_font_color"
+            android:textColor="@color/primary_font_color"
             android:layout_toLeftOf="@id/iv_clear_phone"
             android:maxLength="11"
             />
