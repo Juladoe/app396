@@ -162,13 +162,19 @@ public class LoginActivity extends BaseNoTitleActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                mBtnLogin.setAlpha(1f);
+                mBtnLogin.setEnabled(true);
                 if (etUsername.getText().length() == 0) {
                     ivUserCancel.setVisibility(View.INVISIBLE);
+                    mBtnLogin.setAlpha(0.6f);
+                    mBtnLogin.setEnabled(false);
                 } else {
                     ivUserCancel.setVisibility(View.VISIBLE);
                 }
                 if (etPassword.getText().length() == 0) {
                     ivPwCancel.setVisibility(View.INVISIBLE);
+                    mBtnLogin.setAlpha(0.6f);
+                    mBtnLogin.setEnabled(false);
                 } else {
                     ivPwCancel.setVisibility(View.VISIBLE);
                 }
