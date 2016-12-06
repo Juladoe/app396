@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -48,7 +50,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
     private ImageView ivShowPwd;
     private Button btnConfirm;
     private String mCookie = "";
-    private ImageView iv;
+    private ImageView ivBack;
     private ImageView ivClearAuth;
     private ImageView ivClearPwd;
     private TextView tvTime;
@@ -65,13 +67,15 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         tvSend = (TextView) findViewById(R.id.tv_send);
         tvSend.setOnClickListener(mSmsSendClickListener);
         etAuth = (EditText) findViewById(R.id.et_auth);
+        etAuth.addTextChangedListener(mAuthChangeListener);
         etPwd = (EditText) findViewById(R.id.et_pwd);
+        etPwd.addTextChangedListener(mPwdChangeListener);
         ivShowPwd = (ImageView) findViewById(R.id.iv_show_pwd);
         ivShowPwd.setOnClickListener(nShowPwdClickListener);
         btnConfirm = (Button) findViewById(R.id.btn_confirm);
         btnConfirm.setOnClickListener(mConfirmRegClickListener);
-        iv = (ImageView) findViewById(R.id.iv_back);
-        iv.setOnClickListener(mBackClickListener);
+        ivBack = (ImageView) findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(mBackClickListener);
         ivClearAuth = (ImageView) findViewById(R.id.iv_clear_auth);
         ivClearAuth.setOnClickListener(mClearContentListener);
         ivClearPwd = (ImageView) findViewById(R.id.iv_clear_pwd);
@@ -115,6 +119,48 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                 etAuth.setText("");
             }else {
                 etPwd.setText("");
+            }
+        }
+    };
+
+    TextWatcher mAuthChangeListener = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length()>0) {
+                ivClearAuth.setVisibility(View.VISIBLE);
+            }else {
+                ivClearAuth.setVisibility(View.GONE);
+            }
+        }
+    };
+
+    TextWatcher mPwdChangeListener = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            if (s.length()>0) {
+                ivClearPwd.setVisibility(View.VISIBLE);
+            }else {
+                ivClearPwd.setVisibility(View.INVISIBLE);
             }
         }
     };
