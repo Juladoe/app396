@@ -80,8 +80,8 @@ public class FindPasswordByMailFragment extends BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(getActivity()).setMessage("请前往该邮箱验证信息，验证成功即可登录").
-                        setPositiveButton("去登录", new DialogInterface.OnClickListener() {
+                new AlertDialog.Builder(getActivity()).setMessage(getString(R.string.find_password_via_mail_success)).
+                        setPositiveButton(getString(R.string.find_password_then_login), new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 app.mEngine.runNormalPlugin("LoginActivity", mContext, new PluginRunCallback() {
