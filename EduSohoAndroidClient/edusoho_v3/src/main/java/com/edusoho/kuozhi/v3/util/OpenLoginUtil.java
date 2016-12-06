@@ -76,13 +76,13 @@ public class OpenLoginUtil {
         final String thirdPartyType = params.length > 4 ? params[4] : "";
         Looper.prepare();
         final LoadDialog loadDialog = LoadDialog.create(activity);
-//        loadDialog.setMessage("登录中...");
-//        loadDialog.show();
+        loadDialog.setMessage("登录中...");
+        loadDialog.show();
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Log.d("test",response);
-//                loadDialog.dismiss();
+                loadDialog.dismiss();
 //                UserResult userResult = app.parseJsonValue(
 //                        response, new TypeToken<UserResult>() {
 //                        });

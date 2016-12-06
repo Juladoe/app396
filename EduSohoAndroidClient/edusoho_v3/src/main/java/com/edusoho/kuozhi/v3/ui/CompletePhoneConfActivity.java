@@ -8,6 +8,7 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,7 +22,6 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
@@ -43,12 +43,13 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
     private SmsCodeHandler mSmsCodeHandler;
     private String num;
     private ImageView ivShowPwd;
-    private EduSohoLoadingButton btnConfirm;
+    private Button btnConfirm;
     private String mCookie = "";
     private ImageView iv;
     private TextView tvInfo;
     private ImageView ivClearPwd;
     private ImageView ivClearAuth;
+    private TextView tvShowTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +69,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         etPwd = (EditText) findViewById(R.id.et_pwd);
         ivShowPwd = (ImageView) findViewById(R.id.iv_show_pwd);
         ivShowPwd.setOnClickListener(nShowPwdClickListener);
-        btnConfirm = (EduSohoLoadingButton) findViewById(R.id.btn_confirm);
+        btnConfirm = (Button) findViewById(R.id.btn_confirm);
         btnConfirm.setOnClickListener(mConfirmRegClickListener);
         iv = (ImageView) findViewById(R.id.iv_back);
         iv.setOnClickListener(mBackClickListener);
@@ -76,15 +77,16 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         ivClearAuth.setOnClickListener(mClearContent);
         ivClearPwd = (ImageView) findViewById(R.id.iv_clear_pwd);
         ivClearPwd.setOnClickListener(mClearContent);
+        tvShowTime = (TextView)  findViewById(R.id.tv_show_time);
 
-        num = getIntent().getExtras().getString("phoneNum");
+        num = getIntent().getStringExtra("phoneNum");
         tvShow.setText("验证码已经发送到:"+ num);
 
         mSmsCodeHandler = new SmsCodeHandler(this);
 
         mSmsSendClickListener.onClick(tvSend);
 
-//        firstReq();
+        firstReq();
     }
 
     View.OnClickListener mBackClickListener = new View.OnClickListener() {
@@ -122,6 +124,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                 ivShowPwd.setImageResource(R.drawable.pwd_show);
             }
             isShowPwd = !isShowPwd;
+            etPwd.setSelection(etPwd.getText().toString().length());
         }
     };
 
@@ -132,21 +135,21 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         @Override
         public void onClick(View v) {
             RequestUrl url = app.bindUrl(Const.REGIST, false);
-            HashMap<String, String> params = url.getParams();
+            HashMap<String, String> params = (HashMap<String, String>) url.getParams();
             params.put("registeredWay","android");
 
             params.put("phone", num);
 
             String strCode = etAuth.getText().toString().trim();
             if (TextUtils.isEmpty(strCode)) {
-                CommonUtil.longToast(mContext, "请输入验证码");
+                CommonUtil.longToast(mContext, getString(R.string.reg_code_hint));
                 return;
             } else {
                 params.put("smsCode", strCode);
             }
             String strPass = etPwd.getText().toString();
             if (TextUtils.isEmpty(strPass)) {
-                CommonUtil.longToast(mContext, "请输入密码");
+                CommonUtil.longToast(mContext, getString(R.string.reg_password_hint));
                 return;
             }
             params.put("password", strPass);
@@ -156,8 +159,6 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
             if (!TextUtils.isEmpty(mCookie)) {
                 headers.put("Cookie", mCookie);
             }
-
-            btnConfirm.setLoadingState();
 
             mActivity.ajaxPost(url, new Response.Listener<String>() {
                 @Override
@@ -169,27 +170,25 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                                 });
                         if (userResult != null && userResult.user != null) {
                             app.saveToken(userResult);
-                            btnConfirm.setSuccessState();
                             btnConfirm.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
 
+
+
                                     //绑定成功后直接进到网校
 
-                                    CommonUtil.shortCenterToast(CompletePhoneConfActivity.this,"恭喜你，绑定成功");
+                                    CommonUtil.shortCenterToast(CompletePhoneConfActivity.this,getString(R.string.complete_info_text));
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     app.sendMessage(Const.LOGIN_SUCCESS, null);
-                                    CompletePhoneConfActivity.this.finish();
                                 }
                             }, 500);
                         } else {
-                            btnConfirm.setInitState();
                             if (!TextUtils.isEmpty(response)) {
                                 CommonUtil.longToast(mContext, response);
                             }
                         }
                     } catch (Exception e) {
-                        btnConfirm.setInitState();
                         e.printStackTrace();
                     }
                 }
@@ -197,7 +196,6 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data).toString());
-                    btnConfirm.setInitState();
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
             });
@@ -209,7 +207,6 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
      */
     private void firstReq(){
         tvSend.setEnabled(false);
-        tvSend.setTextColor(mActivity.getResources().getColor(R.color.register_send_auth));
         mClockTime = 120;
         mTimer = new Timer();
         mTimer.schedule(new TimerTask() {
@@ -218,7 +215,6 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                 Message message = mSmsCodeHandler.obtainMessage();
                 message.what = 0;
                 mSmsCodeHandler.sendMessage(message);
-
             }
         }, 0, 1000);
     }
@@ -227,7 +223,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         @Override
         public void onClick(View v) {
             RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
-            HashMap<String, String> params = requestUrl.getParams();
+            HashMap<String, String> params = (HashMap<String, String>) requestUrl.getParams();
             params.put("phoneNumber", String.valueOf(num));
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
@@ -236,8 +232,8 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                         MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>() {
                         });
                         if (result != null && result.code == 200) {
+                            tvShowTime.setVisibility(View.VISIBLE);
                             tvSend.setEnabled(false);
-                            tvSend.setTextColor(mActivity.getResources().getColor(R.color.register_send));
                             mClockTime = 120;
                             mTimer = new Timer();
                             mTimer.schedule(new TimerTask() {
@@ -272,13 +268,13 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         @Override
         public void handleMessage(Message msg) {
             mActivity = mWeakReference.get();
-            mActivity.tvSend.setText(mActivity.mClockTime + "S后重新获取");
+            mActivity.tvSend.setText(mActivity.mClockTime +"S");
             mActivity.mClockTime--;
             if (mActivity.mClockTime < 0) {
+                mActivity.tvShowTime.setVisibility(View.GONE);
                 mActivity.mTimer.cancel();
                 mActivity.mTimer = null;
-                mActivity.tvSend.setTextColor(mActivity.getResources().getColor(R.color.register_send));
-                mActivity.tvSend.setText("重新获取验证码");
+                mActivity.tvSend.setText(R.string.register_reget);
                 mActivity.tvSend.setEnabled(true);
             }
         }

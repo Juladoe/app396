@@ -165,6 +165,7 @@
     <dimen name="btn_register_height">16dp</dimen>
     <dimen name="view_register_margin">15dp</dimen>
     <dimen name="view_register_height">1px</dimen>
+    <dimen name="register_btn_next">17sp</dimen>
 
 
 </resources>

@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -43,7 +44,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
 
     private void initView() {
         tvInfo = (TextView) findViewById(R.id.tv_info);
-        tvInfo.setText("完善信息");
+        tvInfo.setText(R.string.register_complete_info);
         etAccount = (EditText) findViewById(R.id.et_phone_num);
         btnNext = (EduSohoLoadingButton) findViewById(R.id.btn_next);
         btnNext.setOnClickListener(nextClickListener);
@@ -63,11 +64,12 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
         public void onClick(View v) {
             final String phoneNum = etAccount.getText().toString().trim();
             if (TextUtils.isEmpty(phoneNum)) {
-                CommonUtil.shortCenterToast(mContext, "请输入手机号");
+                CommonUtil.shortCenterToast(mContext,getString(R.string.reg_phone_hint));
             } else if (isPhone(phoneNum)) {
-                RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
-                HashMap<String, String> params = requestUrl.getParams();
-                params.put("phoneNumber", String.valueOf(phoneNum));
+                RequestUrl requestUrl = app.bindUrl(Const.COMPLETE, false);
+                HashMap<String, String> params = (HashMap<String, String>) requestUrl.getParams();
+                params.put("mobile", String.valueOf(phoneNum));
+                params.put("type", "sms_verify_mobile");
                 mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -75,11 +77,10 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                             MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>() {
                             });
                             if (result != null && result.code == 200) {
-                                Bundle bundle = new Bundle();
-                                bundle.putString("phoneNum",phoneNum);
-                                app.mEngine.runNormalPluginWithBundle("CompletePhoneConfActivity",mActivity,bundle);
+                                startActivity(new Intent(CompletePhoneActivity.this,CompletePhoneConfActivity.class).
+                                        putExtra("phoneNum",phoneNum));
                             } else {
-                                    CommonUtil.shortCenterToast(CompletePhoneActivity.this,"当前手机号已被注册，请直接登录");
+                                CommonUtil.shortCenterToast(CompletePhoneActivity.this,getString(R.string.complete_info_text));
                             }
                         } catch (Exception e) {
                             Log.d(TAG, "phone reg error");
@@ -87,7 +88,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                     }
                 }, null);
             } else {
-                CommonUtil.shortCenterToast(mContext, "你输入的手机号格式有误");
+                CommonUtil.shortCenterToast(mContext, getString(R.string.register_phone_error));
             }
         }
     };

@@ -50,6 +50,7 @@
         <LinearLayout
             android:id="@+id/rl_auth"
             android:paddingLeft="@dimen/view_register_margin"
+            android:orientation="horizontal"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -61,8 +62,18 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:background="@android:color/white"
+                android:textColor="@color/register_send"
+                android:textSize="@dimen/learn_status_widget_learnbtn"
+                android:clickable="true"
                 android:text="120S"/>
+
+            <TextView
+                android:id="@+id/tv_show_time"
+                android:text="@string/register_reget_auth"
+                android:textColor="@color/register_send_auth"
+                android:textSize="@dimen/learn_status_widget_learnbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
@@ -78,7 +89,9 @@
         <EditText
             android:id="@+id/et_auth"
             style="@style/edittext_style"
-            android:hint="请输入短信验证码"
+            android:hint="@string/reg_auth_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -115,10 +128,10 @@
                 android:layout_height="@dimen/btn_register_height"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:scaleType="fitXY"
-                android:src="@drawable/pwd_unshow"/>
+                android:scaleType="center"
+                android:src="@drawable/register_pwd_unshow"/>
 
-         </LinearLayout>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/iv_clear_pwd"
@@ -132,7 +145,7 @@
         <EditText
             android:id="@+id/et_pwd"
             android:maxLength="20"
-            android:hint="请设置密码"
+            android:hint="@string/reg_set_pwd"
             style="@style/edittext_style"
             android:inputType="textPassword"
             android:gravity="center_vertical"
@@ -149,16 +162,15 @@
             android:layout_marginTop="@dimen/view_marginTop"/>
     </RelativeLayout>
 
-    <com.edusoho.kuozhi.v3.view.EduSohoLoadingButton
+    <Button
         android:id="@+id/btn_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/view_register_margin"
         android:layout_marginLeft="@dimen/view_register_margin"
         android:layout_marginTop="@dimen/rl_register_margin"
-        app:init_background="@drawable/login_btn_normal"
-        app:init_text="@string/register_confirm"
-        app:loading_background="@drawable/login_btn_press"
-        app:loading_text="@string/register_loading"
-        app:success_text="@string/register_success"/>
+        android:background="@drawable/login_btn_normal"
+        android:textColor="@color/white"
+        android:textSize="@dimen/register_btn_next"
+        android:text="确定"/>
 </LinearLayout>
