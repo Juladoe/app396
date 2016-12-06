@@ -11,6 +11,8 @@
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
     <string name="image_cache_path">ImageLoaderCache</string>
+    <string name="find_password_via_mail_success">请前往该邮箱验证信息，验证成功即可登录</string>
+    <string name="find_password_then_login">去登录</string>
 
     <!--Button-->
     <string name="down_tab_news">动态</string>

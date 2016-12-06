@@ -52,7 +52,7 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
     private TextView tvPhoneSmsCodeHint;
     private EditText etSmsCode;
     private EditText etResetPassword;
-    private Button btnSubmit;
+    private TextView tvSubmit;
     private CheckBox cbShowOrHidePassword;
     private TextView tvPhoneCodeTimer;
     private TextView tvRetrievePhoneCode;
@@ -94,14 +94,14 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
         etSmsCode = (EditText) view.findViewById(R.id.et_phone_code);
         etResetPassword = (EditText) view.findViewById(R.id.et_reset_password);
         cbShowOrHidePassword = (CheckBox) view.findViewById(R.id.cb_show_or_hide_password);
-        btnSubmit = (Button) view.findViewById(R.id.btn_submit);
+        tvSubmit = (TextView) view.findViewById(R.id.tv_submit);
         tvPhoneCodeTimer = (TextView) view.findViewById(R.id.tv_code_timer);
         tvRetrievePhoneCode = (TextView) view.findViewById(R.id.tv_retrieve_phone_code);
         ivErasePhoneCode = (ImageView) view.findViewById(R.id.iv_erase_phone_code);
         ivErasePassword = (ImageView) view.findViewById(R.id.iv_erase_password);
         ivErasePhoneCode.setOnClickListener(getEraseInfoClickListener());
         ivErasePassword.setOnClickListener(getEraseInfoClickListener());
-        btnSubmit.setOnClickListener(getSubmitClickListener());
+        tvSubmit.setOnClickListener(getSubmitClickListener());
         cbShowOrHidePassword.setOnCheckedChangeListener(getShowOrHidePasswordChangeListener());
         tvRetrievePhoneCode.setOnClickListener(getRetrievePhoneCodeClickListener());
         etSmsCode.requestFocus();
@@ -110,10 +110,12 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
         InputUtils.addTextChangedListener(etSmsCode, new NormalCallback<Editable>() {
             @Override
             public void success(Editable editable) {
-                if (editable.length() == 0) {
+                if (editable.length() == 0 || etResetPassword.length() == 0) {
                     ivErasePhoneCode.setVisibility(View.INVISIBLE);
+                    tvSubmit.setAlpha(0.6f);
                 } else {
                     ivErasePhoneCode.setVisibility(View.VISIBLE);
+                    tvSubmit.setAlpha(1.0f);
                 }
             }
         });
@@ -121,10 +123,12 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
         InputUtils.addTextChangedListener(etResetPassword, new NormalCallback<Editable>() {
             @Override
             public void success(Editable editable) {
-                if (editable.length() == 0) {
+                if (editable.length() == 0 || etSmsCode.length() == 0) {
                     ivErasePassword.setVisibility(View.INVISIBLE);
+                    tvSubmit.setAlpha(0.6f);
                 } else {
                     ivErasePassword.setVisibility(View.VISIBLE);
+                    tvSubmit.setAlpha(1.0f);
                 }
             }
         });
@@ -153,6 +157,9 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (etSmsCode.length() == 0 || etResetPassword.length() == 0) {
+                    return;
+                }
                 String smsCode = etSmsCode.getText().toString().trim();
                 String resetPassword = etResetPassword.getText().toString().trim();
                 if (TextUtils.isEmpty(smsCode)) {
