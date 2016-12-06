@@ -74,43 +74,45 @@ public class FindPasswordFragment extends BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (etPhoneOrMail.length() == 0) {
-                    return;
-                }
-                if ("".equals(etPhoneOrMail.getText().toString().trim())) {
-                    ToastUtil.getInstance(mContext).makeText(getString(R.string.find_password_text_not_null), Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (getActivity() != null && getActivity() instanceof ForgetPasswordActivity) {
-                    final ForgetPasswordActivity forgetPasswordActivity = (ForgetPasswordActivity) getActivity();
-                    final Bundle bundle = new Bundle();
-                    if (Validator.isMail(etPhoneOrMail.getText().toString().trim())) {
-                        bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
-                        forgetPasswordActivity.switchFragment("FindPasswordByMailFragment", bundle);
-                    } else if (Validator.isPhone(etPhoneOrMail.getText().toString().trim())) {
-                        sendSmsToPhone(new NormalCallback<String>() {
-                            @Override
-                            public void success(String response) {
-                                if (response != null) {
-                                    FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
-                                    });
-                                    if (smsCode.mobile != null && smsCode.smsToken != null) {
-                                        ToastUtils.show(mContext, getString(R.string.sms_code_success), Toast.LENGTH_LONG);
-                                        bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
-                                        bundle.putString(SMS_TOKEN, smsCode.smsToken);
-                                        forgetPasswordActivity.switchFragment("FindPasswordByPhoneFragment", bundle);
-                                    } else {
-                                        Error error = ModelDecor.getInstance().decor(response, new TypeToken<Error>() {
-                                        });
-                                        ToastUtils.show(mContext, error.message, Toast.LENGTH_LONG);
-                                    }
-                                }
-                            }
-                        });
-                    } else {
-                        ToastUtil.getInstance(mContext).makeText(getString(R.string.phone_or_mail_format_error), Toast.LENGTH_LONG).show();
-                    }
-                }
+                final ForgetPasswordActivity forgetPasswordActivity = (ForgetPasswordActivity) getActivity();
+                forgetPasswordActivity.switchFragment("FindPasswordByPhoneFragment", null);
+//                if (etPhoneOrMail.length() == 0) {
+//                    return;
+//                }
+//                if ("".equals(etPhoneOrMail.getText().toString().trim())) {
+//                    ToastUtil.getInstance(mContext).makeText(getString(R.string.find_password_text_not_null), Toast.LENGTH_LONG).show();
+//                    return;
+//                }
+//                if (getActivity() != null && getActivity() instanceof ForgetPasswordActivity) {
+//                    final ForgetPasswordActivity forgetPasswordActivity = (ForgetPasswordActivity) getActivity();
+//                    final Bundle bundle = new Bundle();
+//                    if (Validator.isMail(etPhoneOrMail.getText().toString().trim())) {
+//                        bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
+//                        forgetPasswordActivity.switchFragment("FindPasswordByMailFragment", bundle);
+//                    } else if (Validator.isPhone(etPhoneOrMail.getText().toString().trim())) {
+//                        sendSmsToPhone(new NormalCallback<String>() {
+//                            @Override
+//                            public void success(String response) {
+//                                if (response != null) {
+//                                    FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
+//                                    });
+//                                    if (smsCode.mobile != null && smsCode.smsToken != null) {
+//                                        ToastUtils.show(mContext, getString(R.string.sms_code_success), Toast.LENGTH_LONG);
+//                                        bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
+//                                        bundle.putString(SMS_TOKEN, smsCode.smsToken);
+//                                        forgetPasswordActivity.switchFragment("FindPasswordByPhoneFragment", bundle);
+//                                    } else {
+//                                        Error error = ModelDecor.getInstance().decor(response, new TypeToken<Error>() {
+//                                        });
+//                                        ToastUtils.show(mContext, error.message, Toast.LENGTH_LONG);
+//                                    }
+//                                }
+//                            }
+//                        });
+//                    } else {
+//                        ToastUtil.getInstance(mContext).makeText(getString(R.string.phone_or_mail_format_error), Toast.LENGTH_LONG).show();
+//                    }
+//                }
             }
         };
     }

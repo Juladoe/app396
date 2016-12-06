@@ -110,11 +110,14 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
         InputUtils.addTextChangedListener(etSmsCode, new NormalCallback<Editable>() {
             @Override
             public void success(Editable editable) {
-                if (editable.length() == 0 || etResetPassword.length() == 0) {
+                if (editable.length() == 0) {
                     ivErasePhoneCode.setVisibility(View.INVISIBLE);
-                    tvSubmit.setAlpha(0.6f);
                 } else {
                     ivErasePhoneCode.setVisibility(View.VISIBLE);
+                }
+                if (editable.length() == 0 || etResetPassword.length() == 0) {
+                    tvSubmit.setAlpha(0.6f);
+                } else {
                     tvSubmit.setAlpha(1.0f);
                 }
             }
@@ -123,11 +126,14 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
         InputUtils.addTextChangedListener(etResetPassword, new NormalCallback<Editable>() {
             @Override
             public void success(Editable editable) {
-                if (editable.length() == 0 || etSmsCode.length() == 0) {
+                if (editable.length() == 0) {
                     ivErasePassword.setVisibility(View.INVISIBLE);
-                    tvSubmit.setAlpha(0.6f);
                 } else {
                     ivErasePassword.setVisibility(View.VISIBLE);
+                }
+                if (editable.length() == 0 || etSmsCode.length() == 0) {
+                    tvSubmit.setAlpha(0.6f);
+                } else {
                     tvSubmit.setAlpha(1.0f);
                 }
             }
