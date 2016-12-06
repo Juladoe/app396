@@ -130,7 +130,7 @@
             </RelativeLayout>
 
             <TextView
-                android:id="@+id/btn_login"
+                android:id="@+id/tv_login"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginBottom="@dimen/login_widget_margin_bottom"
