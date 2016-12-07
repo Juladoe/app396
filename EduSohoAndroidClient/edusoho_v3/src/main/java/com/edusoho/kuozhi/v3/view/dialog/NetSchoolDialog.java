@@ -4,6 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -11,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -291,6 +294,11 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
         app.getUrl(schoolApiUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if(response.equals("网校客户端未开启")){
+                    CommonUtil.shortToast(mContext,"网校客户端未开启");
+                    mLoading.dismiss();
+                    return;
+                }
                 SchoolResult schoolResult = app.gson.fromJson(
                         response, new TypeToken<SchoolResult>() {
                         }.getType());

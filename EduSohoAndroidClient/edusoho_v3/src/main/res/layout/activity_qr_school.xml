@@ -11,7 +11,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:scaleType="centerCrop"
-        android:src="@drawable/bg_search_back"/>
+        android:src="@drawable/shape_search_color"/>
 
     <ImageView
         android:id="@+id/iv_school"
@@ -21,6 +21,7 @@
         android:scaleType="fitXY"
         android:layout_alignBottom="@id/background"
         android:layout_alignTop="@+id/background"
+        android:visibility="invisible"
         />
 
     <TextView
@@ -82,9 +83,10 @@
                 android:textColor="@color/base_black_normal"
                 android:textSize="@dimen/x_medium_font_size" />
 
-            <com.edusoho.kuozhi.v3.view.FixHeightListView
+            <com.edusoho.kuozhi.v3.view.ChildListView
                 android:id="@+id/login_near_lv"
                 android:layout_width="match_parent"
+                android:divider="@color/transparent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp" />
         </LinearLayout>
