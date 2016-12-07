@@ -36,19 +36,22 @@
         >
 
         <ImageView
-            android:id="@+id/iv_clear_num"
+            android:id="@+id/iv_clear_phone"
             android:scaleType="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
+            android:visibility="invisible"
             android:src="@drawable/register_clear_content"/>
 
         <EditText
             android:id="@+id/et_phone_num"
             style="@style/edittext_style"
             android:hint="@string/reg_phone_hint"
-            android:layout_toLeftOf="@id/iv_clear_num"
+            android:textSize="@dimen/x_medium_font_size"
+            android:textColor="@color/primary_font_color"
+            android:layout_toLeftOf="@id/iv_clear_phone"
             android:maxLength="11"
             />
 
@@ -61,17 +64,19 @@
 
     </RelativeLayout>
 
-    <Button
-        android:id="@+id/btn_next"
+    <TextView
+        android:id="@+id/tv_next"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/view_register_margin"
+        android:layout_height="45dp"
+        android:layout_marginBottom="@dimen/login_widget_margin_bottom"
         android:layout_marginLeft="@dimen/view_register_margin"
+        android:layout_marginRight="@dimen/view_register_margin"
         android:layout_marginTop="@dimen/rl_register_margin"
-        android:background="@drawable/login_btn_normal"
-        android:enabled="false"
-        android:textColor="@color/white"
-        android:textSize="@dimen/register_btn_next"
-        android:text="@string/register_next"/>
+        android:alpha="0.6"
+        android:background="@color/primary_color"
+        android:gravity="center"
+        android:text="@string/register_next"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_xl" />
 
 </LinearLayout>
