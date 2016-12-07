@@ -1,14 +1,13 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.app.Dialog;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,11 +19,11 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.InputUtils;
+import com.edusoho.kuozhi.v3.util.Validator;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -33,7 +32,7 @@ import java.util.regex.Pattern;
 
 public class RegisterActivity extends ActionBarBaseActivity {
     private EditText etAccount;
-    private Button btnNext;
+    private TextView tvNext;
     private ImageView ivBack;
     private TextView tvInfo;
     private ImageView ivClear;
@@ -44,18 +43,21 @@ public class RegisterActivity extends ActionBarBaseActivity {
         setContentView(R.layout.activity_register);
         hideActionBar();
         initView();
+
     }
 
     private void initView() {
         tvInfo = (TextView) findViewById(R.id.tv_info);
         etAccount = (EditText) findViewById(R.id.et_phone_num);
         etAccount.addTextChangedListener(mTextChangeListener);
-        btnNext = (Button) findViewById(R.id.btn_next);
-        btnNext.setOnClickListener(nextClickListener);
+        tvNext = (TextView) findViewById(R.id.tv_next);
+        tvNext.setOnClickListener(nextClickListener);
         ivBack = (ImageView) findViewById(R.id.iv_back);
         ivBack.setOnClickListener(mBackClickListener);
-        ivClear = (ImageView) findViewById(R.id.iv_clear_num);
+        ivClear = (ImageView) findViewById(R.id.iv_clear_phone);
         ivClear.setOnClickListener(mClearClickListener);
+
+        InputUtils.showKeyBoard(etAccount, mContext);
     }
 
     TextWatcher mTextChangeListener = new TextWatcher() {
@@ -72,9 +74,11 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void afterTextChanged(Editable s) {
             if (s.length() > 0) {
-                btnNext.setEnabled(true);
+                tvNext.setAlpha(1f);
+                ivClear.setVisibility(View.VISIBLE);
             }else {
-                btnNext.setEnabled(false);
+                tvNext.setAlpha(0.6f);
+                ivClear.setVisibility(View.INVISIBLE);
             }
         }
     };
@@ -83,7 +87,6 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             RegisterActivity.this.finish();
-
         }
     };
 
@@ -98,8 +101,15 @@ public class RegisterActivity extends ActionBarBaseActivity {
     private View.OnClickListener nextClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (etAccount.length() == 0) {
+                return;
+            }
+            if ("".equals(etAccount.getText().toString().trim())) {
+                CommonUtil.longToast(mContext, getString(R.string.complete_phone_empty));
+                return;
+            }
             final String st = etAccount.getText().toString().trim();
-            if (isPhone(st)) {
+            if (Validator.isPhone(st)) {
                 RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
                 HashMap<String,String> params = (HashMap<String, String>) requestUrl.getParams();
                 params.put("phoneNumber", String.valueOf(st));
@@ -135,39 +145,21 @@ public class RegisterActivity extends ActionBarBaseActivity {
      * 弹窗提示已注册
      */
     private void showDialog() {
-        final Dialog dialog = new Dialog(this, R.style.RegisterDialogStyle);
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_register, null);
-        dialog.setContentView(view);
-        TextView tvCancel = (TextView) view.findViewById(R.id.tv_cancel);
-        TextView tvConfirm = (TextView) view.findViewById(R.id.tv_confirm);
-        tvCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-                CommonUtil.longToast(mContext,getString(R.string.register_modify_phone));
-            }
-        });
-        tvConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-                RegisterActivity.this.finish();
-            }
-        });
-        dialog.show();
+       new AlertDialog.Builder(RegisterActivity.this)
+            .setTitle(R.string.notification)
+            .setMessage(R.string.register_hint)
+            .setPositiveButton(R.string.register_confirm, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    RegisterActivity.this.finish();
+                }
+            })
+            .setNegativeButton(R.string.register_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    CommonUtil.longToast(mContext,getString(R.string.register_modify_phone));
+                }
+            }).show();
     }
 
-    /**
-     * 判断是否为手机号
-     */
-    private boolean isPhone(String str) {
-        Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
-        Matcher m = p.matcher(str);
-        return m.matches();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 }

@@ -9,6 +9,8 @@
     <dimen name="font_xs">11sp</dimen>
     <dimen name="font_xxs">10sp</dimen>
 
+    <dimen name="button_height">45dp</dimen>
+
     <!-- end -->
 
     <dimen name="font_size_l">20sp</dimen>
@@ -182,7 +184,7 @@
     <dimen name="view_register_margin">15dp</dimen>
     <dimen name="view_register_height">1px</dimen>
     <dimen name="register_btn_next">17sp</dimen>
-    
+
     <!--字体大小-->
     <!--<dimen name="font_size_l"-->
 </resources>

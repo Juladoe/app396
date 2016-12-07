@@ -4,11 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Editable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,11 +17,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.register.MsgCode;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
@@ -46,9 +48,9 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
     private SmsCodeHandler mSmsCodeHandler;
     private String num;
     private ImageView ivShowPwd;
-    private Button btnConfirm;
+    private TextView tvConfirm;
     private String mCookie = "";
-    private ImageView iv;
+    private ImageView ivBack;
     private ImageView ivClearAuth;
     private ImageView ivClearPwd;
     private TextView tvTime;
@@ -68,10 +70,10 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         etPwd = (EditText) findViewById(R.id.et_pwd);
         ivShowPwd = (ImageView) findViewById(R.id.iv_show_pwd);
         ivShowPwd.setOnClickListener(nShowPwdClickListener);
-        btnConfirm = (Button) findViewById(R.id.btn_confirm);
-        btnConfirm.setOnClickListener(mConfirmRegClickListener);
-        iv = (ImageView) findViewById(R.id.iv_back);
-        iv.setOnClickListener(mBackClickListener);
+        tvConfirm = (TextView) findViewById(R.id.tv_confirm);
+        tvConfirm.setOnClickListener(mConfirmRegClickListener);
+        ivBack = (ImageView) findViewById(R.id.iv_back);
+        ivBack.setOnClickListener(mBackClickListener);
         ivClearAuth = (ImageView) findViewById(R.id.iv_clear_auth);
         ivClearAuth.setOnClickListener(mClearContentListener);
         ivClearPwd = (ImageView) findViewById(R.id.iv_clear_pwd);
@@ -81,10 +83,13 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         num = getIntent().getStringExtra("num");
         tvShow.setText(getString(R.string.phone_code_input_hint)+ num);
 
-        mSmsCodeHandler = new SmsCodeHandler(this);
+        initTextChange();
 
+        InputUtils.showKeyBoard(etAuth, mContext);
+        mSmsCodeHandler = new SmsCodeHandler(this);
         sendSms();
     }
+
 
     private void sendSms() {
         tvSend.setEnabled(false);
@@ -99,6 +104,42 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
 
             }
         }, 0, 1000);
+    }
+
+    private void initTextChange() {
+        InputUtils.addTextChangedListener(etAuth, new NormalCallback<Editable>() {
+            @Override
+            public void success(Editable editable) {
+                if (etAuth.length() == 0) {
+                    ivClearAuth.setVisibility(View.INVISIBLE);
+                }else {
+                    ivClearAuth.setVisibility(View.VISIBLE);
+                }
+                if (etAuth.length() == 0 || etPwd.length() == 0) {
+                    tvConfirm.setAlpha(0.6f);
+                } else {
+                    tvConfirm.setAlpha(1.0f);
+                }
+            }
+        });
+
+        InputUtils.addTextChangedListener(etPwd, new NormalCallback<Editable>() {
+            @Override
+            public void success(Editable editable) {
+                if (etPwd.length() == 0) {
+                    ivClearPwd.setVisibility(View.INVISIBLE);
+                }else {
+                    ivClearPwd.setVisibility(View.VISIBLE);
+                }
+                if (etAuth.length() == 0 || etPwd.length() == 0) {
+                    tvConfirm.setAlpha(0.6f);
+                } else {
+                    ivClearPwd.setVisibility(View.VISIBLE);
+                    tvConfirm.setAlpha(1.0f);
+                }
+            }
+        });
+
     }
 
     View.OnClickListener mBackClickListener = new View.OnClickListener() {
@@ -118,7 +159,6 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             }
         }
     };
-
 
     /**
      * 处理隐藏pwd
@@ -146,6 +186,9 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
     View.OnClickListener mConfirmRegClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (etAuth.length() == 0 || etPwd.length() == 0) {
+                return;
+            }
             RequestUrl url = app.bindUrl(Const.REGIST, false);
             HashMap<String, String> params = (HashMap<String, String>) url.getParams();
             params.put("registeredWay","android");
@@ -159,7 +202,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             } else {
                 params.put("smsCode", strCode);
             }
-            String strPass = etPwd.getText().toString();
+            String strPass = etPwd.getText().toString().trim();
             if (TextUtils.isEmpty(strPass)) {
                 CommonUtil.longToast(mContext, getString(R.string.reg_password_hint));
                 return;
@@ -182,7 +225,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                                 });
                         if (userResult != null && userResult.user != null) {
                             app.saveToken(userResult);
-                            btnConfirm.postDelayed(new Runnable() {
+                            tvConfirm.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -269,4 +312,12 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mTimer != null) {
+            mTimer.cancel();
+            mTimer = null;
+        }
+    }
 }
