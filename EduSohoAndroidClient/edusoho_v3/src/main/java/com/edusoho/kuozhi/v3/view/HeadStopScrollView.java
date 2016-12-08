@@ -31,18 +31,13 @@ public class HeadStopScrollView extends ScrollView {
         init();
     }
 
-
     private int startY;
     private View view;
 
     /**
-     * 监听的滑动的子View，用于判断是否要恢复滑动事件
+     * 监听的滑动的子View
      */
     private View controlChildView;
-    /**
-     * 滑动停止的高度
-     */
-    private int viewHeight = 0;
     /**
      *firstViewHeight 头View的高度，用来判断什么时候应该向下分发事件
      */
@@ -52,11 +47,6 @@ public class HeadStopScrollView extends ScrollView {
     public void setView(View view) {
         this.view = view;
     }
-
-    public void setViewHeight(int viewHeight) {
-        this.viewHeight = viewHeight;
-    }
-
 
     public void setFirstViewHeight(int firstViewHeight) {
         this.firstViewHeight = firstViewHeight;
@@ -99,6 +89,10 @@ public class HeadStopScrollView extends ScrollView {
 
     public void setCanScroll(boolean isScrolled) {
         this.canScroll = isScrolled;
+    }
+
+    public boolean isCanScroll() {
+        return canScroll;
     }
 
     @Override

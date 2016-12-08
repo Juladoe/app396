@@ -128,6 +128,7 @@ public class Const {
     public static final String CLEAR_HISTORY = "clear_history";
     public static final String DELETE_FRIEND = "delete_friend";
     public static final String DIALOG_DISMISS = "dialog_dismiss";
+    public static final String SCROLL_STATE_SAVE = "scroll_state_save";
 
     public static final int OK = 200;
     public static final int ERROR_200 = 200;
