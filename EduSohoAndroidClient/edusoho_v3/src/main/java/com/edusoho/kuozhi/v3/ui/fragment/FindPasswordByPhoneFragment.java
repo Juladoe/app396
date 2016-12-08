@@ -21,10 +21,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.error.Error;
+import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.base.ApiResponse;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ForgetPasswordActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
@@ -49,6 +51,8 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
 
     private static final int PHONE_RETRIEVE_TIME = 120;
     public static final String FIND_PASSWORD_USERNAME = "find_password_username";
+    public static final String RESEND_IMG_CODE = "resend_img_code";
+    public static final String SMS_CODES_OBJECT = "sms_codes_object";
     private TextView tvPhoneSmsCodeHint;
     private EditText etSmsCode;
     private EditText etResetPassword;
@@ -60,7 +64,7 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
     private ImageView ivErasePassword;
     private Timer mTimer;
     private TimerHandler mTimerHandler;
-    private String mSmsToken;
+    private String mCurrentVerifiedToken;
     private String mUserMobile;
 
     @Override
@@ -76,6 +80,20 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
         mTimer = new Timer();
         mTimerHandler = new TimerHandler(this);
         mTimer.schedule(getTimerTimerTask(), 0, 1000);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (!hidden) {
+            if (mTimer == null) {
+                mTimer = new Timer();
+            }
+            tvPhoneCodeTimer.setVisibility(View.VISIBLE);
+            mTimer.schedule(getTimerTimerTask(), 0, 1000);
+        } else {
+            mTimer.cancel();
+            mTimer = null;
+        }
     }
 
     @Override
@@ -144,8 +162,8 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
         if (getArguments() != null && getArguments().getString(ForgetPasswordActivity.RESET_INFO) != null) {
             mUserMobile = getArguments().getString(ForgetPasswordActivity.RESET_INFO);
             tvPhoneSmsCodeHint.setText(getString(R.string.phone_code_input_hint) + mUserMobile);
-            mSmsToken = getArguments().getString(FindPasswordFragment.SMS_TOKEN);
-            Log.d("mSmsToken", "mSmsToken: " + mSmsToken);
+            mCurrentVerifiedToken = getArguments().getString(FindPasswordFragment.SMS_TOKEN);
+            Log.d("mSmsToken", "mSmsToken: " + mCurrentVerifiedToken);
         }
     }
 
@@ -184,7 +202,7 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                 Map<String, String> params = requestUrl.getParams();
                 params.put("password", etResetPassword.getText().toString());
                 params.put("sms_code", etSmsCode.getText().toString());
-                params.put("verified_token", mSmsToken);
+                params.put("verified_token", mCurrentVerifiedToken);
                 params.put("mobile", mUserMobile);
                 params.put("type", "sms");
                 app.postUrl(requestUrl, new Response.Listener<String>() {
@@ -231,6 +249,43 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                     tvRetrievePhoneCode.setText(getString(R.string.after_retrieve_phone_code));
                     tvRetrievePhoneCode.setTextColor(getResources().getColor(R.color.secondary2_font_color));
                     tvPhoneCodeTimer.setVisibility(View.VISIBLE);
+
+                    RequestUrl requestUrl = app.bindNewUrl(Const.SMS_CODES, false);
+                    Map<String, String> params = requestUrl.getParams();
+                    params.put("type", "sms_change_password");
+                    params.put("mobile", mUserMobile);
+                    app.postUrl(requestUrl, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            ApiResponse<Error> error = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<Error>>() {
+                            });
+                            if (error.error != null) {
+                                ToastUtils.show(mContext, error.error.message, Toast.LENGTH_LONG);
+                                return;
+                            }
+                            FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
+                            });
+                            if ("ok".equals(smsCode.status)) {
+                                ToastUtils.show(mContext, getString(R.string.sms_code_success), Toast.LENGTH_LONG);
+                                etSmsCode.setText("");
+                            } else if ("limited".equals(smsCode.status)) {
+                                if (getActivity() != null && getActivity() instanceof ForgetPasswordActivity) {
+                                    ToastUtils.show(mContext, getString(R.string.resend_sms_code), Toast.LENGTH_LONG);
+                                    final ForgetPasswordActivity forgetPasswordActivity = (ForgetPasswordActivity) getActivity();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putSerializable(SMS_CODES_OBJECT, smsCode);
+                                    app.sendMessage(RESEND_IMG_CODE, bundle);
+                                    forgetPasswordActivity.switchFragment("FindPasswordFragment", null);
+                                }
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            String as = new String(error.networkResponse.data);
+                            Toast.makeText(mContext, as, Toast.LENGTH_LONG).show();
+                        }
+                    });
                 }
             }
         };

@@ -21,7 +21,9 @@ import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.base.ApiResponse;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.ForgetPasswordActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -56,6 +58,11 @@ public class FindPasswordFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_find_password);
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
     }
 
     @Override
@@ -151,6 +158,7 @@ public class FindPasswordFragment extends BaseFragment {
                                                 rlImgCode.setVisibility(View.VISIBLE);
                                                 mImgCodeBitmap = ImageUtil.decodeBase64(smsCode.img_code);
                                                 ivImgCode.setImageBitmap(mImgCodeBitmap);
+                                                etImgCode.requestFocus();
                                                 tvNext.setAlpha(0.6f);
                                             }
                                         } else {
@@ -167,14 +175,14 @@ public class FindPasswordFragment extends BaseFragment {
                             sendSmsToPhoneViaImgCode(new NormalCallback<String>() {
                                 @Override
                                 public void success(String response) {
-                                    FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
-                                    });
                                     ApiResponse<Error> error = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<Error>>() {
                                     });
                                     if (error.error != null) {
                                         ToastUtils.show(mContext, error.error.message, Toast.LENGTH_LONG);
                                         return;
                                     }
+                                    FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
+                                    });
                                     Log.d("smsCode", "success: " + smsCode.status);
                                     if ("ok".equals(smsCode.status)) {
                                         ToastUtils.show(mContext, getString(R.string.sms_code_success), Toast.LENGTH_LONG);
@@ -203,10 +211,7 @@ public class FindPasswordFragment extends BaseFragment {
                         FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
                         });
                         if (smsCode != null && "limited".equals(smsCode.status)) {
-                            if (mImgCodeBitmap != null) {
-                                mImgCodeBitmap.recycle();
-                                mImgCodeBitmap = null;
-                            }
+                            clearCurrentBitmap();
                             mCurrentVerifiedToken = smsCode.verified_token;
                             mImgCodeBitmap = ImageUtil.decodeBase64(smsCode.img_code);
                             ivImgCode.setImageBitmap(ImageUtil.decodeBase64(smsCode.img_code));
@@ -268,10 +273,35 @@ public class FindPasswordFragment extends BaseFragment {
                 callback.success(as);
             }
         });
+    }
 
+    @Override
+    public void invoke(WidgetMessage message) {
+        if (message.type.type.equals(FindPasswordByPhoneFragment.RESEND_IMG_CODE)) {
+            FindPasswordSmsCode smsCode = (FindPasswordSmsCode) message.data.getSerializable(FindPasswordByPhoneFragment.SMS_CODES_OBJECT);
+            mCurrentVerifiedToken = smsCode.verified_token;
+            clearCurrentBitmap();
+            mImgCodeBitmap = ImageUtil.decodeBase64(smsCode.img_code);
+            ivImgCode.setImageBitmap(ImageUtil.decodeBase64(smsCode.img_code));
+            etImgCode.setText("");
+            rlImgCode.setVisibility(View.VISIBLE);
+            Log.d("FindPasswordSmsCode", "invoke: FindPasswordSmsCode");
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{new MessageType(FindPasswordByPhoneFragment.RESEND_IMG_CODE)};
     }
 
     public String getResetInfo() {
         return etPhoneOrMail.getText().toString().trim();
+    }
+
+    private void clearCurrentBitmap() {
+        if (mImgCodeBitmap != null) {
+            mImgCodeBitmap.recycle();
+            mImgCodeBitmap = null;
+        }
     }
 }
