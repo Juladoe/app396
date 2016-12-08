@@ -139,6 +139,7 @@
     <string name="register_error">你输入的手机号格式有误</string>
     <string name="register_modify_phone">请更换手机号码</string>
     <string name="complete_phone_empty">手机号不能为空</string>
+    <string name="img_code_cannot_null">图形验证码不能为空</string>
 
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>
@@ -278,4 +279,5 @@
     <string name="label_teacher">教师</string>
 
     <string name="register_cancel">取消</string>
+
 </resources>
