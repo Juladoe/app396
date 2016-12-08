@@ -607,7 +607,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         Date date = new Date();
         String loginTime = nowfmt.format(date);
         Uri uri = Uri.parse(site.url);
-        String domain = site.url.indexOf(":") == -1?
+        String domain = uri.getPort() == -1?
                 uri.getHost():
                 uri.getHost() + ":" + uri.getPort();
         SchoolUtil.saveEnterSchool(mContext, site.name, loginTime, "登录账号：未登录", domain);
