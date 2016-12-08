@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextPaint;
@@ -503,10 +504,6 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     }
 
     private void searchSchool(String searchStr) {
-        if (TextUtils.isEmpty(searchStr)) {
-            CommonUtil.longToast(mContext, "请输入网校url");
-            return;
-        }
         String url = "http://" + searchStr + Const.VERIFYVERSION;
         mLoading = LoadDialog.create(mContext);
         mLoading.show();
@@ -541,12 +538,14 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                 if (schoolResult == null
                         || schoolResult.site == null) {
                     handlerError(response);
+                    mLoading.dismiss();
                     return;
                 }
 
                 School site = schoolResult.site;
                 if (!SchoolUtil.checkMobileVersion(QrSchoolActivity.this
                         , site, site.apiVersionRange)) {
+                    mLoading.dismiss();
                     return;
                 }
                 bindApiToken(site);
@@ -592,6 +591,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mLoading.dismiss();
                 app.setCurrentSchool(site);
                 app.removeToken();
                 app.registDevice(null);
@@ -606,7 +606,11 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
         String loginTime = nowfmt.format(date);
-        SchoolUtil.saveEnterSchool(mContext, site.name, loginTime, "登录账号：未登录", app.domain);
+        Uri uri = Uri.parse(site.url);
+        String domain = site.url.indexOf(":") == -1?
+                uri.getHost():
+                uri.getHost() + ":" + uri.getPort();
+        SchoolUtil.saveEnterSchool(mContext, site.name, loginTime, "登录账号：未登录", domain);
         startSchoolActivity(site);
     }
 
