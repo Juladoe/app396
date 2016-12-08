@@ -10,7 +10,6 @@ import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -25,6 +24,7 @@ import com.edusoho.kuozhi.v3.entity.error.Error;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
+import com.edusoho.kuozhi.v3.model.base.ApiResponse;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ForgetPasswordActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
@@ -61,7 +61,7 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
     private Timer mTimer;
     private TimerHandler mTimerHandler;
     private String mSmsToken;
-    private String mUsername;
+    private String mUserMobile;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -142,8 +142,8 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
 
     private void initData() {
         if (getArguments() != null && getArguments().getString(ForgetPasswordActivity.RESET_INFO) != null) {
-            mUsername = getArguments().getString(ForgetPasswordActivity.RESET_INFO);
-            tvPhoneSmsCodeHint.setText(getString(R.string.phone_code_input_hint) + mUsername);
+            mUserMobile = getArguments().getString(ForgetPasswordActivity.RESET_INFO);
+            tvPhoneSmsCodeHint.setText(getString(R.string.phone_code_input_hint) + mUserMobile);
             mSmsToken = getArguments().getString(FindPasswordFragment.SMS_TOKEN);
             Log.d("mSmsToken", "mSmsToken: " + mSmsToken);
         }
@@ -167,7 +167,7 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                     return;
                 }
                 String smsCode = etSmsCode.getText().toString().trim();
-                String resetPassword = etResetPassword.getText().toString().trim();
+                final String resetPassword = etResetPassword.getText().toString().trim();
                 if (TextUtils.isEmpty(smsCode)) {
                     ToastUtil.getInstance(mContext).makeText(getString(R.string.sms_code_not_null), Toast.LENGTH_LONG).show();
                     return;
@@ -184,16 +184,23 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                 Map<String, String> params = requestUrl.getParams();
                 params.put("password", etResetPassword.getText().toString());
                 params.put("sms_code", etSmsCode.getText().toString());
-                params.put("sms_token", mSmsToken);
+                params.put("verified_token", mSmsToken);
+                params.put("mobile", mUserMobile);
                 params.put("type", "sms");
                 app.postUrl(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        ApiResponse<Error> error = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<Error>>() {
+                        });
+                        if (error.error != null) {
+                            ToastUtils.show(mContext, error.error.message, Toast.LENGTH_LONG);
+                            return;
+                        }
                         ToastUtils.show(mContext, R.string.reset_password_success, Toast.LENGTH_LONG);
                         app.mEngine.runNormalPlugin("LoginActivity", mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(LoginActivity.FIND_PASSWORD_ACCOUNT, mUsername);
+                                startIntent.putExtra(LoginActivity.FIND_PASSWORD_ACCOUNT, mUserMobile);
                             }
                         }, Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     }

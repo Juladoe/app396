@@ -2,10 +2,11 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +17,7 @@ import com.edusoho.kuozhi.v3.entity.error.Error;
 import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
+import com.edusoho.kuozhi.v3.model.base.ApiResponse;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ForgetPasswordActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -38,7 +40,11 @@ public class FindPasswordFragment extends BaseFragment {
     public static final String SMS_TOKEN = "sms_token";
     private TextView tvNext;
     private EditText etPhoneOrMail;
-    private ImageView ivErase;
+    private EditText etImgCode;
+    private ImageView ivPhoneOrEmailErase;
+    private ImageView ivImgCode;
+    private TextView tvImgCodeChange;
+    private RelativeLayout rlImgCode;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,19 +57,24 @@ public class FindPasswordFragment extends BaseFragment {
         super.initView(view);
         tvNext = (TextView) view.findViewById(R.id.tv_next);
         etPhoneOrMail = (EditText) view.findViewById(R.id.et_phone_or_mail);
-        ivErase = (ImageView) view.findViewById(R.id.iv_erase);
+        etImgCode = (EditText) view.findViewById(R.id.et_img_code);
+        ivPhoneOrEmailErase = (ImageView) view.findViewById(R.id.iv_phone_or_mail_erase);
+        ivImgCode = (ImageView) view.findViewById(R.id.iv_img_code);
+        tvImgCodeChange = (TextView) view.findViewById(R.id.tv_change_img_code);
+        rlImgCode = (RelativeLayout) view.findViewById(R.id.rl_img_code);
         tvNext.setOnClickListener(getNextClickListener());
-        ivErase.setOnClickListener(getEraseInfoClickListener());
+        ivPhoneOrEmailErase.setOnClickListener(getEraseInfoClickListener());
         etPhoneOrMail.requestFocus();
+        InputUtils.showKeyBoard(etPhoneOrMail, mContext);
         InputUtils.showKeyBoard(etPhoneOrMail, mContext);
         InputUtils.addTextChangedListener(etPhoneOrMail, new NormalCallback<Editable>() {
             @Override
             public void success(Editable editable) {
                 if (editable.length() == 0) {
-                    ivErase.setVisibility(View.INVISIBLE);
+                    ivPhoneOrEmailErase.setVisibility(View.INVISIBLE);
                     tvNext.setAlpha(0.6f);
                 } else {
-                    ivErase.setVisibility(View.VISIBLE);
+                    ivPhoneOrEmailErase.setVisibility(View.VISIBLE);
                     tvNext.setAlpha(1.0f);
                 }
             }
@@ -94,15 +105,23 @@ public class FindPasswordFragment extends BaseFragment {
                                 if (response != null) {
                                     FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
                                     });
-                                    if (smsCode.mobile != null && smsCode.smsToken != null) {
-                                        ToastUtils.show(mContext, getString(R.string.sms_code_success), Toast.LENGTH_LONG);
-                                        bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
-                                        bundle.putString(SMS_TOKEN, smsCode.smsToken);
-                                        forgetPasswordActivity.switchFragment("FindPasswordByPhoneFragment", bundle);
+                                    if (smsCode != null) {
+                                        if (TextUtils.isEmpty(smsCode.img_code)) {
+                                            ToastUtils.show(mContext, getString(R.string.sms_code_success), Toast.LENGTH_LONG);
+                                            bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
+                                            bundle.putString(SMS_TOKEN, smsCode.verified_token);
+                                            forgetPasswordActivity.switchFragment("FindPasswordByPhoneFragment", bundle);
+                                        } else {
+                                            //图形验证码
+                                            rlImgCode.setVisibility(View.VISIBLE);
+                                        }
+
                                     } else {
-                                        Error error = ModelDecor.getInstance().decor(response, new TypeToken<Error>() {
+                                        ApiResponse<Error> error = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<Error>>() {
                                         });
-                                        ToastUtils.show(mContext, error.message, Toast.LENGTH_LONG);
+                                        if (error.error != null) {
+                                            ToastUtils.show(mContext, error.error.message, Toast.LENGTH_LONG);
+                                        }
                                     }
                                 }
                             }
@@ -141,6 +160,13 @@ public class FindPasswordFragment extends BaseFragment {
                 callback.success(as);
             }
         });
+    }
+
+    private void sendSmsByImgCode(final NormalCallback<String> callback) {
+        RequestUrl requestUrl = app.bindNewUrl(Const.SMS_CODES, false);
+        Map<String, String> params = requestUrl.getParams();
+        params.put("type", "sms_change_password");
+        params.put("mobile", etPhoneOrMail.getText().toString().trim());
     }
 
     public String getResetInfo() {
