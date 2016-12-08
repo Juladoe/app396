@@ -44,7 +44,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
 
     private void initView() {
         tvInfo = (TextView) findViewById(R.id.tv_info);
-        tvInfo.setText(R.string.register_complete_info);
+        tvInfo.setText(R.string.complete_info);
         etAccount = (EditText) findViewById(R.id.et_phone_num);
         btnNext = (EduSohoLoadingButton) findViewById(R.id.btn_next);
         btnNext.setOnClickListener(nextClickListener);
@@ -65,7 +65,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
             final String phoneNum = etAccount.getText().toString().trim();
             if (TextUtils.isEmpty(phoneNum)) {
                 CommonUtil.shortCenterToast(mContext,getString(R.string.reg_phone_hint));
-            } else if (isPhone(phoneNum)) {
+            } else if ((phoneNum)) {
                 RequestUrl requestUrl = app.bindUrl(Const.COMPLETE, false);
                 HashMap<String, String> params = (HashMap<String, String>) requestUrl.getParams();
                 params.put("mobile", String.valueOf(phoneNum));
@@ -93,13 +93,5 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
         }
     };
 
-    /**
-     * 判断是否为手机号
-     */
-    private boolean isPhone(String str) {
-        Pattern p = Pattern.compile("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$");
-        Matcher m = p.matcher(str);
-        return m.matches();
-    }
 }
 
