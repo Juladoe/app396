@@ -26,6 +26,7 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
@@ -178,6 +179,10 @@ public class EdusohoApp extends Application {
             @Override
             public void onErrorResponse(VolleyError error) {
                 if (error instanceof NoConnectionError) {
+                    errorListener.onErrorResponse(error);
+                    return;
+                }
+                if(error instanceof TimeoutError){
                     errorListener.onErrorResponse(error);
                     return;
                 }
