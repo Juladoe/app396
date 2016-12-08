@@ -15,6 +15,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by JesseHuang on 16/5/9.
@@ -71,7 +72,7 @@ public class NoteModel {
 
     public void postNote(int courseId, int lessonId, int status, String content, final ResponseCallbackListener<Note> callbackListener) {
         RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(String.format(Const.LESSON_NOTE, courseId), true);
-        HashMap<String, String> params = requestUrl.getParams();
+        Map<String, String> params = requestUrl.getParams();
         params.put("lessonId", lessonId + "");
         params.put("status", status + "");
         params.put("content", content);

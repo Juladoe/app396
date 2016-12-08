@@ -401,6 +401,26 @@
         version="1.0" />
 
     <plugin
+        name="ForgetPasswordActivity"
+        package="com.edusoho.kuozhi.v3.ui.ForgetPasswordActivity"
+        version="1.0" />
+
+    <plugin
+        name="FindPasswordFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FindPasswordFragment"
+        version="1.0" />
+
+    <plugin
+        name="FindPasswordByPhoneFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByPhoneFragment"
+        version="1.0" />
+
+    <plugin
+        name="FindPasswordByMailFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByMailFragment"
+        version="1.0" />
+
+    <plugin
         name="NotifyActivity"
         package="com.edusoho.kuozhi.v3.ui.NotifyActivity"
         version="1.0" />

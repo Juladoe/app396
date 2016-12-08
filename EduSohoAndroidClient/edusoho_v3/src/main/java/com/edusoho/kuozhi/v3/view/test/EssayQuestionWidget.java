@@ -199,7 +199,7 @@ public class EssayQuestionWidget extends BaseQuestionWidget
         if ("noAnswer".equals(testResult.status)) {
             myAnswer = "未答题";
         } else {
-            myAnswer = listToStr(testResult.answer);
+            myAnswer = listToStr(coverResultAnswer(testResult.answer));
         }
 
         String html = "你的答案:<p></p>" + myAnswer;

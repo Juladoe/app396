@@ -40,7 +40,7 @@ public class IMChatRoom {
         Collections.sort(messageEntities, new Comparator<MessageEntity>() {
             @Override
             public int compare(MessageEntity t1, MessageEntity t2) {
-                return t1.getTime() - t2.getTime();
+                return t2.getTime() - t1.getTime();
             }
         });
         return messageEntities;

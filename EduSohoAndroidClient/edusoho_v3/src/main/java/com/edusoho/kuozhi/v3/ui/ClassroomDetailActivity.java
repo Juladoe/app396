@@ -35,6 +35,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by JesseHuang on 15/10/27.
@@ -126,7 +127,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                 public void onClick(int button) {
                     if (button == PopupDialog.OK) {
                         RequestUrl requestUrl = app.bindUrl(Const.CLASSROOM_UNLEARN, true);
-                        HashMap<String, String> params = requestUrl.getParams();
+                        Map<String, String> params = requestUrl.getParams();
                         params.put("classRoomId", mFromId + "");
                         params.put("targetType", "classroom");
                         ajaxPost(requestUrl, new Response.Listener<String>() {

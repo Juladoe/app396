@@ -43,7 +43,7 @@
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             android:visibility="invisible"
-            android:src="@drawable/register_clear_content"/>
+            android:src="@drawable/clear_content"/>
 
         <EditText
             android:id="@+id/et_phone_num"

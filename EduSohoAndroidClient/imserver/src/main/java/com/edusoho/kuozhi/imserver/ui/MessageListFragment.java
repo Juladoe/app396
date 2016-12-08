@@ -614,12 +614,6 @@ public class MessageListFragment extends Fragment implements
         if (messageEntityList.isEmpty()) {
             canLoadData = false;
         }
-        Collections.sort(messageEntityList, new Comparator<MessageEntity>() {
-            @Override
-            public int compare(MessageEntity t1, MessageEntity t2) {
-                return t2.getTime() - t1.getTime();
-            }
-        });
 
         mListAdapter.setList(messageEntityList);
         mStart += messageEntityList.size();

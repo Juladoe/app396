@@ -11,9 +11,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by howzhi on 15/7/9.
@@ -134,33 +132,24 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
 
     protected static class RequestLocalManager {
 
-        public List<String> cookie;
-        private static RequestLocalManager instace;
-
-        private RequestLocalManager() {
-            cookie = new CopyOnWriteArrayList<>();
-        }
+        public String cookie = "";
+        private static RequestLocalManager instance;
 
         public static RequestLocalManager getManager() {
             synchronized (RequestLocalManager.class) {
-                if (instace == null) {
-                    instace = new RequestLocalManager();
+                if (instance == null) {
+                    instance = new RequestLocalManager();
                 }
             }
-
-            return instace;
+            return instance;
         }
 
         public String getCookie() {
-            StringBuilder builder = new StringBuilder();
-            for (String key : cookie) {
-                builder.append(key).append(";");
-            }
-            return builder.toString();
+            return cookie;
         }
 
         public void setCookie(String value) {
-            cookie.add(value);
+            cookie = value;
         }
     }
 }

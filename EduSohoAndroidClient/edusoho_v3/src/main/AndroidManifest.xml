@@ -3,6 +3,10 @@
     package="com.edusoho.kuozhi"
     android:windowSoftInputMode="adjustResize">
 
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="22" />
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -36,10 +40,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BATTERY_STATS" />
 
-    <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="22" />
-
     <!-- 获取MAC地址 -->
 
     <uses-feature android:name="android.hardware.camera" />
@@ -66,17 +66,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".v3.ui.QrSchoolActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".v3.ui.NotifyActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".v3.view.qr.CaptureActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -113,8 +110,17 @@
         <activity
             android:name=".v3.ui.LoginActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".v3.ui.ForgetPasswordActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".v3.view.photo.SchoolSplashActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -130,7 +136,6 @@
             android:name=".v3.ui.ThreadDiscussActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
-
         <activity
             android:name=".v3.ui.ThreadDiscussChatActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -160,7 +165,14 @@
         <activity
             android:name=".v3.ui.RegisterActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:screenOrientation="portrait" />
+       <activity
+           android:name=".v3.ui.RegisterConfirmActivity"
+           android:configChanges="keyboardHidden|orientation"
+           android:screenOrientation="portrait"
+           android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+           android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
         <activity
             android:name=".v3.ui.LessonDownloadingActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -169,12 +181,11 @@
             android:name=".v3.ui.DownloadManagerActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-
         <activity
-            android:theme="@style/AppThemeNoActionBar"
             android:name=".v3.ui.LessonActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar" />
 
         <activity
             android:name=".v3.ui.NewsCourseActivity"
@@ -222,7 +233,6 @@
             android:name=".v3.ui.friend.SearchFriendActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".v3.ui.payCourse.PayCourseActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -231,20 +241,16 @@
             android:name=".v3.ui.FragmentPageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".v3.ui.WebViewActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
-
         <activity
             android:name=".v3.ui.MyThreadActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-
         <activity
-
             android:name=".v3.ui.ThreadCreateActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
@@ -253,24 +259,22 @@
             android:screenOrientation="landscape"
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".v3.ui.NoteActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
-            android:name="com.edusoho.kuozhi.v3.view.photo.ViewPagerActivity"
+            android:name=".v3.view.photo.ViewPagerActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
             android:theme="@style/AppViewPaperTheme" />
-
         <activity
             android:name=".v3.ui.ImChatActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+<<<<<<< HEAD
 
         <activity android:name=".v3.ui.CompletePhoneActivity"
             android:configChanges="orientation|keyboard|screenSize"
@@ -284,6 +288,9 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
 
+=======
+        <activity android:name=".v3.ui.test.RegisterConfirmActivity"></activity>
+>>>>>>> develop
     </application>
 
 </manifest>

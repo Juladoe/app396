@@ -7,6 +7,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -35,8 +36,12 @@ import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by howzhi on 14-9-29.
@@ -284,6 +289,27 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
         }, null);
     }
 
+    protected ArrayList<String> coverResultAnswer(Object answer) {
+        ArrayList<String> answerList = null;
+        if (answer == null) {
+            return new ArrayList<>();
+        }
+        if (answer instanceof LinkedHashMap) {
+            LinkedHashMap answerMap = (LinkedHashMap) answer;
+            answerList = new ArrayList<>();
+            List<String> keyList = new ArrayList<>(answerMap.keySet());
+            Collections.sort(keyList);
+            for (String key : keyList) {
+                answerList.add(answerMap.get(key).toString());
+            }
+            return answerList;
+        } else if (answer instanceof ArrayList){
+            return  (ArrayList<String>) answer;
+        }
+
+        return new ArrayList<>();
+    }
+
     protected void initResultAnalysis(View view) {
         TextView myAnswerText = (TextView) view.findViewById(R.id.question_my_anwer);
         TextView myRightText = (TextView) view.findViewById(R.id.question_right_anwer);
@@ -294,7 +320,7 @@ public abstract class BaseQuestionWidget extends RelativeLayout implements IQues
         if ("noAnswer".equals(testResult.status)) {
             myAnswer = "未答题";
         } else {
-            myAnswer = listToStr(testResult.answer);
+            myAnswer = listToStr(coverResultAnswer(testResult.answer));
         }
 
         int rightColor = mContext.getResources().getColor(R.color.testpaper_result_right);

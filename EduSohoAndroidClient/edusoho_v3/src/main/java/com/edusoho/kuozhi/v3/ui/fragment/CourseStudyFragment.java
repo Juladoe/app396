@@ -423,7 +423,7 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
     private void addCourseSummary() {
         EdusohoApp app = (EdusohoApp) getActivity().getApplication();
         RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
-        HashMap<String, String> params = requestUrl.getParams();
+        Map<String, String> params = requestUrl.getParams();
         params.put("courseId", mCourseId + "");
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
