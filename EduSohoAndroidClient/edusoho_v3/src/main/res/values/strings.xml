@@ -30,6 +30,7 @@
     <string name="register_loading">正在注册...</string>
     <string name="register_success">正在成功</string>
     <string name="complete_info">完善信息</string>
+    <string name="complete_info_registered">当前手机号已被注册，请直接登录</string>
     <string name="course_study_entrance">进入学习</string>
     <string name="study">学习</string>
     <string name="discuss">讨论</string>
@@ -135,7 +136,7 @@
     <string name="player_exit_dialog_title">提醒</string>
     <string name="player_exit_dialog_msg">是否退出播放</string>
     <string name="register_hint">该手机号码已被其他用户绑定</string>
-    <string name="register_error">你输入的手机号格式有误</string>
+    <string name="phone_error">你输入的手机号格式有误</string>
     <string name="register_modify_phone">请更换手机号码</string>
     <string name="complete_phone_empty">手机号不能为空</string>
 

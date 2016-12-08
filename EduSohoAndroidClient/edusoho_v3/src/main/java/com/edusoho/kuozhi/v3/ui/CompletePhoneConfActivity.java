@@ -118,10 +118,10 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         public void onClick(View v) {
             if (isShowPwd) {
                 etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                ivShowPwd.setImageResource(R.drawable.pwd_unshow);
+                ivShowPwd.setImageResource(R.drawable.qq);
             }else{
                 etPwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                ivShowPwd.setImageResource(R.drawable.pwd_show);
+                ivShowPwd.setImageResource(R.drawable.qq);
             }
             isShowPwd = !isShowPwd;
             etPwd.setSelection(etPwd.getText().toString().length());

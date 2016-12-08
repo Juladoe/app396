@@ -16,12 +16,9 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 /**
@@ -30,7 +27,7 @@ import java.util.regex.Pattern;
 
 public class CompletePhoneActivity extends ActionBarBaseActivity {
     private EditText etAccount;
-    private EduSohoLoadingButton btnNext;
+    private TextView tvNext;
     private ImageView ivBack;
     private TextView tvInfo;
 
@@ -46,8 +43,8 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
         tvInfo = (TextView) findViewById(R.id.tv_info);
         tvInfo.setText(R.string.complete_info);
         etAccount = (EditText) findViewById(R.id.et_phone_num);
-        btnNext = (EduSohoLoadingButton) findViewById(R.id.btn_next);
-        btnNext.setOnClickListener(nextClickListener);
+        tvNext = (TextView) findViewById(R.id.tv_next);
+        tvNext.setOnClickListener(nextClickListener);
         ivBack = (ImageView) findViewById(R.id.iv_back);
         ivBack.setOnClickListener(mBackClickListener);
     }
@@ -65,7 +62,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
             final String phoneNum = etAccount.getText().toString().trim();
             if (TextUtils.isEmpty(phoneNum)) {
                 CommonUtil.shortCenterToast(mContext,getString(R.string.reg_phone_hint));
-            } else if ((phoneNum)) {
+            } else if ((true)) {
                 RequestUrl requestUrl = app.bindUrl(Const.COMPLETE, false);
                 HashMap<String, String> params = (HashMap<String, String>) requestUrl.getParams();
                 params.put("mobile", String.valueOf(phoneNum));
@@ -80,7 +77,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                                 startActivity(new Intent(CompletePhoneActivity.this,CompletePhoneConfActivity.class).
                                         putExtra("phoneNum",phoneNum));
                             } else {
-                                CommonUtil.shortCenterToast(CompletePhoneActivity.this,getString(R.string.complete_info_text));
+                                CommonUtil.shortCenterToast(CompletePhoneActivity.this,getString(R.string.complete_info_registered));
                             }
                         } catch (Exception e) {
                             Log.d(TAG, "phone reg error");
@@ -88,7 +85,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                     }
                 }, null);
             } else {
-                CommonUtil.shortCenterToast(mContext, getString(R.string.register_phone_error));
+                CommonUtil.shortCenterToast(mContext, getString(R.string.phone_error));
             }
         }
     };

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,10 +20,10 @@
     <TextView
         android:id="@+id/tv_info"
         android:textSize="@dimen/base_x_large_size"
-        android:text=""
+        android:text="@string/reg_account_reg"
         android:layout_marginTop="@dimen/view_register_margin"
         android:layout_gravity="center_horizontal"
-        android:textColor="@color/register_send_auth"
+        android:textColor="@color/primary_font_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -36,11 +35,23 @@
         android:layout_marginLeft="@dimen/view_register_margin"
         >
 
+        <ImageView
+            android:id="@+id/iv_clear_phone"
+            android:scaleType="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:visibility="invisible"
+            android:src="@drawable/register_clear_content"/>
+
         <EditText
             android:id="@+id/et_phone_num"
             style="@style/edittext_style"
-            android:textSize="@dimen/learn_status_widget_learnbtn"
             android:hint="@string/reg_phone_hint"
+            android:textSize="@dimen/x_medium_font_size"
+            android:textColor="@color/primary_font_color"
+            android:layout_toLeftOf="@id/iv_clear_phone"
             android:maxLength="11"
             />
 
@@ -53,14 +64,19 @@
 
     </RelativeLayout>
 
-    <com.edusoho.kuozhi.v3.view.EduSohoLoadingButton
-        android:id="@+id/btn_next"
+    <TextView
+        android:id="@+id/tv_next"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/view_register_margin"
+        android:layout_height="45dp"
+        android:layout_marginBottom="@dimen/login_widget_margin_bottom"
         android:layout_marginLeft="@dimen/view_register_margin"
+        android:layout_marginRight="@dimen/view_register_margin"
         android:layout_marginTop="@dimen/rl_register_margin"
-        app:init_background="@drawable/login_btn_normal"
-        app:init_text="@string/register_next" />
+        android:alpha="0.6"
+        android:background="@color/primary_color"
+        android:gravity="center"
+        android:text="@string/register_next"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_xl" />
 
 </LinearLayout>
