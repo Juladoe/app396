@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,6 +27,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByPhoneFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
@@ -71,6 +73,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private TextView tvForgetPassword;
     private String mAuthCancel;
     private View vSao;
+    private View mParent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +112,10 @@ public class LoginActivity extends BaseNoTitleActivity {
         ivPwCancel = (ImageView) findViewById(R.id.iv_password_cancel);
         ivUserCancel = (ImageView) findViewById(R.id.iv_username_cancel);
         vSao = findViewById(R.id.saoyisao);
-
+        mParent = findViewById(R.id.parent_rlayout);
+        ViewGroup.LayoutParams params = mParent.getLayoutParams();
+        params.height = AppUtil.getUnrealScreenHeightPx(this);
+        mParent.setLayoutParams(params);
         tvForgetPassword.setOnClickListener(getForgetPasswordClickListener());
         vSao.setOnClickListener(new View.OnClickListener() {
             @Override
