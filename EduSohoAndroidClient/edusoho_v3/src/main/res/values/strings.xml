@@ -77,6 +77,8 @@
     <string name="no">否</string>
     <string name="find_password">找回密码</string>
     <string name="input_phone_or_mail">请输入手机号／邮箱号</string>
+    <string name="input_img_code">请输入图形验证码</string>
+    <string name="change_img_code">换一换</string>
     <string name="reset_password_hint">请输入密码</string>
     <string name="find_password_next">下一步</string>
     <string name="find_password_submit">确定</string>
@@ -92,6 +94,7 @@
     <string name="reg_set_password">请设置密码</string>
     <string name="reset_password_success">密码重置成功</string>
     <string name="sms_code_success">验证码发送成功</string>
+    <string name="resend_sms_code">操作过于频繁，请重新获取</string>
     <string name="txt_login">账号登录</string>
     <string name="txt_three">第三方登录</string>
     <string name="netclass">选择网校 ></string>
@@ -137,6 +140,7 @@
     <string name="register_error">你输入的手机号格式有误</string>
     <string name="register_modify_phone">请更换手机号码</string>
     <string name="complete_phone_empty">手机号不能为空</string>
+    <string name="img_code_cannot_null">图形验证码不能为空</string>
 
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>
@@ -276,4 +280,5 @@
     <string name="label_teacher">教师</string>
 
     <string name="register_cancel">取消</string>
+
 </resources>
