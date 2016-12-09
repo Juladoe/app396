@@ -146,13 +146,13 @@ public class FindPasswordFragment extends BaseFragment {
                                     if (response != null) {
                                         FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
                                         });
-                                        if (smsCode != null) {
-                                            if (smsCode.status.equals("ok")) {
+                                        if (smsCode != null && smsCode.status != null) {
+                                            if ("ok".equals(smsCode.status)) {
                                                 ToastUtils.show(mContext, getString(R.string.sms_code_success), Toast.LENGTH_LONG);
                                                 bundle.putString(ForgetPasswordActivity.RESET_INFO, getResetInfo());
                                                 bundle.putString(SMS_TOKEN, smsCode.verified_token);
                                                 forgetPasswordActivity.switchFragment("FindPasswordByPhoneFragment", bundle);
-                                            } else if (smsCode.status.equals("limited")) {
+                                            } else if ("limited".equals(smsCode.status)) {
                                                 //图形验证码
                                                 mCurrentVerifiedToken = smsCode.verified_token;
                                                 rlImgCode.setVisibility(View.VISIBLE);
