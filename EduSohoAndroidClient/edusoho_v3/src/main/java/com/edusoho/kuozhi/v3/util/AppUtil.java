@@ -23,7 +23,9 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -47,6 +49,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
@@ -1269,5 +1272,48 @@ public class AppUtil {
         } else if (Const.HIDE_KEYBOARD == status) {
             inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
         }
+    }
+
+    public static int getWidthPx(Context context) {
+        int result;
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        ((WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(outMetrics);
+        result = outMetrics.widthPixels;
+        return result;
+    }
+
+    public static int getHeightPx(Context context) {
+        int result;
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        ((WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(outMetrics);
+        result = outMetrics.heightPixels;
+        return result;
+    }
+
+    public static int getUnrealScreenHeightPx(Context context) {
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        ((WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(outMetrics);
+        return outMetrics.heightPixels - getStatusBarHeight(context);
+    }
+
+    // 获取手机状态栏高度
+    public static int getStatusBarHeight(Context context) {
+        Class<?> c = null;
+        Object obj = null;
+        Field field = null;
+        int x = 0, statusBarHeight = 0;
+        try {
+            c = Class.forName("com.android.internal.R$dimen");
+            obj = c.newInstance();
+            field = c.getField("status_bar_height");
+            x = Integer.parseInt(field.get(obj).toString());
+            statusBarHeight = context.getResources().getDimensionPixelSize(x);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return statusBarHeight;
     }
 }
