@@ -132,7 +132,8 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         Bundle bundle = message.data;
         String clazz = bundle.getString("class");
         if (clazz != null && clazz.equals(getClass().getSimpleName())) {
-
+            mCanScroll[mCheckNum] = true;
+            mParent.setCanScroll(true);
         }
     }
 
