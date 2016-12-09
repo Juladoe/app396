@@ -8,5 +8,7 @@ import java.io.Serializable;
 
 public class FindPasswordSmsCode implements Serializable {
     public String mobile;
-    public String smsToken;
+    public String verified_token;
+    public String img_code;
+    public String status;
 }
