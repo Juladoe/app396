@@ -11,17 +11,15 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.edusoho.kuozhi.v3.view.EduSohoIconView
+        <ImageView
             android:id="@+id/back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingBottom="14dp"
             android:paddingLeft="15dp"
+            android:paddingRight="15dp"
             android:paddingTop="14dp"
-            android:privateImeOptions="15dp"
-            android:text="@string/font_wrong"
-            android:textColor="@color/secondary_font_color"
-            android:textSize="@dimen/medium_font_size" />
+            android:src="@drawable/icon_close"/>
 
         <ImageView
             android:id="@+id/saoyisao"
