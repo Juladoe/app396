@@ -27,7 +27,7 @@ import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -175,8 +175,8 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
     View.OnClickListener mConfirmRegClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl url = app.bindUrl(Const.BIND_PHONE, false);
-            HashMap<String, String> params = (HashMap<String, String>) url.getParams();
+            RequestUrl url = app.bindNewUrl(Const.BIND_PHONE, true);
+            Map<String, String> params = url.getParams();
             params.put("type", "sms");
             params.put("mobile",phone);
             params.put("verified_token", verified_token);
@@ -193,16 +193,10 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                 return;
             }
             params.put("password", strPass);
-            HashMap<String, String> headers = url.getHeads();
-            headers.put("header", app.token);
-            if (!TextUtils.isEmpty(mCookie)) {
-                headers.put("Cookie", mCookie);
-            }
             mActivity.ajaxPost(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        Log.d("test", response);
                         UserResult userResult = mActivity.parseJsonValue(
                                 response, new TypeToken<UserResult>() {
                                 });
@@ -256,11 +250,10 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
     View.OnClickListener mSmsSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl requestUrl = app.bindUrl(Const.SEND_SMS, false);
-            HashMap<String, String> params = (HashMap<String, String>) requestUrl.getParams();
+            RequestUrl requestUrl = app.bindNewUrl(Const.SEND_SMS, true);
+            Map<String, String> params = requestUrl.getParams();
             params.put("mobile", num);
             params.put("type", "sms_bind");
-            requestUrl.getHeads().put("header", app.token);
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -271,29 +264,28 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                         bundle.putString("verified_token",result.verified_token);
                         app.mEngine.runNormalPluginWithBundle("CompletePhoneActivity", mContext, bundle);
                         CompletePhoneConfActivity.this.finish();
-//                    }else{
-//                        try {
-//                            if (result != null && result.code == 200) {
-//                                tvTime.setVisibility(View.VISIBLE);
-//                                tvSend.setEnabled(false);
-//                                mClockTime = 120;
-//                                mTimer = new Timer();
-//                                mTimer.schedule(new TimerTask() {
-//                                    @Override
-//                                    public void run() {
-//                                        Message message = mSmsCodeHandler.obtainMessage();
-//                                        message.what = 0;
-//                                        mSmsCodeHandler.sendMessage(message);
-//
-//                                    }
-//                                }, 0, 1000);
-//                                CommonUtil.longToast(mContext, result.msg);
-//                            } else {
-//                                CommonUtil.longToast(mContext, response);
-//                            }
-//                        } catch (Exception e) {
-//                            Log.d(TAG, "phone reg error");
-//                        }
+                    }else{
+                        try {
+                            if (result != null && result.code == 200) {
+                                tvTime.setVisibility(View.VISIBLE);
+                                tvSend.setEnabled(false);
+                                mClockTime = 120;
+                                mTimer = new Timer();
+                                mTimer.schedule(new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        Message message = mSmsCodeHandler.obtainMessage();
+                                        message.what = 0;
+                                        mSmsCodeHandler.sendMessage(message);
+                                    }
+                                }, 0, 1000);
+                                CommonUtil.longToast(mContext, result.msg);
+                            } else {
+                                CommonUtil.longToast(mContext, response);
+                            }
+                        } catch (Exception e) {
+                            Log.d(TAG, "phone reg error");
+                        }
                     }
                 }
             }, null);

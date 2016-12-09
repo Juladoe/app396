@@ -235,11 +235,11 @@ public class Const {
     public static final String EDIT_QUESTION_INFO = "Course/updateThread";
 
     public static final String CHECKTOKEN = "User/loginWithToken";
-    public static final String BIND_PHONE = "api/users/password";
+    public static final String BIND_PHONE = "/api/users/password";
     public static final String COMPLETE = "/api/sms_codes";
     public static final String LOGIN = "User/login";
     public static final String SMS_SEND = "User/smsSend";
-    public static final String SEND_SMS = "api/sms_codes";
+    public static final String SEND_SMS = "/api/sms_codes";
     public static final String ADDCOMMENT = "Course/commitCourse";
     public static final String ABOUT = "School/getSchoolInfo";
     public static final String LEARNING = "Course/getLearningCourse";

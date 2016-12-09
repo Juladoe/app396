@@ -92,17 +92,27 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/tv_change"
-            android:src="@drawable/box_blue"/>
+            android:layout_toLeftOf="@id/tv_change"/>
+
+        <ImageView
+            android:id="@+id/iv_clear_code"
+            android:layout_toLeftOf="@id/iv_graphic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/sys_small_normal"
+            android:layout_marginRight="@dimen/sys_small_normal"
+            android:visibility="invisible"
+            android:src="@drawable/clear_content"/>
 
         <EditText
             android:id="@+id/et_graphic_code"
             style="@style/edittext_style"
-            android:hint="@string/reg_phone_hint"
+            android:hint="@string/img_code_hint"
             android:textSize="@dimen/x_medium_font_size"
             android:textColor="@color/primary_font_color"
-            android:layout_toLeftOf="@id/iv_graphic"
-            android:maxLength="11"
+            android:layout_toLeftOf="@id/iv_clear_code"
+            android:maxLength="5"
             />
 
         <View
