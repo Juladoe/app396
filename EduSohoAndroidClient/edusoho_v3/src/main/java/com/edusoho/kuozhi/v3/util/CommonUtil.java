@@ -181,11 +181,9 @@ public class CommonUtil {
     public static String coverUrlToCacheKey(RequestUrl requestUrl) {
         StringBuilder builder = new StringBuilder(requestUrl.url);
 
-<<<<<<< HEAD
+
         HashMap<String, String> map = (HashMap<String, String>) requestUrl.params;
-=======
-        Map<String, String> map = requestUrl.params;
->>>>>>> develop
+
         for (String key : map.keySet()) {
             builder.append("&").append(key);
             builder.append("&").append(map.get(key));

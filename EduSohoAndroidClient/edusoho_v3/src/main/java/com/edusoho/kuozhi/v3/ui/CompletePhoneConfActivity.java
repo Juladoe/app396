@@ -52,6 +52,8 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
     private ImageView ivClearPwd;
     private ImageView ivClearAuth;
     private TextView tvTime;
+    private String phone;
+    private String verified_token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +87,8 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         tvShow.setText(getString(R.string.phone_code_input_hint)+ num);
 
         initTextChange();
-
+        phone = getIntent().getStringExtra("phoneNum");
+        verified_token = getIntent().getStringExtra("verified_token");
         InputUtils.showKeyBoard(etAuth,mContext);
         mSmsCodeHandler = new SmsCodeHandler(this);
         mSmsSendClickListener.onClick(tvSend);
@@ -167,23 +170,22 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
     };
 
     /**
-     * 注册账号
+     * 绑定账号
      */
     View.OnClickListener mConfirmRegClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl url = app.bindUrl(Const.REGIST, false);
+            RequestUrl url = app.bindUrl(Const.BIND_PHONE, false);
             HashMap<String, String> params = (HashMap<String, String>) url.getParams();
-            params.put("registeredWay","android");
-
-            params.put("phone", num);
-
+            params.put("type", "sms");
+            params.put("mobile",phone);
+            params.put("verified_token", verified_token);
             String strCode = etAuth.getText().toString().trim();
             if (TextUtils.isEmpty(strCode)) {
                 CommonUtil.longToast(mContext, getString(R.string.reg_code_hint));
                 return;
             } else {
-                params.put("smsCode", strCode);
+                params.put("sms_code", strCode);
             }
             String strPass = etPwd.getText().toString();
             if (TextUtils.isEmpty(strPass)) {
@@ -191,13 +193,11 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                 return;
             }
             params.put("password", strPass);
-
-
             HashMap<String, String> headers = url.getHeads();
+            headers.put("header", app.token);
             if (!TextUtils.isEmpty(mCookie)) {
                 headers.put("Cookie", mCookie);
             }
-
             mActivity.ajaxPost(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -211,11 +211,10 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                             tvConfirm.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-
                                     //绑定成功后直接进到网校
                                     CommonUtil.shortCenterToast(CompletePhoneConfActivity.this,"绑定成功");
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
+//                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
                                 }
                             }, 500);
                         } else {
@@ -257,35 +256,44 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
     View.OnClickListener mSmsSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
+            RequestUrl requestUrl = app.bindUrl(Const.SEND_SMS, false);
             HashMap<String, String> params = (HashMap<String, String>) requestUrl.getParams();
-            params.put("phoneNumber", String.valueOf(num));
+            params.put("mobile", num);
+            params.put("type", "sms_bind");
+            requestUrl.getHeads().put("header", app.token);
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    try {
-                        MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>() {
-                        });
-                        if (result != null && result.code == 200) {
-                            tvTime.setVisibility(View.VISIBLE);
-                            tvSend.setEnabled(false);
-                            mClockTime = 120;
-                            mTimer = new Timer();
-                            mTimer.schedule(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    Message message = mSmsCodeHandler.obtainMessage();
-                                    message.what = 0;
-                                    mSmsCodeHandler.sendMessage(message);
-
-                                }
-                            }, 0, 1000);
-                            CommonUtil.longToast(mContext, result.msg);
-                        } else {
-                            CommonUtil.longToast(mContext, response);
-                        }
-                    } catch (Exception e) {
-                        Log.d(TAG, "phone reg error");
+                    MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>(){});
+                    if (response.contains("limited")) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("img_code",result.img_code);
+                        bundle.putString("verified_token",result.verified_token);
+                        app.mEngine.runNormalPluginWithBundle("CompletePhoneActivity", mContext, bundle);
+                        CompletePhoneConfActivity.this.finish();
+//                    }else{
+//                        try {
+//                            if (result != null && result.code == 200) {
+//                                tvTime.setVisibility(View.VISIBLE);
+//                                tvSend.setEnabled(false);
+//                                mClockTime = 120;
+//                                mTimer = new Timer();
+//                                mTimer.schedule(new TimerTask() {
+//                                    @Override
+//                                    public void run() {
+//                                        Message message = mSmsCodeHandler.obtainMessage();
+//                                        message.what = 0;
+//                                        mSmsCodeHandler.sendMessage(message);
+//
+//                                    }
+//                                }, 0, 1000);
+//                                CommonUtil.longToast(mContext, result.msg);
+//                            } else {
+//                                CommonUtil.longToast(mContext, response);
+//                            }
+//                        } catch (Exception e) {
+//                            Log.d(TAG, "phone reg error");
+//                        }
                     }
                 }
             }, null);

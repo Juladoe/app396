@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <RelativeLayout
@@ -61,6 +63,54 @@
             android:layout_height="@dimen/view_register_height"
             android:layout_marginTop="@dimen/rl_register_margin"
             android:layout_below="@id/et_phone_num"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_graphic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_register_margin"
+        android:layout_marginRight="@dimen/view_register_margin"
+        android:layout_marginLeft="@dimen/view_register_margin"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/tv_change"
+            android:text="换一换"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/x_medium_font_size"
+            android:layout_alignParentRight="true"/>
+
+        <ImageView
+            android:id="@+id/iv_graphic"
+            android:scaleType="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_change"
+            android:src="@drawable/box_blue"/>
+
+        <EditText
+            android:id="@+id/et_graphic_code"
+            style="@style/edittext_style"
+            android:hint="@string/reg_phone_hint"
+            android:textSize="@dimen/x_medium_font_size"
+            android:textColor="@color/primary_font_color"
+            android:layout_toLeftOf="@id/iv_graphic"
+            android:maxLength="11"
+            />
+
+        <View
+            android:background="@color/register_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_register_height"
+            android:layout_marginTop="@dimen/rl_register_margin"
+            android:layout_below="@id/et_graphic_code"/>
 
     </RelativeLayout>
 

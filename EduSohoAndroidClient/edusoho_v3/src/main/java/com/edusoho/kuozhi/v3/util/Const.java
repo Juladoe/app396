@@ -144,7 +144,7 @@ public class Const {
     public static final String DB_NAME = "edusoho";
 
     public static final String MOBILE_REGIST = "http://open.edusoho.com/mobstat/installed";
-
+    public static final String REGIST = "User/regist";
     public static final String REGIST_DEVICE = "School/registDevice";
     public static final String DOWNLOAD_URL = "School/getDownloadUrl";
     public static final String APP_UPDATE = "School/getClientVersion";
@@ -235,10 +235,11 @@ public class Const {
     public static final String EDIT_QUESTION_INFO = "Course/updateThread";
 
     public static final String CHECKTOKEN = "User/loginWithToken";
-    public static final String REGIST = "User/regist";
-    public static final String COMPLETE = "api/SmsCodes";
+    public static final String BIND_PHONE = "api/users/password";
+    public static final String COMPLETE = "/api/sms_codes";
     public static final String LOGIN = "User/login";
     public static final String SMS_SEND = "User/smsSend";
+    public static final String SEND_SMS = "api/sms_codes";
     public static final String ADDCOMMENT = "Course/commitCourse";
     public static final String ABOUT = "School/getSchoolInfo";
     public static final String LEARNING = "Course/getLearningCourse";

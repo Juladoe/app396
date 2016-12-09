@@ -84,6 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/rl_auth"
             android:layout_centerVertical="true"
+            android:visibility="invisible"
             android:src="@drawable/clear_content"/>
 
         <EditText
@@ -138,6 +139,7 @@
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/rl_pwd"
             android:layout_centerVertical="true"
+            android:visibility="invisible"
             android:src="@drawable/clear_content"/>
 
         <EditText
