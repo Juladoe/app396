@@ -10,4 +10,6 @@ public class MsgCode {
     public String img_code;
     public String status;
     public String verified_token;
+
+
 }

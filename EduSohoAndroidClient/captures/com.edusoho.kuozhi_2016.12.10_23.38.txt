@@ -1,0 +1,89 @@
+Applications Graphics Acceleration Info:
+Uptime: 30890492 Realtime: 53429287
+
+** Graphics info for pid 17571 [com.edusoho.kuozhi] **
+
+Recent DisplayList operations
+                      DrawDisplayList
+                        Save
+                        ClipRect
+                        DrawDisplayList
+                          DrawOval
+                        DrawDisplayList
+                          DrawOval
+                        DrawDisplayList
+                          DrawOval
+                        RestoreToCount
+                    DrawDisplayList
+            DrawDisplayList
+    RestoreToCount
+  DrawRect
+  DrawDisplayList
+    Save
+    ClipRect
+    DrawDisplayList
+      DrawDisplayList
+        DrawDisplayList
+          DrawDisplayList
+            DrawDisplayList
+            DrawDisplayList
+              DrawRect
+              DrawDisplayList
+                DrawRect
+                DrawDisplayList
+                  DrawDisplayList
+                    DrawRect
+                    DrawDisplayList
+                      DrawDisplayList
+                        Translate
+                        DrawDisplayList
+                          Save
+                          ConcatMatrix
+                          DrawBitmapRect
+                          RestoreToCount
+                      DrawDisplayList
+                        Save
+                        ClipRect
+                        DrawDisplayList
+                          DrawOval
+                        DrawDisplayList
+                          DrawOval
+                        DrawDisplayList
+                          DrawOval
+                        RestoreToCount
+                    DrawDisplayList
+            DrawDisplayList
+    RestoreToCount
+
+Caches:
+Current memory usage / total memory usage (bytes):
+  TextureCache         10025936 / 25165824
+  LayerCache                  0 / 16777216
+  GradientCache            4096 /   524288
+  PathCache                 225 /  4194304
+  CircleShapeCache            0 /  1048576
+  OvalShapeCache              0 /  1048576
+  RoundRectShapeCache         0 /  1048576
+  RectShapeCache              0 /  1048576
+  ArcShapeCache               0 /  1048576
+  TextDropShadowCache         0 /  2097152
+  FontRenderer 0         262144 /   262144
+Other:
+  FboCache                    1 /       16
+  PatchCache                  1 /      512
+Total memory usage:
+  10292401 bytes, 9.82 MB
+
+Profile data in ms:
+
+	com.edusoho.kuozhi/com.edusoho.kuozhi.v3.ui.DefaultPageActivity/android.view.ViewRootImpl@4282c2c0
+View hierarchy:
+
+  com.edusoho.kuozhi/com.edusoho.kuozhi.v3.ui.DefaultPageActivity/android.view.ViewRootImpl@4282c2c0
+  99 views, 5.36 kB of display lists, 631 frames rendered
+
+
+Total ViewRootImpl: 1
+Total Views:        99
+Total DisplayList:  5.36 kB
+

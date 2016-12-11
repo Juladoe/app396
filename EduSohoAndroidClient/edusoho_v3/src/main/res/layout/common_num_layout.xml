@@ -52,6 +52,7 @@
             style="@style/edittext_style"
             android:hint="@string/reg_phone_hint"
             android:textSize="@dimen/x_medium_font_size"
+            android:textColorHint="@color/grey_hint"
             android:textColor="@color/primary_font_color"
             android:layout_toLeftOf="@id/iv_clear_phone"
             android:maxLength="11"
@@ -88,9 +89,9 @@
 
         <ImageView
             android:id="@+id/iv_graphic"
-            android:scaleType="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:layout_width="@dimen/complete_iv_width"
+            android:layout_height="@dimen/complete_iv_height"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/tv_change"/>
 
@@ -108,9 +109,10 @@
         <EditText
             android:id="@+id/et_graphic_code"
             style="@style/edittext_style"
-            android:hint="@string/img_code_hint"
+            android:hint="@string/img_code_input"
             android:textSize="@dimen/x_medium_font_size"
             android:textColor="@color/primary_font_color"
+            android:textColorHint="@color/grey_hint"
             android:layout_toLeftOf="@id/iv_clear_code"
             android:maxLength="5"
             />

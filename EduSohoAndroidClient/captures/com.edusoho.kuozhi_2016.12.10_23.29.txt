@@ -1,0 +1,44 @@
+Applications Memory Usage (kB):
+Uptime: 30357604 Realtime: 52896399
+
+** MEMINFO in pid 15015 [com.edusoho.kuozhi] **
+                         Shared  Private     Heap     Heap     Heap
+                   Pss    Dirty    Dirty     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------
+       Native       16       12       16    23796    17101      462
+       Dalvik    28860    13808    28556    39156    34440     4716
+       Cursor        0        0        0                           
+       Ashmem     1020        0     1020                           
+    Other dev    87064     8600    44768                           
+     .so mmap     9151     2696     1476                           
+    .jar mmap        0        0        0                           
+    .apk mmap      424        0        0                           
+    .ttf mmap      889        0        0                           
+    .dex mmap     4212      292      324                           
+   Other mmap      879        8      480                           
+      Unknown    30510      392    30508                           
+        TOTAL   163025    25808   107148    62952    51541     5178
+ 
+ Objects
+               Views:      321         ViewRootImpl:        1
+         AppContexts:        7           Activities:        5
+              Assets:        9        AssetManagers:        9
+       Local Binders:       28        Proxy Binders:       30
+    Death Recipients:        0
+     OpenSSL Sockets:        0
+ 
+ SQL
+         MEMORY_USED:      312
+  PAGECACHE_OVERFLOW:       84          MALLOC_SIZE:       62
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b)          cache  Dbname
+         4       20             45       222/21/7  /data/data/com.edusoho.kuozhi/databases/sharesdk.db
+         4       40             30         2/57/5  /data/data/com.edusoho.kuozhi/databases/webview.db
+ 
+ Asset Allocations
+    zip:/data/app/com.edusoho.kuozhi-2.apk:/assets/iconfont.ttf: 51K
+    zip:/data/app/com.edusoho.kuozhi-2.apk:/assets/iconfont.ttf: 51K
+    zip:/data/app/com.edusoho.kuozhi-2.apk:/assets/iconfont.ttf: 51K
+    zip:/data/app/com.edusoho.kuozhi-2.apk:/assets/iconfont.ttf: 51K
+    zip:/data/app/com.edusoho.kuozhi-2.apk:/assets/iconfont.ttf: 51K

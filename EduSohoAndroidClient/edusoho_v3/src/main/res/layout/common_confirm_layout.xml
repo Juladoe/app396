@@ -70,8 +70,8 @@
             <TextView
                 android:id="@+id/tv_show_time"
                 android:text="@string/register_resend"
-                android:textColor="@color/primary_font_color"
                 android:textSize="@dimen/learn_status_widget_learnbtn"
+                android:textColor="@color/secondary2_font_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
@@ -93,11 +93,11 @@
             android:hint="@string/phone_sms_code_hint"
             android:gravity="center_vertical"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@id/iv_clear_auth"
             android:textSize="@dimen/tv_register_size"
-            android:layout_below="@+id/iv_clear_auth"
-            android:textColorHint="@color/register_tv_show_hint" />
+            android:layout_alignParentStart="true"
+            android:textColorHint="@color/grey_hint"
+            android:layout_toLeftOf="@id/iv_clear_auth"
+            android:layout_below="@+id/iv_clear_auth" />
 
         <View
             android:background="@color/register_view"
@@ -151,9 +151,9 @@
             android:gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColorHint="@color/grey_hint"
             android:layout_toLeftOf="@id/iv_clear_pwd"
-            android:textSize="@dimen/base_large_size"
-            android:textColorHint="@color/register_tv_show_hint" />
+            android:textSize="@dimen/base_large_size"/>
 
         <View
             android:background="@color/register_view"

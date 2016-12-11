@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CompletePhoneActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -35,6 +36,8 @@ import java.util.Map;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 
+import static com.edusoho.kuozhi.v3.EdusohoApp.app;
+
 /**
  * Created by howzhi on 15/7/7.
  */
@@ -51,6 +54,7 @@ public class OpenLoginUtil {
     private Context mContext;
     private String mAuthCancel;
     private Promise mPromise;
+    private String thirdPartyType;
 
     private OpenLoginUtil(Context context) {
         this.mContext = context;
@@ -78,25 +82,25 @@ public class OpenLoginUtil {
                 "name", params[1],
                 "avatar", params[2],
         });
-        final String thirdPartyType = params.length > 4 ? params[4] : "";
+        thirdPartyType = params.length > 4 ? params[4] : "";
         Looper.prepare();
 
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                    UserResult userResult = app.parseJsonValue(
-                            response, new TypeToken<UserResult>() {
-                            });
-                    app.saveToken(userResult);
+                UserResult userResult = app.parseJsonValue(
+                        response, new TypeToken<UserResult>() {
+                        });
                 if (!response.contains("verifiedMobile")) {
+                    app.userResult = userResult;
                     Intent intent = new Intent(mContext, CompletePhoneActivity.class);
                     mContext.startActivity(intent);
                 }else {
+                    app.saveToken(userResult);
                     app.loginUser.thirdParty = thirdPartyType;
                     app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
                     Bundle bundle = new Bundle();
                     bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUser.id));
-
                     User user = app.loginUser;
                     new IMServiceProvider(activity.getBaseContext()).bindServer(user.id, user.nickname);
                     mLoginhandler.success(userResult);
@@ -110,6 +114,22 @@ public class OpenLoginUtil {
 
         Looper.loop();
     }
+
+    public void completeInfo(BaseActivity baseActivity){
+        app.saveToken(app.userResult);
+        app.loginUser.thirdParty = thirdPartyType;
+        app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
+        Bundle bundle = new Bundle();
+        bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUser.id));
+        User user = app.loginUser;
+        new IMServiceProvider(baseActivity.getBaseContext()).bindServer(user.id, user.nickname);
+        SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String entertime = nowfmt.format(date);
+        saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
+    }
+
+
 
     private String[] getWeixinLoginResult(HashMap<String, Object> res) {
         String id = res.get("unionid").toString();
