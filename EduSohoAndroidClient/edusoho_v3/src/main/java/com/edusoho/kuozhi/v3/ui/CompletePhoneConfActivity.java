@@ -179,7 +179,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         @Override
         public void onClick(View v) {
             RequestUrl url = app.bindNewUrl(Const.BIND_PHONE, false);
-            url.heads.put("Auth-Token", app.token);
+            url.heads.put("Auth-Token", app.userResult.token);
             Map<String, String> params = url.getParams();
             params.put("type", "sms");
             params.put("mobile",phone);
@@ -256,7 +256,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         @Override
         public void onClick(View v) {
             RequestUrl requestUrl = app.bindNewUrl(Const.SEND_SMS, false);
-            requestUrl.heads.put("Auth-Token", app.token);
+            requestUrl.heads.put("Auth-Token", app.userResult.token);
             Map<String, String> params = requestUrl.getParams();
             params.put("mobile", num);
             params.put("type", "sms_bind");
@@ -268,7 +268,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                         Bundle bundle = new Bundle();
                         bundle.putString("img_code",result.img_code);
                         bundle.putString("verified_token",result.verified_token);
-                        setResult(0, new Intent().putExtras(bundle));
+                        setResult(1, new Intent().putExtras(bundle));
                         CompletePhoneConfActivity.this.finish();
                     }else{
                         if (result != null) {

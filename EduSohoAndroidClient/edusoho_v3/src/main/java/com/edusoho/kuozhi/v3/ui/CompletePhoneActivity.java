@@ -263,13 +263,14 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == 0) {
+        if (resultCode == 1 && data != null) {
             bundle = data.getExtras();
+            this.isBack = true;
         }
     }
 
     private void initCodeCoent() {
-        if (bundle != null) {
+        if (bundle != null && isBack) {
             String img_code = bundle.getString("img_code");
             verified = bundle.getString("verified_token");
             rl.setVisibility(View.VISIBLE);
@@ -277,6 +278,16 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
             byte[] byteArray = Base64.decode(img_code, Base64.DEFAULT);
             ivGraph.setImageBitmap(BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length));
         }
+    }
+
+    /**
+     * 判断回退方式
+     */
+    private boolean isBack = false;
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.isBack = false;
     }
 }
 
