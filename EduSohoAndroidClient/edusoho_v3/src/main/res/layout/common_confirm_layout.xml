@@ -36,7 +36,7 @@
         android:layout_marginTop="@dimen/btn_loading_margin"
         android:layout_gravity="center_horizontal"
         android:layout_width="wrap_content"
-        android:textColor="@color/register_tv_show_hint"
+        android:textColor="@color/secondary2_font_color"
         android:layout_height="wrap_content"
         android:text="@string/phone_code_input_hint"/>
 
@@ -62,7 +62,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:textColor="@color/register_send"
+                android:textColor="@color/secondary2_color"
                 android:textSize="@dimen/learn_status_widget_learnbtn"
                 android:clickable="true"
                 android:text=""/>
@@ -98,7 +98,6 @@
             android:textColorHint="@color/grey_hint"
             android:layout_toLeftOf="@id/iv_clear_auth"
             android:layout_below="@+id/iv_clear_auth" />
-
         <View
             android:background="@color/register_view"
             android:layout_width="match_parent"
@@ -154,7 +153,6 @@
             android:textColorHint="@color/grey_hint"
             android:layout_toLeftOf="@id/iv_clear_pwd"
             android:textSize="@dimen/base_large_size"/>
-
         <View
             android:background="@color/register_view"
             android:layout_width="match_parent"
@@ -176,5 +174,4 @@
         android:text="@string/register_confirm"
         android:textColor="@color/disabled2_hint_color"
         android:textSize="@dimen/font_xl" />
-
 </LinearLayout>

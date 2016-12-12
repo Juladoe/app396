@@ -160,6 +160,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                         CommonUtil.longToast(mContext,getString(R.string.register_modify_phone));
                     }
                 }).show();
+
     }
 
 }

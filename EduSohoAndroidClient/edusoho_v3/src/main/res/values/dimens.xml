@@ -184,8 +184,12 @@
     <dimen name="view_register_margin">15dp</dimen>
     <dimen name="view_register_height">1px</dimen>
     <dimen name="register_btn_next">17sp</dimen>
+<<<<<<< HEAD
     <dimen name="complete_iv_width">80dp</dimen>
     <dimen name="complete_iv_height">40dp</dimen>
+=======
+
+>>>>>>> develop
     <!--字体大小-->
     <!--<dimen name="font_size_l"-->
 </resources>

@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+import android.util.Base64;
 import android.util.Log;
 
 import java.io.File;
@@ -115,5 +116,10 @@ public class ImageUtil {
         fos.flush();
         fos.close();
         return file;
+    }
+
+    public static Bitmap decodeBase64(String input) {
+        byte[] decodedBytes = Base64.decode(input, Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.length);
     }
 }
