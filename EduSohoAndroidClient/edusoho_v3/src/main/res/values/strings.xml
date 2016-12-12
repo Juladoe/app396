@@ -175,6 +175,7 @@
     <string name="font_wrong">&#xe655;</string>
     <string name="font_scan_code">&#xe608;</string>
     <string name="font_search">&#xe603;</string>
+    <string name="font_back">&#xe618;</string>
 
     <string name="font_chat_add_media">&#xe611;</string>
     <string name="font_chat_keyboard">&#xe60d;</string>
