@@ -13,7 +13,7 @@
     <string name="image_cache_path">ImageLoaderCache</string>
     <string name="find_password_via_mail_success">请前往该邮箱验证信息，验证成功即可登录</string>
     <string name="find_password_then_login">去登录</string>
-
+    <string name="img_code_cannot_null">图形验证码不能为空</string>
     <!--Button-->
     <string name="down_tab_news">动态</string>
     <string name="down_tab_find">发现</string>

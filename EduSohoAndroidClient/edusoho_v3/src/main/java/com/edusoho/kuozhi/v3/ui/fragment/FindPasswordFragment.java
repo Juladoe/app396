@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -144,7 +143,7 @@ public class FindPasswordFragment extends BaseFragment {
                                 @Override
                                 public void success(String response) {
                                     if (response != null) {
-                                        FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
+                                        FindPasswordSmsCode smsCode = ModelDecor.getI nstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
                                         });
                                         if (smsCode != null && smsCode.status != null) {
                                             if ("ok".equals(smsCode.status)) {
