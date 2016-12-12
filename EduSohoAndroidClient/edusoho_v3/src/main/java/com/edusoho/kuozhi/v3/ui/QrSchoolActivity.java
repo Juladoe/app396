@@ -250,9 +250,22 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private View.OnClickListener mHelpClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            /**
-             * todo 用户帮助
-             */
+            app.mEngine.runNormalPlugin("WebViewDataActivity", mActivity, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(WebViewDataActivity.TITLE,"使用帮助");
+                    startIntent.putExtra(WebViewDataActivity.DATA,
+                            "<p>一、扫一扫进入网校：<p style=\\\"text-indent:2em;\\\">" +
+                                    "1、点击 <strong>网校首页</strong>—<strong>侧边栏</strong>" +
+                                    "—<strong>手机端</strong>，进入页面后滑至页面底部，即可找到登录二维码。" +
+                                    "</p><p style=\\\"text-indent:2em;\\\">" +
+                                    "2、在电脑浏览器内输入网校域名/mobile（例如：xxxx.cn/mobile）" +
+                                    "即可找到登录二维码。</p></p><p>二、通过网校网址、名称搜索网校：" +
+                                    "<p style=\\\"text-indent:2em;\\\">在搜索框内输入" +
+                                    "<strong>网校网址</strong>或者<strong>网校名称</strong>点击搜索，" +
+                                    "即可找到你想要的网校。</p></p>\n");
+                }
+            });
         }
     };
 

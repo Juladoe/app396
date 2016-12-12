@@ -259,6 +259,12 @@
             android:screenOrientation="landscape"
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".v3.ui.WebViewDataActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".v3.ui.NoteActivity"
             android:screenOrientation="landscape"
