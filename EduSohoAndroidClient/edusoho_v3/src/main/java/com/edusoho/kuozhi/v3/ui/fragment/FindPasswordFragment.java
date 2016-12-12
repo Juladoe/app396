@@ -143,7 +143,7 @@ public class FindPasswordFragment extends BaseFragment {
                                 @Override
                                 public void success(String response) {
                                     if (response != null) {
-                                        FindPasswordSmsCode smsCode = ModelDecor.getI nstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
+                                        FindPasswordSmsCode smsCode = ModelDecor.getInstance().decor(response, new TypeToken<FindPasswordSmsCode>() {
                                         });
                                         if (smsCode != null && smsCode.status != null) {
                                             if ("ok".equals(smsCode.status)) {
