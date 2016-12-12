@@ -35,6 +35,7 @@ import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -120,6 +121,7 @@ public class LoginActivity extends BaseNoTitleActivity {
         vSao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "Login_scan_it");
                 Intent qrIntent = new Intent();
                 qrIntent.setClass(LoginActivity.this, CaptureActivity.class);
                 startActivityForResult(qrIntent, REQUEST_QR);
@@ -128,12 +130,14 @@ public class LoginActivity extends BaseNoTitleActivity {
         tvMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "Login_Select_the_school");
                 QrSchoolActivity.start(mActivity);
             }
         });
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "Login_Register_an_account");
                 mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
             }
         });
@@ -206,6 +210,7 @@ public class LoginActivity extends BaseNoTitleActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "Forgot_your_password");
                 mActivity.app.mEngine.runNormalPlugin("ForgetPasswordActivity", mContext, null);
             }
         };
@@ -302,9 +307,9 @@ public class LoginActivity extends BaseNoTitleActivity {
     }
 
     private View.OnClickListener mWeiboLoginClickListener = new View.OnClickListener() {
-
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Login_weib_login");
             loginByPlatform("SinaWeibo");
         }
     };
@@ -312,6 +317,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private View.OnClickListener mQQLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Login_qq_login");
             loginByPlatform("QQ");
         }
     };
@@ -320,6 +326,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private View.OnClickListener mWeChatLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Login_weixin_login");
             loginByPlatform("Wechat");
         }
     };

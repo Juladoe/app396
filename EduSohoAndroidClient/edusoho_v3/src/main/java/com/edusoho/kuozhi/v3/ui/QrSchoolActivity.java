@@ -53,6 +53,7 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -233,6 +234,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private View.OnClickListener mSearchClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Search_the_school_scan_it");
             Intent qrIntent = new Intent();
             qrIntent.setClass(QrSchoolActivity.this, CaptureActivity.class);
             startActivityForResult(qrIntent, REQUEST_QR);
@@ -242,6 +244,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private View.OnClickListener mOtherClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Search_the_school_input_box");
             mAnimatorUpSet.start();
             mSearchLayout.setEnabled(false);
         }
