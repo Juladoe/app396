@@ -92,7 +92,6 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         verified_token = getIntent().getStringExtra("verified_token");
         InputUtils.showKeyBoard(etAuth,mContext);
         mSmsCodeHandler = new SmsCodeHandler(this);
-//        mSmsSendClickListener.onClick(tvSend);
         sendSms();
     }
 
