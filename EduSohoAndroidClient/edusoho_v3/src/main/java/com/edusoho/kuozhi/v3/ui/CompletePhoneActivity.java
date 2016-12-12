@@ -5,7 +5,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,13 +15,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.register.ErrorCode;
-import com.edusoho.kuozhi.v3.entity.register.MsgCode;
+import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.ErrorUtil;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.Validator;
 import com.google.gson.reflect.TypeToken;
@@ -92,14 +90,14 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             RequestUrl requestUrl = app.bindNewUrl(Const.COMPLETE, false);
-            requestUrl.heads.put("Auth-Token", app.userResult.token);
+            requestUrl.heads.put("Auth-Token", app.token);
             Map<String, String> params =  requestUrl.getParams();
             params.put("mobile", etPhone.getText().toString().trim());
             params.put("type", "sms_bind");
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>() {
+                    FindPasswordSmsCode result = parseJsonValue(response, new TypeToken<FindPasswordSmsCode>() {
                     });
                     if (result != null) {
                         byte[] byteArray = Base64.decode(result.img_code, Base64.DEFAULT);
@@ -189,7 +187,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
             final String phoneNum = etPhone.getText().toString().trim();
             if (Validator.isPhone(phoneNum)) {
                 RequestUrl requestUrl = app.bindNewUrl(Const.COMPLETE, false);
-                requestUrl.heads.put("Auth-Token", app.userResult.token);
+                requestUrl.heads.put("Auth-Token", app.token);
                 if (bundle!=null) {
                     Map<String, String> params = requestUrl.getParams();
                     params.put("mobile", phoneNum);
@@ -201,14 +199,14 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                         @Override
                         public void onResponse(String response) {
                             ErrorCode errorCode = null;
-                            MsgCode result = null;
+                            FindPasswordSmsCode result = null;
                             if (response.contains("message")) {
                                 errorCode = parseJsonValue(response, new TypeToken<ErrorCode>(){});
                             }else {
-                                result = parseJsonValue(response, new TypeToken<MsgCode>() {});
+                                result = parseJsonValue(response, new TypeToken<FindPasswordSmsCode>() {});
                             }
                             if (errorCode != null) {
-                                CommonUtil.shortCenterToast(mActivity,ErrorUtil.getStrFromUniCode(errorCode.error.message));
+                                CommonUtil.shortCenterToast(mActivity, errorCode.error.message);
                             }else {
                                 startActivityForResult(new Intent(CompletePhoneActivity.this, CompletePhoneConfActivity.class).
                                         putExtra("phoneNum", phoneNum).putExtra("verified_token", result.verified_token),0);
@@ -226,12 +224,11 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                                 ErrorCode errorCode = parseJsonValue(response, new TypeToken<ErrorCode>() {
                                 });
                                 if (errorCode != null) {
-                                    CommonUtil.shortCenterToast(mActivity, ErrorUtil.getStrFromUniCode(errorCode.error.message));
-                                    Log.d("test", errorCode.error.message);
+                                    CommonUtil.shortCenterToast(mActivity, errorCode.error.message);
                                     return;
                                 }
                             }
-                            MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>() {
+                            FindPasswordSmsCode result = parseJsonValue(response, new TypeToken<FindPasswordSmsCode>() {
                             });
                             if (result != null) {
                                 verified = result.verified_token;

@@ -92,7 +92,7 @@ public class OpenLoginUtil {
                         response, new TypeToken<UserResult>() {
                         });
                 if (!response.contains("verifiedMobile")) {
-                    app.userResult = userResult;
+                    app.token = userResult.token;
                     Intent intent = new Intent(mContext, CompletePhoneActivity.class);
                     mContext.startActivity(intent);
                 }else {
@@ -116,7 +116,6 @@ public class OpenLoginUtil {
     }
 
     public void completeInfo(BaseActivity baseActivity){
-        app.saveToken(app.userResult);
         app.loginUser.thirdParty = thirdPartyType;
         app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
         Bundle bundle = new Bundle();

@@ -17,14 +17,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.register.ErrorCode;
-import com.edusoho.kuozhi.v3.entity.register.MsgCode;
-import com.edusoho.kuozhi.v3.entity.register.UserBean;
+import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.ErrorUtil;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.google.gson.reflect.TypeToken;
@@ -179,7 +177,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         @Override
         public void onClick(View v) {
             RequestUrl url = app.bindNewUrl(Const.BIND_PHONE, false);
-            url.heads.put("Auth-Token", app.userResult.token);
+            url.heads.put("Auth-Token", app.token);
             Map<String, String> params = url.getParams();
             params.put("type", "sms");
             params.put("mobile",phone);
@@ -204,12 +202,9 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                         ErrorCode errorCode = mActivity.parseJsonValue(response, new TypeToken<ErrorCode>() {
                         });
                         if (errorCode != null) {
-                            CommonUtil.shortCenterToast(CompletePhoneConfActivity.this, ErrorUtil.getStrFromUniCode(errorCode.error.message));
+                            CommonUtil.shortCenterToast(CompletePhoneConfActivity.this, errorCode.error.message);
                         }
                     }else {
-                        UserBean userBean = mActivity.parseJsonValue(response, new TypeToken<UserBean>() {
-                        });
-                        if (userBean != null) {
                             tvConfirm.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -218,12 +213,10 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                                     openLoginUtil.completeInfo(CompletePhoneConfActivity.this);
                                     CommonUtil.shortCenterToast(CompletePhoneConfActivity.this, getString(R.string.complete_success));
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
                                 }
                             }, 500);
-                        }
+
                     }
-                    Log.d("test", response);
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -256,14 +249,14 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         @Override
         public void onClick(View v) {
             RequestUrl requestUrl = app.bindNewUrl(Const.SEND_SMS, false);
-            requestUrl.heads.put("Auth-Token", app.userResult.token);
+            requestUrl.heads.put("Auth-Token", app.token);
             Map<String, String> params = requestUrl.getParams();
             params.put("mobile", num);
             params.put("type", "sms_bind");
             app.postUrl(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>(){});
+                    FindPasswordSmsCode result = parseJsonValue(response, new TypeToken<FindPasswordSmsCode>(){});
                     if (response.contains("limited")) {
                         Bundle bundle = new Bundle();
                         bundle.putString("img_code",result.img_code);
@@ -284,7 +277,6 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                                     mSmsCodeHandler.sendMessage(message);
                                 }
                             }, 0, 1000);
-                            CommonUtil.shortCenterToast(mContext, result.msg);
                         } else {
                             CommonUtil.shortCenterToast(mContext, response);
                         }

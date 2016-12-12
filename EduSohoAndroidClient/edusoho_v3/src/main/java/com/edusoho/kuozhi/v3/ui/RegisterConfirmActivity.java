@@ -27,7 +27,7 @@ import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -190,7 +190,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                 return;
             }
             RequestUrl url = app.bindUrl(Const.REGIST, false);
-            HashMap<String, String> params = (HashMap<String, String>) url.getParams();
+            Map<String, String> params = url.getParams();
             params.put("registeredWay","android");
 
             params.put("phone", num);
@@ -210,7 +210,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             params.put("password", strPass);
 
 
-            HashMap<String, String> headers = url.getHeads();
+            Map<String, String> headers = url.getHeads();
             if (!TextUtils.isEmpty(mCookie)) {
                 headers.put("Cookie", mCookie);
             }
@@ -255,7 +255,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
-            HashMap<String, String> params = (HashMap<String, String>) requestUrl.getParams();
+            Map<String, String> params = requestUrl.getParams();
             params.put("phoneNumber", String.valueOf(num));
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                 @Override

@@ -6,10 +6,4 @@ package com.edusoho.kuozhi.v3.entity.register;
 public class MsgCode {
     public int code;
     public String msg;
-    public String mobile;
-    public String img_code;
-    public String status;
-    public String verified_token;
-
-
 }

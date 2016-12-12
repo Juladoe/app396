@@ -23,7 +23,7 @@ import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.Validator;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -111,7 +111,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
             final String phoneNum = etAccount.getText().toString().trim();
             if (Validator.isPhone(phoneNum)) {
                 RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
-                HashMap<String,String> params = (HashMap<String, String>) requestUrl.getParams();
+                Map<String,String> params = requestUrl.getParams();
                 params.put("phoneNumber", String.valueOf(phoneNum));
                 mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                     @Override

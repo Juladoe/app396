@@ -94,7 +94,6 @@ public class EdusohoApp extends Application {
     public Context mContext;
 
     public String token;
-    public UserResult userResult;
     /**
      * school token
      */
