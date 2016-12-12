@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -9,58 +10,57 @@
 
         <ImageView
             android:id="@+id/iv_back"
-            android:layout_centerVertical="true"
             android:layout_width="@dimen/iv_register"
             android:layout_height="@dimen/iv_register"
+            android:layout_centerVertical="true"
             android:scaleType="center"
-            android:src="@drawable/action_icon_back"/>
+            android:src="@drawable/action_icon_back" />
 
     </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_info"
-        android:textSize="@dimen/base_x_large_size"
-        android:text="@string/reg_account_reg"
-        android:layout_marginTop="@dimen/view_register_margin"
-        android:layout_gravity="center_horizontal"
-        android:textColor="@color/primary_font_color"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/view_register_margin"
+        android:text="@string/reg_account_reg"
+        android:textColor="@color/primary_font_color"
+        android:textSize="@dimen/base_x_large_size" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/rl_register_margingTop"
-        android:layout_marginRight="@dimen/view_register_margin"
         android:layout_marginLeft="@dimen/view_register_margin"
-        >
+        android:layout_marginRight="@dimen/view_register_margin"
+        android:layout_marginTop="@dimen/rl_register_margingTop">
 
         <ImageView
             android:id="@+id/iv_clear_phone"
-            android:scaleType="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:visibility="invisible"
-            android:src="@drawable/register_clear_content"/>
+            android:layout_centerVertical="true"
+            android:scaleType="center"
+            android:src="@drawable/register_clear_content"
+            android:visibility="invisible" />
 
         <EditText
             android:id="@+id/et_phone_num"
             style="@style/edittext_style"
-            android:hint="@string/reg_phone_hint"
-            android:textSize="@dimen/x_medium_font_size"
-            android:textColor="@color/primary_font_color"
             android:layout_toLeftOf="@id/iv_clear_phone"
+            android:hint="@string/reg_phone_hint"
             android:maxLength="11"
-            />
+            android:textColor="@color/primary_font_color"
+            android:textColorHint="@color/secondary2_font_color"
+            android:textSize="@dimen/x_medium_font_size" />
 
         <View
-            android:background="@color/register_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/view_register_height"
+            android:layout_below="@id/et_phone_num"
             android:layout_marginTop="@dimen/rl_register_margin"
-            android:layout_below="@id/et_phone_num"/>
+            android:background="@color/register_view" />
 
     </RelativeLayout>
 
