@@ -31,7 +31,32 @@
 
         </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/teacher_rlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/vip_rlayout"
+            >
 
+        </RelativeLayout>
+        
+        <RelativeLayout
+            android:id="@+id/student_rlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/teacher_rlayout"
+            >
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/review_rlayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/student_rlayout"
+            >
+
+        </RelativeLayout>
 
     </RelativeLayout>
 </com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>

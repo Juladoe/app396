@@ -424,4 +424,9 @@
         name="NotifyActivity"
         package="com.edusoho.kuozhi.v3.ui.NotifyActivity"
         version="1.0" />
+
+    <plugin
+        name="CourseActivity"
+        package="com.edusoho.kuozhi.v3.ui.CourseActivity"
+        version="1.0" />
 </plugins>

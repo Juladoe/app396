@@ -1,11 +1,16 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -14,8 +19,10 @@ import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.FragmentUtil;
+import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 
 import java.util.ArrayList;
@@ -27,6 +34,7 @@ import java.util.List;
 public class CourseActivity extends BaseNoTitleActivity implements View.OnClickListener {
     private HeadStopScrollView mParent;
     private RelativeLayout mHeadRlayout;
+    private RelativeLayout mMediaRlayout;
     private ViewPager mContentVp;
     private RelativeLayout mIntroLayout;
     private View mIntro;
@@ -39,11 +47,23 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     private int mCheckNum = 0;
     private int[] mScrollY = new int[3];
     private boolean[] mCanScroll = {true, true, true};
+    public static final int MEDIA_VIEW_HEIGHT = 150;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window window = getWindow();
+            window.setFlags(
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            SystemBarTintManager tintManager = new SystemBarTintManager(this);
+            tintManager.setStatusBarTintEnabled(true);
+            tintManager.setNavigationBarTintEnabled(true);
+            tintManager.setTintColor(Color.parseColor("#00000000"));
+        }
+
         initView();
         initEvent();
         initData();
@@ -54,6 +74,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         super.initView();
         mParent = (HeadStopScrollView) findViewById(R.id.scroll_parent);
         mHeadRlayout = (RelativeLayout) findViewById(R.id.head_rlayout);
+        mMediaRlayout = (RelativeLayout) findViewById(R.id.media_rlayout);
         mContentVp = (ViewPager) findViewById(R.id.vp_content);
         mIntroLayout = (RelativeLayout) findViewById(R.id.intro_rlayout);
         mHourLayout = (RelativeLayout) findViewById(R.id.hour_rlayout);
@@ -66,10 +87,6 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     }
 
     private void initEvent() {
-
-    }
-
-    private void initData() {
         mIntroLayout.setOnClickListener(this);
         mHourLayout.setOnClickListener(this);
         mReviewLayout.setOnClickListener(this);
@@ -96,6 +113,10 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
                 mScrollY[mCheckNum] = t;
             }
         });
+    }
+
+    private void initData() {
+
     }
 
     @Override
@@ -155,12 +176,42 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
             case Const.COURSE_HIDE_BAR:
                 changeBar(false);
                 break;
-
+            case Const.SCREEN_LOCK:
+                screenLock();
+                break;
         }
     }
 
-    private void changeBar(boolean show) {
+    private boolean isScreenLock = false;
 
+    private void screenLock() {
+        if (isScreenLock) {
+            isScreenLock = false;
+        } else {
+            isScreenLock = true;
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (isScreenLock) {
+                return true;
+            }
+//            if(mIsFullScreen){
+//                fullScreen();
+//            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void changeBar(boolean show) {
+        if(show){
+            mHeadRlayout.setVisibility(View.GONE);
+        }else{
+            mHeadRlayout.setVisibility(View.VISIBLE);
+        }
     }
 
     private void courseSwitch() {
@@ -168,17 +219,22 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     }
 
     private boolean mIsFullScreen = false;
-
     private void fullScreen() {
+        ViewGroup.LayoutParams params = mMediaRlayout.getLayoutParams();
         if (!mIsFullScreen) {
-            ViewGroup.LayoutParams params = mHeadRlayout.getLayoutParams();
+            mIsFullScreen = true;
             params.height = -1;
             params.width = -1;
-            mHeadRlayout.setLayoutParams(params);
+            mMediaRlayout.setLayoutParams(params);
             mParent.setCanScroll(false);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
-
+            mIsFullScreen = false;
+            params.width = -1;
+            params.height = AppUtil.dp2px(this, MEDIA_VIEW_HEIGHT);
+            mMediaRlayout.setLayoutParams(params);
+            mParent.setCanScroll(mCanScroll[mCheckNum]);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
 
@@ -190,6 +246,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
                 new MessageType(Const.COURSE_SWITCH),
                 new MessageType(Const.COURSE_REFRESH),
                 new MessageType(Const.COURSE_SHOW_BAR),
+                new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
 }

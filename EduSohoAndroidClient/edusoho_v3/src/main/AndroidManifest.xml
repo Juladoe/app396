@@ -261,7 +261,6 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".v3.ui.CourseActivity"
-            android:screenOrientation="landscape"
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity

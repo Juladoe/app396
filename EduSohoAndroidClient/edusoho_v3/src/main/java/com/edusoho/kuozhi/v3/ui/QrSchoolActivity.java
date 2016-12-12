@@ -253,6 +253,9 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
             /**
              * todo 用户帮助
              */
+            mActivity.app.mEngine
+                    .runNormalPlugin("CourseActivity",
+                            QrSchoolActivity.this, null);
         }
     };
 
