@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;

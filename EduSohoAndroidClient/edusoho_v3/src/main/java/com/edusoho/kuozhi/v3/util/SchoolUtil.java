@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.android.volley.Response;
@@ -185,5 +186,17 @@ public class SchoolUtil {
         }
 
         return true;
+    }
+
+    public static void saveSchoolHistory(School site) {
+        SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String loginTime = nowfmt.format(date);
+        Uri uri = Uri.parse(site.url);
+        String domain = uri.getPort() == -1 ?
+                uri.getHost() :
+                uri.getHost() + ":" + uri.getPort();
+        SchoolUtil.saveEnterSchool(EdusohoApp.app
+                , site.name, loginTime, "登录账号：未登录", domain);
     }
 }
