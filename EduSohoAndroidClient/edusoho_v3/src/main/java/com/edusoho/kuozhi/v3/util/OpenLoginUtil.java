@@ -22,6 +22,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.security.SecureRandom;
@@ -82,7 +83,7 @@ public class OpenLoginUtil {
         }
         EdusohoApp app = activity.app;
         RequestUrl requestUrl = app.bindNewUrl(Const.BIND_LOGIN, false);
-        if (!params[3].equals("qq")) {
+        if (!"qq".equals(params[3])) {
             requestUrl.setParams(new String[]{
                     "type", params[3],
                     "id", params[0],
@@ -90,38 +91,13 @@ public class OpenLoginUtil {
                     "avatar", params[2],
             });
         } else {
-            String https = String.format("https://graph.qq.com/oauth2.0/me?access_token=%s&unionid=1",params[0]);
-            try{
-                SSLContext sc = SSLContext.getInstance("TLS");
-                sc.init(null, new TrustManager[]{new MyTrustManager()}, new SecureRandom());
-                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-                HttpsURLConnection.setDefaultHostnameVerifier(new MyHostnameVerifier());
-                HttpsURLConnection conn = (HttpsURLConnection)new URL(https).openConnection();
-                conn.setDoInput(true);
-                conn.setConnectTimeout(10000);
-                conn.setReadTimeout(50000);
-                conn.setRequestMethod("GET");
-                conn.connect();
-                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                StringBuffer sb = new StringBuffer();
-                String line;
-                while ((line = br.readLine()) != null)
-                    sb.append(line);
-                String responseStr = sb.toString();
-                String unionIdStr = responseStr.substring(responseStr.indexOf("UID"),responseStr.length() - 6);
-                Log.v("BindQQ",unionIdStr);
-                requestUrl.setParams(new String[]{
-                        "type", params[3],
-                        "id", params[0],
-                        "name", params[1],
-                        "avatar", params[2],
-                        "unionid", unionIdStr,
-                });
-                conn.disconnect();
-                br.close();
-            }catch(Exception e){
-                Log.e("BindQQ", e.getMessage());
-            }
+            requestUrl.setParams(new String[]{
+                    "type", params[3],
+                    "id", params[0],
+                    "name", params[1],
+                    "avatar", params[2],
+                    "unionid", getUnionid(params[0]),
+            });
         }
         final String thirdPartyType = params.length > 4 ? params[4] : "";
         Looper.prepare();
@@ -149,6 +125,47 @@ public class OpenLoginUtil {
             }
         }, null);
         Looper.loop();
+    }
+
+    private String getUnionid(String accessToken) {
+        String unionIdStr = null;
+        BufferedReader br = null;
+        HttpsURLConnection conn = null;
+        String https = String.format("https://graph.qq.com/oauth2.0/me?access_token=%s&unionid=1", accessToken);
+        try {
+            SSLContext sc = SSLContext.getInstance("TLS");
+            sc.init(null, new TrustManager[]{new MyTrustManager()}, new SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+            HttpsURLConnection.setDefaultHostnameVerifier(new MyHostnameVerifier());
+            conn = (HttpsURLConnection) new URL(https).openConnection();
+            conn.setDoInput(true);
+            conn.setConnectTimeout(10000);
+            conn.setReadTimeout(50000);
+            conn.setRequestMethod("GET");
+            conn.connect();
+            br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            StringBuffer sb = new StringBuffer();
+            String line;
+            while ((line = br.readLine()) != null)
+                sb.append(line);
+            String responseStr = sb.toString();
+            unionIdStr = responseStr.substring(responseStr.indexOf("UID"), responseStr.length() - 6);
+            Log.v("BindQQ", unionIdStr);
+        } catch (Exception e) {
+            Log.e("BindQQ", e.getMessage());
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                }
+            }
+            if (conn != null) {
+                conn.disconnect();
+            }
+        }
+
+        return unionIdStr;
     }
 
     private String[] getWeixinLoginResult(HashMap<String, Object> res) {
@@ -299,6 +316,7 @@ public class OpenLoginUtil {
         }
         return datas;
     }
+
     private class MyHostnameVerifier implements HostnameVerifier {
 
         @Override
@@ -308,7 +326,7 @@ public class OpenLoginUtil {
         }
     }
 
-    private class MyTrustManager implements X509TrustManager{
+    private class MyTrustManager implements X509TrustManager {
 
         @Override
         public void checkClientTrusted(X509Certificate[] chain, String authType)
