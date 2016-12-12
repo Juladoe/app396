@@ -1,9 +1,11 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
@@ -130,16 +132,64 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     @Override
     public void invoke(WidgetMessage message) {
         Bundle bundle = message.data;
-        String clazz = bundle.getString("class");
-        if (clazz != null && clazz.equals(getClass().getSimpleName())) {
-            mCanScroll[mCheckNum] = true;
-            mParent.setCanScroll(true);
+        switch (message.type.type) {
+            case Const.SCROLL_STATE_SAVE:
+                String clazz = bundle.getString("class");
+                if (clazz != null && clazz.equals(getClass().getSimpleName())) {
+                    mCanScroll[mCheckNum] = true;
+                    mParent.setCanScroll(true);
+                }
+                break;
+            case Const.FULL_SCREEN:
+                fullScreen();
+                break;
+            case Const.COURSE_SWITCH:
+                courseSwitch();
+                break;
+            case Const.COURSE_REFRESH:
+                initData();
+                break;
+            case Const.COURSE_SHOW_BAR:
+                changeBar(true);
+                break;
+            case Const.COURSE_HIDE_BAR:
+                changeBar(false);
+                break;
+
+        }
+    }
+
+    private void changeBar(boolean show) {
+
+    }
+
+    private void courseSwitch() {
+
+    }
+
+    private boolean mIsFullScreen = false;
+
+    private void fullScreen() {
+        if (!mIsFullScreen) {
+            ViewGroup.LayoutParams params = mHeadRlayout.getLayoutParams();
+            params.height = -1;
+            params.width = -1;
+            mHeadRlayout.setLayoutParams(params);
+            mParent.setCanScroll(false);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        } else {
+
         }
     }
 
     @Override
     public MessageType[] getMsgTypes() {
         return new MessageType[]{
-                new MessageType(Const.SCROLL_STATE_SAVE)};
+                new MessageType(Const.SCROLL_STATE_SAVE),
+                new MessageType(Const.FULL_SCREEN),
+                new MessageType(Const.COURSE_SWITCH),
+                new MessageType(Const.COURSE_REFRESH),
+                new MessageType(Const.COURSE_SHOW_BAR),
+                new MessageType(Const.COURSE_HIDE_BAR)};
     }
 }

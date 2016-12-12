@@ -130,6 +130,12 @@ public class Const {
     public static final String DIALOG_DISMISS = "dialog_dismiss";
     public static final String SCROLL_STATE_SAVE = "scroll_state_save";
 
+    public static final String FULL_SCREEN = "course_full_screen";
+    public static final String COURSE_REFRESH = "course_refresh";//刷新课程Activity
+    public static final String COURSE_SWITCH= "course_switch";//切换课程
+    public static final String COURSE_SHOW_BAR = "course_show_bar";//导航栏
+    public static final String COURSE_HIDE_BAR = "course_hide_bar";//导航栏
+
     public static final int OK = 200;
     public static final int ERROR_200 = 200;
     public static final boolean memCacheNo = false;
