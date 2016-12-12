@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -40,26 +40,82 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:visibility="invisible"
+            android:src="@drawable/clear_content"
             android:layout_centerVertical="true"
-            android:scaleType="center"
-            android:src="@drawable/register_clear_content"
-            android:visibility="invisible" />
+            android:scaleType="center"/>
 
         <EditText
             android:id="@+id/et_phone_num"
             style="@style/edittext_style"
-            android:layout_toLeftOf="@id/iv_clear_phone"
             android:hint="@string/reg_phone_hint"
+            android:textSize="@dimen/x_medium_font_size"
             android:maxLength="11"
+            android:textColorHint="@color/grey_hint"/>
+        <View
+            android:background="@color/register_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/view_register_height"
+            android:layout_marginTop="@dimen/rl_register_margin"
+            android:layout_below="@id/et_phone_num"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_graphic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/view_register_margin"
+        android:layout_marginRight="@dimen/view_register_margin"
+        android:layout_marginLeft="@dimen/view_register_margin"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:id="@+id/tv_change"
+            android:text="换一换"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textColor="@color/primary"
+            android:textSize="@dimen/x_medium_font_size"
+            android:layout_alignParentRight="true"/>
+
+        <ImageView
+            android:id="@+id/iv_graphic"
+            android:scaleType="fitXY"
+            android:layout_width="@dimen/complete_iv_width"
+            android:layout_height="@dimen/complete_iv_height"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_change"/>
+
+        <ImageView
+            android:id="@+id/iv_clear_code"
+            android:layout_toLeftOf="@id/iv_graphic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/sys_small_normal"
+            android:layout_marginRight="@dimen/sys_small_normal"
+            android:visibility="invisible"
+            android:src="@drawable/clear_content"/>
+
+        <EditText
+            android:id="@+id/et_graphic_code"
+            style="@style/edittext_style"
+            android:hint="@string/img_code_input"
+            android:textSize="@dimen/x_medium_font_size"
             android:textColor="@color/primary_font_color"
-            android:textColorHint="@color/secondary2_font_color"
-            android:textSize="@dimen/x_medium_font_size" />
+            android:textColorHint="@color/grey_hint"
+            android:layout_toLeftOf="@id/iv_clear_code"
+            android:maxLength="5"
+            />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/view_register_height"
-            android:layout_below="@id/et_phone_num"
             android:layout_marginTop="@dimen/rl_register_margin"
+            android:layout_below="@id/et_graphic_code"
             android:background="@color/register_view" />
 
     </RelativeLayout>

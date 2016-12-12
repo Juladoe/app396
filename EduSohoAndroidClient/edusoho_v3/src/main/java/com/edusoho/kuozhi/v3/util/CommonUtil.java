@@ -27,6 +27,7 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -180,7 +181,9 @@ public class CommonUtil {
     public static String coverUrlToCacheKey(RequestUrl requestUrl) {
         StringBuilder builder = new StringBuilder(requestUrl.url);
 
-        Map<String, String> map = requestUrl.params;
+
+        HashMap<String, String> map = (HashMap<String, String>) requestUrl.params;
+
         for (String key : map.keySet()) {
             builder.append("&").append(key);
             builder.append("&").append(map.get(key));
@@ -1123,6 +1126,12 @@ public class CommonUtil {
 
     public static void shortToast(Context context, String title) {
         Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
+    }
+    //居中弹出toast
+    public static void shortCenterToast(Context context,String title){
+        Toast toast = Toast.makeText(context,title,Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER,0,0);
+        toast.show();
     }
 
     public static class MoveTimerTask extends TimerTask {

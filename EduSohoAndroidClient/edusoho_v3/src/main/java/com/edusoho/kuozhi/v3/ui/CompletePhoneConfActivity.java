@@ -16,14 +16,15 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.entity.register.MsgCode;
+import com.edusoho.kuozhi.v3.entity.register.ErrorCode;
+import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
+import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
@@ -31,19 +32,16 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
 /**
- * Created by DF on 2016/11/24.
+ * Created by DF on 2016/11/28.
  */
+public class CompletePhoneConfActivity extends ActionBarBaseActivity{
 
-public class RegisterConfirmActivity extends ActionBarBaseActivity {
-
+    private int mClockTime;
     private TextView tvShow;
     private EditText etPwd;
     private EditText etAuth;
     private TextView tvSend;
-
-    private int mClockTime;
     private Timer mTimer;
     private SmsCodeHandler mSmsCodeHandler;
     private String num;
@@ -51,59 +49,50 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
     private TextView tvConfirm;
     private String mCookie = "";
     private ImageView ivBack;
-    private ImageView ivClearAuth;
+    private TextView tvInfo;
     private ImageView ivClearPwd;
+    private ImageView ivClearAuth;
     private TextView tvTime;
+    private String phone;
+    private String verified_token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register_confirm);
+        hideActionBar();
+        setContentView(R.layout.activity_complete_phone_conf);
         initView();
     }
 
     private void initView() {
+        tvInfo = (TextView) findViewById(R.id.tv_info);
         tvShow = (TextView) findViewById(R.id.tv_show);
         tvSend = (TextView) findViewById(R.id.tv_send);
-        tvSend.setOnClickListener(mSmsSendClickListener);
         etAuth = (EditText) findViewById(R.id.et_auth);
         etPwd = (EditText) findViewById(R.id.et_pwd);
         ivShowPwd = (ImageView) findViewById(R.id.iv_show_pwd);
-        ivShowPwd.setOnClickListener(nShowPwdClickListener);
         tvConfirm = (TextView) findViewById(R.id.tv_confirm);
-        tvConfirm.setOnClickListener(mConfirmRegClickListener);
         ivBack = (ImageView) findViewById(R.id.iv_back);
-        ivBack.setOnClickListener(mBackClickListener);
         ivClearAuth = (ImageView) findViewById(R.id.iv_clear_auth);
-        ivClearAuth.setOnClickListener(mClearContentListener);
+        tvTime = (TextView)  findViewById(R.id.tv_show_time);
         ivClearPwd = (ImageView) findViewById(R.id.iv_clear_pwd);
-        ivClearPwd.setOnClickListener(mClearContentListener);
-        tvTime = (TextView) findViewById(R.id.tv_show_time);
+        tvInfo.setText("完善信息");
+        tvSend.setOnClickListener(mSmsSendClickListener);
+        ivShowPwd.setOnClickListener(nShowPwdClickListener);
+        tvConfirm.setOnClickListener(mConfirmRegClickListener);
+        ivBack.setOnClickListener(mBackClickListener);
+        ivClearAuth.setOnClickListener(mClearContent);
+        ivClearPwd.setOnClickListener(mClearContent);
 
-        num = getIntent().getStringExtra("num");
+        num = getIntent().getStringExtra("phoneNum");
         tvShow.setText(getString(R.string.phone_code_input_hint)+ num);
 
         initTextChange();
-
-        InputUtils.showKeyBoard(etAuth, mContext);
+        phone = getIntent().getStringExtra("phoneNum");
+        verified_token = getIntent().getStringExtra("verified_token");
+        InputUtils.showKeyBoard(etAuth,mContext);
         mSmsCodeHandler = new SmsCodeHandler(this);
         sendSms();
-    }
-
-
-    private void sendSms() {
-        tvSend.setEnabled(false);
-        mClockTime = 120;
-        mTimer = new Timer();
-        mTimer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                Message message = mSmsCodeHandler.obtainMessage();
-                message.what = 0;
-                mSmsCodeHandler.sendMessage(message);
-
-            }
-        }, 0, 1000);
     }
 
     private void initTextChange() {
@@ -139,22 +128,22 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                 }
             }
         });
-
     }
 
     View.OnClickListener mBackClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RegisterConfirmActivity.this.finish();
+            CompletePhoneConfActivity.this.finish();
         }
     };
 
-    View.OnClickListener mClearContentListener = new View.OnClickListener() {
+    View.OnClickListener mClearContent = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
-            if (v.getId() == R.id.iv_clear_auth) {
+            int id = v.getId();
+            if (id == R.id.iv_clear_auth) {
                 etAuth.setText("");
-            }else {
+            }else if (id == R.id.iv_clear_pwd){
                 etPwd.setText("");
             }
         }
@@ -165,7 +154,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
      */
     private boolean isShowPwd = true;
 
-    View.OnClickListener nShowPwdClickListener = new View.OnClickListener() {
+    View.OnClickListener nShowPwdClickListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
             if (isShowPwd) {
@@ -181,89 +170,100 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
     };
 
     /**
-     * 注册账号
+     * 绑定账号
      */
     View.OnClickListener mConfirmRegClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (etAuth.length() == 0 || etPwd.length() == 0) {
-                return;
-            }
-            RequestUrl url = app.bindUrl(Const.REGIST, false);
+            RequestUrl url = app.bindNewUrl(Const.BIND_PHONE, false);
+            url.heads.put("Auth-Token", app.token);
             Map<String, String> params = url.getParams();
-            params.put("registeredWay","android");
-
-            params.put("phone", num);
-
+            params.put("type", "sms");
+            params.put("mobile",phone);
+            params.put("verified_token", verified_token);
             String strCode = etAuth.getText().toString().trim();
             if (TextUtils.isEmpty(strCode)) {
-                CommonUtil.longToast(mContext, getString(R.string.reg_code_hint));
+                CommonUtil.shortCenterToast(mContext, getString(R.string.reg_code_hint));
                 return;
             } else {
-                params.put("smsCode", strCode);
+                params.put("sms_code", strCode);
             }
-            String strPass = etPwd.getText().toString().trim();
+            String strPass = etPwd.getText().toString();
             if (TextUtils.isEmpty(strPass)) {
-                CommonUtil.longToast(mContext, getString(R.string.reg_password_hint));
+                CommonUtil.shortCenterToast(mContext, getString(R.string.reg_password_hint));
                 return;
             }
             params.put("password", strPass);
-
-
-            Map<String, String> headers = url.getHeads();
-            if (!TextUtils.isEmpty(mCookie)) {
-                headers.put("Cookie", mCookie);
-            }
-
-            mActivity.ajaxPost(url, new Response.Listener<String>() {
+            app.postUrl(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    try {
-                        Log.d("test", response);
-                        UserResult userResult = mActivity.parseJsonValue(
-                                response, new TypeToken<UserResult>() {
-                                });
-                        if (userResult != null && userResult.user != null) {
-                            app.saveToken(userResult);
+                    if (response.contains("error")) {
+                        ErrorCode errorCode = mActivity.parseJsonValue(response, new TypeToken<ErrorCode>() {
+                        });
+                        if (errorCode != null) {
+                            CommonUtil.shortCenterToast(CompletePhoneConfActivity.this, errorCode.error.message);
+                        }
+                    }else {
                             tvConfirm.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    //绑定成功后直接进到网校
+                                    OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mActivity);
+                                    openLoginUtil.completeInfo(CompletePhoneConfActivity.this);
+                                    CommonUtil.shortCenterToast(CompletePhoneConfActivity.this, getString(R.string.complete_success));
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
                                 }
                             }, 500);
-                        } else {
-                            if (!TextUtils.isEmpty(response)) {
-                                CommonUtil.longToast(mContext, response);
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
+
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data).toString());
-                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+                    CommonUtil.shortCenterToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
             });
         }
     };
 
+    /**
+     * 处理验证码
+     */
+    private void sendSms(){
+        tvSend.setEnabled(false);
+        mClockTime = 120;
+        mTimer = new Timer();
+        mTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Message message = mSmsCodeHandler.obtainMessage();
+                message.what = 0;
+                mSmsCodeHandler.sendMessage(message);
+            }
+        }, 0, 1000);
+    }
+
     View.OnClickListener mSmsSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
+            RequestUrl requestUrl = app.bindNewUrl(Const.SEND_SMS, false);
+            requestUrl.heads.put("Auth-Token", app.token);
             Map<String, String> params = requestUrl.getParams();
-            params.put("phoneNumber", String.valueOf(num));
-            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            params.put("mobile", num);
+            params.put("type", "sms_bind");
+            app.postUrl(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    try {
-                        MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>() {
-                        });
-                        if (result != null && result.code == 200) {
+                    FindPasswordSmsCode result = parseJsonValue(response, new TypeToken<FindPasswordSmsCode>(){});
+                    if (response.contains("limited")) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("img_code",result.img_code);
+                        bundle.putString("verified_token",result.verified_token);
+                        setResult(1, new Intent().putExtras(bundle));
+                        CompletePhoneConfActivity.this.finish();
+                    }else{
+                        if (result != null) {
                             tvTime.setVisibility(View.VISIBLE);
                             tvSend.setEnabled(false);
                             mClockTime = 120;
@@ -274,15 +274,11 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                                     Message message = mSmsCodeHandler.obtainMessage();
                                     message.what = 0;
                                     mSmsCodeHandler.sendMessage(message);
-
                                 }
                             }, 0, 1000);
-                            CommonUtil.longToast(mContext, result.msg);
                         } else {
-                            CommonUtil.longToast(mContext, response);
+                            CommonUtil.shortCenterToast(mContext, response);
                         }
-                    } catch (Exception e) {
-                        Log.d(TAG, "phone reg error");
                     }
                 }
             }, null);
@@ -290,10 +286,10 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
     };
 
     public static class SmsCodeHandler extends Handler {
-        WeakReference<RegisterConfirmActivity> mWeakReference;
-        RegisterConfirmActivity mActivity;
+        WeakReference<CompletePhoneConfActivity> mWeakReference;
+        CompletePhoneConfActivity mActivity;
 
-        public SmsCodeHandler(RegisterConfirmActivity activity) {
+        public SmsCodeHandler(CompletePhoneConfActivity activity) {
             mWeakReference = new WeakReference<>(activity);
         }
 
@@ -320,4 +316,6 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             mTimer = null;
         }
     }
+
+
 }
