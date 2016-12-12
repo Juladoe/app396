@@ -25,6 +25,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -168,6 +169,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
     View.OnClickListener nShowPwdClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Set_the_password_for_the_eye_btb");
             if (isShowPwd) {
                 etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 ivShowPwd.setImageResource(R.drawable.register_pwd_unshow);
@@ -254,6 +256,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
     View.OnClickListener mSmsSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Retrieve_the_verification_code");
             RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
             HashMap<String, String> params = (HashMap<String, String>) requestUrl.getParams();
             params.put("phoneNumber", String.valueOf(num));
