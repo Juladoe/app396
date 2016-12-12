@@ -21,6 +21,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -28,6 +34,13 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
@@ -69,12 +82,47 @@ public class OpenLoginUtil {
         }
         EdusohoApp app = activity.app;
         RequestUrl requestUrl = app.bindNewUrl(Const.BIND_LOGIN, false);
-        requestUrl.setParams(new String[]{
-                "type", params[3],
-                "id", params[0],
-                "name", params[1],
-                "avatar", params[2],
-        });
+        if (!params[3].equals("qq")) {
+            requestUrl.setParams(new String[]{
+                    "type", params[3],
+                    "id", params[0],
+                    "name", params[1],
+                    "avatar", params[2],
+            });
+        } else {
+            String https = String.format("https://graph.qq.com/oauth2.0/me?access_token=%s&unionid=1",params[0]);
+            try{
+                SSLContext sc = SSLContext.getInstance("TLS");
+                sc.init(null, new TrustManager[]{new MyTrustManager()}, new SecureRandom());
+                HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+                HttpsURLConnection.setDefaultHostnameVerifier(new MyHostnameVerifier());
+                HttpsURLConnection conn = (HttpsURLConnection)new URL(https).openConnection();
+                conn.setDoInput(true);
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(50000);
+                conn.setRequestMethod("GET");
+                conn.connect();
+                BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                StringBuffer sb = new StringBuffer();
+                String line;
+                while ((line = br.readLine()) != null)
+                    sb.append(line);
+                String responseStr = sb.toString();
+                String unionIdStr = responseStr.substring(responseStr.indexOf("UID"),responseStr.length() - 6);
+                Log.v("BindQQ",unionIdStr);
+                requestUrl.setParams(new String[]{
+                        "type", params[3],
+                        "id", params[0],
+                        "name", params[1],
+                        "avatar", params[2],
+                        "unionid", unionIdStr,
+                });
+                conn.disconnect();
+                br.close();
+            }catch(Exception e){
+                Log.e("BindQQ", e.getMessage());
+            }
+        }
         final String thirdPartyType = params.length > 4 ? params[4] : "";
         Looper.prepare();
         final LoadDialog loadDialog = LoadDialog.create(activity);
@@ -136,7 +184,6 @@ public class OpenLoginUtil {
         } else if ("SinaWeibo".equals(type)) {
             params = getWeiboLoginResult(res);
         }
-
         return params;
     }
 
@@ -147,6 +194,7 @@ public class OpenLoginUtil {
             public void onComplete(Platform platform, int action, HashMap<String, Object> res) {
                 if (action == Platform.ACTION_USER_INFOR) {
                     try {
+
                         if (!res.containsKey("id")) {
                             res.put("id", platform.getDb().getToken());
                         }
@@ -249,7 +297,36 @@ public class OpenLoginUtil {
         } catch (JSONException e) {
 
         }
-
         return datas;
+    }
+    private class MyHostnameVerifier implements HostnameVerifier {
+
+        @Override
+        public boolean verify(String hostname, SSLSession session) {
+            // TODO Auto-generated method stub
+            return true;
+        }
+    }
+
+    private class MyTrustManager implements X509TrustManager{
+
+        @Override
+        public void checkClientTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
+            // TODO Auto-generated method stub
+        }
+
+        @Override
+        public void checkServerTrusted(X509Certificate[] chain, String authType)
+                throws CertificateException {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public X509Certificate[] getAcceptedIssuers() {
+            // TODO Auto-generated method stub
+            return null;
+        }
     }
 }
