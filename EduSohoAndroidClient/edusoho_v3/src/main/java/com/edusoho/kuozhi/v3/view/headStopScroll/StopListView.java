@@ -10,12 +10,14 @@ import android.widget.ListView;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 
 /**
  * Created by Zhang on 2016/12/9.
  */
 
-public class StopListView extends ListView implements AbsListView.OnScrollListener {
+public class StopListView extends ListView implements AbsListView.OnScrollListener,
+        HeadStopScrollView.CanStopView {
     public StopListView(Context context) {
         super(context);
         init();
@@ -48,6 +50,11 @@ public class StopListView extends ListView implements AbsListView.OnScrollListen
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+    }
+
+    @Override
+    public void setCanScroll(boolean canScroll) {
 
     }
 }

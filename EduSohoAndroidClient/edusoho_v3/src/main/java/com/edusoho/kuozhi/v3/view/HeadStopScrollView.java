@@ -52,6 +52,8 @@ public class HeadStopScrollView extends ScrollView {
     }
 
     private void init() {
+        setOverScrollMode(OVER_SCROLL_NEVER);
+        setVerticalScrollBarEnabled(false);
     }
 
     @Override
@@ -135,12 +137,12 @@ public class HeadStopScrollView extends ScrollView {
                 break;
             case MotionEvent.ACTION_MOVE:
                 moveY = ev.getRawY() - startY;
-                if (moveY > 0) {
-                    if (controlChildView != null
-                            && controlChildView.getTop() >= -AppUtil.dp2px(getContext(), 2)) {
-                        setCanScroll(true);
-                    }
-                }
+//                if (moveY > 0) {
+//                    if (controlChildView != null
+//                            && controlChildView.getTop() >= -AppUtil.dp2px(getContext(), 2)) {
+//                        setCanScroll(true);
+//                    }
+//                }
                 break;
             case MotionEvent.ACTION_UP:
                 startY = 0;

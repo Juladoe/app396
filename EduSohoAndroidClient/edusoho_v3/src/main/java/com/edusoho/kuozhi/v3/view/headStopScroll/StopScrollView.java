@@ -33,11 +33,10 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     }
 
     private boolean mCanScroll = true;
-
+    private HeadStopScrollView mParent;
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        Log.e("top","oldt:" + oldt + "  " + "t" + t);
         if (oldt - t > 0 &&
                 t <= AppUtil.dp2px(getContext(), 10)) {
             Bundle bundle = new Bundle();
