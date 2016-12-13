@@ -185,17 +185,17 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                     return;
                 }
                 String smsCode = etSmsCode.getText().toString().trim();
-                final String resetPassword = etResetPassword.getText().toString().trim();
+                final String resetPassword = etResetPassword.getText().toString();
                 if (TextUtils.isEmpty(smsCode)) {
-                    ToastUtil.getInstance(mContext).makeText(getString(R.string.sms_code_not_null), Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, getString(R.string.sms_code_not_null), Toast.LENGTH_LONG).show();
                     return;
                 }
                 if (TextUtils.isEmpty(resetPassword)) {
-                    ToastUtil.getInstance(mContext).makeText(getString(R.string.reset_password_not_null), Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, getString(R.string.reset_password_not_null), Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (resetPassword.length() < 6) {
-                    ToastUtil.getInstance(mContext).makeText(getString(R.string.password_more_than_six_digit_number), Toast.LENGTH_LONG).show();
+                if (resetPassword.length() <= 5 || resetPassword.length() >= 20) {
+                    Toast.makeText(mContext, getString(R.string.password_more_than_six_digit_number), Toast.LENGTH_LONG).show();
                     return;
                 }
                 RequestUrl requestUrl = app.bindNewUrl(Const.FIND_PASSWORD, false);
@@ -215,12 +215,12 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                             return;
                         }
                         ToastUtils.show(mContext, R.string.reset_password_success, Toast.LENGTH_LONG);
-                        app.mEngine.runNormalPlugin("LoginActivity", mContext, new PluginRunCallback() {
+                        app.mEngine.runNormalPlugin("LoginActivity", getActivity().getApplicationContext(), new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
                                 startIntent.putExtra(LoginActivity.FIND_PASSWORD_ACCOUNT, mUserMobile);
                             }
-                        }, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        }, Intent.FLAG_ACTIVITY_NEW_TASK);
                     }
                 }, new Response.ErrorListener() {
                     @Override
