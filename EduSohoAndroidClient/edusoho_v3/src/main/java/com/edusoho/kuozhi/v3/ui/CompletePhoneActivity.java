@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.register.ErrorCode;
 import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -43,12 +46,15 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
     private Bundle bundle;
     private String verified;
     private ImageView ivClearCode;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideActionBar();
         setContentView(R.layout.activity_complete_phone);
+
+        user = (User) getIntent().getExtras().getSerializable("user");
         initView();
         initGraphContent();
     }
@@ -66,7 +72,6 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
         tvGraph = (TextView) findViewById(R.id.tv_change);
         ivClearCode = (ImageView) findViewById(R.id.iv_clear_code);
         ivClearCode.setOnClickListener(mClearListener);
-        bundle = getIntent().getExtras();
         initCodeCoent();
         tvGraph.setOnClickListener(mChangListener);
         InputUtils.addTextChangedListener(etCode, new NormalCallback<Editable>() {
@@ -186,7 +191,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
             }
             final String phoneNum = etPhone.getText().toString().trim();
             if (Validator.isPhone(phoneNum)) {
-                RequestUrl requestUrl = app.bindNewUrl(Const.COMPLETE, false);
+                final RequestUrl requestUrl = app.bindNewUrl(Const.COMPLETE, false);
                 requestUrl.heads.put("Auth-Token", app.token);
                 if (bundle!=null) {
                     Map<String, String> params = requestUrl.getParams();
@@ -206,10 +211,16 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                                 result = parseJsonValue(response, new TypeToken<FindPasswordSmsCode>() {});
                             }
                             if (errorCode != null) {
+                                if (getString(R.string.phone_registered).equals(errorCode.error.message)) {
+                                    showDialog();
+                                    return;
+                                }
                                 CommonUtil.shortCenterToast(mActivity, errorCode.error.message);
                             }else {
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("user",user);
                                 startActivityForResult(new Intent(CompletePhoneActivity.this, CompletePhoneConfActivity.class).
-                                        putExtra("phoneNum", phoneNum).putExtra("verified_token", result.verified_token),0);
+                                        putExtra("phoneNum", phoneNum).putExtra("verified_token", result.verified_token).putExtras(bundle),0);
                             }
                         }
                     },null);
@@ -224,6 +235,10 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                                 ErrorCode errorCode = parseJsonValue(response, new TypeToken<ErrorCode>() {
                                 });
                                 if (errorCode != null) {
+                                    if (getString(R.string.phone_registered).equals(errorCode.error.message)) {
+                                        showDialog();
+                                        return;
+                                    }
                                     CommonUtil.shortCenterToast(mActivity, errorCode.error.message);
                                     return;
                                 }
@@ -240,8 +255,10 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                                     tvNext.setAlpha(0.6f);
                                     return;
                                 }
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("user", user);
                                 startActivityForResult(new Intent(CompletePhoneActivity.this, CompletePhoneConfActivity.class).
-                                    putExtra("phoneNum", phoneNum).putExtra("verified_token", result.verified_token),0);
+                                    putExtra("phoneNum", phoneNum).putExtra("verified_token", result.verified_token).putExtras(bundle),0);
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -285,6 +302,23 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
     protected void onPause() {
         super.onPause();
         this.isBack = false;
+    }
+
+    private void showDialog() {
+        new AlertDialog.Builder(CompletePhoneActivity.this)
+                .setMessage(R.string.register_hint)
+                .setPositiveButton(R.string.register_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        CompletePhoneActivity.this.finish();
+                    }
+                })
+                .setNegativeButton(R.string.register_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();
     }
 }
 

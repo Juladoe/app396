@@ -115,6 +115,7 @@
     <string name="reg_code_hint">请输入验证码</string>
     <string name="reg_username_hint">请输入手机号／邮箱号／用户名</string>
     <string name="reg_password_hint">密码不能为空</string>
+    <string name="phone_registered">该手机号已被绑定</string>
 
     <!--Button-->
     <string name="reg_account_reg">账号注册</string>
