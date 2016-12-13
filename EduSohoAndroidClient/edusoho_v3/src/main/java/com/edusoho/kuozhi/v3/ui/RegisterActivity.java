@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -95,69 +94,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
         @Override
         public void onClick(View v) {
             etAccount.setText("");
-            String strPass = etPhonePass.getText().toString();
-            if (TextUtils.isEmpty(strPass)) {
-                CommonUtil.longToast(mContext, "请输入密码");
-                return;
-            } else if (strPass.length() > 20) {
-                CommonUtil.longToast(mContext, "密码的长度必须小于或等于20");
-                return;
-            }
-            params.put("password", strPass);
 
-            String strCode = etCode.getText().toString().trim();
-            if (TextUtils.isEmpty(strCode)) {
-                CommonUtil.longToast(mContext, "请输入验证码");
-                return;
-            } else {
-                params.put("smsCode", strCode);
-            }
-
-            HashMap<String, String> headers = url.getHeads();
-            if (!TextUtils.isEmpty(mCookie)) {
-                headers.put("Cookie", mCookie);
-            }
-
-            btnPhoneReg.setLoadingState();
-
-            mActivity.ajaxPost(url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        UserResult userResult = mActivity.parseJsonValue(
-                                response, new TypeToken<UserResult>() {
-                                });
-                        if (userResult != null && userResult.user != null) {
-                            app.saveToken(userResult);
-                            btnPhoneReg.setSuccessState();
-                            btnPhoneReg.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
-                                }
-                            }, 500);
-                        } else {
-                            btnPhoneReg.setInitState();
-                            if (!TextUtils.isEmpty(response)) {
-                                CommonUtil.longToast(mContext, response);
-                            } else {
-                                CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
-                            }
-                        }
-                    } catch (Exception e) {
-                        btnPhoneReg.setInitState();
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data));
-                    btnPhoneReg.setInitState();
-                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
-                }
-            });
         }
     };
 
