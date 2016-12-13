@@ -120,16 +120,16 @@ public class FindPasswordByMailFragment extends BaseFragment {
                             Toast.makeText(mContext, error.error.message, Toast.LENGTH_LONG).show();
                             return;
                         }
-                        new AlertDialog.Builder(getActivity()).setMessage("请前往该邮箱验证信息，验证成功即可登录").
-                                setPositiveButton("去登录", new DialogInterface.OnClickListener() {
+                        new AlertDialog.Builder(getActivity()).setMessage("请前往邮箱验证信息，验证成功即可登录").
+                                setPositiveButton("确认", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        app.mEngine.runNormalPlugin("LoginActivity", mContext, new PluginRunCallback() {
+                                        app.mEngine.runNormalPlugin("LoginActivity", getActivity().getApplicationContext(), new PluginRunCallback() {
                                             @Override
                                             public void setIntentDate(Intent startIntent) {
                                                 startIntent.putExtra(LoginActivity.FIND_PASSWORD_ACCOUNT, mEmail);
                                             }
-                                        }, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        }, Intent.FLAG_ACTIVITY_NEW_TASK);
                                     }
                                 }).setCancelable(false).show();
                     }

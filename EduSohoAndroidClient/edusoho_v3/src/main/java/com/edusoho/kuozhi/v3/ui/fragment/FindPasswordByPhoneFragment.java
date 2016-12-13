@@ -215,12 +215,12 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                             return;
                         }
                         ToastUtils.show(mContext, R.string.reset_password_success, Toast.LENGTH_LONG);
-                        app.mEngine.runNormalPlugin("LoginActivity", mContext, new PluginRunCallback() {
+                        app.mEngine.runNormalPlugin("LoginActivity", getActivity().getApplicationContext(), new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
                                 startIntent.putExtra(LoginActivity.FIND_PASSWORD_ACCOUNT, mUserMobile);
                             }
-                        }, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        }, Intent.FLAG_ACTIVITY_NEW_TASK);
                     }
                 }, new Response.ErrorListener() {
                     @Override
