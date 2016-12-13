@@ -6,57 +6,312 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingLeft="15dp">
 
-        <RelativeLayout
-            android:id="@+id/price_rlayout"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </RelativeLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/title_rlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/price_rlayout"
-            >
-        </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/price_rlayout"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true">
 
-        <RelativeLayout
-            android:id="@+id/vip_rlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/title_rlayout"
-            >
+                <TextView
+                    android:id="@+id/tv_price1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="27dp"
+                    android:text="¥"
+                    android:textColor="@color/secondary_color"
+                    android:textSize="@dimen/font_l" />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/tv_price_now"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_toRightOf="@+id/tv_price1"
+                    android:text="500"
+                    android:textColor="@color/secondary_color"
+                    android:textSize="@dimen/font_xxxl" />
 
-        <RelativeLayout
-            android:id="@+id/teacher_rlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/vip_rlayout"
-            >
+                <TextView
+                    android:id="@+id/tv_price_old"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginTop="29dp"
+                    android:layout_toRightOf="@+id/tv_price_now"
+                    android:text="¥200"
+                    android:textColor="@color/secondary2_font_color"
+                    android:textSize="@dimen/font_l" />
 
-        </RelativeLayout>
-        
-        <RelativeLayout
-            android:id="@+id/student_rlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/teacher_rlayout"
-            >
+                <View style="@style/BottomLine" />
+            </RelativeLayout>
 
-        </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/title_rlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:id="@+id/review_rlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/student_rlayout"
-            >
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:text="PS教程之趣味外传"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
 
-        </RelativeLayout>
+                <com.edusoho.kuozhi.v3.view.ReviewStarView
+                    android:id="@+id/review_star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="23dp"
+                    android:layout_marginTop="26dp" />
 
+                <TextView
+                    android:id="@+id/tv_title_student_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_title"
+                    android:layout_marginTop="15dp"
+                    android:text="3950名学生"
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="@dimen/font_s_" />
+
+                <TextView
+                    android:id="@+id/tv_title_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_title_student_num"
+                    android:layout_marginRight="27dp"
+                    android:layout_marginTop="15dp"
+                    android:text="本课程分为基础篇、方法篇和案例篇3篇，共10章。基础篇介绍平面设计的基本概念、流程、要求。"
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="@dimen/font_s" />
+
+                <View
+                    style="@style/BottomLine"
+                    android:layout_below="@+id/tv_title_desc"
+                    android:layout_marginTop="25dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/vip_rlayout"
+                android:layout_width="match_parent"
+                android:layout_height="63dp">
+
+                <ImageView
+                    android:id="@+id/iv_vip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true" />
+
+                <TextView
+                    android:id="@+id/tv_vip_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="33dp"
+                    android:layout_toRightOf="@+id/iv_vip"
+                    android:text="加入钻石会员，免费学习189门课程 "
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="@dimen/font_s" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="15dp"
+                    android:src="@drawable/more_setting_right" />
+
+                <View style="@style/BottomLine" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/people_rlayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_people1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:text="适宜人群"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
+
+                <TextView
+                    android:id="@+id/tv_people_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_people1"
+                    android:layout_marginRight="22dp"
+                    android:layout_marginTop="15dp"
+                    android:text="网校用户"
+                    android:textColor="@color/secondary_font_color" />
+
+                <View
+                    style="@style/BottomLine"
+                    android:layout_below="@+id/tv_people_desc"
+                    android:layout_marginTop="25dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/teacher_rlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_teacher1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:text="讲师"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
+
+                <com.edusoho.kuozhi.v3.view.circleImageView.CircleImageView
+                    android:id="@+id/iv_teacher_icon"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_below="@+id/tv_teacher1"
+                    android:layout_marginTop="15dp"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/tv_teacher_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/iv_teacher_icon"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="23dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_toRightOf="@+id/iv_teacher_icon"
+                    android:text="格格咪"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_s" />
+
+                <TextView
+                    android:id="@+id/tv_teacher_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/tv_teacher_name"
+                    android:layout_below="@+id/tv_teacher_name"
+                    android:layout_marginRight="23dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Edusoho官方运营"
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="@dimen/font_xs" />
+
+                <View
+                    style="@style/BottomLine"
+                    android:layout_below="@+id/iv_teacher_icon"
+                    android:layout_marginTop="25dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/student_rlayout"
+                android:layout_width="match_parent"
+                android:layout_height="148dp">
+
+                <TextView
+                    android:id="@+id/tv_student1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:text="课程学员"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
+
+                <TextView
+                    android:id="@+id/tv_student_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/tv_student1"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/tv_student1"
+                    android:text="(233)"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_s" />
+
+                <ImageView
+                    android:id="@+id/iv_student_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="25dp"
+                    android:src="@drawable/more_setting_right" />
+
+                <LinearLayout
+                    android:id="@+id/student_icon_llayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="68dp"
+                    android:layout_below="@+id/tv_student1"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="14dp"
+                    android:orientation="horizontal" />
+
+                <View style="@style/BottomLine" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/review_rlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_review1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:text="课程评论"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
+
+                <TextView
+                    android:id="@+id/tv_review_num"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/tv_review1"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/tv_review1"
+                    android:text="(66)"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_s" />
+
+                <com.edusoho.kuozhi.v3.view.ChildListView
+                    android:id="@+id/lv_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@+id/tv_review1"
+                    android:layout_marginRight="15dp" />
+
+                <TextView
+                    android:id="@+id/tv_review_more"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/lv_review"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
+                    android:text="更多评论（61）"
+                    android:textColor="@color/primary_color"
+                    android:textSize="@dimen/font_l" />
+            </RelativeLayout>
+        </LinearLayout>
     </RelativeLayout>
 </com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>

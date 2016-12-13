@@ -255,4 +255,12 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:backgroundDimEnabled">true</item>
     </style>
+
+    <style name="BottomLine">
+        <item name="android:background">@color/disabled_hint_color</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:layout_alignParentBottom">true</item>
+    </style>
 </resources>

@@ -1,11 +1,12 @@
 <resources>
     <!--kuozhi 4.0 font size guideline-->
-
+    <dimen name="font_xxxl">24sp</dimen>
     <dimen name="font_xxl">20sp</dimen>
     <dimen name="font_xl">17sp</dimen>
     <dimen name="font_l">15sp</dimen>
     <dimen name="font_m">14sp</dimen>
     <dimen name="font_s">13sp</dimen>
+    <dimen name="font_s_">12sp</dimen>
     <dimen name="font_xs">11sp</dimen>
     <dimen name="font_xxs">10sp</dimen>
 

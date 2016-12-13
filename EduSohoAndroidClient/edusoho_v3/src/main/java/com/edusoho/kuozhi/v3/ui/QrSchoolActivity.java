@@ -255,7 +255,12 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
              */
             mActivity.app.mEngine
                     .runNormalPlugin("CourseActivity",
-                            QrSchoolActivity.this, null);
+                            QrSchoolActivity.this, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra(CourseActivity.COURSE_ID,"0");
+                                }
+                            });
         }
     };
 

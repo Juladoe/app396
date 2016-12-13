@@ -30,7 +30,8 @@ public class StopScrollView extends ScrollView{
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        if(getChildAt(0).getTop() >= -AppUtil.dp2px(getContext(),2)){
+        if(oldt - t > 0&&
+                getChildAt(0).getTop() >= -AppUtil.dp2px(getContext(),2)){
             Bundle bundle = new Bundle();
             bundle.putString("class",getContext().getClass().getSimpleName());
             ((EdusohoApp) ((Activity)getContext()).getApplication())

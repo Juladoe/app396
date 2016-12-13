@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.FragmentUtil;
@@ -91,6 +92,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mIntro = findViewById(R.id.intro);
         mHour = findViewById(R.id.hour);
         mReview = findViewById(R.id.review);
+        mFragments.add(new CourseDetailFragment(mCourseId));
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mContentVp.setAdapter(mAdapter);
         mParent.setFirstViewHeight(AppUtil.dp2px(this, 260));
