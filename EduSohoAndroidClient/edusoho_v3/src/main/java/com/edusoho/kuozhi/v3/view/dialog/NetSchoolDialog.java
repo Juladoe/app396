@@ -4,6 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -11,6 +14,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
@@ -35,6 +39,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
@@ -144,7 +149,12 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 dismiss();
             }
         });
-        mPattern = Pattern.compile("([a-z]([a-z0-9\\-]*[\\.。])+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&]*)?)?(#[a-z][a-z0-9_]*)?$");
+        mPattern = Pattern.compile("([a-z]([a-z0-9\\-]*[\\.。])" +
+                "+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)" +
+                "|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))" +
+                "(:[0-9]{1,5})?" +
+                "(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&]*)?)?(#[a-z][a-z0-9_]*)?$"
+        );
         mSearchEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
@@ -153,30 +163,33 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 }
                 String searchStr = mSearchEdt.getText().toString();
                 if (searchStr.trim().length() > 0) {
-                    mLoading = LoadDialog.create(mContext);
-                    mLoading.show();
                     Matcher matcher = mPattern.matcher(searchStr);
                     if (matcher.matches()) {
                         saveSearchHistory(searchStr);
                         searchSchool(searchStr);
                     } else {
+                        mLoading = LoadDialog.create(mContext);
+                        mLoading.show();
                         SiteModel.getSite(searchStr, new ResponseCallbackListener<List<Site>>() {
                             @Override
                             public void onSuccess(List<Site> data) {
-                                mLoading.hide();
+                                mLoading.dismiss();
                                 mList.clear();
-                                mList.addAll(data);
+                                if(data.size() == 0){
+                                    CommonUtil.shortToast(mContext,"没有搜索到相关网校");
+                                }else {
+                                    mList.addAll(data);
+                                }
                                 mAdapter.notifyDataSetChanged();
                             }
 
                             @Override
                             public void onFailure(String code, String message) {
-                                mLoading.hide();
+                                mLoading.dismiss();
                             }
                         });
                     }
                 }
-                mSearchEdt.setText("");
                 return true;
             }
         });
@@ -291,6 +304,11 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
         app.getUrl(schoolApiUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if (response.equals("网校客户端未开启")) {
+                    CommonUtil.shortToast(mContext, "网校客户端未开启");
+                    mLoading.dismiss();
+                    return;
+                }
                 SchoolResult schoolResult = app.gson.fromJson(
                         response, new TypeToken<SchoolResult>() {
                         }.getType());
@@ -298,11 +316,13 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 if (schoolResult == null
                         || schoolResult.site == null) {
                     handlerError(response);
+                    mLoading.dismiss();
                     return;
                 }
 
                 School site = schoolResult.site;
                 if (!SchoolUtil.checkMobileVersion(mContext, site, site.apiVersionRange)) {
+                    mLoading.dismiss();
                     return;
                 }
                 bindApiToken(site);
@@ -314,7 +334,11 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
         SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
         Date date = new Date();
         String loginTime = nowfmt.format(date);
-        SchoolUtil.saveEnterSchool(mContext, site.name, loginTime, "登录账号：未登录", app.domain);
+        Uri uri = Uri.parse(site.url);
+        String domain = uri.getPort() == -1?
+                uri.getHost():
+                uri.getHost() + ":" + uri.getPort();
+        SchoolUtil.saveEnterSchool(mContext, site.name, loginTime, "登录账号：未登录", domain);
         startSchoolActivity(site);
     }
 
@@ -343,6 +367,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mLoading.dismiss();
                 app.setCurrentSchool(site);
                 app.removeToken();
                 app.registDevice(null);
@@ -397,7 +422,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
             @Override
             public void onClick(View v) {
                 int position = (int) v.getTag(R.id.net_school_tv);
-                String schoolhost = mList.get(position).getSiteUrl();
+                String schoolhost = mList.get(position).getLicenseDomains();
                 searchSchool(schoolhost);
             }
         };

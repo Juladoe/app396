@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--kuozhi 4.0 color guideline-->
-
     <color name="primary_color">#03C777</color>
     <color name="secondary_color">#FD4852</color>
     <color name="secondary2_color">#FFAA00</color>
@@ -13,6 +12,7 @@
     <color name="disabled2_hint_color">#FFFFFF</color>
 
     <!-- end -->
+
     <color name="base_card_bg">#ffffff</color>
     <color name="base_light">#fdb933</color>
     <color name="base_light_red">#ff5822</color>
@@ -469,5 +469,9 @@
     <color name="thread_type_discuss">#2DB7F5</color>
 
     <color name="live_notice_list_bg">#e8e8e8</color>
+    <color name="register_send">#ffaa00</color>
+    <color name="register_send_auth">#2b333b</color>
+    <color name="register_tv_show_hint">#bdc2c6</color>
+    <color name="register_view">#d8d8d8</color>
 
 </resources>

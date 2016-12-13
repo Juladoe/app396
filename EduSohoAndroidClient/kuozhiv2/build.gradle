@@ -5,13 +5,17 @@ android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
 
+    freeline {
+        hack true
+    }
+
     defaultConfig {
         applicationId "com.edusoho"
         minSdkVersion 16
 
         targetSdkVersion 21
-        versionName "3.7.1"
-        versionCode 41
+        versionName "3.8.0"
+        versionCode 42
 
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
@@ -71,4 +75,5 @@ dependencies {
     compile project(':edusoho_v3')
     compile project(':homework')
     //compile project(':liveplayer')
+
 }

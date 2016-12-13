@@ -9,6 +9,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,14 +27,15 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByPhoneFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,7 +63,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private static boolean isRun;
     private EditText etUsername;
     private EditText etPassword;
-    private View mBtnLogin;
+    private View mTvLogin;
     private ImageView ivWeibo;
     private ImageView ivQQ;
     private ImageView ivWeixin;
@@ -72,6 +74,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private TextView tvForgetPassword;
     private String mAuthCancel;
     private View vSao;
+    private View mParent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,8 +99,8 @@ public class LoginActivity extends BaseNoTitleActivity {
         super.initView();
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
-        mBtnLogin = findViewById(R.id.btn_login);
-        mBtnLogin.setOnClickListener(mLoginClickListener);
+        mTvLogin = findViewById(R.id.tv_login);
+        mTvLogin.setOnClickListener(mLoginClickListener);
         ivWeibo = (ImageView) findViewById(R.id.iv_weibo);
         ivWeibo.setOnClickListener(mWeiboLoginClickListener);
         ivQQ = (ImageView) findViewById(R.id.iv_qq);
@@ -110,11 +113,15 @@ public class LoginActivity extends BaseNoTitleActivity {
         ivPwCancel = (ImageView) findViewById(R.id.iv_password_cancel);
         ivUserCancel = (ImageView) findViewById(R.id.iv_username_cancel);
         vSao = findViewById(R.id.saoyisao);
-
+        mParent = findViewById(R.id.parent_rlayout);
+        ViewGroup.LayoutParams params = mParent.getLayoutParams();
+        params.height = AppUtil.getUnrealScreenHeightPx(this);
+        mParent.setLayoutParams(params);
         tvForgetPassword.setOnClickListener(getForgetPasswordClickListener());
         vSao.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "Login_scan_it");
                 Intent qrIntent = new Intent();
                 qrIntent.setClass(LoginActivity.this, CaptureActivity.class);
                 startActivityForResult(qrIntent, REQUEST_QR);
@@ -123,12 +130,14 @@ public class LoginActivity extends BaseNoTitleActivity {
         tvMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "Login_Select_the_school");
                 QrSchoolActivity.start(mActivity);
             }
         });
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "Login_Register_an_account");
                 mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
             }
         });
@@ -162,13 +171,19 @@ public class LoginActivity extends BaseNoTitleActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+                mTvLogin.setAlpha(1f);
+                mTvLogin.setEnabled(true);
                 if (etUsername.getText().length() == 0) {
                     ivUserCancel.setVisibility(View.INVISIBLE);
+                    mTvLogin.setAlpha(0.6f);
+                    mTvLogin.setEnabled(false);
                 } else {
                     ivUserCancel.setVisibility(View.VISIBLE);
                 }
                 if (etPassword.getText().length() == 0) {
                     ivPwCancel.setVisibility(View.INVISIBLE);
+                    mTvLogin.setAlpha(0.6f);
+                    mTvLogin.setEnabled(false);
                 } else {
                     ivPwCancel.setVisibility(View.VISIBLE);
                 }
@@ -195,6 +210,7 @@ public class LoginActivity extends BaseNoTitleActivity {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "Forgot_your_password");
                 mActivity.app.mEngine.runNormalPlugin("ForgetPasswordActivity", mContext, null);
             }
         };
@@ -231,7 +247,7 @@ public class LoginActivity extends BaseNoTitleActivity {
                     saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
                     new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
-                    mBtnLogin.postDelayed(new Runnable() {
+                    mTvLogin.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             mActivity.finish();
@@ -291,9 +307,9 @@ public class LoginActivity extends BaseNoTitleActivity {
     }
 
     private View.OnClickListener mWeiboLoginClickListener = new View.OnClickListener() {
-
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Login_weib_login");
             loginByPlatform("SinaWeibo");
         }
     };
@@ -301,6 +317,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private View.OnClickListener mQQLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Login_qq_login");
             loginByPlatform("QQ");
         }
     };
@@ -309,6 +326,7 @@ public class LoginActivity extends BaseNoTitleActivity {
     private View.OnClickListener mWeChatLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Login_weixin_login");
             loginByPlatform("Wechat");
         }
     };

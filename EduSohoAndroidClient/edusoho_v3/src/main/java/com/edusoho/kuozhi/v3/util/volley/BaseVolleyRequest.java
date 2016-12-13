@@ -139,7 +139,6 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
                     instance = new RequestLocalManager();
                 }
             }
-
             return instance;
         }
 

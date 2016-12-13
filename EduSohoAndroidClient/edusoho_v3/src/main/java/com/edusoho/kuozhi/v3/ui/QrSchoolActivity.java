@@ -7,12 +7,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -50,6 +53,7 @@ import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -230,6 +234,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private View.OnClickListener mSearchClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Search_the_school_scan_it");
             Intent qrIntent = new Intent();
             qrIntent.setClass(QrSchoolActivity.this, CaptureActivity.class);
             startActivityForResult(qrIntent, REQUEST_QR);
@@ -239,6 +244,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private View.OnClickListener mOtherClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Search_the_school_input_box");
             mAnimatorUpSet.start();
             mSearchLayout.setEnabled(false);
         }
@@ -247,9 +253,22 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private View.OnClickListener mHelpClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            /**
-             * todo 用户帮助
-             */
+            app.mEngine.runNormalPlugin("WebViewDataActivity", mActivity, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(WebViewDataActivity.TITLE,"使用帮助");
+                    startIntent.putExtra(WebViewDataActivity.DATA,
+                            "<p>一、扫一扫进入网校：<p style=\\\"text-indent:2em;\\\">" +
+                                    "1、点击 <strong>网校首页</strong>—<strong>侧边栏</strong>" +
+                                    "—<strong>手机端</strong>，进入页面后滑至页面底部，即可找到登录二维码。" +
+                                    "</p><p style=\\\"text-indent:2em;\\\">" +
+                                    "2、在电脑浏览器内输入网校域名/mobile（例如：xxxx.cn/mobile）" +
+                                    "即可找到登录二维码。</p></p><p>二、通过网校网址、名称搜索网校：" +
+                                    "<p style=\\\"text-indent:2em;\\\">在搜索框内输入" +
+                                    "<strong>网校网址</strong>或者<strong>网校名称</strong>点击搜索，" +
+                                    "即可找到你想要的网校。</p></p>\n");
+                }
+            });
         }
     };
 
@@ -318,7 +337,6 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
 
         protected void bindApiToken(final UserResult userResult) {
             School school = userResult.site;
-
             RequestUrl requestUrl = new RequestUrl(school.host + Const.GET_API_TOKEN);
             Map<String, String> tokenMap = ApiTokenUtil.getToken(mActivity.getBaseContext());
             requestUrl.heads.put("Auth-Token", tokenMap.get("token"));
@@ -386,9 +404,8 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                         if (!checkMobileVersion(site, site.apiVersionRange)) {
                             return;
                         }
-
                         bindApiToken(userResult);
-
+                        SchoolUtil.saveSchoolHistory(site);
                     } catch (Exception e) {
                         mLoading.dismiss();
                         CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
@@ -501,10 +518,6 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     }
 
     private void searchSchool(String searchStr) {
-        if (TextUtils.isEmpty(searchStr)) {
-            CommonUtil.longToast(mContext, "请输入网校url");
-            return;
-        }
         String url = "http://" + searchStr + Const.VERIFYVERSION;
         mLoading = LoadDialog.create(mContext);
         mLoading.show();
@@ -539,12 +552,14 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                 if (schoolResult == null
                         || schoolResult.site == null) {
                     handlerError(response);
+                    mLoading.dismiss();
                     return;
                 }
 
                 School site = schoolResult.site;
                 if (!SchoolUtil.checkMobileVersion(QrSchoolActivity.this
                         , site, site.apiVersionRange)) {
+                    mLoading.dismiss();
                     return;
                 }
                 bindApiToken(site);
@@ -590,6 +605,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mLoading.dismiss();
                 app.setCurrentSchool(site);
                 app.removeToken();
                 app.registDevice(null);
@@ -601,10 +617,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     }
 
     private void saveSchoolHistory(School site) {
-        SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
-        Date date = new Date();
-        String loginTime = nowfmt.format(date);
-        SchoolUtil.saveEnterSchool(mContext, site.name, loginTime, "登录账号：未登录", app.domain);
+        SchoolUtil.saveSchoolHistory(site);
         startSchoolActivity(site);
     }
 

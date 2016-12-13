@@ -17,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -38,9 +39,11 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -241,10 +244,6 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
     }
 
     private void searchSchool(String searchStr) {
-        if (TextUtils.isEmpty(searchStr)) {
-            CommonUtil.longToast(mContext, "请输入网校url");
-            return;
-        }
 
         String url = "http://" + searchStr + Const.VERIFYVERSION;
         mLoading = LoadDialog.create(mContext);
@@ -399,11 +398,13 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                 if (schoolResult == null
                         || schoolResult.site == null) {
                     handlerError(response);
+                    mLoading.dismiss();
                     return;
                 }
 
                 School site = schoolResult.site;
                 if (!checkMobileVersion(site, site.apiVersionRange)) {
+                    mLoading.dismiss();
                     return;
                 }
                 bindApiToken(site);
@@ -444,6 +445,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mLoading.dismiss();
                 app.setCurrentSchool(site);
                 app.removeToken();
                 app.registDevice(null);
