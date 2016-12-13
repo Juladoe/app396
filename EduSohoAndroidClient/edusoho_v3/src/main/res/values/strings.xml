@@ -38,6 +38,7 @@
     <!--TextView-->
     <string name="testpaper_menu_card">答题卡</string>
     <string name="setting_scan">扫一扫</string>
+    <string name="setting_search_school">搜索网校</string>
     <string name="setting_scan_second">扫描进入网校</string>
     <string name="setting_new_msg_notify">新消息提醒</string>
     <string name="setting_online_duration">在线时段</string>
