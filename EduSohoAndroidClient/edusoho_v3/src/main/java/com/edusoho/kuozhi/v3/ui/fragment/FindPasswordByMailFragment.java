@@ -33,6 +33,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.ToastUtil;
 import com.edusoho.kuozhi.v3.util.Validator;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
@@ -111,9 +112,12 @@ public class FindPasswordByMailFragment extends BaseFragment {
                 Map<String, String> map = requestUrl.getParams();
                 map.put("password", etResetPassword.getText().toString());
                 map.put("email", mEmail);
+                final LoadDialog loadDialog = LoadDialog.create(getActivity());
+                loadDialog.show();
                 app.postUrl(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        loadDialog.dismiss();
                         ApiResponse<Error> error = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<Error>>() {
                         });
                         if (error.error != null && error.error.code != null && error.error.code.equals("500")) {
@@ -136,7 +140,11 @@ public class FindPasswordByMailFragment extends BaseFragment {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
+                        loadDialog.dismiss();
+                        if (error.networkResponse != null) {
+                            String errorMsg = new String(error.networkResponse.data);
+                            Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
