@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
@@ -24,6 +25,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.FragmentUtil;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
+import com.edusoho.kuozhi.v3.view.qr.decode.Intents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +34,7 @@ import java.util.List;
  * Created by Zhang on 2016/12/8.
  */
 public class CourseActivity extends BaseNoTitleActivity implements View.OnClickListener {
+    public static final String COURSE_ID = "course_id";
     private HeadStopScrollView mParent;
     private RelativeLayout mHeadRlayout;
     private RelativeLayout mMediaRlayout;
@@ -48,6 +51,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     private int[] mScrollY = new int[3];
     private boolean[] mCanScroll = {true, true, true};
     public static final int MEDIA_VIEW_HEIGHT = 150;
+    private String mCourseId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +68,11 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
             tintManager.setTintColor(Color.parseColor("#00000000"));
         }
 
+        Intent intent = getIntent();
+        mCourseId = intent.getStringExtra(COURSE_ID);
+        if(mCourseId == null || mCourseId.trim().length()==0){
+            finish();
+        }
         initView();
         initEvent();
         initData();
