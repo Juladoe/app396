@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -97,7 +98,13 @@ public class FindPasswordByMailFragment extends BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (etResetPassword.length() == 0) {
+                final String resetPassword = etResetPassword.getText().toString();
+                if (TextUtils.isEmpty(resetPassword)) {
+                    Toast.makeText(mContext, getString(R.string.reset_password_not_null), Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (resetPassword.length() <= 5 || resetPassword.length() >= 20) {
+                    Toast.makeText(mContext, getString(R.string.password_more_than_six_digit_number), Toast.LENGTH_LONG).show();
                     return;
                 }
                 RequestUrl requestUrl = app.bindNewUrl(Const.EMAILS, false);
@@ -110,7 +117,7 @@ public class FindPasswordByMailFragment extends BaseFragment {
                         ApiResponse<Error> error = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<Error>>() {
                         });
                         if (error.error != null && error.error.code != null && error.error.code.equals("500")) {
-                            ToastUtil.getInstance(mContext).makeText(error.error.message, Toast.LENGTH_LONG).show();
+                            Toast.makeText(mContext, error.error.message, Toast.LENGTH_LONG).show();
                             return;
                         }
                         new AlertDialog.Builder(getActivity()).setMessage("请前往该邮箱验证信息，验证成功即可登录").
