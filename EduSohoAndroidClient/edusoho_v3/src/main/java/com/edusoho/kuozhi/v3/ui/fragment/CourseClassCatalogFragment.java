@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 /**
  * Created by DF on 2016/12/13.
  */
-
 public class CourseClassCatalogFragment extends Fragment {
 
     @Nullable
