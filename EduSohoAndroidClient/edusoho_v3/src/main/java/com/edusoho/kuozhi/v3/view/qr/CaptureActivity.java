@@ -204,7 +204,7 @@ public class CaptureActivity extends ActionBarBaseActivity implements
 //            intent.putExtras(bundle);
 //            setResult(QrSchoolActivity.RESULT_QR, intent);
             new QrSchoolActivity.SchoolChangeHandler(mActivity).change(msg + "&version=2");
-            finish();
+//            finish();
         }
     }
 
