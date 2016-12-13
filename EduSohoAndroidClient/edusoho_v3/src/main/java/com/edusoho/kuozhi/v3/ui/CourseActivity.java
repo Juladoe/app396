@@ -50,7 +50,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     private int mCheckNum = 0;
     private int[] mScrollY = new int[3];
     private boolean[] mCanScroll = {true, true, true};
-    public static final int MEDIA_VIEW_HEIGHT = 150;
+    public static final int MEDIA_VIEW_HEIGHT = 210;
     private String mCourseId;
 
     @Override
@@ -70,7 +70,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
 
         Intent intent = getIntent();
         mCourseId = intent.getStringExtra(COURSE_ID);
-        if(mCourseId == null || mCourseId.trim().length()==0){
+        if (mCourseId == null || mCourseId.trim().length() == 0) {
             finish();
         }
         initView();
@@ -93,6 +93,12 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mReview = findViewById(R.id.review);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mContentVp.setAdapter(mAdapter);
+        mParent.setFirstViewHeight(AppUtil.dp2px(this, 260));
+        ViewGroup.LayoutParams params = mContentVp.getLayoutParams();
+        if (params != null) {
+            params.height = AppUtil.getHeightPx(this);
+            mContentVp.setLayoutParams(params);
+        }
     }
 
     private void initEvent() {
@@ -216,18 +222,21 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     }
 
     private void changeBar(boolean show) {
-        if(show){
+        if (show) {
             mHeadRlayout.setVisibility(View.GONE);
-        }else{
+        } else {
             mHeadRlayout.setVisibility(View.VISIBLE);
         }
     }
 
     private void courseSwitch() {
-
+        /**
+         * todo 切换课程
+         */
     }
 
     private boolean mIsFullScreen = false;
+
     private void fullScreen() {
         ViewGroup.LayoutParams params = mMediaRlayout.getLayoutParams();
         if (!mIsFullScreen) {
