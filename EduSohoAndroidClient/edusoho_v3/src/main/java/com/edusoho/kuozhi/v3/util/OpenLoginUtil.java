@@ -91,6 +91,7 @@ public class OpenLoginUtil {
                 UserResult userResult = app.parseJsonValue(
                         response, new TypeToken<UserResult>() {
                         });
+                app.loginUser = userResult.user;
                 if (!response.contains("verifiedMobile")) {
                     app.token = userResult.token;
                     Intent intent = new Intent(mContext, CompletePhoneActivity.class);
