@@ -25,9 +25,10 @@
         android:id="@+id/scroll_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
         <RelativeLayout
             android:id="@+id/parent_rlayout"
             android:layout_width="match_parent"
@@ -36,14 +37,14 @@
             <RelativeLayout
                 android:id="@+id/media_rlayout"
                 android:layout_width="match_parent"
-                android:layout_height="150dp">
+                android:layout_height="210dp">
 
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/tab_rlayout"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="50dp"
                 android:layout_below="@+id/media_rlayout">
 
                 <LinearLayout
@@ -61,12 +62,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="简介" />
+                            android:text="简介"
+                            android:textColor="@color/secondary_font_color"
+                            android:textSize="@dimen/font_l" />
 
                         <View
                             android:id="@+id/intro"
-                            android:layout_width="30dp"
-                            android:layout_height="2dp"
+                            android:layout_width="35dp"
+                            android:layout_height="3dp"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:background="@color/primary_color" />
@@ -78,22 +81,25 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1">
 
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:gravity="center"
-                            android:text="课时" />
-
                         <View
                             android:id="@+id/hour"
-                            android:layout_width="30dp"
-                            android:layout_height="2dp"
+                            android:layout_width="35dp"
+                            android:layout_height="3dp"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:background="@color/primary_color" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="课时"
+                            android:textColor="@color/secondary_font_color"
+                            android:textSize="@dimen/font_l"
+                            android:layout_above="@+id/hour"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:id="@+id/textView" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -106,12 +112,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="评价" />
+                            android:text="评价"
+                            android:textColor="@color/secondary_font_color"
+                            android:textSize="@dimen/font_l" />
 
                         <View
                             android:id="@+id/review"
-                            android:layout_width="30dp"
-                            android:layout_height="2dp"
+                            android:layout_width="35dp"
+                            android:layout_height="3dp"
                             android:layout_alignParentBottom="true"
                             android:layout_centerHorizontal="true"
                             android:background="@color/primary_color" />
