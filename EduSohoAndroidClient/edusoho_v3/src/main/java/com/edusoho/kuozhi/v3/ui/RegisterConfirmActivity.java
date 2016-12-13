@@ -305,7 +305,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         @Override
         public void handleMessage(Message msg) {
             mActivity = mWeakReference.get();
-            mActivity.tvSend.setText(mActivity.mClockTime + "S");
+            mActivity.tvSend.setText(mActivity.mClockTime + "s");
             mActivity.mClockTime--;
             if (mActivity.mClockTime < 0) {
                 mActivity.mTimer.cancel();
