@@ -90,7 +90,7 @@
     <string name="phone_sms_code_hint">请输入短信验证码</string>
     <string name="sms_code_not_null">验证码不能为空</string>
     <string name="reset_password_not_null">重置密码不能为空</string>
-    <string name="password_more_than_six_digit_number">密码不能小于6位</string>
+    <string name="password_more_than_six_digit_number">密码是由5-20位英文、数字、符号组成</string>
     <string name="retrieve_phone_code">重新获取验证码</string>
     <string name="after_retrieve_phone_code">后重新获取验证码</string>
     <string name="reg_set_password">请设置密码</string>

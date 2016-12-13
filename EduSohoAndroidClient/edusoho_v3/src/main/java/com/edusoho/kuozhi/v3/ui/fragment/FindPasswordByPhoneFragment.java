@@ -194,7 +194,7 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                     ToastUtil.getInstance(mContext).makeText(getString(R.string.reset_password_not_null), Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (resetPassword.length() < 6) {
+                if (resetPassword.length() <= 5 || resetPassword.length() >= 20) {
                     ToastUtil.getInstance(mContext).makeText(getString(R.string.password_more_than_six_digit_number), Toast.LENGTH_LONG).show();
                     return;
                 }
