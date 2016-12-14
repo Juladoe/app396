@@ -147,7 +147,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
     private void showDialog() {
         new AlertDialog.Builder(RegisterActivity.this)
                 .setMessage(R.string.register_hint)
-                .setPositiveButton(R.string.register_confirm, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.register_login, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
