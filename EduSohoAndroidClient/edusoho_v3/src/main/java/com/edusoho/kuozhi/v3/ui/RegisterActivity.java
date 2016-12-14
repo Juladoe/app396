@@ -124,7 +124,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                                 registerIntent.putExtra("num", phoneNum);
                                 startActivity(registerIntent);
                             } else {
-                                if (response.equals(getString(R.string.register_hint))) {
+                                if (response.equals(getString(R.string.registered_hint))) {
                                     showDialog();
                                 }else{
                                     CommonUtil.longToast(mContext, response);

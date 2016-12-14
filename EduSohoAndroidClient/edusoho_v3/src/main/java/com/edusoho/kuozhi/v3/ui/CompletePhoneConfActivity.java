@@ -195,7 +195,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
             }
             String strPass = etPwd.getText().toString();
             if (TextUtils.isEmpty(strPass)) {
-                CommonUtil.shortCenterToast(mContext, getString(R.string.reg_password_hint));
+                CommonUtil.shortCenterToast(mContext, getString(R.string.register_password_hint));
                 return;
             }
             if (strPass.length() < 5 || strPass.length() > 20) {
