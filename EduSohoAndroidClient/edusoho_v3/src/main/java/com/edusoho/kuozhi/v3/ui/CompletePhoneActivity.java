@@ -19,7 +19,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.register.ErrorCode;
 import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -46,7 +46,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
     private Bundle bundle;
     private String verified;
     private ImageView ivClearCode;
-    private User user;
+    private UserResult userResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +54,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
         hideActionBar();
         setContentView(R.layout.activity_complete_phone);
 
-        user = (User) getIntent().getExtras().getSerializable("user");
+        userResult = (UserResult) getIntent().getExtras().getSerializable("user");
         initView();
         initGraphContent();
     }
@@ -218,7 +218,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                                 CommonUtil.shortCenterToast(mActivity, errorCode.error.message);
                             }else {
                                 Bundle bundle = new Bundle();
-                                bundle.putSerializable("user",user);
+                                bundle.putSerializable("user",userResult);
                                 startActivityForResult(new Intent(CompletePhoneActivity.this, CompletePhoneConfActivity.class).
                                         putExtra("phoneNum", phoneNum).putExtra("verified_token", result.verified_token).putExtras(bundle),0);
                             }
@@ -256,7 +256,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                                     return;
                                 }
                                 Bundle bundle = new Bundle();
-                                bundle.putSerializable("user", user);
+                                bundle.putSerializable("user", userResult);
                                 startActivityForResult(new Intent(CompletePhoneActivity.this, CompletePhoneConfActivity.class).
                                     putExtra("phoneNum", phoneNum).putExtra("verified_token", result.verified_token).putExtras(bundle),0);
                             }
