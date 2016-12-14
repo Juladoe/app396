@@ -19,7 +19,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.register.ErrorCode;
 import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -56,7 +56,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
     private TextView tvTime;
     private String phone;
     private String verified_token;
-    private User user;
+    private UserResult userResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +92,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         initTextChange();
         phone = getIntent().getStringExtra("phoneNum");
         verified_token = getIntent().getStringExtra("verified_token");
-        user = (User) getIntent().getExtras().getSerializable("user");
+        userResult = (UserResult) getIntent().getExtras().getSerializable("user");
         InputUtils.showKeyBoard(etAuth,mContext);
         mSmsCodeHandler = new SmsCodeHandler(this);
         sendSms();
@@ -216,7 +216,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                                 public void run() {
                                     //绑定成功后直接进到网校
                                     OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mActivity);
-                                    openLoginUtil.completeInfo(CompletePhoneConfActivity.this, user);
+                                    openLoginUtil.completeInfo(CompletePhoneConfActivity.this, userResult);
                                     CommonUtil.shortCenterToast(CompletePhoneConfActivity.this, getString(R.string.complete_success));
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 }
