@@ -115,8 +115,9 @@
     <string name="reg_mail_hint">请输入邮箱地址</string>
     <string name="reg_code_hint">请输入验证码</string>
     <string name="reg_username_hint">请输入手机号／邮箱号／用户名</string>
-    <string name="reg_password_hint">密码不能为空</string>
+    <string name="reg_password_hint">请输入密码</string>
     <string name="phone_registered">该手机号已被绑定</string>
+    <string name="register_password_hint">密码不能为空</string>
 
     <!--Button-->
     <string name="reg_account_reg">账号注册</string>
@@ -141,7 +142,7 @@
     <string name="course_params_error">课程参数不正确</string>
     <string name="player_exit_dialog_title">提醒</string>
     <string name="player_exit_dialog_msg">是否退出播放</string>
-    <string name="register_hint">该手机号码已被其他用户绑定</string>
+    <string name="register_hint">当前账号已被注册，请直接登录</string>
     <string name="phone_error">你输入的手机号格式有误</string>
     <string name="register_modify_phone">请更换手机号码</string>
     <string name="complete_phone_empty">手机号不能为空</string>

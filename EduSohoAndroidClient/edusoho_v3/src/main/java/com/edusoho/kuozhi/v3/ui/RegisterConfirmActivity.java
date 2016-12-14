@@ -206,7 +206,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             }
             String strPass = etPwd.getText().toString().trim();
             if (TextUtils.isEmpty(strPass)) {
-                CommonUtil.longToast(mContext, getString(R.string.reg_password_hint));
+                CommonUtil.longToast(mContext, getString(R.string.register_password_hint));
                 return;
             }
             if (strPass.length() < 5 || strPass.length() > 20) {
