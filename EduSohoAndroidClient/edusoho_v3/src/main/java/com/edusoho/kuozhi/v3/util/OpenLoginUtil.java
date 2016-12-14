@@ -10,6 +10,7 @@ import com.android.volley.Response;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.cache.request.model.StringResponse;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -96,7 +97,7 @@ public class OpenLoginUtil {
                     "id", params[0],
                     "name", params[1],
                     "avatar", params[2],
-                    "unionid", getUnionid(params[0]),
+                    "unionid", getUnionid(params[5]),
             });
         }
         final String thirdPartyType = params.length > 4 ? params[4] : "";
@@ -149,7 +150,7 @@ public class OpenLoginUtil {
             while ((line = br.readLine()) != null)
                 sb.append(line);
             String responseStr = sb.toString();
-            unionIdStr = responseStr.substring(responseStr.indexOf("UID"), responseStr.length() - 6);
+            unionIdStr = responseStr.substring(responseStr.indexOf("UID"), responseStr.length() - 5);
             Log.v("BindQQ", unionIdStr);
         } catch (Exception e) {
             Log.e("BindQQ", e.getMessage());
@@ -188,8 +189,8 @@ public class OpenLoginUtil {
         String id = res.get("id").toString();
         String name = res.get("nickname").toString();
         String avatar = res.get("figureurl_qq_2").toString();
-
-        return new String[]{id, name, avatar, "qq", "QQ"};
+        String accessToken = res.get("accessToken").toString();
+        return new String[]{id, name, avatar, "qq", "QQ", accessToken};
     }
 
     public String[] bindByPlatform(String type, HashMap<String, Object> res) {
@@ -213,7 +214,9 @@ public class OpenLoginUtil {
                     try {
 
                         if (!res.containsKey("id")) {
-                            res.put("id", platform.getDb().getToken());
+                            res.put("id", platform.getDb().getUserId());
+                            res.put("accessToken", platform.getDb().getToken());
+                            platform.getDb().exportData();
                         }
                         String[] params = bindByPlatform(type, res);
                         mPromise.resolve(params);
