@@ -221,7 +221,6 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 }
                             }, 500);
-
                     }
                 }
             }, new Response.ErrorListener() {

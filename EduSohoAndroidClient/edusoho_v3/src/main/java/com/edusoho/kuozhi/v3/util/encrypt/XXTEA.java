@@ -1,9 +1,5 @@
 package com.edusoho.kuozhi.v3.util.encrypt;
 
-/**
- * Created by JesseHuang on 2016/12/14.
- */
-
 import java.io.UnsupportedEncodingException;
 
 public class XXTEA {

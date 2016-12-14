@@ -34,6 +34,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.ToastUtil;
+import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
@@ -200,7 +201,7 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                 }
                 RequestUrl requestUrl = app.bindNewUrl(Const.FIND_PASSWORD, false);
                 Map<String, String> params = requestUrl.getParams();
-                params.put("password", etResetPassword.getText().toString());
+                params.put("password", XXTEA.encryptToBase64String(etResetPassword.getText().toString(), app.domain));
                 params.put("sms_code", etSmsCode.getText().toString());
                 params.put("verified_token", mCurrentVerifiedToken);
                 params.put("mobile", mUserMobile);

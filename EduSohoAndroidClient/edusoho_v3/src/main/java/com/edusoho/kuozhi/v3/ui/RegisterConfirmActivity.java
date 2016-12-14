@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
+import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
 
@@ -82,7 +83,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         tvTime = (TextView) findViewById(R.id.tv_show_time);
 
         num = getIntent().getStringExtra("num");
-        tvShow.setText(getString(R.string.phone_code_input_hint)+ num);
+        tvShow.setText(getString(R.string.phone_code_input_hint) + num);
 
         initTextChange();
 
@@ -113,7 +114,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             public void success(Editable editable) {
                 if (etAuth.length() == 0) {
                     ivClearAuth.setVisibility(View.INVISIBLE);
-                }else {
+                } else {
                     ivClearAuth.setVisibility(View.VISIBLE);
                 }
                 if (etAuth.length() == 0 || etPwd.length() == 0) {
@@ -129,7 +130,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             public void success(Editable editable) {
                 if (etPwd.length() == 0) {
                     ivClearPwd.setVisibility(View.INVISIBLE);
-                }else {
+                } else {
                     ivClearPwd.setVisibility(View.VISIBLE);
                 }
                 if (etAuth.length() == 0 || etPwd.length() == 0) {
@@ -155,7 +156,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         public void onClick(View v) {
             if (v.getId() == R.id.iv_clear_auth) {
                 etAuth.setText("");
-            }else {
+            } else {
                 etPwd.setText("");
             }
         }
@@ -173,7 +174,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             if (isShowPwd) {
                 etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 ivShowPwd.setImageResource(R.drawable.pwd_unshow);
-            }else{
+            } else {
                 etPwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 ivShowPwd.setImageResource(R.drawable.pwd_show);
             }
@@ -193,7 +194,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             }
             RequestUrl url = app.bindUrl(Const.REGIST, false);
             Map<String, String> params = url.getParams();
-            params.put("registeredWay","android");
+            params.put("registeredWay", "android");
 
             params.put("phone", num);
 
@@ -213,7 +214,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                 CommonUtil.shortCenterToast(mContext, getString(R.string.password_more_than_six_digit_number));
                 return;
             }
-            params.put("password", strPass);
+            params.put("password", XXTEA.encryptToBase64String(strPass, app.domain));
             Map<String, String> headers = url.getHeads();
             if (!TextUtils.isEmpty(mCookie)) {
                 headers.put("Cookie", mCookie);

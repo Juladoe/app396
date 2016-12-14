@@ -33,6 +33,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.ToastUtil;
 import com.edusoho.kuozhi.v3.util.Validator;
+import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
@@ -110,7 +111,7 @@ public class FindPasswordByMailFragment extends BaseFragment {
                 }
                 RequestUrl requestUrl = app.bindNewUrl(Const.EMAILS, false);
                 Map<String, String> map = requestUrl.getParams();
-                map.put("password", etResetPassword.getText().toString());
+                map.put("password", XXTEA.encryptToBase64String(etResetPassword.getText().toString(), app.domain));
                 map.put("email", mEmail);
                 final LoadDialog loadDialog = LoadDialog.create(getActivity());
                 loadDialog.show();
