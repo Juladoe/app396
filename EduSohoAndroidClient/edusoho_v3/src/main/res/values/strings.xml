@@ -7,6 +7,7 @@
     <string name="app_title">将学校装进口袋</string>
     <string name="api_version">3.0.0</string>
     <string name="apk_version">3.8.0</string>
+    <string name="encrypt_version">7.4.0</string>
     <string name="apk_code">42</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>

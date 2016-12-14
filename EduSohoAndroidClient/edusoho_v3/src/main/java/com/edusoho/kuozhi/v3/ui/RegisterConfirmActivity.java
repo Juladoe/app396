@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
@@ -214,7 +215,11 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                 CommonUtil.shortCenterToast(mContext, getString(R.string.password_more_than_six_digit_number));
                 return;
             }
-            params.put("password", XXTEA.encryptToBase64String(strPass, app.domain));
+            if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
+                params.put("_password", strPass);
+            } else {
+                params.put("password", XXTEA.encryptToBase64String(strPass, app.domain));
+            }
             Map<String, String> headers = url.getHeads();
             if (!TextUtils.isEmpty(mCookie)) {
                 headers.put("Cookie", mCookie);

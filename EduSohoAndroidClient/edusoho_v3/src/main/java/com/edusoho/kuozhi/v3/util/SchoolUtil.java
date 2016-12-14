@@ -144,6 +144,13 @@ public class SchoolUtil {
         editor.apply();
     }
 
+    public static boolean checkEncryptVersion(String schoolVersion, String encryptVersion) {
+        if (AppUtil.compareVersion(schoolVersion, encryptVersion) != Const.HEIGHT_VERSIO) {
+            return true;
+        }
+        return false;
+    }
+
     public static boolean checkMobileVersion(final BaseActivity context, final School site, HashMap<String, String> versionRange) {
         String min = versionRange.get("min");
         String max = versionRange.get("max");

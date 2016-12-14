@@ -33,6 +33,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
@@ -232,7 +233,11 @@ public class LoginActivity extends BaseNoTitleActivity {
         RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
         Map<String, String> params = requestUrl.getParams();
         params.put("_username", etUsername.getText().toString().trim());
-        params.put("_password", XXTEA.encryptToBase64String(etPassword.getText().toString(), app.domain));
+        if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
+            params.put("_password", etPassword.getText().toString());
+        } else {
+            params.put("_password", XXTEA.encryptToBase64String(etPassword.getText().toString(), app.domain));
+        }
 
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override

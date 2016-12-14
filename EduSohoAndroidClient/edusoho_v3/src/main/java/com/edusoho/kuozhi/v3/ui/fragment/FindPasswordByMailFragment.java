@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.ToastUtil;
 import com.edusoho.kuozhi.v3.util.Validator;
 import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
@@ -110,9 +111,13 @@ public class FindPasswordByMailFragment extends BaseFragment {
                     return;
                 }
                 RequestUrl requestUrl = app.bindNewUrl(Const.EMAILS, false);
-                Map<String, String> map = requestUrl.getParams();
-                map.put("password", XXTEA.encryptToBase64String(etResetPassword.getText().toString(), app.domain));
-                map.put("email", mEmail);
+                Map<String, String> params = requestUrl.getParams();
+                if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
+                    params.put("_password", resetPassword);
+                } else {
+                    params.put("_password", XXTEA.encryptToBase64String(resetPassword, app.domain));
+                }
+                params.put("email", mEmail);
                 final LoadDialog loadDialog = LoadDialog.create(getActivity());
                 loadDialog.show();
                 app.postUrl(requestUrl, new Response.Listener<String>() {
