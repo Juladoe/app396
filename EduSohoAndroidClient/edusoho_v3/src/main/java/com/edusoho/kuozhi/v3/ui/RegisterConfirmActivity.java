@@ -209,9 +209,11 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                 CommonUtil.longToast(mContext, getString(R.string.reg_password_hint));
                 return;
             }
+            if (strPass.length() < 5 || strPass.length() > 20) {
+                CommonUtil.shortCenterToast(mContext, getString(R.string.password_more_than_six_digit_number));
+                return;
+            }
             params.put("password", strPass);
-
-
             Map<String, String> headers = url.getHeads();
             if (!TextUtils.isEmpty(mCookie)) {
                 headers.put("Cookie", mCookie);
@@ -303,7 +305,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         @Override
         public void handleMessage(Message msg) {
             mActivity = mWeakReference.get();
-            mActivity.tvSend.setText(mActivity.mClockTime + "S");
+            mActivity.tvSend.setText(mActivity.mClockTime + "s");
             mActivity.mClockTime--;
             if (mActivity.mClockTime < 0) {
                 mActivity.mTimer.cancel();

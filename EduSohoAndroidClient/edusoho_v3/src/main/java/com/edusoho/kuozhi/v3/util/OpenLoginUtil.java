@@ -93,8 +93,10 @@ public class OpenLoginUtil {
                         });
                 if (!response.contains("verifiedMobile")) {
                     app.token = userResult.token;
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("user", userResult.user);
                     Intent intent = new Intent(mContext, CompletePhoneActivity.class);
-                    mContext.startActivity(intent);
+                    mContext.startActivity(intent.putExtras(bundle));
                 }else {
                     app.saveToken(userResult);
                     app.loginUser.thirdParty = thirdPartyType;
@@ -115,7 +117,8 @@ public class OpenLoginUtil {
         Looper.loop();
     }
 
-    public void completeInfo(BaseActivity baseActivity){
+    public void completeInfo(BaseActivity baseActivity, User use){
+        app.loginUser = use;
         app.loginUser.thirdParty = thirdPartyType;
         app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
         Bundle bundle = new Bundle();

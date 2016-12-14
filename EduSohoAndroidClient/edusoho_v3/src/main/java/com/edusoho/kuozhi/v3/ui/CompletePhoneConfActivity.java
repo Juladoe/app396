@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.register.ErrorCode;
 import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -55,6 +56,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
     private TextView tvTime;
     private String phone;
     private String verified_token;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +92,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
         initTextChange();
         phone = getIntent().getStringExtra("phoneNum");
         verified_token = getIntent().getStringExtra("verified_token");
+        user = (User) getIntent().getExtras().getSerializable("user");
         InputUtils.showKeyBoard(etAuth,mContext);
         mSmsCodeHandler = new SmsCodeHandler(this);
         sendSms();
@@ -193,6 +196,10 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                 CommonUtil.shortCenterToast(mContext, getString(R.string.reg_password_hint));
                 return;
             }
+            if (strPass.length() < 5 || strPass.length() > 20) {
+                CommonUtil.shortCenterToast(mContext, getString(R.string.password_more_than_six_digit_number));
+                return;
+            }
             params.put("password", strPass);
             app.postUrl(url, new Response.Listener<String>() {
                 @Override
@@ -209,7 +216,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                                 public void run() {
                                     //绑定成功后直接进到网校
                                     OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mActivity);
-                                    openLoginUtil.completeInfo(CompletePhoneConfActivity.this);
+                                    openLoginUtil.completeInfo(CompletePhoneConfActivity.this, user);
                                     CommonUtil.shortCenterToast(CompletePhoneConfActivity.this, getString(R.string.complete_success));
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 }
@@ -264,6 +271,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity{
                         CompletePhoneConfActivity.this.finish();
                     }else{
                         if (result != null) {
+                            verified_token = result.verified_token;
                             tvTime.setVisibility(View.VISIBLE);
                             tvSend.setEnabled(false);
                             mClockTime = 120;

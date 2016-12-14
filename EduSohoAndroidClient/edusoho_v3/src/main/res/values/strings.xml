@@ -27,6 +27,7 @@
     <string name="register_resend">后重新获取验证码</string>
     <string name="register_next">下一步</string>
     <string name="register_confirm">确定</string>
+    <string name="register_login">登录</string>
     <string name="register_loading">正在注册...</string>
     <string name="register_success">正在成功</string>
     <string name="complete_info">完善信息</string>
@@ -114,7 +115,8 @@
     <string name="reg_mail_hint">请输入邮箱地址</string>
     <string name="reg_code_hint">请输入验证码</string>
     <string name="reg_username_hint">请输入手机号／邮箱号／用户名</string>
-    <string name="reg_password_hint">请输入密码</string>
+    <string name="reg_password_hint">密码不能为空</string>
+    <string name="phone_registered">该手机号已被绑定</string>
 
     <!--Button-->
     <string name="reg_account_reg">账号注册</string>
