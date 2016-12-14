@@ -143,6 +143,7 @@
     <string name="player_exit_dialog_title">提醒</string>
     <string name="player_exit_dialog_msg">是否退出播放</string>
     <string name="register_hint">当前账号已被注册，请直接登录</string>
+    <string name="registered_hint">该手机号码已被其他用户绑定</string>
     <string name="phone_error">你输入的手机号格式有误</string>
     <string name="register_modify_phone">请更换手机号码</string>
     <string name="complete_phone_empty">手机号不能为空</string>
