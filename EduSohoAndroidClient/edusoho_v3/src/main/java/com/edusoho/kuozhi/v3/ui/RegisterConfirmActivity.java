@@ -209,7 +209,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                 CommonUtil.longToast(mContext, getString(R.string.reg_password_hint));
                 return;
             }
-            if (strPass.length() <= 5 || strPass.length() >= 20) {
+            if (strPass.length() < 5 || strPass.length() > 20) {
                 CommonUtil.shortCenterToast(mContext, getString(R.string.password_more_than_six_digit_number));
                 return;
             }
