@@ -1,0 +1,29 @@
+package com.edusoho.kuozhi.v3.view;
+
+import android.content.Context;
+import android.graphics.Typeface;
+import android.view.Gravity;
+import android.widget.TextView;
+
+public class EduSohoNewIconView extends TextView {
+
+    private Context mContext;
+
+    public EduSohoNewIconView(Context context) {
+        super(context);
+        mContext = context;
+        initView();
+    }
+
+    public EduSohoNewIconView(Context context, android.util.AttributeSet attrs) {
+        super(context, attrs);
+        mContext = context;
+        initView();
+    }
+
+    private void initView() {
+        Typeface iconfont = Typeface.createFromAsset(mContext.getAssets(), "iconfont_new.ttf");
+        setTypeface(iconfont);
+        setGravity(Gravity.CENTER);
+    }
+}
