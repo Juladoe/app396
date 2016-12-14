@@ -180,7 +180,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
     View.OnClickListener mConfirmRegClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl url = app.bindNewUrl(Const.BIND_PHONE, false);
+            RequestUrl url = app.bindNewUrl(Const.CHANGE_PASSWORD, false);
             url.heads.put("Auth-Token", app.token);
             Map<String, String> params = url.getParams();
             params.put("type", "sms");
@@ -203,9 +203,9 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
                 return;
             }
             if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
-                params.put("_password", strPass);
+                params.put("password", strPass);
             } else {
-                params.put("_password", XXTEA.encryptToBase64String(strPass, app.domain));
+                params.put("password", XXTEA.encryptToBase64String(strPass, app.domain));
             }
             app.postUrl(url, new Response.Listener<String>() {
                 @Override
@@ -259,8 +259,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
     View.OnClickListener mSmsSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl requestUrl = app.bindNewUrl(Const.SEND_SMS, false);
-            requestUrl.heads.put("Auth-Token", app.token);
+            RequestUrl requestUrl = app.bindNewUrl(Const.SEND_SMS, true);
             Map<String, String> params = requestUrl.getParams();
             params.put("mobile", num);
             params.put("type", "sms_bind");

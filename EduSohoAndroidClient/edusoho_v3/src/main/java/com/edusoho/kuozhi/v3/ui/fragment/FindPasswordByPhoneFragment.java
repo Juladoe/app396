@@ -26,7 +26,6 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.base.ApiResponse;
-import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ForgetPasswordActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
@@ -34,7 +33,6 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
-import com.edusoho.kuozhi.v3.util.ToastUtil;
 import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
 import com.google.gson.reflect.TypeToken;
 
@@ -200,12 +198,12 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                     Toast.makeText(mContext, getString(R.string.password_more_than_six_digit_number), Toast.LENGTH_LONG).show();
                     return;
                 }
-                RequestUrl requestUrl = app.bindNewUrl(Const.FIND_PASSWORD, false);
+                RequestUrl requestUrl = app.bindNewUrl(Const.CHANGE_PASSWORD, false);
                 Map<String, String> params = requestUrl.getParams();
                 if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
-                    params.put("_password", etResetPassword.getText().toString());
+                    params.put("password", etResetPassword.getText().toString());
                 } else {
-                    params.put("_password", XXTEA.encryptToBase64String(etResetPassword.getText().toString(), app.domain));
+                    params.put("password", XXTEA.encryptToBase64String(etResetPassword.getText().toString(), app.domain));
                 }
                 params.put("sms_code", etSmsCode.getText().toString());
                 params.put("verified_token", mCurrentVerifiedToken);

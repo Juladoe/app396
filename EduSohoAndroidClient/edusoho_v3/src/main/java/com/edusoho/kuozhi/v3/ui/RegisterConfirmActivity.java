@@ -218,7 +218,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
                 params.put("_password", strPass);
             } else {
-                params.put("password", XXTEA.encryptToBase64String(strPass, app.domain));
+                params.put("_password", XXTEA.encryptToBase64String(strPass, app.domain));
             }
             Map<String, String> headers = url.getHeads();
             if (!TextUtils.isEmpty(mCookie)) {
