@@ -233,6 +233,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private View.OnClickListener mSearchClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Search_the_school_scan_it");
             Intent qrIntent = new Intent();
             qrIntent.setClass(QrSchoolActivity.this, CaptureActivity.class);
             startActivityForResult(qrIntent, REQUEST_QR);
@@ -242,6 +243,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private View.OnClickListener mOtherClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Search_the_school_input_box");
             mAnimatorUpSet.start();
             mSearchLayout.setEnabled(false);
         }
@@ -250,17 +252,22 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     private View.OnClickListener mHelpClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            /**
-             * todo 用户帮助
-             */
-            mActivity.app.mEngine
-                    .runNormalPlugin("CourseActivity",
-                            QrSchoolActivity.this, new PluginRunCallback() {
-                                @Override
-                                public void setIntentDate(Intent startIntent) {
-                                    startIntent.putExtra(CourseActivity.COURSE_ID,"0");
-                                }
-                            });
+            app.mEngine.runNormalPlugin("WebViewDataActivity", mActivity, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(WebViewDataActivity.TITLE,"使用帮助");
+                    startIntent.putExtra(WebViewDataActivity.DATA,
+                            "<p>一、扫一扫进入网校：<p style=\\\"text-indent:2em;\\\">" +
+                                    "1、点击 <strong>网校首页</strong>—<strong>侧边栏</strong>" +
+                                    "—<strong>手机端</strong>，进入页面后滑至页面底部，即可找到登录二维码。" +
+                                    "</p><p style=\\\"text-indent:2em;\\\">" +
+                                    "2、在电脑浏览器内输入网校域名/mobile（例如：xxxx.cn/mobile）" +
+                                    "即可找到登录二维码。</p></p><p>二、通过网校网址、名称搜索网校：" +
+                                    "<p style=\\\"text-indent:2em;\\\">在搜索框内输入" +
+                                    "<strong>网校网址</strong>或者<strong>网校名称</strong>点击搜索，" +
+                                    "即可找到你想要的网校。</p></p>\n");
+                }
+            });
         }
     };
 
@@ -329,7 +336,6 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
 
         protected void bindApiToken(final UserResult userResult) {
             School school = userResult.site;
-
             RequestUrl requestUrl = new RequestUrl(school.host + Const.GET_API_TOKEN);
             Map<String, String> tokenMap = ApiTokenUtil.getToken(mActivity.getBaseContext());
             requestUrl.heads.put("Auth-Token", tokenMap.get("token"));
@@ -397,9 +403,8 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                         if (!checkMobileVersion(site, site.apiVersionRange)) {
                             return;
                         }
-
                         bindApiToken(userResult);
-
+                        SchoolUtil.saveSchoolHistory(site);
                     } catch (Exception e) {
                         mLoading.dismiss();
                         CommonUtil.longToast(mActivity.getBaseContext(), "二维码信息错误!");
@@ -611,14 +616,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     }
 
     private void saveSchoolHistory(School site) {
-        SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
-        Date date = new Date();
-        String loginTime = nowfmt.format(date);
-        Uri uri = Uri.parse(site.url);
-        String domain = uri.getPort() == -1?
-                uri.getHost():
-                uri.getHost() + ":" + uri.getPort();
-        SchoolUtil.saveEnterSchool(mContext, site.name, loginTime, "登录账号：未登录", domain);
+        SchoolUtil.saveSchoolHistory(site);
         startSchoolActivity(site);
     }
 

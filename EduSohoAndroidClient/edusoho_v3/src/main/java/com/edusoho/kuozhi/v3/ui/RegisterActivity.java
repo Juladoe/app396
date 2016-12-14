@@ -23,7 +23,7 @@ import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.Validator;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -108,11 +108,11 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 CommonUtil.longToast(mContext, getString(R.string.complete_phone_empty));
                 return;
             }
-            final String st = etAccount.getText().toString().trim();
-            if (Validator.isPhone(st)) {
+            final String phoneNum = etAccount.getText().toString().trim();
+            if (Validator.isPhone(phoneNum)) {
                 RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
-                HashMap<String,String> params = (HashMap<String, String>) requestUrl.getParams();
-                params.put("phoneNumber", String.valueOf(st));
+                Map<String,String> params = requestUrl.getParams();
+                params.put("phoneNumber", String.valueOf(phoneNum));
                 mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -121,7 +121,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                             });
                             if (result != null && result.code == 200) {
                                 Intent registerIntent = new Intent(mContext,RegisterConfirmActivity.class);
-                                registerIntent.putExtra("num", st);
+                                registerIntent.putExtra("num", phoneNum);
                                 startActivity(registerIntent);
                             } else {
                                 if (response.equals(getString(R.string.register_hint))) {
@@ -145,21 +145,23 @@ public class RegisterActivity extends ActionBarBaseActivity {
      * 弹窗提示已注册
      */
     private void showDialog() {
-       new AlertDialog.Builder(RegisterActivity.this)
-            .setTitle(R.string.notification)
-            .setMessage(R.string.register_hint)
-            .setPositiveButton(R.string.register_confirm, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    RegisterActivity.this.finish();
-                }
-            })
-            .setNegativeButton(R.string.register_cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    CommonUtil.longToast(mContext,getString(R.string.register_modify_phone));
-                }
-            }).show();
+        new AlertDialog.Builder(RegisterActivity.this)
+                .setTitle(R.string.notification)
+                .setMessage(R.string.register_hint)
+                .setPositiveButton(R.string.register_confirm, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        RegisterActivity.this.finish();
+                    }
+                })
+                .setNegativeButton(R.string.register_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        CommonUtil.longToast(mContext,getString(R.string.register_modify_phone));
+                    }
+                }).show();
+
     }
 
 }
+

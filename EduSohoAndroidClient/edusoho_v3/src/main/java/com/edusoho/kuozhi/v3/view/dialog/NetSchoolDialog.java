@@ -39,6 +39,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
@@ -174,7 +175,11 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                             public void onSuccess(List<Site> data) {
                                 mLoading.dismiss();
                                 mList.clear();
-                                mList.addAll(data);
+                                if(data.size() == 0){
+                                    CommonUtil.shortToast(mContext,"没有搜索到相关网校");
+                                }else {
+                                    mList.addAll(data);
+                                }
                                 mAdapter.notifyDataSetChanged();
                             }
 
@@ -185,7 +190,6 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                         });
                     }
                 }
-                mSearchEdt.setText("");
                 return true;
             }
         });

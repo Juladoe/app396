@@ -13,7 +13,7 @@
     <string name="image_cache_path">ImageLoaderCache</string>
     <string name="find_password_via_mail_success">请前往该邮箱验证信息，验证成功即可登录</string>
     <string name="find_password_then_login">去登录</string>
-
+    <string name="img_code_cannot_null">图形验证码不能为空</string>
     <!--Button-->
     <string name="down_tab_news">动态</string>
     <string name="down_tab_find">发现</string>
@@ -24,11 +24,13 @@
     <string name="login_loading">正在登录...</string>
     <string name="login_success">登录成功</string>
     <string name="register">注册</string>
-    <string name="register_resend">重新发送</string>
+    <string name="register_resend">后重新获取验证码</string>
     <string name="register_next">下一步</string>
     <string name="register_confirm">确定</string>
     <string name="register_loading">正在注册...</string>
     <string name="register_success">正在成功</string>
+    <string name="complete_info">完善信息</string>
+    <string name="complete_info_registered">当前手机号已被注册，请直接登录</string>
     <string name="course_study_entrance">进入学习</string>
     <string name="study">学习</string>
     <string name="discuss">讨论</string>
@@ -137,10 +139,14 @@
     <string name="player_exit_dialog_title">提醒</string>
     <string name="player_exit_dialog_msg">是否退出播放</string>
     <string name="register_hint">该手机号码已被其他用户绑定</string>
-    <string name="register_error">你输入的手机号格式有误</string>
+    <string name="phone_error">你输入的手机号格式有误</string>
     <string name="register_modify_phone">请更换手机号码</string>
     <string name="complete_phone_empty">手机号不能为空</string>
-    <string name="img_code_cannot_null">图形验证码不能为空</string>
+    <string name="img_code_hint">图形验证码不能为空</string>
+    <string name="img_code_input">请输入图形验证码</string>
+    <string name="register_error">你输入的手机号格式有误</string>
+    <string name="complete_success">恭喜你，绑定成功</string>
+
 
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>
@@ -169,6 +175,7 @@
     <string name="font_wrong">&#xe655;</string>
     <string name="font_scan_code">&#xe608;</string>
     <string name="font_search">&#xe603;</string>
+    <string name="font_back">&#xe618;</string>
 
     <string name="font_chat_add_media">&#xe611;</string>
     <string name="font_chat_keyboard">&#xe60d;</string>
