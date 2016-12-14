@@ -104,7 +104,7 @@ public class FindPasswordByMailFragment extends BaseFragment {
                     Toast.makeText(mContext, getString(R.string.reset_password_not_null), Toast.LENGTH_LONG).show();
                     return;
                 }
-                if (resetPassword.length() <= 5 || resetPassword.length() >= 20) {
+                if (resetPassword.length() < 5 || resetPassword.length() > 20) {
                     Toast.makeText(mContext, getString(R.string.password_more_than_six_digit_number), Toast.LENGTH_LONG).show();
                     return;
                 }
