@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,21 +15,33 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ShardDialog;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
+import com.edusoho.kuozhi.v3.entity.coursedetail.CourseDetail;
+import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CollectUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
+import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
+import com.edusoho.kuozhi.v3.view.dialog.DefaultShareDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.sharesdk.onekeyshare.OnekeyShare;
 
 /**
  * Created by Zhang on 2016/12/8.
@@ -37,8 +50,13 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     public static final String COURSE_ID = "course_id";
     private HeadStopScrollView mParent;
     private RelativeLayout mHeadRlayout;
-    private ImageView mIvShare;
-    private ImageView mIvGrade;
+    private View mIvShare;
+    private View mIvGrade;
+    private View mBottomLayout;
+    private View mConsult;
+    private View mCollect;
+    private TextView mTvCollect;
+    private View mAddCourse;
     private RelativeLayout mMediaRlayout;
     private ViewPager mContentVp;
     private RelativeLayout mIntroLayout;
@@ -54,6 +72,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     private boolean[] mCanScroll = {true, true, true};
     public static final int MEDIA_VIEW_HEIGHT = 210;
     private String mCourseId;
+    private boolean mIsFavorite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +105,8 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mParent = (HeadStopScrollView) findViewById(R.id.scroll_parent);
         mHeadRlayout = (RelativeLayout) findViewById(R.id.head_rlayout);
         mMediaRlayout = (RelativeLayout) findViewById(R.id.media_rlayout);
-        mIvGrade = (ImageView) findViewById(R.id.iv_grade);
-        mIvShare = (ImageView) findViewById(R.id.iv_share);
+        mIvGrade = findViewById(R.id.iv_grade);
+        mIvShare = findViewById(R.id.iv_share);
         mContentVp = (ViewPager) findViewById(R.id.vp_content);
         mIntroLayout = (RelativeLayout) findViewById(R.id.intro_rlayout);
         mHourLayout = (RelativeLayout) findViewById(R.id.hour_rlayout);
@@ -99,6 +118,11 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mContentVp.setAdapter(mAdapter);
         mParent.setFirstViewHeight(AppUtil.dp2px(this, 260));
+        mBottomLayout = findViewById(R.id.bottom_layout);
+        mCollect = findViewById(R.id.collect_layout);
+        mTvCollect = (TextView) findViewById(R.id.tv_collect);
+        mConsult = findViewById(R.id.consult_layout);
+        mAddCourse = findViewById(R.id.tv_add);
         ViewGroup.LayoutParams params = mContentVp.getLayoutParams();
         if (params != null) {
             params.height = AppUtil.getHeightPx(this);
@@ -112,6 +136,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mReviewLayout.setOnClickListener(this);
         mIvShare.setOnClickListener(this);
         mIvGrade.setOnClickListener(this);
+        mCollect.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -138,7 +163,23 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     }
 
     private void initData() {
+        CourseDetailModel.getCourseDetail(mCourseId,
+                new ResponseCallbackListener<CourseDetail>() {
+            @Override
+            public void onSuccess(CourseDetail data) {
+                mIsFavorite = data.isUserFavorited();
+                if(mIsFavorite){
+                    mTvCollect.setText(getResources().getString(R.string.new_font_collected));
+                }else{
+                    mTvCollect.setText(getResources().getString(R.string.new_font_collect));
+                }
+            }
 
+            @Override
+            public void onFailure(String code, String message) {
+
+            }
+        });
     }
 
     @Override
@@ -152,7 +193,23 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         } else if (v.getId() == R.id.iv_grade) {
 
         } else if (v.getId() == R.id.iv_share) {
-            new ShardDialog(this).show();
+            new DefaultShareDialog(this).show();
+        } else if (v.getId() == R.id.collect_layout) {
+            if(mIsFavorite) {
+                CollectUtil.uncollectCourse(mCourseId, new CollectUtil.OnCollectSucceeListener() {
+                    @Override
+                    public void onCollectSuccee() {
+                        mTvCollect.setText(getResources().getString(R.string.new_font_collect));
+                    }
+                });
+            }else{
+                CollectUtil.collectCourse(mCourseId, new CollectUtil.OnCollectSucceeListener() {
+                    @Override
+                    public void onCollectSuccee() {
+                        mTvCollect.setText(getResources().getString(R.string.new_font_collected));
+                    }
+                });
+            }
         }
 
     }

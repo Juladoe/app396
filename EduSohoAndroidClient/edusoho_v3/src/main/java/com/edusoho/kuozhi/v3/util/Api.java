@@ -12,6 +12,5 @@ public class Api {
     public static final String DISCOVERY_COLUMNS = "/api/discovery_columns";
     public static final String LESSONS = "/api/lessons?courseId=%d";
     public static final String SCHOOLS = "/api/v1/schools";
-    public static final String COURSE_GETCOURSE = "/mapi_v2/Course/getCourse?courseId=%s";
 
 }

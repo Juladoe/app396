@@ -204,17 +204,22 @@
     <string name="font_homework">&#xe659;</string>
     <string name="font_exercise">&#xe658;</string>
 
-    <!--<string name="font_share">&#xe667;</string>-->
-    <!--<string name="font_back">&#xe668;</string>-->
-    <!--<string name="font_play">&#xe669;</string>-->
-    <!--<string name="font_collect">&#xe66a;</string>-->
-    <!--<string name="font_consult">&#xe66b;</string>-->
-    <!--<string name="font_star_grade">&#xe66c;</string>-->
-    <!--<string name="font_unfold">&#xe66d;</string>-->
-    <!--<string name="font_open">&#xe66e;</string>-->
-    <!--<string name="font_more">&#xe66f;</string>-->
-    <!--<string name="font_close">&#xe671;</string>-->
-    <!--<string name="font_unfold">&#xe66d;</string>-->
+    <string name="new_font_share">&#xe667;</string>
+    <string name="new_font_back">&#xe668;</string>
+    <string name="new_font_play">&#xe669;</string>
+    <string name="new_font_collect">&#xe66a;</string>
+    <string name="new_font_consult">&#xe66b;</string>
+    <string name="new_font_star_grade">&#xe66c;</string>
+    <string name="new_font_unfold">&#xe66d;</string>
+    <string name="new_font_fold">&#xe66e;</string>
+    <string name="new_font_more">&#xe66f;</string>
+    <string name="new_font_close">&#xe671;</string>
+    <string name="new_font_cache">&#xe672;</string>
+    <string name="new_font_video">&#xe673;</string>
+    <string name="new_font_audio">&#xe674;</string>
+    <string name="new_font_more_oper">&#xe678;</string>
+    <string name="new_font_grade">&#xe676;</string>
+    <string name="new_font_collected">&#xe679;</string>
 
 
 

@@ -277,6 +277,8 @@ public class Const {
     public static final String USERTERMS = "School/getUserterms";
     public static final String USERINFO = "User/getUserInfo";
     public static final String REVIEWS = "Course/getReviews";
+    public static final String COURSE_GETCOURSE = "Course/getCourse?courseId=%s";
+
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";
     public static final String SEARCH_COURSE = "Course/searchCourse";

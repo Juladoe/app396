@@ -9,10 +9,13 @@ import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.base.ApiResponse;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.Api;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
 import java.util.List;
+
+import static com.edusoho.kuozhi.R.color.error;
 
 /**
  * Created by Zhang on 2016/12/13.
@@ -21,19 +24,19 @@ import java.util.List;
 public class CourseDetailModel implements Serializable {
 
     public static void getCourseDetail(String courseId,
-            final ResponseCallbackListener<List<CourseDetail>>callbackListener){
-        String url = String.format(Api.COURSE_GETCOURSE, courseId);
+            final ResponseCallbackListener<CourseDetail>callbackListener){
+        String url = String.format(Const.COURSE_GETCOURSE, courseId);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                ApiResponse<CourseDetail> apiResponse = ModelDecor.getInstance().
-                        decor(response, new TypeToken<ApiResponse<CourseDetail>>() {
+                CourseDetail apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<CourseDetail>() {
                 });
-                if (apiResponse.resources != null) {
-                    callbackListener.onSuccess(apiResponse.resources);
-                } else if (apiResponse.error != null) {
-                    callbackListener.onFailure(apiResponse.error.code, apiResponse.error.message);
+                if (apiResponse != null) {
+                    callbackListener.onSuccess(apiResponse);
+                } else if (apiResponse != null) {
+                    callbackListener.onFailure("Error", response);
                 }
             }
         }, new Response.ErrorListener() {

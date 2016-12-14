@@ -1316,4 +1316,6 @@ public class AppUtil {
         }
         return statusBarHeight;
     }
+
+
 }

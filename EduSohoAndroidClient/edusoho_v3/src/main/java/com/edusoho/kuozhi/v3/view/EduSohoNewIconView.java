@@ -8,17 +8,17 @@ import android.widget.TextView;
 /**
  * Created by howzhi on 14-5-12.
  */
-public class NewEduSohoIconView extends TextView {
+public class EduSohoNewIconView extends TextView {
 
     private Context mContext;
 
-    public NewEduSohoIconView(Context context) {
+    public EduSohoNewIconView(Context context) {
         super(context);
         mContext = context;
         initView();
     }
 
-    public NewEduSohoIconView(Context context, android.util.AttributeSet attrs) {
+    public EduSohoNewIconView(Context context, android.util.AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         initView();

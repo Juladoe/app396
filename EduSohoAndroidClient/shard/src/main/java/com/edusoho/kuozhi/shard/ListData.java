@@ -15,6 +15,10 @@ public class ListData {
     public String type;
     private Context mContext;
 
+    public ListData(){
+
+    }
+
     public ListData(Drawable icon, String type, Context context){
         this.icon = icon;
         this.type = type;

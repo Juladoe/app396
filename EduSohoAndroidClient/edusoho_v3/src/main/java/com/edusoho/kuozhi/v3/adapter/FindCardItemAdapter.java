@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.lesson.LessonModel;
+import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -296,6 +297,9 @@ public class FindCardItemAdapter extends BaseAdapter {
         final String url;
         switch (type) {
             case "normal":
+                view.setTag(R.id.card_cover, String.valueOf(id));
+                view.setOnClickListener(mViewOnClickListener2);
+                return;
             case "live":
                 url = String.format(
                         Const.MOBILE_APP_URL,
@@ -319,6 +323,19 @@ public class FindCardItemAdapter extends BaseAdapter {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     startIntent.putExtra(Const.WEB_URL, url);
+                }
+            });
+        }
+    };
+
+    View.OnClickListener mViewOnClickListener2 = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            final String id = v.getTag(R.id.card_cover).toString();
+            EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(CourseActivity.COURSE_ID, id);
                 }
             });
         }
