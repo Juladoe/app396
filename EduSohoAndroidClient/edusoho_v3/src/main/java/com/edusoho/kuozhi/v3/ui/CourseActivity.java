@@ -12,10 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.shard.ShardDialog;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -23,10 +24,8 @@ import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.FragmentUtil;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
-import com.edusoho.kuozhi.v3.view.qr.decode.Intents;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +37,8 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     public static final String COURSE_ID = "course_id";
     private HeadStopScrollView mParent;
     private RelativeLayout mHeadRlayout;
+    private ImageView mIvShare;
+    private ImageView mIvGrade;
     private RelativeLayout mMediaRlayout;
     private ViewPager mContentVp;
     private RelativeLayout mIntroLayout;
@@ -85,6 +86,8 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mParent = (HeadStopScrollView) findViewById(R.id.scroll_parent);
         mHeadRlayout = (RelativeLayout) findViewById(R.id.head_rlayout);
         mMediaRlayout = (RelativeLayout) findViewById(R.id.media_rlayout);
+        mIvGrade = (ImageView) findViewById(R.id.iv_grade);
+        mIvShare = (ImageView) findViewById(R.id.iv_share);
         mContentVp = (ViewPager) findViewById(R.id.vp_content);
         mIntroLayout = (RelativeLayout) findViewById(R.id.intro_rlayout);
         mHourLayout = (RelativeLayout) findViewById(R.id.hour_rlayout);
@@ -107,6 +110,8 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mIntroLayout.setOnClickListener(this);
         mHourLayout.setOnClickListener(this);
         mReviewLayout.setOnClickListener(this);
+        mIvShare.setOnClickListener(this);
+        mIvGrade.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -144,7 +149,12 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
             mContentVp.setCurrentItem(1);
         } else if (v.getId() == R.id.review_rlayout) {
             mContentVp.setCurrentItem(2);
+        } else if (v.getId() == R.id.iv_grade) {
+
+        } else if (v.getId() == R.id.iv_share) {
+            new ShardDialog(this).show();
         }
+
     }
 
     private void checkTab(int num) {
@@ -181,8 +191,8 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
             case Const.FULL_SCREEN:
                 fullScreen();
                 break;
-            case Const.COURSE_SWITCH:
-                courseSwitch();
+            case Const.COURSE_START:
+                courseStart();
                 break;
             case Const.COURSE_REFRESH:
                 initData();
@@ -196,7 +206,13 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
             case Const.SCREEN_LOCK:
                 screenLock();
                 break;
+            case Const.FILL_BANNER:
+                fillBanner();
         }
+    }
+
+    private void fillBanner() {
+
     }
 
     private boolean isScreenLock = false;
@@ -231,7 +247,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         }
     }
 
-    private void courseSwitch() {
+    private void courseStart() {
         /**
          * todo 切换课程
          */
@@ -263,7 +279,8 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         return new MessageType[]{
                 new MessageType(Const.SCROLL_STATE_SAVE),
                 new MessageType(Const.FULL_SCREEN),
-                new MessageType(Const.COURSE_SWITCH),
+                new MessageType(Const.FILL_BANNER),
+                new MessageType(Const.COURSE_START),
                 new MessageType(Const.COURSE_REFRESH),
                 new MessageType(Const.COURSE_SHOW_BAR),
                 new MessageType(Const.SCREEN_LOCK),

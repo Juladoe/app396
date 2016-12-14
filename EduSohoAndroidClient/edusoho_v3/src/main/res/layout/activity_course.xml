@@ -4,27 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/head_rlayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/bottom_rlayout"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
-
-    </RelativeLayout>
-
     <com.edusoho.kuozhi.v3.view.HeadStopScrollView
         android:id="@+id/scroll_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_rlayout"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true">
@@ -38,7 +22,20 @@
                 android:id="@+id/media_rlayout"
                 android:layout_width="match_parent"
                 android:layout_height="210dp">
+                <ImageView
+                    android:id="@+id/iv_media_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    />
+                <RelativeLayout
+                    android:id="@+id/play_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
 
+                    >
+
+                </RelativeLayout>
             </RelativeLayout>
 
             <RelativeLayout
@@ -90,16 +87,16 @@
                             android:background="@color/primary_color" />
 
                         <TextView
+                            android:id="@+id/textView"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="课时"
-                            android:textColor="@color/secondary_font_color"
-                            android:textSize="@dimen/font_l"
                             android:layout_above="@+id/hour"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
-                            android:id="@+id/textView" />
+                            android:gravity="center"
+                            android:text="课时"
+                            android:textColor="@color/secondary_font_color"
+                            android:textSize="@dimen/font_l" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -134,4 +131,90 @@
                 android:layout_below="@+id/tab_rlayout" />
         </RelativeLayout>
     </com.edusoho.kuozhi.v3.view.HeadStopScrollView>
+
+    <RelativeLayout
+        android:id="@+id/head_rlayout"
+        android:layout_width="match_parent"
+        android:layout_height="43dp"
+        android:layout_marginTop="20dp">
+
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="40dp"
+            android:layout_height="43dp"
+            android:paddingBottom="13dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="13dp"
+            android:src="#000" />
+
+        <ImageView
+            android:id="@+id/iv_grade"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="43dp"
+            android:paddingBottom="13dp"
+            android:paddingLeft="13dp"
+            android:paddingRight="13dp"
+            android:paddingTop="13dp"
+            android:src="#000" />
+
+        <ImageView
+            android:id="@+id/iv_share"
+            android:layout_width="43dp"
+            android:layout_height="43dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="2dp"
+            android:paddingBottom="13dp"
+            android:paddingLeft="13dp"
+            android:paddingRight="13dp"
+            android:paddingTop="13dp"
+            android:src="#000" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/bottom_rlayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:background="@color/disabled2_hint_color"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/phone_layout"
+            android:layout_width="55dp"
+            android:layout_height="match_parent"
+            android:background="#00f"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/collect_layout"
+            android:layout_width="55dp"
+            android:layout_height="match_parent"
+            android:background="#000"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_add"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/primary_color"
+            android:gravity="center"
+            android:text="加入课程"
+            android:textColor="@color/disabled2_hint_color"
+            android:textSize="@dimen/font_xl" />
+    </LinearLayout>
+
 </RelativeLayout>
