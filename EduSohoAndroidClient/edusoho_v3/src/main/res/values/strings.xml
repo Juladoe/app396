@@ -204,6 +204,10 @@
     <string name="font_homework">&#xe659;</string>
     <string name="font_exercise">&#xe658;</string>
 
+    <string name="catalog_cache">&#xe672;</string>
+    <string name="catalog_lesson_audio">&#xe674;</string>
+    <string name="catalog_lesson_video">&#xe673;</string>
+
     <string name="title_news">动态</string>
     <string name="title_find">发现</string>
     <string name="title_friends">校友</string>

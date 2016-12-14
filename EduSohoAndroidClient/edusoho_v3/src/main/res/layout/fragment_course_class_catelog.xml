@@ -17,24 +17,34 @@
             android:textSize="@dimen/font_s"
             android:textColor="@color/secondary_font_color"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
+
         <TextView
             android:id="@+id/tv_course"
             android:text="缓存课程"
             android:textSize="@dimen/font_s"
-            android:textColor="@color/primary"
+            android:textColor="@color/primary_color"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-        <ImageView
-            android:src="@drawable/clear_content"
+
+        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+            android:text="&#xe60e;"
+            android:textSize="@dimen/font_m"
             android:layout_toLeftOf="@id/tv_course"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/primary_color"
             android:layout_marginRight="@dimen/common_margin" />
     </RelativeLayout>
-    
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_catalog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginRight="@dimen/common_margin">
+
+    </android.support.v7.widget.RecyclerView>
     
 
 </LinearLayout>
