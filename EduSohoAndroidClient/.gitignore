@@ -3,3 +3,7 @@
 /.idea/workspace.xml
 .DS_Store
 /build
+/freeline
+freeline.py
+/freeline_core
+freeline_project_description.json
