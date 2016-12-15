@@ -294,25 +294,25 @@ public class FindCardItemAdapter extends BaseAdapter {
     }
 
     private void setDiscoveryCardClickListener(View view, String type, int id) {
-        final String url;
-        switch (type) {
-            case "normal":
-                view.setTag(R.id.card_cover, String.valueOf(id));
-                view.setOnClickListener(mViewOnClickListener2);
-                return;
-            case "live":
-                url = String.format(
-                        Const.MOBILE_APP_URL,
-                        EdusohoApp.app.schoolHost,
-                        String.format(Const.MOBILE_WEB_COURSE, id)
-                );
-                break;
-            case "classroom":
-            default:
-                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.CLASSROOM_COURSES, id));
-        }
-        view.setTag(R.id.card_cover, url);
-        view.setOnClickListener(mViewOnClickListener);
+//        final String url;
+//        switch (type) {
+//            case "normal":
+        view.setTag(R.id.card_cover, String.valueOf(id));
+        view.setOnClickListener(mViewOnClickListener2);
+//                return;
+//            case "live":
+//                url = String.format(
+//                        Const.MOBILE_APP_URL,
+//                        EdusohoApp.app.schoolHost,
+//                        String.format(Const.MOBILE_WEB_COURSE, id)
+//                );
+//                break;
+//            case "classroom":
+//            default:
+//                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.CLASSROOM_COURSES, id));
+//        }
+//        view.setTag(R.id.card_cover, url);
+//        view.setOnClickListener(mViewOnClickListener);
     }
 
     View.OnClickListener mViewOnClickListener = new View.OnClickListener() {

@@ -17,5 +17,6 @@
         name="shard_filter"
         >
         <item>WechatFavorite</item>
+        <item>shareToUser</item>
     </string-array>
 </resources>

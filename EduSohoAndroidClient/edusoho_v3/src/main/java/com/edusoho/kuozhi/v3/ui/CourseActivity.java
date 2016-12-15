@@ -5,53 +5,51 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.shard.ShardDialog;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.entity.coursedetail.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CollectUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
-import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
-import com.edusoho.kuozhi.v3.view.dialog.DefaultShareDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import cn.sharesdk.onekeyshare.OnekeyShare;
 
 /**
  * Created by Zhang on 2016/12/8.
  */
 public class CourseActivity extends BaseNoTitleActivity implements View.OnClickListener {
+    public static final int MEDIA_VIEW_HEIGHT = 210;
     public static final String COURSE_ID = "course_id";
     private HeadStopScrollView mParent;
     private RelativeLayout mHeadRlayout;
+    private RelativeLayout mHeadRlayout2;
     private View mIvShare;
+    private View mIvShare2;
     private View mIvGrade;
+    private View mIvGrade2;
+    private View mPlayLayout;
+    private View mPlayLayout2;
     private View mBottomLayout;
     private View mConsult;
     private View mCollect;
@@ -70,9 +68,11 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     private int mCheckNum = 0;
     private int[] mScrollY = new int[3];
     private boolean[] mCanScroll = {true, true, true};
-    public static final int MEDIA_VIEW_HEIGHT = 210;
     private String mCourseId;
     private boolean mIsFavorite = false;
+    private boolean mIsPlay = false;
+    private CourseDetail mCourseDetail;
+    private int mTitleBarHeight;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,11 +102,19 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     @Override
     protected void initView() {
         super.initView();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mTitleBarHeight = 20;
+        }
         mParent = (HeadStopScrollView) findViewById(R.id.scroll_parent);
         mHeadRlayout = (RelativeLayout) findViewById(R.id.head_rlayout);
+        mHeadRlayout2 = (RelativeLayout) findViewById(R.id.head_rlayout2);
         mMediaRlayout = (RelativeLayout) findViewById(R.id.media_rlayout);
         mIvGrade = findViewById(R.id.iv_grade);
+        mIvGrade2 = findViewById(R.id.iv_grade2);
         mIvShare = findViewById(R.id.iv_share);
+        mIvShare2 = findViewById(R.id.iv_share2);
+        mPlayLayout2 = findViewById(R.id.play_layout2);
+        mPlayLayout = findViewById(R.id.play_layout);
         mContentVp = (ViewPager) findViewById(R.id.vp_content);
         mIntroLayout = (RelativeLayout) findViewById(R.id.intro_rlayout);
         mHourLayout = (RelativeLayout) findViewById(R.id.hour_rlayout);
@@ -117,17 +125,19 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mFragments.add(new CourseDetailFragment(mCourseId));
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mContentVp.setAdapter(mAdapter);
-        mParent.setFirstViewHeight(AppUtil.dp2px(this, 260));
+        mParent.setFirstViewHeight(AppUtil.dp2px(this,
+                MEDIA_VIEW_HEIGHT - 43 - mTitleBarHeight));
         mBottomLayout = findViewById(R.id.bottom_layout);
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
         mConsult = findViewById(R.id.consult_layout);
         mAddCourse = findViewById(R.id.tv_add);
-        ViewGroup.LayoutParams params = mContentVp.getLayoutParams();
-        if (params != null) {
-            params.height = AppUtil.getHeightPx(this);
-            mContentVp.setLayoutParams(params);
-        }
+        initViewPager();
+        ViewGroup.LayoutParams headParams =
+                mHeadRlayout2.getLayoutParams();
+        headParams.height = AppUtil.dp2px(this, 43 + mTitleBarHeight);
+        mHeadRlayout2.setLayoutParams(headParams);
+        mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
     }
 
     private void initEvent() {
@@ -135,8 +145,13 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mHourLayout.setOnClickListener(this);
         mReviewLayout.setOnClickListener(this);
         mIvShare.setOnClickListener(this);
+        mIvShare2.setOnClickListener(this);
         mIvGrade.setOnClickListener(this);
+        mIvGrade2.setOnClickListener(this);
+        mPlayLayout2.setOnClickListener(this);
+        mPlayLayout.setOnClickListener(this);
         mCollect.setOnClickListener(this);
+        mAddCourse.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -158,6 +173,15 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
             public void onScrollChanged(int l, int t, int oldl, int oldt) {
                 mCanScroll[mCheckNum] = mParent.isCanScroll();
                 mScrollY[mCheckNum] = t;
+                if (!mParent.isCanScroll()) {
+                    mHeadRlayout.setVisibility(View.GONE);
+                    mHeadRlayout2.setVisibility(View.VISIBLE);
+                    mParent.scrollTo(0, AppUtil.dp2px(CourseActivity.this,
+                            MEDIA_VIEW_HEIGHT - 43 - mTitleBarHeight));
+                } else {
+                    mHeadRlayout.setVisibility(View.VISIBLE);
+                    mHeadRlayout2.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -165,21 +189,22 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     private void initData() {
         CourseDetailModel.getCourseDetail(mCourseId,
                 new ResponseCallbackListener<CourseDetail>() {
-            @Override
-            public void onSuccess(CourseDetail data) {
-                mIsFavorite = data.isUserFavorited();
-                if(mIsFavorite){
-                    mTvCollect.setText(getResources().getString(R.string.new_font_collected));
-                }else{
-                    mTvCollect.setText(getResources().getString(R.string.new_font_collect));
-                }
-            }
+                    @Override
+                    public void onSuccess(CourseDetail data) {
+                        mCourseDetail = data;
+                        mIsFavorite = data.isUserFavorited();
+                        if (mIsFavorite) {
+                            mTvCollect.setText(getResources().getString(R.string.new_font_collected));
+                        } else {
+                            mTvCollect.setText(getResources().getString(R.string.new_font_collect));
+                        }
+                    }
 
-            @Override
-            public void onFailure(String code, String message) {
+                    @Override
+                    public void onFailure(String code, String message) {
 
-            }
-        });
+                    }
+                });
     }
 
     @Override
@@ -190,28 +215,61 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
             mContentVp.setCurrentItem(1);
         } else if (v.getId() == R.id.review_rlayout) {
             mContentVp.setCurrentItem(2);
-        } else if (v.getId() == R.id.iv_grade) {
+        } else if (v.getId() == R.id.iv_grade ||
+                v.getId() == R.id.iv_grade2) {
 
-        } else if (v.getId() == R.id.iv_share) {
-            new DefaultShareDialog(this).show();
+        } else if (v.getId() == R.id.iv_share ||
+                v.getId() == R.id.iv_share2) {
+            share();
         } else if (v.getId() == R.id.collect_layout) {
-            if(mIsFavorite) {
-                CollectUtil.uncollectCourse(mCourseId, new CollectUtil.OnCollectSucceeListener() {
-                    @Override
-                    public void onCollectSuccee() {
-                        mTvCollect.setText(getResources().getString(R.string.new_font_collect));
-                    }
-                });
-            }else{
-                CollectUtil.collectCourse(mCourseId, new CollectUtil.OnCollectSucceeListener() {
-                    @Override
-                    public void onCollectSuccee() {
-                        mTvCollect.setText(getResources().getString(R.string.new_font_collected));
-                    }
-                });
-            }
+            collect();
+        } else if (v.getId() == R.id.tv_add) {
+
+        } else if (v.getId() == R.id.play_layout2) {
+            courseStart();
+        } else if (v.getId() == R.id.play_layout) {
+
+            courseStart();
         }
 
+    }
+
+    private void collect() {
+        if (mIsFavorite) {
+            CollectUtil.uncollectCourse(mCourseId, new CollectUtil.OnCollectSucceeListener() {
+                @Override
+                public void onCollectSuccee() {
+                    mTvCollect.setText(getResources().getString(R.string.new_font_collect));
+                }
+            });
+        } else {
+            CollectUtil.collectCourse(mCourseId, new CollectUtil.OnCollectSucceeListener() {
+                @Override
+                public void onCollectSuccee() {
+                    mTvCollect.setText(getResources().getString(R.string.new_font_collected));
+                }
+            });
+        }
+    }
+
+    private void share() {
+        if (mCourseDetail == null) {
+            return;
+        }
+        final ShareTool shareTool =
+                new ShareTool(this
+                        , app.host + "/course/" + mCourseDetail.getCourse().getId()
+                        , mCourseDetail.getCourse().getTitle()
+                        , mCourseDetail.getCourse().getAbout().length() > 20 ?
+                        mCourseDetail.getCourse().getAbout().substring(0, 20)
+                        : mCourseDetail.getCourse().getAbout()
+                        , mCourseDetail.getCourse().getLargePicture());
+        new Handler((mActivity.getMainLooper())).post(new Runnable() {
+            @Override
+            public void run() {
+                shareTool.shardCourse();
+            }
+        });
     }
 
     private void checkTab(int num) {
@@ -239,6 +297,9 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         Bundle bundle = message.data;
         switch (message.type.type) {
             case Const.SCROLL_STATE_SAVE:
+                if (mIsPlay) {
+                    break;
+                }
                 String clazz = bundle.getString("class");
                 if (clazz != null && clazz.equals(getClass().getSimpleName())) {
                     mCanScroll[mCheckNum] = true;
@@ -249,7 +310,13 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
                 fullScreen();
                 break;
             case Const.COURSE_START:
+                /**
+                 * todo 获得课程相关信息
+                 */
                 courseStart();
+                break;
+            case Const.COURSE_PAUSE:
+                coursePause();
                 break;
             case Const.COURSE_REFRESH:
                 initData();
@@ -263,13 +330,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
             case Const.SCREEN_LOCK:
                 screenLock();
                 break;
-            case Const.FILL_BANNER:
-                fillBanner();
         }
-    }
-
-    private void fillBanner() {
-
     }
 
     private boolean isScreenLock = false;
@@ -306,8 +367,46 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
 
     private void courseStart() {
         /**
-         * todo 切换课程
+         * todo 播放课程
          */
+        if (!mIsFullScreen) {
+            mParent.smoothScrollTo(0, 0);
+            mParent.setCanScroll(false);
+            mCanScroll[mCheckNum] = false;
+            ViewGroup.LayoutParams params = mContentVp.getLayoutParams();
+            if (params != null) {
+                int bottom = AppUtil.dp2px(this, 50 + MEDIA_VIEW_HEIGHT);
+                if (mBottomLayout.getVisibility() != View.GONE) {
+                    bottom += AppUtil.dp2px(this, 50);
+                }
+                params.height = AppUtil.getHeightPx(this) - bottom;
+                mContentVp.setLayoutParams(params);
+            }
+        }
+        mPlayLayout.setVisibility(View.GONE);
+        mIsPlay = true;
+    }
+
+    private void initViewPager() {
+        ViewGroup.LayoutParams params = mContentVp.getLayoutParams();
+        if (params != null) {
+            int bottom = AppUtil.dp2px(this, 50 + 43 + mTitleBarHeight);
+            if (mBottomLayout.getVisibility() != View.GONE) {
+                bottom += AppUtil.dp2px(this, 50);
+            }
+            params.height = AppUtil.getHeightPx(this) - bottom;
+            mContentVp.setLayoutParams(params);
+        }
+    }
+
+    private void coursePause() {
+        if (!mIsFullScreen) {
+            mParent.setCanScroll(true);
+            mCanScroll[mCheckNum] = true;
+            initViewPager();
+        }
+        mPlayLayout.setVisibility(View.VISIBLE);
+        mIsPlay = false;
     }
 
     private boolean mIsFullScreen = false;
@@ -336,10 +435,10 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         return new MessageType[]{
                 new MessageType(Const.SCROLL_STATE_SAVE),
                 new MessageType(Const.FULL_SCREEN),
-                new MessageType(Const.FILL_BANNER),
                 new MessageType(Const.COURSE_START),
                 new MessageType(Const.COURSE_REFRESH),
                 new MessageType(Const.COURSE_SHOW_BAR),
+                new MessageType(Const.COURSE_PAUSE),
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }

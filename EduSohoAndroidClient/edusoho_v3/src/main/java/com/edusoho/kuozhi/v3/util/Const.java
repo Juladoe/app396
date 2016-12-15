@@ -132,11 +132,11 @@ public class Const {
 
     public static final String FULL_SCREEN = "course_full_screen";
     public static final String SCREEN_LOCK = "screen_lock";
-    public static final String FILL_BANNER = "fill_banner";
     public static final String COURSE_REFRESH = "course_refresh";//刷新课程Activity
-    public static final String COURSE_START= "course_start";//切换课程
+    public static final String COURSE_START= "course_start";//开始课程
     public static final String COURSE_SHOW_BAR = "course_show_bar";//导航栏
     public static final String COURSE_HIDE_BAR = "course_hide_bar";//导航栏
+    public static final String COURSE_PAUSE = "course_pause";//暂停课程后的UI处理
 
     public static final int OK = 200;
     public static final int ERROR_200 = 200;
