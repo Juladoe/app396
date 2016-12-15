@@ -112,11 +112,7 @@ public class FindPasswordByMailFragment extends BaseFragment {
                 }
                 RequestUrl requestUrl = app.bindNewUrl(Const.EMAILS, false);
                 Map<String, String> params = requestUrl.getParams();
-                if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
-                    params.put("password", XXTEA.encryptToBase64String(resetPassword, app.domain));
-                } else {
-                    params.put("password", resetPassword);
-                }
+                params.put("password", XXTEA.encryptToBase64String(resetPassword, app.domain));
                 params.put("email", mEmail);
                 final LoadDialog loadDialog = LoadDialog.create(getActivity());
                 loadDialog.show();

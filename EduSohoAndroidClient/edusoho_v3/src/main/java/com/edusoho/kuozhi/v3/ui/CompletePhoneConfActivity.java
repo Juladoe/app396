@@ -202,11 +202,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
                 CommonUtil.shortCenterToast(mContext, getString(R.string.password_more_than_six_digit_number));
                 return;
             }
-            if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
-                params.put("password", XXTEA.encryptToBase64String(strPass, app.domain));
-            } else {
-                params.put("password", strPass);
-            }
+            params.put("password", XXTEA.encryptToBase64String(strPass, app.domain));
             app.postUrl(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
