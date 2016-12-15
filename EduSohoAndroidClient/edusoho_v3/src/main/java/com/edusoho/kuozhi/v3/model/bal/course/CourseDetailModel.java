@@ -9,6 +9,7 @@ import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.base.ApiResponse;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.Api;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 
@@ -30,6 +31,10 @@ public class CourseDetailModel implements Serializable {
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if(response.equals("课程不存在")){
+                    callbackListener.onFailure("Error", response);
+                    return;
+                }
                 CourseDetail apiResponse = ModelDecor.getInstance().
                         decor(response, new TypeToken<CourseDetail>() {
                 });

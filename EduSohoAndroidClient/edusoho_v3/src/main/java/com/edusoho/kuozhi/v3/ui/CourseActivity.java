@@ -19,7 +19,10 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.entity.coursedetail.CourseDetail;
+import com.edusoho.kuozhi.v3.entity.coursedetail.Member;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -27,8 +30,9 @@ import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.CollectUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 
@@ -53,6 +57,8 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     private View mBottomLayout;
     private View mConsult;
     private View mCollect;
+    private View mBack2;
+    private View mTvInclass;
     private TextView mTvCollect;
     private View mAddCourse;
     private RelativeLayout mMediaRlayout;
@@ -69,6 +75,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
     private int[] mScrollY = new int[3];
     private boolean[] mCanScroll = {true, true, true};
     private String mCourseId;
+    private String mClassroomId;
     private boolean mIsFavorite = false;
     private boolean mIsPlay = false;
     private CourseDetail mCourseDetail;
@@ -122,6 +129,8 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mIntro = findViewById(R.id.intro);
         mHour = findViewById(R.id.hour);
         mReview = findViewById(R.id.review);
+        mBack2 = findViewById(R.id.back2);
+        mTvInclass = findViewById(R.id.tv_inclass);
         mFragments.add(new CourseDetailFragment(mCourseId));
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mContentVp.setAdapter(mAdapter);
@@ -152,6 +161,9 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mPlayLayout.setOnClickListener(this);
         mCollect.setOnClickListener(this);
         mAddCourse.setOnClickListener(this);
+        mConsult.setOnClickListener(this);
+        mBack2.setOnClickListener(this);
+        mTvInclass.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -192,19 +204,40 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
                     @Override
                     public void onSuccess(CourseDetail data) {
                         mCourseDetail = data;
-                        mIsFavorite = data.isUserFavorited();
-                        if (mIsFavorite) {
-                            mTvCollect.setText(getResources().getString(R.string.new_font_collected));
-                        } else {
-                            mTvCollect.setText(getResources().getString(R.string.new_font_collect));
-                        }
+                        refreshView();
                     }
 
                     @Override
                     public void onFailure(String code, String message) {
-
+                        if (message.equals("课程不存在")) {
+                            CommonUtil.shortToast(CourseActivity.this, "课程不存在");
+                            finish();
+                        }
                     }
                 });
+    }
+
+    private void refreshView() {
+        mIsFavorite = mCourseDetail.isUserFavorited();
+        if (mIsFavorite) {
+            mTvCollect.setText(getResources().getString(R.string.new_font_collected));
+        } else {
+            mTvCollect.setText(getResources().getString(R.string.new_font_collect));
+        }
+        Member member = mCourseDetail.getMember();
+        if (member == null) {
+            mBottomLayout.setVisibility(View.VISIBLE);
+            mIvGrade.setVisibility(View.GONE);
+            mIvGrade2.setVisibility(View.GONE);
+            mTvInclass.setVisibility(View.GONE);
+            initViewPager();
+        } else {
+            mBottomLayout.setVisibility(View.GONE);
+            mIvGrade.setVisibility(View.VISIBLE);
+            mIvGrade2.setVisibility(View.VISIBLE);
+            mTvInclass.setVisibility(View.VISIBLE);
+            initViewPager();
+        }
     }
 
     @Override
@@ -224,26 +257,79 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         } else if (v.getId() == R.id.collect_layout) {
             collect();
         } else if (v.getId() == R.id.tv_add) {
-
+            add();
         } else if (v.getId() == R.id.play_layout2) {
             courseStart();
         } else if (v.getId() == R.id.play_layout) {
-
             courseStart();
+        } else if (v.getId() == R.id.consult_layout) {
+            consult();
+        } else if (v.getId() == R.id.back2) {
+            finish();
         }
 
     }
 
+    private void consult() {
+        List<Teacher> teachers = mCourseDetail.getCourse().getTeachers();
+        final Teacher teacher;
+        if (teachers.size() > 0) {
+            teacher = teachers.get(0);
+        } else {
+            /**
+             * todo 老师为空的时候
+             */
+            return;
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(ImChatActivity.FROM_NAME, teacher.nickname);
+        bundle.putInt(ImChatActivity.FROM_ID, teacher.id);
+        bundle.putString(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
+        app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
+                startIntent.putExtra(ImChatActivity.FROM_ID, teacher.id);
+                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
+            }
+        });
+    }
+
+    private void add() {
+        if (mCourseId != null) {
+            CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
+                            .setCouponCode("")
+                            .setPayment("")
+                            .setPayPassword("")
+                            .setTargetId(mCourseDetail.getCourse().getId())
+                            .setTargetType("course")
+                            .setTotalPrice(mCourseDetail.getCourse().getPrice())
+                    , new CourseUtil.OnAddCourseListener() {
+                        @Override
+                        public void onAddCourseSuccee(String response) {
+                            CommonUtil.shortToast(CourseActivity.this, getResources()
+                                    .getString(R.string.success_add_course));
+                            initData();
+                        }
+
+                        @Override
+                        public void onAddCourseError(String error) {
+
+                        }
+                    });
+        }
+    }
+
     private void collect() {
         if (mIsFavorite) {
-            CollectUtil.uncollectCourse(mCourseId, new CollectUtil.OnCollectSucceeListener() {
+            CourseUtil.uncollectCourse(mCourseId, new CourseUtil.OnCollectSucceeListener() {
                 @Override
                 public void onCollectSuccee() {
                     mTvCollect.setText(getResources().getString(R.string.new_font_collect));
                 }
             });
         } else {
-            CollectUtil.collectCourse(mCourseId, new CollectUtil.OnCollectSucceeListener() {
+            CourseUtil.collectCourse(mCourseId, new CourseUtil.OnCollectSucceeListener() {
                 @Override
                 public void onCollectSuccee() {
                     mTvCollect.setText(getResources().getString(R.string.new_font_collected));
@@ -304,6 +390,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
                 if (clazz != null && clazz.equals(getClass().getSimpleName())) {
                     mCanScroll[mCheckNum] = true;
                     mParent.setCanScroll(true);
+                    mParent.scrollTo(0, mParent.getScrollY() - 2);
                 }
                 break;
             case Const.FULL_SCREEN:

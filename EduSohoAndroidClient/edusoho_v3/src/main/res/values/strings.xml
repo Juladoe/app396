@@ -65,6 +65,7 @@
     <string name="study_entrance">进入学习</string>
     <string name="message_do_not_disturb">消息免打扰</string>
     <string name="clear_message_record">清空课程历史记录</string>
+    <string name="success_add_course">成功加入课程</string>
     <string name="clear_service_profile_record">清空历史记录</string>
     <string name="classroom_all_members">全体成员</string>
     <string name="classroom_announcement">班级公告</string>

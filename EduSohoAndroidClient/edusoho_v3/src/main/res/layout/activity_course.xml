@@ -343,5 +343,21 @@
             android:textColor="@color/disabled2_hint_color"
             android:textSize="@dimen/font_xl" />
     </LinearLayout>
+    
+    <TextView
+        android:id="@+id/tv_inclass"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:background="@drawable/shape_inclass_back"
+        android:text="进入\n教室"
+        android:gravity="center"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/disabled2_hint_color"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="15dp"
+        android:visibility="gone"
+        android:layout_marginBottom="65dp"
+        />
 
 </RelativeLayout>

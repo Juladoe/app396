@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.entity.coursedetail;
 
+import com.edusoho.kuozhi.v3.model.bal.Teacher;
+
 import java.io.Serializable;
 import java.util.List;
 

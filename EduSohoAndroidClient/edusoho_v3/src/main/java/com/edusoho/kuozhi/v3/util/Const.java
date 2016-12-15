@@ -258,6 +258,7 @@ public class Const {
     public static final String PAYCOURSE = "Order/payCourse";
     public static final String FAVORITE = "Course/favoriteCourse";
     public static final String UNFAVORITE = "Course/unFavoriteCourse";
+    public static final String CREATE_ORDER = "Order/createOrder";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
     public static final String VERIFYVERSION = "/systeminfo?version=2";
     public static final String LOGOUT = "User/logout";
