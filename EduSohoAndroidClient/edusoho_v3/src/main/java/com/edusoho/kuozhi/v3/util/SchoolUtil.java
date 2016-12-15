@@ -145,7 +145,7 @@ public class SchoolUtil {
     }
 
     public static boolean checkEncryptVersion(String schoolVersion, String encryptVersion) {
-        if (AppUtil.compareVersion(schoolVersion, encryptVersion) != Const.HEIGHT_VERSIO) {
+        if (AppUtil.compareVersion(schoolVersion, encryptVersion) != Const.LOW_VERSIO) {
             return true;
         }
         return false;

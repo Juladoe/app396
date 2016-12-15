@@ -201,9 +201,9 @@ public class FindPasswordByPhoneFragment extends BaseFragment {
                 RequestUrl requestUrl = app.bindNewUrl(Const.CHANGE_PASSWORD, false);
                 Map<String, String> params = requestUrl.getParams();
                 if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
-                    params.put("password", etResetPassword.getText().toString());
-                } else {
                     params.put("password", XXTEA.encryptToBase64String(etResetPassword.getText().toString(), app.domain));
+                } else {
+                    params.put("password", etResetPassword.getText().toString());
                 }
                 params.put("sms_code", etSmsCode.getText().toString());
                 params.put("verified_token", mCurrentVerifiedToken);

@@ -203,9 +203,9 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
                 return;
             }
             if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
-                params.put("password", strPass);
-            } else {
                 params.put("password", XXTEA.encryptToBase64String(strPass, app.domain));
+            } else {
+                params.put("password", strPass);
             }
             app.postUrl(url, new Response.Listener<String>() {
                 @Override
