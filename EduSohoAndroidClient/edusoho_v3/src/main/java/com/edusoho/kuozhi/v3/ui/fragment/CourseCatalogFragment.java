@@ -1,9 +1,9 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
+import android.support.v4.app.Fragment;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.adapter.CatalogueAdapter;
+import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.google.gson.Gson;
@@ -29,7 +29,7 @@ public class CourseCatalogFragment extends Fragment {
     private View view;
     private RelativeLayout rlSpace;
     private ListView lvCatalog;
-    private CatalogueAdapter adapter;
+    private CourseCatalogueAdapter adapter;
 
     public CourseCatalogFragment(){
 
@@ -50,7 +50,7 @@ public class CourseCatalogFragment extends Fragment {
     private void initCatalogue() {
         final CourseCatalogue courseCatalogue = new Gson().fromJson( s, CourseCatalogue.class);
         courseCatalogue.getLessons().addAll(courseCatalogue.getLessons());
-        adapter = new CatalogueAdapter(getActivity(), courseCatalogue);
+        adapter = new CourseCatalogueAdapter(getActivity(), courseCatalogue);
         lvCatalog.setAdapter(adapter);
         lvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

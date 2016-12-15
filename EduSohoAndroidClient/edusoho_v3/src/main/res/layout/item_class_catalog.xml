@@ -9,7 +9,6 @@
         android:scaleType="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/common_margin"
         android:src="@drawable/video_thum_normal"
         android:layout_marginRight="@dimen/common_margin"/>

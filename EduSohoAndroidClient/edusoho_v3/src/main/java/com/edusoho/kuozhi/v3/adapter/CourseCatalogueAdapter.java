@@ -17,7 +17,7 @@ import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 /**
  * Created by DF on 2016/12/14.
  */
-public class CatalogueAdapter extends BaseAdapter {
+public class CourseCatalogueAdapter extends BaseAdapter {
     public int mSelect = -1;
     public CourseCatalogue courseCatalogue;
     public Context mContext;
@@ -30,7 +30,7 @@ public class CatalogueAdapter extends BaseAdapter {
     private LessonHolder lessonHolder;
     private CourseCatalogue.LessonsBean lessonsBean;
 
-    public CatalogueAdapter(Context context , CourseCatalogue courseCatalogue){
+    public CourseCatalogueAdapter(Context context , CourseCatalogue courseCatalogue){
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.courseCatalogue = courseCatalogue;
         this.mContext = context;
