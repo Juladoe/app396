@@ -173,7 +173,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
             public void onScrollChanged(int l, int t, int oldl, int oldt) {
                 mCanScroll[mCheckNum] = mParent.isCanScroll();
                 mScrollY[mCheckNum] = t;
-                if (!mParent.isCanScroll()) {
+                if (!mParent.isCanScroll() && t != 0) {
                     mHeadRlayout.setVisibility(View.GONE);
                     mHeadRlayout2.setVisibility(View.VISIBLE);
                     mParent.scrollTo(0, AppUtil.dp2px(CourseActivity.this,
