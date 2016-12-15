@@ -51,6 +51,7 @@
             android:hint="@string/reg_phone_hint"
             android:textSize="@dimen/x_medium_font_size"
             android:maxLength="11"
+            android:layout_toLeftOf="@id/iv_clear_phone"
             android:textColorHint="@color/grey_hint"/>
         <View
             android:background="@color/register_view"

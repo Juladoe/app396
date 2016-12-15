@@ -3,13 +3,14 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/catelog_margin_left"
+    android:layout_marginLeft="@dimen/common_margin_right"
     android:layout_marginRight="@dimen/common_margin_right">
 
     <RelativeLayout
         android:id="@+id/rl_space"
         android:layout_width="match_parent"
         android:layout_height="@dimen/space_height"
+        android:layout_marginLeft="@dimen/common_margin"
         android:gravity="center_vertical">
         <TextView
             android:id="@+id/tv_space"
@@ -21,7 +22,7 @@
 
         <TextView
             android:id="@+id/tv_course"
-            android:text="缓存课程"
+            android:text="@string/cache_course"
             android:textSize="@dimen/font_s"
             android:textColor="@color/primary_color"
             android:layout_alignParentRight="true"
@@ -29,7 +30,7 @@
             android:layout_height="wrap_content" />
 
         <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-            android:text="&#xe60e;"
+            android:text="@string/catalog_cache"
             android:textSize="@dimen/font_m"
             android:layout_toLeftOf="@id/tv_course"
             android:layout_width="wrap_content"
@@ -38,13 +39,12 @@
             android:layout_marginRight="@dimen/common_margin" />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_catalog"
+    <ListView
+        android:id="@+id/lv_catalog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginRight="@dimen/common_margin">
-
-    </android.support.v7.widget.RecyclerView>
-    
+        android:scrollbars="none"
+        android:divider="@null">
+    </ListView>
 
 </LinearLayout>

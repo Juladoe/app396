@@ -2,8 +2,11 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -14,105 +17,86 @@ import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 /**
  * Created by DF on 2016/12/14.
  */
-
-public class CatalogueAdapter extends RecyclerView.Adapter {
-
+public class CatalogueAdapter extends BaseAdapter {
+    public int mSelect = -1;
     public CourseCatalogue courseCatalogue;
     public Context mContext;
-
     public static final int TYPE_CHAPTER = 0;
     public static final int TYPE_SECTION = 1;
     public static final int TYPE_LESSON = 2;
+    private final LayoutInflater mInflater;
+    private ChapterHolder chapterHolder;
+    private SectionHolder sectionHolder;
+    private LessonHolder lessonHolder;
+    private CourseCatalogue.LessonsBean lessonsBean;
 
     public CatalogueAdapter(Context context , CourseCatalogue courseCatalogue){
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.courseCatalogue = courseCatalogue;
         this.mContext = context;
+
+        Log.d("test", courseCatalogue.toString());
     }
 
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = null;
-        switch (viewType) {
-            case TYPE_CHAPTER:
-                view = View.inflate(mContext, R.layout.item_chapter, null);
-                return new ChapterHolder(view);
-            case TYPE_SECTION:
-                view = View.inflate(mContext, R.layout.item_section, null);
-                return new SectionHolder(view);
-            case TYPE_LESSON:
-                view = View.inflate(mContext, R.layout.item_lesson, null);
-                return new LessonHolder(view);
+    public void setCourseCatalogue(CourseCatalogue courseCatalogue) {
+        this.courseCatalogue = courseCatalogue;
+    }
+
+    public void changeSelected(int position){
+        if (position != mSelect) {
+            mSelect = position;
+            notifyDataSetChanged();
         }
-        return null;
+    }
+    @Override
+    public Object getItem(int position) {
+        return courseCatalogue.getLessons().get(position);
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        CourseCatalogue.LessonsBean lessonsBean = courseCatalogue.getLessons().get(position);
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        lessonsBean = courseCatalogue.getLessons().get(position);
         switch (getItemViewType(position)) {
             case TYPE_CHAPTER:
-                ChapterHolder chapterHolder = (ChapterHolder) holder;
-                chapterHolder.chapterTitle.setText("第"+getBigNum(lessonsBean.getNumber())+"章"+"  "+lessonsBean.getTitle());
+                convertView = mInflater.inflate(R.layout.item_chapter_catalog, null);
+                chapterHolder = new ChapterHolder(convertView);
+                chapterHolder.chapterTitle.setText("第"+getBigNum(lessonsBean.getNumber())+"章"+"  "+ lessonsBean.getTitle());
                 break;
             case TYPE_SECTION:
-                SectionHolder sectionHolder = (SectionHolder) holder;
-                sectionHolder.sectionTitle.setText("第"+getBigNum(lessonsBean.getNumber())+"节"+"  "+lessonsBean.getTitle());
+                convertView = mInflater.inflate(R.layout.item_section_catalog, null);
+                sectionHolder = new SectionHolder(convertView);
+                sectionHolder.sectionTitle.setText("第"+getBigNum(lessonsBean.getNumber())+"节"+"  "+ lessonsBean.getTitle());
                 break;
             case TYPE_LESSON:
-                LessonHolder lessonHolder = (LessonHolder) holder;
-                lessonHolder.lessonTime.setText(lessonsBean.getLength());
-                if (getItemViewType(position - 1) != TYPE_LESSON) {
-                    lessonHolder.lessonUp.setVisibility(View.INVISIBLE);
-                    if (position == courseCatalogue.getLessons().size()-1) {
-                        lessonHolder.lessonDown.setVisibility(View.INVISIBLE);
-                    }
-                }
-                if (position < courseCatalogue.getLessons().size()-1) {
-                    if (getItemViewType(position + 1) != TYPE_LESSON) {
-                        lessonHolder.lessonDown.setVisibility(View.INVISIBLE);
-                    }
-                }
+                convertView = mInflater.inflate(R.layout.item_lesson_catalog, null);
+                lessonHolder = new LessonHolder(convertView);
+                lessonHolder.lessonDown.setTag(position);
+                //初始化控件数据
+                initView(position);
                 //判断课时类型
                 //
-                decideKind(lessonsBean, lessonHolder);
+                decideKind();
                 //判断课时学习状态
                 //
-                decideStatu(lessonsBean, lessonHolder);
-                //判断是否免费
-                //
-                decideFree(lessonsBean, lessonHolder);
-
+                decideStatu();
                 break;
         }
-
-    }
-
-    private void decideFree(CourseCatalogue.LessonsBean lessonsBean, LessonHolder lessonHolder) {
-        if ("0".equals(lessonsBean.getFree())) {
-            lessonHolder.lessonFree.setVisibility(View.INVISIBLE);
-        }
-    }
-
-    private void decideStatu(CourseCatalogue.LessonsBean lessonsBean, LessonHolder lessonHolder) {
-    }
-
-    private void decideKind(CourseCatalogue.LessonsBean lessonsBean, LessonHolder lessonHolder) {
-        switch (lessonsBean.getType()) {
-            case "ppt":
-                lessonHolder.lessonKind.setText("&#xe673;");
-                break;
-            case "video":
-                break;
-            case "document":
-                break;
-            case "testpaper":
-                break;
-        }
+        return convertView;
     }
 
     @Override
-    public int getItemCount() {
+    public int getCount() {
         return courseCatalogue.getLessons() == null ? 0 : courseCatalogue.getLessons().size();
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 3;
     }
 
     @Override
@@ -126,8 +110,52 @@ public class CatalogueAdapter extends RecyclerView.Adapter {
         }
     }
 
+    private void initView(int position) {
+        if (getItemViewType(position - 1) != TYPE_LESSON) {
+            lessonHolder.lessonUp.setVisibility(View.INVISIBLE);
+            if (position == courseCatalogue.getLessons().size()-1) {
+                lessonHolder.lessonDown.setVisibility(View.INVISIBLE);
+            }
+        }
+        if (position < courseCatalogue.getLessons().size()-1) {
+            if (getItemViewType(position + 1) != TYPE_LESSON) {
+                lessonHolder.lessonDown.setVisibility(View.INVISIBLE);
+            }
+        }
+        if (mSelect == position) {
+            lessonHolder.lessonTitle.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+            lessonHolder.lessonKind.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+            lessonHolder.lessonTime.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+        }
+        lessonHolder.lessonTime.setText(lessonsBean.getLength());
+        lessonHolder.lessonTitle.setText("课时:"+lessonsBean.getNumber()+" "+lessonsBean.getTitle());
+        if ("0".equals(lessonsBean.getFree())) {
+//            lessonHolder.lessonFree.setVisibility(View.INVISIBLE);
+        }
+    }
 
+    private void decideStatu() {
+        lessonHolder.lessonState.setImageResource(R.drawable.lesson_status);
+        lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_learning);
+        lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_finish);
+    }
 
+    private void decideKind() {
+        switch (lessonsBean.getType()) {
+            case "ppt":
+//                lessonHolder.lessonKind.setText("&#xe673;");
+                break;
+            case "video":
+                lessonHolder.lessonKind.setText("");
+                break;
+            case "document":
+                lessonHolder.lessonKind.setText("");
+                break;
+            case "testpaper":
+                lessonHolder.lessonKind.setText("");
+                break;
+        }
+    }
 
     /**
      * 处理目录中的章ChapterHolder
@@ -167,9 +195,9 @@ public class CatalogueAdapter extends RecyclerView.Adapter {
             super(itemView);
             lessonState = (ImageView) itemView.findViewById(R.id.lesson_state);
             lessonKind = (EduSohoNewIconView) itemView.findViewById(R.id.lesson_kind);
-            lessonTitle = (TextView) itemView.findViewById(R.id.lesson_free);
+            lessonTitle = (TextView) itemView.findViewById(R.id.lesson_title);
             lessonFree = (TextView) itemView.findViewById(R.id.lesson_free);
-            lessonTime = (TextView) itemView.findViewById(R.id.lesson_free);
+            lessonTime = (TextView) itemView.findViewById(R.id.lesson_time);
             lessonUp = itemView.findViewById(R.id.lesson_up);
             lessonDown = itemView.findViewById(R.id.lesson_down);
         }

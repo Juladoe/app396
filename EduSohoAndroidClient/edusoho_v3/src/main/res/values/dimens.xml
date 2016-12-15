@@ -189,12 +189,18 @@
     <dimen name="catelog_margin_left">25dp</dimen>
     <dimen name="common_margin_right">15dp</dimen>
     <dimen name="common_margin">10dp</dimen>
+    <dimen name="common_margin1">9dp</dimen>
     <dimen name="space_height">53dp</dimen>
     <dimen name="catelog_chapter_height">54dp</dimen>
+    <dimen name="catelog_section_height">34dp</dimen>
+    <dimen name="catelog_lesson_height">53dp</dimen>
     <dimen name="catelog_lesson_status">6dp</dimen>
-    <dimen name="catelog_lesson_height">44dp</dimen>
     <dimen name="lesson_status_height">16dp</dimen>
-    <dimen name="lesson_status_width">1dp</dimen>
+    <dimen name="lesson_status_width">0.5dp</dimen>
+    <dimen name="lesson_free_top">19dp</dimen>
+    <dimen name="lesson_status">12dp</dimen>
+    <dimen name="lesson_view_height">21dp</dimen>
+    <dimen name="class_margin_right">20dp</dimen>
     <!--字体大小-->
     <!--<dimen name="font_size_l"-->
 </resources>

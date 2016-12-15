@@ -1,21 +1,22 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CatalogueAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -27,7 +28,8 @@ public class CourseCatalogFragment extends Fragment {
 
     private View view;
     private RelativeLayout rlSpace;
-    private RecyclerView rv;
+    private ListView lvCatalog;
+    private CatalogueAdapter adapter;
 
     public CourseCatalogFragment(){
 
@@ -35,18 +37,31 @@ public class CourseCatalogFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,  Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_course_class_catalog, container, false);
+        view = inflater.inflate(R.layout.fragment_course_catalog, container, false);
         rlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
-        rv = (RecyclerView) view.findViewById(R.id.rv_catalog);
+        lvCatalog = (ListView) view.findViewById(R.id.lv_catalog);
 
-        CourseCatalogue courseCatalogue = new Gson().fromJson( s, CourseCatalogue.class);
-
+        initCatalogue();
         initCache();
-        rv.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rv.setAdapter(new CatalogueAdapter(getActivity(), courseCatalogue));
 
         return view;
+    }
 
+    private void initCatalogue() {
+        final CourseCatalogue courseCatalogue = new Gson().fromJson( s, CourseCatalogue.class);
+        courseCatalogue.getLessons().addAll(courseCatalogue.getLessons());
+        adapter = new CatalogueAdapter(getActivity(), courseCatalogue);
+        lvCatalog.setAdapter(adapter);
+        lvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                adapter.changeSelected(position);
+                if ("0".equals(courseCatalogue.getLessons().get(position).getFree())) {
+                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
+                    return;
+                }
+            }
+        });
     }
 
     /**
@@ -55,7 +70,7 @@ public class CourseCatalogFragment extends Fragment {
     private void initCache() {
         TextView tvSpace = (TextView) view.findViewById(R.id.tv_space);
         TextView tvCourse = (TextView) view.findViewById(R.id.tv_course);
-        tvSpace.setText("可用空间:"+" "+getRomAvailableSize());
+        tvSpace.setText("可用空间:\t"+" "+getRomAvailableSize());
         tvCourse.setOnClickListener(getCacheCourse());
     }
 
@@ -377,6 +392,7 @@ public class CourseCatalogFragment extends Fragment {
             "            \"userId\": \"1\",\n" +
             "            \"viewedNum\": \"0\"\n" +
             "        }\n" +
+
             "    ]\n" +
             "}";
 }
