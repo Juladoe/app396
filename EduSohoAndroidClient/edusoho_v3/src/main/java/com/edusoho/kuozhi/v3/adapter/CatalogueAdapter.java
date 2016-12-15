@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.adapter.test;
+package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -73,10 +73,27 @@ public class CatalogueAdapter extends RecyclerView.Adapter {
                     }
                 }
                 //判断课时类型
+                //
                 decideKind(lessonsBean, lessonHolder);
+                //判断课时学习状态
+                //
+                decideStatu(lessonsBean, lessonHolder);
+                //判断是否免费
+                //
+                decideFree(lessonsBean, lessonHolder);
+
                 break;
         }
 
+    }
+
+    private void decideFree(CourseCatalogue.LessonsBean lessonsBean, LessonHolder lessonHolder) {
+        if ("0".equals(lessonsBean.getFree())) {
+            lessonHolder.lessonFree.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void decideStatu(CourseCatalogue.LessonsBean lessonsBean, LessonHolder lessonHolder) {
     }
 
     private void decideKind(CourseCatalogue.LessonsBean lessonsBean, LessonHolder lessonHolder) {
@@ -165,11 +182,17 @@ public class CatalogueAdapter extends RecyclerView.Adapter {
         final String[] tag = {"一", "二", "三", "四", "五", "六", "七", "八", "九"};
         StringBuffer stringBuffer = new StringBuffer();
         char[] cNum = num.toCharArray();
-        for (int i = 0; i < cNum.length; i++) {
-            int d = Integer.valueOf(String.valueOf(cNum[i]));
-            String digit = tag[d-1];
-
-
+        if (cNum.length == 1) {
+            stringBuffer.append(tag[Integer.valueOf(String.valueOf(cNum[0])) - 1]);
+        }else {
+            if (Integer.parseInt(num) % 10 == 0) {
+                stringBuffer.append(tag[Integer.valueOf(String.valueOf(cNum[0])) - 1] + "十");
+            }else if (Integer.parseInt(num) < 20){
+                stringBuffer.append("十"+tag[Integer.valueOf(String.valueOf(cNum[1])) - 1]);
+            }else {
+                stringBuffer.append(tag[Integer.valueOf(String.valueOf(cNum[0])) - 1] + "十");
+                stringBuffer.append(tag[Integer.valueOf(String.valueOf(cNum[1])) - 1]);
+            }
         }
         return stringBuffer.toString();
     }
