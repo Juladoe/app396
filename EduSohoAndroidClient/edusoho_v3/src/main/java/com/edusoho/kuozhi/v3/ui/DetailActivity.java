@@ -68,7 +68,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
     protected boolean mIsMemder = false;
     private int mTitleBarHeight;
     public int mMediaViewHeight = 210;
-    private  SystemBarTintManager tintManager;
+    private SystemBarTintManager tintManager;
     protected LoadDialog mLoading;
 
     @Override
@@ -123,8 +123,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mContentVp.setAdapter(mAdapter);
         ViewGroup.LayoutParams params = mMediaRlayout.getLayoutParams();
-        if(params != null) {
-            params.height = AppUtil.dp2px(this,mMediaViewHeight);
+        if (params != null) {
+            params.height = AppUtil.dp2px(this, mMediaViewHeight);
             mMediaRlayout.setLayoutParams(params);
         }
         mParent.setFirstViewHeight(AppUtil.dp2px(this,
@@ -219,7 +219,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
         } else if (v.getId() == R.id.play_layout2) {
             courseStart();
         } else if (v.getId() == R.id.play_layout) {
-            courseStart();
+//            courseStart();
+            fullScreen();
         } else if (v.getId() == R.id.consult_layout) {
             consult();
         } else if (v.getId() == R.id.back2) {
@@ -320,7 +321,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
             if (isScreenLock) {
                 return true;
             }
-            if(mIsFullScreen){
+            if (mIsFullScreen) {
                 fullScreen();
             }
         }
@@ -384,7 +385,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
     private void fullScreen() {
         ViewGroup.LayoutParams params = mMediaRlayout.getLayoutParams();
         if (!mIsFullScreen) {
-            mParent.scrollTo(0,0);
+            mParent.scrollTo(0, 0);
             getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
             mIsFullScreen = true;
             params.height = AppUtil.getWidthPx(this);
@@ -392,6 +393,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
             mMediaRlayout.setLayoutParams(params);
             mParent.setCanScroll(false);
             mBottomLayout.setVisibility(View.GONE);
+            mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
@@ -401,8 +403,12 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
             mMediaRlayout.setLayoutParams(params);
             mParent.setCanScroll(mCanScroll[mCheckNum]);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            if(!mIsMemder){
+            if (!mIsMemder) {
                 mBottomLayout.setVisibility(View.VISIBLE);
+            }else{
+                if (this instanceof CourseActivity) {
+                    mTvInclass.setVisibility(View.VISIBLE);
+                }
             }
         }
     }
