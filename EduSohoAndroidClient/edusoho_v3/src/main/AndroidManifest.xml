@@ -165,14 +165,14 @@
         <activity
             android:name=".v3.ui.RegisterActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".v3.ui.RegisterConfirmActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="portrait"/>
-       <activity
-           android:name=".v3.ui.RegisterConfirmActivity"
-           android:configChanges="keyboardHidden|orientation"
-           android:screenOrientation="portrait"
-           android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-           android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".v3.ui.LessonDownloadingActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -281,16 +281,18 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
-        <activity android:name=".v3.ui.CompletePhoneActivity"
+        <activity
+            android:name=".v3.ui.CompletePhoneActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
-        <activity android:name=".v3.ui.CompletePhoneConfActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".v3.ui.CompletePhoneConfActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" /><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
 
     </application>

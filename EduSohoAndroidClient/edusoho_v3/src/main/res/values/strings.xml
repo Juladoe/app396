@@ -6,8 +6,9 @@
     <string name="app_name">阔知学堂</string>
     <string name="app_title">将学校装进口袋</string>
     <string name="api_version">3.0.0</string>
-    <string name="apk_version">3.7.2</string>
-    <string name="apk_code">34</string>
+    <string name="apk_version">3.8.0</string>
+    <string name="encrypt_version">7.3.6</string>
+    <string name="apk_code">42</string>
     <string name="splash_num">0</string>
     <string name="splash_padding">0</string>
     <string name="image_cache_path">ImageLoaderCache</string>
@@ -27,6 +28,7 @@
     <string name="register_resend">后重新获取验证码</string>
     <string name="register_next">下一步</string>
     <string name="register_confirm">确定</string>
+    <string name="register_login">登录</string>
     <string name="register_loading">正在注册...</string>
     <string name="register_success">正在成功</string>
     <string name="complete_info">完善信息</string>
@@ -38,6 +40,7 @@
     <!--TextView-->
     <string name="testpaper_menu_card">答题卡</string>
     <string name="setting_scan">扫一扫</string>
+    <string name="setting_search_school">搜索网校</string>
     <string name="setting_scan_second">扫描进入网校</string>
     <string name="setting_new_msg_notify">新消息提醒</string>
     <string name="setting_online_duration">在线时段</string>
@@ -90,7 +93,7 @@
     <string name="phone_sms_code_hint">请输入短信验证码</string>
     <string name="sms_code_not_null">验证码不能为空</string>
     <string name="reset_password_not_null">重置密码不能为空</string>
-    <string name="password_more_than_six_digit_number">密码不能小于6位</string>
+    <string name="password_more_than_six_digit_number">密码是由5-20位英文、数字、符号组成</string>
     <string name="retrieve_phone_code">重新获取验证码</string>
     <string name="after_retrieve_phone_code">后重新获取验证码</string>
     <string name="reg_set_password">请设置密码</string>
@@ -114,6 +117,8 @@
     <string name="reg_code_hint">请输入验证码</string>
     <string name="reg_username_hint">请输入手机号／邮箱号／用户名</string>
     <string name="reg_password_hint">请输入密码</string>
+    <string name="phone_registered">该手机号已被绑定</string>
+    <string name="register_password_hint">密码不能为空</string>
 
     <!--Button-->
     <string name="reg_account_reg">账号注册</string>
@@ -138,7 +143,8 @@
     <string name="course_params_error">课程参数不正确</string>
     <string name="player_exit_dialog_title">提醒</string>
     <string name="player_exit_dialog_msg">是否退出播放</string>
-    <string name="register_hint">该手机号码已被其他用户绑定</string>
+    <string name="register_hint">当前账号已被注册，请直接登录</string>
+    <string name="registered_hint">该手机号码已被其他用户绑定</string>
     <string name="phone_error">你输入的手机号格式有误</string>
     <string name="register_modify_phone">请更换手机号码</string>
     <string name="complete_phone_empty">手机号不能为空</string>

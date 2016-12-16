@@ -34,6 +34,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.EdusohoAutoCompleteTextView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
@@ -261,6 +262,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                     PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
                     return;
                 }
+                app.schoolVersion = systemInfo.version;
 
                 getSchoolApi(systemInfo);
             }
