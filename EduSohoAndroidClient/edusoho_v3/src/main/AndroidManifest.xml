@@ -165,14 +165,14 @@
         <activity
             android:name=".v3.ui.RegisterActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".v3.ui.RegisterConfirmActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:screenOrientation="portrait"/>
-       <activity
-           android:name=".v3.ui.RegisterConfirmActivity"
-           android:configChanges="keyboardHidden|orientation"
-           android:screenOrientation="portrait"
-           android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-           android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".v3.ui.LessonDownloadingActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -265,6 +265,10 @@
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
 
+        <activity
+            android:name=".v3.ui.CourseActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".v3.ui.NoteActivity"
             android:screenOrientation="landscape"

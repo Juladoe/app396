@@ -65,6 +65,7 @@
     <string name="study_entrance">进入学习</string>
     <string name="message_do_not_disturb">消息免打扰</string>
     <string name="clear_message_record">清空课程历史记录</string>
+    <string name="success_add_course">成功加入课程</string>
     <string name="clear_service_profile_record">清空历史记录</string>
     <string name="classroom_all_members">全体成员</string>
     <string name="classroom_announcement">班级公告</string>
@@ -204,12 +205,33 @@
     <string name="font_homework">&#xe659;</string>
     <string name="font_exercise">&#xe658;</string>
 
+<<<<<<< HEAD
     <string name="catalog_cache">&#xe672;</string>
     <string name="catalog_lesson_audio">&#xe674;</string>
     <string name="catalog_lesson_video">&#xe673;</string>
     <string name="catalog_class_call">&#xe66b;</string>
     <string name="cache_course">缓存课程</string>
     <string name="unjoin_course_hint">加入课程后才能开始学习</string>
+=======
+    <string name="new_font_share">&#xe667;</string>
+    <string name="new_font_back">&#xe668;</string>
+    <string name="new_font_play">&#xe669;</string>
+    <string name="new_font_collect">&#xe66a;</string>
+    <string name="new_font_consult">&#xe66b;</string>
+    <string name="new_font_star_grade">&#xe66c;</string>
+    <string name="new_font_unfold">&#xe66d;</string>
+    <string name="new_font_fold">&#xe66e;</string>
+    <string name="new_font_more">&#xe66f;</string>
+    <string name="new_font_close">&#xe671;</string>
+    <string name="new_font_cache">&#xe672;</string>
+    <string name="new_font_video">&#xe673;</string>
+    <string name="new_font_audio">&#xe674;</string>
+    <string name="new_font_more_oper">&#xe678;</string>
+    <string name="new_font_grade">&#xe676;</string>
+    <string name="new_font_collected">&#xe679;</string>
+
+
+>>>>>>> 4ecd4ad251d95ccba685b18f74f2d837882d72fc
 
     <string name="title_news">动态</string>
     <string name="title_find">发现</string>
