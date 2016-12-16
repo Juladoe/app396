@@ -268,7 +268,17 @@
         <activity
             android:name=".v3.ui.CourseActivity"
             android:theme="@style/AppThemeNoActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".v3.ui.ClassroomActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".v3.ui.NoteActivity"
             android:screenOrientation="landscape"

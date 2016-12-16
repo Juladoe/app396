@@ -20,14 +20,14 @@ import java.util.Map;
  * Created by Zhang on 2016/12/14.
  */
 
-public class CourseUtil {
+public class ClassroomUtil {
 
-    public static void collectCourse(String courseId, final OnCollectSucceeListener onCollectSucceeListener) {
+    public static void collectClassroom(String classroomId, final OnCollectSucceeListener onCollectSucceeListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
             return;
         }
-        EdusohoApp.app.getUrl(EdusohoApp.app.bindUrl(Const.FAVORITE + "?courseId=" + courseId, true)
+        EdusohoApp.app.getUrl(EdusohoApp.app.bindUrl(Const.FAVORITE + "?classroomId=" + classroomId, true)
                 , new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -50,12 +50,12 @@ public class CourseUtil {
                 });
     }
 
-    public static void uncollectCourse(String courseId, final OnCollectSucceeListener onCollectSucceeListener) {
+    public static void uncollectClassroom(String classroomId, final OnCollectSucceeListener onCollectSucceeListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
             return;
         }
-        EdusohoApp.app.getUrl(EdusohoApp.app.bindUrl(Const.UNFAVORITE + "?courseId=" + courseId, true)
+        EdusohoApp.app.getUrl(EdusohoApp.app.bindUrl(Const.UNFAVORITE + "?classroomId=" + classroomId, true)
                 , new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -78,7 +78,7 @@ public class CourseUtil {
                 });
     }
 
-    public static class CourseParamsBuilder {
+    public static class ClassroomParamsBuilder {
         Map<String, String> params = new HashMap<>();
         private String payment;
         private String payPassword;
@@ -87,37 +87,37 @@ public class CourseUtil {
         private String targetType;
         private String targetId;
 
-        public CourseParamsBuilder setPayment(String payment) {
+        public ClassroomParamsBuilder setPayment(String payment) {
             this.payment = payment;
             params.put("payment", payment);
             return this;
         }
 
-        public CourseParamsBuilder setPayPassword(String payPassword) {
+        public ClassroomParamsBuilder setPayPassword(String payPassword) {
             this.payPassword = payPassword;
             params.put("payPassword", payPassword);
             return this;
         }
 
-        public CourseParamsBuilder setTotalPrice(String totalPrice) {
+        public ClassroomParamsBuilder setTotalPrice(String totalPrice) {
             this.totalPrice = totalPrice;
             params.put("totalPrice", totalPrice);
             return this;
         }
 
-        public CourseParamsBuilder setCouponCode(String couponCode) {
+        public ClassroomParamsBuilder setCouponCode(String couponCode) {
             this.couponCode = couponCode;
             params.put("couponCode", couponCode);
             return this;
         }
 
-        public CourseParamsBuilder setTargetType(String targetType) {
+        public ClassroomParamsBuilder setTargetType(String targetType) {
             this.targetType = targetType;
-            params.put("targetType", targetType);
+            params.put("targetType", "classroom");
             return this;
         }
 
-        public CourseParamsBuilder setTargetId(String targetId) {
+        public ClassroomParamsBuilder setTargetId(String targetId) {
             this.targetId = targetId;
             params.put("targetId", targetId);
             return this;
@@ -128,8 +128,8 @@ public class CourseUtil {
         }
     }
 
-    public static void addCourse(final CourseParamsBuilder builder, final OnAddCourseListener
-            onAddCourseListener) {
+    public static void addClassroom(final ClassroomParamsBuilder builder, final OnAddClassroomListener
+            onAddclassroomListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
             return;
@@ -154,7 +154,7 @@ public class CourseUtil {
                                     EdusohoApp.app.schoolHost,
                                     String.format("main#/coursepay/%s/%s",
                                             builder.targetId
-                                            , "course")
+                                            , "classroom")
                             );
                             EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
                                     , EdusohoApp.app.mActivity, new PluginRunCallback() {
@@ -166,17 +166,17 @@ public class CourseUtil {
                             return;
                         }
                         if (status.equals("ok")) {
-                            if (onAddCourseListener != null) {
-                                onAddCourseListener.onAddCourseSuccee(response);
+                            if (onAddclassroomListener != null) {
+                                onAddclassroomListener.onAddClassroomSuccee(response);
                             }
                         } else {
-                            if (onAddCourseListener != null) {
-                                onAddCourseListener.onAddCourseError(status);
+                            if (onAddclassroomListener != null) {
+                                onAddclassroomListener.onAddClassroomError(status);
                             }
                         }
                     } catch (JSONException e) {
-                        if (onAddCourseListener != null) {
-                            onAddCourseListener.onAddCourseError("JsonError");
+                        if (onAddclassroomListener != null) {
+                            onAddclassroomListener.onAddClassroomError("JsonError");
                         }
                     }
                 }
@@ -185,8 +185,8 @@ public class CourseUtil {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (onAddCourseListener != null) {
-                    onAddCourseListener.onAddCourseError("volleyError");
+                if (onAddclassroomListener != null) {
+                    onAddclassroomListener.onAddClassroomError("volleyError");
                 }
             }
         });
@@ -196,10 +196,10 @@ public class CourseUtil {
         void onCollectSuccee();
     }
 
-    public interface OnAddCourseListener {
-        void onAddCourseSuccee(String response);
+    public interface OnAddClassroomListener {
+        void onAddClassroomSuccee(String response);
 
-        void onAddCourseError(String response);
+        void onAddClassroomError(String response);
     }
 
     private static void notLogin() {
