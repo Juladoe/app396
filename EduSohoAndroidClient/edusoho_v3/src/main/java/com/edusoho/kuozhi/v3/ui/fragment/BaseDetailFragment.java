@@ -2,6 +2,9 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,10 +20,11 @@ import com.edusoho.kuozhi.v3.view.circleImageView.CircleImageView;
  * Created by Zhang on 2016/12/8.
  */
 
-public abstract class BaseDetailFragment extends BaseFragment {
+public abstract class BaseDetailFragment extends BaseFragment implements View.OnClickListener {
 
     public BaseDetailFragment() {
     }
+
     protected TextView mTvPriceOld;
     protected TextView mTvPriceNow;
     protected View mPriceLayout;
@@ -38,10 +42,12 @@ public abstract class BaseDetailFragment extends BaseFragment {
     protected TextView mTvStudentNum;
     protected CircleImageView mIvTeacherIcon;
     protected View mStudentMore;
+    protected TextView mTvTitleFull;
     protected LinearLayout mStudentIconLayout;
     protected TextView mTvReviewNum;
     protected TextView mTvReviewMore;
     protected ListView mLvReview;
+    protected int mTeacherId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,11 +83,73 @@ public abstract class BaseDetailFragment extends BaseFragment {
         mTvReviewNum = (TextView) view.findViewById(R.id.tv_review_num);
         mTvReviewMore = (TextView) view.findViewById(R.id.tv_review_more);
         mLvReview = (ListView) view.findViewById(R.id.lv_review);
+        mTvTitleFull = (TextView) view.findViewById(R.id.tv_title_full);
     }
 
     abstract protected void initData();
 
     private void initEvent() {
+        mTvTitleDesc.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int lineCount = mTvTitleDesc.getLineCount();
+                if (lineCount > 2) {
+                    mTvTitleDesc.setMaxLines(2);
+                    mTvTitleDesc.setEllipsize(TextUtils.TruncateAt.END);
+                    mTvTitleFull.setVisibility(View.VISIBLE);
+                    mTvTitleFull.setText(getString(R.string.new_font_unfold));
+                } else {
+                    mTvTitleFull.setVisibility(View.GONE);
+                }
+            }
+        });
+        mTvTitleFull.setOnClickListener(this);
+        mTvTitleDesc.setOnClickListener(this);
+        mStudentMore.setOnClickListener(this);
+        mVipLayout.setOnClickListener(this);
+        mTvReviewMore.setOnClickListener(this);
+        mIvTeacherIcon.setOnClickListener(this);
     }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.tv_title_full ||
+                v.getId() == R.id.tv_title_desc) {
+            if (mTvTitleFull.getVisibility() == View.GONE) {
+                return;
+            }
+            if (mTvTitleFull.getText().equals(getString(R.string.new_font_unfold))) {
+                mTvTitleDesc.setMaxLines(-1);
+                mTvTitleFull.setText(getString(R.string.new_font_fold));
+            } else {
+                mTvTitleDesc.setMaxLines(2);
+                mTvTitleFull.setText(getString(R.string.new_font_unfold));
+            }
+        }else if(v.getId() == R.id.vip_rlayout){
+            vipInfo();
+        }else if(v.getId() == R.id.tv_review_more){
+            moreReview();
+        }else if(v.getId() == R.id.tv_student_more){
+            moreStudent();
+        }else if(v.getId() == R.id.iv_teacher_icon){
+
+        }
+    }
+
+    protected abstract void moreStudent();
+
+    protected abstract void moreReview();
+
+    protected abstract void vipInfo();
+
 }
