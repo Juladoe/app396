@@ -64,16 +64,19 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     protected void initData() {
         if (mCourseId != null) {
+            mLoading.show();
             CourseDetailModel.getCourseDetail(mCourseId,
                     new ResponseCallbackListener<CourseDetail>() {
                         @Override
                         public void onSuccess(CourseDetail data) {
                             mCourseDetail = data;
                             refreshView();
+                            mLoading.dismiss();
                         }
 
                         @Override
                         public void onFailure(String code, String message) {
+                            mLoading.dismiss();
                             if (message.equals("课程不存在")) {
                                 CommonUtil.shortToast(CourseActivity.this, "课程不存在");
                                 finish();
@@ -121,10 +124,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             CommonUtil.shortToast(this,"课程目前没有老师");
             return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putString(ImChatActivity.FROM_NAME, teacher.nickname);
-        bundle.putInt(ImChatActivity.FROM_ID, teacher.id);
-        bundle.putString(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
         app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
