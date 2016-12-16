@@ -62,16 +62,19 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     protected void initData() {
         if (mCourseId != null) {
+            mLoading.show();
             CourseDetailModel.getCourseDetail(mCourseId,
                     new ResponseCallbackListener<CourseDetail>() {
                         @Override
                         public void onSuccess(CourseDetail data) {
                             mCourseDetail = data;
                             refreshView();
+                            mLoading.dismiss();
                         }
 
                         @Override
                         public void onFailure(String code, String message) {
+                            mLoading.dismiss();
                             if (message.equals("课程不存在")) {
                                 CommonUtil.shortToast(CourseActivity.this, "课程不存在");
                                 finish();

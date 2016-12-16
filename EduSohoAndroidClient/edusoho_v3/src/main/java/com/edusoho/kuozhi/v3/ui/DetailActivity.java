@@ -25,6 +25,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
     private int mTitleBarHeight;
     public int mMediaViewHeight = 210;
     private  SystemBarTintManager tintManager;
+    protected LoadDialog mLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +140,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
         headParams.height = AppUtil.dp2px(this, 43 + mTitleBarHeight);
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
+        mLoading = new LoadDialog(this);
     }
 
     protected abstract void initFragment(List<Fragment> fragments);
