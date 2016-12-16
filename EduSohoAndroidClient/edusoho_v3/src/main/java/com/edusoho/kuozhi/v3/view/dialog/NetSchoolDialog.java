@@ -175,9 +175,9 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                             public void onSuccess(List<Site> data) {
                                 mLoading.dismiss();
                                 mList.clear();
-                                if(data.size() == 0){
-                                    CommonUtil.shortToast(mContext,"没有搜索到相关网校");
-                                }else {
+                                if (data.size() == 0) {
+                                    CommonUtil.shortToast(mContext, "没有搜索到相关网校");
+                                } else {
                                     mList.addAll(data);
                                 }
                                 mAdapter.notifyDataSetChanged();
@@ -249,6 +249,8 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                     PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
                     return;
                 }
+
+                app.schoolVersion = systemInfo.version;
 
                 getSchoolApi(systemInfo);
             }
@@ -335,8 +337,8 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
         Date date = new Date();
         String loginTime = nowfmt.format(date);
         Uri uri = Uri.parse(site.url);
-        String domain = uri.getPort() == -1?
-                uri.getHost():
+        String domain = uri.getPort() == -1 ?
+                uri.getHost() :
                 uri.getHost() + ":" + uri.getPort();
         SchoolUtil.saveEnterSchool(mContext, site.name, loginTime, "登录账号：未登录", domain);
         startSchoolActivity(site);
