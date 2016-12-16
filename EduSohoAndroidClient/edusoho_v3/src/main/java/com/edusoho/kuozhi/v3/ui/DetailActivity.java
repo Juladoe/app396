@@ -140,7 +140,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
         headParams.height = AppUtil.dp2px(this, 43 + mTitleBarHeight);
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
-        mLoading = new LoadDialog(this);
+        mLoading = LoadDialog.create(this);
     }
 
     protected abstract void initFragment(List<Fragment> fragments);

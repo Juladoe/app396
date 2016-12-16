@@ -69,12 +69,12 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                         public void onSuccess(CourseDetail data) {
                             mCourseDetail = data;
                             refreshView();
-                            mLoading.dismiss();
+//                            mLoading.dismiss();
                         }
 
                         @Override
                         public void onFailure(String code, String message) {
-                            mLoading.dismiss();
+//                            mLoading.dismiss();
                             if (message.equals("课程不存在")) {
                                 CommonUtil.shortToast(CourseActivity.this, "课程不存在");
                                 finish();
