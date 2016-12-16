@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
 
@@ -225,11 +226,13 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                 headers.put("Cookie", mCookie);
             }
 
+            final LoadDialog loadDialog = LoadDialog.create(RegisterConfirmActivity.this);
+            loadDialog.show();
             mActivity.ajaxPost(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        Log.d("test", response);
+                        loadDialog.dismiss();
                         UserResult userResult = mActivity.parseJsonValue(
                                 response, new TypeToken<UserResult>() {
                                 });
@@ -239,7 +242,6 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                                 @Override
                                 public void run() {
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
                                 }
                             }, 500);
                         } else {
@@ -248,13 +250,14 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                             }
                         }
                     } catch (Exception e) {
+                        loadDialog.dismiss();
                         e.printStackTrace();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data).toString());
+                    loadDialog.dismiss();
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
             });

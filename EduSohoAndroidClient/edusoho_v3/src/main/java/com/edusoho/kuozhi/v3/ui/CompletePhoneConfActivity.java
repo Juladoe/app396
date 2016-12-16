@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
@@ -203,9 +204,12 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
                 return;
             }
             params.put("password", XXTEA.encryptToBase64String(strPass, app.domain));
+            final LoadDialog loadDialog = LoadDialog.create(CompletePhoneConfActivity.this);
+            loadDialog.show();
             app.postUrl(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
+                    loadDialog.dismiss();
                     if (response.contains("error")) {
                         ErrorCode errorCode = mActivity.parseJsonValue(response, new TypeToken<ErrorCode>() {
                         });
@@ -228,6 +232,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    loadDialog.dismiss();
                     Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data).toString());
                     CommonUtil.shortCenterToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
