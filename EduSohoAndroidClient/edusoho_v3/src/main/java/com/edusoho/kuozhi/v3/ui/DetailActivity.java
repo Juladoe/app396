@@ -219,8 +219,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
         } else if (v.getId() == R.id.play_layout2) {
             courseStart();
         } else if (v.getId() == R.id.play_layout) {
-//            courseStart();
-            fullScreen();
+            courseStart();
         } else if (v.getId() == R.id.consult_layout) {
             consult();
         } else if (v.getId() == R.id.back2) {
