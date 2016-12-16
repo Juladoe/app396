@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.entity.lesson;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by DF on 2016/12/14.
@@ -10,19 +11,15 @@ import java.util.List;
 
 public class CourseCatalogue {
 
-    /**
-     * learnStatuses : {"219":"learning","220":"learning","226":"learning","376":"finished"}
-     * lessons : [{"content":"","copyId":"0","courseId":"49","createdTime":"2016-10-28T16:20:28+08:00","id":"53","itemType":"chapter","length":"","number":"1","parentId":"0","seq":"1","title":"古诗词","type":"chapter"},{"content":"","copyId":"0","courseId":"49","createdTime":"2016-10-28T16:21:52+08:00","id":"54","itemType":"chapter","length":"","number":"1","parentId":"53","seq":"2","title":"子","type":"unit"},{"chapterId":"54","content":"","copyId":"0","courseId":"49","createdTime":"2016-08-22T15:13:54+08:00","endTime":"0","exerciseId":"0","free":"0","giveCredit":"0","homeworkId":"0","id":"218","itemType":"lesson","learnedNum":"0","length":"14:51","liveProvider":"0","materialNum":"0","maxOnlineNum":"0","mediaId":"1039","mediaName":"最新爆笑集合，墙外两天破百万观看_高清.mp4","mediaSource":"self","mediaUri":"","memberNum":"0","number":"1","quizNum":"0","replayStatus":"ungenerated","requireCredit":"0","seq":"3","startTime":"0","status":"published","summary":"最好笑的视频","testMode":"normal","testStartTime":"0","title":"课时-mp4视频","type":"video","updatedTime":"1477642917","userId":"1","viewedNum":"0"},{"chapterId":"54","content":"","copyId":"0","courseId":"49","createdTime":"2016-08-22T15:14:43+08:00","endTime":"0","exerciseId":"0","free":"0","giveCredit":"0","homeworkId":"0","id":"219","itemType":"lesson","learnedNum":"0","length":"","liveProvider":"0","materialNum":"0","maxOnlineNum":"0","mediaId":"14","mediaName":"Android开发进阶-目录与样章(Simple著).pdf","mediaSource":"self","mediaUri":"","memberNum":"0","number":"2","quizNum":"0","replayStatus":"ungenerated","requireCredit":"0","seq":"4","startTime":"0","status":"published","summary":"Android开发进阶-目录与样章(Simple著)","testMode":"normal","testStartTime":"0","title":"课时-pdf文档","type":"document","updatedTime":"1477642917","userId":"1","viewedNum":"0"},{"chapterId":"54","content":"","copyId":"0","courseId":"49","createdTime":"2016-08-22T16:07:20+08:00","endTime":"0","exerciseId":"0","free":"0","giveCredit":"0","homeworkId":"0","id":"220","itemType":"lesson","learnedNum":"0","length":"","liveProvider":"0","materialNum":"0","maxOnlineNum":"0","mediaId":"1043","mediaName":"纳兰容若.ppt","mediaSource":"self","mediaUri":"","memberNum":"0","number":"3","quizNum":"0","replayStatus":"ungenerated","requireCredit":"0","seq":"5","startTime":"0","status":"published","summary":"","testMode":"normal","testStartTime":"0","title":"课时-纳兰容若ppt","type":"ppt","updatedTime":"1477642917","uploadFile":{"bucket":"ese1a3b8c7d1of","canDownload":"0","convertHash":"courselesson-49/20160822040702-nrnxwkyp8f4k08ow","convertParams":{"convertor":"ppt"},"convertStatus":"success","createdTime":"1471853222","createdUserId":"1","description":"","directives":{"output":"ppt","thumbOutputBucket":"ese1a3b8c7d1of-pub"},"endShared":"0","endUser":"","ext":"ppt","extno":"1043","fileSize":"1435136","filename":"纳兰容若.ppt","globalId":"b80748fbf7f1436ab9050982edc6e849","hash":"cmd5|bbb42fe452860afe7cda40c9c17e2827","id":"1043","isPublic":"0","isShared":"0","length":"15","mcStatus":"no","name":"纳兰容若.ppt","no":"b80748fbf7f1436ab9050982edc6e849","private":"1","processNo":"8e10a42bdbab41dfb29540bc96a1422f","processProgress":"0","processRetry":"0","processStatus":"ok","processedTime":"1471853245","quality":"","resType":"normal","reskey":"courselesson-49/20160822040702-nrnxwkyp8f4k08ow","size":"1435136","status":"uploaded","storage":"cloud","targetId":"49","targetType":"courselesson","thumbnail":"http://ese1a3b8c7d1of-pub.upcdn.edusoho.net/courselesson-49/20160822040702-nrnxwkyp8f4k08ow/7a7a82a00380c366_thumb","thumbnail_raw":{"bucket":"ese1a3b8c7d1of-pub","key":"courselesson-49/20160822040702-nrnxwkyp8f4k08ow/7a7a82a00380c366_thumb"},"type":"ppt","updatedTime":"0","updatedUserId":"1","usedCount":"14","userId":"13871","views":"0"},"userId":"1","viewedNum":"0"},{"chapterId":"54","content":"","copyId":"0","courseId":"49","createdTime":"2016-08-22T19:04:00+08:00","endTime":"0","exerciseId":"0","free":"0","giveCredit":"0","homeworkId":"0","id":"226","itemType":"lesson","learnedNum":"0","length":"","liveProvider":"0","materialNum":"0","maxOnlineNum":"0","mediaId":"27","mediaName":"","mediaSource":"","memberNum":"0","number":"4","quizNum":"0","replayStatus":"ungenerated","requireCredit":"0","seq":"6","startTime":"0","status":"published","testMode":"normal","testStartTime":"0","title":"单元测试-单选题","type":"testpaper","updatedTime":"1477642917","userId":"1","viewedNum":"0"},{"content":"","copyId":"0","courseId":"49","createdTime":"2016-10-28T16:22:24+08:00","id":"55","itemType":"chapter","length":"","number":"2","parentId":"53","seq":"7","title":"请求","type":"unit"},{"chapterId":"55","content":"","copyId":"0","courseId":"49","createdTime":"2016-11-13T15:12:31+08:00","endTime":"0","exerciseId":"0","free":"0","giveCredit":"0","homeworkId":"0","id":"376","itemType":"lesson","learnedNum":"0","length":"04:37","liveProvider":"0","materialNum":"0","maxOnlineNum":"0","mediaId":"1061","mediaName":"爱神_标清.flv","mediaSource":"self","mediaUri":"","memberNum":"0","number":"5","quizNum":"0","replayStatus":"ungenerated","requireCredit":"0","seq":"8","startTime":"0","status":"published","summary":"","testMode":"normal","testStartTime":"0","title":"爱神_标清","type":"video","updatedTime":"1479021158","userId":"1","viewedNum":"0"}]
-     */
+    private Map<Integer, String> learnStatuses;
 
-    private LearnStatusesBean learnStatuses;
     private List<LessonsBean> lessons;
 
-    public LearnStatusesBean getLearnStatuses() {
+    public Map<Integer, String> getLearnStatuses() {
         return learnStatuses;
     }
 
-    public void setLearnStatuses(LearnStatusesBean learnStatuses) {
+    public void setLearnStatuses(Map<Integer, String> learnStatuses) {
         this.learnStatuses = learnStatuses;
     }
 

@@ -76,7 +76,6 @@ public class CourseCatalogueAdapter extends BaseAdapter {
             case TYPE_LESSON:
                 convertView = mInflater.inflate(R.layout.item_lesson_catalog, null);
                 lessonHolder = new LessonHolder(convertView);
-                lessonHolder.lessonDown.setTag(position);
                 //初始化控件数据
                 initView(position);
                 //判断课时类型
@@ -114,13 +113,13 @@ public class CourseCatalogueAdapter extends BaseAdapter {
             lessonHolder.lessonDown.setVisibility(View.GONE);
         }else {
             //判断课时学习状态
-            decideStatu();
+            decideStatu(position);
             if (position != 0) {
                 if (getItemViewType(position - 1) != TYPE_LESSON) {
                     lessonHolder.lessonUp.setVisibility(View.INVISIBLE);
-                    if (position == courseCatalogue.getLessons().size()-1) {
-                        lessonHolder.lessonDown.setVisibility(View.INVISIBLE);
-                    }
+                }
+                if (position == courseCatalogue.getLessons().size()-1) {
+                    lessonHolder.lessonDown.setVisibility(View.INVISIBLE);
                 }
             }
             if (position < courseCatalogue.getLessons().size()-1) {
@@ -140,15 +139,18 @@ public class CourseCatalogueAdapter extends BaseAdapter {
         lessonHolder.lessonTime.setText(lessonsBean.getLength());
         lessonHolder.lessonTitle.setText("课时:"+lessonsBean.getNumber()+" "+lessonsBean.getTitle());
         if ("0".equals(lessonsBean.getFree())) {
-//            lessonHolder.lessonFree.setVisibility(View.INVISIBLE);
+            lessonHolder.lessonFree.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void decideStatu() {
-
-        lessonHolder.lessonState.setImageResource(R.drawable.lesson_status);
-        lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_learning);
-        lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_finish);
+    private void decideStatu(int positon) {
+        if (courseCatalogue.getLearnStatuses().containsKey(positon)) {
+            if ("learning".equals(courseCatalogue.getLearnStatuses().get(positon))) {
+                lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_learning);
+            }else {
+                lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_finish);
+            }
+        }
     }
 
     private void decideKind() {

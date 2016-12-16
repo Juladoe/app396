@@ -76,7 +76,6 @@ public class CourseCatalogFragment extends BaseFragment {
             public void onErrorResponse(VolleyError error) {
             }
         });
-
     }
 
     public void initLessonCatalog(){

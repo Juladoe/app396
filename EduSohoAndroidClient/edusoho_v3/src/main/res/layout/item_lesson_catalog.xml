@@ -60,9 +60,9 @@
         android:textSize="@dimen/font_s"
         android:layout_centerVertical="true"
         android:textColor="@color/secondary_font_color"
-        android:layout_marginRight="30dp"
+        android:layout_marginRight="@dimen/common_margin"
         android:ellipsize="end"
-        android:maxEms="11"
+        android:maxEms="12"
         android:singleLine="true"
         android:layout_toRightOf="@+id/lesson_kind" />
 
