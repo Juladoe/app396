@@ -187,10 +187,12 @@
     <dimen name="register_btn_next">17sp</dimen>
     <dimen name="complete_iv_width">80dp</dimen>
     <dimen name="complete_iv_height">40dp</dimen>
-    <dimen name="catelog_margin_left">25dp</dimen>
+    <dimen name="catalog_margin_left">25dp</dimen>
     <dimen name="common_margin_right">15dp</dimen>
+    <dimen name="common_maring0">15dp</dimen>
     <dimen name="common_margin">10dp</dimen>
     <dimen name="common_margin1">9dp</dimen>
+    <dimen name="common_marginl">5dp</dimen>
     <dimen name="space_height">53dp</dimen>
     <dimen name="catelog_chapter_height">54dp</dimen>
     <dimen name="catelog_section_height">34dp</dimen>

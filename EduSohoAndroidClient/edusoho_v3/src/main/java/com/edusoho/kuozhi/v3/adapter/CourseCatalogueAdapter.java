@@ -21,6 +21,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     public int mSelect = -1;
     public CourseCatalogue courseCatalogue;
     public Context mContext;
+    public boolean isJoin;
     public static final int TYPE_CHAPTER = 0;
     public static final int TYPE_SECTION = 1;
     public static final int TYPE_LESSON = 2;
@@ -30,11 +31,11 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     private LessonHolder lessonHolder;
     private CourseCatalogue.LessonsBean lessonsBean;
 
-    public CourseCatalogueAdapter(Context context , CourseCatalogue courseCatalogue){
+    public CourseCatalogueAdapter(Context context , CourseCatalogue courseCatalogue,boolean isJoin){
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.courseCatalogue = courseCatalogue;
         this.mContext = context;
-
+        this.isJoin = isJoin;
         Log.d("test", courseCatalogue.toString());
     }
 
@@ -79,11 +80,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
                 //初始化控件数据
                 initView(position);
                 //判断课时类型
-                //
                 decideKind();
-                //判断课时学习状态
-                //
-                decideStatu();
                 break;
         }
         return convertView;
@@ -111,15 +108,28 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     }
 
     private void initView(int position) {
-        if (getItemViewType(position - 1) != TYPE_LESSON) {
-            lessonHolder.lessonUp.setVisibility(View.INVISIBLE);
-            if (position == courseCatalogue.getLessons().size()-1) {
-                lessonHolder.lessonDown.setVisibility(View.INVISIBLE);
+        if (!isJoin) {
+            lessonHolder.lessonState.setVisibility(View.GONE);
+            lessonHolder.lessonUp.setVisibility(View.GONE);
+            lessonHolder.lessonDown.setVisibility(View.GONE);
+        }else {
+            //判断课时学习状态
+            decideStatu();
+            if (position != 0) {
+                if (getItemViewType(position - 1) != TYPE_LESSON) {
+                    lessonHolder.lessonUp.setVisibility(View.INVISIBLE);
+                    if (position == courseCatalogue.getLessons().size()-1) {
+                        lessonHolder.lessonDown.setVisibility(View.INVISIBLE);
+                    }
+                }
             }
-        }
-        if (position < courseCatalogue.getLessons().size()-1) {
-            if (getItemViewType(position + 1) != TYPE_LESSON) {
-                lessonHolder.lessonDown.setVisibility(View.INVISIBLE);
+            if (position < courseCatalogue.getLessons().size()-1) {
+                if (getItemViewType(position + 1) != TYPE_LESSON) {
+                    lessonHolder.lessonDown.setVisibility(View.INVISIBLE);
+                }
+                if (position == 0) {
+                    lessonHolder.lessonUp.setVisibility(View.INVISIBLE);
+                }
             }
         }
         if (mSelect == position) {
@@ -135,6 +145,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     }
 
     private void decideStatu() {
+
         lessonHolder.lessonState.setImageResource(R.drawable.lesson_status);
         lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_learning);
         lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_finish);
@@ -143,16 +154,16 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     private void decideKind() {
         switch (lessonsBean.getType()) {
             case "ppt":
-//                lessonHolder.lessonKind.setText("&#xe673;");
+                lessonHolder.lessonKind.setText(R.string.catalog_lesson_audio);
                 break;
             case "video":
-                lessonHolder.lessonKind.setText("");
+                lessonHolder.lessonKind.setText(R.string.catalog_lesson_video);
                 break;
             case "document":
-                lessonHolder.lessonKind.setText("");
+                lessonHolder.lessonKind.setText(R.string.catalog_lesson_doucument);
                 break;
             case "testpaper":
-                lessonHolder.lessonKind.setText("");
+                lessonHolder.lessonKind.setText(R.string.catalog_lesson_testPaper);
                 break;
         }
     }

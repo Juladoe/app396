@@ -85,47 +85,6 @@ public class CourseCatalogue {
     }
 
     public static class LessonsBean {
-        /**
-         * content :
-         * copyId : 0
-         * courseId : 49
-         * createdTime : 2016-10-28T16:20:28+08:00
-         * id : 53
-         * itemType : chapter
-         * length :
-         * number : 1
-         * parentId : 0
-         * seq : 1
-         * title : 古诗词
-         * type : chapter
-         * chapterId : 54
-         * endTime : 0
-         * exerciseId : 0
-         * free : 0
-         * giveCredit : 0
-         * homeworkId : 0
-         * learnedNum : 0
-         * liveProvider : 0
-         * materialNum : 0
-         * maxOnlineNum : 0
-         * mediaId : 1039
-         * mediaName : 最新爆笑集合，墙外两天破百万观看_高清.mp4
-         * mediaSource : self
-         * mediaUri :
-         * memberNum : 0
-         * quizNum : 0
-         * replayStatus : ungenerated
-         * requireCredit : 0
-         * startTime : 0
-         * status : published
-         * summary : 最好笑的视频
-         * testMode : normal
-         * testStartTime : 0
-         * updatedTime : 1477642917
-         * userId : 1
-         * viewedNum : 0
-         * uploadFile : {"bucket":"ese1a3b8c7d1of","canDownload":"0","convertHash":"courselesson-49/20160822040702-nrnxwkyp8f4k08ow","convertParams":{"convertor":"ppt"},"convertStatus":"success","createdTime":"1471853222","createdUserId":"1","description":"","directives":{"output":"ppt","thumbOutputBucket":"ese1a3b8c7d1of-pub"},"endShared":"0","endUser":"","ext":"ppt","extno":"1043","fileSize":"1435136","filename":"纳兰容若.ppt","globalId":"b80748fbf7f1436ab9050982edc6e849","hash":"cmd5|bbb42fe452860afe7cda40c9c17e2827","id":"1043","isPublic":"0","isShared":"0","length":"15","mcStatus":"no","name":"纳兰容若.ppt","no":"b80748fbf7f1436ab9050982edc6e849","private":"1","processNo":"8e10a42bdbab41dfb29540bc96a1422f","processProgress":"0","processRetry":"0","processStatus":"ok","processedTime":"1471853245","quality":"","resType":"normal","reskey":"courselesson-49/20160822040702-nrnxwkyp8f4k08ow","size":"1435136","status":"uploaded","storage":"cloud","targetId":"49","targetType":"courselesson","thumbnail":"http://ese1a3b8c7d1of-pub.upcdn.edusoho.net/courselesson-49/20160822040702-nrnxwkyp8f4k08ow/7a7a82a00380c366_thumb","thumbnail_raw":{"bucket":"ese1a3b8c7d1of-pub","key":"courselesson-49/20160822040702-nrnxwkyp8f4k08ow/7a7a82a00380c366_thumb"},"type":"ppt","updatedTime":"0","updatedUserId":"1","usedCount":"14","userId":"13871","views":"0"}
-         */
 
         private String content;
         private String copyId;
@@ -480,54 +439,6 @@ public class CourseCatalogue {
         }
 
         public static class UploadFileBean {
-            /**
-             * bucket : ese1a3b8c7d1of
-             * canDownload : 0
-             * convertHash : courselesson-49/20160822040702-nrnxwkyp8f4k08ow
-             * convertParams : {"convertor":"ppt"}
-             * convertStatus : success
-             * createdTime : 1471853222
-             * createdUserId : 1
-             * description :
-             * directives : {"output":"ppt","thumbOutputBucket":"ese1a3b8c7d1of-pub"}
-             * endShared : 0
-             * endUser :
-             * ext : ppt
-             * extno : 1043
-             * fileSize : 1435136
-             * filename : 纳兰容若.ppt
-             * globalId : b80748fbf7f1436ab9050982edc6e849
-             * hash : cmd5|bbb42fe452860afe7cda40c9c17e2827
-             * id : 1043
-             * isPublic : 0
-             * isShared : 0
-             * length : 15
-             * mcStatus : no
-             * name : 纳兰容若.ppt
-             * no : b80748fbf7f1436ab9050982edc6e849
-             * private : 1
-             * processNo : 8e10a42bdbab41dfb29540bc96a1422f
-             * processProgress : 0
-             * processRetry : 0
-             * processStatus : ok
-             * processedTime : 1471853245
-             * quality :
-             * resType : normal
-             * reskey : courselesson-49/20160822040702-nrnxwkyp8f4k08ow
-             * size : 1435136
-             * status : uploaded
-             * storage : cloud
-             * targetId : 49
-             * targetType : courselesson
-             * thumbnail : http://ese1a3b8c7d1of-pub.upcdn.edusoho.net/courselesson-49/20160822040702-nrnxwkyp8f4k08ow/7a7a82a00380c366_thumb
-             * thumbnail_raw : {"bucket":"ese1a3b8c7d1of-pub","key":"courselesson-49/20160822040702-nrnxwkyp8f4k08ow/7a7a82a00380c366_thumb"}
-             * type : ppt
-             * updatedTime : 0
-             * updatedUserId : 1
-             * usedCount : 14
-             * userId : 13871
-             * views : 0
-             */
 
             private String bucket;
             private String canDownload;
@@ -893,124 +804,21 @@ public class CourseCatalogue {
                 return thumbnail_raw;
             }
 
-            public void setThumbnail_raw(ThumbnailRawBean thumbnail_raw) {
-                this.thumbnail_raw = thumbnail_raw;
-            }
-
-            public String getType() {
-                return type;
-            }
-
-            public void setType(String type) {
-                this.type = type;
-            }
-
-            public String getUpdatedTime() {
-                return updatedTime;
-            }
-
-            public void setUpdatedTime(String updatedTime) {
-                this.updatedTime = updatedTime;
-            }
-
-            public String getUpdatedUserId() {
-                return updatedUserId;
-            }
-
-            public void setUpdatedUserId(String updatedUserId) {
-                this.updatedUserId = updatedUserId;
-            }
-
-            public String getUsedCount() {
-                return usedCount;
-            }
-
-            public void setUsedCount(String usedCount) {
-                this.usedCount = usedCount;
-            }
-
-            public String getUserId() {
-                return userId;
-            }
-
-            public void setUserId(String userId) {
-                this.userId = userId;
-            }
-
-            public String getViews() {
-                return views;
-            }
-
-            public void setViews(String views) {
-                this.views = views;
-            }
-
             public static class ConvertParamsBean {
-                /**
-                 * convertor : ppt
-                 */
-
                 private String convertor;
-
-                public String getConvertor() {
-                    return convertor;
-                }
-
-                public void setConvertor(String convertor) {
-                    this.convertor = convertor;
-                }
             }
 
             public static class DirectivesBean {
-                /**
-                 * output : ppt
-                 * thumbOutputBucket : ese1a3b8c7d1of-pub
-                 */
 
                 private String output;
                 private String thumbOutputBucket;
 
-                public String getOutput() {
-                    return output;
-                }
-
-                public void setOutput(String output) {
-                    this.output = output;
-                }
-
-                public String getThumbOutputBucket() {
-                    return thumbOutputBucket;
-                }
-
-                public void setThumbOutputBucket(String thumbOutputBucket) {
-                    this.thumbOutputBucket = thumbOutputBucket;
-                }
             }
 
             public static class ThumbnailRawBean {
-                /**
-                 * bucket : ese1a3b8c7d1of-pub
-                 * key : courselesson-49/20160822040702-nrnxwkyp8f4k08ow/7a7a82a00380c366_thumb
-                 */
-
                 private String bucket;
                 private String key;
 
-                public String getBucket() {
-                    return bucket;
-                }
-
-                public void setBucket(String bucket) {
-                    this.bucket = bucket;
-                }
-
-                public String getKey() {
-                    return key;
-                }
-
-                public void setKey(String key) {
-                    this.key = key;
-                }
             }
         }
     }

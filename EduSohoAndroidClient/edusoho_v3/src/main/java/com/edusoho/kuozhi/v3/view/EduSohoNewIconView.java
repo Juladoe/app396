@@ -5,12 +5,10 @@ import android.graphics.Typeface;
 import android.view.Gravity;
 import android.widget.TextView;
 
-<<<<<<< HEAD
-=======
 /**
  * Created by howzhi on 14-5-12.
  */
->>>>>>> 4ecd4ad251d95ccba685b18f74f2d837882d72fc
+
 public class EduSohoNewIconView extends TextView {
 
     private Context mContext;
