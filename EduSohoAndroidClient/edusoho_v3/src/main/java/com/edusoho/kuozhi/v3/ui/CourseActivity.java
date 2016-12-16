@@ -220,7 +220,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(LessonVideoPlayerFragment.PLAY_URI,
-                "http://153.3.225.17/youku/6575289867F3071DD873F3528/030008040051135358F52D035FA458D389C279-875A-5337-C625-B6999B848372.mp4");
+                "http://61.158.240.104/youku/657440FCC144682C8830A96871/030008010051AD035DE45E001ACB49BE6BEF66-ECB0-3FD5-9729-E626B75C4B4A.mp4");
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
         transaction.commitAllowingStateLoss();

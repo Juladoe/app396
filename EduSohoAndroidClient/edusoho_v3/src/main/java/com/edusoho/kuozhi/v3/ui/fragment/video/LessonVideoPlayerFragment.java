@@ -5,13 +5,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.os.Handler;
-import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
 
+import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
 
 /**
@@ -36,9 +36,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment {
             return;
         }
         ViewGroup parent = (ViewGroup) viewParent.getParent();
-        int requestedOrientarion = orientation == Configuration.ORIENTATION_LANDSCAPE ?
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
-        getActivity().setRequestedOrientation(requestedOrientarion);
+        MessageEngine.getInstance().sendMsg(Const.FULL_SCREEN, null);
 
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         ViewGroup.LayoutParams lp = parent.getLayoutParams();
@@ -46,5 +44,12 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment {
                 wm.getDefaultDisplay().getHeight() : getContext().getResources().getDimensionPixelOffset(com.edusoho.videoplayer.R.dimen.video_height);
         lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
         parent.setLayoutParams(lp);
+    }
+
+    @Override
+    protected void changeHeaderViewStatus(boolean isShow) {
+        String changeBarEvent = isShow ?
+                Const.COURSE_SHOW_BAR : Const.COURSE_HIDE_BAR;
+        MessageEngine.getInstance().sendMsg(changeBarEvent, null);
     }
 }
