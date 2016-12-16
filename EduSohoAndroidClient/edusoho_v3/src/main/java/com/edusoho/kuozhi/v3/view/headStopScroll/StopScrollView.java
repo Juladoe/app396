@@ -39,12 +39,36 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
         super.onScrollChanged(l, t, oldl, oldt);
         if (oldt - t > 0 &&
                 t <= AppUtil.dp2px(getContext(), 10)) {
-            Bundle bundle = new Bundle();
-            bundle.putString("class", getContext().getClass().getSimpleName());
-            ((EdusohoApp) ((Activity) getContext()).getApplication())
-                    .sendMessage(Const.SCROLL_STATE_SAVE, bundle);
-            mCanScroll = false;
+            sendScrollState();
         }
+    }
+    float moveY;
+    float startY;
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                startY = (int) ev.getRawY();
+                break;
+            case MotionEvent.ACTION_MOVE:
+                moveY = ev.getRawY() - startY;
+                if (moveY > 0 && getScrollY() == 0) {
+                    sendScrollState();
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                startY = 0;
+                break;
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private void sendScrollState(){
+        Bundle bundle = new Bundle();
+        bundle.putString("class", getContext().getClass().getSimpleName());
+        ((EdusohoApp) ((Activity) getContext()).getApplication())
+                .sendMessage(Const.SCROLL_STATE_SAVE, bundle);
+        mCanScroll = false;
     }
 
     @Override

@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.lesson.LessonModel;
+import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -297,8 +298,14 @@ public class FindCardItemAdapter extends BaseAdapter {
 //        final String url;
 //        switch (type) {
 //            case "normal":
-        view.setTag(R.id.card_cover, String.valueOf(id));
-        view.setOnClickListener(mViewOnClickListener2);
+        if(type.equals("classroom")){
+            view.setTag(R.id.card_cover, String.valueOf(id));
+            view.setOnClickListener(mViewOnClickListener);
+        }else{
+            view.setTag(R.id.card_cover, String.valueOf(id));
+            view.setOnClickListener(mViewOnClickListener2);
+        }
+
 //                return;
 //            case "live":
 //                url = String.format(
@@ -308,6 +315,8 @@ public class FindCardItemAdapter extends BaseAdapter {
 //                );
 //                break;
 //            case "classroom":
+//                break;
+//        }
 //            default:
 //                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.CLASSROOM_COURSES, id));
 //        }
@@ -315,18 +324,32 @@ public class FindCardItemAdapter extends BaseAdapter {
 //        view.setOnClickListener(mViewOnClickListener);
     }
 
+//    View.OnClickListener mViewOnClickListener = new View.OnClickListener() {
+//        @Override
+//        public void onClick(View v) {
+//            final String url = v.getTag(R.id.card_cover).toString();
+//            EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+//                @Override
+//                public void setIntentDate(Intent startIntent) {
+//                    startIntent.putExtra(Const.WEB_URL, url);
+//                }
+//            });
+//        }
+//    };
+
     View.OnClickListener mViewOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            final String url = v.getTag(R.id.card_cover).toString();
-            EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+            final String id = v.getTag(R.id.card_cover).toString();
+            EdusohoApp.app.mEngine.runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(Const.WEB_URL, url);
+                    startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, id);
                 }
             });
         }
     };
+
 
     View.OnClickListener mViewOnClickListener2 = new View.OnClickListener() {
         @Override

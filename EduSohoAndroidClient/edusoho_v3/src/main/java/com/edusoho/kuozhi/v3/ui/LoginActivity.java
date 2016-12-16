@@ -35,6 +35,7 @@ import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
@@ -239,11 +240,14 @@ public class LoginActivity extends BaseNoTitleActivity {
             params.put("_password", etPassword.getText().toString());
         }
 
+        final LoadDialog loadDialog = LoadDialog.create(this);
+        loadDialog.show();
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
                 });
+                loadDialog.dismiss();
                 if (userResult != null && userResult.user != null) {
                     app.saveToken(userResult);
                     setResult(LoginActivity.OK);
@@ -270,6 +274,7 @@ public class LoginActivity extends BaseNoTitleActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                loadDialog.dismiss();
                 CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
             }
         });
@@ -281,12 +286,10 @@ public class LoginActivity extends BaseNoTitleActivity {
             final String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
             if (TextUtils.isEmpty(username)) {
-                CommonUtil.longToast(mContext, "请输入用户名");
                 etUsername.requestFocus();
                 return;
             }
             if (TextUtils.isEmpty(password)) {
-                CommonUtil.longToast(mContext, "请输入密码");
                 etPassword.requestFocus();
                 return;
             }

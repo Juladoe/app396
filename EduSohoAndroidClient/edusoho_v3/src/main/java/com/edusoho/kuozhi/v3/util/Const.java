@@ -134,6 +134,7 @@ public class Const {
     public static final String SCREEN_LOCK = "screen_lock";
     public static final String COURSE_REFRESH = "course_refresh";//刷新课程Activity
     public static final String COURSE_START= "course_start";//开始课程
+    public static final String COURSE_CHANGE= "course_change";//课程切换
     public static final String COURSE_SHOW_BAR = "course_show_bar";//导航栏
     public static final String COURSE_HIDE_BAR = "course_hide_bar";//导航栏
     public static final String COURSE_PAUSE = "course_pause";//暂停课程后的UI处理
@@ -257,6 +258,7 @@ public class Const {
     public static final String PAYCOURSE = "Order/payCourse";
     public static final String FAVORITE = "Course/favoriteCourse";
     public static final String UNFAVORITE = "Course/unFavoriteCourse";
+    public static final String CREATE_ORDER = "Order/createOrder";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
     public static final String VERIFYVERSION = "/systeminfo?version=2";
     public static final String LOGOUT = "User/logout";
@@ -277,6 +279,7 @@ public class Const {
     public static final String USERINFO = "User/getUserInfo";
     public static final String REVIEWS = "Course/getReviews";
     public static final String COURSE_GETCOURSE = "Course/getCourse?courseId=%s";
+    public static final String COURSE_GETCLASSROOM = "ClassRoom/getClassRoom?id=%s";
 
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";

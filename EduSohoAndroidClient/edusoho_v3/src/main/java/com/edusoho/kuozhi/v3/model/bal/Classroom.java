@@ -36,14 +36,12 @@ public class Classroom implements Serializable {
     public String income;
     public String createdTime;
     public Object service;
-    @SerializedName("public")
-    public String publicX;
     public String recommended;
     public String recommendedSeq;
     public String recommendedTime;
     public String showable;
     public String buyable;
     public String maxRate;
-
+    public Teacher[] teachers;
     public String convNo;
 }

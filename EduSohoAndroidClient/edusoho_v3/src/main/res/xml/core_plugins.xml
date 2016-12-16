@@ -429,6 +429,10 @@
         name="CourseActivity"
         package="com.edusoho.kuozhi.v3.ui.CourseActivity"
         version="1.0" />
+    <plugin
+        name="ClassroomActivity"
+        package="com.edusoho.kuozhi.v3.ui.ClassroomActivity"
+        version="1.0" />
 
     <plugin
         name="WebViewDataActivity"
