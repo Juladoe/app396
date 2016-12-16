@@ -17,42 +17,31 @@ import com.edusoho.kuozhi.v3.view.circleImageView.CircleImageView;
  * Created by Zhang on 2016/12/8.
  */
 
-public class BaseDetailFragment extends BaseFragment {
-
-    private String mCourseId;
+public abstract class BaseDetailFragment extends BaseFragment {
 
     public BaseDetailFragment() {
     }
-
-    public BaseDetailFragment(String courseId) {
-        this.mCourseId = courseId;
-    }
-
-    public void setCourseId(String courseId) {
-        this.mCourseId = courseId;
-    }
-
-    private TextView mTvPriceOld;
-    private TextView mTvPriceNow;
-    private View mPriceLayout;
-    private View mTitleLayout;
-    private TextView mTvTitle;
-    private ReviewStarView mReviewStar;
-    private TextView mTvTitleStudentNum;
-    private TextView mTvTitleDesc;
-    private View mVipLayout;
-    private ImageView mIvVip;
-    private TextView mTvVipDesc;
-    private TextView mTvPeopleDesc;
-    private TextView mTvTeacherName;
-    private TextView mTvTeacherDesc;
-    private TextView mTvStudentNum;
-    private CircleImageView mIvTeacherIcon;
-    private View mStudentMore;
-    private LinearLayout mStudentIconLayout;
-    private TextView mTvReviewNum;
-    private TextView mTvReviewMore;
-    private ListView mLvReview;
+    protected TextView mTvPriceOld;
+    protected TextView mTvPriceNow;
+    protected View mPriceLayout;
+    protected View mTitleLayout;
+    protected TextView mTvTitle;
+    protected ReviewStarView mReviewStar;
+    protected TextView mTvTitleStudentNum;
+    protected TextView mTvTitleDesc;
+    protected View mVipLayout;
+    protected ImageView mIvVip;
+    protected TextView mTvVipDesc;
+    protected TextView mTvPeopleDesc;
+    protected TextView mTvTeacherName;
+    protected TextView mTvTeacherDesc;
+    protected TextView mTvStudentNum;
+    protected CircleImageView mIvTeacherIcon;
+    protected View mStudentMore;
+    protected LinearLayout mStudentIconLayout;
+    protected TextView mTvReviewNum;
+    protected TextView mTvReviewMore;
+    protected ListView mLvReview;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,16 +72,14 @@ public class BaseDetailFragment extends BaseFragment {
         mTvTeacherDesc = (TextView) view.findViewById(R.id.tv_teacher_desc);
         mTvStudentNum = (TextView) view.findViewById(R.id.tv_student_num);
         mIvTeacherIcon = (CircleImageView) view.findViewById(R.id.iv_teacher_icon);
-        mStudentMore = view.findViewById(R.id.iv_student_more);
+        mStudentMore = view.findViewById(R.id.tv_student_more);
         mStudentIconLayout = (LinearLayout) view.findViewById(R.id.student_icon_llayout);
         mTvReviewNum = (TextView) view.findViewById(R.id.tv_review_num);
         mTvReviewMore = (TextView) view.findViewById(R.id.tv_review_more);
         mLvReview = (ListView) view.findViewById(R.id.lv_review);
     }
 
-    private void initData() {
-
-    }
+    abstract protected void initData();
 
     private void initEvent() {
 
