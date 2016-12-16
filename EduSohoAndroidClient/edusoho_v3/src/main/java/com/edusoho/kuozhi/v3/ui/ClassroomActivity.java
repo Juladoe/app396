@@ -112,10 +112,6 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             CommonUtil.shortToast(this,"班级目前没有老师");
             return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putString(ImChatActivity.FROM_NAME, teacher.nickname);
-        bundle.putInt(ImChatActivity.FROM_ID, teacher.id);
-        bundle.putString(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
         app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
