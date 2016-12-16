@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -15,6 +16,7 @@ import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -210,7 +212,19 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
          * todo 播放课程
          */
         super.courseStart();
+        playVideoLesson();
     }
 
+    private void playVideoLesson() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(LessonVideoPlayerFragment.PLAY_URI,
+                "http://153.3.225.17/youku/6575289867F3071DD873F3528/030008040051135358F52D035FA458D389C279-875A-5337-C625-B6999B848372.mp4");
+        fragment.setArguments(bundle);
+        transaction.replace(R.id.fl_header_container, fragment);
+        transaction.commitAllowingStateLoss();
+    }
 
 }

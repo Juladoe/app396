@@ -55,6 +55,11 @@
                         android:textSize="@dimen/font_l" />
 
                 </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/fl_header_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"></FrameLayout>
             </RelativeLayout>
 
             <RelativeLayout

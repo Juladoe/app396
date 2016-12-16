@@ -15,5 +15,6 @@ allprojects {
     repositories {
         mavenLocal()
         jcenter()
+        maven { url "http://localhost" }
     }
 }

@@ -160,7 +160,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
