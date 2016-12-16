@@ -17,14 +17,14 @@ import com.edusoho.kuozhi.v3.view.circleImageView.CircleImageView;
  * Created by Zhang on 2016/12/8.
  */
 
-public class CourseDetailFragment extends BaseDetailFragment {
+public class BaseDetailFragment extends BaseFragment {
 
     private String mCourseId;
 
-    public CourseDetailFragment() {
+    public BaseDetailFragment() {
     }
 
-    public CourseDetailFragment(String courseId) {
+    public BaseDetailFragment(String courseId) {
         this.mCourseId = courseId;
     }
 
