@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
@@ -18,10 +19,10 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -48,23 +49,27 @@ public class CourseCatalogFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_course_catalog, container, false);
-        rlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
-        lvCatalog = (ListView) view.findViewById(R.id.lv_catalog);
+        init(view);
         initCatalogue();
         initCache();
         return view;
     }
 
+    protected void init(View view) {
+        super.initView(view);
+        rlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
+        lvCatalog = (ListView) view.findViewById(R.id.lv_catalog);
+        TextView tvSpace = (TextView) view.findViewById(R.id.tv_space);
+        tvSpace.setOnClickListener(getCacheCourse());
+    }
+
     private void initCatalogue() {
-        final LoadDialog loadDialog = new LoadDialog(getActivity());
-        loadDialog.show();
         RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + courseId, false);
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 courseCatalogue = new Gson().fromJson(response, CourseCatalogue.class);
-                loadDialog.dismiss();
-                initView();
+                initLessonCatalog();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -74,7 +79,7 @@ public class CourseCatalogFragment extends BaseFragment {
 
     }
 
-    public void initView(){
+    public void initLessonCatalog(){
         if (!isJoin) {
             rlSpace.setVisibility(View.GONE);
         }
@@ -120,9 +125,7 @@ public class CourseCatalogFragment extends BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**
-                 * TODO 跳转到课程缓存界面
-                 */
+                startActivity(new Intent(getContext(), LessonDownloadingActivity.class).putExtra(Const.COURSE_ID, Integer.parseInt(courseId)));
             }
         };
     }
