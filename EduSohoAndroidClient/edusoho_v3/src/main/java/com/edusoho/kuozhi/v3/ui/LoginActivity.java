@@ -281,12 +281,10 @@ public class LoginActivity extends BaseNoTitleActivity {
             final String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
             if (TextUtils.isEmpty(username)) {
-                CommonUtil.longToast(mContext, "请输入用户名");
                 etUsername.requestFocus();
                 return;
             }
             if (TextUtils.isEmpty(password)) {
-                CommonUtil.longToast(mContext, "请输入密码");
                 etPassword.requestFocus();
                 return;
             }
