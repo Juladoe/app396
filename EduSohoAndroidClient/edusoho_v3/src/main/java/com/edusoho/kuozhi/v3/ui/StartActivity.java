@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -28,6 +29,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
@@ -65,7 +67,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     }
 
     private void startAnim() {
-        final View nameView =  findViewById(R.id.tv_start_name);
+        final View nameView = findViewById(R.id.tv_start_name);
         final View titleView = findViewById(R.id.tv_start_title);
         View iconView = findViewById(R.id.tv_start_icon);
 
@@ -172,6 +174,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     protected void onDestroy() {
         app.unRegistMsgSource(this);
         super.onDestroy();
+        Log.d(TAG, "onDestroy: " + "is finish");
     }
 
     protected void checkSchoolAndUserToken(SystemInfo systemInfo) {
@@ -307,18 +310,20 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             @Override
             public void onResponse(String response) {
                 hideLoading();
-                SystemInfo info = parseJsonValue(response.toString(), new TypeToken<SystemInfo>() {
+                SystemInfo systemInfo = parseJsonValue(response.toString(), new TypeToken<SystemInfo>() {
                 });
-                if (info == null || info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
+                if (systemInfo == null || systemInfo.mobileApiUrl == null || "".equals(systemInfo.mobileApiUrl)) {
                     showSchoolErrorDlg();
                     return;
                 }
 
+                app.schoolVersion = systemInfo.version;
+
                 if (TextUtils.isEmpty(app.token)) {
-                    checkSchoolVersion(info);
+                    checkSchoolVersion(systemInfo);
                     return;
                 }
-                checkSchoolAndUserToken(info);
+                checkSchoolAndUserToken(systemInfo);
             }
         }, new Response.ErrorListener() {
             @Override

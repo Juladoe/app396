@@ -244,7 +244,6 @@ public class Const {
     public static final String EDIT_QUESTION_INFO = "Course/updateThread";
 
     public static final String CHECKTOKEN = "User/loginWithToken";
-    public static final String BIND_PHONE = "/api/users/password";
     public static final String COMPLETE = "/api/sms_codes";
     public static final String LOGIN = "User/login";
     public static final String SMS_SEND = "User/smsSend";
@@ -475,7 +474,7 @@ public class Const {
      */
 
     public static final String SMS_CODES = "/api/sms_codes";
-    public static final String FIND_PASSWORD = "/api/users/password";
+    public static final String CHANGE_PASSWORD = "/api/users/password";
     public static final String EMAILS = "/api/emails";
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String USERS = "/api/users";

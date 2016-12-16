@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -17,6 +19,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.register.ErrorCode;
 import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -43,12 +46,15 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
     private Bundle bundle;
     private String verified;
     private ImageView ivClearCode;
+    private UserResult userResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hideActionBar();
         setContentView(R.layout.activity_complete_phone);
+
+        userResult = (UserResult) getIntent().getExtras().getSerializable("user");
         initView();
         initGraphContent();
     }
@@ -66,7 +72,6 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
         tvGraph = (TextView) findViewById(R.id.tv_change);
         ivClearCode = (ImageView) findViewById(R.id.iv_clear_code);
         ivClearCode.setOnClickListener(mClearListener);
-        bundle = getIntent().getExtras();
         initCodeCoent();
         tvGraph.setOnClickListener(mChangListener);
         InputUtils.addTextChangedListener(etCode, new NormalCallback<Editable>() {
@@ -74,7 +79,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
             public void success(Editable obj) {
                 if (etCode.length() == 0) {
                     ivClearCode.setVisibility(View.INVISIBLE);
-                }else {
+                } else {
                     ivClearCode.setVisibility(View.VISIBLE);
                 }
                 if (etCode.length() == 0 || etPhone.length() == 0) {
@@ -89,9 +94,9 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
     View.OnClickListener mChangListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl requestUrl = app.bindNewUrl(Const.COMPLETE, false);
+            RequestUrl requestUrl = app.bindNewUrl(Const.SEND_SMS, false);
             requestUrl.heads.put("Auth-Token", app.token);
-            Map<String, String> params =  requestUrl.getParams();
+            Map<String, String> params = requestUrl.getParams();
             params.put("mobile", etPhone.getText().toString().trim());
             params.put("type", "sms_bind");
             mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
@@ -107,7 +112,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                         tvNext.setAlpha(0.6f);
                     }
                 }
-            }, new Response.ErrorListener(){
+            }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     CommonUtil.shortCenterToast(mContext, getResources().getString(R.string.request_fail_text));
@@ -132,7 +137,7 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
             public void success(Editable obj) {
                 if (etPhone.length() == 0) {
                     ivClearPhone.setVisibility(View.INVISIBLE);
-                }else {
+                } else {
                     ivClearPhone.setVisibility(View.VISIBLE);
                 }
                 if (bundle != null) {
@@ -141,22 +146,23 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                     } else {
                         tvNext.setAlpha(1.0f);
                     }
-                }else {
+                } else {
                     if (etPhone.length() == 0) {
                         tvNext.setAlpha(0.6f);
-                    }else {
+                    } else {
                         tvNext.setAlpha(1.0f);
                     }
                 }
             }
         });
     }
+
     View.OnClickListener mClearListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.iv_clear_phone) {
                 etPhone.setText("");
-            }else if(v.getId() == R.id.iv_clear_code){
+            } else if (v.getId() == R.id.iv_clear_code) {
                 etCode.setText("");
             }
         }
@@ -181,39 +187,46 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                 return;
             }
             if ("".equals(etCode.getText().toString().trim()) && bundle != null) {
-                CommonUtil.shortCenterToast(mContext,getString(R.string.img_code_hint));
+                CommonUtil.shortCenterToast(mContext, getString(R.string.img_code_hint));
                 return;
             }
             final String phoneNum = etPhone.getText().toString().trim();
             if (Validator.isPhone(phoneNum)) {
-                RequestUrl requestUrl = app.bindNewUrl(Const.COMPLETE, false);
-                requestUrl.heads.put("Auth-Token", app.token);
-                if (bundle!=null) {
+                final RequestUrl requestUrl = app.bindNewUrl(Const.SEND_SMS, true);
+                if (bundle != null) {
                     Map<String, String> params = requestUrl.getParams();
                     params.put("mobile", phoneNum);
                     String img_code = etCode.getText().toString().trim();
                     params.put("img_code", img_code);
                     params.put("type", "sms_bind");
-                    params.put("verified_token",verified);
+                    params.put("verified_token", verified);
                     app.postUrl(requestUrl, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             ErrorCode errorCode = null;
                             FindPasswordSmsCode result = null;
                             if (response.contains("message")) {
-                                errorCode = parseJsonValue(response, new TypeToken<ErrorCode>(){});
-                            }else {
-                                result = parseJsonValue(response, new TypeToken<FindPasswordSmsCode>() {});
+                                errorCode = parseJsonValue(response, new TypeToken<ErrorCode>() {
+                                });
+                            } else {
+                                result = parseJsonValue(response, new TypeToken<FindPasswordSmsCode>() {
+                                });
                             }
                             if (errorCode != null) {
+                                if (getString(R.string.phone_registered).equals(errorCode.error.message)) {
+                                    showDialog();
+                                    return;
+                                }
                                 CommonUtil.shortCenterToast(mActivity, errorCode.error.message);
-                            }else {
+                            } else {
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("user", userResult);
                                 startActivityForResult(new Intent(CompletePhoneActivity.this, CompletePhoneConfActivity.class).
-                                        putExtra("phoneNum", phoneNum).putExtra("verified_token", result.verified_token),0);
+                                        putExtra("phoneNum", phoneNum).putExtra("verified_token", result.verified_token).putExtras(bundle), 0);
                             }
                         }
-                    },null);
-                }else {
+                    }, null);
+                } else {
                     final Map<String, String> params = requestUrl.getParams();
                     params.put("mobile", phoneNum);
                     params.put("type", "sms_bind");
@@ -224,6 +237,10 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                                 ErrorCode errorCode = parseJsonValue(response, new TypeToken<ErrorCode>() {
                                 });
                                 if (errorCode != null) {
+                                    if (getString(R.string.phone_registered).equals(errorCode.error.message)) {
+                                        showDialog();
+                                        return;
+                                    }
                                     CommonUtil.shortCenterToast(mActivity, errorCode.error.message);
                                     return;
                                 }
@@ -240,8 +257,10 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
                                     tvNext.setAlpha(0.6f);
                                     return;
                                 }
+                                Bundle bundle = new Bundle();
+                                bundle.putSerializable("user", userResult);
                                 startActivityForResult(new Intent(CompletePhoneActivity.this, CompletePhoneConfActivity.class).
-                                    putExtra("phoneNum", phoneNum).putExtra("verified_token", result.verified_token),0);
+                                        putExtra("phoneNum", phoneNum).putExtra("verified_token", result.verified_token).putExtras(bundle), 0);
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -281,10 +300,28 @@ public class CompletePhoneActivity extends ActionBarBaseActivity {
      * 判断回退方式
      */
     private boolean isBack = false;
+
     @Override
     protected void onPause() {
         super.onPause();
         this.isBack = false;
+    }
+
+    private void showDialog() {
+        new AlertDialog.Builder(CompletePhoneActivity.this)
+                .setMessage(R.string.register_hint)
+                .setPositiveButton(R.string.register_login, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        CompletePhoneActivity.this.finish();
+                    }
+                })
+                .setNegativeButton(R.string.register_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                }).show();
     }
 }
 

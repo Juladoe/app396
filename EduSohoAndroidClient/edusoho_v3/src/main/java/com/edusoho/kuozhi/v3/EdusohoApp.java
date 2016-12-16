@@ -87,6 +87,7 @@ public class EdusohoApp extends Application {
     public School defaultSchool;
     public User loginUser;
     public String apiVersion;
+    public String schoolVersion;
     public String schoolHost = "";
     public CoreEngine mEngine;
 
@@ -182,7 +183,7 @@ public class EdusohoApp extends Application {
                     errorListener.onErrorResponse(error);
                     return;
                 }
-                if(error instanceof TimeoutError){
+                if (error instanceof TimeoutError) {
                     errorListener.onErrorResponse(error);
                     return;
                 }
