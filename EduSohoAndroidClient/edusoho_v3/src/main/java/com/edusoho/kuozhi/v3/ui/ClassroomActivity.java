@@ -63,16 +63,19 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     protected void initData() {
         if (mClassroomId != null) {
+            mLoading.show();
             CourseDetailModel.getClassroomDetail(mClassroomId,
                     new ResponseCallbackListener<ClassroomDetail>() {
                         @Override
                         public void onSuccess(ClassroomDetail data) {
+                            mLoading.dismiss();
                             mClassroomDetail = data;
                             refreshView();
                         }
 
                         @Override
                         public void onFailure(String code, String message) {
+                            mLoading.dismiss();
                             if (message.equals("班级不存在")) {
                                 CommonUtil.shortToast(ClassroomActivity.this, "班级不存在");
                                 finish();
