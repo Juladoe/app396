@@ -219,6 +219,7 @@
     <string name="catalog_lesson_doucument">&#xe682;</string>
     <string name="catalog_class_call">&#xe66b;</string>
     <string name="cache_course">缓存课程</string>
+    <string name="cache_hint">本地剩余空间不足，无法缓存</string>
     <string name="unjoin_course_hint">加入课程后才能开始学习</string>
 
     <string name="new_font_share">&#xe667;</string>

@@ -26,7 +26,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.List;
 
 
-
 /**
  * Created by Zhang on 2016/12/8.
  */
@@ -245,7 +244,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     protected void onDestroy() {
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_header_container);
         if (fragment != null && fragment instanceof LessonAudioPlayerFragment) {
-            ((LessonAudioPlayerFragment)fragment).destoryService();
+            ((LessonAudioPlayerFragment) fragment).destoryService();
         }
         super.onDestroy();
     }

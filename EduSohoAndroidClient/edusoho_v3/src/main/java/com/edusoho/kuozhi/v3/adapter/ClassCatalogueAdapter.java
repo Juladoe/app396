@@ -38,7 +38,7 @@ public class ClassCatalogueAdapter extends RecyclerView.Adapter{
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 super.onLoadingComplete(imageUri, view, loadedImage);
-                classHolder.ivClass.setImageBitmap(loadedImage);
+                classHolder.mIvClass.setImageBitmap(loadedImage);
             }
         });
 
@@ -50,17 +50,17 @@ public class ClassCatalogueAdapter extends RecyclerView.Adapter{
     }
 
     public static class ClassHolder extends RecyclerView.ViewHolder{
-        public ImageView ivClass;
-        public TextView tvTitle;
-        public TextView tvFree;
-        public TextView tvPeople;
+        public ImageView mIvClass;
+        public TextView mTvTitle;
+        public TextView mTvFree;
+        public TextView mTvPeople;
 
         public ClassHolder(View itemView) {
             super(itemView);
-            ivClass = (ImageView) itemView.findViewById(R.id.iv_class);
-            tvTitle = (TextView) itemView.findViewById(R.id.tv_title);
-            tvFree = (TextView) itemView.findViewById(R.id.tv_free_price);
-            tvPeople = (TextView) itemView.findViewById(R.id.tv_people_join);
+            mIvClass = (ImageView) itemView.findViewById(R.id.iv_class);
+            mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
+            mTvFree = (TextView) itemView.findViewById(R.id.tv_free_price);
+            mTvPeople = (TextView) itemView.findViewById(R.id.tv_people_join);
         }
     }
 }

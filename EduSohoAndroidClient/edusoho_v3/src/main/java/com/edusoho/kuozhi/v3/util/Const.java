@@ -308,7 +308,7 @@ public class Const {
     public static final String GET_UPLOAD_INFO = "/file/%s/upload/url?length=%d&filename=%s";
     public static final String SAVE_UPLOAD_INFO = "/file/%d/upload/succeed";
     public static final String GET_LATEST_OFFLINE_MSG = "/message/%d/newest/list";
-
+    public static final String LESSON_IDS = "lesson_ids";
     /**
      * 获取课程状态（是否包含资料，学习状态）
      */
