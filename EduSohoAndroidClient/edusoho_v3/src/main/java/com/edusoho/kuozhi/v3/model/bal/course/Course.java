@@ -14,6 +14,9 @@ public class Course implements Serializable {
     public double rating;
     public String smallPicture;
     public double price;
+    public double originPrice;
+    public String coinPrice;
+    public String originCoinPrice;
     public int id;
     public int parentId;
     public String subtitle;

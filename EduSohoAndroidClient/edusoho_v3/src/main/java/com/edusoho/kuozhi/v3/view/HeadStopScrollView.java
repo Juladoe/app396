@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.view;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -155,5 +156,10 @@ public class HeadStopScrollView extends ScrollView {
 
     public interface CanStopView {
         void setCanScroll(boolean canScroll);
+    }
+
+    @Override
+    protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
+        return 0;
     }
 }

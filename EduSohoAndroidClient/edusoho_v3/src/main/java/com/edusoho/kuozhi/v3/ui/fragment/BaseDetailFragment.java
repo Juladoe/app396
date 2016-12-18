@@ -1,25 +1,35 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
-import com.edusoho.kuozhi.v3.view.circleImageView.CircleImageView;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Zhang on 2016/12/8.
@@ -31,10 +41,12 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
     }
 
     protected TextView mTvPriceOld;
+    protected TextView mTvPrice1;
     protected TextView mTvPriceNow;
     protected View mPriceLayout;
     protected View mTitleLayout;
     protected TextView mTvTitle;
+    protected View mVTitleLine;
     protected ReviewStarView mReviewStar;
     protected TextView mTvTitleStudentNum;
     protected TextView mTvTitleDesc;
@@ -45,7 +57,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
     protected TextView mTvTeacherName;
     protected TextView mTvTeacherDesc;
     protected TextView mTvStudentNum;
-    protected CircleImageView mIvTeacherIcon;
+    protected ImageView mIvTeacherIcon;
     protected View mStudentMore;
     protected TextView mTvTitleFull;
     protected LinearLayout mStudentIconLayout;
@@ -53,6 +65,8 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
     protected TextView mTvReviewMore;
     protected ListView mLvReview;
     protected String mTeacherId;
+    protected LoadDialog mLoading;
+    protected View mPeopleLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,7 +82,12 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         mTvPriceOld = (TextView) view.findViewById(R.id.tv_price_old);
         mTvPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         mTvPriceNow = (TextView) view.findViewById(R.id.tv_price_now);
-        mPriceLayout = view.findViewById(R.id.tv_price_now);
+        mTvPrice1 = (TextView) view.findViewById(R.id.tv_price1);
+        mVTitleLine = view.findViewById(R.id.v_title_line);
+        mPriceLayout = view.findViewById(R.id.price_rlayout);
+        mPriceLayout.setFocusable(true);
+        mPriceLayout.setFocusableInTouchMode(true);
+        mPriceLayout.requestFocus();
         mTitleLayout = view.findViewById(R.id.title_rlayout);
         mTvTitle = (TextView) view.findViewById(R.id.tv_title);
         mReviewStar = (ReviewStarView) view.findViewById(R.id.review_star);
@@ -81,46 +100,48 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         mTvTeacherName = (TextView) view.findViewById(R.id.tv_teacher_name);
         mTvTeacherDesc = (TextView) view.findViewById(R.id.tv_teacher_desc);
         mTvStudentNum = (TextView) view.findViewById(R.id.tv_student_num);
-        mIvTeacherIcon = (CircleImageView) view.findViewById(R.id.iv_teacher_icon);
+        mIvTeacherIcon = (ImageView) view.findViewById(R.id.iv_teacher_icon);
         mStudentMore = view.findViewById(R.id.tv_student_more);
         mStudentIconLayout = (LinearLayout) view.findViewById(R.id.student_icon_llayout);
         mTvReviewNum = (TextView) view.findViewById(R.id.tv_review_num);
         mTvReviewMore = (TextView) view.findViewById(R.id.tv_review_more);
         mLvReview = (ListView) view.findViewById(R.id.lv_review);
         mTvTitleFull = (TextView) view.findViewById(R.id.tv_title_full);
-        initEvent();
-        initData();
+        mLoading = LoadDialog.create(getActivity());
+        mPeopleLayout = view.findViewById(R.id.people_rlayout);
     }
 
-    protected abstract void refreshView();
+    protected  void refreshView(){
+        mTvTitleDesc.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                int lineCount = mTvTitleDesc.getLineCount();
+                RelativeLayout.LayoutParams params =
+                        (RelativeLayout.LayoutParams) mVTitleLine.getLayoutParams();
+                if (lineCount > 3) {
+                    mTvTitleDesc.setMaxLines(3);
+                    mTvTitleDesc.setEllipsize(TextUtils.TruncateAt.END);
+                    mTvTitleFull.setVisibility(View.VISIBLE);
+                    mTvTitleFull.setText(getString(R.string.new_font_unfold));
+                    mTvTitleDesc.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    if(params != null){
+                        params.setMargins(0, AppUtil.dp2px(mContext,38),0,0);
+                        mVTitleLine.setLayoutParams(params);
+                    }
+                } else {
+                    mTvTitleFull.setVisibility(View.GONE);
+                    if(params != null){
+                        params.setMargins(0, AppUtil.dp2px(mContext,25),0,0);
+                        mVTitleLine.setLayoutParams(params);
+                    }
+                }
+            }
+        });
+    }
 
     abstract protected void initData();
 
     protected void initEvent() {
-        mTvTitleDesc.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                int lineCount = mTvTitleDesc.getLineCount();
-                if (lineCount > 2) {
-                    mTvTitleDesc.setMaxLines(2);
-                    mTvTitleDesc.setEllipsize(TextUtils.TruncateAt.END);
-                    mTvTitleFull.setVisibility(View.VISIBLE);
-                    mTvTitleFull.setText(getString(R.string.new_font_unfold));
-                } else {
-                    mTvTitleFull.setVisibility(View.GONE);
-                }
-            }
-        });
         mTvTitleFull.setOnClickListener(this);
         mTvTitleDesc.setOnClickListener(this);
         mStudentMore.setOnClickListener(this);
@@ -137,7 +158,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
                 return;
             }
             if (mTvTitleFull.getText().equals(getString(R.string.new_font_unfold))) {
-                mTvTitleDesc.setMaxLines(-1);
+                mTvTitleDesc.setMaxLines(999);
                 mTvTitleFull.setText(getString(R.string.new_font_fold));
             } else {
                 mTvTitleDesc.setMaxLines(2);

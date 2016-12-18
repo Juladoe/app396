@@ -92,6 +92,13 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     @Override
     protected void refreshView() {
+        if (mCourseDetail.getCourse().price == 0) {
+            mTvPlay.setText("开始试学");
+            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
+        } else {
+            mTvPlay.setText("开始学习");
+            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
+        }
         mIsFavorite = mCourseDetail.isUserFavorited();
         if (mIsFavorite) {
             mTvCollect.setText(getResources().getString(R.string.new_font_collected));
@@ -118,6 +125,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             initViewPager();
         }
     }
+
     @Override
     protected void consult() {
         Teacher[] teachers = mCourseDetail.getCourse().teachers;
@@ -125,7 +133,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (teachers.length > 0) {
             teacher = teachers[0];
         } else {
-            CommonUtil.shortToast(this,"课程目前没有老师");
+            CommonUtil.shortToast(this, "课程目前没有老师");
             return;
         }
         app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
@@ -141,6 +149,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void add() {
         if (mCourseId != null) {
+            mLoading.show();
             CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")
@@ -151,6 +160,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                     , new CourseUtil.OnAddCourseListener() {
                         @Override
                         public void onAddCourseSuccee(String response) {
+                            mLoading.dismiss();
                             CommonUtil.shortToast(CourseActivity.this, getResources()
                                     .getString(R.string.success_add_course));
                             initData();
@@ -158,7 +168,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
                         @Override
                         public void onAddCourseError(String error) {
-
+                            mLoading.dismiss();
                         }
                     });
         }
