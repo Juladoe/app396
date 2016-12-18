@@ -15,6 +15,8 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
+import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -22,6 +24,8 @@ import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
+
+
 
 /**
  * Created by Zhang on 2016/12/8.
@@ -50,7 +54,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void initView() {
         super.initView();
-
     }
 
     @Override

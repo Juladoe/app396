@@ -309,7 +309,10 @@ public class Const {
      * 获取课程状态（是否包含资料，学习状态）
      */
     public static final String LESSON_STATUS = "Lesson/getLessonStatus";
-
+    /**
+     * 获取课程目录
+     */
+    public static final String LESSON_CATALOG = "/mapi_v2/Lesson/getCourseLessons";
     /**
      * 获取考试课程详情
      */
