@@ -31,7 +31,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     private LessonHolder lessonHolder;
     private CourseCatalogue.LessonsBean lessonsBean;
 
-    public CourseCatalogueAdapter(Context context , CourseCatalogue courseCatalogue,boolean isJoin){
+    public CourseCatalogueAdapter(Context context , CourseCatalogue courseCatalogue, boolean isJoin){
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.courseCatalogue = courseCatalogue;
         this.mContext = context;
@@ -144,8 +144,8 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     }
 
     private void decideStatu(int positon) {
-        if (courseCatalogue.getLearnStatuses().containsKey(positon)) {
-            if ("learning".equals(courseCatalogue.getLearnStatuses().get(positon))) {
+        if (courseCatalogue.getLearnStatuses().containsKey(lessonsBean.getId())) {
+            if ("learning".equals(courseCatalogue.getLearnStatuses().get(lessonsBean.getId()))) {
                 lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_learning);
             }else {
                 lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_finish);

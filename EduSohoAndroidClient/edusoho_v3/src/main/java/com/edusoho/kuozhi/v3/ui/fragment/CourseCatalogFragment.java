@@ -65,7 +65,8 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     private void initCatalogue() {
-        RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + courseId, false);
+        RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + courseId + "&token=" + app.token + courseId, true);
+        requestUrl.heads.put("token", app.token);
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -84,7 +85,6 @@ public class CourseCatalogFragment extends BaseFragment {
         if (!isJoin) {
             rlSpace.setVisibility(View.GONE);
         }
-        courseCatalogue.getLessons().addAll(courseCatalogue.getLessons());
         adapter = new CourseCatalogueAdapter(getActivity(), courseCatalogue, isJoin);
         lvCatalog.setAdapter(adapter);
         lvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -100,7 +100,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 }
             }
         });
-    };
+    }
 
     /**
      * 外部刷新界面
@@ -126,6 +126,10 @@ public class CourseCatalogFragment extends BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Float.parseFloat(getRomAvailableSize().replaceAll("[a-zA-Z]", "").trim()) < 60) {
+                    CommonUtil.shortCenterToast(getActivity(), "本地剩余空间不足，无法缓存");
+                    return;
+                }
                 startActivity(new Intent(getContext(), LessonDownloadingActivity.class).putExtra(Const.COURSE_ID, Integer.parseInt(courseId)));
             }
         };

@@ -11,15 +11,15 @@ import java.util.Map;
 
 public class CourseCatalogue {
 
-    private Map<Integer, String> learnStatuses;
+    private Map<String, String> learnStatuses;
 
     private List<LessonsBean> lessons;
 
-    public Map<Integer, String> getLearnStatuses() {
+    public Map<String, String> getLearnStatuses() {
         return learnStatuses;
     }
 
-    public void setLearnStatuses(Map<Integer, String> learnStatuses) {
+    public void setLearnStatuses(Map<String, String> learnStatuses) {
         this.learnStatuses = learnStatuses;
     }
 
