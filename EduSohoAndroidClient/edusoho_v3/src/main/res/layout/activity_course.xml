@@ -4,6 +4,161 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <com.edusoho.kuozhi.v3.view.HeadStopScrollView
+        android:id="@+id/scroll_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_layout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true">
+
+        <RelativeLayout
+            android:id="@+id/parent_rlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <RelativeLayout
+                android:id="@+id/media_rlayout"
+                android:layout_width="match_parent"
+                android:layout_height="210dp">
+
+                <ImageView
+                    android:id="@+id/iv_media_background"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <LinearLayout
+                    android:id="@+id/play_layout"
+                    android:layout_width="143dp"
+                    android:layout_height="41dp"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/shape_play_background"
+                    android:orientation="horizontal">
+
+                    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/new_font_play"
+                        android:textColor="@color/disabled2_hint_color"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="开始播放"
+                        android:textColor="@color/disabled2_hint_color"
+                        android:textSize="@dimen/font_l" />
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/fl_header_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"></FrameLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/tab_rlayout"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/media_rlayout"
+                android:background="@color/disabled2_hint_color">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:id="@+id/intro_rlayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="简介"
+                            android:textColor="@color/secondary_font_color"
+                            android:textSize="@dimen/font_l" />
+
+                        <View
+                            android:id="@+id/intro"
+                            android:layout_width="35dp"
+                            android:layout_height="3dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:background="@color/primary_color" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/hour_rlayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <View
+                            android:id="@+id/hour"
+                            android:layout_width="35dp"
+                            android:layout_height="3dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:background="@color/primary_color"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/textView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_above="@+id/hour"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:gravity="center"
+                            android:text="课时"
+                            android:textColor="@color/secondary_font_color"
+                            android:textSize="@dimen/font_l" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:id="@+id/review_rlayout"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="评价"
+                            android:textColor="@color/secondary_font_color"
+                            android:textSize="@dimen/font_l" />
+
+                        <View
+                            android:id="@+id/review"
+                            android:layout_width="35dp"
+                            android:layout_height="3dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_centerHorizontal="true"
+                            android:background="@color/primary_color"
+                            android:visibility="gone" />
+                    </RelativeLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/vp_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/tab_rlayout" />
+        </RelativeLayout>
+    </com.edusoho.kuozhi.v3.view.HeadStopScrollView>
+
     <RelativeLayout
         android:id="@+id/head_rlayout"
         android:layout_width="match_parent"
@@ -196,169 +351,16 @@
         android:id="@+id/tv_inclass"
         android:layout_width="54dp"
         android:layout_height="54dp"
+        android:background="@drawable/shape_inclass_back"
+        android:text="进入\n教室"
+        android:gravity="center"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/disabled2_hint_color"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="65dp"
         android:layout_marginRight="15dp"
-        android:background="@drawable/shape_inclass_back"
-        android:gravity="center"
-        android:text="进入\n教室"
-        android:textColor="@color/disabled2_hint_color"
-        android:textSize="@dimen/font_s"
-        android:visibility="gone" />
-
-    <com.edusoho.kuozhi.v3.view.HeadStopScrollView
-        android:id="@+id/scroll_parent"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
-
-        <RelativeLayout
-            android:id="@+id/parent_rlayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <RelativeLayout
-                android:id="@+id/media_rlayout"
-                android:layout_width="match_parent"
-                android:layout_height="210dp">
-
-                <ImageView
-                    android:id="@+id/iv_media_background"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop" />
-
-                <LinearLayout
-                    android:id="@+id/play_layout"
-                    android:layout_width="143dp"
-                    android:layout_height="41dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:background="@drawable/shape_play_background"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/new_font_play"
-                        android:textColor="@color/disabled2_hint_color"
-                        android:textSize="15dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="开始播放"
-                        android:textColor="@color/disabled2_hint_color"
-                        android:textSize="@dimen/font_l" />
-
-                </LinearLayout>
-
-                <FrameLayout
-                    android:id="@+id/fl_header_container"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></FrameLayout>
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/tab_rlayout"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_below="@+id/media_rlayout"
-                android:background="@color/disabled2_hint_color">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal">
-
-                    <RelativeLayout
-                        android:id="@+id/intro_rlayout"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="简介"
-                            android:textColor="@color/secondary_font_color"
-                            android:textSize="@dimen/font_l" />
-
-                        <View
-                            android:id="@+id/intro"
-                            android:layout_width="35dp"
-                            android:layout_height="3dp"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:background="@color/primary_color" />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/hour_rlayout"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-
-                        <View
-                            android:id="@+id/hour"
-                            android:layout_width="35dp"
-                            android:layout_height="3dp"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:background="@color/primary_color"
-                            android:visibility="gone" />
-
-                        <TextView
-                            android:id="@+id/textView"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_above="@+id/hour"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:gravity="center"
-                            android:text="课时"
-                            android:textColor="@color/secondary_font_color"
-                            android:textSize="@dimen/font_l" />
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/review_rlayout"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:gravity="center"
-                            android:text="评价"
-                            android:textColor="@color/secondary_font_color"
-                            android:textSize="@dimen/font_l" />
-
-                        <View
-                            android:id="@+id/review"
-                            android:layout_width="35dp"
-                            android:layout_height="3dp"
-                            android:layout_alignParentBottom="true"
-                            android:layout_centerHorizontal="true"
-                            android:background="@color/primary_color"
-                            android:visibility="gone" />
-                    </RelativeLayout>
-                </LinearLayout>
-            </RelativeLayout>
-
-            <android.support.v4.view.ViewPager
-                android:id="@+id/vp_content"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/tab_rlayout" />
-        </RelativeLayout>
-    </com.edusoho.kuozhi.v3.view.HeadStopScrollView>
+        android:visibility="gone"
+        android:layout_marginBottom="65dp"
+        />
 
 </RelativeLayout>
