@@ -2,6 +2,10 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
 import android.view.View;
+import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
+import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 
 /**
  * Created by Zhang on 2016/12/8.
@@ -10,6 +14,7 @@ import android.view.View;
 public class CourseDetailFragment extends BaseDetailFragment {
 
     private String mCourseId;
+    private CourseDetail mCourseDetail;
 
     public CourseDetailFragment() {
     }
@@ -34,16 +39,28 @@ public class CourseDetailFragment extends BaseDetailFragment {
     }
 
     protected void initData() {
+        CourseDetailModel.getCourseDetail(mCourseId, new ResponseCallbackListener<CourseDetail>() {
+            @Override
+            public void onSuccess(CourseDetail data) {
+                mCourseDetail = data;
+                refreshView();
+            }
 
-    }
-
-    protected void initEvent() {
-
+            @Override
+            public void onFailure(String code, String message) {
+                if (message.equals("课程不存在")) {
+                    CommonUtil.shortToast(mContext, "课程不存在");
+                }
+            }
+        });
     }
 
     @Override
-    protected void vipInfo() {
-
+    protected void refreshView() {
+        mTvTitle.setText(mCourseDetail.getCourse().title);
+        mTvTitleDesc.setText(mCourseDetail.getCourse().about);
+//        m
+//        if(mCourseDetail.get)
     }
 
     @Override
@@ -58,6 +75,11 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
     @Override
     protected void moreReview() {
+
+    }
+
+    @Override
+    protected void vipInfo() {
 
     }
 }
