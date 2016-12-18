@@ -52,10 +52,7 @@
             android:textSize="@dimen/x_medium_font_size"
             android:maxLength="11"
             android:layout_toLeftOf="@id/iv_clear_phone"
-<<<<<<< HEAD
             android:textColor="@color/primary_font_color"
-=======
->>>>>>> feature/17904-course-class-catalog
             android:textColorHint="@color/grey_hint"/>
         <View
             android:background="@color/register_view"

@@ -55,7 +55,6 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         setContainerView(R.layout.fragment_course_detail);
 
         initData();
-        initEvent();
     }
 
     @Override
@@ -84,6 +83,8 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         mTvReviewMore = (TextView) view.findViewById(R.id.tv_review_more);
         mLvReview = (ListView) view.findViewById(R.id.lv_review);
         mTvTitleFull = (TextView) view.findViewById(R.id.tv_title_full);
+
+        initEvent();
     }
 
     abstract protected void initData();

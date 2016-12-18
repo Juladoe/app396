@@ -1,16 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-
-import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.view.ReviewStarView;
-import com.edusoho.kuozhi.v3.view.circleImageView.CircleImageView;
 
 /**
  * Created by Zhang on 2016/12/8.
@@ -47,6 +38,26 @@ public class CourseDetailFragment extends BaseDetailFragment {
     }
 
     protected void initEvent() {
+
+    }
+
+    @Override
+    protected void vipInfo() {
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+    }
+
+    @Override
+    protected void moreStudent() {
+
+    }
+
+    @Override
+    protected void moreReview() {
 
     }
 }

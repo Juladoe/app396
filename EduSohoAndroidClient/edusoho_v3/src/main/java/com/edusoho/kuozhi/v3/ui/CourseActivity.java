@@ -15,7 +15,6 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
@@ -59,6 +58,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void initFragment(List<Fragment> fragments) {
         fragments.add(new CourseDetailFragment(mCourseId));
+        fragments.add(new CourseCatalogFragment(mCourseId));
     }
 
     protected void initEvent() {
