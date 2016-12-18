@@ -54,6 +54,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             @Override
             public void onSuccess(CourseDetail data) {
                 mCourseDetail = data;
+                refreshView();
             }
 
             @Override
@@ -70,6 +71,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         mTvTitle.setText(mCourseDetail.getCourse().title);
         mTvTitleDesc.setText(mCourseDetail.getCourse().about);
 //        m
+//        if(mCourseDetail.get)
     }
 
     @Override

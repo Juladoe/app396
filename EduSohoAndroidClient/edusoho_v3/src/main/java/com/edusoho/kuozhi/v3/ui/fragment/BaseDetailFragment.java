@@ -88,7 +88,6 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         mTvTitleFull = (TextView) view.findViewById(R.id.tv_title_full);
         initEvent();
         initData();
-        refreshView();
     }
 
     protected abstract void refreshView();
