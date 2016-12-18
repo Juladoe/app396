@@ -11,15 +11,15 @@ import java.util.Map;
 
 public class CourseCatalogue {
 
-    private Map<Integer, String> learnStatuses;
+    private Map<String, String> learnStatuses;
 
     private List<LessonsBean> lessons;
 
-    public Map<Integer, String> getLearnStatuses() {
+    public Map<String, String> getLearnStatuses() {
         return learnStatuses;
     }
 
-    public void setLearnStatuses(Map<Integer, String> learnStatuses) {
+    public void setLearnStatuses(Map<String, String> learnStatuses) {
         this.learnStatuses = learnStatuses;
     }
 
@@ -29,56 +29,6 @@ public class CourseCatalogue {
 
     public void setLessons(List<LessonsBean> lessons) {
         this.lessons = lessons;
-    }
-
-    public static class LearnStatusesBean {
-        /**
-         * 219 : learning
-         * 220 : learning
-         * 226 : learning
-         * 376 : finished
-         */
-
-        @SerializedName("219")
-        private String value219;
-        @SerializedName("220")
-        private String value220;
-        @SerializedName("226")
-        private String value226;
-        @SerializedName("376")
-        private String value376;
-
-        public String getValue219() {
-            return value219;
-        }
-
-        public void setValue219(String value219) {
-            this.value219 = value219;
-        }
-
-        public String getValue220() {
-            return value220;
-        }
-
-        public void setValue220(String value220) {
-            this.value220 = value220;
-        }
-
-        public String getValue226() {
-            return value226;
-        }
-
-        public void setValue226(String value226) {
-            this.value226 = value226;
-        }
-
-        public String getValue376() {
-            return value376;
-        }
-
-        public void setValue376(String value376) {
-            this.value376 = value376;
-        }
     }
 
     public static class LessonsBean {

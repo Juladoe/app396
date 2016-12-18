@@ -19,11 +19,12 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 
@@ -64,11 +65,13 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     private void initCatalogue() {
-        RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + courseId, false);
+        RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + courseId + "&token=" + app.token + courseId, true);
+        requestUrl.heads.put("token", app.token);
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                courseCatalogue = new Gson().fromJson(response, CourseCatalogue.class);
+                courseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
+                });
                 initLessonCatalog();
             }
         }, new Response.ErrorListener() {
@@ -82,7 +85,6 @@ public class CourseCatalogFragment extends BaseFragment {
         if (!isJoin) {
             rlSpace.setVisibility(View.GONE);
         }
-        courseCatalogue.getLessons().addAll(courseCatalogue.getLessons());
         adapter = new CourseCatalogueAdapter(getActivity(), courseCatalogue, isJoin);
         lvCatalog.setAdapter(adapter);
         lvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -98,7 +100,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 }
             }
         });
-    };
+    }
 
     /**
      * 外部刷新界面
@@ -124,6 +126,10 @@ public class CourseCatalogFragment extends BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Float.parseFloat(getRomAvailableSize().replaceAll("[a-zA-Z]", "").trim()) < 60) {
+                    CommonUtil.shortCenterToast(getActivity(), "本地剩余空间不足，无法缓存");
+                    return;
+                }
                 startActivity(new Intent(getContext(), LessonDownloadingActivity.class).putExtra(Const.COURSE_ID, Integer.parseInt(courseId)));
             }
         };
