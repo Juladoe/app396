@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -220,13 +221,22 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     private void playVideoLesson() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
+        LessonAudioPlayerFragment fragment = new LessonAudioPlayerFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(LessonVideoPlayerFragment.PLAY_URI,
-                "http://61.158.240.104/youku/657440FCC144682C8830A96871/030008010051AD035DE45E001ACB49BE6BEF66-ECB0-3FD5-9729-E626B75C4B4A.mp4");
+        bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().largePicture);
+        bundle.putString(LessonAudioPlayerFragment.PLAY_URI,
+                "http://m10.music.126.net/20161218201605/4f307645d714975eb3dd8fad65fd9bab/ymusic/baed/c724/f8bc/32453e10c844d35bc7d58762e668e3de.mp3");
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
         transaction.commitAllowingStateLoss();
     }
 
+    @Override
+    protected void onDestroy() {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_header_container);
+        if (fragment != null && fragment instanceof LessonAudioPlayerFragment) {
+            ((LessonAudioPlayerFragment)fragment).destoryService();
+        }
+        super.onDestroy();
+    }
 }
