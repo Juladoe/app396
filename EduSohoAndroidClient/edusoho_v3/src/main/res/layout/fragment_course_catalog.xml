@@ -1,49 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:scrollbars="none">
 
-    <RelativeLayout
-        android:id="@+id/rl_space"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/space_height"
-        android:layout_marginLeft="@dimen/catalog_margin_left"
-        android:layout_marginRight="@dimen/common_margin_right"
-        android:gravity="center_vertical">
-        <TextView
-            android:id="@+id/tv_space"
-            android:text="可用空间: 65.6G"
-            android:textSize="@dimen/font_s"
-            android:textColor="@color/secondary_font_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/tv_course"
-            android:text="@string/cache_course"
-            android:textSize="@dimen/font_s"
-            android:textColor="@color/primary_color"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        <RelativeLayout
+            android:id="@+id/rl_space"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/space_height"
+            android:layout_marginLeft="@dimen/catalog_margin_left"
+            android:layout_marginRight="@dimen/common_margin_right"
+            android:gravity="center_vertical">
+            <TextView
+                android:id="@+id/tv_space"
+                android:text="可用空间: 65.6G"
+                android:textSize="@dimen/font_s"
+                android:textColor="@color/secondary_font_color"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-            android:text="@string/catalog_cache"
-            android:textSize="@dimen/font_m"
-            android:layout_toLeftOf="@id/tv_course"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/primary_color"
-            android:layout_marginRight="@dimen/common_margin" />
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/tv_course"
+                android:text="@string/cache_course"
+                android:textSize="@dimen/font_s"
+                android:textColor="@color/primary_color"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
-    <ListView
-        android:id="@+id/lv_catalog"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:divider="@null">
-    </ListView>
+            <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                android:text="@string/catalog_cache"
+                android:textSize="@dimen/font_m"
+                android:layout_toLeftOf="@id/tv_course"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/primary_color"
+                android:layout_marginRight="@dimen/common_margin" />
+        </RelativeLayout>
 
-</LinearLayout>
+        <com.edusoho.kuozhi.v3.view.FixHeightListView
+            android:id="@+id/lv_catalog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:divider="@null">
+        </com.edusoho.kuozhi.v3.view.FixHeightListView>
+
+    </LinearLayout>
+
+</com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>
