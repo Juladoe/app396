@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by JesseHuang on 15/12/11.
  */
-public class CourseMember implements Serializable {
+public class ClassroomMember implements Serializable {
 
     public int id;
     public int courseId;

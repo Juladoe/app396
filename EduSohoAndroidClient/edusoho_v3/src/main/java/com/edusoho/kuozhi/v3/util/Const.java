@@ -279,7 +279,11 @@ public class Const {
     public static final String USERINFO = "User/getUserInfo";
     public static final String REVIEWS = "Course/getReviews";
     public static final String COURSE_GETCOURSE = "Course/getCourse?courseId=%s";
+    public static final String COURSE_GETREVIEWS = "Course/getReviews?courseId=%s&limit=%s&start=%s";
+    public static final String COURSE_GETMEMBER = "/api/courses/%s/members";
     public static final String COURSE_GETCLASSROOM = "ClassRoom/getClassRoom?id=%s";
+    public static final String CLASSROOM_GETREVIEWS = "ClassRoom/getReviews?courseId=%s&limit=%s&start=%s";
+    public static final String CLASSROOM_GETMEMBER = "/api/classroom/%s/members";
 
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";

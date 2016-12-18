@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.view.headStopScroll;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -79,5 +80,10 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     @Override
     public void setCanScroll(boolean canScroll) {
         mCanScroll = true;
+    }
+
+    @Override
+    protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
+        return 0;
     }
 }

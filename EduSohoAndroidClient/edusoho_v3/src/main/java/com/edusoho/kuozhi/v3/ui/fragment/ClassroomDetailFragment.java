@@ -1,37 +1,35 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
+import com.edusoho.kuozhi.v3.model.bal.course.ClassroomMember;
+import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReview;
+import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReviewDetail;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
-import com.edusoho.kuozhi.v3.view.circleImageView.CircleImageView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -41,22 +39,22 @@ import java.util.List;
  * Created by Zhang on 2016/12/8.
  */
 
-public class CourseDetailFragment extends BaseDetailFragment {
+public class ClassroomDetailFragment extends BaseDetailFragment {
 
-    private String mCourseId;
-    private CourseDetail mCourseDetail;
-    private List<CourseReview> mReviews = new ArrayList<>();
+    private String mClassroomId;
+    private ClassroomDetail mClassroomDetail;
+    private List<ClassroomReview> mReviews = new ArrayList<>();
     private ReviewAdapter mAdapter;
 
-    public CourseDetailFragment() {
+    public ClassroomDetailFragment() {
     }
 
-    public CourseDetailFragment(String courseId) {
-        this.mCourseId = courseId;
+    public ClassroomDetailFragment(String courseId) {
+        this.mClassroomId = courseId;
     }
 
-    public void setCourseId(String courseId) {
-        this.mCourseId = courseId;
+    public void setClassroomId (String classroomId ) {
+        this.mClassroomId = classroomId;
         initData();
     }
 
@@ -76,26 +74,23 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
     protected void initData() {
         mLoading.show();
-        CourseDetailModel.getCourseDetail(mCourseId, new ResponseCallbackListener<CourseDetail>() {
+        CourseDetailModel.getClassroomDetail(mClassroomId, new ResponseCallbackListener<ClassroomDetail>() {
             @Override
-            public void onSuccess(CourseDetail data) {
+            public void onSuccess(ClassroomDetail data) {
                 mLoading.dismiss();
-                mCourseDetail = data;
+                mClassroomDetail = data;
                 refreshView();
             }
 
             @Override
             public void onFailure(String code, String message) {
                 mLoading.dismiss();
-                if (message.equals("课程不存在")) {
-                    CommonUtil.shortToast(mContext, "课程不存在");
-                }
             }
         });
-        CourseDetailModel.getCourseReviews(mCourseId, "5", "0",
-                new ResponseCallbackListener<CourseReviewDetail>() {
+        CourseDetailModel.getClassroomReviews(mClassroomId, "5", "0",
+                new ResponseCallbackListener<ClassroomReviewDetail>() {
                     @Override
-                    public void onSuccess(CourseReviewDetail data) {
+                    public void onSuccess(ClassroomReviewDetail data) {
                         mReviews.clear();
                         mReviews.addAll(data.getData());
                         mTvReviewMore.setText(String.format("更多评论（%s）", data.getTotal()));
@@ -107,10 +102,10 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
                     }
                 });
-        CourseDetailModel.getCourseMember(mCourseId,
-                new ResponseCallbackListener<List<CourseMember>>() {
+        CourseDetailModel.getClassroomMember(mClassroomId,
+                new ResponseCallbackListener<List<ClassroomMember>>() {
                     @Override
-                    public void onSuccess(List<CourseMember> data) {
+                    public void onSuccess(List<ClassroomMember> data) {
                         initStudent(data);
                     }
 
@@ -121,7 +116,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 });
     }
 
-    private void initStudent(List<CourseMember> data) {
+    private void initStudent(List<ClassroomMember> data) {
         View.OnClickListener onClickListener =
                 new View.OnClickListener() {
             @Override
@@ -150,49 +145,40 @@ public class CourseDetailFragment extends BaseDetailFragment {
     @Override
     protected void refreshView() {
         super.refreshView();
-        Course course = mCourseDetail.getCourse();
-        mTvTitle.setText(course.title);
-        mTvTitleDesc.setText(Html.fromHtml(course.about));
-        if (mCourseDetail.getMember() == null) {
+        Classroom classRoom = mClassroomDetail.getClassRoom();
+        mTvTitle.setText(classRoom.title);
+        mTvTitleDesc.setText(Html.fromHtml(classRoom.about.toString()));
+        if (mClassroomDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             mVipLayout.setVisibility(View.VISIBLE);
-            if (course.price == 0) {
+            if (classRoom.price == 0) {
                 mTvPriceNow.setText("免费");
                 mTvPriceNow.setTextSize(18);
                 mTvPriceNow.setTextColor(getResources().getColor(R.color.primary_color));
                 mTvPrice1.setVisibility(View.GONE);
             } else {
-                mTvPriceNow.setText(String.valueOf(course.price));
+                mTvPriceNow.setText(String.valueOf(classRoom.price));
                 mTvPriceNow.setTextSize(24);
                 mTvPriceNow.setTextColor(getResources().getColor(R.color.secondary_color));
                 mTvPrice1.setVisibility(View.VISIBLE);
             }
-            if (course.originPrice == 0) {
-                mTvPriceOld.setVisibility(View.GONE);
-            } else {
-                mTvPriceOld.setVisibility(View.VISIBLE);
-                mTvPriceOld.setText("¥" + course.originPrice);
-            }
+            mTvPriceOld.setVisibility(View.GONE);
         } else {
             mPriceLayout.setVisibility(View.GONE);
             mVipLayout.setVisibility(View.GONE);
         }
         mTvTitleStudentNum.setText(String.format("%s名学生",
-                course.studentNum));
-        mReviewStar.setRating((int) course.rating);
-        StringBuilder sb = new StringBuilder();
-        int length = course.audiences.length;
-        for (int i = 0; i < length; i++) {
-            sb.append(course.audiences[i]);
-            if (i != length - 1) {
-                sb.append("；");
-            }
+                classRoom.studentNum));
+        try {
+            mReviewStar.setRating((int) Double.parseDouble(classRoom.rating));
+        }catch (Exception e){
+
         }
-        mTvPeopleDesc.setText(sb.toString());
-        if (course.teachers.length == 0) {
+        mPeopleLayout.setVisibility(View.GONE);
+        if (classRoom.teachers.length == 0) {
 
         } else {
-            Teacher teacher = course.teachers[0];
+            Teacher teacher = classRoom.teachers[0];
             mTeacherId = String.valueOf(teacher.id);
             ImageLoader.getInstance().displayImage(teacher.avatar, mIvTeacherIcon);
             mTvTeacherName.setText(teacher.nickname);
@@ -247,7 +233,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            CourseReview review = mReviews.get(position);
+            ClassroomReview review = mReviews.get(position);
             viewHolder.mDesc.setText(review.getContent());
             viewHolder.mName.setText(review.getUser().nickname);
             viewHolder.mTime.setText(CommonUtil.convertWeekTime(review.getCreatedTime()));

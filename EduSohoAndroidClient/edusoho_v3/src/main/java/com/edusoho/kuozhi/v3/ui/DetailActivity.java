@@ -7,7 +7,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -20,6 +23,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -33,7 +37,8 @@ import java.util.List;
 /**
  * Created by Zhang on 2016/12/8.
  */
-public abstract class DetailActivity extends BaseNoTitleActivity implements View.OnClickListener {
+public abstract class DetailActivity extends BaseNoTitleActivity
+        implements View.OnClickListener {
     protected HeadStopScrollView mParent;
     protected RelativeLayout mHeadRlayout;
     protected RelativeLayout mHeadRlayout2;
@@ -49,6 +54,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
     protected View mBack2;
     protected View mTvInclass;
     protected TextView mTvCollect;
+    protected TextView mTvPlay;
     protected View mAddCourse;
     protected RelativeLayout mMediaRlayout;
     protected ImageView mIvMediaBackground;
@@ -86,11 +92,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
             tintManager.setTintColor(Color.parseColor("#00000000"));
         }
 
-        Intent intent = getIntent();
-
-//        initView();
-//        initEvent();
-//        initData();
     }
 
     @Override
@@ -117,6 +118,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity implements View
         mHour = findViewById(R.id.hour);
         mReview = findViewById(R.id.review);
         mBack2 = findViewById(R.id.back2);
+        mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvInclass = findViewById(R.id.tv_inclass);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
         initFragment(mFragments);

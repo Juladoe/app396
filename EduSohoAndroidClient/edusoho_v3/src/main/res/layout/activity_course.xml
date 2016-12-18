@@ -33,10 +33,10 @@
                     android:id="@+id/play_layout"
                     android:layout_width="143dp"
                     android:layout_height="41dp"
-                    android:gravity="center"
-                    android:layout_centerVertical="true"
                     android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:background="@drawable/shape_play_background"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
@@ -47,6 +47,7 @@
                         android:textSize="15dp" />
 
                     <TextView
+                        android:id="@+id/tv_play"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -196,7 +197,6 @@
             android:text="@string/new_font_share"
             android:textColor="@color/disabled2_hint_color"
             android:textSize="17dp" />
-
     </RelativeLayout>
 
     <RelativeLayout
@@ -341,21 +341,20 @@
             android:textColor="@color/disabled2_hint_color"
             android:textSize="@dimen/font_xl" />
     </LinearLayout>
-    
+
     <TextView
         android:id="@+id/tv_inclass"
         android:layout_width="54dp"
         android:layout_height="54dp"
-        android:background="@drawable/shape_inclass_back"
-        android:text="进入\n教室"
-        android:gravity="center"
-        android:textSize="@dimen/font_s"
-        android:textColor="@color/disabled2_hint_color"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="15dp"
-        android:visibility="gone"
         android:layout_marginBottom="65dp"
-        />
+        android:layout_marginRight="15dp"
+        android:background="@drawable/shape_inclass_back"
+        android:gravity="center"
+        android:text="进入\n教室"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_s"
+        android:visibility="gone" />
 
 </RelativeLayout>
