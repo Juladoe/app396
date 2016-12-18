@@ -28,7 +28,6 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -137,7 +136,6 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
         mTvInclass = findViewById(R.id.tv_inclass);
         mFragments.add(new CourseDetailFragment(mCourseId));
         mFragments.add(new CourseCatalogFragment(mCourseId));
-        mFragments.add(new ClassCatalogFragment());
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mContentVp.setAdapter(mAdapter);
         mParent.setFirstViewHeight(AppUtil.dp2px(this,

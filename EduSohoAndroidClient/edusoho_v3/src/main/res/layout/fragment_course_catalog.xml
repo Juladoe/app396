@@ -16,10 +16,11 @@
             android:layout_height="@dimen/space_height"
             android:layout_marginLeft="@dimen/catalog_margin_left"
             android:layout_marginRight="@dimen/common_margin_right"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:visibility="gone">
             <TextView
                 android:id="@+id/tv_space"
-                android:text="可用空间: 65.6G"
+                android:text="可用空间: "
                 android:textSize="@dimen/font_s"
                 android:textColor="@color/secondary_font_color"
                 android:layout_width="wrap_content"

@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.text.format.Formatter;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,14 +20,17 @@ import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
+import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.FixHeightListView;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by DF on 2016/12/13.
@@ -36,6 +42,9 @@ public class CourseCatalogFragment extends BaseFragment {
     private RelativeLayout mRlSpace;
     private FixHeightListView mLvCatalog;
     private CourseCatalogue mCourseCatalogue;
+    private CourseCatalogue.LessonsBean mLessonsBean;
+    private TextView tvSpace;
+    private View view;
 
     public CourseCatalogFragment() {
     }
@@ -45,33 +54,39 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContainerView(R.layout.fragment_course_catalog);
-    }
-
-    @Override
-    protected void initView(View view) {
-        super.initView(view);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_course_catalog, container, false);
         init(view);
         initCatalogue();
-        initCache(view);
+        return view;
     }
 
     protected void init(View view) {
-        super.initView(view);
         mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
         mLvCatalog = (FixHeightListView) view.findViewById(R.id.lv_catalog);
-        TextView tvSpace = (TextView) view.findViewById(R.id.tv_space);
+        tvSpace = (TextView) view.findViewById(R.id.tv_space);
         tvSpace.setOnClickListener(getCacheCourse());
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        
+    }
+
     private void initCatalogue() {
+        if (mIsJoin) {
+            mRlSpace.setVisibility(View.VISIBLE);
+            initCache(view);
+        }
         RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + mCourseId + "&token=" + app.token, true);
         requestUrl.heads.put("token", app.token);
+        final LoadDialog loadDialog = LoadDialog.create(getActivity());
+        loadDialog.show();
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                loadDialog.dismiss();
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
                 });
                 if (mCourseCatalogue != null) {
@@ -88,24 +103,38 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     public void initLessonCatalog(){
-        if (!mIsJoin) {
-            mRlSpace.setVisibility(View.GONE);
-        }
         mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, mIsJoin);
         mLvCatalog.setAdapter(mAdapter);
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mAdapter.changeSelected(position);
-                if ("0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
-                    if (!mIsJoin) {
-                        CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
-                        return;
-                    }
+                if (!mIsJoin && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
+                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
                     return;
                 }
+                startLessonActivity(position);
             }
         });
+    }
+
+    public void startLessonActivity(int position){
+        mLessonsBean = mCourseCatalogue.getLessons().get(position);
+        Intent intent = new Intent(getActivity(), LessonActivity.class)
+                .putExtra(Const.LESSON_ID, Integer.parseInt(mLessonsBean.getId()))
+                .putExtra(Const.COURSE_ID, Integer.parseInt(mCourseId))
+                .putIntegerArrayListExtra(Const.LESSON_IDS, getLessonArray());
+        getActivity().startActivity(intent);
+    }
+
+    public ArrayList<Integer> getLessonArray(){
+        ArrayList<Integer> lessonArray = new ArrayList<>();
+        for (CourseCatalogue.LessonsBean lessonsBean : mCourseCatalogue.getLessons()) {
+            if ("lesson".equals(lessonsBean.getItemType())) {
+                lessonArray.add(Integer.parseInt(lessonsBean.getId()));
+            }
+        }
+        return lessonArray;
     }
 
     /**
@@ -124,7 +153,8 @@ public class CourseCatalogFragment extends BaseFragment {
     private void initCache(View view) {
         TextView tvSpace = (TextView) view.findViewById(R.id.tv_space);
         TextView tvCourse = (TextView) view.findViewById(R.id.tv_course);
-        tvSpace.setText("可用空间:\t" + " " + getRomAvailableSize());
+        tvSpace.setText("可用空间: " + getRomAvailableSize());
+        Log.d("test", getRomAvailableSize());
         tvCourse.setOnClickListener(getCacheCourse());
     }
 
@@ -150,5 +180,4 @@ public class CourseCatalogFragment extends BaseFragment {
         long availableBlocks = stat.getAvailableBlocks();
         return Formatter.formatFileSize(getActivity(), blockSize * availableBlocks).replace("B", "");
     }
-
 }

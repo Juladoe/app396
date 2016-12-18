@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,6 @@ public class CourseCatalogueAdapter extends BaseAdapter {
         this.courseCatalogue = courseCatalogue;
         this.mContext = context;
         this.isJoin = isJoin;
-        Log.d("test", courseCatalogue.toString());
     }
 
     public void setCourseCatalogue(CourseCatalogue courseCatalogue) {
