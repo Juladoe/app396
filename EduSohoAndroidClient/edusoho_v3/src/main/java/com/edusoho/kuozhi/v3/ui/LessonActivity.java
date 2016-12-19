@@ -39,12 +39,12 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
-import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.plugin.edusoho.bdvideoplayer.StreamInfo;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.net.InetAddress;
@@ -53,6 +53,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 
