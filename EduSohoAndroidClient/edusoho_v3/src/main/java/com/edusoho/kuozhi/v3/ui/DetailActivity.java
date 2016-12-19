@@ -240,9 +240,13 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             finish();
         } else if (v.getId() == R.id.iv_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
+        } else if(v.getId() == R.id.tv_inclass){
+            goClass();
         }
 
     }
+
+    protected abstract void goClass();
 
     protected abstract void consult();
 

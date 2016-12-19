@@ -124,6 +124,17 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
+    protected void goClass() {
+        app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(NewsCourseActivity.COURSE_ID, mCourseId);
+                startIntent.putExtra(NewsCourseActivity.FROM_NAME, mCourseDetail.getCourse().title);
+            }
+        });
+    }
+
+    @Override
     protected void consult() {
         Teacher[] teachers = mCourseDetail.getCourse().teachers;
         final Teacher teacher;

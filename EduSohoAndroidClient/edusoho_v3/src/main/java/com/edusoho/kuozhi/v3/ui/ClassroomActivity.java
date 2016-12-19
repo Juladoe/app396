@@ -60,7 +60,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         Fragment fragment = app.mEngine.runPluginWithFragment("ClassroomDetailFragment", this, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString("id",mClassroomId);
+                bundle.putString("id", mClassroomId);
             }
         });
         fragments.add(fragment);
@@ -114,6 +114,18 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             initViewPager();
         }
     }
+
+    @Override
+    protected void goClass() {
+        app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mContext, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, mClassroomId);
+                startIntent.putExtra(ClassroomDiscussActivity.FROM_NAME, mClassroomDetail.getClassRoom().title);
+            }
+        });
+    }
+
     @Override
     protected void consult() {
         Teacher[] teachers = mClassroomDetail.getClassRoom().teachers;
@@ -121,7 +133,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         if (teachers.length > 0) {
             teacher = teachers[0];
         } else {
-            CommonUtil.shortToast(this,"班级目前没有老师");
+            CommonUtil.shortToast(this, "班级目前没有老师");
             return;
         }
         app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {

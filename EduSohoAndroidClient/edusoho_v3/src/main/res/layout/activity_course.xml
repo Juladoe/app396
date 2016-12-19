@@ -149,6 +149,7 @@
                             android:visibility="gone" />
                     </RelativeLayout>
                 </LinearLayout>
+
             </RelativeLayout>
 
             <android.support.v4.view.ViewPager
@@ -156,6 +157,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/tab_rlayout" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:layout_below="@+id/tab_rlayout"
+                android:background="@drawable/shape_line_shadow"
+                />
         </RelativeLayout>
     </com.edusoho.kuozhi.v3.view.HeadStopScrollView>
 
