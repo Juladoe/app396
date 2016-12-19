@@ -297,6 +297,19 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             case Const.COURSE_CHANGE:
                 courseChange();
                 break;
+            case Const.COURSE_HASTRIAL:
+                courseHastrial(bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT));
+                break;
+        }
+    }
+
+    protected  void courseHastrial(boolean has){
+        if (has) {
+            mTvPlay.setText("开始试学");
+            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
+        } else {
+            mTvPlay.setText("开始学习");
+            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
         }
     }
 
@@ -420,6 +433,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     public MessageType[] getMsgTypes() {
         return new MessageType[]{
                 new MessageType(Const.SCROLL_STATE_SAVE),
+                new MessageType(Const.COURSE_HASTRIAL),
                 new MessageType(Const.FULL_SCREEN),
                 new MessageType(Const.COURSE_START),
                 new MessageType(Const.COURSE_CHANGE),
