@@ -64,7 +64,12 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     }
 
     private void initNavigationBar() {
-        mMenuCallback.getMenu().addItem("xxx");
+        mMenuCallback.getMenu()
+                .addItem("记笔记")
+                .addItem("作业")
+                .addItem("练习")
+                .addItem("学完")
+                .setVisibility(true);
     }
 
     private void initCoverSize() {
