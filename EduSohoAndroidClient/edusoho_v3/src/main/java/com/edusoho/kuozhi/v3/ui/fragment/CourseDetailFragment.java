@@ -65,6 +65,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCourseId = getArguments().getString("id");
     }
 
     @Override
@@ -125,12 +126,12 @@ public class CourseDetailFragment extends BaseDetailFragment {
     private void initStudent(List<CourseMember> data) {
         View.OnClickListener onClickListener =
                 new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String id = v.getTag().toString();
-                jumpToMember(id);
-            }
-        };
+                    @Override
+                    public void onClick(View v) {
+                        String id = v.getTag().toString();
+                        jumpToMember(id);
+                    }
+                };
         for (int i = 0; i < 5; i++) {
             View view = LayoutInflater.from(mContext)
                     .inflate(R.layout.item_detail_avatar, null, false);
@@ -183,9 +184,9 @@ public class CourseDetailFragment extends BaseDetailFragment {
         mReviewStar.setRating((int) course.rating);
         StringBuilder sb = new StringBuilder();
         int length = course.audiences.length;
-        if(length == 0){
+        if (length == 0) {
             mPeopleLayout.setVisibility(View.GONE);
-        }else {
+        } else {
             mPeopleLayout.setVisibility(View.VISIBLE);
             for (int i = 0; i < length; i++) {
                 sb.append(course.audiences[i]);
@@ -284,7 +285,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         ReviewStarView mStar;
     }
 
-    private void jumpToMember(String id){
+    private void jumpToMember(String id) {
         final String url = String.format(
                 Const.MOBILE_APP_URL,
                 EdusohoApp.app.schoolHost,

@@ -61,6 +61,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mClassroomId = getArguments().getString("id");
     }
 
     @Override

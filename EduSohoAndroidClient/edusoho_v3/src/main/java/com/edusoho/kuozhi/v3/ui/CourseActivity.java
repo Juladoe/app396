@@ -10,6 +10,7 @@ import android.view.View;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
@@ -55,8 +56,14 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     @Override
     protected void initFragment(List<Fragment> fragments) {
-        fragments.add(new CourseDetailFragment(mCourseId));
-        fragments.add(new CourseDetailFragment(mCourseId));
+//        CourseDetailFragment.instantiate()
+        Fragment fragment = app.mEngine.runPluginWithFragment("CourseDetailFragment", this, new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putString("id",mCourseId);
+            }
+        });
+        fragments.add(fragment);
     }
 
     protected void initEvent() {

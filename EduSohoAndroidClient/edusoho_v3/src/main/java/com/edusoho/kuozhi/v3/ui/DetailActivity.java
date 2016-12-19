@@ -108,7 +108,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected void initView() {
         super.initView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mTitleBarHeight = 20;
+            mTitleBarHeight = 25;
         }
         mParent = (HeadStopScrollView) findViewById(R.id.scroll_parent);
         mHeadRlayout = (RelativeLayout) findViewById(R.id.head_rlayout);
@@ -364,6 +364,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     protected void courseStart() {
+        /**
+         * todo 开始播放
+         */
         if (!mIsFullScreen) {
             mParent.smoothScrollTo(0, 0);
             mParent.setCanScroll(false);
@@ -376,6 +379,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 params.height = AppUtil.getHeightPx(this) - bottom;
                 mContentVp.setLayoutParams(params);
             }
+            mMenuPop.setVisibility(true);
         }
         mPlayLayout.setVisibility(View.GONE);
         mIsPlay = true;

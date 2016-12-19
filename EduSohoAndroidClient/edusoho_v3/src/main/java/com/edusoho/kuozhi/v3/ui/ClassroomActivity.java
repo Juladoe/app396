@@ -9,6 +9,7 @@ import android.view.View;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
@@ -56,7 +57,13 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void initFragment(List<Fragment> fragments) {
-        fragments.add(new ClassroomDetailFragment(mClassroomId));
+        Fragment fragment = app.mEngine.runPluginWithFragment("ClassroomDetailFragment", this, new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putString("id",mClassroomId);
+            }
+        });
+        fragments.add(fragment);
     }
 
     protected void initEvent() {
