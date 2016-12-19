@@ -137,7 +137,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             image.setOnClickListener(onClickListener);
             TextView txt = (TextView) view.findViewById(R.id.tv_avatar_name);
             txt.setText(data.get(i).user.nickname);
-            ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image);
+//            ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image);
             mStudentIconLayout.addView(view);
         }
     }

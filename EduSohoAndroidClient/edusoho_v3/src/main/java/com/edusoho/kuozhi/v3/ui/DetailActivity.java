@@ -68,8 +68,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected List<Fragment> mFragments = new ArrayList<>();
     protected FragmentViewPagerAdapter mAdapter;
     protected int mCheckNum = 0;
-    protected int[] mScrollY = new int[3];
-    protected boolean[] mCanScroll = {true, true, true};
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
     private int mTitleBarHeight;
@@ -131,6 +129,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mParent.setFirstViewHeight(AppUtil.dp2px(this,
                 mMediaViewHeight - 43 - mTitleBarHeight));
+        mParent.setSize(3);
         mBottomLayout = findViewById(R.id.bottom_layout);
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
@@ -181,8 +180,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mParent.setOnScrollChangeListener(new HeadStopScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChanged(int l, int t, int oldl, int oldt) {
-                mCanScroll[mCheckNum] = mParent.isCanScroll();
-                mScrollY[mCheckNum] = t;
                 if (!mParent.isCanScroll() && t != 0) {
                     mHeadRlayout.setVisibility(View.GONE);
                     mHeadRlayout2.setVisibility(View.VISIBLE);
@@ -332,7 +329,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         if (!mIsFullScreen) {
             mParent.smoothScrollTo(0, 0);
             mParent.setCanScroll(false);
-            mCanScroll[mCheckNum] = false;
             ViewGroup.LayoutParams params = mContentVp.getLayoutParams();
             if (params != null) {
                 int bottom = AppUtil.dp2px(this, 50 + mMediaViewHeight);
@@ -345,6 +341,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mPlayLayout.setVisibility(View.GONE);
         mIsPlay = true;
+        mParent.setStay(true);
     }
 
     protected void initViewPager() {
@@ -362,11 +359,11 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     private void coursePause() {
         if (!mIsFullScreen) {
             mParent.setCanScroll(true);
-            mCanScroll[mCheckNum] = true;
             initViewPager();
         }
         mPlayLayout.setVisibility(View.VISIBLE);
         mIsPlay = false;
+        mParent.setStay(false);
     }
 
     private boolean mIsFullScreen = false;
@@ -390,7 +387,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             params.width = -1;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
             mMediaRlayout.setLayoutParams(params);
-            mParent.setCanScroll(mCanScroll[mCheckNum]);
+            mParent.setCanScroll(mParent.getScroll(mCheckNum));
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
                 mBottomLayout.setVisibility(View.VISIBLE);
@@ -415,4 +412,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
+
+
 }
