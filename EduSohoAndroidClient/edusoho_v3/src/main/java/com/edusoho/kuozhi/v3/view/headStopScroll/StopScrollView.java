@@ -63,7 +63,9 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
 
     private void sendScrollState() {
         mCanScroll = false;
-//        mParent.stateChange();
+        if (mParent != null) {
+            mParent.stateChange();
+        }
     }
 
     @Override

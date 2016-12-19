@@ -146,8 +146,10 @@ public class CourseCatalogFragment extends BaseFragment {
             mRlSpace.setVisibility(View.VISIBLE);
             initCache();
         }
-        mAdapter.isJoin = mIsJoin;
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null) {
+            mAdapter.isJoin = mIsJoin;
+            mAdapter.notifyDataSetChanged();
+        }
     }
     /**
      * 获取手机可用空间,该界面要先判断是否显示rlSpace

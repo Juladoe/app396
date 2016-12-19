@@ -27,7 +27,8 @@ public class ClassCatalogueAdapter extends BaseAdapter{
 
     @Override
     public int getCount() {
-        mClassCatalogue.get
+//        mClassCatalogue.get
+        return 0;
     }
 
     @Override
