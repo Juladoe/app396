@@ -95,8 +95,23 @@
                     android:textColor="@color/secondary_font_color"
                     android:textSize="@dimen/font_s" />
 
+                <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                    android:id="@+id/tv_title_full"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_title_desc"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:padding="10dp"
+                    android:text="@string/new_font_unfold"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="13dp"
+                    android:visibility="gone" />
+
                 <View
+                    android:id="@+id/v_title_line"
                     style="@style/BottomLine"
+                    android:layout_alignParentBottom="false"
                     android:layout_below="@+id/tv_title_desc"
                     android:layout_marginTop="25dp" />
             </RelativeLayout>
@@ -121,15 +136,21 @@
                     android:layout_marginRight="33dp"
                     android:layout_toRightOf="@+id/iv_vip"
                     android:textColor="@color/secondary_font_color"
+                    android:text="加入会员，免费学习更多课程"
                     android:textSize="@dimen/font_s" />
 
-                <ImageView
+                <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginRight="15dp"
-                    android:src="@drawable/more_setting_right" />
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/new_font_more"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="13dp" />
 
                 <View style="@style/BottomLine" />
             </RelativeLayout>
@@ -177,7 +198,7 @@
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_l" />
 
-                <com.edusoho.kuozhi.v3.view.circleImageView.CircleImageView
+                <com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView
                     android:id="@+id/iv_teacher_icon"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -192,7 +213,7 @@
                     android:layout_alignTop="@+id/iv_teacher_icon"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="23dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="3dp"
                     android:layout_toRightOf="@+id/iv_teacher_icon"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_s" />
@@ -238,25 +259,31 @@
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_s" />
 
-                <ImageView
-                    android:id="@+id/iv_student_more"
+                <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                    android:id="@+id/tv_student_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="15dp"
-                    android:layout_marginTop="25dp"
-                    android:src="@drawable/more_setting_right" />
+                    android:layout_marginTop="18dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="10dp"
+                    android:text="@string/new_font_more"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="13dp" />
 
                 <LinearLayout
                     android:id="@+id/student_icon_llayout"
                     android:layout_width="match_parent"
-                    android:layout_height="68dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_student1"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="14dp"
                     android:orientation="horizontal" />
 
-                <View style="@style/BottomLine" />
+                <View style="@style/BottomLine"
+                    />
             </RelativeLayout>
 
             <RelativeLayout
