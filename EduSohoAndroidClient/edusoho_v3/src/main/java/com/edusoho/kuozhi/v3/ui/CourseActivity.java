@@ -95,13 +95,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     @Override
     protected void refreshView() {
-        if (mCourseDetail.getCourse().price == 0) {
-            mTvPlay.setText("开始试学");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-        } else {
-            mTvPlay.setText("开始学习");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-        }
         mIsFavorite = mCourseDetail.isUserFavorited();
         if (mIsFavorite) {
             mTvCollect.setText(getResources().getString(R.string.new_font_collected));
