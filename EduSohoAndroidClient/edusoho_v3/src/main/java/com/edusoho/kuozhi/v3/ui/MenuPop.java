@@ -38,9 +38,11 @@ public class MenuPop {
     private ListView mListView;
     private List<Item> mNames = new ArrayList<>();
     private MenuAdapter mAdapter = new MenuAdapter();
+    private View mBindView;
 
-    public MenuPop(Context context) {
+    public MenuPop(Context context,View bindView) {
         this.mContext = context;
+        mBindView = bindView;
         init();
         initEvent();
     }
@@ -83,12 +85,42 @@ public class MenuPop {
         return this;
     }
 
-    public MenuPop addItem(String name, int drawableId) {
+    public MenuPop addItem(String name, int textColor, Drawable drawable) {
         Item item = new Item();
         item.name = name;
-        item.drawable = drawableId;
+        item.color = textColor;
         mNames.add(item);
         return this;
+    }
+
+    public MenuPop addItem(String name, int textColor) {
+        Item item = new Item();
+        item.name = name;
+        item.color = textColor;
+        mNames.add(item);
+        return this;
+    }
+
+    public MenuPop addItem(String name, Drawable drawable) {
+        Item item = new Item();
+        item.name = name;
+        item.drawable = drawable;
+        mNames.add(item);
+        return this;
+    }
+
+    public Item getItem(int position){
+        return mNames.get(position);
+    }
+
+    public void setVisibility(boolean show){
+        if(mBindView != null){
+            if(show){
+                mBindView.setVisibility(View.VISIBLE);
+            }else{
+                mBindView.setVisibility(View.GONE);
+            }
+        }
     }
 
     private OnMenuClickListener mOnMenuClickListener;
@@ -153,9 +185,11 @@ public class MenuPop {
             }
             Item item = mNames.get(position);
             view.setText(item.name);
-            if (item.drawable != -1) {
-                view.setCompoundDrawables(mContext.getResources()
-                        .getDrawable(item.drawable), null, null, null);
+            if (item.drawable != null) {
+                view.setCompoundDrawables(item.drawable , null, null, null);
+            }
+            if(item.color != -1){
+                view.setTextColor(item.color);
             }
             return convertView;
         }
@@ -166,6 +200,9 @@ public class MenuPop {
 
     private class Item {
         String name;
-        int drawable = -1;
+        int color = -1;
+        Drawable drawable;
     }
+
+
 }

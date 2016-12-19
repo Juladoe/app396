@@ -52,6 +52,7 @@ public class ShardDialog extends Dialog {
             setContentView(R.layout.shard_content_layout);
         }
         mGridView = (GridView) findViewById(R.id.shard_gridview);
+
         mCancelView = (TextView) findViewById(R.id.shard_cancelBtn);
         mCancelView.setOnClickListener(new View.OnClickListener() {
             @Override

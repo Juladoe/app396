@@ -6,10 +6,9 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-import android.widget.FrameLayout;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
+import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
@@ -23,7 +22,6 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.List;
-
 
 /**
  * Created by Zhang on 2016/12/8.
@@ -90,13 +88,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     @Override
     protected void refreshView() {
-        if (mCourseDetail.getCourse().price == 0) {
-            mTvPlay.setText("开始试学");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-        } else {
-            mTvPlay.setText("开始学习");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-        }
         mIsFavorite = mCourseDetail.isUserFavorited();
         if (mIsFavorite) {
             mTvCollect.setText(getResources().getString(R.string.new_font_collected));
@@ -213,7 +204,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
-    protected void courseChange() {
+    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
 
     }
 

@@ -133,6 +133,7 @@
                         android:id="@+id/review_rlayout"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:visibility="gone"
                         android:layout_weight="1">
 
                         <TextView
@@ -225,7 +226,7 @@
     <RelativeLayout
         android:id="@+id/head_rlayout2"
         android:layout_width="match_parent"
-        android:layout_height="63dp"
+        android:layout_height="64dp"
         android:background="@color/disabled2_hint_color"
         android:paddingTop="20dp"
         android:visibility="gone">

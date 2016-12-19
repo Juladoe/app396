@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
+import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
@@ -88,13 +89,6 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void refreshView() {
-        if(mClassroomDetail.getClassRoom().price == 0){
-            mTvPlay.setText("开始试学");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-        }else{
-            mTvPlay.setText("开始学习");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-        }
         ImageLoader.getInstance().displayImage(
                 mClassroomDetail.getClassRoom().largePicture,
                 mIvMediaBackground);
@@ -214,7 +208,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     }
 
     @Override
-    protected void courseChange() {
+    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
 
     }
 }

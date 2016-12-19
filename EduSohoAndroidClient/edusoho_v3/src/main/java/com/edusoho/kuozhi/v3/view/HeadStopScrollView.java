@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,8 +71,8 @@ public class HeadStopScrollView extends ScrollView {
         scrollTo(0, mScrollY.get(position));
     }
 
-    public boolean getScroll(int position){
-        if(mCanScrolls.size() <position){
+    public boolean getScroll(int position) {
+        if (mCanScrolls.size() < position) {
             return false;
         }
         return mCanScrolls.get(position);
@@ -90,7 +91,7 @@ public class HeadStopScrollView extends ScrollView {
         }
         mCanScrolls.set(mCheckNum, true);
         setCanScroll(true);
-        scrollTo(0, getScrollY() - 2);
+        scrollTo(0, getScrollY() - 1);
     }
 
     public void setStay(boolean stay) {
@@ -106,7 +107,7 @@ public class HeadStopScrollView extends ScrollView {
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        if (t >= firstViewHeight - AppUtil.dp2px(getContext(), 3) && t - oldt >= 0) {
+        if (t >= firstViewHeight && t - oldt >= 0) {
             canScroll = false;
         }
         if (mScrollY.size() > mCheckNum) {
@@ -167,7 +168,6 @@ public class HeadStopScrollView extends ScrollView {
             for (CanStopView view : mChildScrolls) {
                 if (view != null) {
                     view.setCanScroll(true);
-                    view.bindParent(this);
                 }
             }
         }
@@ -179,6 +179,7 @@ public class HeadStopScrollView extends ScrollView {
             View view = parent.getChildAt(i);
             if (view instanceof CanStopView) {
                 mChildScrolls.add((CanStopView) view);
+                ((CanStopView) view).bindParent(this);
             }
             if (view instanceof ViewGroup) {
                 searchCanScrollChild((ViewGroup) view);
@@ -200,6 +201,10 @@ public class HeadStopScrollView extends ScrollView {
 //                        setCanScroll(true);
 //                    }
 //                }
+//                Log.e("Y","" + getScrollY());
+//                if (moveY > 0 && getScrollY() >= firstViewHeight) {
+//                    setCanScroll(false);
+//                }
                 break;
             case MotionEvent.ACTION_UP:
                 startY = 0;
@@ -210,7 +215,12 @@ public class HeadStopScrollView extends ScrollView {
 
     public interface CanStopView {
         void setCanScroll(boolean canScroll);
+
         void bindParent(HeadStopScrollView headStopScrollView);
+    }
+
+    public int getFirstViewHeight() {
+        return firstViewHeight;
     }
 
     @Override
