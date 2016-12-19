@@ -250,7 +250,7 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
             mContentVp.setCurrentItem(0);
         } else if (v.getId() == R.id.hour_rlayout) {
             mContentVp.setCurrentItem(1);
-            if (mCourseDetail.getMember() != null) {
+            if (mCourseDetail.getMember() != null && ((CourseCatalogFragment) mFragments.get(1)).mIsJoin == false) {
                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
             }
         } else if (v.getId() == R.id.review_rlayout) {

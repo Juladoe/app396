@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
+import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -69,7 +71,7 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     private void initCatalogue() {
-        if (mIsJoin) {
+        if (mIsJoin && app.token != null) {
             mRlSpace.setVisibility(View.VISIBLE);
             initCache();
         }
@@ -85,7 +87,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 });
                 if (mCourseCatalogue != null) {
                     initLessonCatalog();
-                }else {
+                } else {
                     CommonUtil.shortCenterToast(getActivity(), "该课程没有课时");
                 }
             }
@@ -103,6 +105,11 @@ public class CourseCatalogFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mAdapter.changeSelected(position);
+                Log.d("test", app.token+"");
+                if (TextUtils.isEmpty(app.token)) {
+                    getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
+                    return;
+                }
                 if (!mIsJoin && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
                     CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
                     return;
@@ -132,16 +139,15 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     /**
-     * 外部刷新界面
+     * 外部刷新数据
      */
     public void reFreshView(boolean mIsJoin){
         this.mIsJoin = mIsJoin;
-        if (mIsJoin) {
+        if (mIsJoin && app.token != null) {
             mRlSpace.setVisibility(View.VISIBLE);
             initCache();
         }
         mAdapter.isJoin = mIsJoin;
-//        mAdapter.setCourseCatalogue(null);
         mAdapter.notifyDataSetChanged();
     }
     /**
