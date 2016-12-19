@@ -18,10 +18,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
-import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -76,12 +76,9 @@ public class CourseCatalogFragment extends BaseFragment {
         }
         RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + mCourseId + "&token=" + app.token, true);
         requestUrl.heads.put("token", app.token);
-//        final LoadDialog loadDialog = LoadDialog.create(getActivity());
-//        loadDialog.show();
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-//                loadDialog.dismiss();
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
                 });
                 if (mCourseCatalogue.getLessons().size() != 0) {
@@ -104,7 +101,6 @@ public class CourseCatalogFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mAdapter.changeSelected(position);
-                Log.d("test", app.token+"");
                 if (TextUtils.isEmpty(app.token)) {
                     getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
                     return;
@@ -119,12 +115,26 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     public void startLessonActivity(int position){
-        mLessonsBean = mCourseCatalogue.getLessons().get(position);
-        Intent intent = new Intent(getActivity(), LessonActivity.class)
-                .putExtra(Const.LESSON_ID, Integer.parseInt(mLessonsBean.getId()))
-                .putExtra(Const.COURSE_ID, Integer.parseInt(mCourseId))
-                .putIntegerArrayListExtra(Const.LESSON_IDS, getLessonArray());
-        getActivity().startActivity(intent);
+//        mLessonsBean = mCourseCatalogue.getLessons().get(position);
+//        Intent intent = new Intent(getActivity(), LessonActivity.class)
+//                .putExtra(Const.LESSON_ID, Integer.parseInt(mLessonsBean.getId()))
+//                .putExtra(Const.COURSE_ID, Integer.parseInt(mCourseId))
+//                .putIntegerArrayListExtra(Const.LESSON_IDS, getLessonArray());
+//        getActivity().startActivity(intent);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, mCourseCatalogue.getLessons().get(position));
+        if (mCourseCatalogue.getLearnStatuses().containsKey(mCourseCatalogue.getLessons().get(position).getId())) {
+            if ("learning".equals(mCourseCatalogue.getLearnStatuses().get(mCourseCatalogue.getLessons().get(position).getId()))) {
+                bundle.putString(Const.COURSE_CHANGE_STATE, "1");
+            } else {
+                bundle.putString(Const.COURSE_CHANGE_STATE, "2");
+            }
+        } else {
+            bundle.putString(Const.COURSE_CHANGE_STATE, "0");
+        }
+        bundle.putBoolean(Const.COURSE_HASTRIAL_RESULT, true);
+        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
     }
 
     public ArrayList<Integer> getLessonArray(){

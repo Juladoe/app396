@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.v3.adapter.ClassCatalogueAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.ClassCatalogue;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.FixHeightListView;
 import com.google.gson.reflect.TypeToken;
@@ -52,7 +53,11 @@ public class ClassCatalogFragment extends Fragment {
             public void onResponse(String response) {
                 mClassCatalogue = ((ClassroomActivity) getActivity()).parseJsonValue(response, new TypeToken<ClassCatalogue>() {
                 });
-                initView();
+                if (mClassCatalogue != null && mClassCatalogue.getCourses() != null) {
+                    initView();
+                } else {
+                    CommonUtil.shortCenterToast(getActivity(), "该班级没有课程");
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -63,9 +68,7 @@ public class ClassCatalogFragment extends Fragment {
     }
 
     private void initView() {
-        ClassCatalogueAdapter classAdapter = new ClassCatalogueAdapter(getActivity(), mClassCatalogue);
+        ClassCatalogueAdapter classAdapter = new ClassCatalogueAdapter(getActivity(), mClassCatalogue.getCourses());
         mLvClass.setAdapter(classAdapter);
     }
-
-
 }

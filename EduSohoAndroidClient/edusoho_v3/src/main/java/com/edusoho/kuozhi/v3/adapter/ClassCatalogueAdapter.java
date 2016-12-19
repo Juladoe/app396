@@ -1,7 +1,8 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import android.graphics.Bitmap;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -10,6 +11,10 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.lesson.ClassCatalogue;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+
+import java.util.List;
 
 /**
  * Created by DF on 2016/12/15.
@@ -17,55 +22,64 @@ import com.edusoho.kuozhi.v3.entity.lesson.ClassCatalogue;
 
 public class ClassCatalogueAdapter extends BaseAdapter{
     public Context mContext;
-    public ClassCatalogue mClassCatalogue;
-    private ClassHolder classHolder;
+    public List<ClassCatalogue.CoursesBean> mCourseList;
 
-    public ClassCatalogueAdapter(Context mContext, ClassCatalogue mClassCatalogue) {
+
+    public ClassCatalogueAdapter(Context mContext, List<ClassCatalogue.CoursesBean> mCourseList) {
         this.mContext = mContext;
-        this.mClassCatalogue = mClassCatalogue;
+        this.mCourseList = mCourseList;
     }
 
     @Override
     public int getCount() {
-//        mClassCatalogue.get
-        return 0;
+        return mCourseList == null ? 0 : mCourseList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return null;
+        return mCourseList.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return 0;
+        return position;
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-//        View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_class_catalog, parent, false);
-//        classHolder = new ClassHolder(view);
-//        return classHolder;
-//
-//
-//        ImageLoader.getInstance().loadImage("url", new SimpleImageLoadingListener(){
-//            @Override
-//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                super.onLoadingComplete(imageUri, view, loadedImage);
-//                classHolder.mIvClass.setImageBitmap(loadedImage);
-//            }
-//        });
-        return null;
+        final ClassHolder classHolder;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_class_catalog, parent, false);
+            classHolder = new ClassHolder(convertView);
+            convertView.setTag(classHolder);
+        } else {
+            classHolder = (ClassHolder) convertView.getTag();
+            ClassCatalogue.CoursesBean coursesBean = mCourseList.get(position);
+            ImageLoader.getInstance().loadImage(mCourseList.get(position).getSmallPicture(), new SimpleImageLoadingListener(){
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    super.onLoadingComplete(imageUri, view, loadedImage);
+                    classHolder.mIvClass.setImageBitmap(loadedImage);
+                }
+            });
+            classHolder.mTvTitle.setText(coursesBean.getTitle());
+            classHolder.mTvPeople.setText(coursesBean.getStudentNum());
+            if ("0.00".equals(coursesBean.getPrice())) {
+                classHolder.mTvFree.setText("免费");
+                classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+            } else {
+                classHolder.mTvFree.setText("¥" + coursesBean.getPrice());
+            }
+        }
+        return convertView;
     }
 
-    public static class ClassHolder extends RecyclerView.ViewHolder{
+    public static class ClassHolder {
         public ImageView mIvClass;
         public TextView mTvTitle;
         public TextView mTvFree;
         public TextView mTvPeople;
-
         public ClassHolder(View itemView) {
-            super(itemView);
             mIvClass = (ImageView) itemView.findViewById(R.id.iv_class);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             mTvFree = (TextView) itemView.findViewById(R.id.tv_free_price);
