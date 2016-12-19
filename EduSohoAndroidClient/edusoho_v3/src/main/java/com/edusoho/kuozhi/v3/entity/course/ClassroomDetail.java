@@ -1,4 +1,8 @@
-package com.edusoho.kuozhi.v3.entity.coursedetail;
+package com.edusoho.kuozhi.v3.entity.course;
+
+import com.edusoho.kuozhi.v3.model.bal.Classroom;
+import com.edusoho.kuozhi.v3.model.bal.Member;
+import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
 import java.io.Serializable;
 import java.util.List;
@@ -7,20 +11,20 @@ import java.util.List;
  * Created by Zhang on 2016/12/13.
  */
 
-public class CourseDetail implements Serializable {
+public class ClassroomDetail implements Serializable {
 
-    private Course course;
+    private Classroom classRoom;
     private boolean userFavorited;
     private Member member;
     private Object discount;
-    private List<?> vipLevels;
+    private List<VipLevel> vipLevels;
 
-    public Course getCourse() {
-        return course;
+    public Classroom getClassRoom() {
+        return classRoom;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setClassRoom(Classroom classRoom) {
+        this.classRoom = classRoom;
     }
 
     public boolean isUserFavorited() {
@@ -47,11 +51,11 @@ public class CourseDetail implements Serializable {
         this.discount = discount;
     }
 
-    public List<?> getVipLevels() {
+    public List<VipLevel> getVipLevels() {
         return vipLevels;
     }
 
-    public void setVipLevels(List<?> vipLevels) {
+    public void setVipLevels(List<VipLevel> vipLevels) {
         this.vipLevels = vipLevels;
     }
 

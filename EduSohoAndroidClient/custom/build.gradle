@@ -57,7 +57,3 @@ android {
 dependencies {
     compile project(':edusoho_v3')
 }
-
-task newcustom (type: Copy) {
-    println "qweqweqwe"
-}

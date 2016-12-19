@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.view;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -56,6 +57,36 @@ public class HeadStopScrollView extends ScrollView {
     private void init() {
         setOverScrollMode(OVER_SCROLL_NEVER);
         setVerticalScrollBarEnabled(false);
+    }
+
+    private List<Boolean> mCanScrolls = new ArrayList<>();
+    private List<Integer> mScrollY = new ArrayList<>();
+    private int mCheckNum = 0;
+    private boolean mStay = false;
+
+    public void setCheckNum(int position) {
+        mCheckNum = position;
+        setCanScroll(mCanScrolls.get(position));
+        scrollTo(0,mScrollY.get(position));
+    }
+
+    public void stateChange(){
+        if(mStay){
+            return;
+        }
+        mCanScrolls.set(mCheckNum,true);
+        setCanScroll(true);
+        scrollTo(0, getScrollY() - 2);
+    }
+
+    public void setmStay(boolean mStay) {
+        this.mStay = mStay;
+    }
+
+    public void notifyCanScrolls(int position, boolean state) {
+        if (mCanScrolls.size() > position) {
+            mCanScrolls.set(position, state);
+        }
     }
 
     @Override
@@ -155,5 +186,10 @@ public class HeadStopScrollView extends ScrollView {
 
     public interface CanStopView {
         void setCanScroll(boolean canScroll);
+    }
+
+    @Override
+    protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
+        return 0;
     }
 }

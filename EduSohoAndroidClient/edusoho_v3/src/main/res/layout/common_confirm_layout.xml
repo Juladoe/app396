@@ -96,6 +96,7 @@
             android:textSize="@dimen/tv_register_size"
             android:maxLength="6"
             android:layout_alignParentStart="true"
+            android:textColor="@color/primary_font_color"
             android:textColorHint="@color/grey_hint"
             android:layout_toLeftOf="@id/iv_clear_auth"
             android:layout_below="@+id/iv_clear_auth" />
@@ -152,6 +153,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColorHint="@color/grey_hint"
+            android:textColor="@color/primary_font_color"
             android:layout_toLeftOf="@id/iv_clear_pwd"
             android:textSize="@dimen/base_large_size"/>
         <View

@@ -163,6 +163,7 @@ public class CourseUtil {
                                             startIntent.putExtra(Const.WEB_URL, url);
                                         }
                                     });
+                            return;
                         }
                         if (status.equals("ok")) {
                             if (onAddCourseListener != null) {

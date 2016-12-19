@@ -134,6 +134,7 @@ public class Const {
     public static final String SCREEN_LOCK = "screen_lock";
     public static final String COURSE_REFRESH = "course_refresh";//刷新课程Activity
     public static final String COURSE_START= "course_start";//开始课程
+    public static final String COURSE_CHANGE= "course_change";//课程切换
     public static final String COURSE_SHOW_BAR = "course_show_bar";//导航栏
     public static final String COURSE_HIDE_BAR = "course_hide_bar";//导航栏
     public static final String COURSE_PAUSE = "course_pause";//暂停课程后的UI处理
@@ -244,7 +245,6 @@ public class Const {
     public static final String EDIT_QUESTION_INFO = "Course/updateThread";
 
     public static final String CHECKTOKEN = "User/loginWithToken";
-    public static final String BIND_PHONE = "/api/users/password";
     public static final String COMPLETE = "/api/sms_codes";
     public static final String LOGIN = "User/login";
     public static final String SMS_SEND = "User/smsSend";
@@ -279,6 +279,11 @@ public class Const {
     public static final String USERINFO = "User/getUserInfo";
     public static final String REVIEWS = "Course/getReviews";
     public static final String COURSE_GETCOURSE = "Course/getCourse?courseId=%s";
+    public static final String COURSE_GETREVIEWS = "Course/getReviews?courseId=%s&limit=%s&start=%s";
+    public static final String COURSE_GETMEMBER = "/api/courses/%s/members";
+    public static final String COURSE_GETCLASSROOM = "ClassRoom/getClassRoom?id=%s";
+    public static final String CLASSROOM_GETREVIEWS = "ClassRoom/getReviews?courseId=%s&limit=%s&start=%s";
+    public static final String CLASSROOM_GETMEMBER = "/api/classroom/%s/members";
 
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";
@@ -476,7 +481,7 @@ public class Const {
      */
 
     public static final String SMS_CODES = "/api/sms_codes";
-    public static final String FIND_PASSWORD = "/api/users/password";
+    public static final String CHANGE_PASSWORD = "/api/users/password";
     public static final String EMAILS = "/api/emails";
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String USERS = "/api/users";

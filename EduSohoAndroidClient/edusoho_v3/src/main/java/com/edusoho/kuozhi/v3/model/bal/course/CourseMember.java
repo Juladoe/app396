@@ -28,11 +28,19 @@ public class CourseMember implements Serializable {
     public String createdTime;
 
     public UserEntity user;
+    public Course course;
 
     public static class UserEntity {
         public int id;
         public String nickname;
         public String title;
         public String avatar;
+    }
+
+    public static class Course{
+        public int id;
+        public String title;
+        public String picture;
+        public String convNo;
     }
 }

@@ -6,11 +6,14 @@ import android.view.Gravity;
 import android.widget.TextView;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 /**
  * Created by howzhi on 14-5-12.
  */
 >>>>>>> 4ecd4ad251d95ccba685b18f74f2d837882d72fc
+=======
+>>>>>>> 2a9b512c31a1e3073222af6bca5f4e7ff9d0013d
 public class EduSohoNewIconView extends TextView {
 
     private Context mContext;
