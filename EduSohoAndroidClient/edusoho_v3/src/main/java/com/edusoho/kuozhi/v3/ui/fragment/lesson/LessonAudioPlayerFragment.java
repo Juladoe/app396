@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment.lesson;
 
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.ui.DetailActivity;
 import com.edusoho.videoplayer.ui.AudioPlayerFragment;
 import com.edusoho.videoplayer.util.ControllerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -26,14 +28,19 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     protected String mCoverUrl;
     protected float mAudioCoverAnimOffset;
     protected ObjectAnimator mAudioCoverAnim;
-
-    private boolean isPlay;
     private ImageView mCoverImageView;
+    private DetailActivity mMenuCallback;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCoverUrl = getArguments().getString(COVER);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mMenuCallback = (DetailActivity) activity;
     }
 
     @Override
@@ -45,14 +52,19 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
                 .build();
         mVideoControllerView.setControllerOptions(options);
         initPlayContainer();
-        ImageLoader.getInstance().displayImage(mCoverUrl, mCoverImageView);
+        initNavigationBar();
     }
 
     protected void initPlayContainer() {
         View containerView = LayoutInflater.from(getContext()).inflate(R.layout.view_audio_container_layout, null);
         setContainerView(containerView);
         mCoverImageView = (ImageView) containerView.findViewById(R.id.rl_audio_cover);
+        ImageLoader.getInstance().displayImage(mCoverUrl, mCoverImageView);
         initCoverSize();
+    }
+
+    private void initNavigationBar() {
+        mMenuCallback.getMenu().addItem("xxx");
     }
 
     private void initCoverSize() {
@@ -67,7 +79,6 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     @Override
     public void onPlayStatusChange(boolean isPlay) {
         super.onPlayStatusChange(isPlay);
-        this.isPlay = isPlay;
         updateAudioCoverViewStatus(isPlay);
     }
 

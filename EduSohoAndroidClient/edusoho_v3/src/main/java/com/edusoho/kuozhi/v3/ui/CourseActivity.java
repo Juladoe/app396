@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
+import android.widget.FrameLayout;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -243,6 +245,17 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_header_container);
         if (fragment != null && fragment instanceof LessonAudioPlayerFragment) {
             ((LessonAudioPlayerFragment) fragment).destoryService();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        if (v.getId() == R.id.hour_rlayout) {
+            Fragment fragment = mFragments.get(1);
+            if (fragment != null && fragment instanceof CourseCatalogFragment) {
+                ((CourseCatalogFragment)fragment).reFreshView(true);
+            }
         }
     }
 }
