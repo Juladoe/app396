@@ -283,7 +283,7 @@ public class Const {
     public static final String COURSE_GETMEMBER = "/api/courses/%s/members";
     public static final String COURSE_GETCLASSROOM = "ClassRoom/getClassRoom?id=%s";
     public static final String CLASSROOM_GETREVIEWS = "ClassRoom/getReviews?courseId=%s&limit=%s&start=%s";
-    public static final String CLASSROOM_GETMEMBER = "/api/classroom/%s/members";
+    public static final String CLASSROOM_GETMEMBER = "/api/classrooms/%s/members?limits=1";
 
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";

@@ -48,16 +48,14 @@ public class ReviewStarView extends LinearLayout {
     }
 
     private void init() {
+        LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, 0, AppUtil.dp2px(getContext(), 2), 0);
         for (int i = 0; i < 5; i++) {
             EduSohoNewIconView view = new EduSohoNewIconView(getContext());
             view.setTextSize(13);
             view.setText(R.string.new_font_star_grade);
             view.setTextColor(getResources().getColor(R.color.disabled_hint_color));
-            LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            if (i != 4) {
-                params.setMargins(0, 0, AppUtil.dp2px(getContext(), 2), 0);
-            }
             view.setLayoutParams(params);
             stars.add(view);
             addView(view);

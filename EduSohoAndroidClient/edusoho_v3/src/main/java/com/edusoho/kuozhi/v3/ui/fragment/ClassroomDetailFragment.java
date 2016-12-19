@@ -176,8 +176,9 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         }
         mPeopleLayout.setVisibility(View.GONE);
         if (classRoom.teachers.length == 0) {
-
+            mTeacherLayout.setVisibility(View.GONE);
         } else {
+            mTeacherLayout.setVisibility(View.VISIBLE);
             Teacher teacher = classRoom.teachers[0];
             mTeacherId = String.valueOf(teacher.id);
             ImageLoader.getInstance().displayImage(teacher.avatar, mIvTeacherIcon);

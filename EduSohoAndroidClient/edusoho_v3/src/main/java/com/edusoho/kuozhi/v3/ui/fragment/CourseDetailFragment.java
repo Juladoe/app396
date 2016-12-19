@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -67,14 +69,15 @@ public class CourseDetailFragment extends BaseDetailFragment {
         initData();
     }
 
+
     protected void initData() {
         mLoading.show();
         CourseDetailModel.getCourseDetail(mCourseId, new ResponseCallbackListener<CourseDetail>() {
             @Override
             public void onSuccess(CourseDetail data) {
-                mLoading.dismiss();
                 mCourseDetail = data;
                 refreshView();
+                mLoading.dismiss();
             }
 
             @Override
@@ -97,7 +100,6 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
                     @Override
                     public void onFailure(String code, String message) {
-
                     }
                 });
         CourseDetailModel.getCourseMember(mCourseId,
@@ -109,7 +111,6 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
                     @Override
                     public void onFailure(String code, String message) {
-
                     }
                 });
     }
@@ -175,16 +176,22 @@ public class CourseDetailFragment extends BaseDetailFragment {
         mReviewStar.setRating((int) course.rating);
         StringBuilder sb = new StringBuilder();
         int length = course.audiences.length;
-        for (int i = 0; i < length; i++) {
-            sb.append(course.audiences[i]);
-            if (i != length - 1) {
-                sb.append("；");
+        if(length == 0){
+            mPeopleLayout.setVisibility(View.GONE);
+        }else {
+            mPeopleLayout.setVisibility(View.VISIBLE);
+            for (int i = 0; i < length; i++) {
+                sb.append(course.audiences[i]);
+                if (i != length - 1) {
+                    sb.append("；");
+                }
             }
+            mTvPeopleDesc.setText(sb.toString());
         }
-        mTvPeopleDesc.setText(sb.toString());
         if (course.teachers.length == 0) {
-
+            mTeacherLayout.setVisibility(View.GONE);
         } else {
+            mTeacherLayout.setVisibility(View.VISIBLE);
             Teacher teacher = course.teachers[0];
             mTeacherId = String.valueOf(teacher.id);
             ImageLoader.getInstance().displayImage(teacher.avatar, mIvTeacherIcon);

@@ -16,11 +16,14 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Zhang on 2016/12/9.
  */
 
-public class StopScrollView extends ScrollView implements HeadStopScrollView.CanStopView{
+public class StopScrollView extends ScrollView implements HeadStopScrollView.CanStopView {
     public StopScrollView(Context context) {
         super(context);
     }
@@ -35,6 +38,8 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
 
     private boolean mCanScroll = true;
     private HeadStopScrollView mParent;
+
+
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
@@ -43,8 +48,10 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
             sendScrollState();
         }
     }
+
     float moveY;
     float startY;
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
@@ -64,12 +71,11 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
         return super.dispatchTouchEvent(ev);
     }
 
-    private void sendScrollState(){
-        Bundle bundle = new Bundle();
-        bundle.putString("class", getContext().getClass().getSimpleName());
-        ((EdusohoApp) ((Activity) getContext()).getApplication())
-                .sendMessage(Const.SCROLL_STATE_SAVE, bundle);
+    private void sendScrollState() {
         mCanScroll = false;
+        if (mParent != null) {
+            mParent.stateChange();
+        }
     }
 
     @Override
@@ -80,6 +86,11 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     @Override
     public void setCanScroll(boolean canScroll) {
         mCanScroll = true;
+    }
+
+    @Override
+    public void bindParent(HeadStopScrollView headStopScrollView) {
+        mParent = headStopScrollView;
     }
 
     @Override

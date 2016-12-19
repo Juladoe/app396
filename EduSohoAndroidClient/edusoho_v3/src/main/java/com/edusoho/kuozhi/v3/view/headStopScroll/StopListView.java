@@ -57,4 +57,9 @@ public class StopListView extends ListView implements AbsListView.OnScrollListen
     public void setCanScroll(boolean canScroll) {
 
     }
+
+    @Override
+    public void bindParent(HeadStopScrollView headStopScrollView) {
+
+    }
 }

@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -18,11 +17,9 @@ import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.List;
 
 
@@ -118,8 +115,8 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         } else {
             mIsMemder = true;
             mBottomLayout.setVisibility(View.GONE);
-            mIvGrade.setVisibility(View.VISIBLE);
-            mIvGrade2.setVisibility(View.VISIBLE);
+//            mIvGrade.setVisibility(View.VISIBLE);
+//            mIvGrade2.setVisibility(View.VISIBLE);
             mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }

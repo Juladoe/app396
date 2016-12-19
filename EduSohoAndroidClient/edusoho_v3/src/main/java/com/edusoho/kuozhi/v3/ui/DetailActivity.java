@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,17 +66,17 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mHour;
     protected RelativeLayout mReviewLayout;
     protected View mReview;
+    protected View mMenu;
     protected List<Fragment> mFragments = new ArrayList<>();
     protected FragmentViewPagerAdapter mAdapter;
     protected int mCheckNum = 0;
-    protected int[] mScrollY = new int[3];
-    protected boolean[] mCanScroll = {true, true, true};
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
     private int mTitleBarHeight;
     public int mMediaViewHeight = 210;
     private SystemBarTintManager tintManager;
     protected LoadDialog mLoading;
+    protected MenuPop mMenuPop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +92,15 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             tintManager.setNavigationBarTintEnabled(true);
             tintManager.setTintColor(Color.parseColor("#00000000"));
         }
+        mMenuPop = new MenuPop(this);
+    }
 
+    public MenuPop getMenu() {
+        if (isFinishing()) {
+            return null;
+        } else {
+            return mMenuPop;
+        }
     }
 
     @Override
@@ -118,6 +127,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mHour = findViewById(R.id.hour);
         mReview = findViewById(R.id.review);
         mBack2 = findViewById(R.id.back2);
+        mMenu = findViewById(R.id.iv_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvInclass = findViewById(R.id.tv_inclass);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
@@ -131,6 +141,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mParent.setFirstViewHeight(AppUtil.dp2px(this,
                 mMediaViewHeight - 43 - mTitleBarHeight));
+        mParent.setSize(3);
         mBottomLayout = findViewById(R.id.bottom_layout);
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
@@ -162,6 +173,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mConsult.setOnClickListener(this);
         mBack2.setOnClickListener(this);
         mTvInclass.setOnClickListener(this);
+        mMenu.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -180,8 +192,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mParent.setOnScrollChangeListener(new HeadStopScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChanged(int l, int t, int oldl, int oldt) {
-                mCanScroll[mCheckNum] = mParent.isCanScroll();
-                mScrollY[mCheckNum] = t;
                 if (!mParent.isCanScroll() && t != 0) {
                     mHeadRlayout.setVisibility(View.GONE);
                     mHeadRlayout2.setVisibility(View.VISIBLE);
@@ -225,6 +235,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             consult();
         } else if (v.getId() == R.id.back2) {
             finish();
+        } else if (v.getId() == R.id.iv_menu) {
+            mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
         }
 
     }
@@ -242,8 +254,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mIntro.setVisibility(View.GONE);
         mHour.setVisibility(View.GONE);
         mReview.setVisibility(View.GONE);
-        mParent.setCanScroll(mCanScroll[num]);
-        mParent.scrollTo(0, mScrollY[num]);
+        mParent.setCheckNum(num);
         switch (num) {
             case 0:
                 mIntro.setVisibility(View.VISIBLE);
@@ -261,17 +272,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     public void invoke(WidgetMessage message) {
         Bundle bundle = message.data;
         switch (message.type.type) {
-            case Const.SCROLL_STATE_SAVE:
-                if (mIsPlay) {
-                    break;
-                }
-                String clazz = bundle.getString("class");
-                if (clazz != null && clazz.equals(getClass().getSimpleName())) {
-                    mCanScroll[mCheckNum] = true;
-                    mParent.setCanScroll(true);
-                    mParent.scrollTo(0, mParent.getScrollY() - 2);
-                }
-                break;
             case Const.FULL_SCREEN:
                 fullScreen();
                 break;
@@ -343,7 +343,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         if (!mIsFullScreen) {
             mParent.smoothScrollTo(0, 0);
             mParent.setCanScroll(false);
-            mCanScroll[mCheckNum] = false;
             ViewGroup.LayoutParams params = mContentVp.getLayoutParams();
             if (params != null) {
                 int bottom = AppUtil.dp2px(this, 50 + mMediaViewHeight);
@@ -356,6 +355,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mPlayLayout.setVisibility(View.GONE);
         mIsPlay = true;
+        mParent.setStay(true);
     }
 
     protected void initViewPager() {
@@ -373,11 +373,11 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     private void coursePause() {
         if (!mIsFullScreen) {
             mParent.setCanScroll(true);
-            mCanScroll[mCheckNum] = true;
             initViewPager();
         }
         mPlayLayout.setVisibility(View.VISIBLE);
         mIsPlay = false;
+        mParent.setStay(false);
     }
 
     private boolean mIsFullScreen = false;
@@ -395,21 +395,23 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mBottomLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            mMenu.setVisibility(View.VISIBLE);
         } else {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             mIsFullScreen = false;
             params.width = -1;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
             mMediaRlayout.setLayoutParams(params);
-            mParent.setCanScroll(mCanScroll[mCheckNum]);
+            mParent.setCanScroll(mParent.getScroll(mCheckNum));
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
                 mBottomLayout.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 if (this instanceof CourseActivity) {
                     mTvInclass.setVisibility(View.VISIBLE);
                 }
             }
+            mMenu.setVisibility(View.GONE);
         }
     }
 
@@ -426,4 +428,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
+
+
 }
