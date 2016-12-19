@@ -157,7 +157,19 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     private void decideKind() {
         switch (lessonsBean.getType()) {
             case "ppt":
+                lessonHolder.lessonKind.setText(R.string.catalog_lesson_ppt);
+                break;
+            case "audio":
                 lessonHolder.lessonKind.setText(R.string.catalog_lesson_audio);
+                break;
+            case "text":
+                lessonHolder.lessonKind.setText(R.string.catalog_lesson_text);
+                break;
+            case "flash":
+                lessonHolder.lessonKind.setText(R.string.catalog_lesson_flash);
+                break;
+            case "live":
+                lessonHolder.lessonKind.setText(R.string.catalog_lesson_live);
                 break;
             case "video":
                 lessonHolder.lessonKind.setText(R.string.catalog_lesson_video);

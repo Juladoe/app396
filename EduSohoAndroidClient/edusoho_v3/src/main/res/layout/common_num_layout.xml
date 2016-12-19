@@ -52,6 +52,7 @@
             android:textSize="@dimen/x_medium_font_size"
             android:maxLength="11"
             android:layout_toLeftOf="@id/iv_clear_phone"
+            android:textColor="@color/primary_font_color"
             android:textColorHint="@color/grey_hint"/>
         <View
             android:background="@color/register_view"

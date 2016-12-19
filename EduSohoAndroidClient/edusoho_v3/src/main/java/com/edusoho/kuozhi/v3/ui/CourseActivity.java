@@ -87,6 +87,11 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
+    protected CourseDetail getCourseDetail() {
+        return mCourseDetail;
+    }
+
+    @Override
     protected void refreshView() {
         mIsFavorite = mCourseDetail.isUserFavorited();
         if (mIsFavorite) {
@@ -108,8 +113,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         } else {
             mIsMemder = true;
             mBottomLayout.setVisibility(View.GONE);
-//            mIvGrade.setVisibility(View.VISIBLE);
-//            mIvGrade2.setVisibility(View.VISIBLE);
             mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }

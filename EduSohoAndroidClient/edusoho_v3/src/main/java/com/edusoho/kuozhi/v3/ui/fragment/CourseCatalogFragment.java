@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,16 +18,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
-import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
+import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.FixHeightListView;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -69,23 +70,20 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     private void initCatalogue() {
-        if (mIsJoin) {
+        if (mIsJoin && app.token != null) {
             mRlSpace.setVisibility(View.VISIBLE);
             initCache();
         }
         RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + mCourseId + "&token=" + app.token, true);
         requestUrl.heads.put("token", app.token);
-        final LoadDialog loadDialog = LoadDialog.create(getActivity());
-        loadDialog.show();
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                loadDialog.dismiss();
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
                 });
-                if (mCourseCatalogue != null) {
+                if (mCourseCatalogue.getLessons().size() != 0) {
                     initLessonCatalog();
-                }else {
+                } else {
                     CommonUtil.shortCenterToast(getActivity(), "该课程没有课时");
                 }
             }
@@ -103,6 +101,10 @@ public class CourseCatalogFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mAdapter.changeSelected(position);
+                if (TextUtils.isEmpty(app.token)) {
+                    getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
+                    return;
+                }
                 if (!mIsJoin && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
                     CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
                     return;
@@ -113,12 +115,26 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     public void startLessonActivity(int position){
-        mLessonsBean = mCourseCatalogue.getLessons().get(position);
-        Intent intent = new Intent(getActivity(), LessonActivity.class)
-                .putExtra(Const.LESSON_ID, Integer.parseInt(mLessonsBean.getId()))
-                .putExtra(Const.COURSE_ID, Integer.parseInt(mCourseId))
-                .putIntegerArrayListExtra(Const.LESSON_IDS, getLessonArray());
-        getActivity().startActivity(intent);
+//        mLessonsBean = mCourseCatalogue.getLessons().get(position);
+//        Intent intent = new Intent(getActivity(), LessonActivity.class)
+//                .putExtra(Const.LESSON_ID, Integer.parseInt(mLessonsBean.getId()))
+//                .putExtra(Const.COURSE_ID, Integer.parseInt(mCourseId))
+//                .putIntegerArrayListExtra(Const.LESSON_IDS, getLessonArray());
+//        getActivity().startActivity(intent);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, mCourseCatalogue.getLessons().get(position));
+        if (mCourseCatalogue.getLearnStatuses().containsKey(mCourseCatalogue.getLessons().get(position).getId())) {
+            if ("learning".equals(mCourseCatalogue.getLearnStatuses().get(mCourseCatalogue.getLessons().get(position).getId()))) {
+                bundle.putString(Const.COURSE_CHANGE_STATE, "1");
+            } else {
+                bundle.putString(Const.COURSE_CHANGE_STATE, "2");
+            }
+        } else {
+            bundle.putString(Const.COURSE_CHANGE_STATE, "0");
+        }
+        bundle.putBoolean(Const.COURSE_HASTRIAL_RESULT, true);
+        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
     }
 
     public ArrayList<Integer> getLessonArray(){
@@ -132,17 +148,18 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     /**
-     * 外部刷新界面
+     * 外部刷新数据
      */
     public void reFreshView(boolean mIsJoin){
         this.mIsJoin = mIsJoin;
-        if (mIsJoin) {
+        if (mIsJoin && app.token != null) {
             mRlSpace.setVisibility(View.VISIBLE);
             initCache();
         }
-        mAdapter.isJoin = mIsJoin;
-//        mAdapter.setCourseCatalogue(null);
-        mAdapter.notifyDataSetChanged();
+        if (mAdapter != null) {
+            mAdapter.isJoin = mIsJoin;
+            mAdapter.notifyDataSetChanged();
+        }
     }
     /**
      * 获取手机可用空间,该界面要先判断是否显示rlSpace
