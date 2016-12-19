@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.view.Menu;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -114,8 +115,8 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         } else {
             mIsMemder = true;
             mBottomLayout.setVisibility(View.GONE);
-            mIvGrade.setVisibility(View.VISIBLE);
-            mIvGrade2.setVisibility(View.VISIBLE);
+//            mIvGrade.setVisibility(View.VISIBLE);
+//            mIvGrade2.setVisibility(View.VISIBLE);
             mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }

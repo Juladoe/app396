@@ -16,7 +16,10 @@
         <RelativeLayout
             android:id="@+id/parent_rlayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:background="@color/disabled2_hint_color"
+
+            >
 
             <RelativeLayout
                 android:id="@+id/media_rlayout"
@@ -182,6 +185,7 @@
             android:paddingLeft="13dp"
             android:paddingRight="13dp"
             android:text="@string/new_font_grade"
+            android:visibility="gone"
             android:textColor="@color/disabled2_hint_color"
             android:textSize="16dp" />
 
@@ -270,6 +274,7 @@
                 android:paddingLeft="13dp"
                 android:paddingRight="13dp"
                 android:text="@string/new_font_grade"
+                android:visibility="gone"
                 android:textColor="@color/secondary_font_color"
                 android:textSize="16dp" />
 

@@ -137,7 +137,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             image.setOnClickListener(onClickListener);
             TextView txt = (TextView) view.findViewById(R.id.tv_avatar_name);
             txt.setText(data.get(i).user.nickname);
-//            ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image);
+            ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image);
             mStudentIconLayout.addView(view);
         }
     }
@@ -176,8 +176,9 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         }
         mPeopleLayout.setVisibility(View.GONE);
         if (classRoom.teachers.length == 0) {
-
+            mTeacherLayout.setVisibility(View.GONE);
         } else {
+            mTeacherLayout.setVisibility(View.VISIBLE);
             Teacher teacher = classRoom.teachers[0];
             mTeacherId = String.valueOf(teacher.id);
             ImageLoader.getInstance().displayImage(teacher.avatar, mIvTeacherIcon);
