@@ -94,7 +94,7 @@ public class CourseCatalogFragment extends BaseFragment {
         });
     }
 
-    public void initLessonCatalog(){
+    public void initLessonCatalog() {
         mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, mIsJoin);
         mLvCatalog.setAdapter(mAdapter);
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -114,7 +114,7 @@ public class CourseCatalogFragment extends BaseFragment {
         });
     }
 
-    public void startLessonActivity(int position){
+    public void startLessonActivity(int position) {
 //        mLessonsBean = mCourseCatalogue.getLessons().get(position);
 //        Intent intent = new Intent(getActivity(), LessonActivity.class)
 //                .putExtra(Const.LESSON_ID, Integer.parseInt(mLessonsBean.getId()))
@@ -137,7 +137,7 @@ public class CourseCatalogFragment extends BaseFragment {
         MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
     }
 
-    public ArrayList<Integer> getLessonArray(){
+    public ArrayList<Integer> getLessonArray() {
         ArrayList<Integer> lessonArray = new ArrayList<>();
         for (CourseCatalogue.LessonsBean lessonsBean : mCourseCatalogue.getLessons()) {
             if ("lesson".equals(lessonsBean.getItemType())) {
@@ -150,7 +150,7 @@ public class CourseCatalogFragment extends BaseFragment {
     /**
      * 外部刷新数据
      */
-    public void reFreshView(boolean mIsJoin){
+    public void reFreshView(boolean mIsJoin) {
         this.mIsJoin = mIsJoin;
         if (mIsJoin && app.token != null) {
             mRlSpace.setVisibility(View.VISIBLE);
@@ -161,6 +161,7 @@ public class CourseCatalogFragment extends BaseFragment {
             mAdapter.notifyDataSetChanged();
         }
     }
+
     /**
      * 获取手机可用空间,该界面要先判断是否显示rlSpace
      */
