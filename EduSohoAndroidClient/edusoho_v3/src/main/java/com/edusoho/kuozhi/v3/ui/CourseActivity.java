@@ -208,9 +208,6 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
                     @Override
                     public void onSuccess(CourseDetail data) {
                         mCourseDetail = data;
-                        if (mCourseDetail.getMember() != null) {
-                            ((CourseCatalogFragment) mFragments.get(1)).mIsJoin = true;
-                        }
                         refreshView();
                     }
 
@@ -253,11 +250,13 @@ public class CourseActivity extends BaseNoTitleActivity implements View.OnClickL
             mContentVp.setCurrentItem(0);
         } else if (v.getId() == R.id.hour_rlayout) {
             mContentVp.setCurrentItem(1);
+            if (mCourseDetail.getMember() != null) {
+                ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+            }
         } else if (v.getId() == R.id.review_rlayout) {
             mContentVp.setCurrentItem(2);
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
-
         } else if (v.getId() == R.id.iv_share ||
                 v.getId() == R.id.iv_share2) {
             share();
