@@ -92,7 +92,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             tintManager.setNavigationBarTintEnabled(true);
             tintManager.setTintColor(Color.parseColor("#00000000"));
         }
-        mMenuPop = new MenuPop(this);
     }
 
     public MenuPop getMenu() {
@@ -154,6 +153,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
         mLoading = LoadDialog.create(this);
+        mMenuPop = new MenuPop(this, mMenu);
     }
 
     protected abstract void initFragment(List<Fragment> fragments);
@@ -198,7 +198,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                     mHeadRlayout2.setVisibility(View.VISIBLE);
                     mParent.scrollTo(0, AppUtil.dp2px(DetailActivity.this,
                             mMediaViewHeight - 43 - mTitleBarHeight));
-                } else {
+                } else if (mParent.getScrollY() < mParent.getFirstViewHeight() - 2) {
                     mHeadRlayout.setVisibility(View.VISIBLE);
                     mHeadRlayout2.setVisibility(View.GONE);
                 }
@@ -303,7 +303,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    protected  void courseHastrial(boolean has){
+    protected void courseHastrial(boolean has) {
         if (has) {
             mTvPlay.setText("开始试学");
             mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
@@ -316,7 +316,17 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     /**
      * todo 获得课程相关信息
      */
-    protected abstract void courseChange();
+    protected void courseChange() {
+        String type = null;
+        switch (type) {
+            case "audio":
+
+                break;
+            case "video":
+
+                break;
+        }
+    }
 
     private boolean isScreenLock = false;
 
@@ -351,9 +361,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     protected void courseStart() {
-        /**
-         * todo 播放课程
-         */
         if (!mIsFullScreen) {
             mParent.smoothScrollTo(0, 0);
             mParent.setCanScroll(false);
@@ -443,6 +450,5 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
-
 
 }
