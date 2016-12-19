@@ -72,11 +72,8 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     }
 
     private void sendScrollState() {
-        Bundle bundle = new Bundle();
-        bundle.putString("class", getContext().getClass().getSimpleName());
-        ((EdusohoApp) ((Activity) getContext()).getApplication())
-                .sendMessage(Const.SCROLL_STATE_SAVE, bundle);
         mCanScroll = false;
+        mParent.stateChange();
     }
 
     @Override
@@ -87,6 +84,11 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     @Override
     public void setCanScroll(boolean canScroll) {
         mCanScroll = true;
+    }
+
+    @Override
+    public void bindParent(HeadStopScrollView headStopScrollView) {
+        mParent = headStopScrollView;
     }
 
     @Override
