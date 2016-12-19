@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.LinearLayout;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -25,10 +24,8 @@ public class ClassCatalogFragment extends BaseFragment{
 
     public String mClassId = "1";
 
-    private LinearLayout mLlCall;
     private RecyclerView mRlClass;
     private ClassCatalogue mClassCatalogue;
-    private ClassCatalogue mClassCatalogue1;
 
 
     public ClassCatalogFragment() {
@@ -44,7 +41,6 @@ public class ClassCatalogFragment extends BaseFragment{
     protected void initView(View view) {
         super.initView(view);
         mRlClass = (RecyclerView) view.findViewById(R.id.rv_class);
-        mLlCall = (LinearLayout) view.findViewById(R.id.ll_join_course);
         initData();
     }
 
@@ -53,7 +49,7 @@ public class ClassCatalogFragment extends BaseFragment{
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                mClassCatalogue1 = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<ClassCatalogue>() {
+                mClassCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<ClassCatalogue>() {
                 });
                 initView();
             }
@@ -66,10 +62,6 @@ public class ClassCatalogFragment extends BaseFragment{
     }
 
     private void initView() {
-        //判断用户是否加入了班级,未加入显示加入框
-        if(!true){
-            mLlCall.setVisibility(View.INVISIBLE);
-        }
         ClassCatalogueAdapter classAdapter = new ClassCatalogueAdapter(getActivity());
         mRlClass.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRlClass.setAdapter(classAdapter);
