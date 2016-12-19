@@ -5,7 +5,6 @@ import android.graphics.Typeface;
 import android.view.Gravity;
 import android.widget.TextView;
 
-
 /**
  * Created by howzhi on 14-5-12.
  */

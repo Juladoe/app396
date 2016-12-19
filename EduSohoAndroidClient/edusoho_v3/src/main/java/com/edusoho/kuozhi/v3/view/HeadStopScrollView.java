@@ -13,8 +13,6 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import jazzyviewpager.Util;
-
 /**
  * 头部向上滑一段距离后，滑动事件交给子View的ScrollView
  * Created by zhang on 2016/12/8.
@@ -67,20 +65,34 @@ public class HeadStopScrollView extends ScrollView {
     public void setCheckNum(int position) {
         mCheckNum = position;
         setCanScroll(mCanScrolls.get(position));
-        scrollTo(0,mScrollY.get(position));
+        scrollTo(0, mScrollY.get(position));
     }
 
-    public void stateChange(){
-        if(mStay){
+    public boolean getScroll(int position){
+        if(mCanScrolls.size() <position){
+            return false;
+        }
+        return mCanScrolls.get(position);
+    }
+
+    public void setSize(int num) {
+        for (int i = 0; i < num; i++) {
+            mCanScrolls.add(true);
+            mScrollY.add(0);
+        }
+    }
+
+    public void stateChange() {
+        if (mStay) {
             return;
         }
-        mCanScrolls.set(mCheckNum,true);
+        mCanScrolls.set(mCheckNum, true);
         setCanScroll(true);
         scrollTo(0, getScrollY() - 2);
     }
 
-    public void setmStay(boolean mStay) {
-        this.mStay = mStay;
+    public void setStay(boolean stay) {
+        this.mStay = stay;
     }
 
     public void notifyCanScrolls(int position, boolean state) {
@@ -94,6 +106,12 @@ public class HeadStopScrollView extends ScrollView {
         super.onScrollChanged(l, t, oldl, oldt);
         if (t >= firstViewHeight - AppUtil.dp2px(getContext(), 3) && t - oldt >= 0) {
             canScroll = false;
+        }
+        if (mScrollY.size() > mCheckNum) {
+            mScrollY.set(mCheckNum, t);
+        }
+        if (mCanScrolls.size() > mCheckNum) {
+            mCanScrolls.set(mCheckNum, canScroll);
         }
         if (onScrollChangeListener != null) {
             onScrollChangeListener.onScrollChanged(l, t, oldl, oldt);
@@ -116,6 +134,9 @@ public class HeadStopScrollView extends ScrollView {
 
     public void setCanScroll(boolean isScrolled) {
         this.canScroll = isScrolled;
+        if (mCanScrolls.size() > mCheckNum) {
+            mCanScrolls.set(mCheckNum, isScrolled);
+        }
     }
 
     public boolean isCanScroll() {
@@ -144,6 +165,7 @@ public class HeadStopScrollView extends ScrollView {
             for (CanStopView view : mChildScrolls) {
                 if (view != null) {
                     view.setCanScroll(true);
+                    view.bindParent(this);
                 }
             }
         }
@@ -186,10 +208,12 @@ public class HeadStopScrollView extends ScrollView {
 
     public interface CanStopView {
         void setCanScroll(boolean canScroll);
+        void bindParent(HeadStopScrollView headStopScrollView);
     }
 
     @Override
     protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
         return 0;
     }
+
 }

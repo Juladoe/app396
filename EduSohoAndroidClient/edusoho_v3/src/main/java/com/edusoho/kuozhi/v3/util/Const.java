@@ -318,6 +318,10 @@ public class Const {
      */
     public static final String LESSON_CATALOG = "/mapi_v2/Lesson/getCourseLessons";
     /**
+     * 获取班级目录
+     */
+    public static final String CLASS_CATALOG = "/mapi_v2/ClassRoom/getClassRoomCourses";
+    /**
      * 获取考试课程详情
      */
     public static final String TESTPAPER_INFO = "Lesson/getTestpaperInfo";

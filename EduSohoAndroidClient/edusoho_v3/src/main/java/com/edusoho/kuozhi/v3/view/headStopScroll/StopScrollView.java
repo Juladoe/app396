@@ -1,23 +1,13 @@
 package com.edusoho.kuozhi.v3.view.headStopScroll;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ScrollView;
 
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Zhang on 2016/12/9.
@@ -72,11 +62,8 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     }
 
     private void sendScrollState() {
-        Bundle bundle = new Bundle();
-        bundle.putString("class", getContext().getClass().getSimpleName());
-        ((EdusohoApp) ((Activity) getContext()).getApplication())
-                .sendMessage(Const.SCROLL_STATE_SAVE, bundle);
         mCanScroll = false;
+//        mParent.stateChange();
     }
 
     @Override
@@ -87,6 +74,11 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     @Override
     public void setCanScroll(boolean canScroll) {
         mCanScroll = true;
+    }
+
+    @Override
+    public void bindParent(HeadStopScrollView headStopScrollView) {
+        mParent = headStopScrollView;
     }
 
     @Override

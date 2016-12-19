@@ -1,52 +1,60 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.edusoho.kuozhi.v3.entity.lesson.ClassCatalogue;
 
 /**
  * Created by DF on 2016/12/15.
  */
 
-public class ClassCatalogueAdapter extends RecyclerView.Adapter{
+public class ClassCatalogueAdapter extends BaseAdapter{
     public Context mContext;
+    public ClassCatalogue mClassCatalogue;
     private ClassHolder classHolder;
 
-    public ClassCatalogueAdapter(Context mContext) {
+    public ClassCatalogueAdapter(Context mContext, ClassCatalogue mClassCatalogue) {
         this.mContext = mContext;
+        this.mClassCatalogue = mClassCatalogue;
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_class_catalog, parent, false);
-        classHolder = new ClassHolder(view);
-        return classHolder;
+    public int getCount() {
+        mClassCatalogue.get
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        ImageLoader.getInstance().loadImage("url", new SimpleImageLoadingListener(){
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                super.onLoadingComplete(imageUri, view, loadedImage);
-                classHolder.mIvClass.setImageBitmap(loadedImage);
-            }
-        });
-
+    public Object getItem(int position) {
+        return null;
     }
 
     @Override
-    public int getItemCount() {
+    public long getItemId(int position) {
         return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+//        View view = LayoutInflater.from(mContext).inflate(R.layout.fragment_class_catalog, parent, false);
+//        classHolder = new ClassHolder(view);
+//        return classHolder;
+//
+//
+//        ImageLoader.getInstance().loadImage("url", new SimpleImageLoadingListener(){
+//            @Override
+//            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                super.onLoadingComplete(imageUri, view, loadedImage);
+//                classHolder.mIvClass.setImageBitmap(loadedImage);
+//            }
+//        });
+        return null;
     }
 
     public static class ClassHolder extends RecyclerView.ViewHolder{

@@ -128,6 +128,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mParent.setFirstViewHeight(AppUtil.dp2px(this,
                 mMediaViewHeight - 43 - mTitleBarHeight));
+        mParent.setSize(3);
         mBottomLayout = findViewById(R.id.bottom_layout);
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
@@ -178,8 +179,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mParent.setOnScrollChangeListener(new HeadStopScrollView.OnScrollChangeListener() {
             @Override
             public void onScrollChanged(int l, int t, int oldl, int oldt) {
-                mCanScroll[mCheckNum] = mParent.isCanScroll();
-                mScrollY[mCheckNum] = t;
                 if (!mParent.isCanScroll() && t != 0) {
                     mHeadRlayout.setVisibility(View.GONE);
                     mHeadRlayout2.setVisibility(View.VISIBLE);
@@ -203,8 +202,12 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mContentVp.setCurrentItem(0);
         } else if (v.getId() == R.id.hour_rlayout) {
             mContentVp.setCurrentItem(1);
-            if (getCourseDetail().getMember() != null && ((CourseCatalogFragment) mFragments.get(1)).mIsJoin == false) {
-                ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+            if (getClass().getSimpleName().equals("CourseActivity")) {
+                if (getCourseDetail().getMember() != null && ((CourseCatalogFragment) mFragments.get(1)).mIsJoin == false) {
+                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+                }
+            } else {
+
             }
         } else if (v.getId() == R.id.review_rlayout) {
             mContentVp.setCurrentItem(2);
@@ -332,7 +335,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         if (!mIsFullScreen) {
             mParent.smoothScrollTo(0, 0);
             mParent.setCanScroll(false);
-            mCanScroll[mCheckNum] = false;
             ViewGroup.LayoutParams params = mContentVp.getLayoutParams();
             if (params != null) {
                 int bottom = AppUtil.dp2px(this, 50 + mMediaViewHeight);
@@ -345,6 +347,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mPlayLayout.setVisibility(View.GONE);
         mIsPlay = true;
+        mParent.setStay(true);
     }
 
     protected void initViewPager() {
@@ -362,11 +365,11 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     private void coursePause() {
         if (!mIsFullScreen) {
             mParent.setCanScroll(true);
-            mCanScroll[mCheckNum] = true;
             initViewPager();
         }
         mPlayLayout.setVisibility(View.VISIBLE);
         mIsPlay = false;
+        mParent.setStay(false);
     }
 
     private boolean mIsFullScreen = false;
@@ -390,7 +393,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             params.width = -1;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
             mMediaRlayout.setLayoutParams(params);
-            mParent.setCanScroll(mCanScroll[mCheckNum]);
+            mParent.setCanScroll(mParent.getScroll(mCheckNum));
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
                 mBottomLayout.setVisibility(View.VISIBLE);

@@ -28,7 +28,6 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.FixHeightListView;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -77,15 +76,15 @@ public class CourseCatalogFragment extends BaseFragment {
         }
         RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + mCourseId + "&token=" + app.token, true);
         requestUrl.heads.put("token", app.token);
-        final LoadDialog loadDialog = LoadDialog.create(getActivity());
-        loadDialog.show();
+//        final LoadDialog loadDialog = LoadDialog.create(getActivity());
+//        loadDialog.show();
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                loadDialog.dismiss();
+//                loadDialog.dismiss();
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
                 });
-                if (mCourseCatalogue != null) {
+                if (mCourseCatalogue.getLessons().size() != 0) {
                     initLessonCatalog();
                 } else {
                     CommonUtil.shortCenterToast(getActivity(), "该课程没有课时");

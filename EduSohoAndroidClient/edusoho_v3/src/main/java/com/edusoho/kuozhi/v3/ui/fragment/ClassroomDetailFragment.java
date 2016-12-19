@@ -14,7 +14,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
-import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
@@ -22,11 +21,7 @@ import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.ClassroomMember;
 import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReview;
 import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReviewDetail;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
@@ -137,7 +132,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             image.setOnClickListener(onClickListener);
             TextView txt = (TextView) view.findViewById(R.id.tv_avatar_name);
             txt.setText(data.get(i).user.nickname);
-            ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image);
+//            ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image);
             mStudentIconLayout.addView(view);
         }
     }

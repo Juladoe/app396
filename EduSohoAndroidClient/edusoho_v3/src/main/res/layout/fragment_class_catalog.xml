@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:scrollbars="none">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_class"
+    <com.edusoho.kuozhi.v3.view.FixHeightListView
+        android:id="@+id/lv_catalog"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:divider="@null">
+    </com.edusoho.kuozhi.v3.view.FixHeightListView>
 
-    </android.support.v7.widget.RecyclerView>
-
-</RelativeLayout>
+</com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>

@@ -228,6 +228,4 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
          */
         super.courseStart();
     }
-
-
 }
