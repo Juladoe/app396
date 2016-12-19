@@ -243,8 +243,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mIntro.setVisibility(View.GONE);
         mHour.setVisibility(View.GONE);
         mReview.setVisibility(View.GONE);
-        mParent.setCanScroll(mCanScroll[num]);
-        mParent.scrollTo(0, mScrollY[num]);
+        mParent.setCheckNum(num);
         switch (num) {
             case 0:
                 mIntro.setVisibility(View.VISIBLE);
@@ -262,17 +261,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     public void invoke(WidgetMessage message) {
         Bundle bundle = message.data;
         switch (message.type.type) {
-            case Const.SCROLL_STATE_SAVE:
-                if (mIsPlay) {
-                    break;
-                }
-                String clazz = bundle.getString("class");
-                if (clazz != null && clazz.equals(getClass().getSimpleName())) {
-                    mCanScroll[mCheckNum] = true;
-                    mParent.setCanScroll(true);
-                    mParent.scrollTo(0, mParent.getScrollY() - 2);
-                }
-                break;
             case Const.FULL_SCREEN:
                 fullScreen();
                 break;

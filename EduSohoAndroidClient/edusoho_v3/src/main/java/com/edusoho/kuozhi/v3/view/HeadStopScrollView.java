@@ -59,6 +59,36 @@ public class HeadStopScrollView extends ScrollView {
         setVerticalScrollBarEnabled(false);
     }
 
+    private List<Boolean> mCanScrolls = new ArrayList<>();
+    private List<Integer> mScrollY = new ArrayList<>();
+    private int mCheckNum = 0;
+    private boolean mStay = false;
+
+    public void setCheckNum(int position) {
+        mCheckNum = position;
+        setCanScroll(mCanScrolls.get(position));
+        scrollTo(0,mScrollY.get(position));
+    }
+
+    public void stateChange(){
+        if(mStay){
+            return;
+        }
+        mCanScrolls.set(mCheckNum,true);
+        setCanScroll(true);
+        scrollTo(0, getScrollY() - 2);
+    }
+
+    public void setmStay(boolean mStay) {
+        this.mStay = mStay;
+    }
+
+    public void notifyCanScrolls(int position, boolean state) {
+        if (mCanScrolls.size() > position) {
+            mCanScrolls.set(position, state);
+        }
+    }
+
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
