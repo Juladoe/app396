@@ -3,18 +3,8 @@ package com.edusoho.kuozhi.v3.adapter.test;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.edusoho.kuozhi.R;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
-
-import photoview.PhotoView;
-import photoview.PhotoViewAttacher;
 
 /**
  * Created by suju on 16/9/14.
