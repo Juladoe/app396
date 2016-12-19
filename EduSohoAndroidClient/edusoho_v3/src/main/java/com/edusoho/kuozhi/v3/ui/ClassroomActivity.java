@@ -15,7 +15,6 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.ClassroomDetailFragment;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -57,8 +56,10 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void initFragment(List<Fragment> fragments) {
+        Bundle bundle = new Bundle();
+        bundle.putString("classroodid", mClassroomId);
         fragments.add(new ClassroomDetailFragment(mClassroomId));
-        fragments.add(new ClassCatalogFragment(mClassroomId));
+        fragments.add(app.mEngine.runPluginWithFragmentByBundle("ClassCatalogFragment", ClassroomActivity.this, bundle));
     }
 
     protected void initEvent() {
