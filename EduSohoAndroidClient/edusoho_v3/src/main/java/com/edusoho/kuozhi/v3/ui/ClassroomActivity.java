@@ -88,13 +88,6 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void refreshView() {
-        if(mClassroomDetail.getClassRoom().price == 0){
-            mTvPlay.setText("开始试学");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-        }else{
-            mTvPlay.setText("开始学习");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-        }
         ImageLoader.getInstance().displayImage(
                 mClassroomDetail.getClassRoom().largePicture,
                 mIvMediaBackground);
