@@ -234,7 +234,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         Bundle bundle = new Bundle();
         bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().largePicture);
         bundle.putString(LessonAudioPlayerFragment.PLAY_URI,
-                "http://m10.music.126.net/20161218201605/4f307645d714975eb3dd8fad65fd9bab/ymusic/baed/c724/f8bc/32453e10c844d35bc7d58762e668e3de.mp3");
+                "http://yinyueshiting.baidu.com/data2/music/64011738/2771611482105661128.mp3?xcode=6dc9fc7b26d1ff315fa4084c7da1aa86");
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
         transaction.commitAllowingStateLoss();

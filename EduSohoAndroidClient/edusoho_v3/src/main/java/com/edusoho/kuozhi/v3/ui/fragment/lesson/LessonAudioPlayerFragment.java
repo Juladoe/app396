@@ -30,6 +30,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     protected float mAudioCoverAnimOffset;
     protected ObjectAnimator mAudioCoverAnim;
 
+    private boolean isPlay;
     private ImageView mCoverImageView;
 
     @Override
@@ -53,8 +54,12 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     protected void initPlayContainer() {
         View containerView = LayoutInflater.from(getContext()).inflate(R.layout.view_audio_container_layout, null);
         setContainerView(containerView);
-
         mCoverImageView = (ImageView) containerView.findViewById(R.id.rl_audio_cover);
+        initCoverSize();
+        mCoverImageView.setOnClickListener(getCoverClickListener());
+    }
+
+    private void initCoverSize() {
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         int parentWidth = wm.getDefaultDisplay().getWidth();
         ViewGroup.LayoutParams lp = mCoverImageView.getLayoutParams();
@@ -63,14 +68,20 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         mCoverImageView.setLayoutParams(lp);
     }
 
-    @Override
-    protected void updateMediaPlayStatus(boolean isPlay) {
-        updateAudioCoverViewStatus(isPlay);
+    private View.OnClickListener getCoverClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isPlay = !isPlay;
+                mVideoControllerView.updatePlayStatus(isPlay);
+            }
+        };
     }
 
     @Override
     public void onPlayStatusChange(boolean isPlay) {
         super.onPlayStatusChange(isPlay);
+        this.isPlay = isPlay;
         updateAudioCoverViewStatus(isPlay);
     }
 
