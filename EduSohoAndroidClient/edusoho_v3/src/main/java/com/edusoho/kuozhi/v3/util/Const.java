@@ -132,9 +132,12 @@ public class Const {
 
     public static final String FULL_SCREEN = "course_full_screen";
     public static final String SCREEN_LOCK = "screen_lock";
+    public static final String COURSE_HASTRIAL = "course_hastrial";//是否有试学
+    public static final String COURSE_HASTRIAL_RESULT = "course_hastrial_result";
     public static final String COURSE_REFRESH = "course_refresh";//刷新课程Activity
     public static final String COURSE_START= "course_start";//开始课程
     public static final String COURSE_CHANGE= "course_change";//课程切换
+    public static final String COURSE_CHANGE_OBJECT= "course_change_object";//课程切换
     public static final String COURSE_SHOW_BAR = "course_show_bar";//导航栏
     public static final String COURSE_HIDE_BAR = "course_hide_bar";//导航栏
     public static final String COURSE_PAUSE = "course_pause";//暂停课程后的UI处理
@@ -279,7 +282,11 @@ public class Const {
     public static final String USERINFO = "User/getUserInfo";
     public static final String REVIEWS = "Course/getReviews";
     public static final String COURSE_GETCOURSE = "Course/getCourse?courseId=%s";
+    public static final String COURSE_GETREVIEWS = "Course/getReviews?courseId=%s&limit=%s&start=%s";
+    public static final String COURSE_GETMEMBER = "/api/courses/%s/members";
     public static final String COURSE_GETCLASSROOM = "ClassRoom/getClassRoom?id=%s";
+    public static final String CLASSROOM_GETREVIEWS = "ClassRoom/getReviews?courseId=%s&limit=%s&start=%s";
+    public static final String CLASSROOM_GETMEMBER = "/api/classrooms/%s/members?limits=1";
 
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";

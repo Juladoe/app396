@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.view.Menu;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -54,6 +55,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void initFragment(List<Fragment> fragments) {
         fragments.add(new CourseDetailFragment(mCourseId));
+        fragments.add(new CourseDetailFragment(mCourseId));
     }
 
     protected void initEvent() {
@@ -69,12 +71,12 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                         public void onSuccess(CourseDetail data) {
                             mCourseDetail = data;
                             refreshView();
-//                            mLoading.dismiss();
+                            mLoading.dismiss();
                         }
 
                         @Override
                         public void onFailure(String code, String message) {
-//                            mLoading.dismiss();
+                            mLoading.dismiss();
                             if (message.equals("课程不存在")) {
                                 CommonUtil.shortToast(CourseActivity.this, "课程不存在");
                                 finish();
@@ -106,12 +108,13 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         } else {
             mIsMemder = true;
             mBottomLayout.setVisibility(View.GONE);
-            mIvGrade.setVisibility(View.VISIBLE);
-            mIvGrade2.setVisibility(View.VISIBLE);
+//            mIvGrade.setVisibility(View.VISIBLE);
+//            mIvGrade2.setVisibility(View.VISIBLE);
             mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }
     }
+
     @Override
     protected void consult() {
         Teacher[] teachers = mCourseDetail.getCourse().teachers;
@@ -119,7 +122,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (teachers.length > 0) {
             teacher = teachers[0];
         } else {
-            CommonUtil.shortToast(this,"课程目前没有老师");
+            CommonUtil.shortToast(this, "课程目前没有老师");
             return;
         }
         app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
@@ -135,6 +138,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void add() {
         if (mCourseId != null) {
+            mLoading.show();
             CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")
@@ -145,6 +149,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                     , new CourseUtil.OnAddCourseListener() {
                         @Override
                         public void onAddCourseSuccee(String response) {
+                            mLoading.dismiss();
                             CommonUtil.shortToast(CourseActivity.this, getResources()
                                     .getString(R.string.success_add_course));
                             initData();
@@ -152,7 +157,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
                         @Override
                         public void onAddCourseError(String error) {
-
+                            mLoading.dismiss();
                         }
                     });
         }

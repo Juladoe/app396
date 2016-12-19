@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
+import com.edusoho.kuozhi.v3.ui.fragment.ClassroomDetailFragment;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -54,7 +55,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void initFragment(List<Fragment> fragments) {
-//        fragments.add(new ClassroomDetailFragment(mClassroomId));
+        fragments.add(new ClassroomDetailFragment(mClassroomId));
     }
 
     protected void initEvent() {
@@ -76,7 +77,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                         @Override
                         public void onFailure(String code, String message) {
                             mLoading.dismiss();
-                            if (message.equals("班级不存在")) {
+                            if (message != null && message.equals("班级不存在")) {
                                 CommonUtil.shortToast(ClassroomActivity.this, "班级不存在");
                                 finish();
                             }
@@ -128,6 +129,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     @Override
     protected void add() {
         if (mClassroomId != null) {
+            mLoading.show();
             ClassroomUtil.addClassroom(new ClassroomUtil.ClassroomParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")
@@ -138,6 +140,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                     , new ClassroomUtil.OnAddClassroomListener() {
                         @Override
                         public void onAddClassroomSuccee(String response) {
+                            mLoading.dismiss();
                             CommonUtil.shortToast(ClassroomActivity.this, getResources()
                                     .getString(R.string.success_add_classroom));
                             initData();
@@ -145,7 +148,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
                         @Override
                         public void onAddClassroomError(String error) {
-
+                            mLoading.dismiss();
                         }
                     });
         }
