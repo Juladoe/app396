@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -56,6 +58,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
     protected TextView mTvPeopleDesc;
     protected TextView mTvTeacherName;
     protected TextView mTvTeacherDesc;
+    protected View mTeacherLayout;
     protected TextView mTvStudentNum;
     protected ImageView mIvTeacherIcon;
     protected View mStudentMore;
@@ -107,6 +110,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         mTvTitleFull = (TextView) view.findViewById(R.id.tv_title_full);
         mLoading = LoadDialog.create(getActivity());
         mPeopleLayout = view.findViewById(R.id.people_rlayout);
+        mTeacherLayout = view.findViewById(R.id.teacher_rlayout);
     }
 
     protected  void refreshView(){

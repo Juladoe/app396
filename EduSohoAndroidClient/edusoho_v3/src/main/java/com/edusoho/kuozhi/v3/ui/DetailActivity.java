@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -65,6 +66,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mHour;
     protected RelativeLayout mReviewLayout;
     protected View mReview;
+    protected View mMenu;
     protected List<Fragment> mFragments = new ArrayList<>();
     protected FragmentViewPagerAdapter mAdapter;
     protected int mCheckNum = 0;
@@ -74,6 +76,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     public int mMediaViewHeight = 210;
     private SystemBarTintManager tintManager;
     protected LoadDialog mLoading;
+    protected MenuPop mMenuPop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +92,15 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             tintManager.setNavigationBarTintEnabled(true);
             tintManager.setTintColor(Color.parseColor("#00000000"));
         }
+        mMenuPop = new MenuPop(this);
+    }
 
+    public MenuPop getMenu() {
+        if (isFinishing()) {
+            return null;
+        } else {
+            return mMenuPop;
+        }
     }
 
     @Override
@@ -116,6 +127,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mHour = findViewById(R.id.hour);
         mReview = findViewById(R.id.review);
         mBack2 = findViewById(R.id.back2);
+        mMenu = findViewById(R.id.iv_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvInclass = findViewById(R.id.tv_inclass);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
@@ -161,6 +173,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mConsult.setOnClickListener(this);
         mBack2.setOnClickListener(this);
         mTvInclass.setOnClickListener(this);
+        mMenu.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -223,6 +236,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             consult();
         } else if (v.getId() == R.id.back2) {
             finish();
+        } else if (v.getId() == R.id.iv_menu) {
+            mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
         }
 
     }
@@ -381,6 +396,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mBottomLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            mMenu.setVisibility(View.VISIBLE);
         } else {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             mIsFullScreen = false;
@@ -391,11 +407,12 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
                 mBottomLayout.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 if (this instanceof CourseActivity) {
                     mTvInclass.setVisibility(View.VISIBLE);
                 }
             }
+            mMenu.setVisibility(View.GONE);
         }
     }
 
