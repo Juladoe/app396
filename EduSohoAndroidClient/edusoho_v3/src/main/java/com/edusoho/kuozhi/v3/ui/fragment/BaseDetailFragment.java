@@ -72,8 +72,6 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_course_detail);
-
-        initData();
     }
 
     @Override

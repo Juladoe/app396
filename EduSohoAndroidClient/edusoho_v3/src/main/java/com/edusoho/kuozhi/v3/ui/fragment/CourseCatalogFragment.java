@@ -56,28 +56,22 @@ public class CourseCatalogFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_course_catalog, container, false);
-        init(view);
+        init();
         initCatalogue();
         return view;
     }
 
-    protected void init(View view) {
+    protected void init() {
         mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
         mLvCatalog = (FixHeightListView) view.findViewById(R.id.lv_catalog);
         tvSpace = (TextView) view.findViewById(R.id.tv_space);
         tvSpace.setOnClickListener(getCacheCourse());
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        
-    }
-
     private void initCatalogue() {
         if (mIsJoin) {
             mRlSpace.setVisibility(View.VISIBLE);
-            initCache(view);
+            initCache();
         }
         RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + mCourseId + "&token=" + app.token, true);
         requestUrl.heads.put("token", app.token);
@@ -140,17 +134,20 @@ public class CourseCatalogFragment extends BaseFragment {
     /**
      * 外部刷新界面
      */
-    public void reFreshView(){
-        if (!mIsJoin) {
-            mRlSpace.setVisibility(View.GONE);
+    public void reFreshView(boolean mIsJoin){
+        this.mIsJoin = mIsJoin;
+        if (mIsJoin) {
+            mRlSpace.setVisibility(View.VISIBLE);
+            initCache();
         }
-        mAdapter.setCourseCatalogue(null);
+        mAdapter.isJoin = mIsJoin;
+//        mAdapter.setCourseCatalogue(null);
         mAdapter.notifyDataSetChanged();
     }
     /**
      * 获取手机可用空间,该界面要先判断是否显示rlSpace
      */
-    private void initCache(View view) {
+    private void initCache() {
         TextView tvSpace = (TextView) view.findViewById(R.id.tv_space);
         TextView tvCourse = (TextView) view.findViewById(R.id.tv_course);
         tvSpace.setText("可用空间: " + getRomAvailableSize());

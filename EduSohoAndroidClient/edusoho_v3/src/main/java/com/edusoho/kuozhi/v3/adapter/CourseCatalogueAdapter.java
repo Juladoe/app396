@@ -85,6 +85,9 @@ public class CourseCatalogueAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
+        if (courseCatalogue == null) {
+            return 0;
+        }
         return courseCatalogue.getLessons() == null ? 0 : courseCatalogue.getLessons().size();
     }
 
