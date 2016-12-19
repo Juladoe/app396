@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.lesson.ClassCatalogue;
 import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 import java.util.List;
 
@@ -54,22 +52,16 @@ public class ClassCatalogueAdapter extends BaseAdapter{
             convertView.setTag(classHolder);
         } else {
             classHolder = (ClassHolder) convertView.getTag();
-            ClassCatalogue.CoursesBean coursesBean = mCourseList.get(position);
-            ImageLoader.getInstance().loadImage(mCourseList.get(position).getSmallPicture(), new SimpleImageLoadingListener(){
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    super.onLoadingComplete(imageUri, view, loadedImage);
-                    classHolder.mIvClass.setImageBitmap(loadedImage);
-                }
-            });
-            classHolder.mTvTitle.setText(coursesBean.getTitle());
-            classHolder.mTvPeople.setText(coursesBean.getStudentNum());
-            if ("0.00".equals(coursesBean.getPrice())) {
-                classHolder.mTvFree.setText("免费");
-                classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-            } else {
-                classHolder.mTvFree.setText("¥" + coursesBean.getPrice());
-            }
+        }
+        ClassCatalogue.CoursesBean coursesBean = mCourseList.get(position);
+        ImageLoader.getInstance().displayImage(coursesBean.getSmallPicture(), classHolder.mIvClass);
+        classHolder.mTvTitle.setText(coursesBean.getTitle());
+        classHolder.mTvPeople.setText(coursesBean.getStudentNum());
+        if ("0.00".equals(coursesBean.getPrice())) {
+            classHolder.mTvFree.setText("免费");
+            classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+        } else {
+            classHolder.mTvFree.setText("¥" + coursesBean.getPrice());
         }
         return convertView;
     }

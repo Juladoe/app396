@@ -33,7 +33,7 @@ public class ClassCatalogFragment extends Fragment {
     public ClassCatalogFragment() {
     }
 
-    public ClassCatalogFragment(String mClassRoomId){
+    public ClassCatalogFragment(String mClassRoomId) {
         this.mClassRoomId = mClassRoomId;
     }
 
