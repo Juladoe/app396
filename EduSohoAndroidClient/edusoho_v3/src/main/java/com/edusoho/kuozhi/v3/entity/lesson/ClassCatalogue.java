@@ -5,5 +5,6 @@ package com.edusoho.kuozhi.v3.entity.lesson;
  */
 
 public class ClassCatalogue {
-    
+
+
 }
