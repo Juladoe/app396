@@ -1,17 +1,12 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -22,10 +17,11 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
+import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
@@ -70,6 +66,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected List<Fragment> mFragments = new ArrayList<>();
     protected FragmentViewPagerAdapter mAdapter;
     protected int mCheckNum = 0;
+    protected int[] mScrollY = new int[3];
+    protected boolean[] mCanScroll = {true, true, true};
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
     private int mTitleBarHeight;
@@ -207,7 +205,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     protected abstract void initData();
-
+    protected abstract CourseDetail getCourseDetail();
     protected abstract void refreshView();
 
     @Override
@@ -216,6 +214,13 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mContentVp.setCurrentItem(0);
         } else if (v.getId() == R.id.hour_rlayout) {
             mContentVp.setCurrentItem(1);
+            if (getClass().getSimpleName().equals("CourseActivity")) {
+                if (getCourseDetail().getMember() != null && ((CourseCatalogFragment) mFragments.get(1)).mIsJoin == false) {
+                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+                }
+            } else {
+
+            }
         } else if (v.getId() == R.id.review_rlayout) {
             mContentVp.setCurrentItem(2);
         } else if (v.getId() == R.id.iv_grade ||
@@ -443,6 +448,4 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
-
-
 }

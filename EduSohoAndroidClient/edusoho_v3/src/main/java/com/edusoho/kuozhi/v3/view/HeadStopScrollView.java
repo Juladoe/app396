@@ -13,8 +13,6 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-import jazzyviewpager.Util;
-
 /**
  * 头部向上滑一段距离后，滑动事件交给子View的ScrollView
  * Created by zhang on 2016/12/8.
@@ -221,4 +219,5 @@ public class HeadStopScrollView extends ScrollView {
     protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
         return 0;
     }
+
 }

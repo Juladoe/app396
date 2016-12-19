@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:scrollbars="none">
+
+    <com.edusoho.kuozhi.v3.view.FixHeightListView
+        android:id="@+id/lv_catalog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:divider="@null">
+    </com.edusoho.kuozhi.v3.view.FixHeightListView>
+
+</com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.view.Menu;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -15,6 +14,7 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -55,6 +55,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void initFragment(List<Fragment> fragments) {
         fragments.add(new CourseDetailFragment(mCourseId));
+        fragments.add(new CourseCatalogFragment(mCourseId));
         fragments.add(new CourseDetailFragment(mCourseId));
     }
 
@@ -84,6 +85,11 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                         }
                     });
         }
+    }
+
+    @Override
+    protected CourseDetail getCourseDetail() {
+        return mCourseDetail;
     }
 
     @Override
@@ -215,6 +221,4 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
          */
         super.courseStart();
     }
-
-
 }

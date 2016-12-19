@@ -8,12 +8,14 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
+import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
+import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.ClassroomDetailFragment;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -56,6 +58,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     @Override
     protected void initFragment(List<Fragment> fragments) {
         fragments.add(new ClassroomDetailFragment(mClassroomId));
+        fragments.add(new ClassCatalogFragment(mClassroomId));
     }
 
     protected void initEvent() {
@@ -84,6 +87,11 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                         }
                     });
         }
+    }
+
+    @Override
+    protected CourseDetail getCourseDetail() {
+        return null;
     }
 
     @Override
