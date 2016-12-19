@@ -280,7 +280,19 @@
                     android:layout_below="@+id/tv_student1"
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="14dp"
-                    android:orientation="horizontal" />
+                    android:gravity="center"
+                    android:orientation="horizontal" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tv_student_none"
+                        android:text="暂无学员，赶紧加入吧！"
+                        android:textSize="@dimen/font_s"
+                        android:textColor="@color/secondary2_font_color"
+                        />
+
+                </LinearLayout>
 
                 <View style="@style/BottomLine"
                     />
@@ -315,6 +327,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/tv_review1"
+                    android:divider="@color/transparent"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginRight="15dp" />
 
                 <TextView
@@ -323,11 +337,38 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/lv_review"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="20dp"
+                    android:paddingBottom="20dp"
                     android:layout_marginTop="20dp"
                     android:text="更多评论"
+                    android:layout_alignParentBottom="true"
                     android:textColor="@color/primary_color"
                     android:textSize="@dimen/font_l" />
+                
+                <LinearLayout
+                    android:id="@+id/layout_review_none"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="60dp"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="35dp"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    >
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/no_review"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="暂无评论"
+                        android:textSize="@dimen/font_s"
+                        android:layout_marginTop="12dp"
+                        android:textColor="@color/secondary2_font_color"
+                        />
+                </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
     </RelativeLayout>
