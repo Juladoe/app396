@@ -18,11 +18,9 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
-import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
@@ -67,8 +65,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected List<Fragment> mFragments = new ArrayList<>();
     protected FragmentViewPagerAdapter mAdapter;
     protected int mCheckNum = 0;
-    protected int[] mScrollY = new int[3];
-    protected boolean[] mCanScroll = {true, true, true};
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
     private int mTitleBarHeight;
@@ -105,7 +101,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected void initView() {
         super.initView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mTitleBarHeight = 20;
+            mTitleBarHeight = 25;
         }
         mParent = (HeadStopScrollView) findViewById(R.id.scroll_parent);
         mHeadRlayout = (RelativeLayout) findViewById(R.id.head_rlayout);
@@ -205,7 +201,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     protected abstract void initData();
-    protected abstract CourseDetail getCourseDetail();
+
     protected abstract void refreshView();
 
     @Override
@@ -214,13 +210,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mContentVp.setCurrentItem(0);
         } else if (v.getId() == R.id.hour_rlayout) {
             mContentVp.setCurrentItem(1);
-            if (getClass().getSimpleName().equals("CourseActivity")) {
-                if (getCourseDetail().getMember() != null && ((CourseCatalogFragment) mFragments.get(1)).mIsJoin == false) {
-                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
-                }
-            } else {
-
-            }
         } else if (v.getId() == R.id.review_rlayout) {
             mContentVp.setCurrentItem(2);
         } else if (v.getId() == R.id.iv_grade ||
@@ -242,9 +231,13 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             finish();
         } else if (v.getId() == R.id.iv_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
+        } else if(v.getId() == R.id.tv_inclass){
+            goClass();
         }
 
     }
+
+    protected abstract void goClass();
 
     protected abstract void consult();
 
@@ -366,6 +359,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     protected void courseStart() {
+        /**
+         * todo 开始播放
+         */
         if (!mIsFullScreen) {
             mParent.smoothScrollTo(0, 0);
             mParent.setCanScroll(false);
@@ -378,6 +374,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 params.height = AppUtil.getHeightPx(this) - bottom;
                 mContentVp.setLayoutParams(params);
             }
+            mMenuPop.setVisibility(true);
         }
         mPlayLayout.setVisibility(View.GONE);
         mIsPlay = true;
@@ -455,4 +452,5 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
+
 }
