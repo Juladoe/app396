@@ -4,15 +4,12 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.videoplayer.ui.AudioPlayerFragment;
 import com.edusoho.videoplayer.util.ControllerOptions;
@@ -56,7 +53,6 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         setContainerView(containerView);
         mCoverImageView = (ImageView) containerView.findViewById(R.id.rl_audio_cover);
         initCoverSize();
-        mCoverImageView.setOnClickListener(getCoverClickListener());
     }
 
     private void initCoverSize() {
@@ -66,16 +62,6 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         lp.width = parentWidth / 3;
         lp.height = parentWidth / 3;
         mCoverImageView.setLayoutParams(lp);
-    }
-
-    private View.OnClickListener getCoverClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isPlay = !isPlay;
-                mVideoControllerView.updatePlayStatus(isPlay);
-            }
-        };
     }
 
     @Override
