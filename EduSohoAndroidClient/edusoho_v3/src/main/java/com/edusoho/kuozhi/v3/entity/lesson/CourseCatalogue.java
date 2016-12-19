@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.entity.lesson;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class CourseCatalogue {
         this.lessons = lessons;
     }
 
-    public static class LessonsBean {
+    public static class LessonsBean implements Serializable{
 
         private String content;
         private String copyId;

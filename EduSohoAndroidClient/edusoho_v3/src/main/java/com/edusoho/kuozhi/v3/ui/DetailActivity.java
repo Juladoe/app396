@@ -22,6 +22,8 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
+import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -295,7 +297,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 screenLock();
                 break;
             case Const.COURSE_CHANGE:
-                courseChange();
+                courseChange((CourseCatalogue.LessonsBean)
+                        bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.COURSE_HASTRIAL:
                 courseHastrial(bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT));
@@ -316,8 +319,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     /**
      * todo 获得课程相关信息
      */
-    protected void courseChange() {
-        String type = null;
+    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
+        String type = lesson.getType();
         switch (type) {
             case "audio":
 

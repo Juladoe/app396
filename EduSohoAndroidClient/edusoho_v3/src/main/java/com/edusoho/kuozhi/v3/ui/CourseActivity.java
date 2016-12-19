@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
+import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
@@ -204,7 +205,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
-    protected void courseChange() {
+    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
 
     }
 

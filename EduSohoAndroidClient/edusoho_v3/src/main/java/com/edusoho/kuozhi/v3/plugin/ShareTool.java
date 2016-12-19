@@ -182,6 +182,8 @@ public class ShareTool {
         if (EdusohoApp.app.loginUser == null) {
             return listDatas;
         }
+
+        //校友修改位置
         ListData data = new ListData(
                 mContext.getResources().getDrawable(R.drawable.share_user),
                 "shareToUser",
