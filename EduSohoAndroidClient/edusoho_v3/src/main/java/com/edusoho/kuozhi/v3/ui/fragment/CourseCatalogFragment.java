@@ -90,6 +90,7 @@ public class CourseCatalogFragment extends BaseFragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
             }
         });
     }
