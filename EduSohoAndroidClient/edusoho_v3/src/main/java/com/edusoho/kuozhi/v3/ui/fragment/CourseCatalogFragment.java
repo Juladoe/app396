@@ -20,8 +20,13 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
+import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
+import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -32,6 +37,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 /**
  * Created by DF on 2016/12/13.
@@ -115,17 +121,11 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     public void startLessonActivity(int position) {
-//        mLessonsBean = mCourseCatalogue.getLessons().get(position);
-//        Intent intent = new Intent(getActivity(), LessonActivity.class)
-//                .putExtra(Const.LESSON_ID, Integer.parseInt(mLessonsBean.getId()))
-//                .putExtra(Const.COURSE_ID, Integer.parseInt(mCourseId))
-//                .putIntegerArrayListExtra(Const.LESSON_IDS, getLessonArray());
-//        getActivity().startActivity(intent);
-
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, mCourseCatalogue.getLessons().get(position));
-        if (mCourseCatalogue.getLearnStatuses().containsKey(mCourseCatalogue.getLessons().get(position).getId())) {
-            if ("learning".equals(mCourseCatalogue.getLearnStatuses().get(mCourseCatalogue.getLessons().get(position).getId()))) {
+        final Bundle bundle = new Bundle();
+        final CourseCatalogue.LessonsBean lesson = mCourseCatalogue.getLessons().get(position);
+        bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lesson);
+        if (mCourseCatalogue.getLearnStatuses().containsKey(lesson.getId())) {
+            if ("learning".equals(mCourseCatalogue.getLearnStatuses().get(lesson.getId()))) {
                 bundle.putString(Const.COURSE_CHANGE_STATE, "1");
             } else {
                 bundle.putString(Const.COURSE_CHANGE_STATE, "2");
@@ -134,14 +134,38 @@ public class CourseCatalogFragment extends BaseFragment {
             bundle.putString(Const.COURSE_CHANGE_STATE, "0");
         }
         bundle.putBoolean(Const.COURSE_HASTRIAL_RESULT, true);
-        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
+
+        new LessonProvider(mContext).getLesson(lesson.getId()).success(new NormalCallback<LessonItem>() {
+            @Override
+            public void success(LessonItem lessonItem) {
+                CourseLessonType lessonType = CourseLessonType.value(lesson.getType());
+                switch (lessonType) {
+                    case PPT:
+                        LessonItem<LinkedHashMap<String, ArrayList<String>>> pptLesson = lessonItem;
+                        ArrayList<String> pptContent = pptLesson.content.get("resource");
+                        bundle.putStringArrayList(LessonActivity.CONTENT, pptContent);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_PPT, bundle);
+                        break;
+                    case VIDEO:
+                        break;
+                    case DOCUMENT:
+                        break;
+                }
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+
+            }
+        });
+        //MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
     }
 
     public ArrayList<Integer> getLessonArray() {
         ArrayList<Integer> lessonArray = new ArrayList<>();
         for (CourseCatalogue.LessonsBean lessonsBean : mCourseCatalogue.getLessons()) {
             if ("lesson".equals(lessonsBean.getItemType())) {
-                lessonArray.add(Integer.parseInt(lessonsBean.getId()));
+                lessonArray.add(lessonsBean.getId());
             }
         }
         return lessonArray;

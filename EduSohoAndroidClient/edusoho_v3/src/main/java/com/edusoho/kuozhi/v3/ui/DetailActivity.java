@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
@@ -22,6 +24,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
+import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -210,6 +213,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
     protected abstract void initData();
 
+    protected abstract CourseDetail getCourseDetail();
+
     protected abstract void refreshView();
 
     @Override
@@ -307,7 +312,18 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             case Const.COURSE_HASTRIAL:
                 courseHastrial(bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT));
                 break;
+            case Const.COURSE_PPT:
+                replaceFragment("PptLessonFragment");
+                break;
         }
+    }
+
+    private void replaceFragment(String tag) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        Fragment fragment = app.mEngine.runPluginWithFragment(tag, mActivity, null);
+        ft.replace(R.id.media_rlayout, fragment, tag);
+        ft.commit();
     }
 
     protected void courseHastrial(boolean has) {
@@ -459,6 +475,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.COURSE_SHOW_BAR),
                 new MessageType(Const.COURSE_PAUSE),
                 new MessageType(Const.SCREEN_LOCK),
+                new MessageType(Const.COURSE_PPT),
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
 
