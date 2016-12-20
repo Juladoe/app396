@@ -214,13 +214,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mContentVp.setCurrentItem(0);
         } else if (v.getId() == R.id.hour_rlayout) {
             mContentVp.setCurrentItem(1);
-            if (getClass().getSimpleName().equals("CourseActivity")) {
-                if (getCourseDetail().getMember() != null && ((CourseCatalogFragment) mFragments.get(1)).mIsJoin == false) {
-                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
-                }
-            } else {
 
-            }
         } else if (v.getId() == R.id.review_rlayout) {
             mContentVp.setCurrentItem(2);
         } else if (v.getId() == R.id.iv_grade ||

@@ -20,6 +20,9 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
@@ -28,10 +31,10 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.FixHeightListView;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
-import java.util.ArrayList;
 
 /**
  * Created by DF on 2016/12/13.
@@ -46,6 +49,7 @@ public class CourseCatalogFragment extends BaseFragment {
     private CourseCatalogue.LessonsBean mLessonsBean;
     private TextView tvSpace;
     private View view;
+    private CourseCatalogue.LessonsBean lesson;
 
     public CourseCatalogFragment() {
     }
@@ -80,6 +84,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 });
                 if (mCourseCatalogue.getLessons().size() != 0) {
                     initLessonCatalog();
+                    !TextUtils.isEmpty(app.token) &&
                 } else {
                     CommonUtil.shortCenterToast(getActivity(), "该课程没有课时");
                 }
@@ -112,13 +117,14 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     public void startLessonActivity(int position) {
-//        mLessonsBean = mCourseCatalogue.getLessons().get(position);
-//        Intent intent = new Intent(getActivity(), LessonActivity.class)
-//                .putExtra(Const.LESSON_ID, Integer.parseInt(mLessonsBean.getId()))
-//                .putExtra(Const.COURSE_ID, Integer.parseInt(mCourseId))
-//                .putIntegerArrayListExtra(Const.LESSON_IDS, getLessonArray());
-//        getActivity().startActivity(intent);
+        final LoadDialog loadDialog = LoadDialog.create(getActivity());
+        lesson = mCourseCatalogue.getLessons().get(position);
+        loadDialog.show();
+        getSource(position);
+    }
 
+    //获取真实数据源
+    public void getSource(int position){
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, mCourseCatalogue.getLessons().get(position));
         if (mCourseCatalogue.getLearnStatuses().containsKey(mCourseCatalogue.getLessons().get(position).getId())) {
@@ -131,17 +137,18 @@ public class CourseCatalogFragment extends BaseFragment {
             bundle.putString(Const.COURSE_CHANGE_STATE, "0");
         }
         bundle.putBoolean(Const.COURSE_HASTRIAL_RESULT, true);
-        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
-    }
+        new LessonProvider(mContext).getLesson(Integer.parseInt(lesson.getId())).success(new NormalCallback<LessonItem>() {
+            @Override
+            public void success(LessonItem obj) {
 
-    public ArrayList<Integer> getLessonArray() {
-        ArrayList<Integer> lessonArray = new ArrayList<>();
-        for (CourseCatalogue.LessonsBean lessonsBean : mCourseCatalogue.getLessons()) {
-            if ("lesson".equals(lessonsBean.getItemType())) {
-                lessonArray.add(Integer.parseInt(lessonsBean.getId()));
             }
-        }
-        return lessonArray;
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+
+            }
+        });
+        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
     }
 
     /**

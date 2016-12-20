@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -74,6 +75,14 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                             mCourseDetail = data;
                             refreshView();
                             mLoading.dismiss();
+                            if (getClass().getSimpleName().equals("CourseActivity")) {
+                                if (getCourseDetail().getMember() != null && ((CourseCatalogFragment) mFragments.get(1)).mIsJoin == false) {
+                                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+                                }
+                            } else {
+
+                            }
+
                         }
 
                         @Override

@@ -33,7 +33,7 @@
         android:textColor="#D8D8D8"/>
 
     <GridView
-        android:id="@+id/gl_student_list"
+        android:id="@+id/gv_student_list"
         android:numColumns="5"
         android:gravity="center"
         android:verticalSpacing="15dp"
