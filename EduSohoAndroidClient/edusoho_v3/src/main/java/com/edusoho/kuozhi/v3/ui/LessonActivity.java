@@ -74,6 +74,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public static final int SHOW_TOOLS = 0001;
     public static final int HIDE_TOOLS = 0002;
 
+    public static final int REQUEST_LEARN = 0011;
+
     private int mCourseId;
     private int mLessonId;
     private String mLessonType;

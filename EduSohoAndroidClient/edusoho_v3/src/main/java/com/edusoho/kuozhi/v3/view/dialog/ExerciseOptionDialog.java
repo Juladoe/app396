@@ -187,7 +187,7 @@ public class ExerciseOptionDialog extends Dialog {
         }
     }
 
-    public class GridViewItem {
+    public static class GridViewItem {
 
         public static final int LOAD = 0001;
         public static final int ENABLE = 0002;
