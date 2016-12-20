@@ -22,9 +22,11 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
+import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -120,15 +122,17 @@ public class CourseCatalogFragment extends BaseFragment {
         final LoadDialog loadDialog = LoadDialog.create(getActivity());
         lesson = mCourseCatalogue.getLessons().get(position);
         loadDialog.show();
-        getSource(position);
+        getSource(lesson);
     }
 
+
+
     //获取真实数据源
-    public void getSource(int position){
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, mCourseCatalogue.getLessons().get(position));
-        if (mCourseCatalogue.getLearnStatuses().containsKey(mCourseCatalogue.getLessons().get(position).getId())) {
-            if ("learning".equals(mCourseCatalogue.getLearnStatuses().get(mCourseCatalogue.getLessons().get(position).getId()))) {
+    public void getSource(final CourseCatalogue.LessonsBean lesson){
+        final Bundle bundle = new Bundle();
+        bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lesson);
+        if (mCourseCatalogue.getLearnStatuses().containsKey(lesson.getId())) {
+            if ("learning".equals(mCourseCatalogue.getLearnStatuses().get(lesson.getId()))) {
                 bundle.putString(Const.COURSE_CHANGE_STATE, "1");
             } else {
                 bundle.putString(Const.COURSE_CHANGE_STATE, "2");
@@ -140,7 +144,36 @@ public class CourseCatalogFragment extends BaseFragment {
         new LessonProvider(mContext).getLesson(Integer.parseInt(lesson.getId())).success(new NormalCallback<LessonItem>() {
             @Override
             public void success(LessonItem obj) {
-
+                CourseLessonType courseLessonType = CourseLessonType.value(lesson.getType());
+                bundle.putSerializable(LessonActivity.CONTENT, obj);
+                switch (courseLessonType) {
+                    case PPT:
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_PPT, bundle);
+                        break;
+                    case LIVE:
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_LIVE, bundle);
+                        break;
+                    case TEXT:
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_TEXT, bundle);
+                        break;
+                    case AUDIO:
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_AUDIO, bundle);
+                        break;
+                    case VIDEO:
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_VIDEO, bundle);
+                        break;
+                    case TESTPAPER:
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_TESTPAPER, bundle);
+                        break;
+                    case DOCUMENT:
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_DOCUMENT, bundle);
+                        break;
+                    case FLASH:
+                        MessageEngine.getInstance().sendMsg(Const.COUSRE_FLASH, bundle);
+                        break;
+                    case EMPTY:
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_EMPTH, null);
+                }
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override

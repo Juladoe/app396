@@ -69,31 +69,30 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (mCourseId != null) {
             mLoading.show();
             CourseDetailModel.getCourseDetail(mCourseId,
-                    new ResponseCallbackListener<CourseDetail>() {
-                        @Override
-                        public void onSuccess(CourseDetail data) {
-                            mCourseDetail = data;
-                            refreshView();
-                            mLoading.dismiss();
-                            if (getClass().getSimpleName().equals("CourseActivity")) {
-                                if (getCourseDetail().getMember() != null && ((CourseCatalogFragment) mFragments.get(1)).mIsJoin == false) {
-                                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
-                                }
-                            } else {
-
+                new ResponseCallbackListener<CourseDetail>() {
+                    @Override
+                    public void onSuccess(CourseDetail data) {
+                        mCourseDetail = data;
+                        refreshView();
+                        mLoading.dismiss();
+                        if (getClass().getSimpleName().equals("CourseActivity")) {
+                            if (getCourseDetail().getMember() != null && ((CourseCatalogFragment) mFragments.get(1)).mIsJoin == false) {
+                                ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
                             }
+                        } else {
 
                         }
+                    }
 
-                        @Override
-                        public void onFailure(String code, String message) {
-                            mLoading.dismiss();
-                            if (message.equals("课程不存在")) {
-                                CommonUtil.shortToast(CourseActivity.this, "课程不存在");
-                                finish();
-                            }
+                    @Override
+                    public void onFailure(String code, String message) {
+                        mLoading.dismiss();
+                        if (message.equals("课程不存在")) {
+                            CommonUtil.shortToast(CourseActivity.this, "课程不存在");
+                            finish();
                         }
-                    });
+                    }
+                });
         }
     }
 
