@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -9,8 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.entity.lesson.ClassCatalogue;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -20,10 +17,11 @@ import java.util.List;
 
 public class ClassCatalogueAdapter extends BaseAdapter{
     public Context mContext;
-    public List<ClassCatalogue.CoursesBean> mCourseList;
+//    public List<ClassCatalogue.Course> mCourseList;
+    public List mCourseList;
 
 
-    public ClassCatalogueAdapter(Context mContext, List<ClassCatalogue.CoursesBean> mCourseList) {
+    public ClassCatalogueAdapter(Context mContext, List mCourseList) {
         this.mContext = mContext;
         this.mCourseList = mCourseList;
     }
@@ -35,7 +33,8 @@ public class ClassCatalogueAdapter extends BaseAdapter{
 
     @Override
     public Object getItem(int position) {
-        return mCourseList.get(position);
+//        return mCourseList.get(position);
+        return null;
     }
 
     @Override
@@ -46,23 +45,23 @@ public class ClassCatalogueAdapter extends BaseAdapter{
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final ClassHolder classHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_class_catalog, parent, false);
-            classHolder = new ClassHolder(convertView);
-            convertView.setTag(classHolder);
-        } else {
-            classHolder = (ClassHolder) convertView.getTag();
-        }
-        ClassCatalogue.CoursesBean coursesBean = mCourseList.get(position);
-        ImageLoader.getInstance().displayImage(coursesBean.getSmallPicture(), classHolder.mIvClass);
-        classHolder.mTvTitle.setText(coursesBean.getTitle());
-        classHolder.mTvPeople.setText(coursesBean.getStudentNum());
-        if ("0.00".equals(coursesBean.getPrice())) {
-            classHolder.mTvFree.setText("免费");
-            classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-        } else {
-            classHolder.mTvFree.setText("¥" + coursesBean.getPrice());
-        }
+//        if (convertView == null) {
+//            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_class_catalog, parent, false);
+//            classHolder = new ClassHolder(convertView);
+//            convertView.setTag(classHolder);
+//        } else {
+//            classHolder = (ClassHolder) convertView.getTag();
+//        }
+//        ClassCatalogue.Course coursesBean = mCourseList.get(position);
+//        ImageLoader.getInstance().displayImage(coursesBean.getSmallPicture(), classHolder.mIvClass);
+//        classHolder.mTvTitle.setText(coursesBean.getTitle());
+//        classHolder.mTvPeople.setText(coursesBean.getStudentNum());
+//        if ("0.00".equals(coursesBean.getPrice())) {
+//            classHolder.mTvFree.setText("免费");
+//            classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+//        } else {
+//            classHolder.mTvFree.setText("¥" + coursesBean.getPrice());
+//        }
         return convertView;
     }
 

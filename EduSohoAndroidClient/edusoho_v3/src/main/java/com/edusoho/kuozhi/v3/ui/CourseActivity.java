@@ -100,7 +100,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                                 && mFragments.get(1) instanceof CourseCatalogFragment) {
                             if (mCourseDetail.getMember() == null) {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
-                            } else {
+                            }else{
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
                             }
                         }
@@ -318,7 +318,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             if (mContinueLessonItem == null) {
                 return;
             }
-            ((CourseCatalogFragment) fragment).startLessonActivity(mContinueLessonItem.id, mContinueLessonItem.courseId);
+            ((CourseCatalogFragment)fragment).startLessonActivity(mContinueLessonItem.id, mContinueLessonItem.courseId);
         }
     }
 
@@ -359,6 +359,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             ((LessonAudioPlayerFragment) fragment).destoryService();
         }
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
