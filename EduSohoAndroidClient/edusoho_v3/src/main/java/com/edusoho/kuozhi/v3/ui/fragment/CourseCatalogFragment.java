@@ -246,10 +246,11 @@ public class CourseCatalogFragment extends BaseFragment {
             mRlSpace.setVisibility(View.VISIBLE);
             initCache();
         }
-        if (mAdapter != null) {
+//        if (mAdapter != null) {
             mAdapter.isJoin = mIsJoin;
+            mAdapter.courseCatalogue = mCourseCatalogue;
             mAdapter.notifyDataSetChanged();
-        }
+//        }
         initState();
     }
 
