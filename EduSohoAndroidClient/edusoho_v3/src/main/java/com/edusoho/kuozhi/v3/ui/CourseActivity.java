@@ -55,6 +55,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void initView() {
         super.initView();
+        mTvAdd.setText("加入课程");
     }
 
     @Override
@@ -145,7 +146,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(NewsCourseActivity.COURSE_ID, mCourseId);
+                startIntent.putExtra(NewsCourseActivity.COURSE_ID, Integer.parseInt(mCourseId));
                 startIntent.putExtra(NewsCourseActivity.FROM_NAME, mCourseDetail.getCourse().title);
             }
         });
@@ -275,14 +276,4 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        super.onClick(v);
-        if (v.getId() == R.id.hour_rlayout) {
-            Fragment fragment = mFragments.get(1);
-            if (fragment != null && fragment instanceof CourseCatalogFragment) {
-                ((CourseCatalogFragment) fragment).reFreshView(true);
-            }
-        }
-    }
 }

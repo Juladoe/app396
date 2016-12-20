@@ -9,6 +9,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.DetailActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -156,8 +157,10 @@ public class ClassroomUtil {
                                             builder.targetId
                                             , "classroom")
                             );
-                            EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
-                                    , EdusohoApp.app.mActivity, new PluginRunCallback() {
+                            EdusohoApp.app.mEngine.runNormalPluginForResult("WebViewActivity"
+                                    , EdusohoApp.app.mActivity
+                                    , DetailActivity.RESULT_REFRESH
+                                    ,new PluginRunCallback() {
                                         @Override
                                         public void setIntentDate(Intent startIntent) {
                                             startIntent.putExtra(Const.WEB_URL, url);
@@ -204,11 +207,11 @@ public class ClassroomUtil {
 
     private static void notLogin() {
 
-        EdusohoApp.app.mEngine.runNormalPluginWithAnim("LoginActivity", EdusohoApp.app
-                , null, new NormalCallback() {
+        EdusohoApp.app.mEngine.runNormalPluginForResult("LoginActivity", EdusohoApp.app.mActivity
+                , DetailActivity.RESULT_LOGIN, new PluginRunCallback() {
                     @Override
-                    public void success(Object obj) {
-                        EdusohoApp.app.mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
+                    public void setIntentDate(Intent startIntent) {
+
                     }
                 });
     }

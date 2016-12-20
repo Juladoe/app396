@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
@@ -35,6 +36,8 @@ import java.util.List;
  */
 public abstract class DetailActivity extends BaseNoTitleActivity
         implements View.OnClickListener {
+    public static final int RESULT_REFRESH = 0x111;
+    public static final int RESULT_LOGIN = 0x222;
     protected HeadStopScrollView mParent;
     protected RelativeLayout mHeadRlayout;
     protected RelativeLayout mHeadRlayout2;
@@ -53,7 +56,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected TextView mTvLastTitle;
     protected TextView mTvCollect;
     protected TextView mTvPlay;
-    protected View mAddCourse;
+    protected TextView mTvAdd;
     protected RelativeLayout mMediaRlayout;
     protected ImageView mIvMediaBackground;
     protected ViewPager mContentVp;
@@ -144,7 +147,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
         mConsult = findViewById(R.id.consult_layout);
-        mAddCourse = findViewById(R.id.tv_add);
+        mTvAdd = (TextView) findViewById(R.id.tv_add);
         initViewPager();
         ViewGroup.LayoutParams headParams =
                 mHeadRlayout2.getLayoutParams();
@@ -168,7 +171,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mPlayLayout2.setOnClickListener(this);
         mPlayLayout.setOnClickListener(this);
         mCollect.setOnClickListener(this);
-        mAddCourse.setOnClickListener(this);
+        mTvAdd.setOnClickListener(this);
         mConsult.setOnClickListener(this);
         mBack2.setOnClickListener(this);
         mTvInclass.setOnClickListener(this);
@@ -247,7 +250,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
     protected abstract void add();
 
-    protected abstract void collect();
+    protected void collect(){}
 
     protected abstract void share();
 
@@ -477,4 +480,19 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RESULT_REFRESH){
+            if(mLoading.isShowing()) {
+                mLoading.dismiss();
+            }
+            initData();
+        }
+        if(requestCode == RESULT_LOGIN){
+            if(mLoading.isShowing()) {
+                mLoading.dismiss();
+            }
+        }
+    }
 }

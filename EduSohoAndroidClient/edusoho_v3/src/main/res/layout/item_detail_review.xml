@@ -9,6 +9,7 @@
             android:layout_height="30dp"
             android:scaleType="fitXY"
             android:layout_marginTop="15dp"
+            android:src="@drawable/icon_default_avatar"
             />
 
         <TextView

@@ -40,11 +40,10 @@ public class MenuPop {
     private MenuAdapter mAdapter = new MenuAdapter();
     private View mBindView;
 
-    public MenuPop(Context context,View bindView) {
+    public MenuPop(Context context, View bindView) {
         this.mContext = context;
         mBindView = bindView;
         init();
-        initEvent();
     }
 
     private void init() {
@@ -65,17 +64,6 @@ public class MenuPop {
         mPopup.setFocusable(true);
         mPopup.setTouchable(true);
         mPopup.setOutsideTouchable(true);
-    }
-
-    private void initEvent() {
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mOnMenuClickListener != null) {
-                    mOnMenuClickListener.onClick(view, position, mNames.get(position).name);
-                }
-            }
-        });
     }
 
     public MenuPop addItem(String name) {
@@ -109,15 +97,15 @@ public class MenuPop {
         return this;
     }
 
-    public Item getItem(int position){
+    public Item getItem(int position) {
         return mNames.get(position);
     }
 
-    public void setVisibility(boolean show){
-        if(mBindView != null){
-            if(show){
+    public void setVisibility(boolean show) {
+        if (mBindView != null) {
+            if (show) {
                 mBindView.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 mBindView.setVisibility(View.GONE);
             }
         }
@@ -185,16 +173,29 @@ public class MenuPop {
             }
             Item item = mNames.get(position);
             view.setText(item.name);
+            convertView.setTag(R.id.iv_menu, position);
+            convertView.setOnClickListener(mOnClickListener);
             if (item.drawable != null) {
-                view.setCompoundDrawables(item.drawable , null, null, null);
+                view.setCompoundDrawables(item.drawable, null, null, null);
             }
-            if(item.color != -1){
+            if (item.color != -1) {
                 view.setTextColor(item.color);
             }
             return convertView;
         }
 
         TextView view;
+
+        private View.OnClickListener mOnClickListener =
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int position = (int) v.getTag(R.id.iv_menu);
+                        if (mOnMenuClickListener != null) {
+                            mOnMenuClickListener.onClick(v, position, mNames.get(position).name);
+                        }
+                    }
+                };
     }
 
 
