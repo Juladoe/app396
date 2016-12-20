@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
-import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
+import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
@@ -49,6 +49,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mCollect;
     protected View mBack2;
     protected View mTvInclass;
+    protected View mPlayLastLayout;
+    protected TextView mTvLastTitle;
     protected TextView mTvCollect;
     protected TextView mTvPlay;
     protected View mAddCourse;
@@ -65,8 +67,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected List<Fragment> mFragments = new ArrayList<>();
     protected FragmentViewPagerAdapter mAdapter;
     protected int mCheckNum = 0;
-    protected int[] mScrollY = new int[3];
-    protected boolean[] mCanScroll = {true, true, true};
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
     private int mTitleBarHeight;
@@ -89,7 +89,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             tintManager.setNavigationBarTintEnabled(true);
             tintManager.setTintColor(Color.parseColor("#00000000"));
         }
-        mMenuPop = new MenuPop(this);
     }
 
     public MenuPop getMenu() {
@@ -104,7 +103,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected void initView() {
         super.initView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mTitleBarHeight = 20;
+            mTitleBarHeight = 25;
         }
         mParent = (HeadStopScrollView) findViewById(R.id.scroll_parent);
         mHeadRlayout = (RelativeLayout) findViewById(R.id.head_rlayout);
@@ -127,6 +126,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mMenu = findViewById(R.id.iv_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvInclass = findViewById(R.id.tv_inclass);
+        mPlayLastLayout = findViewById(R.id.layout_play_last);
+        mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
         initFragment(mFragments);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -151,6 +152,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
         mLoading = LoadDialog.create(this);
+        mMenuPop = new MenuPop(this, mMenu);
     }
 
     protected abstract void initFragment(List<Fragment> fragments);
@@ -174,7 +176,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -195,7 +196,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                     mHeadRlayout2.setVisibility(View.VISIBLE);
                     mParent.scrollTo(0, AppUtil.dp2px(DetailActivity.this,
                             mMediaViewHeight - 43 - mTitleBarHeight));
-                } else {
+                } else if (mParent.getScrollY() < mParent.getFirstViewHeight() - 2) {
                     mHeadRlayout.setVisibility(View.VISIBLE);
                     mHeadRlayout2.setVisibility(View.GONE);
                 }
@@ -204,7 +205,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     protected abstract void initData();
-    protected abstract CourseDetail getCourseDetail();
+
     protected abstract void refreshView();
 
     @Override
@@ -213,12 +214,10 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mContentVp.setCurrentItem(0);
         } else if (v.getId() == R.id.hour_rlayout) {
             mContentVp.setCurrentItem(1);
-
         } else if (v.getId() == R.id.review_rlayout) {
             mContentVp.setCurrentItem(2);
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
-
         } else if (v.getId() == R.id.iv_share ||
                 v.getId() == R.id.iv_share2) {
             share();
@@ -236,9 +235,13 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             finish();
         } else if (v.getId() == R.id.iv_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
+        } else if (v.getId() == R.id.tv_inclass) {
+            goClass();
         }
 
     }
+
+    protected abstract void goClass();
 
     protected abstract void consult();
 
@@ -293,28 +296,58 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 screenLock();
                 break;
             case Const.COURSE_CHANGE:
-                courseChange();
+                courseChange((CourseCatalogue.LessonsBean)
+                        bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.COURSE_HASTRIAL:
-                courseHastrial(bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT));
+                courseHastrial(bundle.getString(Const.COURSE_CHANGE_STATE)
+                        , bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT));
                 break;
         }
     }
 
-    protected  void courseHastrial(boolean has){
-        if (has) {
-            mTvPlay.setText("开始试学");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-        } else {
-            mTvPlay.setText("开始学习");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+    protected void courseHastrial(String state, boolean hasTrial) {
+        mPlayLastLayout.setVisibility(View.GONE);
+        switch (state){
+            case Const.COURSE_CHANGE_STATE_NONE:
+                mPlayLayout.setEnabled(true);
+                if (hasTrial) {
+                    mTvPlay.setText("开始试学");
+                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
+                } else {
+                    mTvPlay.setText("开始学习");
+                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                }
+                break;
+            case Const.COURSE_CHANGE_STATE_STARTED:
+                mTvPlay.setText("继续学习");
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                mPlayLayout.setEnabled(true);
+                mPlayLastLayout.setVisibility(View.VISIBLE);
+
+                break;
+            case Const.COURSE_CHANGE_STATE_FINISH:
+                mTvPlay.setText("学习完成");
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                mPlayLayout.setEnabled(false);
+                break;
         }
     }
 
     /**
      * todo 获得课程相关信息
      */
-    protected abstract void courseChange();
+    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
+        String type = lesson.getType();
+        switch (type) {
+            case "audio":
+
+                break;
+            case "video":
+
+                break;
+        }
+    }
 
     private boolean isScreenLock = false;
 
@@ -350,7 +383,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
     protected void courseStart() {
         /**
-         * todo 播放课程
+         * todo 开始播放
          */
         if (!mIsFullScreen) {
             mParent.smoothScrollTo(0, 0);
@@ -364,6 +397,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 params.height = AppUtil.getHeightPx(this) - bottom;
                 mContentVp.setLayoutParams(params);
             }
+            mMenuPop.setVisibility(true);
         }
         mPlayLayout.setVisibility(View.GONE);
         mIsPlay = true;
@@ -441,4 +475,5 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
+
 }

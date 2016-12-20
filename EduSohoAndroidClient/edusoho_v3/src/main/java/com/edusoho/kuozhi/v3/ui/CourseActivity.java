@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
+import android.view.Menu;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
+import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
@@ -16,6 +20,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -49,16 +54,24 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void initView() {
         super.initView();
-
     }
 
     @Override
     protected void initFragment(List<Fragment> fragments) {
-        Bundle bundle = new Bundle();
-        bundle.putString("courseid", mCourseId);
-        fragments.add(new CourseDetailFragment(mCourseId));
-        fragments.add(app.mEngine.runPluginWithFragmentByBundle("CourseCatalogFragment", CourseActivity.this, bundle));
-        fragments.add(new CourseDetailFragment(mCourseId));
+        Fragment detailfragment = app.mEngine.runPluginWithFragment("CourseDetailFragment", this, new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putString("id", mCourseId);
+            }
+        });
+        fragments.add(detailfragment);
+        Fragment catafragment = app.mEngine.runPluginWithFragment("CourseCatalogFragment", this, new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putString("id", mCourseId);
+            }
+        });
+        fragments.add(catafragment);
     }
 
     protected void initEvent() {
@@ -69,36 +82,31 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (mCourseId != null) {
             mLoading.show();
             CourseDetailModel.getCourseDetail(mCourseId,
-                new ResponseCallbackListener<CourseDetail>() {
-                    @Override
-                    public void onSuccess(CourseDetail data) {
-                        mCourseDetail = data;
-                        refreshView();
-                        mLoading.dismiss();
-                        if (getClass().getSimpleName().equals("CourseActivity")) {
-                            if (getCourseDetail().getMember() != null && ((CourseCatalogFragment) mFragments.get(1)).mIsJoin == false) {
-                                ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+                    new ResponseCallbackListener<CourseDetail>() {
+                        @Override
+                        public void onSuccess(CourseDetail data) {
+                            mCourseDetail = data;
+                            if (mFragments.size() >= 2 && mFragments.get(1) != null
+                                    && mFragments.get(1) instanceof CourseCatalogFragment) {
+                                if (mCourseDetail.getMember() == null) {
+                                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
+                                }else{
+                                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+                                }
                             }
-                        } else {
-
+                            refreshView();
+                            mLoading.dismiss();
                         }
-                    }
-
-                    @Override
-                    public void onFailure(String code, String message) {
-                        mLoading.dismiss();
-                        if (message.equals("课程不存在")) {
-                            CommonUtil.shortToast(CourseActivity.this, "课程不存在");
-                            finish();
+                        @Override
+                        public void onFailure(String code, String message) {
+                            mLoading.dismiss();
+                            if (message.equals("课程不存在")) {
+                                CommonUtil.shortToast(CourseActivity.this, "课程不存在");
+                                finish();
+                            }
                         }
-                    }
-                });
+            });
         }
-    }
-
-    @Override
-    protected CourseDetail getCourseDetail() {
-        return mCourseDetail;
     }
 
     @Override
@@ -128,6 +136,17 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }
+    }
+
+    @Override
+    protected void goClass() {
+        app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(NewsCourseActivity.COURSE_ID, mCourseId);
+                startIntent.putExtra(NewsCourseActivity.FROM_NAME, mCourseDetail.getCourse().title);
+            }
+        });
     }
 
     @Override
@@ -219,7 +238,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
-    protected void courseChange() {
+    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
 
     }
 
@@ -229,5 +248,39 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
          * todo 播放课程
          */
         super.courseStart();
+        playVideoLesson();
+    }
+
+    private void playVideoLesson() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        LessonAudioPlayerFragment fragment = new LessonAudioPlayerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().largePicture);
+        bundle.putString(LessonAudioPlayerFragment.PLAY_URI,
+                "http://yinyueshiting.baidu.com/data2/music/64011738/2771611482105661128.mp3?xcode=6dc9fc7b26d1ff315fa4084c7da1aa86");
+        fragment.setArguments(bundle);
+        transaction.replace(R.id.fl_header_container, fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_header_container);
+        if (fragment != null && fragment instanceof LessonAudioPlayerFragment) {
+            ((LessonAudioPlayerFragment) fragment).destoryService();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        if (v.getId() == R.id.hour_rlayout) {
+            Fragment fragment = mFragments.get(1);
+            if (fragment != null && fragment instanceof CourseCatalogFragment) {
+                ((CourseCatalogFragment) fragment).reFreshView(true);
+            }
+        }
     }
 }

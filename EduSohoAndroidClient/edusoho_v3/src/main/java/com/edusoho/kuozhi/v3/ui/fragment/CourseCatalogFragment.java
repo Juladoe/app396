@@ -37,6 +37,8 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -87,7 +89,6 @@ public class CourseCatalogFragment extends BaseFragment {
                 });
                 if (mCourseCatalogue.getLessons().size() != 0) {
                     initLessonCatalog();
-//                    !TextUtils.isEmpty(app.token) &&
                 } else {
                     CommonUtil.shortCenterToast(getActivity(), "该课程没有课时");
                 }
@@ -95,6 +96,7 @@ public class CourseCatalogFragment extends BaseFragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+
             }
         });
     }
@@ -117,7 +119,12 @@ public class CourseCatalogFragment extends BaseFragment {
                 startLessonActivity(position);
             }
         });
+    }
 
+    /**
+     * 初始学习状态
+     */
+    public void initState(){
         Map<String, String> learnStatuses = mCourseCatalogue.getLearnStatuses();
         //试学状态下
         if (!TextUtils.isEmpty(app.token) && !mIsJoin) {
@@ -125,23 +132,49 @@ public class CourseCatalogFragment extends BaseFragment {
             for (CourseCatalogue.LessonsBean lessonsBean : mCourseCatalogue.getLessons()) {
                 if ("1".equals(lessonsBean.getFree()) && "lesson".equals(lessonsBean.getItemType())) {
                     //直接传递消息，结束
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Const.COURSE_CHANGE_STATE, "0");
-                    bundle.putBoolean(Const.COURSE_HASTRIAL_RESULT, true);
-//                    bundle.putSerializable(Const.COURSE_CHANGE_Title, lesson);
-                    MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
+                    sendMsg("0", true, lesson);
                     return;
                 }
             }
-        } else if (!TextUtils.isEmpty(app.token) && !mIsJoin){
-
+        } else if (!TextUtils.isEmpty(app.token) && mIsJoin){
+            //加入没有学习状态,直接发送第一个课时
+            if (mCourseCatalogue.getLearnStatuses().containsKey("-1")) {
+                for (CourseCatalogue.LessonsBean lessonsBean : mCourseCatalogue.getLessons()) {
+                    if ("1".equals(lessonsBean.getFree()) && "lesson".equals(lessonsBean.getItemType())) {
+                        //直接传递消息，结束
+                        sendMsg("0", true, lesson);
+                        return;
+                    }
+                }
+            } else {    //加入且有学习状态，加载最后一次学习的课时，
+                if (mCourseCatalogue.getLearnStatuses().containsValue("learning")) {
+                    List<String> list = new ArrayList<>();
+                    for(Map.Entry<String, String> entry:mCourseCatalogue.getLearnStatuses().entrySet()){
+                        if ("learning".equals(entry.getValue())) {
+                            list.add(entry.getKey());
+                        }
+                    }
+                    sendMsg("1", false, lesson);
+                    return;
+                } else if (!mCourseCatalogue.getLearnStatuses().containsKey("learning")){
+                    sendMsg("2", false, lesson);
+                }
+            }
         }
+    }
+
+    public void sendMsg(String state, boolean isJoin, CourseCatalogue.LessonsBean lesson){
+        Bundle bundle = new Bundle();
+        bundle.putString(Const.COURSE_CHANGE_STATE, "2");
+        bundle.putBoolean(Const.COURSE_HASTRIAL_RESULT, false);
+        bundle.putSerializable(Const.COURSE_CHANGE_TITLE, lesson);
+        MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
     }
 
     public void startLessonActivity(int position) {
         final LoadDialog loadDialog = LoadDialog.create(getActivity());
         lesson = mCourseCatalogue.getLessons().get(position);
-        loadDialog.show();
+//        loadDialog.show();
         getSource(lesson);
     }
 
@@ -215,6 +248,7 @@ public class CourseCatalogFragment extends BaseFragment {
             mAdapter.isJoin = mIsJoin;
             mAdapter.notifyDataSetChanged();
         }
+        initState();
     }
 
     /**
