@@ -339,40 +339,14 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 courseChange((LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.COURSE_HASTRIAL:
-                courseHastrial(bundle.getString(Const.COURSE_CHANGE_STATE)
-                        , bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT)
-                        , bundle.getString(Const.COURSE_CHANGE_TITLE));
+                courseHastrial(
+                        bundle.getString(Const.COURSE_CHANGE_STATE),
+                        (LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT)
+                );
                 break;
         }
     }
     protected void courseHastrial(String state, LessonItem lessonItem) {}
-//    protected void courseHastrial(String state, boolean hasTrial, String title) {
-//        mPlayLastLayout.setVisibility(View.GONE);
-//        switch (state) {
-//            case Const.COURSE_CHANGE_STATE_NONE:
-//                mPlayLayout.setEnabled(true);
-//                if (hasTrial) {
-//                    mTvPlay.setText("开始试学");
-//                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-//                } else {
-//                    mTvPlay.setText("开始学习");
-//                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-//                }
-//                break;
-//            case Const.COURSE_CHANGE_STATE_STARTED:
-//                mTvPlay.setText("继续学习");
-//                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-//                mPlayLayout.setEnabled(true);
-//                mPlayLastLayout.setVisibility(View.VISIBLE);
-//                mTvLastTitle.setText(String.valueOf(title));
-//                break;
-//            case Const.COURSE_CHANGE_STATE_FINISH:
-//                mTvPlay.setText("学习完成");
-//                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-//                mPlayLayout.setEnabled(false);
-//                break;
-//        }
-//    }
 
     /**
      * todo 获得课程相关信息
