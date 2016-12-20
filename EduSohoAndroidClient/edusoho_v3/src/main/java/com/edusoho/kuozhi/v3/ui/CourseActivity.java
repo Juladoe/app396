@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -8,8 +9,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.View;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
-import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
@@ -19,7 +21,9 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.List;
@@ -32,6 +36,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     private String mCourseId;
     private boolean mIsFavorite = false;
     private CourseDetail mCourseDetail;
+    private LessonItem mContinueLessonItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -223,27 +228,90 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
-    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
+    protected void courseChange(LessonItem lessonItem) {
+        mContinueLessonItem = lessonItem;
+        coursePause();
+        courseStart();
+    }
 
+    @Override
+    protected void courseHastrial(String status, LessonItem lessonItem) {
+        mContinueLessonItem = lessonItem;
+        switch (status) {
+            case "0":
+                mTvPlay.setText("开始试学");
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
+                break;
+            case "1":
+                mTvPlay.setText("开始学习");
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                break;
+            case "2":
+                mTvPlay.setText("继续学习");
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+        }
+    }
+
+    @Override
+    protected void coursePause() {
+        super.coursePause();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_header_container);
+        if (fragment == null) {
+            return;
+        }
+        if (fragment instanceof LessonAudioPlayerFragment) {
+            ((LessonAudioPlayerFragment) fragment).destoryService();
+        }
+
+        transaction.remove(fragment).commitAllowingStateLoss();
     }
 
     @Override
     protected void courseStart() {
-        /**
-         * todo 播放课程
-         */
+        if (mContinueLessonItem == null) {
+            return;
+        }
         super.courseStart();
-        playVideoLesson();
+        String type = mContinueLessonItem.type;
+        switch (type) {
+            case "audio":
+                playAudioLesson(mContinueLessonItem.mediaUri);
+                return;
+            case "video":
+                playVideoLesson(mContinueLessonItem.mediaUri);
+                return;
+        }
+
+        Fragment fragment = mFragments.get(1);
+        if (fragment != null && fragment instanceof CourseCatalogFragment) {
+            if (mContinueLessonItem == null) {
+                return;
+            }
+            ((CourseCatalogFragment)fragment).startLessonActivity(mContinueLessonItem.id, mContinueLessonItem.courseId);
+        }
     }
 
-    private void playVideoLesson() {
+    private void playVideoLesson(String mediaUrl) {
+        Uri uri = Uri.parse(mediaUrl);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(LessonAudioPlayerFragment.PLAY_URI,
+                String.format("%s://%s%s", uri.getScheme(), uri.getHost(), uri.getPath()));
+        fragment.setArguments(bundle);
+        transaction.replace(R.id.fl_header_container, fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
+    private void playAudioLesson(String mediaUrl) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         LessonAudioPlayerFragment fragment = new LessonAudioPlayerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().largePicture);
-        bundle.putString(LessonAudioPlayerFragment.PLAY_URI,
-                "http://yinyueshiting.baidu.com/data2/music/64011738/2771611482105661128.mp3?xcode=6dc9fc7b26d1ff315fa4084c7da1aa86");
+        bundle.putString(LessonAudioPlayerFragment.PLAY_URI, mediaUrl);
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
         transaction.commitAllowingStateLoss();
@@ -266,6 +334,14 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             if (fragment != null && fragment instanceof CourseCatalogFragment) {
                 ((CourseCatalogFragment)fragment).reFreshView(true);
             }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LessonActivity.REQUEST_LEARN) {
+            coursePause();
         }
     }
 }

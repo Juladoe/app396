@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
@@ -325,38 +326,24 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 screenLock();
                 break;
             case Const.COURSE_CHANGE:
-                courseChange((CourseCatalogue.LessonsBean)
-                        bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
+                courseChange((LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.COURSE_HASTRIAL:
-                courseHastrial(bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT));
+                String status = bundle.getString(Const.COURSE_CHANGE_STATE);
+                LessonItem lessonItem = (LessonItem) bundle.getSerializable(
+                        Const.COURSE_CHANGE_OBJECT);
+                courseHastrial(status, lessonItem);
                 break;
         }
     }
 
-    protected void courseHastrial(boolean has) {
-        if (has) {
-            mTvPlay.setText("开始试学");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-        } else {
-            mTvPlay.setText("开始学习");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-        }
+    protected void courseHastrial(String status, LessonItem lessonItem) {
     }
 
     /**
      * todo 获得课程相关信息
      */
-    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
-        String type = lesson.getType();
-        switch (type) {
-            case "audio":
-
-                break;
-            case "video":
-
-                break;
-        }
+    protected void courseChange(LessonItem lessonItem) {
     }
 
     private boolean isScreenLock = false;
@@ -426,7 +413,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    private void coursePause() {
+    protected void coursePause() {
         if (!mIsFullScreen) {
             mParent.setCanScroll(true);
             initViewPager();
