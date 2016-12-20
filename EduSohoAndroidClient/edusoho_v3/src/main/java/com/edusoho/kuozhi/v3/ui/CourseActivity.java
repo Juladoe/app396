@@ -4,11 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-<<<<<<< HEAD
 import android.support.v4.app.FragmentTransaction;
-=======
-import android.view.Menu;
->>>>>>> feature/17898-course-frame
+import android.text.TextUtils;
 import android.view.View;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
@@ -20,11 +17,7 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-<<<<<<< HEAD
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
-=======
->>>>>>> feature/17898-course-frame
-import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -62,7 +55,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     @Override
     protected void initFragment(List<Fragment> fragments) {
-        fragments.add(new CourseCatalogFragment(mCourseId));
         Fragment fragment = app.mEngine.runPluginWithFragment("CourseDetailFragment", this, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
@@ -70,6 +62,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             }
         });
         fragments.add(fragment);
+        fragments.add(new CourseCatalogFragment(mCourseId));
     }
 
     protected void initEvent() {
@@ -77,27 +70,30 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     protected void initData() {
-        if (mCourseId != null) {
-            mLoading.show();
-            CourseDetailModel.getCourseDetail(mCourseId,
-                    new ResponseCallbackListener<CourseDetail>() {
-                        @Override
-                        public void onSuccess(CourseDetail data) {
-                            mCourseDetail = data;
-                            refreshView();
-                            mLoading.dismiss();
-                        }
-
-                        @Override
-                        public void onFailure(String code, String message) {
-                            mLoading.dismiss();
-                            if (message.equals("课程不存在")) {
-                                CommonUtil.shortToast(CourseActivity.this, "课程不存在");
-                                finish();
-                            }
-                        }
-                    });
+        if (TextUtils.isEmpty(mCourseId)) {
+            CommonUtil.shortToast(CourseActivity.this, "课程不存在");
+            finish();
+            return;
         }
+        setLoadStatus(View.VISIBLE);
+        CourseDetailModel.getCourseDetail(mCourseId,
+                new ResponseCallbackListener<CourseDetail>() {
+                    @Override
+                    public void onSuccess(CourseDetail data) {
+                        mCourseDetail = data;
+                        refreshView();
+                        setLoadStatus(View.GONE);
+                    }
+
+                    @Override
+                    public void onFailure(String code, String message) {
+                        setLoadStatus(View.GONE);
+                        if (message.equals("课程不存在")) {
+                            CommonUtil.shortToast(CourseActivity.this, "课程不存在");
+                            finish();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -161,7 +157,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void add() {
         if (mCourseId != null) {
-            mLoading.show();
+            showProcessDialog();
             CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")
@@ -172,7 +168,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                     , new CourseUtil.OnAddCourseListener() {
                         @Override
                         public void onAddCourseSuccee(String response) {
-                            mLoading.dismiss();
+                            hideProcesDialog();
                             CommonUtil.shortToast(CourseActivity.this, getResources()
                                     .getString(R.string.success_add_course));
                             initData();
@@ -180,7 +176,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
                         @Override
                         public void onAddCourseError(String error) {
-                            mLoading.dismiss();
+                            hideProcesDialog();
                         }
                     });
         }
@@ -272,9 +268,4 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             }
         }
     }
-<<<<<<< HEAD
-=======
-
-
->>>>>>> feature/17898-course-frame
 }

@@ -68,23 +68,19 @@ public class CourseDetailFragment extends BaseDetailFragment {
         initData();
     }
 
-
     protected void initData() {
-        mLoading.show();
+        setLoadViewStatus(View.VISIBLE);
         CourseDetailModel.getCourseDetail(mCourseId, new ResponseCallbackListener<CourseDetail>() {
             @Override
             public void onSuccess(CourseDetail data) {
                 mCourseDetail = data;
                 refreshView();
-                mLoading.dismiss();
+                setLoadViewStatus(View.GONE);
             }
 
             @Override
             public void onFailure(String code, String message) {
-                mLoading.dismiss();
-                if (message.equals("课程不存在")) {
-                    CommonUtil.shortToast(mContext, "课程不存在");
-                }
+                setLoadViewStatus(View.GONE);
             }
         });
         CourseDetailModel.getCourseReviews(mCourseId, "5", "0",

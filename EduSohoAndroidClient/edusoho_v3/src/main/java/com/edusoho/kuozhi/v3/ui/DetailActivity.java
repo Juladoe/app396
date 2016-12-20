@@ -70,7 +70,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     private int mTitleBarHeight;
     public int mMediaViewHeight = 210;
     private SystemBarTintManager tintManager;
-    protected LoadDialog mLoading;
+    protected View mLoadingView;
+    protected LoadDialog mProcessDialog;
     protected MenuPop mMenuPop;
 
     @Override
@@ -124,7 +125,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mMenu = findViewById(R.id.iv_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvInclass = findViewById(R.id.tv_inclass);
+        mLoadingView = findViewById(R.id.ll_frame_load);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
+
         initFragment(mFragments);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mContentVp.setAdapter(mAdapter);
@@ -147,7 +150,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         headParams.height = AppUtil.dp2px(this, 43 + mTitleBarHeight);
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
-        mLoading = LoadDialog.create(this);
         mMenuPop = new MenuPop(this, mMenu);
     }
 
@@ -200,9 +202,40 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         });
     }
 
+    protected void showProcessDialog() {
+        if (mProcessDialog == null) {
+            mProcessDialog = LoadDialog.create(this);
+        }
+        mProcessDialog.show();
+    }
+
+    protected void hideProcesDialog() {
+        if (mProcessDialog == null) {
+            return;
+        }
+        if (mProcessDialog.isShowing()) {
+            mProcessDialog.dismiss();
+        }
+    }
+
+    protected void setLoadStatus(int visibility) {
+        mLoadingView.setVisibility(visibility);
+    }
+
     protected abstract void initData();
 
     protected abstract void refreshView();
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mProcessDialog != null) {
+            if (mProcessDialog.isShowing()) {
+                mProcessDialog.dismiss();
+            }
+            mProcessDialog = null;
+        }
+    }
 
     @Override
     public void onClick(View v) {

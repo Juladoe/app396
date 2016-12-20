@@ -133,8 +133,8 @@
                         android:id="@+id/review_rlayout"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:visibility="gone"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_width="match_parent"
@@ -167,8 +167,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="7dp"
                 android:layout_below="@+id/tab_rlayout"
-                android:background="@drawable/shape_line_shadow"
-                />
+                android:background="@drawable/shape_line_shadow" />
         </RelativeLayout>
     </com.edusoho.kuozhi.v3.view.HeadStopScrollView>
 
@@ -199,9 +198,9 @@
             android:paddingLeft="13dp"
             android:paddingRight="13dp"
             android:text="@string/new_font_grade"
-            android:visibility="gone"
             android:textColor="@color/disabled2_hint_color"
-            android:textSize="16dp" />
+            android:textSize="16dp"
+            android:visibility="gone" />
 
         <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
             android:id="@+id/iv_menu"
@@ -213,9 +212,9 @@
             android:paddingLeft="13dp"
             android:paddingRight="13dp"
             android:text="@string/new_font_more_oper"
-            android:visibility="gone"
             android:textColor="@color/disabled2_hint_color"
-            android:textSize="16dp" />
+            android:textSize="16dp"
+            android:visibility="gone" />
 
         <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
             android:id="@+id/iv_share"
@@ -288,9 +287,9 @@
                 android:paddingLeft="13dp"
                 android:paddingRight="13dp"
                 android:text="@string/new_font_grade"
-                android:visibility="gone"
                 android:textColor="@color/secondary_font_color"
-                android:textSize="16dp" />
+                android:textSize="16dp"
+                android:visibility="gone" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                 android:id="@+id/iv_share2"
@@ -390,4 +389,25 @@
         android:textSize="@dimen/font_s"
         android:visibility="gone" />
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/textIcons"
+        android:id="@+id/ll_frame_load"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:indeterminateDrawable="@drawable/load" />
+
+        <TextView
+            android:id="@+id/loading_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="加载中.."
+            android:textColor="@color/base_black_54" />
+    </LinearLayout>
 </RelativeLayout>
