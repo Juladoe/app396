@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -21,12 +19,9 @@ import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
-import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
@@ -152,7 +147,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
                 ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image,
-                        app.mOptions);
+                        app.mAvatarOptions);
             } else {
                 txt.setText("");
                 image.setImageAlpha(0);
@@ -302,7 +297,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             viewHolder.mTime.setText(CommonUtil.convertWeekTime(review.getCreatedTime()));
             viewHolder.mStar.setRating((int) Double.parseDouble(review.getRating()));
             ImageLoader.getInstance().displayImage(review.getUser().mediumAvatar, viewHolder.mIcon,
-                    app.mOptions);
+                    app.mAvatarOptions);
             viewHolder.mIcon.setTag(review.getUser().id);
             viewHolder.mIcon.setOnClickListener(mOnClickListener);
             return convertView;
