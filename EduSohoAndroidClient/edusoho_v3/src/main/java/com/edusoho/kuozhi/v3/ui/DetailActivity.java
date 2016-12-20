@@ -387,9 +387,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     protected void courseStart() {
-        /**
-         * todo 开始播放
-         */
         if (!mIsFullScreen) {
             mParent.smoothScrollTo(0, 0);
             mParent.setCanScroll(false);
@@ -485,10 +482,13 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_REFRESH) {
             setLoadStatus(View.GONE);
+            hideProcesDialog();
             initData();
         }
         if (requestCode == RESULT_LOGIN) {
             setLoadStatus(View.GONE);
+            hideProcesDialog();
+            initData();
         }
     }
 }

@@ -100,7 +100,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                                 && mFragments.get(1) instanceof CourseCatalogFragment) {
                             if (mCourseDetail.getMember() == null) {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
-                            }else{
+                            } else {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
                             }
                         }
@@ -272,7 +272,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(true);
                 mPlayLastLayout.setVisibility(View.VISIBLE);
-                mTvLastTitle.setText(lessonItem.title);
+                mTvLastTitle.setText(String.valueOf(lessonItem == null ? null : lessonItem.title));
                 break;
             case Const.COURSE_CHANGE_STATE_FINISH:
                 mTvPlay.setText("学习完成");
@@ -318,7 +318,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             if (mContinueLessonItem == null) {
                 return;
             }
-            ((CourseCatalogFragment)fragment).startLessonActivity(mContinueLessonItem.id, mContinueLessonItem.courseId);
+            ((CourseCatalogFragment) fragment).startLessonActivity(mContinueLessonItem.id, mContinueLessonItem.courseId);
         }
     }
 

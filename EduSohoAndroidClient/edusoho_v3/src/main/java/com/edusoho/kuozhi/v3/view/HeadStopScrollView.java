@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,8 +133,10 @@ public class HeadStopScrollView extends ScrollView {
     private boolean canScroll = true;
 
     public void setCanScroll(boolean isScrolled) {
+        if(canScroll != isScrolled){
+            isTab = !isScrolled;
+        }
         this.canScroll = isScrolled;
-        isTab = !canScroll;
 //        if (mCanScrolls.size() > mCheckNum) {
 //            mCanScrolls.set(mCheckNum, isScrolled);
 //        }
@@ -201,9 +204,11 @@ public class HeadStopScrollView extends ScrollView {
                 startY = 0;
                 break;
         }
+        Log.e("parent",moveY + "");
+        Log.e("parent",canScroll + "===" + isTab);
         if (!canScroll == isTab) {
             ev.setAction(MotionEvent.ACTION_DOWN);
-            isTab = !isTab;
+            isTab = canScroll;
         }
         return super.dispatchTouchEvent(ev);
     }
