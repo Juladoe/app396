@@ -1,17 +1,12 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,9 +20,7 @@ import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
@@ -56,6 +49,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mCollect;
     protected View mBack2;
     protected View mTvInclass;
+    protected View mPlayLastLayout;
+    protected TextView mTvLastTitle;
     protected TextView mTvCollect;
     protected TextView mTvPlay;
     protected View mAddCourse;
@@ -131,6 +126,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mMenu = findViewById(R.id.iv_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvInclass = findViewById(R.id.tv_inclass);
+        mPlayLastLayout = findViewById(R.id.layout_play_last);
+        mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
         initFragment(mFragments);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -179,7 +176,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -222,7 +218,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mContentVp.setCurrentItem(2);
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
-
         } else if (v.getId() == R.id.iv_share ||
                 v.getId() == R.id.iv_share2) {
             share();
@@ -240,7 +235,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             finish();
         } else if (v.getId() == R.id.iv_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
-        } else if(v.getId() == R.id.tv_inclass){
+        } else if (v.getId() == R.id.tv_inclass) {
             goClass();
         }
 
@@ -305,18 +300,38 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                         bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.COURSE_HASTRIAL:
-                courseHastrial(bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT));
+                courseHastrial(bundle.getString(Const.COURSE_CHANGE_STATE)
+                        , bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT)
+                        , bundle.getString(Const.COURSE_CHANGE_TITLE));
                 break;
         }
     }
 
-    protected void courseHastrial(boolean has) {
-        if (has) {
-            mTvPlay.setText("开始试学");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-        } else {
-            mTvPlay.setText("开始学习");
-            mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+    protected void courseHastrial(String state, boolean hasTrial, String title) {
+        mPlayLastLayout.setVisibility(View.GONE);
+        switch (state) {
+            case Const.COURSE_CHANGE_STATE_NONE:
+                mPlayLayout.setEnabled(true);
+                if (hasTrial) {
+                    mTvPlay.setText("开始试学");
+                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
+                } else {
+                    mTvPlay.setText("开始学习");
+                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                }
+                break;
+            case Const.COURSE_CHANGE_STATE_STARTED:
+                mTvPlay.setText("继续学习");
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                mPlayLayout.setEnabled(true);
+                mPlayLastLayout.setVisibility(View.VISIBLE);
+                mTvLastTitle.setText(String.valueOf(title));
+                break;
+            case Const.COURSE_CHANGE_STATE_FINISH:
+                mTvPlay.setText("学习完成");
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                mPlayLayout.setEnabled(false);
+                break;
         }
     }
 

@@ -16,7 +16,8 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.fragment.ClassroomDetailFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -39,6 +40,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         mClassroomId = intent.getStringExtra(CLASSROOM_ID);
         if (mClassroomId == null || mClassroomId.trim().length() == 0) {
             finish();
+            return;
         }
         mMediaViewHeight = 281;
         initView();
@@ -64,6 +66,13 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             }
         });
         fragments.add(fragment);
+        Fragment catafragment = app.mEngine.runPluginWithFragment("ClassCatalogFragment", this, new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putString("id", mClassroomId);
+            }
+        });
+        fragments.add(catafragment);
     }
 
     protected void initEvent() {
@@ -79,6 +88,14 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                         public void onSuccess(ClassroomDetail data) {
                             mLoading.dismiss();
                             mClassroomDetail = data;
+                            if (mFragments.size() >= 2 && mFragments.get(1) != null
+                                    && mFragments.get(1) instanceof ClassCatalogFragment) {
+                                if (mClassroomDetail.getMember() == null) {
+//                                    ((ClassCatalogFragment) mFragments.get(1)).reFreshView(false);
+                                }else{
+//                                    ((ClassCatalogFragment) mFragments.get(1)).reFreshView(true);
+                                }
+                            }
                             refreshView();
                         }
 
