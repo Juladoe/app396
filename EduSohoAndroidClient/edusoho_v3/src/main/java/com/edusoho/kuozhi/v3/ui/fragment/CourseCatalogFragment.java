@@ -59,7 +59,7 @@ public class CourseCatalogFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_course_catalog, container, false);
-        mCourseId = getArguments().getString("courseid");
+        mCourseId = getArguments().getString("id");
         init();
         initCatalogue();
         return view;
