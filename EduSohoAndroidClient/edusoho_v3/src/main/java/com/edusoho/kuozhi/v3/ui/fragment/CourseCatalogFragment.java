@@ -160,7 +160,7 @@ public class CourseCatalogFragment extends BaseFragment {
             return;
         }
 
-        new LessonProvider(getContext()).getLesson(lessonsBean.getId())
+        new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
         .success(new NormalCallback<LessonItem>() {
             @Override
             public void success(LessonItem lessonItem) {
@@ -230,7 +230,7 @@ public class CourseCatalogFragment extends BaseFragment {
     public void perpareStartLearnLesson(int position) {
         final CourseCatalogue.LessonsBean lessonsBean = mCourseCatalogue.getLessons().get(position);
         showProcessDialog();
-        new LessonProvider(getContext()).getLesson(lessonsBean.getId())
+        new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
                 .success(new NormalCallback<LessonItem>() {
                     @Override
                     public void success(LessonItem lessonItem) {
@@ -260,7 +260,7 @@ public class CourseCatalogFragment extends BaseFragment {
         ArrayList<Integer> lessonArray = new ArrayList<>();
         for (CourseCatalogue.LessonsBean lessonsBean : mCourseCatalogue.getLessons()) {
             if ("lesson".equals(lessonsBean.getItemType())) {
-                lessonArray.add(lessonsBean.getId());
+                lessonArray.add(AppUtil.parseInt(lessonsBean.getId()));
             }
         }
         return lessonArray;
