@@ -23,7 +23,6 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
@@ -161,7 +160,7 @@ public class CourseCatalogFragment extends BaseFragment {
             return;
         }
 
-        new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
+        new LessonProvider(getContext()).getLesson(lessonsBean.getId())
         .success(new NormalCallback<LessonItem>() {
             @Override
             public void success(LessonItem lessonItem) {
@@ -231,7 +230,7 @@ public class CourseCatalogFragment extends BaseFragment {
     public void perpareStartLearnLesson(int position) {
         final CourseCatalogue.LessonsBean lessonsBean = mCourseCatalogue.getLessons().get(position);
         showProcessDialog();
-        new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
+        new LessonProvider(getContext()).getLesson(lessonsBean.getId())
                 .success(new NormalCallback<LessonItem>() {
                     @Override
                     public void success(LessonItem lessonItem) {
@@ -261,7 +260,7 @@ public class CourseCatalogFragment extends BaseFragment {
         ArrayList<Integer> lessonArray = new ArrayList<>();
         for (CourseCatalogue.LessonsBean lessonsBean : mCourseCatalogue.getLessons()) {
             if ("lesson".equals(lessonsBean.getItemType())) {
-                lessonArray.add(Integer.parseInt(lessonsBean.getId()));
+                lessonArray.add(lessonsBean.getId());
             }
         }
         return lessonArray;
