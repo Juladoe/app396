@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
@@ -344,34 +345,34 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 break;
         }
     }
-
-    protected void courseHastrial(String state, boolean hasTrial, String title) {
-        mPlayLastLayout.setVisibility(View.GONE);
-        switch (state) {
-            case Const.COURSE_CHANGE_STATE_NONE:
-                mPlayLayout.setEnabled(true);
-                if (hasTrial) {
-                    mTvPlay.setText("开始试学");
-                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-                } else {
-                    mTvPlay.setText("开始学习");
-                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-                }
-                break;
-            case Const.COURSE_CHANGE_STATE_STARTED:
-                mTvPlay.setText("继续学习");
-                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-                mPlayLayout.setEnabled(true);
-                mPlayLastLayout.setVisibility(View.VISIBLE);
-                mTvLastTitle.setText(String.valueOf(title));
-                break;
-            case Const.COURSE_CHANGE_STATE_FINISH:
-                mTvPlay.setText("学习完成");
-                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-                mPlayLayout.setEnabled(false);
-                break;
-        }
-    }
+    protected void courseHastrial(String state, LessonItem lessonItem) {}
+//    protected void courseHastrial(String state, boolean hasTrial, String title) {
+//        mPlayLastLayout.setVisibility(View.GONE);
+//        switch (state) {
+//            case Const.COURSE_CHANGE_STATE_NONE:
+//                mPlayLayout.setEnabled(true);
+//                if (hasTrial) {
+//                    mTvPlay.setText("开始试学");
+//                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
+//                } else {
+//                    mTvPlay.setText("开始学习");
+//                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+//                }
+//                break;
+//            case Const.COURSE_CHANGE_STATE_STARTED:
+//                mTvPlay.setText("继续学习");
+//                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+//                mPlayLayout.setEnabled(true);
+//                mPlayLastLayout.setVisibility(View.VISIBLE);
+//                mTvLastTitle.setText(String.valueOf(title));
+//                break;
+//            case Const.COURSE_CHANGE_STATE_FINISH:
+//                mTvPlay.setText("学习完成");
+//                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+//                mPlayLayout.setEnabled(false);
+//                break;
+//        }
+//    }
 
     /**
      * todo 获得课程相关信息
@@ -509,15 +510,11 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_REFRESH) {
-            if (mLoading.isShowing()) {
-                mLoading.dismiss();
-            }
+            setLoadStatus(View.GONE);
             initData();
         }
         if (requestCode == RESULT_LOGIN) {
-            if (mLoading.isShowing()) {
-                mLoading.dismiss();
-            }
+            setLoadStatus(View.GONE);
         }
     }
 }
