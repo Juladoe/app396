@@ -36,6 +36,8 @@ import java.util.List;
  */
 public abstract class DetailActivity extends BaseNoTitleActivity
         implements View.OnClickListener {
+    public static final int RESULT_REFRESH = 0x111;
+    public static final int RESULT_LOGIN = 0x222;
     protected HeadStopScrollView mParent;
     protected RelativeLayout mHeadRlayout;
     protected RelativeLayout mHeadRlayout2;
@@ -50,9 +52,11 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mCollect;
     protected View mBack2;
     protected View mTvInclass;
+    protected View mPlayLastLayout;
+    protected TextView mTvLastTitle;
     protected TextView mTvCollect;
     protected TextView mTvPlay;
-    protected View mAddCourse;
+    protected TextView mTvAdd;
     protected RelativeLayout mMediaRlayout;
     protected ImageView mIvMediaBackground;
     protected ViewPager mContentVp;
@@ -127,6 +131,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvInclass = findViewById(R.id.tv_inclass);
         mLoadingView = findViewById(R.id.ll_frame_load);
+        mPlayLastLayout = findViewById(R.id.layout_play_last);
+        mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
 
         initFragment(mFragments);
@@ -144,7 +150,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
         mConsult = findViewById(R.id.consult_layout);
-        mAddCourse = findViewById(R.id.tv_add);
+        mTvAdd = (TextView) findViewById(R.id.tv_add);
         initViewPager();
         ViewGroup.LayoutParams headParams =
                 mHeadRlayout2.getLayoutParams();
@@ -167,7 +173,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mPlayLayout2.setOnClickListener(this);
         mPlayLayout.setOnClickListener(this);
         mCollect.setOnClickListener(this);
-        mAddCourse.setOnClickListener(this);
+        mTvAdd.setOnClickListener(this);
         mConsult.setOnClickListener(this);
         mBack2.setOnClickListener(this);
         mTvInclass.setOnClickListener(this);
@@ -265,7 +271,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             finish();
         } else if (v.getId() == R.id.iv_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
-        } else if(v.getId() == R.id.tv_inclass){
+        } else if (v.getId() == R.id.tv_inclass) {
             goClass();
         }
 
@@ -277,7 +283,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
     protected abstract void add();
 
-    protected abstract void collect();
+    protected void collect(){}
 
     protected abstract void share();
 
@@ -329,15 +335,14 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 courseChange((LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.COURSE_HASTRIAL:
-                String status = bundle.getString(Const.COURSE_CHANGE_STATE);
-                LessonItem lessonItem = (LessonItem) bundle.getSerializable(
-                        Const.COURSE_CHANGE_OBJECT);
-                courseHastrial(status, lessonItem);
+                courseHastrial(bundle.getString(Const.COURSE_CHANGE_STATE)
+                        , bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT)
+                        , bundle.getString(Const.COURSE_CHANGE_TITLE));
                 break;
         }
     }
 
-    protected void courseHastrial(String status, LessonItem lessonItem) {
+    protected void courseHastrial(String state, boolean hasTrial, String title) {
     }
 
     /**
@@ -473,4 +478,19 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
 
+   /* @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RESULT_REFRESH){
+            if(mLoading.isShowing()) {
+                mLoading.dismiss();
+            }
+            initData();
+        }
+        if(requestCode == RESULT_LOGIN){
+            if(mLoading.isShowing()) {
+                mLoading.dismiss();
+            }
+        }
+    }*/
 }

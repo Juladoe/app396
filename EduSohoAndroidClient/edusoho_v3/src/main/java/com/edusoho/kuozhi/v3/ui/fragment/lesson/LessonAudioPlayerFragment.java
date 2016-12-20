@@ -79,7 +79,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         return new MenuPop.OnMenuClickListener() {
             @Override
             public void onClick(View v, int position, String name) {
-                Log.d(TAG, name);
+
             }
         };
     }

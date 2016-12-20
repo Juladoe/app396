@@ -9,6 +9,7 @@
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
         android:scaleType="fitXY"
+        android:src="@drawable/icon_default_avatar"
         />
 
     <TextView

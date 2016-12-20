@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
+import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -38,6 +39,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         mClassroomId = intent.getStringExtra(CLASSROOM_ID);
         if (mClassroomId == null || mClassroomId.trim().length() == 0) {
             finish();
+            return;
         }
         mMediaViewHeight = 281;
         initView();
@@ -52,6 +54,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         mPlayLayout.setVisibility(View.GONE);
         mTvInclass.setVisibility(View.GONE);
         mPlayLayout2.setVisibility(View.GONE);
+        mTvAdd.setText("加入班级");
     }
 
     @Override
@@ -63,6 +66,13 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             }
         });
         fragments.add(fragment);
+        Fragment catafragment = app.mEngine.runPluginWithFragment("ClassCatalogFragment", this, new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putString("id", mClassroomId);
+            }
+        });
+        fragments.add(catafragment);
     }
 
     protected void initEvent() {
@@ -78,6 +88,14 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                         public void onSuccess(ClassroomDetail data) {
                             setLoadStatus(View.GONE);
                             mClassroomDetail = data;
+                            if (mFragments.size() >= 2 && mFragments.get(1) != null
+                                    && mFragments.get(1) instanceof ClassCatalogFragment) {
+                                if (mClassroomDetail.getMember() == null) {
+//                                    ((ClassCatalogFragment) mFragments.get(1)).reFreshView(false);
+                                }else{
+//                                    ((ClassCatalogFragment) mFragments.get(1)).reFreshView(true);
+                                }
+                            }
                             refreshView();
                         }
 
@@ -119,7 +137,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, mClassroomId);
+                startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, Integer.parseInt(mClassroomId));
                 startIntent.putExtra(ClassroomDiscussActivity.FROM_NAME, mClassroomDetail.getClassRoom().title);
             }
         });
@@ -171,32 +189,6 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                         }
                     });
         }
-    }
-
-    @Override
-    protected void collect() {
-        Teacher[] teachers = mClassroomDetail.getClassRoom().teachers;
-        final Teacher teacher;
-        if (teachers.length > 0) {
-            teacher = teachers[0];
-        } else {
-            /**
-             * todo 老师为空的时候
-             */
-            return;
-        }
-        Bundle bundle = new Bundle();
-        bundle.putString(ImChatActivity.FROM_NAME, teacher.nickname);
-        bundle.putInt(ImChatActivity.FROM_ID, teacher.id);
-        bundle.putString(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
-        app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
-                startIntent.putExtra(ImChatActivity.FROM_ID, teacher.id);
-                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
-            }
-        });
     }
 
     @Override

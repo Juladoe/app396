@@ -8,8 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.View;
+
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.List;
 
 /**
@@ -46,6 +47,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         mCourseId = intent.getStringExtra(COURSE_ID);
         if (mCourseId == null || mCourseId.trim().length() == 0) {
             finish();
+            return;
         }
         mMediaViewHeight = 210;
         initView();
@@ -56,18 +58,25 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void initView() {
         super.initView();
+        mTvAdd.setText("加入课程");
     }
 
     @Override
     protected void initFragment(List<Fragment> fragments) {
-        Fragment fragment = app.mEngine.runPluginWithFragment("CourseDetailFragment", this, new PluginFragmentCallback() {
+        Fragment detailfragment = app.mEngine.runPluginWithFragment("CourseDetailFragment", this, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString("id",mCourseId);
+                bundle.putString("id", mCourseId);
             }
         });
-        fragments.add(fragment);
-        fragments.add(new CourseCatalogFragment(mCourseId));
+        fragments.add(detailfragment);
+        Fragment catafragment = app.mEngine.runPluginWithFragment("CourseCatalogFragment", this, new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putString("id", mCourseId);
+            }
+        });
+        fragments.add(catafragment);
     }
 
     protected void initEvent() {
@@ -86,6 +95,14 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                     @Override
                     public void onSuccess(CourseDetail data) {
                         mCourseDetail = data;
+                        if (mFragments.size() >= 2 && mFragments.get(1) != null
+                                && mFragments.get(1) instanceof CourseCatalogFragment) {
+                            if (mCourseDetail.getMember() == null) {
+                                ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
+                            }else{
+                                ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+                            }
+                        }
                         refreshView();
                         setLoadStatus(View.GONE);
                     }
@@ -133,7 +150,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(NewsCourseActivity.COURSE_ID, mCourseId);
+                startIntent.putExtra(NewsCourseActivity.COURSE_ID, Integer.parseInt(mCourseId));
                 startIntent.putExtra(NewsCourseActivity.FROM_NAME, mCourseDetail.getCourse().title);
             }
         });
@@ -235,20 +252,31 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
-    protected void courseHastrial(String status, LessonItem lessonItem) {
-        mContinueLessonItem = lessonItem;
-        switch (status) {
-            case "0":
-                mTvPlay.setText("开始试学");
-                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
+    protected void courseHastrial(String state, boolean hasTrial, String title) {
+        mPlayLastLayout.setVisibility(View.GONE);
+        switch (state) {
+            case Const.COURSE_CHANGE_STATE_NONE:
+                mPlayLayout.setEnabled(true);
+                if (hasTrial) {
+                    mTvPlay.setText("开始试学");
+                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
+                } else {
+                    mTvPlay.setText("开始学习");
+                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                }
                 break;
-            case "1":
-                mTvPlay.setText("开始学习");
-                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-                break;
-            case "2":
+            case Const.COURSE_CHANGE_STATE_STARTED:
                 mTvPlay.setText("继续学习");
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                mPlayLayout.setEnabled(true);
+                mPlayLastLayout.setVisibility(View.VISIBLE);
+                mTvLastTitle.setText(String.valueOf(title));
+                break;
+            case Const.COURSE_CHANGE_STATE_FINISH:
+                mTvPlay.setText("学习完成");
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                mPlayLayout.setEnabled(false);
+                break;
         }
     }
 
