@@ -183,15 +183,15 @@ public class Const {
     /**
      * 课时类型
      */
-    public static final String COURSE_PPT = "ppt";
-    public static final String COURSE_LIVE = "live";
-    public static final String COURSE_TEXT = "text";
-    public static final String COURSE_AUDIO = "audio";
-    public static final String COURSE_VIDEO = "video";
-    public static final String COUSRE_FLASH = "flash";
-    public static final String COURSE_TESTPAPER = "testPaper";
-    public static final String COURSE_DOCUMENT = "document";
-    public static final String COURSE_EMPTH = "empty";
+    public static final String COURSE_CATALOG_PPT = "ppt";
+    public static final String COURSE_CATALOG_LIVE = "live";
+    public static final String COURSE_CATALOG_TEXT = "text";
+    public static final String COURSE_CATALOG_AUDIO = "audio";
+    public static final String COURSE_CATALOG_VIDEO = "video";
+    public static final String COUSRE_CATALOG_FLASH = "flash";
+    public static final String COURSE_CATALOG_TESTPAPER = "testPaper";
+    public static final String COURSE_CATALOG_DOCUMENT = "document";
+    public static final String COURSE_CATALOG_EMPTH = "empty";
 
     /**
      * mobile/{code}/version  *

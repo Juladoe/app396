@@ -260,7 +260,7 @@ public class CourseCatalogFragment extends BaseFragment {
         ArrayList<Integer> lessonArray = new ArrayList<>();
         for (CourseCatalogue.LessonsBean lessonsBean : mCourseCatalogue.getLessons()) {
             if ("lesson".equals(lessonsBean.getItemType())) {
-                lessonArray.add(AppUtil.parseInt(lessonsBean.getId()));
+                lessonArray.add(Integer.parseInt(lessonsBean.getId()));
             }
         }
         return lessonArray;
