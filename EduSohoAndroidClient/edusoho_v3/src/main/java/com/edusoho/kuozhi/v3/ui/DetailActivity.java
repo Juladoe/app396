@@ -404,6 +404,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mMenuPop.setVisibility(true);
         }
         mPlayLayout.setVisibility(View.GONE);
+        mPlayLastLayout.setVisibility(View.GONE);
         mIsPlay = true;
         mParent.setStay(true);
     }
@@ -425,7 +426,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mParent.setCanScroll(true);
             initViewPager();
         }
-        mPlayLayout.setVisibility(View.VISIBLE);
         mIsPlay = false;
         mParent.setStay(false);
     }
