@@ -168,7 +168,7 @@ public class CourseCatalogFragment extends BaseFragment {
             Bundle bundle = new Bundle();
             bundle.putString(Const.COURSE_CHANGE_STATE, state);
             bundle.putBoolean(Const.COURSE_HASTRIAL_RESULT, isJoin);
-            bundle.putSerializable(Const.COURSE_CHANGE_TITLE, lesson.getTitle());
+            bundle.putString(Const.COURSE_CHANGE_TITLE, lesson.getTitle());
             MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
         }
     }
