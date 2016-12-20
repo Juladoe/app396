@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
@@ -19,6 +18,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
@@ -76,7 +76,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     private int mTitleBarHeight;
     public int mMediaViewHeight = 210;
     private SystemBarTintManager tintManager;
-    protected LoadDialog mLoading;
+    protected View mLoadingView;
+    protected LoadDialog mProcessDialog;
     protected MenuPop mMenuPop;
 
     @Override
@@ -131,9 +132,11 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mMenu = findViewById(R.id.iv_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvInclass = findViewById(R.id.tv_inclass);
+        mLoadingView = findViewById(R.id.ll_frame_load);
         mPlayLastLayout = findViewById(R.id.layout_play_last);
         mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
+
         initFragment(mFragments);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mContentVp.setAdapter(mAdapter);
@@ -156,7 +159,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         headParams.height = AppUtil.dp2px(this, 44 + mTitleBarHeight);
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
-        mLoading = LoadDialog.create(this);
         mMenuPop = new MenuPop(this, mMenu);
     }
 
@@ -209,9 +211,40 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         });
     }
 
+    protected void showProcessDialog() {
+        if (mProcessDialog == null) {
+            mProcessDialog = LoadDialog.create(this);
+        }
+        mProcessDialog.show();
+    }
+
+    protected void hideProcesDialog() {
+        if (mProcessDialog == null) {
+            return;
+        }
+        if (mProcessDialog.isShowing()) {
+            mProcessDialog.dismiss();
+        }
+    }
+
+    protected void setLoadStatus(int visibility) {
+        mLoadingView.setVisibility(visibility);
+    }
+
     protected abstract void initData();
 
     protected abstract void refreshView();
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mProcessDialog != null) {
+            if (mProcessDialog.isShowing()) {
+                mProcessDialog.dismiss();
+            }
+            mProcessDialog = null;
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -302,8 +335,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 screenLock();
                 break;
             case Const.COURSE_CHANGE:
-                courseChange((CourseCatalogue.LessonsBean)
-                        bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
+                courseChange((LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.COURSE_HASTRIAL:
                 courseHastrial(bundle.getString(Const.COURSE_CHANGE_STATE)
@@ -344,16 +376,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     /**
      * todo 获得课程相关信息
      */
-    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
-        String type = lesson.getType();
-        switch (type) {
-            case "audio":
-
-                break;
-            case "video":
-
-                break;
-        }
+    protected void courseChange(LessonItem lessonItem) {
     }
 
     private boolean isScreenLock = false;
@@ -423,7 +446,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    private void coursePause() {
+    protected void coursePause() {
         if (!mIsFullScreen) {
             mParent.setCanScroll(true);
             initViewPager();

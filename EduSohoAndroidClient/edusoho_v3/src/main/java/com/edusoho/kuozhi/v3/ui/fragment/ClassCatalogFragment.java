@@ -33,10 +33,6 @@ public class ClassCatalogFragment extends Fragment {
     public ClassCatalogFragment() {
     }
 
-    public ClassCatalogFragment(String mClassRoomId) {
-        this.mClassRoomId = mClassRoomId;
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -47,6 +43,7 @@ public class ClassCatalogFragment extends Fragment {
     }
 
     private void initData() {
+        mClassRoomId = getArguments().getString("id");
         RequestUrl requestUrl = ((ClassroomActivity) getActivity()).app.bindNewUrl(Const.CLASS_CATALOG + "?classRoomId=" + mClassRoomId, false);
         ((ClassroomActivity) getActivity()).app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
@@ -71,4 +68,6 @@ public class ClassCatalogFragment extends Fragment {
         ClassCatalogueAdapter classAdapter = new ClassCatalogueAdapter(getActivity(), mClassCatalogue.getCourses());
         mLvClass.setAdapter(classAdapter);
     }
+
+    public void reFreshView(){}
 }

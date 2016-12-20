@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
@@ -68,23 +69,19 @@ public class CourseDetailFragment extends BaseDetailFragment {
         initData();
     }
 
-
     protected void initData() {
-        mLoading.show();
+        setLoadViewStatus(View.VISIBLE);
         CourseDetailModel.getCourseDetail(mCourseId, new ResponseCallbackListener<CourseDetail>() {
             @Override
             public void onSuccess(CourseDetail data) {
                 mCourseDetail = data;
                 refreshView();
-                mLoading.dismiss();
+                setLoadViewStatus(View.GONE);
             }
 
             @Override
             public void onFailure(String code, String message) {
-                mLoading.dismiss();
-                if (message.equals("课程不存在")) {
-                    CommonUtil.shortToast(mContext, "课程不存在");
-                }
+                setLoadViewStatus(View.GONE);
             }
         });
         CourseDetailModel.getCourseReviews(mCourseId, "5", "0",
@@ -329,8 +326,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 String.format("main#/userinfo/%s",
                         id)
         );
-        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
-                , EdusohoApp.app.mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
+                , getActivity(), new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.WEB_URL, url);

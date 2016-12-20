@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -39,7 +40,6 @@ public class LessonProvider extends ModelProvider {
     }
 
     public ProviderListener<LinkedHashMap> getLiveRoom(String roomUrl) {
-        School school = SchoolUtil.getDefaultSchool(mContext);
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
         String token = tokenMap.get("token").toString();
 
@@ -48,6 +48,21 @@ public class LessonProvider extends ModelProvider {
 
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
+    }
+
+    public ProviderListener<LessonStatus> getLearnState(int lessonId, int courseId) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
+        String token = tokenMap.get("token").toString();
+
+        String url = String.format("%s/%s?lessonId=%d&courseId=%d", school.url, Const.LESSON_STATUS, lessonId, courseId);
+        RequestUrl requestUrl = new RequestUrl(url);
+        requestUrl.heads.put("token", token);
+
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<LessonStatus>(){});
 
         return requestOption.build();
     }

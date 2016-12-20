@@ -69,18 +69,18 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     }
 
     protected void initData() {
-        mLoading.show();
+        setLoadViewStatus(View.VISIBLE);
         CourseDetailModel.getClassroomDetail(mClassroomId, new ResponseCallbackListener<ClassroomDetail>() {
             @Override
             public void onSuccess(ClassroomDetail data) {
-                mLoading.dismiss();
+                setLoadViewStatus(View.GONE);
                 mClassroomDetail = data;
                 refreshView();
             }
 
             @Override
             public void onFailure(String code, String message) {
-                mLoading.dismiss();
+                setLoadViewStatus(View.GONE);
             }
         });
         CourseDetailModel.getClassroomReviews(mClassroomId, "5", "0",
