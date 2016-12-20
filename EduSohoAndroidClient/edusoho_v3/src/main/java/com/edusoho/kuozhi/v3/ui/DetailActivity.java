@@ -129,7 +129,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mPlayLastLayout = findViewById(R.id.layout_play_last);
         mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
-//        initFragment(mFragments);
+        initFragment(mFragments);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mContentVp.setAdapter(mAdapter);
         ViewGroup.LayoutParams params = mMediaRlayout.getLayoutParams();
@@ -301,14 +301,15 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 break;
             case Const.COURSE_HASTRIAL:
                 courseHastrial(bundle.getString(Const.COURSE_CHANGE_STATE)
-                        , bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT));
+                        , bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT)
+                        , bundle.getString(Const.COURSE_CHANGE_TITLE));
                 break;
         }
     }
 
-    protected void courseHastrial(String state, boolean hasTrial) {
+    protected void courseHastrial(String state, boolean hasTrial, String title) {
         mPlayLastLayout.setVisibility(View.GONE);
-        switch (state){
+        switch (state) {
             case Const.COURSE_CHANGE_STATE_NONE:
                 mPlayLayout.setEnabled(true);
                 if (hasTrial) {
@@ -324,7 +325,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(true);
                 mPlayLastLayout.setVisibility(View.VISIBLE);
-
+                mTvLastTitle.setText(String.valueOf(title));
                 break;
             case Const.COURSE_CHANGE_STATE_FINISH:
                 mTvPlay.setText("学习完成");
