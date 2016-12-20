@@ -309,7 +309,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 playAudioLesson(mContinueLessonItem);
                 return;
             case "video":
-                playVideoLesson(mContinueLessonItem.mediaUri);
+                playVideoLesson(mContinueLessonItem);
                 return;
         }
 
@@ -322,13 +322,15 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         }
     }
 
-    private void playVideoLesson(String mediaUrl) {
-        Uri uri = Uri.parse(mediaUrl);
+    private void playVideoLesson(LessonItem lessonItem) {
+        Uri uri = Uri.parse(lessonItem.mediaUri);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(LessonAudioPlayerFragment.PLAY_URI,
+        bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(mCourseId));
+        bundle.putInt(Const.LESSON_ID, lessonItem.id);
+        bundle.putString(LessonVideoPlayerFragment.PLAY_URI,
                 String.format("%s://%s%s", uri.getScheme(), uri.getHost(), uri.getPath()));
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
