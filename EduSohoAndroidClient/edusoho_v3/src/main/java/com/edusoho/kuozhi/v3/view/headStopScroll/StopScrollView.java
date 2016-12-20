@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.view.headStopScroll;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
 

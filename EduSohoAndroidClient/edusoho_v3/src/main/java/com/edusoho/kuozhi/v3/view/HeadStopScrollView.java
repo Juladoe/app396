@@ -3,13 +3,10 @@ package com.edusoho.kuozhi.v3.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ScrollView;
-
-import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +55,7 @@ public class HeadStopScrollView extends ScrollView {
         setVerticalScrollBarEnabled(false);
     }
 
-//    private List<Boolean> mCanScrolls = new ArrayList<>();
+    //    private List<Boolean> mCanScrolls = new ArrayList<>();
 //    private List<Integer> mScrollY = new ArrayList<>();
     private int mCheckNum = 0;
     private boolean mStay = false;
@@ -107,7 +104,7 @@ public class HeadStopScrollView extends ScrollView {
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         if (t >= firstViewHeight && t - oldt >= 0) {
-            canScroll = false;
+            setCanScroll(false);
         }
 //        if (mScrollY.size() > mCheckNum) {
 //            mScrollY.set(mCheckNum, t);
@@ -136,6 +133,7 @@ public class HeadStopScrollView extends ScrollView {
 
     public void setCanScroll(boolean isScrolled) {
         this.canScroll = isScrolled;
+        isTab = !canScroll;
 //        if (mCanScrolls.size() > mCheckNum) {
 //            mCanScrolls.set(mCheckNum, isScrolled);
 //        }
@@ -209,8 +207,14 @@ public class HeadStopScrollView extends ScrollView {
                 startY = 0;
                 break;
         }
+        if (!canScroll == isTab) {
+            ev.setAction(MotionEvent.ACTION_DOWN);
+            isTab = !isTab;
+        }
         return super.dispatchTouchEvent(ev);
     }
+
+    private boolean isTab = false;
 
     public interface CanStopView {
         void setCanScroll(boolean canScroll);

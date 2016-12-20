@@ -57,6 +57,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected TextView mTvCollect;
     protected TextView mTvPlay;
     protected TextView mTvAdd;
+    protected View mPlayButtomLayout;
     protected RelativeLayout mMediaRlayout;
     protected ImageView mIvMediaBackground;
     protected ViewPager mContentVp;
@@ -118,6 +119,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mIvShare2 = findViewById(R.id.iv_share2);
         mPlayLayout2 = findViewById(R.id.play_layout2);
         mPlayLayout = findViewById(R.id.play_layout);
+        mPlayButtomLayout = findViewById(R.id.layout_play_buttom);
         mContentVp = (ViewPager) findViewById(R.id.vp_content);
         mIntroLayout = (RelativeLayout) findViewById(R.id.intro_rlayout);
         mHourLayout = (RelativeLayout) findViewById(R.id.hour_rlayout);
@@ -151,7 +153,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         initViewPager();
         ViewGroup.LayoutParams headParams =
                 mHeadRlayout2.getLayoutParams();
-        headParams.height = AppUtil.dp2px(this, 43 + mTitleBarHeight);
+        headParams.height = AppUtil.dp2px(this, 44 + mTitleBarHeight);
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
         mLoading = LoadDialog.create(this);
@@ -250,7 +252,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
     protected abstract void add();
 
-    protected void collect(){}
+    protected void collect() {
+    }
 
     protected abstract void share();
 
@@ -403,8 +406,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             }
             mMenuPop.setVisibility(true);
         }
-        mPlayLayout.setVisibility(View.GONE);
-        mPlayLastLayout.setVisibility(View.GONE);
+        mPlayButtomLayout.setVisibility(View.GONE);
         mIsPlay = true;
         mParent.setStay(true);
     }
@@ -483,14 +485,14 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RESULT_REFRESH){
-            if(mLoading.isShowing()) {
+        if (requestCode == RESULT_REFRESH) {
+            if (mLoading.isShowing()) {
                 mLoading.dismiss();
             }
             initData();
         }
-        if(requestCode == RESULT_LOGIN){
-            if(mLoading.isShowing()) {
+        if (requestCode == RESULT_LOGIN) {
+            if (mLoading.isShowing()) {
                 mLoading.dismiss();
             }
         }
