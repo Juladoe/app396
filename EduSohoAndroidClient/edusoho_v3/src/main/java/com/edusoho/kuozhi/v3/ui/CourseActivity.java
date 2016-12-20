@@ -44,6 +44,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         mCourseId = intent.getStringExtra(COURSE_ID);
         if (mCourseId == null || mCourseId.trim().length() == 0) {
             finish();
+            return;
         }
         mMediaViewHeight = 210;
         initView();

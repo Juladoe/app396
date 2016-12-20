@@ -194,7 +194,7 @@ public class CourseCatalogFragment extends BaseFragment {
             bundle.putString(Const.COURSE_CHANGE_STATE, "0");
         }
         bundle.putBoolean(Const.COURSE_HASTRIAL_RESULT, true);
-        new LessonProvider(mContext).getLesson(Integer.parseInt(lesson.getId())).success(new NormalCallback<LessonItem>() {
+        new LessonProvider(mContext).getLesson(lesson.getId()).success(new NormalCallback<LessonItem>() {
             @Override
             public void success(LessonItem obj) {
                 CourseLessonType courseLessonType = CourseLessonType.value(lesson.getType());
@@ -204,34 +204,33 @@ public class CourseCatalogFragment extends BaseFragment {
                         MessageEngine.getInstance().sendMsg(Const.COURSE_PPT, bundle);
                         break;
                     case LIVE:
-                        MessageEngine.getInstance().sendMsg(Const.COURSE_LIVE, bundle);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_CATALOG_LIVE, bundle);
                         break;
                     case TEXT:
-                        MessageEngine.getInstance().sendMsg(Const.COURSE_TEXT, bundle);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_CATALOG_TEXT, bundle);
                         break;
                     case AUDIO:
-                        MessageEngine.getInstance().sendMsg(Const.COURSE_AUDIO, bundle);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_CATALOG_AUDIO, bundle);
                         break;
                     case VIDEO:
-                        MessageEngine.getInstance().sendMsg(Const.COURSE_VIDEO, bundle);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_CATALOG_VIDEO, bundle);
                         break;
                     case TESTPAPER:
-                        MessageEngine.getInstance().sendMsg(Const.COURSE_TESTPAPER, bundle);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_CATALOG_TESTPAPER, bundle);
                         break;
                     case DOCUMENT:
-                        MessageEngine.getInstance().sendMsg(Const.COURSE_DOCUMENT, bundle);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_CATALOG_DOCUMENT, bundle);
                         break;
                     case FLASH:
-                        MessageEngine.getInstance().sendMsg(Const.COUSRE_FLASH, bundle);
+                        MessageEngine.getInstance().sendMsg(Const.COUSRE_CATALOG_FLASH, bundle);
                         break;
                     case EMPTY:
-                        MessageEngine.getInstance().sendMsg(Const.COURSE_EMPTH, null);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_CATALOG_EMPTH, null);
                 }
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-
             }
         });
         MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);

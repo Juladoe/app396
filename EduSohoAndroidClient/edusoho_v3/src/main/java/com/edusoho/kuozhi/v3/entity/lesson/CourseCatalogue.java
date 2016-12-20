@@ -30,11 +30,11 @@ public class CourseCatalogue {
         this.lessons = lessons;
     }
 
-    public static class LessonsBean implements Serializable{
+    public static class LessonsBean implements Serializable {
 
         private String content;
         private String courseId;
-        private String id;
+        private int id;
         private String itemType;
         private String length;
         private String number;
@@ -58,11 +58,11 @@ public class CourseCatalogue {
             this.courseId = courseId;
         }
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
-        public void setId(String id) {
+        public void setId(int id) {
             this.id = id;
         }
 
