@@ -40,6 +40,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         mClassroomId = intent.getStringExtra(CLASSROOM_ID);
         if (mClassroomId == null || mClassroomId.trim().length() == 0) {
             finish();
+            return;
         }
         mMediaViewHeight = 281;
         initView();
