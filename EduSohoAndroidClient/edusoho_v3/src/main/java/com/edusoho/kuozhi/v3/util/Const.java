@@ -138,7 +138,11 @@ public class Const {
     public static final String COURSE_START = "course_start";//开始课程
     public static final String COURSE_CHANGE = "course_change";//课程切换
     public static final String COURSE_CHANGE_OBJECT = "course_change_object";//课程切换
-    public static final String COURSE_CHANGE_STATE = "course_change_state";//课程切换
+    public static final String COURSE_CHANGE_TITLE = "course_change_title";//课程名字
+    public static final String COURSE_CHANGE_STATE = "course_change_state";//课程状态
+    public static final String COURSE_CHANGE_STATE_NONE = "0";//课程状态,未开始
+    public static final String COURSE_CHANGE_STATE_STARTED = "1";//课程状态,已开始
+    public static final String COURSE_CHANGE_STATE_FINISH = "2";//课程状态,学完了
     public static final String COURSE_SHOW_BAR = "course_show_bar";//导航栏
     public static final String COURSE_HIDE_BAR = "course_hide_bar";//导航栏
     public static final String COURSE_PAUSE = "course_pause";//暂停课程后的UI处理

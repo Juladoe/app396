@@ -58,14 +58,20 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     @Override
     protected void initFragment(List<Fragment> fragments) {
-//        CourseDetailFragment.instantiate()
-        Fragment fragment = app.mEngine.runPluginWithFragment("CourseDetailFragment", this, new PluginFragmentCallback() {
+        Fragment detailfragment = app.mEngine.runPluginWithFragment("CourseDetailFragment", this, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString("id",mCourseId);
+                bundle.putString("id", mCourseId);
             }
         });
-        fragments.add(fragment);
+        fragments.add(detailfragment);
+        Fragment catafragment = app.mEngine.runPluginWithFragment("CourseCatalogFragment", this, new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putString("id", mCourseId);
+            }
+        });
+        fragments.add(catafragment);
     }
 
     protected void initEvent() {
@@ -80,6 +86,14 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                         @Override
                         public void onSuccess(CourseDetail data) {
                             mCourseDetail = data;
+                            if (mFragments.size() >= 2 && mFragments.get(1) != null
+                                    && mFragments.get(1) instanceof CourseCatalogFragment) {
+                                if (mCourseDetail.getMember() == null) {
+                                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
+                                }else{
+                                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+                                }
+                            }
                             refreshView();
                             mLoading.dismiss();
                         }
@@ -266,7 +280,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (v.getId() == R.id.hour_rlayout) {
             Fragment fragment = mFragments.get(1);
             if (fragment != null && fragment instanceof CourseCatalogFragment) {
-                ((CourseCatalogFragment)fragment).reFreshView(true);
+                ((CourseCatalogFragment) fragment).reFreshView(true);
             }
         }
     }
