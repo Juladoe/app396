@@ -225,8 +225,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 String.format("main#/studentlist/%s/%s",
                         "course", mCourseId)
         );
-        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
-                , EdusohoApp.app.mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
+                , mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.WEB_URL, url);
@@ -247,8 +247,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 String.format("main#/viplist/%s/%s",
                         "course", mCourseId)
         );
-        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
-                , EdusohoApp.app.mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
+                , mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.WEB_URL, url);
