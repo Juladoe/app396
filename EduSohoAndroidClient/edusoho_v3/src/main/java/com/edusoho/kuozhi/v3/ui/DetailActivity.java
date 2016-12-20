@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
 import android.view.View;
@@ -205,7 +207,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     protected abstract void initData();
+
     protected abstract CourseDetail getCourseDetail();
+
     protected abstract void refreshView();
 
     @Override
@@ -305,10 +309,21 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             case Const.COURSE_HASTRIAL:
                 courseHastrial(bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT));
                 break;
+            case Const.COURSE_PPT:
+                replaceFragment("PptLessonFragment");
+                break;
         }
     }
 
-    protected  void courseHastrial(boolean has){
+    private void replaceFragment(String tag) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction ft = fragmentManager.beginTransaction();
+        Fragment fragment = app.mEngine.runPluginWithFragment(tag, mActivity, null);
+        ft.replace(R.id.media_rlayout, fragment, tag);
+        ft.commit();
+    }
+
+    protected void courseHastrial(boolean has) {
         if (has) {
             mTvPlay.setText("开始试学");
             mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
@@ -446,6 +461,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.COURSE_SHOW_BAR),
                 new MessageType(Const.COURSE_PAUSE),
                 new MessageType(Const.SCREEN_LOCK),
+                new MessageType(Const.COURSE_PPT),
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
 }
