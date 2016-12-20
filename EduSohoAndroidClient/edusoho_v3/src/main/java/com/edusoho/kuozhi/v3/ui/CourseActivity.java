@@ -10,7 +10,6 @@ import android.view.View;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
@@ -51,7 +50,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void initView() {
         super.initView();
-
     }
 
     @Override
@@ -233,7 +231,39 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
          * todo 播放课程
          */
         super.courseStart();
+        playVideoLesson();
     }
 
+    private void playVideoLesson() {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
+        LessonAudioPlayerFragment fragment = new LessonAudioPlayerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().largePicture);
+        bundle.putString(LessonAudioPlayerFragment.PLAY_URI,
+                "http://yinyueshiting.baidu.com/data2/music/64011738/2771611482105661128.mp3?xcode=6dc9fc7b26d1ff315fa4084c7da1aa86");
+        fragment.setArguments(bundle);
+        transaction.replace(R.id.fl_header_container, fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_header_container);
+        if (fragment != null && fragment instanceof LessonAudioPlayerFragment) {
+            ((LessonAudioPlayerFragment) fragment).destoryService();
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        if (v.getId() == R.id.hour_rlayout) {
+            Fragment fragment = mFragments.get(1);
+            if (fragment != null && fragment instanceof CourseCatalogFragment) {
+                ((CourseCatalogFragment)fragment).reFreshView(true);
+            }
+        }
+    }
 }

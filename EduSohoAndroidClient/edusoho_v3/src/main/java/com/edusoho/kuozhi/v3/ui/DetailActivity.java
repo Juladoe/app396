@@ -1,17 +1,12 @@
 package com.edusoho.kuozhi.v3.ui;
 
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,7 +20,6 @@ import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -179,7 +173,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -222,7 +215,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mContentVp.setCurrentItem(2);
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
-
         } else if (v.getId() == R.id.iv_share ||
                 v.getId() == R.id.iv_share2) {
             share();

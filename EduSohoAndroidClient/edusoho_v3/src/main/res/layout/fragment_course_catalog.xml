@@ -6,9 +6,9 @@
     android:scrollbars="none">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <RelativeLayout
             android:id="@+id/rl_space"
@@ -19,40 +19,40 @@
             android:layout_marginRight="@dimen/common_margin_right"
             android:gravity="center_vertical"
             android:visibility="gone">
+
             <TextView
                 android:id="@+id/tv_space"
-                android:text="可用空间: "
-                android:textSize="@dimen/font_s"
-                android:textColor="@color/secondary_font_color"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="可用空间: "
+                android:textColor="@color/secondary_font_color"
+                android:textSize="@dimen/font_s" />
 
             <TextView
                 android:id="@+id/tv_course"
-                android:text="@string/cache_course"
-                android:textSize="@dimen/font_s"
-                android:textColor="@color/primary_color"
-                android:layout_alignParentRight="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-            <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-                android:text="@string/catalog_cache"
-                android:textSize="@dimen/font_m"
-                android:layout_toLeftOf="@id/tv_course"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="@string/cache_course"
                 android:textColor="@color/primary_color"
-                android:layout_marginRight="@dimen/common_margin" />
+                android:textSize="@dimen/font_s" />
+
+            <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/common_margin"
+                android:layout_toLeftOf="@id/tv_course"
+                android:text="@string/catalog_cache"
+                android:textColor="@color/primary_color"
+                android:textSize="@dimen/font_m" />
         </RelativeLayout>
 
         <com.edusoho.kuozhi.v3.view.FixHeightListView
             android:id="@+id/lv_catalog"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:divider="@null">
-        </com.edusoho.kuozhi.v3.view.FixHeightListView>
+            android:divider="@null"
+            android:scrollbars="none"></com.edusoho.kuozhi.v3.view.FixHeightListView>
 
     </LinearLayout>
 
