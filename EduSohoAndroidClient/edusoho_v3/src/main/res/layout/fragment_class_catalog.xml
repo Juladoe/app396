@@ -5,12 +5,21 @@
     android:orientation="vertical"
     android:scrollbars="none">
 
-    <com.edusoho.kuozhi.v3.view.FixHeightListView
-        android:id="@+id/lv_catalog"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbars="none"
-        android:divider="@null">
-    </com.edusoho.kuozhi.v3.view.FixHeightListView>
+        android:layout_height="match_parent">
+
+        <com.edusoho.kuozhi.v3.view.FixHeightListView
+            android:id="@+id/lv_catalog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:dividerHeight="1dp"
+            android:layout_marginLeft="@dimen/common_margin"
+            android:layout_marginRight="@dimen/common_margin"
+            android:divider="@color/disabled_hint_color">
+        </com.edusoho.kuozhi.v3.view.FixHeightListView>
+
+    </RelativeLayout>
 
 </com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>
