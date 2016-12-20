@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
-import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -478,20 +477,4 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
-
-   /* @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == RESULT_REFRESH){
-            if(mLoading.isShowing()) {
-                mLoading.dismiss();
-            }
-            initData();
-        }
-        if(requestCode == RESULT_LOGIN){
-            if(mLoading.isShowing()) {
-                mLoading.dismiss();
-            }
-        }
-    }*/
 }

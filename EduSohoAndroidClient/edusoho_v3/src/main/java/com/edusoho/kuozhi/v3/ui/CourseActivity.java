@@ -272,7 +272,9 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(true);
                 mPlayLastLayout.setVisibility(View.VISIBLE);
-                mTvLastTitle.setText(lessonItem.title);
+                if (lessonItem != null) {
+                    mTvLastTitle.setText(lessonItem.title);
+                }
                 break;
             case Const.COURSE_CHANGE_STATE_FINISH:
                 mTvPlay.setText("学习完成");
@@ -360,16 +362,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        super.onClick(v);
-        if (v.getId() == R.id.hour_rlayout) {
-            Fragment fragment = mFragments.get(1);
-            if (fragment != null && fragment instanceof CourseCatalogFragment) {
-                ((CourseCatalogFragment)fragment).reFreshView(true);
-            }
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
