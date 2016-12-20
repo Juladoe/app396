@@ -73,6 +73,8 @@ public class CourseCatalogFragment extends BaseFragment {
         mLvCatalog = (FixHeightListView) view.findViewById(R.id.lv_catalog);
         tvSpace = (TextView) view.findViewById(R.id.tv_space);
         tvSpace.setOnClickListener(getCacheCourse());
+        mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, mIsJoin);
+        mLvCatalog.setAdapter(mAdapter);
     }
 
     private void initCatalogue() {
@@ -102,8 +104,6 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     public void initLessonCatalog() {
-        mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, mIsJoin);
-        mLvCatalog.setAdapter(mAdapter);
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -164,11 +164,13 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     public void sendMsg(String state, boolean isJoin, CourseCatalogue.LessonsBean lesson){
-        Bundle bundle = new Bundle();
-        bundle.putString(Const.COURSE_CHANGE_STATE, "2");
-        bundle.putBoolean(Const.COURSE_HASTRIAL_RESULT, false);
-        bundle.putSerializable(Const.COURSE_CHANGE_TITLE, lesson);
-        MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
+        if (lesson != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(Const.COURSE_CHANGE_STATE, state);
+            bundle.putBoolean(Const.COURSE_HASTRIAL_RESULT, isJoin);
+            bundle.putSerializable(Const.COURSE_CHANGE_TITLE, lesson.getTitle());
+            MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
+        }
     }
 
     public void startLessonActivity(int position) {

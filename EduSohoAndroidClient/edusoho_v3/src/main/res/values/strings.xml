@@ -219,7 +219,7 @@
     <string name="catalog_lesson_doucument">&#xe682;</string>
     <string name="catalog_lesson_live">&#xe68d;</string>
     <string name="catalog_lesson_ppt">&#xe68f;</string>
-    <string name="catalog_lesson_text">&#xe68b;</string>
+    <string name="catalog_lesson_text">&#xe690;</string>
     <string name="catalog_lesson_flash">&#xe689;</string>
     <string name="cache_course">缓存课程</string>
     <string name="cache_hint">本地剩余空间不足，无法缓存</string>
