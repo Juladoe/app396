@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.v3.model.bal;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.io.Serializable;
 
 /**
@@ -43,6 +41,7 @@ public class Classroom implements Serializable {
     public String showable;
     public String buyable;
     public String maxRate;
+    public String classroom_course_id;
     public Teacher[] teachers;
     public String convNo;
 }
