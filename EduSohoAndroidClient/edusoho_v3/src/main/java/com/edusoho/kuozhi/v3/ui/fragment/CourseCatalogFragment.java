@@ -84,7 +84,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 });
                 if (mCourseCatalogue.getLessons().size() != 0) {
                     initLessonCatalog();
-                    !TextUtils.isEmpty(app.token) &&
+//                    !TextUtils.isEmpty(app.token) &&
                 } else {
                     CommonUtil.shortCenterToast(getActivity(), "该课程没有课时");
                 }
