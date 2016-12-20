@@ -135,9 +135,14 @@ public class Const {
     public static final String COURSE_HASTRIAL = "course_hastrial";//是否有试学
     public static final String COURSE_HASTRIAL_RESULT = "course_hastrial_result";
     public static final String COURSE_REFRESH = "course_refresh";//刷新课程Activity
-    public static final String COURSE_START= "course_start";//开始课程
-    public static final String COURSE_CHANGE= "course_change";//课程切换
-    public static final String COURSE_CHANGE_OBJECT= "course_change_object";//课程切换
+    public static final String COURSE_START = "course_start";//开始课程
+    public static final String COURSE_CHANGE = "course_change";//课程切换
+    public static final String COURSE_CHANGE_OBJECT = "course_change_object";//课程切换
+    public static final String COURSE_CHANGE_TITLE = "course_change_title";//课程名字
+    public static final String COURSE_CHANGE_STATE = "course_change_state";//课程状态
+    public static final String COURSE_CHANGE_STATE_NONE = "0";//课程状态,未开始
+    public static final String COURSE_CHANGE_STATE_STARTED = "1";//课程状态,已开始
+    public static final String COURSE_CHANGE_STATE_FINISH = "2";//课程状态,学完了
     public static final String COURSE_SHOW_BAR = "course_show_bar";//导航栏
     public static final String COURSE_HIDE_BAR = "course_hide_bar";//导航栏
     public static final String COURSE_PAUSE = "course_pause";//暂停课程后的UI处理
@@ -311,12 +316,19 @@ public class Const {
     public static final String GET_UPLOAD_INFO = "/file/%s/upload/url?length=%d&filename=%s";
     public static final String SAVE_UPLOAD_INFO = "/file/%d/upload/succeed";
     public static final String GET_LATEST_OFFLINE_MSG = "/message/%d/newest/list";
-
+    public static final String LESSON_IDS = "lesson_ids";
     /**
      * 获取课程状态（是否包含资料，学习状态）
      */
     public static final String LESSON_STATUS = "Lesson/getLessonStatus";
-
+    /**
+     * 获取课程目录
+     */
+    public static final String LESSON_CATALOG = "/mapi_v2/Lesson/getCourseLessons";
+    /**
+     * 获取班级目录
+     */
+    public static final String CLASS_CATALOG = "/mapi_v2/ClassRoom/getClassRoomCourses";
     /**
      * 获取考试课程详情
      */

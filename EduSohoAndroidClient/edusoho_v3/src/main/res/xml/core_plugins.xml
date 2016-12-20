@@ -212,6 +212,26 @@
         version="1.0" />
 
     <plugin
+        name="CourseDetailFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseCatalogFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment"
+        version="1.0" />
+
+    <plugin
+        name="ClassCatalogFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment"
+        version="1.0" />
+
+    <plugin
+        name="ClassroomDetailFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.ClassroomDetailFragment"
+        version="1.0" />
+
+    <plugin
         name="EdusohoMainService"
         package="com.edusoho.kuozhi.v3.service.EdusohoMainService"
         version="1.0" />

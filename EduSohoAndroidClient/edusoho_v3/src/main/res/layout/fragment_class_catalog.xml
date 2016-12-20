@@ -1,42 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+<com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:scrollbars="none">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_class"
+    <com.edusoho.kuozhi.v3.view.FixHeightListView
+        android:id="@+id/lv_catalog"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scrollbars="none"
+        android:divider="@null">
+    </com.edusoho.kuozhi.v3.view.FixHeightListView>
 
-    </android.support.v7.widget.RecyclerView>
-
-    <LinearLayout
-        android:id="@+id/ll_join_course"
-        android:orientation="horizontal"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-
-        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-            android:id="@+id/tv_call"
-            android:text="@string/catalog_class_call"
-            android:textSize="@dimen/font_xl"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-
-        <TextView
-            android:id="@+id/tv_join_course"
-            android:layout_weight="6"
-            android:layout_width="0dp"
-            android:text="加入班级"
-            android:gravity="center"
-            android:textSize="@dimen/font_xl"
-            android:background="@color/primary_color"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-    
-</RelativeLayout>
+</com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>

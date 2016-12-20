@@ -70,6 +70,8 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
     protected String mTeacherId;
     protected LoadDialog mLoading;
     protected View mPeopleLayout;
+    protected View mTvStudentNone;
+    protected View mReviewNoneLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -111,9 +113,11 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         mLoading = LoadDialog.create(getActivity());
         mPeopleLayout = view.findViewById(R.id.people_rlayout);
         mTeacherLayout = view.findViewById(R.id.teacher_rlayout);
+        mTvStudentNone = view.findViewById(R.id.tv_student_none);
+        mReviewNoneLayout = view.findViewById(R.id.layout_review_none);
     }
 
-    protected  void refreshView(){
+    protected void refreshView() {
         mTvTitleDesc.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -126,14 +130,16 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
                     mTvTitleFull.setVisibility(View.VISIBLE);
                     mTvTitleFull.setText(getString(R.string.new_font_unfold));
                     mTvTitleDesc.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    if(params != null){
-                        params.setMargins(0, AppUtil.dp2px(mContext,38),0,0);
+                    if (params != null) {
+                        params.setMargins(0, AppUtil.dp2px(mContext, 38),
+                                AppUtil.dp2px(mContext, 15), 0);
                         mVTitleLine.setLayoutParams(params);
                     }
                 } else {
                     mTvTitleFull.setVisibility(View.GONE);
-                    if(params != null){
-                        params.setMargins(0, AppUtil.dp2px(mContext,25),0,0);
+                    if (params != null) {
+                        params.setMargins(0, AppUtil.dp2px(mContext, 25),
+                                AppUtil.dp2px(mContext, 15), 0);
                         mVTitleLine.setLayoutParams(params);
                     }
                 }

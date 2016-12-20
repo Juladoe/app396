@@ -71,8 +71,8 @@ public class ShareUtil {
             mLocalImagePath = imageFile.getAbsolutePath();
             mOneKeyShare.setImagePath(mLocalImagePath);
         } else {
-        }
 
+        }
         mShareSite = ShareSite;
         initOneKeyShare();
         initDialog(type);

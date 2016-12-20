@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <com.edusoho.kuozhi.v3.view.HeadStopScrollView
@@ -24,7 +25,8 @@
             <RelativeLayout
                 android:id="@+id/media_rlayout"
                 android:layout_width="match_parent"
-                android:layout_height="210dp">
+                android:layout_height="210dp"
+                android:background="#333">
 
                 <ImageView
                     android:id="@+id/iv_media_background"
@@ -33,11 +35,46 @@
                     android:scaleType="centerCrop" />
 
                 <LinearLayout
+                    android:id="@+id/layout_play_last"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:paddingLeft="15dp"
+                    android:visibility="gone"
+                    android:paddingRight="15dp"
+                    android:layout_marginTop="60dp"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="上次学到:"
+                        android:textSize="@dimen/font_s"
+                        android:textColor="@color/disabled2_hint_color"
+                        />
+
+                    <TextView
+                        android:id="@+id/tv_last_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/font_l"
+                        android:maxLines="1"
+                        android:maxWidth="210dp"
+                        android:ellipsize="end"
+                        android:textColor="@color/disabled2_hint_color"
+                        android:layout_marginTop="15dp"
+                        />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/play_layout"
                     android:layout_width="143dp"
                     android:layout_height="41dp"
+                    android:layout_below="@+id/layout_play_last"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginTop="20dp"
                     android:background="@drawable/shape_play_background"
                     android:gravity="center"
                     android:orientation="horizontal">
@@ -59,6 +96,11 @@
                         android:textSize="@dimen/font_l" />
 
                 </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/fl_header_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"></FrameLayout>
             </RelativeLayout>
 
             <RelativeLayout
@@ -128,6 +170,7 @@
                         android:id="@+id/review_rlayout"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:visibility="gone"
                         android:layout_weight="1">
 
                         <TextView
@@ -148,6 +191,7 @@
                             android:visibility="gone" />
                     </RelativeLayout>
                 </LinearLayout>
+
             </RelativeLayout>
 
             <android.support.v4.view.ViewPager
@@ -155,6 +199,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/tab_rlayout" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="7dp"
+                android:layout_below="@+id/tab_rlayout"
+                android:background="@drawable/shape_line_shadow"
+                />
         </RelativeLayout>
     </com.edusoho.kuozhi.v3.view.HeadStopScrollView>
 
@@ -220,7 +271,7 @@
     <RelativeLayout
         android:id="@+id/head_rlayout2"
         android:layout_width="match_parent"
-        android:layout_height="63dp"
+        android:layout_height="64dp"
         android:background="@color/disabled2_hint_color"
         android:paddingTop="20dp"
         android:visibility="gone">

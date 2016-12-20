@@ -1,16 +1,23 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.ClassCatalogueAdapter;
+import com.edusoho.kuozhi.v3.entity.lesson.ClassCatalogue;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.FixHeightListView;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Created by DF on 2016/12/15.
@@ -18,33 +25,50 @@ import com.edusoho.kuozhi.v3.adapter.ClassCatalogueAdapter;
 
 public class ClassCatalogFragment extends Fragment {
 
+    public String mClassRoomId = "0";
+    private FixHeightListView mLvClass;
+    private ClassCatalogue mClassCatalogue;
 
-    private LinearLayout llCall;
-    private RecyclerView rlClass;
 
     public ClassCatalogFragment() {
     }
 
+    public ClassCatalogFragment(String mClassRoomId) {
+        this.mClassRoomId = mClassRoomId;
+    }
+
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_class_catalog, container, false);
-        rlClass = (RecyclerView) view.findViewById(R.id.rv_class);
-        llCall = (LinearLayout) view.findViewById(R.id.ll_join_course);
-
-        initView();
+        mLvClass = (FixHeightListView) view.findViewById(R.id.lv_catalog);
+        initData();
         return view;
+    }
 
+    private void initData() {
+        RequestUrl requestUrl = ((ClassroomActivity) getActivity()).app.bindNewUrl(Const.CLASS_CATALOG + "?classRoomId=" + mClassRoomId, false);
+        ((ClassroomActivity) getActivity()).app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                mClassCatalogue = ((ClassroomActivity) getActivity()).parseJsonValue(response, new TypeToken<ClassCatalogue>() {
+                });
+                if (mClassCatalogue != null && mClassCatalogue.getCourses() != null) {
+                    initView();
+                } else {
+                    CommonUtil.shortCenterToast(getActivity(), "该班级没有课程");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
     }
 
     private void initView() {
-        //判断用户是否加入了班级,未加入显示加入框
-        if(!true){
-            llCall.setVisibility(View.INVISIBLE);
-        }
-        ClassCatalogueAdapter classAdapter = new ClassCatalogueAdapter(getActivity());
-        rlClass.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rlClass.setAdapter(classAdapter);
+        ClassCatalogueAdapter classAdapter = new ClassCatalogueAdapter(getActivity(), mClassCatalogue.getCourses());
+        mLvClass.setAdapter(classAdapter);
     }
-
-
 }

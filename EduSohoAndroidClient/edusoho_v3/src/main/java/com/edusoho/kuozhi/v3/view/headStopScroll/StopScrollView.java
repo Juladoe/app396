@@ -1,23 +1,13 @@
 package com.edusoho.kuozhi.v3.view.headStopScroll;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Rect;
-import android.os.Bundle;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ScrollView;
 
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Zhang on 2016/12/9.

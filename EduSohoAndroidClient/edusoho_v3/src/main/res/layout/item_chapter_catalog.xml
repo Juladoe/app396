@@ -3,7 +3,7 @@
     android:background="@color/disabled1_hint_color"
     android:layout_width="match_parent"
     android:layout_height="@dimen/catelog_chapter_height"
-    android:paddingLeft="@dimen/common_margin"
+    android:paddingLeft="@dimen/catalog_margin_left"
     android:gravity="center_vertical"
     android:minHeight="@dimen/catelog_chapter_height" >
 
