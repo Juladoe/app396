@@ -37,6 +37,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
+import java.util.Map;
 
 /**
  * Created by DF on 2016/12/13.
@@ -116,6 +117,25 @@ public class CourseCatalogFragment extends BaseFragment {
                 startLessonActivity(position);
             }
         });
+
+        Map<String, String> learnStatuses = mCourseCatalogue.getLearnStatuses();
+        //试学状态下
+        if (!TextUtils.isEmpty(app.token) && !mIsJoin) {
+            //首先判断课时中有没有免费学习的课程，有的话就传送第一个课时，没有则表示传空
+            for (CourseCatalogue.LessonsBean lessonsBean : mCourseCatalogue.getLessons()) {
+                if ("1".equals(lessonsBean.getFree()) && "lesson".equals(lessonsBean.getItemType())) {
+                    //直接传递消息，结束
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Const.COURSE_CHANGE_STATE, "0");
+                    bundle.putBoolean(Const.COURSE_HASTRIAL_RESULT, true);
+//                    bundle.putSerializable(Const.COURSE_CHANGE_Title, lesson);
+                    MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
+                    return;
+                }
+            }
+        } else if (!TextUtils.isEmpty(app.token) && !mIsJoin){
+
+        }
     }
 
     public void startLessonActivity(int position) {
@@ -124,8 +144,6 @@ public class CourseCatalogFragment extends BaseFragment {
         loadDialog.show();
         getSource(lesson);
     }
-
-
 
     //获取真实数据源
     public void getSource(final CourseCatalogue.LessonsBean lesson){
@@ -181,7 +199,7 @@ public class CourseCatalogFragment extends BaseFragment {
 
             }
         });
-        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
+        MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
     }
 
     /**
