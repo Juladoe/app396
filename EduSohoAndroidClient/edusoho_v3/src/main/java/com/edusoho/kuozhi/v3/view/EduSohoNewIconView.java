@@ -8,7 +8,6 @@ import android.widget.TextView;
 /**
  * Created by howzhi on 14-5-12.
  */
-
 public class EduSohoNewIconView extends TextView {
 
     private Context mContext;

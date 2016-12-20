@@ -68,7 +68,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
     protected TextView mTvReviewMore;
     protected ListView mLvReview;
     protected String mTeacherId;
-    protected LoadDialog mLoading;
+    protected View mLoadView;
     protected View mPeopleLayout;
     protected View mTvStudentNone;
     protected View mReviewNoneLayout;
@@ -110,11 +110,12 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         mTvReviewMore = (TextView) view.findViewById(R.id.tv_review_more);
         mLvReview = (ListView) view.findViewById(R.id.lv_review);
         mTvTitleFull = (TextView) view.findViewById(R.id.tv_title_full);
-        mLoading = LoadDialog.create(getActivity());
+
         mPeopleLayout = view.findViewById(R.id.people_rlayout);
         mTeacherLayout = view.findViewById(R.id.teacher_rlayout);
         mTvStudentNone = view.findViewById(R.id.tv_student_none);
         mReviewNoneLayout = view.findViewById(R.id.layout_review_none);
+        mLoadView = view.findViewById(R.id.ll_detail_load);
     }
 
     protected void refreshView() {
@@ -195,6 +196,10 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
                         });
             }
         }
+    }
+
+    protected void setLoadViewStatus(int visibility) {
+        mLoadView.setVisibility(visibility);
     }
 
     protected abstract void moreStudent();

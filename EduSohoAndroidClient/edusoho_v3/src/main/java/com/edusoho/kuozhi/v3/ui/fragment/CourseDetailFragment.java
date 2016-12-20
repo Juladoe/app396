@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -15,6 +13,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
@@ -25,9 +24,6 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
-import com.edusoho.kuozhi.v3.ui.WebViewActivity;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -73,23 +69,19 @@ public class CourseDetailFragment extends BaseDetailFragment {
         initData();
     }
 
-
     protected void initData() {
-        mLoading.show();
+        setLoadViewStatus(View.VISIBLE);
         CourseDetailModel.getCourseDetail(mCourseId, new ResponseCallbackListener<CourseDetail>() {
             @Override
             public void onSuccess(CourseDetail data) {
                 mCourseDetail = data;
                 refreshView();
-                mLoading.dismiss();
+                setLoadViewStatus(View.GONE);
             }
 
             @Override
             public void onFailure(String code, String message) {
-                mLoading.dismiss();
-                if (message.equals("课程不存在")) {
-                    CommonUtil.shortToast(mContext, "课程不存在");
-                }
+                setLoadViewStatus(View.GONE);
             }
         });
         CourseDetailModel.getCourseReviews(mCourseId, "5", "0",
@@ -97,9 +89,9 @@ public class CourseDetailFragment extends BaseDetailFragment {
                     @Override
                     public void onSuccess(CourseReviewDetail data) {
                         mReviews.clear();
-                        if(data.getData().size() == 0){
+                        if (data.getData().size() == 0) {
                             mReviewNoneLayout.setVisibility(View.VISIBLE);
-                        }else {
+                        } else {
                             mReviewNoneLayout.setVisibility(View.GONE);
                             mReviews.addAll(data.getData());
                             mTvReviewMore.setText(String.format("更多评论（%s）", data.getTotal()));
@@ -133,9 +125,9 @@ public class CourseDetailFragment extends BaseDetailFragment {
                         jumpToMember(id);
                     }
                 };
-        if(data.size() == 0){
+        if (data.size() == 0) {
             mTvStudentNone.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             mTvStudentNone.setVisibility(View.GONE);
         }
         for (int i = 0; i < 5; i++) {
@@ -151,8 +143,9 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 image.setTag(i);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
-                ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image);
-            }else{
+                ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image,
+                        app.mOptions);
+            } else {
                 txt.setText("");
                 image.setImageAlpha(0);
             }
@@ -230,7 +223,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 Const.MOBILE_APP_URL,
                 EdusohoApp.app.schoolHost,
                 String.format("main#/studentlist/%s/%s",
-                        "course",mCourseId)
+                        "course", mCourseId)
         );
         EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
                 , EdusohoApp.app.mActivity, new PluginRunCallback() {
@@ -252,7 +245,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 Const.MOBILE_APP_URL,
                 EdusohoApp.app.schoolHost,
                 String.format("main#/viplist/%s/%s",
-                        "course",mCourseId)
+                        "course", mCourseId)
         );
         EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
                 , EdusohoApp.app.mActivity, new PluginRunCallback() {
@@ -300,7 +293,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
             viewHolder.mName.setText(review.getUser().nickname);
             viewHolder.mTime.setText(CommonUtil.convertWeekTime(review.getCreatedTime()));
             viewHolder.mStar.setRating((int) Double.parseDouble(review.getRating()));
-            ImageLoader.getInstance().displayImage(review.getUser().mediumAvatar, viewHolder.mIcon);
+            ImageLoader.getInstance().displayImage(review.getUser().mediumAvatar, viewHolder.mIcon,
+                    app.mOptions);
             viewHolder.mIcon.setTag(review.getUser().id);
             viewHolder.mIcon.setOnClickListener(mOnClickListener);
             return convertView;
@@ -332,8 +326,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 String.format("main#/userinfo/%s",
                         id)
         );
-        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
-                , EdusohoApp.app.mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
+                , getActivity(), new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.WEB_URL, url);

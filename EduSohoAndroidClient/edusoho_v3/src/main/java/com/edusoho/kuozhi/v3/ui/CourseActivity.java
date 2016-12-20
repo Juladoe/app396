@@ -1,16 +1,17 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.view.Menu;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
-import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
@@ -19,9 +20,11 @@ import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -35,6 +38,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     private String mCourseId;
     private boolean mIsFavorite = false;
     private CourseDetail mCourseDetail;
+    private LessonItem mContinueLessonItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +59,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void initView() {
         super.initView();
+        mTvAdd.setText("加入课程");
     }
 
     @Override
@@ -80,35 +85,38 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     protected void initData() {
-        if (mCourseId != null) {
-            mLoading.show();
-            CourseDetailModel.getCourseDetail(mCourseId,
-                    new ResponseCallbackListener<CourseDetail>() {
-                        @Override
-                        public void onSuccess(CourseDetail data) {
-                            mCourseDetail = data;
-                            if (mFragments.size() >= 2 && mFragments.get(1) != null
-                                    && mFragments.get(1) instanceof CourseCatalogFragment) {
-                                if (mCourseDetail.getMember() == null) {
-                                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
-                                }else{
-                                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
-                                }
-                            }
-                            refreshView();
-                            mLoading.dismiss();
-                        }
-
-                        @Override
-                        public void onFailure(String code, String message) {
-                            mLoading.dismiss();
-                            if (message.equals("课程不存在")) {
-                                CommonUtil.shortToast(CourseActivity.this, "课程不存在");
-                                finish();
-                            }
-                        }
-                    });
+        if (TextUtils.isEmpty(mCourseId)) {
+            CommonUtil.shortToast(CourseActivity.this, "课程不存在");
+            finish();
+            return;
         }
+        setLoadStatus(View.VISIBLE);
+        CourseDetailModel.getCourseDetail(mCourseId,
+                new ResponseCallbackListener<CourseDetail>() {
+                    @Override
+                    public void onSuccess(CourseDetail data) {
+                        mCourseDetail = data;
+                        if (mFragments.size() >= 2 && mFragments.get(1) != null
+                                && mFragments.get(1) instanceof CourseCatalogFragment) {
+                            if (mCourseDetail.getMember() == null) {
+                                ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
+                            }else{
+                                ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+                            }
+                        }
+                        refreshView();
+                        setLoadStatus(View.GONE);
+                    }
+
+                    @Override
+                    public void onFailure(String code, String message) {
+                        setLoadStatus(View.GONE);
+                        if (message.equals("课程不存在")) {
+                            CommonUtil.shortToast(CourseActivity.this, "课程不存在");
+                            finish();
+                        }
+                    }
+                });
     }
 
     @Override
@@ -133,8 +141,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         } else {
             mIsMemder = true;
             mBottomLayout.setVisibility(View.GONE);
-//            mIvGrade.setVisibility(View.VISIBLE);
-//            mIvGrade2.setVisibility(View.VISIBLE);
             mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }
@@ -145,7 +151,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(NewsCourseActivity.COURSE_ID, mCourseId);
+                startIntent.putExtra(NewsCourseActivity.COURSE_ID, Integer.parseInt(mCourseId));
                 startIntent.putExtra(NewsCourseActivity.FROM_NAME, mCourseDetail.getCourse().title);
             }
         });
@@ -174,7 +180,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void add() {
         if (mCourseId != null) {
-            mLoading.show();
+            showProcessDialog();
             CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")
@@ -185,7 +191,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                     , new CourseUtil.OnAddCourseListener() {
                         @Override
                         public void onAddCourseSuccee(String response) {
-                            mLoading.dismiss();
+                            hideProcesDialog();
                             CommonUtil.shortToast(CourseActivity.this, getResources()
                                     .getString(R.string.success_add_course));
                             initData();
@@ -193,7 +199,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
                         @Override
                         public void onAddCourseError(String error) {
-                            mLoading.dismiss();
+                            hideProcesDialog();
                         }
                     });
         }
@@ -240,27 +246,108 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
-    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
+    protected void courseChange(LessonItem lessonItem) {
+        mContinueLessonItem = lessonItem;
+        coursePause();
+        courseStart();
+    }
 
+    @Override
+    protected void courseHastrial(String state, LessonItem lessonItem) {
+        mContinueLessonItem = lessonItem;
+        mPlayLastLayout.setVisibility(View.GONE);
+        switch (state) {
+            case Const.COURSE_CHANGE_STATE_NONE:
+                mPlayLayout.setEnabled(true);
+                if (mCourseDetail.getMember() == null) {
+                    mTvPlay.setText("开始试学");
+                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
+                } else {
+                    mTvPlay.setText("开始学习");
+                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                }
+                break;
+            case Const.COURSE_CHANGE_STATE_STARTED:
+                mTvPlay.setText("继续学习");
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                mPlayLayout.setEnabled(true);
+                mPlayLastLayout.setVisibility(View.VISIBLE);
+                if (lessonItem != null) {
+                    mTvLastTitle.setText(lessonItem.title);
+                }
+                break;
+            case Const.COURSE_CHANGE_STATE_FINISH:
+                mTvPlay.setText("学习完成");
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                mPlayLayout.setEnabled(false);
+                break;
+        }
+    }
+
+    @Override
+    protected void coursePause() {
+        super.coursePause();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_header_container);
+        if (fragment == null) {
+            return;
+        }
+        if (fragment instanceof LessonAudioPlayerFragment) {
+            ((LessonAudioPlayerFragment) fragment).destoryService();
+        }
+
+        transaction.remove(fragment).commitAllowingStateLoss();
     }
 
     @Override
     protected void courseStart() {
-        /**
-         * todo 播放课程
-         */
+        if (mContinueLessonItem == null) {
+            return;
+        }
         super.courseStart();
-        playVideoLesson();
+        String type = mContinueLessonItem.type;
+        switch (type) {
+            case "audio":
+                playAudioLesson(mContinueLessonItem);
+                return;
+            case "video":
+                playVideoLesson(mContinueLessonItem);
+                return;
+        }
+
+        Fragment fragment = mFragments.get(1);
+        if (fragment != null && fragment instanceof CourseCatalogFragment) {
+            if (mContinueLessonItem == null) {
+                return;
+            }
+            ((CourseCatalogFragment)fragment).startLessonActivity(mContinueLessonItem.id, mContinueLessonItem.courseId);
+        }
     }
 
-    private void playVideoLesson() {
+    private void playVideoLesson(LessonItem lessonItem) {
+        Uri uri = Uri.parse(lessonItem.mediaUri);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(mCourseId));
+        bundle.putInt(Const.LESSON_ID, lessonItem.id);
+        bundle.putString(LessonVideoPlayerFragment.PLAY_URI,
+                String.format("%s://%s%s", uri.getScheme(), uri.getHost(), uri.getPath()));
+        fragment.setArguments(bundle);
+        transaction.replace(R.id.fl_header_container, fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
+    private void playAudioLesson(LessonItem lessonItem) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         LessonAudioPlayerFragment fragment = new LessonAudioPlayerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().largePicture);
-        bundle.putString(LessonAudioPlayerFragment.PLAY_URI,
-                "http://yinyueshiting.baidu.com/data2/music/64011738/2771611482105661128.mp3?xcode=6dc9fc7b26d1ff315fa4084c7da1aa86");
+        bundle.putString(LessonAudioPlayerFragment.PLAY_URI, lessonItem.mediaUri);
+        bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(mCourseId));
+        bundle.putInt(Const.LESSON_ID, lessonItem.id);
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
         transaction.commitAllowingStateLoss();
@@ -275,14 +362,12 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         }
     }
 
+
     @Override
-    public void onClick(View v) {
-        super.onClick(v);
-        if (v.getId() == R.id.hour_rlayout) {
-            Fragment fragment = mFragments.get(1);
-            if (fragment != null && fragment instanceof CourseCatalogFragment) {
-                ((CourseCatalogFragment) fragment).reFreshView(true);
-            }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LessonActivity.REQUEST_LEARN) {
+            coursePause();
         }
     }
 }

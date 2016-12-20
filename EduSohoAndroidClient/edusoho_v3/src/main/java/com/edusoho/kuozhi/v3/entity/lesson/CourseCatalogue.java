@@ -34,7 +34,7 @@ public class CourseCatalogue {
 
         private String content;
         private String courseId;
-        private int id;
+        private String id;
         private String itemType;
         private String length;
         private String number;
@@ -58,11 +58,11 @@ public class CourseCatalogue {
             this.courseId = courseId;
         }
 
-        public int getId() {
+        public String getId() {
             return id;
         }
 
-        public void setId(int id) {
+        public void setId(String id) {
             this.id = id;
         }
 
