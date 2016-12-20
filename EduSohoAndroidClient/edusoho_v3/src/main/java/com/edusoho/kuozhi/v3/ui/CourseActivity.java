@@ -272,9 +272,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(true);
                 mPlayLastLayout.setVisibility(View.VISIBLE);
-                if (lessonItem != null) {
-                    mTvLastTitle.setText(lessonItem.title);
-                }
+                mTvLastTitle.setText(String.valueOf(lessonItem == null ? null : lessonItem.title));
                 break;
             case Const.COURSE_CHANGE_STATE_FINISH:
                 mTvPlay.setText("学习完成");

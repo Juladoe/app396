@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
@@ -56,6 +57,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected TextView mTvCollect;
     protected TextView mTvPlay;
     protected TextView mTvAdd;
+    protected View mPlayButtomLayout;
     protected RelativeLayout mMediaRlayout;
     protected ImageView mIvMediaBackground;
     protected ViewPager mContentVp;
@@ -118,6 +120,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mIvShare2 = findViewById(R.id.iv_share2);
         mPlayLayout2 = findViewById(R.id.play_layout2);
         mPlayLayout = findViewById(R.id.play_layout);
+        mPlayButtomLayout = findViewById(R.id.layout_play_buttom);
         mContentVp = (ViewPager) findViewById(R.id.vp_content);
         mIntroLayout = (RelativeLayout) findViewById(R.id.intro_rlayout);
         mHourLayout = (RelativeLayout) findViewById(R.id.hour_rlayout);
@@ -153,7 +156,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         initViewPager();
         ViewGroup.LayoutParams headParams =
                 mHeadRlayout2.getLayoutParams();
-        headParams.height = AppUtil.dp2px(this, 43 + mTitleBarHeight);
+        headParams.height = AppUtil.dp2px(this, 44 + mTitleBarHeight);
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
         mMenuPop = new MenuPop(this, mMenu);
@@ -282,7 +285,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
     protected abstract void add();
 
-    protected void collect(){}
+    protected void collect() {
+    }
 
     protected abstract void share();
 
@@ -341,9 +345,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 break;
         }
     }
-
-    protected void courseHastrial(String state, LessonItem lessonItem) {
-    }
+    protected void courseHastrial(String state, LessonItem lessonItem) {}
 
     /**
      * todo 获得课程相关信息
@@ -384,9 +386,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     protected void courseStart() {
-        /**
-         * todo 开始播放
-         */
         if (!mIsFullScreen) {
             mParent.smoothScrollTo(0, 0);
             mParent.setCanScroll(false);
@@ -401,7 +400,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             }
             mMenuPop.setVisibility(true);
         }
-        mPlayLayout.setVisibility(View.GONE);
+        mPlayButtomLayout.setVisibility(View.GONE);
         mIsPlay = true;
         mParent.setStay(true);
     }
@@ -423,7 +422,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mParent.setCanScroll(true);
             initViewPager();
         }
-        mPlayLayout.setVisibility(View.VISIBLE);
         mIsPlay = false;
         mParent.setStay(false);
     }
@@ -476,5 +474,20 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.COURSE_PAUSE),
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR)};
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_REFRESH) {
+            setLoadStatus(View.GONE);
+            hideProcesDialog();
+            initData();
+        }
+        if (requestCode == RESULT_LOGIN) {
+            setLoadStatus(View.GONE);
+            hideProcesDialog();
+            initData();
+        }
     }
 }
