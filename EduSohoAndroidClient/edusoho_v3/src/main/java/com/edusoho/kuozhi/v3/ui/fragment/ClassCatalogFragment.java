@@ -29,7 +29,7 @@ import java.util.List;
  */
 
 public class ClassCatalogFragment extends BaseFragment {
-
+    public boolean isJoin = false;
     public String mClassRoomId = "0";
     private FixHeightListView mLvClass;
     private List<Classroom> mClassCatalogue;
@@ -75,12 +75,18 @@ public class ClassCatalogFragment extends BaseFragment {
         mLvClass.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!TextUtils.isEmpty(app.token)) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("course_id", mClassCatalogue.get(position).lessonNum+"");
-                    CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);
+                if (TextUtils.isEmpty(app.token)) {
+                    CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
                     return;
                 }
+                if (!isJoin) {
+                    CommonUtil.shortCenterToast(getActivity(), "请先加入班级");
+                    return;
+                }
+                Bundle bundle = new Bundle();
+                bundle.putString("course_id", mClassCatalogue.get(position).lessonNum+"");
+                CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);
+                return;
             }
         });
     }
