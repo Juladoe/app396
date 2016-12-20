@@ -8,14 +8,14 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
-import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
+import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.ClassroomDetailFragment;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -57,8 +57,13 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void initFragment(List<Fragment> fragments) {
-        fragments.add(new ClassroomDetailFragment(mClassroomId));
-        fragments.add(new ClassCatalogFragment(mClassroomId));
+        Fragment fragment = app.mEngine.runPluginWithFragment("ClassroomDetailFragment", this, new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putString("id", mClassroomId);
+            }
+        });
+        fragments.add(fragment);
     }
 
     protected void initEvent() {
@@ -90,11 +95,6 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     }
 
     @Override
-    protected CourseDetail getCourseDetail() {
-        return null;
-    }
-
-    @Override
     protected void refreshView() {
         ImageLoader.getInstance().displayImage(
                 mClassroomDetail.getClassRoom().largePicture,
@@ -114,6 +114,18 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             initViewPager();
         }
     }
+
+    @Override
+    protected void goClass() {
+        app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mContext, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, mClassroomId);
+                startIntent.putExtra(ClassroomDiscussActivity.FROM_NAME, mClassroomDetail.getClassRoom().title);
+            }
+        });
+    }
+
     @Override
     protected void consult() {
         Teacher[] teachers = mClassroomDetail.getClassRoom().teachers;
@@ -121,7 +133,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         if (teachers.length > 0) {
             teacher = teachers[0];
         } else {
-            CommonUtil.shortToast(this,"班级目前没有老师");
+            CommonUtil.shortToast(this, "班级目前没有老师");
             return;
         }
         app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
@@ -215,7 +227,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     }
 
     @Override
-    protected void courseChange() {
+    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
 
     }
 }

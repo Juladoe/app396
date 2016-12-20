@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
+import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -65,6 +66,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCourseId = getArguments().getString("id");
     }
 
     @Override
@@ -100,9 +102,14 @@ public class CourseDetailFragment extends BaseDetailFragment {
                     @Override
                     public void onSuccess(CourseReviewDetail data) {
                         mReviews.clear();
-                        mReviews.addAll(data.getData());
-                        mTvReviewMore.setText(String.format("更多评论（%s）", data.getTotal()));
-                        mAdapter.notifyDataSetChanged();
+                        if(data.getData().size() == 0){
+                            mReviewNoneLayout.setVisibility(View.VISIBLE);
+                        }else {
+                            mReviewNoneLayout.setVisibility(View.GONE);
+                            mReviews.addAll(data.getData());
+                            mTvReviewMore.setText(String.format("更多评论（%s）", data.getTotal()));
+                            mAdapter.notifyDataSetChanged();
+                        }
                     }
 
                     @Override
@@ -125,12 +132,17 @@ public class CourseDetailFragment extends BaseDetailFragment {
     private void initStudent(List<CourseMember> data) {
         View.OnClickListener onClickListener =
                 new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String id = v.getTag().toString();
-                jumpToMember(id);
-            }
-        };
+                    @Override
+                    public void onClick(View v) {
+                        String id = v.getTag().toString();
+                        jumpToMember(id);
+                    }
+                };
+        if(data.size() == 0){
+            mTvStudentNone.setVisibility(View.VISIBLE);
+        }else{
+            mTvStudentNone.setVisibility(View.GONE);
+        }
         for (int i = 0; i < 5; i++) {
             View view = LayoutInflater.from(mContext)
                     .inflate(R.layout.item_detail_avatar, null, false);
@@ -139,11 +151,16 @@ public class CourseDetailFragment extends BaseDetailFragment {
             params.weight = 1;
             view.setLayoutParams(params);
             ImageView image = (ImageView) view.findViewById(R.id.iv_avatar_icon);
-            image.setTag(i);
-            image.setOnClickListener(onClickListener);
             TextView txt = (TextView) view.findViewById(R.id.tv_avatar_name);
-            txt.setText(data.get(i).user.nickname);
-            ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image);
+            if (data.size() > i) {
+                image.setTag(i);
+                image.setOnClickListener(onClickListener);
+                txt.setText(data.get(i).user.nickname);
+                ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image);
+            }else{
+                txt.setText("");
+                image.setImageAlpha(0);
+            }
             mStudentIconLayout.addView(view);
         }
     }
@@ -183,9 +200,9 @@ public class CourseDetailFragment extends BaseDetailFragment {
         mReviewStar.setRating((int) course.rating);
         StringBuilder sb = new StringBuilder();
         int length = course.audiences.length;
-        if(length == 0){
+        if (length == 0) {
             mPeopleLayout.setVisibility(View.GONE);
-        }else {
+        } else {
             mPeopleLayout.setVisibility(View.VISIBLE);
             for (int i = 0; i < length; i++) {
                 sb.append(course.audiences[i]);
@@ -209,7 +226,19 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
     @Override
     protected void moreStudent() {
-
+        final String url = String.format(
+                Const.MOBILE_APP_URL,
+                EdusohoApp.app.schoolHost,
+                String.format("main#/studentlist/%s/%s",
+                        "course",mCourseId)
+        );
+        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
+                , EdusohoApp.app.mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.WEB_URL, url);
+                    }
+                });
     }
 
     @Override
@@ -219,7 +248,19 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
     @Override
     protected void vipInfo() {
-
+        final String url = String.format(
+                Const.MOBILE_APP_URL,
+                EdusohoApp.app.schoolHost,
+                String.format("main#/viplist/%s/%s",
+                        "course",mCourseId)
+        );
+        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
+                , EdusohoApp.app.mActivity, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.WEB_URL, url);
+                    }
+                });
     }
 
     class ReviewAdapter extends BaseAdapter {
@@ -284,7 +325,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         ReviewStarView mStar;
     }
 
-    private void jumpToMember(String id){
+    private void jumpToMember(String id) {
         final String url = String.format(
                 Const.MOBILE_APP_URL,
                 EdusohoApp.app.schoolHost,
