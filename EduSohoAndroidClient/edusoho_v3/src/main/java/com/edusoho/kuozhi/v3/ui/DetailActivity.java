@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
@@ -35,6 +36,8 @@ import java.util.List;
  */
 public abstract class DetailActivity extends BaseNoTitleActivity
         implements View.OnClickListener {
+    public static final int RESULT_REFRESH = 0x111;
+    public static final int RESULT_LOGIN = 0x222;
     protected HeadStopScrollView mParent;
     protected RelativeLayout mHeadRlayout;
     protected RelativeLayout mHeadRlayout2;
@@ -53,7 +56,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected TextView mTvLastTitle;
     protected TextView mTvCollect;
     protected TextView mTvPlay;
-    protected View mAddCourse;
+    protected TextView mTvAdd;
     protected RelativeLayout mMediaRlayout;
     protected ImageView mIvMediaBackground;
     protected ViewPager mContentVp;
@@ -72,7 +75,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     private int mTitleBarHeight;
     public int mMediaViewHeight = 210;
     private SystemBarTintManager tintManager;
-    protected LoadDialog mLoading;
+    protected View mLoadingView;
+    protected LoadDialog mProcessDialog;
     protected MenuPop mMenuPop;
 
     @Override
@@ -126,9 +130,11 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mMenu = findViewById(R.id.iv_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvInclass = findViewById(R.id.tv_inclass);
+        mLoadingView = findViewById(R.id.ll_frame_load);
         mPlayLastLayout = findViewById(R.id.layout_play_last);
         mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
+
         initFragment(mFragments);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
         mContentVp.setAdapter(mAdapter);
@@ -144,14 +150,13 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
         mConsult = findViewById(R.id.consult_layout);
-        mAddCourse = findViewById(R.id.tv_add);
+        mTvAdd = (TextView) findViewById(R.id.tv_add);
         initViewPager();
         ViewGroup.LayoutParams headParams =
                 mHeadRlayout2.getLayoutParams();
         headParams.height = AppUtil.dp2px(this, 43 + mTitleBarHeight);
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
-        mLoading = LoadDialog.create(this);
         mMenuPop = new MenuPop(this, mMenu);
     }
 
@@ -168,7 +173,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mPlayLayout2.setOnClickListener(this);
         mPlayLayout.setOnClickListener(this);
         mCollect.setOnClickListener(this);
-        mAddCourse.setOnClickListener(this);
+        mTvAdd.setOnClickListener(this);
         mConsult.setOnClickListener(this);
         mBack2.setOnClickListener(this);
         mTvInclass.setOnClickListener(this);
@@ -204,9 +209,40 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         });
     }
 
+    protected void showProcessDialog() {
+        if (mProcessDialog == null) {
+            mProcessDialog = LoadDialog.create(this);
+        }
+        mProcessDialog.show();
+    }
+
+    protected void hideProcesDialog() {
+        if (mProcessDialog == null) {
+            return;
+        }
+        if (mProcessDialog.isShowing()) {
+            mProcessDialog.dismiss();
+        }
+    }
+
+    protected void setLoadStatus(int visibility) {
+        mLoadingView.setVisibility(visibility);
+    }
+
     protected abstract void initData();
 
     protected abstract void refreshView();
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mProcessDialog != null) {
+            if (mProcessDialog.isShowing()) {
+                mProcessDialog.dismiss();
+            }
+            mProcessDialog = null;
+        }
+    }
 
     @Override
     public void onClick(View v) {
@@ -247,7 +283,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
     protected abstract void add();
 
-    protected abstract void collect();
+    protected void collect(){}
 
     protected abstract void share();
 
@@ -296,57 +332,24 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 screenLock();
                 break;
             case Const.COURSE_CHANGE:
-                courseChange((CourseCatalogue.LessonsBean)
-                        bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
+                courseChange((LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.COURSE_HASTRIAL:
-                courseHastrial(bundle.getString(Const.COURSE_CHANGE_STATE)
-                        , bundle.getBoolean(Const.COURSE_HASTRIAL_RESULT));
+                courseHastrial(
+                        bundle.getString(Const.COURSE_CHANGE_STATE),
+                        (LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT)
+                );
                 break;
         }
     }
 
-    protected void courseHastrial(String state, boolean hasTrial) {
-        mPlayLastLayout.setVisibility(View.GONE);
-        switch (state){
-            case Const.COURSE_CHANGE_STATE_NONE:
-                mPlayLayout.setEnabled(true);
-                if (hasTrial) {
-                    mTvPlay.setText("开始试学");
-                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
-                } else {
-                    mTvPlay.setText("开始学习");
-                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-                }
-                break;
-            case Const.COURSE_CHANGE_STATE_STARTED:
-                mTvPlay.setText("继续学习");
-                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-                mPlayLayout.setEnabled(true);
-                mPlayLastLayout.setVisibility(View.VISIBLE);
-
-                break;
-            case Const.COURSE_CHANGE_STATE_FINISH:
-                mTvPlay.setText("学习完成");
-                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-                mPlayLayout.setEnabled(false);
-                break;
-        }
+    protected void courseHastrial(String state, LessonItem lessonItem) {
     }
 
     /**
      * todo 获得课程相关信息
      */
-    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
-        String type = lesson.getType();
-        switch (type) {
-            case "audio":
-
-                break;
-            case "video":
-
-                break;
-        }
+    protected void courseChange(LessonItem lessonItem) {
     }
 
     private boolean isScreenLock = false;
@@ -416,7 +419,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    private void coursePause() {
+    protected void coursePause() {
         if (!mIsFullScreen) {
             mParent.setCanScroll(true);
             initViewPager();
@@ -476,4 +479,19 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.COURSE_HIDE_BAR)};
     }
 
+   /* @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == RESULT_REFRESH){
+            if(mLoading.isShowing()) {
+                mLoading.dismiss();
+            }
+            initData();
+        }
+        if(requestCode == RESULT_LOGIN){
+            if(mLoading.isShowing()) {
+                mLoading.dismiss();
+            }
+        }
+    }*/
 }

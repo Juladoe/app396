@@ -194,16 +194,10 @@ public class HeadStopScrollView extends ScrollView {
                 break;
             case MotionEvent.ACTION_MOVE:
                 moveY = ev.getRawY() - startY;
-//                if (moveY > 0) {
-//                    if (controlChildView != null
-//                            && controlChildView.getTop() >= -AppUtil.dp2px(getContext(), 2)) {
-//                        setCanScroll(true);
-//                    }
-//                }
-//                Log.e("Y","" + getScrollY());
-//                if (moveY > 0 && getScrollY() >= firstViewHeight) {
-//                    setCanScroll(false);
-//                }
+
+                if (moveY > 0 && getScrollY() >= firstViewHeight) {
+                    setCanScroll(false);
+                }
                 break;
             case MotionEvent.ACTION_UP:
                 startY = 0;

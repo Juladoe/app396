@@ -135,8 +135,8 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="33dp"
                     android:layout_toRightOf="@+id/iv_vip"
-                    android:textColor="@color/secondary_font_color"
                     android:text="加入会员，免费学习更多课程"
+                    android:textColor="@color/secondary_font_color"
                     android:textSize="@dimen/font_s" />
 
                 <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
@@ -281,21 +281,19 @@
                     android:layout_marginRight="15dp"
                     android:layout_marginTop="14dp"
                     android:gravity="center"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/tv_student_none"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tv_student_none"
                         android:text="暂无学员，赶紧加入吧！"
-                        android:textSize="@dimen/font_s"
                         android:textColor="@color/secondary2_font_color"
-                        />
+                        android:textSize="@dimen/font_s" />
 
                 </LinearLayout>
 
-                <View style="@style/BottomLine"
-                    />
+                <View style="@style/BottomLine" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -327,49 +325,72 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/tv_review1"
-                    android:divider="@color/transparent"
                     android:layout_marginBottom="10dp"
-                    android:layout_marginRight="15dp" />
+                    android:layout_marginRight="15dp"
+                    android:divider="@color/transparent" />
 
                 <TextView
                     android:id="@+id/tv_review_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
                     android:layout_below="@+id/lv_review"
                     android:layout_centerHorizontal="true"
-                    android:paddingBottom="20dp"
                     android:layout_marginTop="20dp"
+                    android:paddingBottom="20dp"
                     android:text="更多评论"
-                    android:layout_alignParentBottom="true"
                     android:textColor="@color/primary_color"
                     android:textSize="@dimen/font_l" />
-                
+
                 <LinearLayout
                     android:id="@+id/layout_review_none"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="60dp"
-                    android:orientation="vertical"
                     android:layout_marginBottom="55dp"
-                    android:visibility="gone"
+                    android:layout_marginTop="60dp"
                     android:gravity="center"
-                    >
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/no_review"
-                        />
+                        android:src="@drawable/no_review" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="暂无评论"
-                        android:textSize="@dimen/font_s"
                         android:layout_marginTop="12dp"
+                        android:text="暂无评论"
                         android:textColor="@color/secondary2_font_color"
-                        />
+                        android:textSize="@dimen/font_s" />
                 </LinearLayout>
             </RelativeLayout>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/ll_detail_load"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/textIcons"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:indeterminateDrawable="@drawable/load" />
+
+            <TextView
+                android:id="@+id/loading_txt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="加载中.."
+                android:textColor="@color/base_black_54" />
+        </LinearLayout>
     </RelativeLayout>
+
 </com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>

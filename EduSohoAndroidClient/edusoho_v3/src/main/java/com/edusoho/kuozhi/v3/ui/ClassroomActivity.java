@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
-import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
@@ -39,6 +39,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         mClassroomId = intent.getStringExtra(CLASSROOM_ID);
         if (mClassroomId == null || mClassroomId.trim().length() == 0) {
             finish();
+            return;
         }
         mMediaViewHeight = 281;
         initView();
@@ -53,6 +54,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         mPlayLayout.setVisibility(View.GONE);
         mTvInclass.setVisibility(View.GONE);
         mPlayLayout2.setVisibility(View.GONE);
+        mTvAdd.setText("加入班级");
     }
 
     @Override
@@ -79,12 +81,12 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     protected void initData() {
         if (mClassroomId != null) {
-            mLoading.show();
+            setLoadStatus(View.VISIBLE);
             CourseDetailModel.getClassroomDetail(mClassroomId,
                     new ResponseCallbackListener<ClassroomDetail>() {
                         @Override
                         public void onSuccess(ClassroomDetail data) {
-                            mLoading.dismiss();
+                            setLoadStatus(View.GONE);
                             mClassroomDetail = data;
                             if (mFragments.size() >= 2 && mFragments.get(1) != null
                                     && mFragments.get(1) instanceof ClassCatalogFragment) {
@@ -99,7 +101,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
                         @Override
                         public void onFailure(String code, String message) {
-                            mLoading.dismiss();
+                            setLoadStatus(View.GONE);
                             if (message != null && message.equals("班级不存在")) {
                                 CommonUtil.shortToast(ClassroomActivity.this, "班级不存在");
                                 finish();
@@ -135,7 +137,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, mClassroomId);
+                startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, Integer.parseInt(mClassroomId));
                 startIntent.putExtra(ClassroomDiscussActivity.FROM_NAME, mClassroomDetail.getClassRoom().title);
             }
         });
@@ -164,7 +166,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     @Override
     protected void add() {
         if (mClassroomId != null) {
-            mLoading.show();
+            showProcessDialog();
             ClassroomUtil.addClassroom(new ClassroomUtil.ClassroomParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")
@@ -175,7 +177,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                     , new ClassroomUtil.OnAddClassroomListener() {
                         @Override
                         public void onAddClassroomSuccee(String response) {
-                            mLoading.dismiss();
+                            hideProcesDialog();
                             CommonUtil.shortToast(ClassroomActivity.this, getResources()
                                     .getString(R.string.success_add_classroom));
                             initData();
@@ -183,36 +185,10 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
                         @Override
                         public void onAddClassroomError(String error) {
-                            mLoading.dismiss();
+                            hideProcesDialog();
                         }
                     });
         }
-    }
-
-    @Override
-    protected void collect() {
-        Teacher[] teachers = mClassroomDetail.getClassRoom().teachers;
-        final Teacher teacher;
-        if (teachers.length > 0) {
-            teacher = teachers[0];
-        } else {
-            /**
-             * todo 老师为空的时候
-             */
-            return;
-        }
-        Bundle bundle = new Bundle();
-        bundle.putString(ImChatActivity.FROM_NAME, teacher.nickname);
-        bundle.putInt(ImChatActivity.FROM_ID, teacher.id);
-        bundle.putString(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
-        app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
-                startIntent.putExtra(ImChatActivity.FROM_ID, teacher.id);
-                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
-            }
-        });
     }
 
     @Override
@@ -242,7 +218,6 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     }
 
     @Override
-    protected void courseChange(CourseCatalogue.LessonsBean lesson) {
-
+    protected void courseChange(LessonItem lessonItem) {
     }
 }
