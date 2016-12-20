@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.DetailActivity;
+import com.edusoho.kuozhi.v3.ui.MenuPop;
 import com.edusoho.videoplayer.ui.AudioPlayerFragment;
 import com.edusoho.videoplayer.util.ControllerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -70,6 +72,16 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
                 .addItem("练习")
                 .addItem("学完")
                 .setVisibility(true);
+        mMenuCallback.getMenu().setOnMenuClickListener(getMenuClickListener());
+    }
+
+    private MenuPop.OnMenuClickListener getMenuClickListener() {
+        return new MenuPop.OnMenuClickListener() {
+            @Override
+            public void onClick(View v, int position, String name) {
+                Log.d(TAG, name);
+            }
+        };
     }
 
     private void initCoverSize() {

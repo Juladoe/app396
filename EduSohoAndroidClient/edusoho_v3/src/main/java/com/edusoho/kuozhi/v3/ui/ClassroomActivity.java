@@ -8,7 +8,6 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
-import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -72,19 +71,19 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     protected void initData() {
         if (mClassroomId != null) {
-            showProcessDialog();
+            setLoadStatus(View.VISIBLE);
             CourseDetailModel.getClassroomDetail(mClassroomId,
                     new ResponseCallbackListener<ClassroomDetail>() {
                         @Override
                         public void onSuccess(ClassroomDetail data) {
-                            hideProcesDialog();
+                            setLoadStatus(View.GONE);
                             mClassroomDetail = data;
                             refreshView();
                         }
 
                         @Override
                         public void onFailure(String code, String message) {
-                            showProcessDialog();
+                            setLoadStatus(View.GONE);
                             if (message != null && message.equals("班级不存在")) {
                                 CommonUtil.shortToast(ClassroomActivity.this, "班级不存在");
                                 finish();
