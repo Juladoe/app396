@@ -129,6 +129,9 @@ public class CourseCatalogFragment extends BaseFragment {
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mAdapter.isSelected(position)) {
+                    return;
+                }
                 mAdapter.changeSelected(position);
                 if (TextUtils.isEmpty(app.token)) {
                     CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
@@ -250,6 +253,9 @@ public class CourseCatalogFragment extends BaseFragment {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
                         MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
+
+                        bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override

@@ -107,5 +107,8 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
             mAudioCoverAnim.cancel();
             mAudioCoverAnim = null;
         }
+        if (mMenuCallback != null) {
+            mMenuCallback.getMenu().setVisibility(false);
+        }
     }
 }

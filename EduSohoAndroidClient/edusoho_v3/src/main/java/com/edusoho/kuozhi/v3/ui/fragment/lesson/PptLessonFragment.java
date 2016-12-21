@@ -59,7 +59,6 @@ public class PptLessonFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLayoutInflater = LayoutInflater.from(mContext);
-        //cacheBitmap = app.query.getCachedImage(R.drawable.defaultpic);
         cacheBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.defaultpic);
         setContainerView(R.layout.ppt_lesson_layout);
     }

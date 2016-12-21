@@ -345,6 +345,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 break;
         }
     }
+
     protected void courseHastrial(String state, LessonItem lessonItem) {}
 
     /**
@@ -398,7 +399,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 params.height = AppUtil.getHeightPx(this) - bottom;
                 mContentVp.setLayoutParams(params);
             }
-            mMenuPop.setVisibility(true);
         }
         mPlayButtomLayout.setVisibility(View.GONE);
         mIsPlay = true;
@@ -424,6 +424,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mIsPlay = false;
         mParent.setStay(false);
+        mPlayButtomLayout.setVisibility(View.VISIBLE);
     }
 
     protected boolean mIsFullScreen = false;
