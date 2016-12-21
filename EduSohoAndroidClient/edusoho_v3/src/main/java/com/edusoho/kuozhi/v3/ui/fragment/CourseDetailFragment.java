@@ -223,7 +223,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
     protected void moreStudent() {
         final String url = String.format(
                 Const.MOBILE_APP_URL,
-                EdusohoApp.app.schoolHost,
+                app.schoolHost,
                 String.format("main#/studentlist/%s/%s",
                         "course", mCourseId)
         );
@@ -245,9 +245,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
     protected void vipInfo() {
         final String url = String.format(
                 Const.MOBILE_APP_URL,
-                EdusohoApp.app.schoolHost,
-                String.format("main#/viplist/%s/%s",
-                        "course", mCourseId)
+                app.schoolHost,
+                "main#/viplist"
         );
         CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
                 , mContext, new PluginRunCallback() {

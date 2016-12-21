@@ -30,7 +30,6 @@ public class Course implements Serializable {
     public String ratingNum;
     public String categoryId;
     public String serializeMode;
-    //    public String[] tags;
     public String middlePicture;
     public String largePicture;
     public String about;
@@ -49,4 +48,12 @@ public class Course implements Serializable {
     public String type;
     public String convNo;
     public long courseDeadline;
+
+    public String getLargePicture() {
+        int schemIndex = largePicture.lastIndexOf("http://");
+        if (schemIndex != 0) {
+            return largePicture.substring(schemIndex);
+        }
+        return largePicture;
+    }
 }
