@@ -23,7 +23,6 @@ import com.edusoho.kuozhi.v3.entity.CustomTitle;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.provider.SystemProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
