@@ -32,6 +32,8 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
 
+import org.sufficientlysecure.htmltextview.HtmlTextView;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -52,7 +54,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
     protected View mVTitleLine;
     protected ReviewStarView mReviewStar;
     protected TextView mTvTitleStudentNum;
-    protected TextView mTvTitleDesc;
+    protected HtmlTextView mTvTitleDesc;
     protected View mVipLayout;
     protected ImageView mIvVip;
     protected TextView mTvVipDesc;
@@ -96,7 +98,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         mTvTitle = (TextView) view.findViewById(R.id.tv_title);
         mReviewStar = (ReviewStarView) view.findViewById(R.id.review_star);
         mTvTitleStudentNum = (TextView) view.findViewById(R.id.tv_title_student_num);
-        mTvTitleDesc = (TextView) view.findViewById(R.id.tv_title_desc);
+        mTvTitleDesc = (HtmlTextView) view.findViewById(R.id.tv_title_desc);
         mVipLayout = view.findViewById(R.id.vip_rlayout);
         mIvVip = (ImageView) view.findViewById(R.id.iv_vip);
         mTvVipDesc = (TextView) view.findViewById(R.id.tv_vip_desc);

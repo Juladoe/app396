@@ -28,6 +28,8 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -158,7 +160,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Course course = mCourseDetail.getCourse();
         mTvTitle.setText(course.title);
-        mTvTitleDesc.setText(Html.fromHtml(course.about));
+        mTvTitleDesc.setHtml(course.about,new HtmlHttpImageGetter(mTvTitleDesc));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             mVipLayout.setVisibility(View.VISIBLE);

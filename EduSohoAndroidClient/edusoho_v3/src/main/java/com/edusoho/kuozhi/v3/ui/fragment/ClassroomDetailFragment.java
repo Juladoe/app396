@@ -27,6 +27,8 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -159,7 +161,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Classroom classRoom = mClassroomDetail.getClassRoom();
         mTvTitle.setText(classRoom.title);
-        mTvTitleDesc.setText(Html.fromHtml(classRoom.about.toString()));
+        mTvTitleDesc.setHtml(classRoom.about.toString(),new HtmlHttpImageGetter(mTvTitleDesc));
         if (mClassroomDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             mVipLayout.setVisibility(View.VISIBLE);
