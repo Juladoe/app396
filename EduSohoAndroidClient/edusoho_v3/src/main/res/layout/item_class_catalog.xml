@@ -9,7 +9,7 @@
 
     <ImageView
         android:id="@+id/iv_class"
-        android:scaleType="center"
+        android:scaleType="centerCrop"
         android:layout_width="@dimen/class_catalog_iv_weight"
         android:layout_height="@dimen/class_catalog_iv_height"
         android:src="@drawable/video_thum_normal"

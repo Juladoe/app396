@@ -54,7 +54,7 @@ public class ClassCatalogueAdapter extends BaseAdapter{
             classHolder = (ClassHolder) convertView.getTag();
         }
         Classroom classroom = mCourseList.get(position);
-        ImageLoader.getInstance().displayImage(classroom.smallPicture, classHolder.mIvClass);
+        ImageLoader.getInstance().displayImage(classroom.middlePicture, classHolder.mIvClass);
         classHolder.mTvTitle.setText(classroom.title);
         classHolder.mTvPeople.setText(classroom.studentNum+"人参与");
         if ("0.0".equals(classroom.price + "")) {

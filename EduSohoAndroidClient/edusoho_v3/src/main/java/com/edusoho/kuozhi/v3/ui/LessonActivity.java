@@ -81,7 +81,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private String mLessonType;
     private String mTitle;
     private int[] mLessonIds;
-    private LessonStatus mLessonStatus;
     private StreamInfo[] streamInfos;
     private Bundle fragmentData;
     private boolean mFromCache;
