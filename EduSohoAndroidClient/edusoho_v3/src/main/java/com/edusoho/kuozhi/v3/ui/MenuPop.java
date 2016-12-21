@@ -99,17 +99,13 @@ public class MenuPop {
     }
 
     public MenuPop removeItem(int position) {
-        mNames.remove(position);
+        if (position != -1 && position < (mNames.size() - 1)) {
+            mNames.remove(position);
+        }
         if(mPopup.isShowing() && mAdapter != null){
             mAdapter.notifyDataSetChanged();
         }
         return this;
-    }
-
-    public void removeItem(int position) {
-        if (position != -1 && position < (mNames.size() - 1)) {
-            mNames.remove(position);
-        }
     }
 
     public void removeAll() {
