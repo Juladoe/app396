@@ -7,7 +7,6 @@ import java.util.List;
  */
 
 public class ClassCatalogue {
-
     private String id;
     private String title;
     private String subtitle;

@@ -20,10 +20,10 @@ import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -144,7 +144,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
                 ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image,
-                        app.mOptions);
+                        app.mAvatarOptions);
             } else {
                 txt.setText("");
                 image.setImageAlpha(0);
@@ -225,8 +225,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 String.format("main#/studentlist/%s/%s",
                         "course", mCourseId)
         );
-        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
-                , EdusohoApp.app.mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
+                , mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.WEB_URL, url);
@@ -247,8 +247,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 String.format("main#/viplist/%s/%s",
                         "course", mCourseId)
         );
-        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
-                , EdusohoApp.app.mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
+                , mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.WEB_URL, url);
@@ -294,7 +294,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             viewHolder.mTime.setText(CommonUtil.convertWeekTime(review.getCreatedTime()));
             viewHolder.mStar.setRating((int) Double.parseDouble(review.getRating()));
             ImageLoader.getInstance().displayImage(review.getUser().mediumAvatar, viewHolder.mIcon,
-                    app.mOptions);
+                    app.mAvatarOptions);
             viewHolder.mIcon.setTag(review.getUser().id);
             viewHolder.mIcon.setOnClickListener(mOnClickListener);
             return convertView;

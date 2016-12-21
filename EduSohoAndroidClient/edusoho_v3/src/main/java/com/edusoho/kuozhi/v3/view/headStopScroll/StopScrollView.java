@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.view.headStopScroll;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
 
@@ -58,6 +59,7 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
                 startY = 0;
                 break;
         }
+        Log.e("child",moveY + "");
         return super.dispatchTouchEvent(ev);
     }
 

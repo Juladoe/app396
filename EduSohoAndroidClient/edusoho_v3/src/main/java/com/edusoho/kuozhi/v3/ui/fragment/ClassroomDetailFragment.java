@@ -144,7 +144,8 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
                 image.setTag(i);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
-                ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image);
+                ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image,
+                        app.mAvatarOptions);
             }else{
                 txt.setText("");
                 image.setImageAlpha(0);
@@ -274,7 +275,8 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             viewHolder.mName.setText(review.getUser().nickname);
             viewHolder.mTime.setText(CommonUtil.convertWeekTime(review.getCreatedTime()));
             viewHolder.mStar.setRating((int) Double.parseDouble(review.getRating()));
-            ImageLoader.getInstance().displayImage(review.getUser().mediumAvatar, viewHolder.mIcon);
+            ImageLoader.getInstance().displayImage(review.getUser().mediumAvatar, viewHolder.mIcon,
+                    app.mAvatarOptions);
             viewHolder.mIcon.setTag(review.getUser().id);
             viewHolder.mIcon.setOnClickListener(mOnClickListener);
             return convertView;
