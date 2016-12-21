@@ -426,7 +426,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mParent.setStay(false);
     }
 
-    private boolean mIsFullScreen = false;
+    protected boolean mIsFullScreen = false;
 
     private void fullScreen() {
         ViewGroup.LayoutParams params = mMediaRlayout.getLayoutParams();

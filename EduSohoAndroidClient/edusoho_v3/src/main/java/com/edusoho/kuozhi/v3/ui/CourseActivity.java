@@ -59,7 +59,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void initView() {
         super.initView();
-        mTvAdd.setText("加入课程");
+        mTvAdd.setText(R.string.txt_add_course);
     }
 
     @Override
@@ -100,8 +100,9 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                                 && mFragments.get(1) instanceof CourseCatalogFragment) {
                             if (mCourseDetail.getMember() == null) {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
-                            }else{
+                            } else {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+                                mContentVp.setCurrentItem(1);
                             }
                         }
                         refreshView();
@@ -229,20 +230,42 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (mCourseDetail == null) {
             return;
         }
-        final ShareTool shareTool =
-                new ShareTool(this
-                        , app.host + "/course/" + mCourseDetail.getCourse().id
-                        , mCourseDetail.getCourse().title
-                        , mCourseDetail.getCourse().about.length() > 20 ?
-                        mCourseDetail.getCourse().about.substring(0, 20)
-                        : mCourseDetail.getCourse().about
-                        , mCourseDetail.getCourse().largePicture);
-        new Handler((mActivity.getMainLooper())).post(new Runnable() {
-            @Override
-            public void run() {
-                shareTool.shardCourse();
-            }
-        });
+        if (mIsFullScreen) {
+            /**
+             * todo 全屏操作
+             */
+            //占位
+            final ShareTool shareTool =
+                    new ShareTool(this
+                            , app.host + "/course/" + mCourseDetail.getCourse().id
+                            , mCourseDetail.getCourse().title
+                            , mCourseDetail.getCourse().about.length() > 20 ?
+                            mCourseDetail.getCourse().about.substring(0, 20)
+                            : mCourseDetail.getCourse().about
+                            , mCourseDetail.getCourse().largePicture);
+            new Handler((mActivity.getMainLooper())).post(new Runnable() {
+                @Override
+                public void run() {
+                    shareTool.shardCourse();
+                }
+            });
+        } else {
+            final ShareTool shareTool =
+                    new ShareTool(this
+                            , app.host + "/course/" + mCourseDetail.getCourse().id
+                            , mCourseDetail.getCourse().title
+                            , mCourseDetail.getCourse().about.length() > 20 ?
+                            mCourseDetail.getCourse().about.substring(0, 20)
+                            : mCourseDetail.getCourse().about
+                            , mCourseDetail.getCourse().largePicture);
+            new Handler((mActivity.getMainLooper())).post(new Runnable() {
+                @Override
+                public void run() {
+                    shareTool.shardCourse();
+                }
+            });
+        }
+        coursePause();
     }
 
     @Override
@@ -260,22 +283,22 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             case Const.COURSE_CHANGE_STATE_NONE:
                 mPlayLayout.setEnabled(true);
                 if (mCourseDetail.getMember() == null) {
-                    mTvPlay.setText("开始试学");
+                    mTvPlay.setText(R.string.txt_study_try);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
                 } else {
-                    mTvPlay.setText("开始学习");
+                    mTvPlay.setText(R.string.txt_study_start);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 }
                 break;
             case Const.COURSE_CHANGE_STATE_STARTED:
-                mTvPlay.setText("继续学习");
+                mTvPlay.setText(R.string.txt_study_continue);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(true);
                 mPlayLastLayout.setVisibility(View.VISIBLE);
                 mTvLastTitle.setText(String.valueOf(lessonItem == null ? null : lessonItem.title));
                 break;
             case Const.COURSE_CHANGE_STATE_FINISH:
-                mTvPlay.setText("学习完成");
+                mTvPlay.setText(R.string.txt_study_finish);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(false);
                 break;
@@ -320,7 +343,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             if (mContinueLessonItem == null) {
                 return;
             }
-            ((CourseCatalogFragment)fragment).startLessonActivity(mContinueLessonItem.id, mContinueLessonItem.courseId);
+            ((CourseCatalogFragment) fragment).startLessonActivity(mContinueLessonItem.id, mContinueLessonItem.courseId);
         }
     }
 

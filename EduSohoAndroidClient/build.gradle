@@ -16,5 +16,6 @@ allprojects {
         mavenLocal()
         jcenter()
         maven { url "http://192.168.12.7:8081/repository/maven-snapshots" }
+//        maven { url "http://localhost" }
     }
 }

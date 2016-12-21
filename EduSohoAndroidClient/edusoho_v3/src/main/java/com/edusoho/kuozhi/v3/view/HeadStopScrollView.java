@@ -204,8 +204,6 @@ public class HeadStopScrollView extends ScrollView {
                 startY = 0;
                 break;
         }
-        Log.e("parent",moveY + "");
-        Log.e("parent",canScroll + "===" + isTab);
         if (!canScroll == isTab) {
             ev.setAction(MotionEvent.ACTION_DOWN);
             isTab = canScroll;

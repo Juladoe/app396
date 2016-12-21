@@ -13,13 +13,16 @@
             android:id="@+id/lv_catalog"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:dividerHeight="1dp"
             android:layout_marginLeft="@dimen/common_margin"
             android:layout_marginRight="@dimen/common_margin"
-            android:divider="@color/disabled_hint_color">
-        </com.edusoho.kuozhi.v3.view.FixHeightListView>
+            android:divider="@color/disabled_hint_color"
+            android:dividerHeight="1dp"
+            android:scrollbars="none" />
 
+        <com.edusoho.kuozhi.v3.view.InnerLoadView
+            android:id="@+id/il_class_catalog_load"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </RelativeLayout>
 
 </com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>
