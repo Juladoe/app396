@@ -3,10 +3,6 @@ package com.edusoho.kuozhi.v3.ui.fragment.video;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,29 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
-
-import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
-import com.edusoho.kuozhi.v3.listener.LessonPluginCallback;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
-import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.ui.DetailActivity;
-import com.edusoho.kuozhi.v3.ui.MenuPop;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
-import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by suju on 16/12/16.
  */
 
-public class LessonVideoPlayerFragment extends VideoPlayerFragment {
+public class LessonVideoPlayerFragment extends VideoPlayerFragment implements View.OnFocusChangeListener {
 
     private int mLessonId;
     private int mCourseId;
@@ -53,6 +36,15 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mMenuCallback = (DetailActivity) activity;
+    }
+
+    @Override
+    public void onFocusChange(View v, boolean hasFocus) {
+        if (hasFocus) {
+            play();
+        } else {
+            pause();
+        }
     }
 
     @Override
@@ -87,5 +79,13 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment {
         String changeBarEvent = isShow ?
                 Const.COURSE_SHOW_BAR : Const.COURSE_HIDE_BAR;
         MessageEngine.getInstance().sendMsg(changeBarEvent, null);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mMenuCallback != null) {
+            mMenuCallback.getMenu().setVisibility(false);
+        }
     }
 }

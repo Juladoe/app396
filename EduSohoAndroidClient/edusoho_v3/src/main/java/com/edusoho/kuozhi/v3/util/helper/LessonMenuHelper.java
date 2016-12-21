@@ -50,6 +50,7 @@ public class LessonMenuHelper {
                 mMenuPop.addItem(mExerciseItemList.get(i).title);
             }
         }
+        mMenuPop.addItem("学完");
         mMenuPop.setVisibility(true);
         mMenuPop.setOnMenuClickListener(getMenuClickListener());
         loadLessonStatus();
@@ -118,9 +119,9 @@ public class LessonMenuHelper {
     private void setLearnBtnState(LearnStatus state) {
         if (state != null && LearnStatus.finished == state) {
             mCurrentLearnState = state;
-            mMenuPop.addItem("学完了");
+            mMenuPop.getItem(3).setName("已学完");
         } else {
-            mMenuPop.addItem("学完");
+            mMenuPop.getItem(3).setName("学完");
         }
     }
 

@@ -56,12 +56,10 @@ public class CourseCatalogFragment extends BaseFragment {
     private RelativeLayout mRlSpace;
     private FixHeightListView mLvCatalog;
     private CourseCatalogue mCourseCatalogue;
-    private CourseCatalogue.LessonsBean mLessonsBean;
     private TextView tvSpace;
     private View view;
     private View mLoadView;
     private View mLessonEmpytView;
-    private CourseCatalogue.LessonsBean lesson;
     private LoadDialog mProcessDialog;
 
     public CourseCatalogFragment() {
@@ -131,6 +129,9 @@ public class CourseCatalogFragment extends BaseFragment {
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mAdapter.isSelected(position)) {
+                    return;
+                }
                 mAdapter.changeSelected(position);
                 if (TextUtils.isEmpty(app.token)) {
                     CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
@@ -252,6 +253,9 @@ public class CourseCatalogFragment extends BaseFragment {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
                         MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
+
+                        bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override

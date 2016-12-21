@@ -172,7 +172,7 @@
     <string name="class_catalog_hint">该班级没有课程</string>
     <string name="class_catalog_join">请先加入班级</string>
     <string name="class_catalog_free">免费</string>
-    <string name="class_catalog_people">人参与</string>
+    <string name="class_catalog_people">%d人参与</string>
 
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>
@@ -343,5 +343,8 @@
     <string name="label_teacher">教师</string>
 
     <string name="register_cancel">取消</string>
+
+    <!-- lesson -->
+    <string name="lesson_not_exist">课时信息不存在</string>
 
 </resources>
