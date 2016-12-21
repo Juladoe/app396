@@ -424,7 +424,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mIsPlay = false;
         mParent.setStay(false);
-        mPlayButtomLayout.setVisibility(View.VISIBLE);
+        mPlayButtonLayout.setVisibility(View.VISIBLE);
     }
 
     protected boolean mIsFullScreen = false;
