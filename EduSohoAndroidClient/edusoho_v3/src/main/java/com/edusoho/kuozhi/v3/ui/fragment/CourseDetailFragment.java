@@ -145,7 +145,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 image.setTag(data.get(i).user.id);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
-                ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image,
+                ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image,
                         app.mAvatarOptions);
             } else {
                 txt.setText("");
@@ -208,7 +208,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             mTeacherLayout.setVisibility(View.VISIBLE);
             Teacher teacher = course.teachers[0];
             mTeacherId = String.valueOf(teacher.id);
-            ImageLoader.getInstance().displayImage(teacher.avatar, mIvTeacherIcon, app.mAvatarOptions);
+            ImageLoader.getInstance().displayImage(teacher.getAvatar(), mIvTeacherIcon, app.mAvatarOptions);
             mTvTeacherName.setText(teacher.nickname);
             mTvTeacherDesc.setText(teacher.title);
         }
@@ -295,7 +295,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             viewHolder.mName.setText(review.getUser().nickname);
             viewHolder.mTime.setText(CommonUtil.convertWeekTime(review.getCreatedTime()));
             viewHolder.mStar.setRating((int) Double.parseDouble(review.getRating()));
-            ImageLoader.getInstance().displayImage(review.getUser().mediumAvatar, viewHolder.mIcon,
+            ImageLoader.getInstance().displayImage(review.getUser().getMediumAvatar(), viewHolder.mIcon,
                     app.mAvatarOptions);
             viewHolder.mIcon.setTag(review.getUser().id);
             viewHolder.mIcon.setOnClickListener(mOnClickListener);

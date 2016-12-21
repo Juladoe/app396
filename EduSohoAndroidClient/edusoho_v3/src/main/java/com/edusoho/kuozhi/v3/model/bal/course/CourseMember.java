@@ -34,7 +34,16 @@ public class CourseMember implements Serializable {
         public int id;
         public String nickname;
         public String title;
+
         public String avatar;
+
+        public String getAvatar() {
+            int schemIndex = avatar.lastIndexOf("http://");
+            if (schemIndex != 0) {
+                return avatar.substring(schemIndex);
+            }
+            return avatar;
+        }
     }
 
     public static class Course{

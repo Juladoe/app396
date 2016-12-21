@@ -8,8 +8,6 @@ import java.util.List;
  */
 public class ClassroomMember implements Serializable {
 
-
-
     public UserEntity user;
     public String id;
     public String classroomId;
@@ -47,54 +45,6 @@ public class ClassroomMember implements Serializable {
         this.userId = userId;
     }
 
-    public String getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
-    }
-
-    public String getLevelId() {
-        return levelId;
-    }
-
-    public void setLevelId(String levelId) {
-        this.levelId = levelId;
-    }
-
-    public String getNoteNum() {
-        return noteNum;
-    }
-
-    public void setNoteNum(String noteNum) {
-        this.noteNum = noteNum;
-    }
-
-    public String getThreadNum() {
-        return threadNum;
-    }
-
-    public void setThreadNum(String threadNum) {
-        this.threadNum = threadNum;
-    }
-
-    public String getLocked() {
-        return locked;
-    }
-
-    public void setLocked(String locked) {
-        this.locked = locked;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
     public String getCreatedTime() {
         return createdTime;
     }
@@ -116,6 +66,14 @@ public class ClassroomMember implements Serializable {
         public String nickname;
         public String title;
         public String avatar;
+
+        public String getAvatar() {
+            int schemIndex = avatar.lastIndexOf("http://");
+            if (schemIndex != 0) {
+                return avatar.substring(schemIndex);
+            }
+            return avatar;
+        }
     }
 
 }

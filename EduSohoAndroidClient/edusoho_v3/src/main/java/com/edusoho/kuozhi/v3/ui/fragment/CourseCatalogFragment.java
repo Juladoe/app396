@@ -25,6 +25,7 @@ import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
+import com.edusoho.kuozhi.v3.model.provider.SystemProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
@@ -120,22 +121,24 @@ public class CourseCatalogFragment extends BaseFragment {
                 setLoadViewStatus(View.GONE);
             }
         });
+        initCustomChapterSetting();
+    }
 
-        new ClassRoomProvider(getContext()).getCustomTitle()
-            .success(new NormalCallback<CustomTitle>() {
-                @Override
-                public void success(CustomTitle obj) {
-                    mCustomTitle = obj;
-                    if (mCustomTitle != null && "1".equals(mCustomTitle.getCustomChapterEnabled())) {
-                        mAdapter.chapterTitle = mCustomTitle.getChapterName();
-                        mAdapter.unitTitle = mCustomTitle.getPartName();
-                        mAdapter.notifyDataSetChanged();
+    protected void initCustomChapterSetting() {
+        new SystemProvider(getContext()).getCourseSetting()
+                .success(new NormalCallback<CustomTitle>() {
+                    @Override
+                    public void success(CustomTitle obj) {
+                        mCustomTitle = obj;
+                        if (mCustomTitle != null && "1".equals(mCustomTitle.getCustomChapterEnabled())) {
+                            mAdapter.chapterTitle = mCustomTitle.getChapterName();
+                            mAdapter.unitTitle = mCustomTitle.getPartName();
+                            mAdapter.notifyDataSetChanged();
+                        }
                     }
-                }
-            }).fail(new NormalCallback<VolleyError>() {
+                }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-
             }
         });
     }
