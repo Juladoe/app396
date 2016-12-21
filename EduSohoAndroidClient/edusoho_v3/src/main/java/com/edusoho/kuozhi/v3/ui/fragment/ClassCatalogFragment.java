@@ -13,7 +13,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.ClassCatalogueAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
-import com.edusoho.kuozhi.v3.model.bal.Classroom;
+import com.edusoho.kuozhi.v3.entity.ClassCatalogue;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
@@ -29,10 +29,10 @@ import java.util.List;
  */
 
 public class ClassCatalogFragment extends BaseFragment {
-
+    public boolean isJoin = false;
     public String mClassRoomId = "0";
     private FixHeightListView mLvClass;
-    private List<Classroom> mClassCatalogue;
+    private List<ClassCatalogue> mClassCatalogue;
 
 
     public ClassCatalogFragment() {
@@ -53,12 +53,12 @@ public class ClassCatalogFragment extends BaseFragment {
         ((BaseNoTitleActivity) getActivity()).app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                mClassCatalogue = ((BaseNoTitleActivity) getActivity()).parseJsonValue(response, new TypeToken<List<Classroom>>() {
+                mClassCatalogue = ((BaseNoTitleActivity) getActivity()).parseJsonValue(response, new TypeToken<List<ClassCatalogue>>() {
                 });
                 if (mClassCatalogue != null && mClassCatalogue.size() > 0) {
                     initView();
                 } else {
-                    CommonUtil.shortCenterToast(getActivity(), "该班级没有课程");
+                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.class_catalog_hint));
                 }
             }
         }, new Response.ErrorListener() {
@@ -75,17 +75,22 @@ public class ClassCatalogFragment extends BaseFragment {
         mLvClass.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!TextUtils.isEmpty(app.token)) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("course_id", mClassCatalogue.get(position).lessonNum+"");
-                    CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);
+                if (TextUtils.isEmpty(app.token)) {
+                    CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
                     return;
                 }
+                if (!isJoin && !"0.0".equals(mClassCatalogue.get(position).getPrice())) {
+                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.class_catalog_join));
+                    return;
+                }
+                Bundle bundle = new Bundle();
+                bundle.putString("course_id", mClassCatalogue.get(position).getClassroom_course_id()+"");
+                CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);
             }
         });
     }
 
-
-
-    public void reFreshView(){}
+    public void reFreshView(boolean mJoin){
+        isJoin = mJoin;
+    }
 }
