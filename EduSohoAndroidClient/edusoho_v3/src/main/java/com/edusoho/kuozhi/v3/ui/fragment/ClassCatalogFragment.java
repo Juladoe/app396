@@ -84,7 +84,7 @@ public class ClassCatalogFragment extends BaseFragment {
                     return;
                 }
                 Bundle bundle = new Bundle();
-                bundle.putString("course_id", mClassCatalogue.get(position).getClassroom_course_id()+"");
+                bundle.putString("course_id", mClassCatalogue.get(position).getLessonNum()+"");
                 CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);
             }
         });

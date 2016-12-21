@@ -158,6 +158,7 @@
     <string name="class_catalog_join">请先加入班级</string>
     <string name="class_catalog_free">免费</string>
     <string name="class_catalog_people">人参与</string>
+    <string name="course_catalog_space">可用空间:</string>
 
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>

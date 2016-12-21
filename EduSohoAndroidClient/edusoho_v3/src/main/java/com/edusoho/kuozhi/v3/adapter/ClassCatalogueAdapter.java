@@ -56,8 +56,8 @@ public class ClassCatalogueAdapter extends BaseAdapter{
         ClassCatalogue classroom = mCourseList.get(position);
         ImageLoader.getInstance().displayImage(classroom.getSmallPicture(), classHolder.mIvClass);
         classHolder.mTvTitle.setText(classroom.getTitle());
-        classHolder.mTvPeople.setText(classroom.getStudentNum() + R.string.class_catalog_people);
-        if ("0.0".equals(classroom.getPrice())) {
+        classHolder.mTvPeople.setText(classroom.getStudentNum() + mContext.getString(R.string.class_catalog_people));
+        if ("0.00".equals(classroom.getPrice())) {
             classHolder.mTvFree.setText(R.string.class_catalog_free);
             classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         } else {

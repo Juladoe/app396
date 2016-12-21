@@ -70,11 +70,12 @@
 
     <TextView
         android:id="@+id/lesson_free"
-        android:text=""
+        android:text="@string/class_catalog_free"
         android:textSize="@dimen/font_xxs"
         android:textColor="@color/primary_color"
         android:layout_marginTop="@dimen/lesson_free_top"
         android:layout_toRightOf="@id/lesson_title"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </RelativeLayout>
