@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     public CourseCatalogue courseCatalogue;
     public Context mContext;
     public boolean isJoin;
+    public String chapterTitle;
+    public String unitTitle;
     public static final int TYPE_CHAPTER = 0;
     public static final int TYPE_SECTION = 1;
     public static final int TYPE_LESSON = 2;
@@ -69,12 +72,20 @@ public class CourseCatalogueAdapter extends BaseAdapter {
             case TYPE_CHAPTER:
                 convertView = mInflater.inflate(R.layout.item_chapter_catalog, null);
                 chapterHolder = new ChapterHolder(convertView);
-                chapterHolder.chapterTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + "章" + "  " + lessonsBean.getTitle());
+                if (!TextUtils.isEmpty(chapterTitle)) {
+                    chapterHolder.chapterTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + chapterTitle  + "  " + lessonsBean.getTitle());
+                }else {
+                    chapterHolder.chapterTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + "章" + "  " + lessonsBean.getTitle());
+                }
                 break;
             case TYPE_SECTION:
                 convertView = mInflater.inflate(R.layout.item_section_catalog, null);
                 sectionHolder = new SectionHolder(convertView);
-                sectionHolder.sectionTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + "节" + "  " + lessonsBean.getTitle());
+                if (!TextUtils.isEmpty(unitTitle)) {
+                    sectionHolder.sectionTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + unitTitle  + "  " + lessonsBean.getTitle());
+                }else {
+                    sectionHolder.sectionTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + "节" + "  " + lessonsBean.getTitle());
+                }
                 break;
             case TYPE_LESSON:
                 convertView = mInflater.inflate(R.layout.item_lesson_catalog, null);
@@ -103,9 +114,9 @@ public class CourseCatalogueAdapter extends BaseAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        if ("chapter".equals(courseCatalogue.getLessons().get(position).getItemType())) {
+        if ("chapter".equals(courseCatalogue.getLessons().get(position).getType())) {
             return TYPE_CHAPTER;
-        } else if ("unit".equals(courseCatalogue.getLessons().get(position).getItemType())) {
+        } else if ("unit".equals(courseCatalogue.getLessons().get(position).getType())) {
             return TYPE_SECTION;
         } else {
             return TYPE_LESSON;
@@ -143,9 +154,9 @@ public class CourseCatalogueAdapter extends BaseAdapter {
             lessonHolder.lessonTime.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         }
         lessonHolder.lessonTime.setText(lessonsBean.getLength());
-        lessonHolder.lessonTitle.setText("课时:" + lessonsBean.getNumber() + " " + lessonsBean.getTitle());
-        if ("0".equals(lessonsBean.getFree())) {
-            lessonHolder.lessonFree.setVisibility(View.INVISIBLE);
+        lessonHolder.lessonTitle.setText(lessonsBean.getTitle());
+        if ("1".equals(lessonsBean.getFree()) && !isJoin) {
+            lessonHolder.lessonFree.setVisibility(View.VISIBLE);
         }
     }
 

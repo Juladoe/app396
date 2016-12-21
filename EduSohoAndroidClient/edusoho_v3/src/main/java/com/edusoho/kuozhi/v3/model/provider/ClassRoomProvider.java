@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
 
+import com.edusoho.kuozhi.v3.entity.CustomTitle;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -36,6 +37,15 @@ public class ClassRoomProvider extends ModelProvider  {
         requestUrl.getHeads().put("token", getToken());
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<List<Course>>(){});
+
+        return requestOption.build();
+    }
+
+
+    public ProviderListener<CustomTitle> getCustomTitle() {
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/api/setting/course", getHost()));
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<CustomTitle>(){});
 
         return requestOption.build();
     }

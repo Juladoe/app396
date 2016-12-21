@@ -6,7 +6,6 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +19,11 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.entity.CustomTitle;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
@@ -52,6 +53,7 @@ public class CourseCatalogFragment extends BaseFragment {
 
     public int mMemberStatus;
     public String mCourseId;
+    public CustomTitle mCustomTitle;
     public CourseCatalogueAdapter mAdapter;
     private RelativeLayout mRlSpace;
     private FixHeightListView mLvCatalog;
@@ -83,6 +85,7 @@ public class CourseCatalogFragment extends BaseFragment {
         tvSpace.setOnClickListener(getCacheCourse());
         mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, mMemberStatus == ISMEMBER);
         mLvCatalog.setAdapter(mAdapter);
+        initCache();
     }
 
     protected void setLoadViewStatus(int visibility) {
@@ -117,6 +120,24 @@ public class CourseCatalogFragment extends BaseFragment {
                 setLoadViewStatus(View.GONE);
             }
         });
+
+        new ClassRoomProvider(getContext()).getCustomTitle()
+            .success(new NormalCallback<CustomTitle>() {
+                @Override
+                public void success(CustomTitle obj) {
+                    mCustomTitle = obj;
+                    if (mCustomTitle != null && "1".equals(mCustomTitle.getCustomChapterEnabled())) {
+                        mAdapter.chapterTitle = mCustomTitle.getChapterName();
+                        mAdapter.unitTitle = mCustomTitle.getPartName();
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
+            }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+
+            }
+        });
     }
 
     private void setLessonEmptyViewVisibility(int visibility) {
@@ -147,40 +168,42 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     private void initFirstLearnLesson() {
-        List<CourseCatalogue.LessonsBean> lessonsBeanList = mCourseCatalogue.getLessons();
-        if (lessonsBeanList == null || lessonsBeanList.isEmpty()) {
-            return;
-        }
-        final Bundle bundle = new Bundle();
-        CourseCatalogue.LessonsBean lessonsBean = null;
-        Map<String, String> learnStatuses = mCourseCatalogue.getLearnStatuses();
-        //没加入
-        if (mMemberStatus != ISMEMBER) {
-            lessonsBean = findFreeLessonInList();
-            bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_NONE);
-        } else if (learnStatuses == null || learnStatuses.isEmpty()) {
-            //还没开始学,学第一个
-            lessonsBean = findFirstLessonInList();
-            bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_NONE);
-        } else {
-            lessonsBean = findFirseLearnLessonWithStatus(mCourseCatalogue);
-            bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
-        }
-
-        if (lessonsBean == null) {
-            bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, null);
-            MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
-            return;
-        }
-
-        new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
-        .success(new NormalCallback<LessonItem>() {
-            @Override
-            public void success(LessonItem lessonItem) {
-                bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
-                MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
+        if (mCourseCatalogue != null) {
+            List<CourseCatalogue.LessonsBean> lessonsBeanList = mCourseCatalogue.getLessons();
+            if (lessonsBeanList == null || lessonsBeanList.isEmpty()) {
+                return;
             }
-        });
+            final Bundle bundle = new Bundle();
+            CourseCatalogue.LessonsBean lessonsBean = null;
+            Map<String, String> learnStatuses = mCourseCatalogue.getLearnStatuses();
+            //没加入
+            if (mMemberStatus != ISMEMBER) {
+                lessonsBean = findFreeLessonInList();
+                bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_NONE);
+            } else if (learnStatuses.containsKey("-1")) {
+                //还没开始学,学第一个
+                lessonsBean = findFirstLessonInList();
+                bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_NONE);
+            } else {
+                lessonsBean = findFirseLearnLessonWithStatus(mCourseCatalogue);
+                bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
+            }
+
+            if (lessonsBean == null) {
+                bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, null);
+                MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
+                return;
+            }
+
+            new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
+                    .success(new NormalCallback<LessonItem>() {
+                        @Override
+                        public void success(LessonItem lessonItem) {
+                            bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
+                            MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
+                        }
+                    });
+        }
     }
 
     private CourseCatalogue.LessonsBean findFirseLearnLessonWithStatus(CourseCatalogue courseCatalogue) {
@@ -288,10 +311,9 @@ public class CourseCatalogFragment extends BaseFragment {
      * 外部刷新数据
      */
     public void reFreshView(boolean mIsJoin) {
-        this.mMemberStatus = mIsJoin ? ISMEMBER : VISITOR;
-        if (mMemberStatus == ISMEMBER && TextUtils.isEmpty(app.token)) {
+        mMemberStatus = mIsJoin ? ISMEMBER : VISITOR;
+        if (mMemberStatus == ISMEMBER && !TextUtils.isEmpty(app.token)) {
             mRlSpace.setVisibility(View.VISIBLE);
-            initCache();
             initFirstLearnLesson();
         }
 
@@ -306,8 +328,7 @@ public class CourseCatalogFragment extends BaseFragment {
     private void initCache() {
         TextView tvSpace = (TextView) view.findViewById(R.id.tv_space);
         TextView tvCourse = (TextView) view.findViewById(R.id.tv_course);
-        tvSpace.setText("可用空间: " + getRomAvailableSize());
-        Log.d("test", getRomAvailableSize());
+        tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
         tvCourse.setOnClickListener(getCacheCourse());
     }
 

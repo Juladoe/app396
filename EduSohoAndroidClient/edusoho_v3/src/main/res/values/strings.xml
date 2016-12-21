@@ -172,6 +172,7 @@
     <string name="class_catalog_hint">该班级没有课程</string>
     <string name="class_catalog_join">请先加入班级</string>
     <string name="class_catalog_free">免费</string>
+    <string name="course_catalog_space">可用空间:</string>
     <string name="class_catalog_people">%d人参与</string>
 
     <!--ttf-->

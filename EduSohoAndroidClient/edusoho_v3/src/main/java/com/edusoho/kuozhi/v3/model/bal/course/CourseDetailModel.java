@@ -5,7 +5,6 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
-import com.edusoho.kuozhi.v3.entity.site.Site;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.base.ApiResponse;
@@ -33,7 +32,6 @@ public class CourseDetailModel implements Serializable {
                     callbackListener.onFailure("Error", response);
                     return;
                 }
-                try {
                     CourseDetail apiResponse = ModelDecor.getInstance().
                             decor(response, new TypeToken<CourseDetail>() {
                             });
@@ -42,9 +40,6 @@ public class CourseDetailModel implements Serializable {
                     } else if (apiResponse != null) {
                         callbackListener.onFailure("Error", response);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         }, new Response.ErrorListener() {
             @Override

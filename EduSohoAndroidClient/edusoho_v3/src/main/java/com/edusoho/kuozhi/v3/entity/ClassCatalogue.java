@@ -8,6 +8,71 @@ import java.util.List;
 
 public class ClassCatalogue {
 
+    /**
+     * id : 7
+     * title : 小金刚和葫芦妹
+     * subtitle :
+     * status : published
+     * buyable : 1
+     * buyExpiryTime : 0
+     * type : normal
+     * maxStudentNum : 0
+     * price : 0.00
+     * originPrice : 0.00
+     * coinPrice : 0.00
+     * originCoinPrice : 0.00
+     * expiryMode : none
+     * expiryDay : 0
+     * showStudentNumType : opened
+     * serializeMode : finished
+     * income : 0.00
+     * lessonNum : 10
+     * giveCredit : 0
+     * rating : 0
+     * ratingNum : 0
+     * vipLevelId : 0
+     * useInClassroom : single
+     * singleBuy : 1
+     * categoryId : 0
+     * smallPicture : http://trymob.edusoho.cn/files/default/2015/12-25/1132171afdc2188503.jpg
+     * middlePicture : http://trymob.edusoho.cn/files/default/2015/12-25/1132171ada76394916.jpg
+     * largePicture : http://trymob.edusoho.cn/files/default/2015/12-25/1132171a8029644709.jpg
+     * about :
+     * goals : []
+     * audiences : []
+     * recommended : 0
+     * recommendedSeq : 0
+     * recommendedTime : 0
+     * locationId : 0
+     * parentId : 2
+     * address :
+     * studentNum : 6
+     * hitNum : 297
+     * noteNum : 0
+     * userId : 2
+     * deadlineNotify : none
+     * daysOfNotifyBeforeDeadline : 0
+     * watchLimit : 0
+     * createdTime : 2016-01-05T17:10:01+08:00
+     * updatedTime : 1482241838
+     * freeStartTime : 0
+     * freeEndTime : 0
+     * discountId : 0
+     * discount : 10.00
+     * approval : 0
+     * locked : 1
+     * maxRate : 100
+     * tryLookable : 0
+     * tryLookTime : 0
+     * orgCode : 1.
+     * orgId : 1
+     * classroom_course_id : 2
+     * teachers : [{"id":"2","nickname":"melo","title":"元始天尊","following":"20","follower":"21","avatar":"http://trymob.edusoho.cn/files/user/2016/09-27/165820c19763863640.JPG?7.3.6"},{"id":"1","nickname":"admin_suju","title":"DFW","following":"12","follower":"14","avatar":"http://trymob.edusoho.cn/files/user/2016/12-09/1157266980c8551722.jpg?7.3.6"},{"id":"11","nickname":"钻石之黎明的","title":"牛逼讲师","following":"19","follower":"17","avatar":"http://trymob.edusoho.cn/files/user/2015/12-24/023419b27e5b543661.jpg?7.3.6"}]
+     * tags : []
+     * priceType : RMB
+     * coinName : 虚拟币
+     */
+
     private String id;
     private String title;
     private String subtitle;
@@ -225,6 +290,15 @@ public class ClassCatalogue {
     }
 
     public static class TeachersBean {
+        /**
+         * id : 2
+         * nickname : melo
+         * title : 元始天尊
+         * following : 20
+         * follower : 21
+         * avatar : http://trymob.edusoho.cn/files/user/2016/09-27/165820c19763863640.JPG?7.3.6
+         */
+
         private String id;
         private String nickname;
         private String title;

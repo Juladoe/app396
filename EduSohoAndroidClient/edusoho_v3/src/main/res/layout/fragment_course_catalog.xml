@@ -15,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/space_height"
             android:layout_marginLeft="@dimen/catalog_margin_left"
-
             android:layout_marginRight="@dimen/common_margin_right"
             android:gravity="center_vertical"
             android:visibility="gone">
