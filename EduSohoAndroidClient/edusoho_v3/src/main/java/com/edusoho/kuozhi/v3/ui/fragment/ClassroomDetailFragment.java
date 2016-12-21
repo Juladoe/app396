@@ -124,7 +124,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String id = v.getTag().toString();
+                        String id = String.valueOf(v.getTag());
                         jumpToMember(id);
                     }
                 };
@@ -143,7 +143,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             ImageView image = (ImageView) view.findViewById(R.id.iv_avatar_icon);
             TextView txt = (TextView) view.findViewById(R.id.tv_avatar_name);
             if (data.size() > i) {
-                image.setTag(i);
+                image.setTag(data.get(i).userId);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
                 ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image,

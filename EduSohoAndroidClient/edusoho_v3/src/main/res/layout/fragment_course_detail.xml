@@ -66,6 +66,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
                     android:layout_marginRight="15dp"
+                    android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@+id/review_star"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_l" />
