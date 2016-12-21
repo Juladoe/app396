@@ -28,6 +28,8 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +96,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                         } else {
                             mReviewNoneLayout.setVisibility(View.GONE);
                             mReviews.addAll(data.getData());
-                            mTvReviewMore.setText(String.format("更多评论（%s）", data.getTotal()));
+                            mTvReviewMore.setText(String.format("更多评价（%s）", data.getTotal()));
                             mAdapter.notifyDataSetChanged();
                         }
                     }
@@ -158,7 +160,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Course course = mCourseDetail.getCourse();
         mTvTitle.setText(course.title);
-        mTvTitleDesc.setText(Html.fromHtml(course.about));
+        mTvTitleDesc.setHtml(course.about,new HtmlHttpImageGetter(mTvTitleDesc));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             mVipLayout.setVisibility(View.VISIBLE);
@@ -206,7 +208,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             mTeacherLayout.setVisibility(View.VISIBLE);
             Teacher teacher = course.teachers[0];
             mTeacherId = String.valueOf(teacher.id);
-            ImageLoader.getInstance().displayImage(teacher.avatar, mIvTeacherIcon);
+            ImageLoader.getInstance().displayImage(teacher.avatar, mIvTeacherIcon,app.mAvatarOptions);
             mTvTeacherName.setText(teacher.nickname);
             mTvTeacherDesc.setText(teacher.title);
         }
