@@ -47,8 +47,8 @@ import java.util.Map;
 public class CourseCatalogFragment extends BaseFragment {
 
     private static final int NONE = 0;
-    private static final int ISMEMBER = 0;
-    private static final int VISITOR = 1;
+    private static final int ISMEMBER = 1;
+    private static final int VISITOR = 2;
 
     public int mMemberStatus;
     public String mCourseId;
@@ -59,6 +59,8 @@ public class CourseCatalogFragment extends BaseFragment {
     private CourseCatalogue.LessonsBean mLessonsBean;
     private TextView tvSpace;
     private View view;
+    private View mLoadView;
+    private View mLessonEmpytView;
     private CourseCatalogue.LessonsBean lesson;
     private LoadDialog mProcessDialog;
 
@@ -77,13 +79,21 @@ public class CourseCatalogFragment extends BaseFragment {
     protected void init() {
         mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
         mLvCatalog = (FixHeightListView) view.findViewById(R.id.lv_catalog);
+        mLoadView = view.findViewById(R.id.ll_frame_load);
         tvSpace = (TextView) view.findViewById(R.id.tv_space);
+        mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
         tvSpace.setOnClickListener(getCacheCourse());
         mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, mMemberStatus == ISMEMBER);
         mLvCatalog.setAdapter(mAdapter);
     }
 
+    protected void setLoadViewStatus(int visibility) {
+        mLoadView.setVisibility(visibility);
+    }
+
     private void initCatalogue() {
+        setLoadViewStatus(View.VISIBLE);
+        setLessonEmptyViewVisibility(View.GONE);
         if (mMemberStatus == ISMEMBER && !TextUtils.isEmpty(app.token)) {
             mRlSpace.setVisibility(View.VISIBLE);
             initCache();
@@ -93,23 +103,26 @@ public class CourseCatalogFragment extends BaseFragment {
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                setLoadViewStatus(View.GONE);
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
                 });
                 if (mCourseCatalogue.getLessons().size() != 0) {
                     initLessonCatalog();
-                    if (mMemberStatus == ISMEMBER) {
-                        initFirstLearnLesson();
-                    }
+                    initFirstLearnLesson();
                 } else {
-                    //empty view
+                    setLessonEmptyViewVisibility(View.VISIBLE);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                setLoadViewStatus(View.GONE);
             }
         });
+    }
+
+    private void setLessonEmptyViewVisibility(int visibility) {
+        mLessonEmpytView.setVisibility(visibility);
     }
 
     public void initLessonCatalog() {
@@ -192,7 +205,7 @@ public class CourseCatalogFragment extends BaseFragment {
     private CourseCatalogue.LessonsBean findFirstLessonInList() {
         List<CourseCatalogue.LessonsBean> lessonsBeanList = mCourseCatalogue.getLessons();
         for (int i = 0; i < lessonsBeanList.size(); i++) {
-            CourseCatalogue.LessonsBean lessonsBean = lessonsBeanList.get(0);
+            CourseCatalogue.LessonsBean lessonsBean = lessonsBeanList.get(i);
             if ("lesson".equals(lessonsBean.getItemType())) {
                 return lessonsBean;
             }
@@ -203,10 +216,12 @@ public class CourseCatalogFragment extends BaseFragment {
 
     private CourseCatalogue.LessonsBean findFreeLessonInList() {
         List<CourseCatalogue.LessonsBean> lessonsBeanList = mCourseCatalogue.getLessons();
-        if (lessonsBeanList == null || lessonsBeanList.isEmpty()) {
-            return null;
+        for (int i = 0; i < lessonsBeanList.size(); i++) {
+            CourseCatalogue.LessonsBean lessonsBean = lessonsBeanList.get(i);
+            if ("lesson".equals(lessonsBean.getItemType()) && "1".equals(lessonsBean.getFree())) {
+                return lessonsBean;
+            }
         }
-
         return null;
     }
 

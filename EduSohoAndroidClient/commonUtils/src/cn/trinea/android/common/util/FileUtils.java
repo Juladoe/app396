@@ -48,6 +48,33 @@ public class FileUtils {
 
     public final static String FILE_EXTENSION_SEPARATOR = ".";
 
+    public static String readFile(InputStream stream) {
+        StringBuilder fileContent = new StringBuilder("");
+        BufferedReader reader = null;
+        try {
+            InputStreamReader is = new InputStreamReader(stream);
+            reader = new BufferedReader(is);
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                if (!fileContent.toString().equals("")) {
+                    fileContent.append("\r\n");
+                }
+                fileContent.append(line);
+            }
+            reader.close();
+            return fileContent.toString();
+        } catch (IOException e) {
+            throw new RuntimeException("IOException occurred. ", e);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    throw new RuntimeException("IOException occurred. ", e);
+                }
+            }
+        }
+    }
     /**
      * read file
      *

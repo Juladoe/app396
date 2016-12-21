@@ -8,26 +8,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.htmlapp.Menu;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import cn.trinea.android.common.util.AppUtils;
-import jazzyviewpager.Util;
-import m.framework.ui.widget.slidingmenu.MenuAdapter;
-import m.framework.utils.Utils;
 
 /**
  * Created by remilia on 2016/12/19.
@@ -95,6 +84,16 @@ public class MenuPop {
         item.drawable = drawable;
         mNames.add(item);
         return this;
+    }
+
+    public void removeItem(int position) {
+        if (position != -1 && position < (mNames.size() - 1)) {
+            mNames.remove(position);
+        }
+    }
+
+    public void removeAll() {
+        mNames.clear();
     }
 
     public Item getItem(int position) {

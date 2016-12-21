@@ -3,9 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_homework"
-        android:icon="@drawable/menu_icon_homework"
-        android:title="练习与作业"
+        android:id="@+id/menu_share"
+        android:icon="@drawable/ic_menu_share"
+        android:title="分享"
+        android:visible="true"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_more"
+        android:icon="@drawable/icon_menu_more"
+        android:title="更多"
         android:visible="true"
         app:showAsAction="always" />
 

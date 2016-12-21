@@ -419,7 +419,6 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
         if (buttonView.isChecked()) {
             buttonView.setEnabled(false);
         }
-        lessonActivity.changeLessonStatus(true);
     }
 
     private void backActivity() {

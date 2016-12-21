@@ -53,6 +53,7 @@ public class ClassCatalogueAdapter extends BaseAdapter{
         } else {
             classHolder = (ClassHolder) convertView.getTag();
         }
+
         ClassCatalogue classroom = mCourseList.get(position);
         ImageLoader.getInstance().displayImage(classroom.getSmallPicture(), classHolder.mIvClass);
         classHolder.mTvTitle.setText(classroom.getTitle());
