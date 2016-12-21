@@ -123,7 +123,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String id = v.getTag().toString();
+                        String id = String.valueOf(v.getTag());
                         jumpToMember(id);
                     }
                 };
@@ -141,8 +141,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
             view.setLayoutParams(params);
             ImageView image = (ImageView) view.findViewById(R.id.iv_avatar_icon);
             TextView txt = (TextView) view.findViewById(R.id.tv_avatar_name);
-            if (data.size() > i) {
-                image.setTag(i);
+            if (data.size() > i && data.get(i).user != null) {
+                image.setTag(data.get(i).user.id);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
                 ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image,
@@ -160,7 +160,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Course course = mCourseDetail.getCourse();
         mTvTitle.setText(course.title);
-        mTvTitleDesc.setHtml(course.about,new HtmlHttpImageGetter(mTvTitleDesc));
+        mTvTitleDesc.setHtml(course.about, new HtmlHttpImageGetter(mTvTitleDesc));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             mVipLayout.setVisibility(View.VISIBLE);
@@ -208,7 +208,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             mTeacherLayout.setVisibility(View.VISIBLE);
             Teacher teacher = course.teachers[0];
             mTeacherId = String.valueOf(teacher.id);
-            ImageLoader.getInstance().displayImage(teacher.avatar, mIvTeacherIcon,app.mAvatarOptions);
+            ImageLoader.getInstance().displayImage(teacher.avatar, mIvTeacherIcon, app.mAvatarOptions);
             mTvTeacherName.setText(teacher.nickname);
             mTvTeacherDesc.setText(teacher.title);
         }
