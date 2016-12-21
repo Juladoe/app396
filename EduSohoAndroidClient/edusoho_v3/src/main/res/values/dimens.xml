@@ -175,6 +175,8 @@
 
     <!--3.8-->
     <dimen name="tv_register_size">16sp</dimen>
+    <dimen name="class_catalog_iv_weight">130dp</dimen>
+    <dimen name="class_catalog_iv_height">73dp</dimen>
     <dimen name="rl_register_margingTop">50dp</dimen>
     <dimen name="iv_register">48dp</dimen>
     <dimen name="view_marginTop">45dp</dimen>

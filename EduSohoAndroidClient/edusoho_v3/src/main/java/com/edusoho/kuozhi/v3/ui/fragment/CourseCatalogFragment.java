@@ -28,7 +28,6 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
-import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -121,7 +120,7 @@ public class CourseCatalogFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 mAdapter.changeSelected(position);
                 if (TextUtils.isEmpty(app.token)) {
-                    getActivity().startActivity(new Intent(getActivity(), LoginActivity.class));
+                    CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
                     return;
                 }
                 if (mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
