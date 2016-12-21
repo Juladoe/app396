@@ -7,11 +7,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.entity.ClassCatalogue;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.List;
 
 /**
@@ -20,10 +18,10 @@ import java.util.List;
 
 public class ClassCatalogueAdapter extends BaseAdapter{
     public Context mContext;
-    public List<ClassCatalogue> mCourseList;
+    public List<Course> mCourseList;
 
 
-    public ClassCatalogueAdapter(Context mContext, List<ClassCatalogue> mCourseList) {
+    public ClassCatalogueAdapter(Context mContext, List<Course> mCourseList) {
         this.mContext = mContext;
         this.mCourseList = mCourseList;
     }
@@ -54,15 +52,17 @@ public class ClassCatalogueAdapter extends BaseAdapter{
             classHolder = (ClassHolder) convertView.getTag();
         }
 
-        ClassCatalogue classroom = mCourseList.get(position);
-        ImageLoader.getInstance().displayImage(classroom.getSmallPicture(), classHolder.mIvClass);
-        classHolder.mTvTitle.setText(classroom.getTitle());
-        classHolder.mTvPeople.setText(classroom.getStudentNum() + R.string.class_catalog_people);
-        if ("0.0".equals(classroom.getPrice())) {
+        Course course = mCourseList.get(position);
+        ImageLoader.getInstance().displayImage(course.middlePicture, classHolder.mIvClass);
+        classHolder.mTvTitle.setText(course.title);
+        classHolder.mTvPeople.setText(
+                String.format(mContext.getResources().getString(R.string.class_catalog_people), course.studentNum));
+        if (course.price <= 0) {
             classHolder.mTvFree.setText(R.string.class_catalog_free);
             classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         } else {
-            classHolder.mTvFree.setText("¥" + classroom.getPrice());
+            classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.secondary_color));
+            classHolder.mTvFree.setText(String.format("¥%.2f", course.price));
         }
         return convertView;
     }
