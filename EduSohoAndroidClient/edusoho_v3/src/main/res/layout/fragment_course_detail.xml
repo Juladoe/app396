@@ -206,6 +206,7 @@
                     android:layout_height="50dp"
                     android:layout_below="@+id/tv_teacher1"
                     android:layout_marginTop="15dp"
+                    android:src="@drawable/icon_default_avatar"
                     android:scaleType="centerCrop" />
 
                 <TextView
