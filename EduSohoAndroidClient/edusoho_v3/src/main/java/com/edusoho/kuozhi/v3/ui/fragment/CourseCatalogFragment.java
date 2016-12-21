@@ -56,12 +56,10 @@ public class CourseCatalogFragment extends BaseFragment {
     private RelativeLayout mRlSpace;
     private FixHeightListView mLvCatalog;
     private CourseCatalogue mCourseCatalogue;
-    private CourseCatalogue.LessonsBean mLessonsBean;
     private TextView tvSpace;
     private View view;
     private View mLoadView;
     private View mLessonEmpytView;
-    private CourseCatalogue.LessonsBean lesson;
     private LoadDialog mProcessDialog;
 
     public CourseCatalogFragment() {

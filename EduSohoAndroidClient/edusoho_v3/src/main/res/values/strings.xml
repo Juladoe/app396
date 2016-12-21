@@ -344,4 +344,7 @@
 
     <string name="register_cancel">取消</string>
 
+    <!-- lesson -->
+    <string name="lesson_not_exist">课时信息不存在</string>
+
 </resources>

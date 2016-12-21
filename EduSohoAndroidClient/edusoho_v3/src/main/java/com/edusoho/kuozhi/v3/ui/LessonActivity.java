@@ -2,17 +2,14 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
@@ -22,12 +19,13 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
-import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
+import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -41,21 +39,15 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
-import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
-import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
-import com.plugin.edusoho.bdvideoplayer.StreamInfo;
-
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
-
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 
@@ -104,16 +96,31 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     protected void share() {
-        final ShareTool shareTool =
-                new ShareTool(this
-                        , app.host + "/course/" + mLessonId
-                        , "分享"
-                        , "分享课时"
-                        , "");
-        new Handler((mActivity.getMainLooper())).post(new Runnable() {
+        final LoadDialog loadDialog = LoadDialog.create(this);
+        loadDialog.show();
+        new CourseProvider(getBaseContext()).getCourse(mCourseId)
+        .success(new NormalCallback<CourseDetailsResult>() {
             @Override
-            public void run() {
-                shareTool.shardCourse();
+            public void success(CourseDetailsResult courseDetailsResult) {
+                loadDialog.dismiss();
+                if (courseDetailsResult == null || courseDetailsResult.course == null) {
+                    return;
+                }
+                final Course course = courseDetailsResult.course;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String shareUrl = String.format("%s/course/%d/learn#lesson/%d/", app.host, mCourseId, mLessonId);
+                        ShareTool shareTool = new ShareTool(
+                                mActivity, shareUrl, course.title, mLessonItem.title, course.middlePicture);
+                        shareTool.shardCourse();
+                    }
+                });
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                loadDialog.dismiss();
             }
         });
     }
@@ -150,7 +157,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             if (data != null) {
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
-                //mLessonIds = data.getIntArrayExtra(LESSON_IDS);
             }
 
             if (mCourseId == 0 || mLessonId == 0) {
@@ -225,6 +231,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }
         if (item.getItemId() == R.id.menu_share) {
             share();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -232,16 +239,26 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.lesson_activity_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.menu_share);
+        if (menuItem != null) {
+            menuItem.setEnabled(mLessonItem != null);
+        }
+        initMenuPop(menu);
+        return true;
+    }
 
+    private void initMenuPop(Menu menu) {
         MenuPop menuPop = new MenuPop(getBaseContext(), menu.getItem(0).getActionView());
         mLessonMenuHelper = new LessonMenuHelper(getBaseContext(), mLessonId, mCourseId);
         mLessonMenuHelper.initMenu(menuPop);
-        return true;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-
+        MenuItem menuItem = menu.findItem(R.id.menu_share);
+        if (menuItem != null) {
+            menuItem.setEnabled(mLessonItem != null);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -277,9 +294,11 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 loadDialog.dismiss();
                 mLessonItem = getLessonResultType(response);
                 if (mLessonItem == null) {
+                    CommonUtil.longToast(mContext, getResources().getString(R.string.lesson_not_exist));
                     finish();
                     return;
                 }
+                invalidateOptionsMenu();
                 mLessonType = mLessonItem.type;
                 setBackMode(BACK, mLessonItem.title);
                 if (!mLessonType.equals("testpaper")) {
