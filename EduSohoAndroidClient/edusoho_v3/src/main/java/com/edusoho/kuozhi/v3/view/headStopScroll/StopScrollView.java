@@ -59,7 +59,6 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
                 startY = 0;
                 break;
         }
-        Log.e("child",moveY + "");
         return super.dispatchTouchEvent(ev);
     }
 
