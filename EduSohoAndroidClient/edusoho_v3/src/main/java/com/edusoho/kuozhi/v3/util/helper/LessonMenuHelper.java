@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.util.helper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public class LessonMenuHelper {
 
     public void initMenu(MenuPop menuPop) {
         this.mMenuPop = menuPop;
+        mMenuPop.removeAll();
         mMenuPop.addItem("记笔记");
         mExerciseItemList = getExerciseItemList();
         if (mExerciseItemList != null) {
@@ -51,6 +53,10 @@ public class LessonMenuHelper {
         mMenuPop.setVisibility(true);
         mMenuPop.setOnMenuClickListener(getMenuClickListener());
         loadLessonStatus();
+    }
+
+    public void show(View view, int x, int y) {
+        mMenuPop.showAsDropDown(view, x, y);
     }
 
     /**
@@ -125,6 +131,7 @@ public class LessonMenuHelper {
         }
         Intent intent = new Intent();
         intent.putExtras(item.bundle);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClassName(mContext.getPackageName(), item.action);
         mContext.startActivity(intent);
     }

@@ -14,6 +14,12 @@ import android.webkit.WebViewClient;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.koushikdutta.async.util.StreamUtility;
+
+import java.io.IOException;
+import java.io.InputStream;
+
+import cn.trinea.android.common.util.FileUtils;
 
 /**
  * Created by howzhi on 14-9-15.
@@ -67,7 +73,17 @@ public class TextLessonFragment extends BaseFragment {
 
         mLessonWebview = (WebView) view.findViewById(R.id.lesson_webview);
         initWebViewSetting(mLessonWebview);
-        mLessonWebview.loadDataWithBaseURL(app.host, mContent, "text/html", "utf-8", null);
+        mLessonWebview.loadDataWithBaseURL(app.host, getWrapContent(mContent), "text/html", "utf-8", null);
+    }
+
+    private String getWrapContent(String content) {
+        try {
+            InputStream inputStream = getContext().getAssets().open("template.html");
+            String wrapContent = FileUtils.readFile(inputStream);
+            return wrapContent.replace("%content%", content);
+        } catch (IOException e) {
+        }
+        return content;
     }
 
     protected void initWebViewSetting(WebView webView) {
@@ -86,9 +102,6 @@ public class TextLessonFragment extends BaseFragment {
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
-                if (newProgress == 100) {
-                    showProgress(false);
-                }
             }
         });
 
@@ -113,9 +126,6 @@ public class TextLessonFragment extends BaseFragment {
     public class JavaScriptObj {
         @JavascriptInterface
         public void showHtml(String src) {
-            if (src != null && !"".equals(src)) {
-                //webViewHandler.obtainMessage(PLAY_VIDEO, src).sendToTarget();
-            }
         }
 
         @JavascriptInterface

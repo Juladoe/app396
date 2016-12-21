@@ -48,8 +48,8 @@ import java.util.Map;
 public class CourseCatalogFragment extends BaseFragment {
 
     private static final int NONE = 0;
-    private static final int ISMEMBER = 0;
-    private static final int VISITOR = 1;
+    private static final int ISMEMBER = 1;
+    private static final int VISITOR = 2;
 
     public int mMemberStatus;
     public String mCourseId;
