@@ -109,6 +109,21 @@
     <string name="txt_search_school">搜索网校</string>
     <string name="txt_help">使用帮助</string>
     <string name="txt_login_near">近期登录</string>
+    <string name="txt_free">免费</string>
+    <string name="txt_vip_desc">加入会员，免费学习更多课程</string>
+    <string name="txt_suit_people">适宜人群</string>
+    <string name="txt_talk_teacher">讲师</string>
+    <string name="txt_course_student">课程学员</string>
+    <string name="txt_student_none">暂无学员，赶紧加入吧！</string>
+    <string name="txt_course_review">课程评论</string>
+    <string name="txt_more_review">更多评论</string>
+    <string name="txt_review_none">没有评论</string>
+    <string name="txt_add_class">加入班级</string>
+    <string name="txt_add_course">加入课程</string>
+    <string name="txt_study_try">开始试学</string>
+    <string name="txt_study_start">开始学习</string>
+    <string name="txt_study_continue">继续学习</string>
+    <string name="txt_study_finish">学习完成</string>
 
     <!--EditText-->
     <string name="login_username_hint">手机号/邮箱/昵称</string>

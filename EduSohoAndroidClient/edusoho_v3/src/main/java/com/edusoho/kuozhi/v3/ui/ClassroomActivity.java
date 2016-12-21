@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -41,7 +42,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             finish();
             return;
         }
-        mMediaViewHeight = 281;
+        mMediaViewHeight = AppUtil.px2dp(this,(float)AppUtil.getWidthPx(this) /4f *3f);
         initView();
         initEvent();
         initData();
@@ -54,7 +55,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         mPlayLayout.setVisibility(View.GONE);
         mTvInclass.setVisibility(View.GONE);
         mPlayLayout2.setVisibility(View.GONE);
-        mTvAdd.setText("加入班级");
+        mTvAdd.setText(R.string.txt_add_class);
     }
 
     @Override

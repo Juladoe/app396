@@ -135,7 +135,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="33dp"
                     android:layout_toRightOf="@+id/iv_vip"
-                    android:text="加入会员，免费学习更多课程"
+                    android:text="@string/txt_vip_desc"
                     android:textColor="@color/secondary_font_color"
                     android:textSize="@dimen/font_s" />
 
@@ -165,7 +165,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
-                    android:text="适宜人群"
+                    android:text="@string/txt_suit_people"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_l" />
 
@@ -194,7 +194,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
-                    android:text="讲师"
+                    android:text="@string/txt_talk_teacher"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_l" />
 
@@ -245,7 +245,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
-                    android:text="课程学员"
+                    android:text="@string/txt_course_student"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_l" />
 
@@ -287,7 +287,7 @@
                         android:id="@+id/tv_student_none"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="暂无学员，赶紧加入吧！"
+                        android:text="@string/txt_student_none"
                         android:textColor="@color/secondary2_font_color"
                         android:textSize="@dimen/font_s" />
 
@@ -306,7 +306,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
-                    android:text="课程评论"
+                    android:text="@string/txt_course_review"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_l" />
 
@@ -338,7 +338,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="20dp"
                     android:paddingBottom="20dp"
-                    android:text="更多评论"
+                    android:text="@string/txt_more_review"
                     android:textColor="@color/primary_color"
                     android:textSize="@dimen/font_l" />
 
@@ -361,7 +361,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
-                        android:text="暂无评论"
+                        android:text="@string/txt_review_none"
                         android:textColor="@color/secondary2_font_color"
                         android:textSize="@dimen/font_s" />
                 </LinearLayout>
