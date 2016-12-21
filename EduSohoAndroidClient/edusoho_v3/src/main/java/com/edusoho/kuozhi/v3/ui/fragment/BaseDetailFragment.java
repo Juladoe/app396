@@ -125,8 +125,8 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
                 int lineCount = mTvTitleDesc.getLineCount();
                 RelativeLayout.LayoutParams params =
                         (RelativeLayout.LayoutParams) mVTitleLine.getLayoutParams();
-                if (lineCount > 3) {
-                    mTvTitleDesc.setMaxLines(3);
+                if (lineCount > 2) {
+                    mTvTitleDesc.setMaxLines(2);
                     mTvTitleDesc.setEllipsize(TextUtils.TruncateAt.END);
                     mTvTitleFull.setVisibility(View.VISIBLE);
                     mTvTitleFull.setText(getString(R.string.new_font_unfold));
