@@ -147,6 +147,18 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
                 }
             }
         });
+        mTvReviewMore.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if(mTvReviewMore.getText().toString().length() > 4){
+                    mTvReviewMore.setVisibility(View.VISIBLE);
+                    mTvTitleDesc.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                }else{
+                    mTvReviewMore.setVisibility(View.GONE);
+                }
+            }
+        });
     }
 
     abstract protected void initData();
