@@ -140,7 +140,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
         }
         lessonHolder.lessonTime.setText(lessonsBean.getLength());
         lessonHolder.lessonTitle.setText(lessonsBean.getTitle());
-        if ("0".equals(lessonsBean.getFree())) {
+        if ("0".equals(lessonsBean.getFree()) && !isJoin) {
             lessonHolder.lessonFree.setVisibility(View.INVISIBLE);
         }
     }
