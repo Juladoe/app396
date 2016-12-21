@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LiveLessonFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
@@ -83,8 +84,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private Bundle fragmentData;
     private boolean mFromCache;
 
-    private int mNextLessonId;
-    private int mPreviousLessonId;
     private LessonItem mLessonItem;
     private Toolbar mToolBar;
     private TextView mToolBarTitle;
@@ -103,6 +102,22 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     public void invoke(WidgetMessage message) {
     }
+
+    protected void share() {
+        final ShareTool shareTool =
+                new ShareTool(this
+                        , app.host + "/course/" + mLessonId
+                        , "分享"
+                        , "分享课时"
+                        , "");
+        new Handler((mActivity.getMainLooper())).post(new Runnable() {
+            @Override
+            public void run() {
+                shareTool.shardCourse();
+            }
+        });
+    }
+
 
     @Override
     public MessageType[] getMsgTypes() {
@@ -206,6 +221,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_more) {
             mLessonMenuHelper.show(mToolBar, mToolBar.getWidth() - 96, 0);
+            return true;
+        }
+        if (item.getItemId() == R.id.menu_share) {
+            share();
         }
         return super.onOptionsItemSelected(item);
     }

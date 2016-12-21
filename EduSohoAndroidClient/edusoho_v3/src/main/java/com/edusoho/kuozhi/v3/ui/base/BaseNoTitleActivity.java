@@ -21,7 +21,6 @@ public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.M
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        setSupportActionBar(null);
         super.onCreate(savedInstanceState);
         app.registMsgSource(this);
     }
@@ -67,8 +66,8 @@ public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.M
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void finish() {
+        super.finish();
         app.unRegistMsgSource(this);
     }
 }
