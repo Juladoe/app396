@@ -1,9 +1,12 @@
 package com.edusoho.kuozhi.v3.ui.fragment.lesson;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
@@ -14,7 +17,7 @@ import android.webkit.WebViewClient;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.koushikdutta.async.util.StreamUtility;
+import com.edusoho.kuozhi.v3.view.webview.InnerWebView;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,11 +27,15 @@ import cn.trinea.android.common.util.FileUtils;
 /**
  * Created by howzhi on 14-9-15.
  */
-public class TextLessonFragment extends BaseFragment {
+public class TextLessonFragment extends BaseFragment implements NestedScrollView.OnScrollChangeListener {
 
-    protected WebView mLessonWebview;
+    private static final String TEXT_CONFIG = "text_config";
+    private static final String TEXT_POSITION = "text_position";
+
+    protected InnerWebView mLessonWebview;
     protected String mContent;
 
+    private int mCurrentScrollPosition;
     protected Handler webViewHandler;
     private static final int SHOW_IMAGES = 0002;
 
@@ -42,6 +49,23 @@ public class TextLessonFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.text_fragment_layout);
         initWorkHandler();
+        initConfig();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        saveConfig();
+    }
+
+    private void initConfig() {
+        SharedPreferences sp = getContext().getSharedPreferences(TEXT_CONFIG, Context.MODE_PRIVATE);
+        mCurrentScrollPosition = sp.getInt(TEXT_POSITION, 0);
+    }
+
+    private void saveConfig() {
+        SharedPreferences sp = getContext().getSharedPreferences(TEXT_CONFIG, Context.MODE_PRIVATE);
+        sp.edit().putInt(TEXT_POSITION, mCurrentScrollPosition).commit();
     }
 
     protected void initWorkHandler() {
@@ -71,9 +95,11 @@ public class TextLessonFragment extends BaseFragment {
     protected void initView(View view) {
         super.initView(view);
 
-        mLessonWebview = (WebView) view.findViewById(R.id.lesson_webview);
+        mLessonWebview = (InnerWebView) view.findViewById(R.id.lesson_webview);
         initWebViewSetting(mLessonWebview);
         mLessonWebview.loadDataWithBaseURL(app.host, getWrapContent(mContent), "text/html", "utf-8", null);
+        mLessonWebview.scrollTo(0, mCurrentScrollPosition);
+        mLessonWebview.setOnScrollListener(this);
     }
 
     private String getWrapContent(String content) {
@@ -114,6 +140,11 @@ public class TextLessonFragment extends BaseFragment {
                 return true;
             }
         });
+    }
+
+    @Override
+    public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+        mCurrentScrollPosition = scrollY;
     }
 
     protected Object getJsObj() {

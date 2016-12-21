@@ -41,8 +41,8 @@ import photoview.PhotoView;
  */
 public class PptLessonFragment extends BaseFragment {
 
-    private static final String PPT_CONFIG = "config";
-    private static final String PPT_INDEX = "index";
+    private static final String PPT_CONFIG = "ppt_config";
+    private static final String PPT_INDEX = "ppt_index";
 
     private HackyViewPager pptViewPager;
     private ArrayList<String> ppts;
