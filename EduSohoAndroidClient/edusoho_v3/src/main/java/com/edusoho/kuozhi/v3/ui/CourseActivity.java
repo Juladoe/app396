@@ -327,13 +327,15 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         }
         super.courseStart();
         String type = mContinueLessonItem.type;
-        switch (type) {
-            case "audio":
-                playAudioLesson(mContinueLessonItem);
-                return;
-            case "video":
-                playVideoLesson(mContinueLessonItem);
-                return;
+        if ("self".equals(mContinueLessonItem.mediaSource)) {
+            switch (type) {
+                case "audio":
+                    playAudioLesson(mContinueLessonItem);
+                    return;
+                case "video":
+                    playVideoLesson(mContinueLessonItem);
+                    return;
+            }
         }
 
         Fragment fragment = mFragments.get(1);

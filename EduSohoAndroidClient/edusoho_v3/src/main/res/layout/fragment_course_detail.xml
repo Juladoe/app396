@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:scrollbars="none">
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingLeft="15dp">
@@ -368,29 +368,15 @@
             </RelativeLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+        <include
             android:id="@+id/ll_detail_load"
+            layout="@layout/load_dig_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:background="@color/textIcons"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:gravity="center" />
 
-            <ProgressBar
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:indeterminateDrawable="@drawable/load" />
-
-            <TextView
-                android:id="@+id/loading_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="加载中.."
-                android:textColor="@color/base_black_54" />
-        </LinearLayout>
-    </RelativeLayout>
+    </FrameLayout>
 
 </com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>

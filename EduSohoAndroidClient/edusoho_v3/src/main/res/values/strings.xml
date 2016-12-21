@@ -169,7 +169,10 @@
     <string name="img_code_input">请输入图形验证码</string>
     <string name="register_error">你输入的手机号格式有误</string>
     <string name="complete_success">恭喜你，绑定成功</string>
-
+    <string name="class_catalog_hint">该班级没有课程</string>
+    <string name="class_catalog_join">请先加入班级</string>
+    <string name="class_catalog_free">免费</string>
+    <string name="class_catalog_people">人参与</string>
 
     <!--ttf-->
     <string name="font_my_study">&#xe63d;</string>

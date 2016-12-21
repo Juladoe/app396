@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -187,8 +188,8 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
                         String.format("main#/userinfo/%s",
                                 mTeacherId)
                 );
-                EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
-                        , EdusohoApp.app.mActivity, new PluginRunCallback() {
+                CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
+                        , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
                                 startIntent.putExtra(Const.WEB_URL, url);
