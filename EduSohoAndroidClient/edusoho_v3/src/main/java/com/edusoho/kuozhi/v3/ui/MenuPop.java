@@ -59,6 +59,9 @@ public class MenuPop {
         Item item = new Item();
         item.name = name;
         mNames.add(item);
+        if(mPopup.isShowing() && mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
         return this;
     }
 
@@ -67,6 +70,9 @@ public class MenuPop {
         item.name = name;
         item.color = textColor;
         mNames.add(item);
+        if(mPopup.isShowing() && mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
         return this;
     }
 
@@ -75,6 +81,9 @@ public class MenuPop {
         item.name = name;
         item.color = textColor;
         mNames.add(item);
+        if(mPopup.isShowing() && mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
         return this;
     }
 
@@ -83,13 +92,20 @@ public class MenuPop {
         item.name = name;
         item.drawable = drawable;
         mNames.add(item);
+        if(mPopup.isShowing() && mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
         return this;
     }
 
-    public void removeItem(int position) {
+    public MenuPop removeItem(int position) {
         if (position != -1 && position < (mNames.size() - 1)) {
             mNames.remove(position);
         }
+        if(mPopup.isShowing() && mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
+        return this;
     }
 
     public void removeAll() {
@@ -126,6 +142,7 @@ public class MenuPop {
     }
 
     public void showAsDropDown(View view, int x, int y) {
+        mAdapter.notifyDataSetChanged();
         mPopup.showAsDropDown(view, x, y);
     }
 
@@ -198,10 +215,43 @@ public class MenuPop {
     }
 
 
-    private class Item {
-        String name;
-        int color = -1;
-        Drawable drawable;
+    public class Item {
+        private String name;
+        private int color = -1;
+        private Drawable drawable;
+
+        public void setName(String name) {
+            this.name = name;
+            if(mPopup.isShowing() && mAdapter != null){
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+
+        public void setColor(int color) {
+            this.color = color;
+            if(mPopup.isShowing() && mAdapter != null){
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+
+        public void setDrawable(Drawable drawable) {
+            this.drawable = drawable;
+            if(mPopup.isShowing() && mAdapter != null){
+                mAdapter.notifyDataSetChanged();
+            }
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getColor() {
+            return color;
+        }
+
+        public Drawable getDrawable() {
+            return drawable;
+        }
     }
 
 

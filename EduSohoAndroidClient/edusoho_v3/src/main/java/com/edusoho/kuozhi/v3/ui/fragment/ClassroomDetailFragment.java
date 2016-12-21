@@ -164,7 +164,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             mPriceLayout.setVisibility(View.VISIBLE);
             mVipLayout.setVisibility(View.VISIBLE);
             if (classRoom.price == 0) {
-                mTvPriceNow.setText("免费");
+                mTvPriceNow.setText(R.string.txt_free);
                 mTvPriceNow.setTextSize(18);
                 mTvPriceNow.setTextColor(getResources().getColor(R.color.primary_color));
                 mTvPrice1.setVisibility(View.GONE);
