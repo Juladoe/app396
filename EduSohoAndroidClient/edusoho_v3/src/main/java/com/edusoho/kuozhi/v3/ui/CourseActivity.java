@@ -282,7 +282,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         switch (state) {
             case Const.COURSE_CHANGE_STATE_NONE:
                 mPlayLayout.setEnabled(true);
-                if (mCourseDetail.getMember() == null) {
+                if (mCourseDetail == null || mCourseDetail.getMember() == null) {
                     mTvPlay.setText(R.string.txt_study_try);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
                 } else {

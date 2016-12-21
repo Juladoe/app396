@@ -65,6 +65,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="25dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_toLeftOf="@+id/review_star"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_l" />
 
@@ -85,7 +87,7 @@
                     android:textColor="@color/secondary_font_color"
                     android:textSize="@dimen/font_s_" />
 
-                <TextView
+                <org.sufficientlysecure.htmltextview.HtmlTextView
                     android:id="@+id/tv_title_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -204,6 +206,7 @@
                     android:layout_height="50dp"
                     android:layout_below="@+id/tv_teacher1"
                     android:layout_marginTop="15dp"
+                    android:src="@drawable/icon_default_avatar"
                     android:scaleType="centerCrop" />
 
                 <TextView
