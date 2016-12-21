@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -128,9 +129,14 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         } else {
             mTvCollect.setText(getResources().getString(R.string.new_font_collect));
         }
+        DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
+                .showImageForEmptyUri(R.drawable.default_course)
+                .showImageOnFail(R.drawable.default_course)
+                .showImageOnLoading(R.drawable.default_course)
+                .build();
         ImageLoader.getInstance().displayImage(
                 mCourseDetail.getCourse().largePicture,
-                mIvMediaBackground);
+                mIvMediaBackground, imageOptions);
         Member member = mCourseDetail.getMember();
         if (member == null) {
             mIsMemder = false;
@@ -263,7 +269,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 }
             });
         }
-        //coursePause();
     }
 
     @Override
