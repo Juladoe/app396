@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.bal.Classroom;
+import com.edusoho.kuozhi.v3.entity.ClassCatalogue;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -20,10 +20,10 @@ import java.util.List;
 
 public class ClassCatalogueAdapter extends BaseAdapter{
     public Context mContext;
-    public List<Classroom> mCourseList;
+    public List<ClassCatalogue> mCourseList;
 
 
-    public ClassCatalogueAdapter(Context mContext, List<Classroom> mCourseList) {
+    public ClassCatalogueAdapter(Context mContext, List<ClassCatalogue> mCourseList) {
         this.mContext = mContext;
         this.mCourseList = mCourseList;
     }
@@ -53,15 +53,15 @@ public class ClassCatalogueAdapter extends BaseAdapter{
         } else {
             classHolder = (ClassHolder) convertView.getTag();
         }
-        Classroom classroom = mCourseList.get(position);
-        ImageLoader.getInstance().displayImage(classroom.smallPicture, classHolder.mIvClass);
-        classHolder.mTvTitle.setText(classroom.title);
-        classHolder.mTvPeople.setText(classroom.studentNum+"人参与");
-        if ("0.0".equals(classroom.price + "")) {
-            classHolder.mTvFree.setText("免费");
+        ClassCatalogue classroom = mCourseList.get(position);
+        ImageLoader.getInstance().displayImage(classroom.getSmallPicture(), classHolder.mIvClass);
+        classHolder.mTvTitle.setText(classroom.getTitle());
+        classHolder.mTvPeople.setText(classroom.getStudentNum() + R.string.class_catalog_people);
+        if ("0.0".equals(classroom.getPrice())) {
+            classHolder.mTvFree.setText(R.string.class_catalog_free);
             classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         } else {
-            classHolder.mTvFree.setText("¥" + classroom.price);
+            classHolder.mTvFree.setText("¥" + classroom.getPrice());
         }
         return convertView;
     }
