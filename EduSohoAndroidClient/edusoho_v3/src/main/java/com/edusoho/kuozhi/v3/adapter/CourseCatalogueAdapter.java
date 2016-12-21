@@ -51,6 +51,10 @@ public class CourseCatalogueAdapter extends BaseAdapter {
         }
     }
 
+    public boolean isSelected(int position) {
+        return mSelect != -1 && position == mSelect;
+    }
+
     @Override
     public Object getItem(int position) {
         return courseCatalogue.getLessons().get(position);

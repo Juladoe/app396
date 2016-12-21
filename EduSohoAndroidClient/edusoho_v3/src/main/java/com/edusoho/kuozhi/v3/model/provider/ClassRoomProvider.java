@@ -39,5 +39,4 @@ public class ClassRoomProvider extends ModelProvider  {
 
         return requestOption.build();
     }
-
 }

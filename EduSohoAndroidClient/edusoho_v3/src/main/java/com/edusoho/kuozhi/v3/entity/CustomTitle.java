@@ -7,20 +7,6 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class CustomTitle {
-//    public String customChapterEnable;
-//    public String chapterName;
-//    public String partName;
-//    public static class CustomTitleDeserializer implements JsonDeserializer<CustomTitle> {
-//        @Override
-//        public CustomTitle deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-//            CustomTitle customTitle = new CustomTitle();
-//            JsonObject jsonObject = jsonElement.getAsJsonObject();
-//            customTitle.customChapterEnable = jsonObject.get("custom_chapter_enabled").getAsString();
-//            customTitle.chapterName = jsonObject.get("chapter_name").getAsString();
-//            customTitle.partName = jsonObject.get("part_name").getAsString();
-//            return customTitle;
-//        }
-//    }
 
     @SerializedName("custom_chapter_enabled")
     private String customChapterEnable;

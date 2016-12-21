@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.ui.fragment.lesson;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -39,6 +41,9 @@ import photoview.PhotoView;
  */
 public class PptLessonFragment extends BaseFragment {
 
+    private static final String PPT_CONFIG = "ppt_config";
+    private static final String PPT_INDEX = "ppt_index";
+
     private HackyViewPager pptViewPager;
     private ArrayList<String> ppts;
     private Bitmap cacheBitmap;
@@ -49,6 +54,7 @@ public class PptLessonFragment extends BaseFragment {
     private View mToolsView;
 
     private boolean isScreen;
+    private int mCurrentIndex;
 
     @Override
     public String getTitle() {
@@ -59,7 +65,6 @@ public class PptLessonFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLayoutInflater = LayoutInflater.from(mContext);
-        //cacheBitmap = app.query.getCachedImage(R.drawable.defaultpic);
         cacheBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.defaultpic);
         setContainerView(R.layout.ppt_lesson_layout);
     }
@@ -71,6 +76,23 @@ public class PptLessonFragment extends BaseFragment {
         if (bundle != null) {
             ppts = bundle.getStringArrayList(LessonActivity.CONTENT);
         }
+        initPPTConfig();
+    }
+
+    private void initPPTConfig() {
+        SharedPreferences sp = getContext().getSharedPreferences(PPT_CONFIG, Context.MODE_PRIVATE);
+        mCurrentIndex = sp.getInt(PPT_INDEX, 0);
+    }
+
+    private void savePPTConfig() {
+        SharedPreferences sp = getContext().getSharedPreferences(PPT_CONFIG, Context.MODE_PRIVATE);
+        sp.edit().putInt(PPT_INDEX, mCurrentIndex).commit();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        savePPTConfig();
     }
 
     @Override
@@ -98,10 +120,11 @@ public class PptLessonFragment extends BaseFragment {
             return;
         }
         PptPagerAdapter adapter = new PptPagerAdapter(ppts);
-        mStartPageView.setText("1/" + ppts.size());
+        mStartPageView.setText(String.format("%d/%d", mCurrentIndex + 1, ppts.size()));
         pptViewPager.setAdapter(adapter);
         pptViewPager.setOnPageChangeListener(adapter);
 
+        pptViewPager.setCurrentItem(mCurrentIndex);
         mScreenView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -175,12 +198,10 @@ public class PptLessonFragment extends BaseFragment {
             ImageLoader.getInstance().displayImage(mImages.get(position), photoView, EdusohoApp.app.mOptions, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String s, View view) {
-
                 }
 
                 @Override
                 public void onLoadingFailed(String s, View view, FailReason failReason) {
-
                 }
 
                 @Override
@@ -195,7 +216,6 @@ public class PptLessonFragment extends BaseFragment {
 
                 @Override
                 public void onLoadingCancelled(String s, View view) {
-
                 }
             });
             container.addView(itemView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -214,17 +234,16 @@ public class PptLessonFragment extends BaseFragment {
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
         }
 
         @Override
         public void onPageSelected(int position) {
+            mCurrentIndex = position;
             mStartPageView.setText((position + 1) + "/" + ppts.size());
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
-
         }
     }
 }

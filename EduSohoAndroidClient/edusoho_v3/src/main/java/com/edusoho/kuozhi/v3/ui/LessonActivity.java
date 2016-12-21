@@ -199,22 +199,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private void bindListener() {
     }
 
-    private void goToAnotherLesson(int lessonId) {
-        mLessonId = lessonId;
-
-        if (mCurrentFragment != null) {
-            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-            fragmentTransaction.remove(mCurrentFragment);
-            fragmentTransaction.setCustomAnimations(
-                    FragmentTransaction.TRANSIT_FRAGMENT_FADE, FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-            fragmentTransaction.commit();
-        }
-
-        loadLesson();
-    }
-
     private void initRedirectBtn() {
-
     }
 
     @Override
@@ -258,6 +243,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         MenuItem menuItem = menu.findItem(R.id.menu_share);
         if (menuItem != null) {
             menuItem.setEnabled(mLessonItem != null);
+        }
+        if ("testpaper".equals(mLessonType)) {
+            MenuItem moreItem = menu.findItem(R.id.menu_share);
+            if (moreItem != null) {
+                moreItem.setVisible(false);
+            }
         }
         return super.onPrepareOptionsMenu(menu);
     }

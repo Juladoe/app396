@@ -28,6 +28,8 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +96,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                         } else {
                             mReviewNoneLayout.setVisibility(View.GONE);
                             mReviews.addAll(data.getData());
-                            mTvReviewMore.setText(String.format("更多评论（%s）", data.getTotal()));
+                            mTvReviewMore.setText(String.format("更多评价（%s）", data.getTotal()));
                             mAdapter.notifyDataSetChanged();
                         }
                     }
@@ -121,7 +123,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String id = v.getTag().toString();
+                        String id = String.valueOf(v.getTag());
                         jumpToMember(id);
                     }
                 };
@@ -139,11 +141,11 @@ public class CourseDetailFragment extends BaseDetailFragment {
             view.setLayoutParams(params);
             ImageView image = (ImageView) view.findViewById(R.id.iv_avatar_icon);
             TextView txt = (TextView) view.findViewById(R.id.tv_avatar_name);
-            if (data.size() > i) {
-                image.setTag(i);
+            if (data.size() > i && data.get(i).user != null) {
+                image.setTag(data.get(i).user.id);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
-                ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image,
+                ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image,
                         app.mAvatarOptions);
             } else {
                 txt.setText("");
@@ -158,7 +160,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Course course = mCourseDetail.getCourse();
         mTvTitle.setText(course.title);
-        mTvTitleDesc.setText(Html.fromHtml(course.about));
+        mTvTitleDesc.setHtml(course.about, new HtmlHttpImageGetter(mTvTitleDesc));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             mVipLayout.setVisibility(View.VISIBLE);
@@ -206,7 +208,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             mTeacherLayout.setVisibility(View.VISIBLE);
             Teacher teacher = course.teachers[0];
             mTeacherId = String.valueOf(teacher.id);
-            ImageLoader.getInstance().displayImage(teacher.avatar, mIvTeacherIcon);
+            ImageLoader.getInstance().displayImage(teacher.getAvatar(), mIvTeacherIcon, app.mAvatarOptions);
             mTvTeacherName.setText(teacher.nickname);
             mTvTeacherDesc.setText(teacher.title);
         }
@@ -293,7 +295,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             viewHolder.mName.setText(review.getUser().nickname);
             viewHolder.mTime.setText(CommonUtil.convertWeekTime(review.getCreatedTime()));
             viewHolder.mStar.setRating((int) Double.parseDouble(review.getRating()));
-            ImageLoader.getInstance().displayImage(review.getUser().mediumAvatar, viewHolder.mIcon,
+            ImageLoader.getInstance().displayImage(review.getUser().getMediumAvatar(), viewHolder.mIcon,
                     app.mAvatarOptions);
             viewHolder.mIcon.setTag(review.getUser().id);
             viewHolder.mIcon.setOnClickListener(mOnClickListener);

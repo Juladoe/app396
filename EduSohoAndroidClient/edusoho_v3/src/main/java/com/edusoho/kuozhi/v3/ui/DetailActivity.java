@@ -57,7 +57,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected TextView mTvCollect;
     protected TextView mTvPlay;
     protected TextView mTvAdd;
-    protected View mPlayButtomLayout;
+    protected View mPlayButtonLayout;
     protected RelativeLayout mMediaRlayout;
     protected ImageView mIvMediaBackground;
     protected ViewPager mContentVp;
@@ -120,7 +120,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mIvShare2 = findViewById(R.id.iv_share2);
         mPlayLayout2 = findViewById(R.id.play_layout2);
         mPlayLayout = findViewById(R.id.play_layout);
-        mPlayButtomLayout = findViewById(R.id.layout_play_buttom);
+        mPlayButtonLayout = findViewById(R.id.layout_play_button);
         mContentVp = (ViewPager) findViewById(R.id.vp_content);
         mIntroLayout = (RelativeLayout) findViewById(R.id.intro_rlayout);
         mHourLayout = (RelativeLayout) findViewById(R.id.hour_rlayout);
@@ -345,6 +345,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 break;
         }
     }
+
     protected void courseHastrial(String state, LessonItem lessonItem) {}
 
     /**
@@ -398,9 +399,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 params.height = AppUtil.getHeightPx(this) - bottom;
                 mContentVp.setLayoutParams(params);
             }
-            mMenuPop.setVisibility(true);
         }
-        mPlayButtomLayout.setVisibility(View.GONE);
+        mPlayButtonLayout.setVisibility(View.GONE);
         mIsPlay = true;
         mParent.setStay(true);
     }
@@ -424,6 +424,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mIsPlay = false;
         mParent.setStay(false);
+        mPlayButtonLayout.setVisibility(View.VISIBLE);
     }
 
     protected boolean mIsFullScreen = false;

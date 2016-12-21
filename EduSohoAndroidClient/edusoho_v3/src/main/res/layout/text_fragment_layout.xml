@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <WebView
+    <com.edusoho.kuozhi.v3.view.webview.InnerWebView
         android:scrollbars="none"
         android:background="@color/transparent"
         android:id="@+id/lesson_webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></WebView>
+        android:layout_height="match_parent" />
 </RelativeLayout>

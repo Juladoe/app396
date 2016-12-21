@@ -32,14 +32,14 @@ public class CourseDetailModel implements Serializable {
                     callbackListener.onFailure("Error", response);
                     return;
                 }
-                    CourseDetail apiResponse = ModelDecor.getInstance().
-                            decor(response, new TypeToken<CourseDetail>() {
-                            });
-                    if (apiResponse != null) {
-                        callbackListener.onSuccess(apiResponse);
-                    } else if (apiResponse != null) {
-                        callbackListener.onFailure("Error", response);
-                    }
+                CourseDetail apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<CourseDetail>() {
+                        });
+                if (apiResponse != null) {
+                    callbackListener.onSuccess(apiResponse);
+                } else if (apiResponse != null) {
+                    callbackListener.onFailure("Error", response);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -106,7 +106,7 @@ public class CourseDetailModel implements Serializable {
     }
 
     public static void getClassroomReviews(String courseId, String limit, String start,
-                                        final ResponseCallbackListener<ClassroomReviewDetail> callbackListener) {
+                                           final ResponseCallbackListener<ClassroomReviewDetail> callbackListener) {
         String url = String.format(Const.CLASSROOM_GETREVIEWS, courseId, limit, start);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
@@ -144,7 +144,7 @@ public class CourseDetailModel implements Serializable {
                     ApiResponse<CourseMember> apiResponse =
                             ModelDecor.getInstance().decor(response,
                                     new TypeToken<ApiResponse<CourseMember>>() {
-                    });
+                                    });
                     if (apiResponse != null) {
                         callbackListener.onSuccess(apiResponse.resources);
                     } else if (apiResponse != null) {
@@ -163,7 +163,7 @@ public class CourseDetailModel implements Serializable {
     }
 
     public static void getClassroomMember(String classroomId,
-                                       final ResponseCallbackListener<List<ClassroomMember>> callbackListener) {
+                                          final ResponseCallbackListener<List<ClassroomMember>> callbackListener) {
         String url = String.format(Const.CLASSROOM_GETMEMBER, classroomId);
         RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {

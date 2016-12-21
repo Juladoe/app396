@@ -42,7 +42,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             finish();
             return;
         }
-        mMediaViewHeight = AppUtil.px2dp(this,(float)AppUtil.getWidthPx(this) /4f *3f);
+        mMediaViewHeight = AppUtil.px2dp(this, (float) AppUtil.getWidthPx(this) / 4f * 3f);
         initView();
         initEvent();
         initData();
@@ -116,7 +116,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     @Override
     protected void refreshView() {
         ImageLoader.getInstance().displayImage(
-                mClassroomDetail.getClassRoom().largePicture,
+                mClassroomDetail.getClassRoom().getLargePicture(),
                 mIvMediaBackground);
         Member member = mClassroomDetail.getMember();
         if (member == null) {
@@ -128,8 +128,6 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         } else {
             mIsMemder = true;
             mBottomLayout.setVisibility(View.GONE);
-            mIvGrade.setVisibility(View.VISIBLE);
-            mIvGrade2.setVisibility(View.VISIBLE);
             initViewPager();
         }
     }

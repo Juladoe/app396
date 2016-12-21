@@ -120,11 +120,10 @@ public class CourseCatalogFragment extends BaseFragment {
                 setLoadViewStatus(View.GONE);
             }
         });
-
-        initTitle();
+        initCustomChapterSetting();
     }
 
-    private void initTitle() {
+    private void initCustomChapterSetting() {
         RequestUrl requestUrl = app.bindNewUrl("/api/setting/course", false);
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
@@ -142,7 +141,6 @@ public class CourseCatalogFragment extends BaseFragment {
                 setLoadViewStatus(View.GONE);
             }
         });
-
     }
 
     private void setLessonEmptyViewVisibility(int visibility) {
@@ -155,6 +153,9 @@ public class CourseCatalogFragment extends BaseFragment {
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mAdapter.isSelected(position)) {
+                    return;
+                }
                 mAdapter.changeSelected(position);
                 if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType()) || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
                     return;
@@ -281,6 +282,9 @@ public class CourseCatalogFragment extends BaseFragment {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
                         MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
+
+                        bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override

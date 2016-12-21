@@ -230,19 +230,17 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (mCourseDetail == null) {
             return;
         }
-        if (mIsFullScreen) {
-            /**
-             * todo 全屏操作
-             */
-            //占位
+        if (mIsPlay) {
+            if (mContinueLessonItem == null) {
+                return;
+            }
+            String shareUrl = String.format("%s/course/%s/learn#lesson/%d/", app.host, mCourseId, mContinueLessonItem.id);
             final ShareTool shareTool =
                     new ShareTool(this
-                            , app.host + "/course/" + mCourseDetail.getCourse().id
+                            , shareUrl
                             , mCourseDetail.getCourse().title
-                            , mCourseDetail.getCourse().about.length() > 20 ?
-                            mCourseDetail.getCourse().about.substring(0, 20)
-                            : mCourseDetail.getCourse().about
-                            , mCourseDetail.getCourse().largePicture);
+                            , mContinueLessonItem.title
+                            , mCourseDetail.getCourse().middlePicture);
             new Handler((mActivity.getMainLooper())).post(new Runnable() {
                 @Override
                 public void run() {
@@ -257,7 +255,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                             , mCourseDetail.getCourse().about.length() > 20 ?
                             mCourseDetail.getCourse().about.substring(0, 20)
                             : mCourseDetail.getCourse().about
-                            , mCourseDetail.getCourse().largePicture);
+                            , mCourseDetail.getCourse().middlePicture);
             new Handler((mActivity.getMainLooper())).post(new Runnable() {
                 @Override
                 public void run() {
@@ -265,7 +263,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 }
             });
         }
-        coursePause();
+        //coursePause();
     }
 
     @Override
@@ -282,7 +280,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         switch (state) {
             case Const.COURSE_CHANGE_STATE_NONE:
                 mPlayLayout.setEnabled(true);
-                if (mCourseDetail.getMember() == null) {
+                if (mCourseDetail == null || mCourseDetail.getMember() == null) {
                     mTvPlay.setText(R.string.txt_study_try);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
                 } else {
@@ -302,6 +300,22 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(false);
                 break;
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        onFragmentsFocusChange(getWindow().getDecorView(), hasFocus);
+    }
+
+    protected void onFragmentsFocusChange(View rootView, boolean hasFocus) {
+        List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+        for (int i = 0; i < fragmentList.size(); i++) {
+            Fragment fragment = fragmentList.get(i);
+            if (fragment instanceof View.OnFocusChangeListener) {
+                ((View.OnFocusChangeListener)fragment).onFocusChange(null, hasFocus);
+            }
         }
     }
 
@@ -352,6 +366,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
+
         Bundle bundle = new Bundle();
         bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(mCourseId));
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
@@ -384,7 +399,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             ((LessonAudioPlayerFragment) fragment).destoryService();
         }
     }
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
