@@ -56,6 +56,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         mPlayButtonLayout.setVisibility(View.GONE);
         mTvInclass.setVisibility(View.GONE);
         mTvAdd.setText(R.string.txt_add_class);
+        mTvCatalog.setText(R.string.class_catalog);
     }
 
     @Override

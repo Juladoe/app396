@@ -106,6 +106,7 @@ public class CourseCatalogFragment extends BaseFragment {
                     initCustomChapterSetting();
                 } else {
                     setLessonEmptyViewVisibility(View.VISIBLE);
+                    setLoadViewStatus(View.GONE);
                 }
             }
         }, new Response.ErrorListener() {

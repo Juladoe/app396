@@ -36,6 +36,7 @@
     <string name="course_study_entrance">进入学习</string>
     <string name="study">学习</string>
     <string name="discuss">讨论</string>
+    <string name="class_catalog">目录</string>
 
     <!--TextView-->
     <string name="testpaper_menu_card">答题卡</string>
