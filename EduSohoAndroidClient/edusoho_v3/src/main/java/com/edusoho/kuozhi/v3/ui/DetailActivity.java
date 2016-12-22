@@ -79,6 +79,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mLoadingView;
     protected LoadDialog mProcessDialog;
     protected MenuPop mMenuPop;
+    protected TextView mTvCatalog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +154,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
         mConsult = findViewById(R.id.consult_layout);
         mTvAdd = (TextView) findViewById(R.id.tv_add);
+        mTvCatalog = (TextView) findViewById(R.id.textView);
         initViewPager();
         ViewGroup.LayoutParams headParams =
                 mHeadRlayout2.getLayoutParams();
