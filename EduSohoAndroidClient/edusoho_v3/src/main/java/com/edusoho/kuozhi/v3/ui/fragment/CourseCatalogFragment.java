@@ -216,8 +216,6 @@ public class CourseCatalogFragment extends BaseFragment {
             }
 
             if (lessonsBean == null) {
-                bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, null);
-                MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
                 return;
             }
 
@@ -324,10 +322,11 @@ public class CourseCatalogFragment extends BaseFragment {
 
     public void perpareStartLearnLesson(int position) {
         CourseCatalogue.LessonsBean lessonsBean = mCourseCatalogue.getLessons().get(position);
-        if ("self".equals(lessonsBean.getMediaSource())
-                && ("audio".equals(lessonsBean.getType()) || "video".equals(lessonsBean.getType()))) {
-            getFullLessonFromServer(lessonsBean);
-            return;
+        if ("self".equals(lessonsBean.getMediaSource())) {
+            if ("audio".equals(lessonsBean.getType()) || "video".equals(lessonsBean.getType())) {
+                getFullLessonFromServer(lessonsBean);
+                return;
+            }
         }
         sendMessageToCourse(lessonsBean.toLessonItem());
     }

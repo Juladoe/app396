@@ -216,7 +216,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.lesson_activity_menu, menu);
-        MenuItem menuItem = menu.findItem(R.id.menu_share);
+        MenuItem menuItem = menu.findItem(R.id.menu_more);
         if (menuItem != null) {
             menuItem.setEnabled(mLessonItem != null);
         }
@@ -237,7 +237,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             menuItem.setEnabled(mLessonItem != null);
         }
         if ("testpaper".equals(mLessonType)) {
-            MenuItem moreItem = menu.findItem(R.id.menu_share);
+            MenuItem moreItem = menu.findItem(R.id.menu_more);
             if (moreItem != null) {
                 moreItem.setVisible(false);
             }
