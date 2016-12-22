@@ -35,7 +35,7 @@ public class User implements Serializable {
 
     public String getMediumAvatar() {
         int schemIndex = mediumAvatar.lastIndexOf("http://");
-        if (schemIndex != 0) {
+        if (schemIndex != -1) {
             return mediumAvatar.substring(schemIndex);
         }
         return mediumAvatar;
