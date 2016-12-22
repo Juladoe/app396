@@ -23,9 +23,7 @@ import com.edusoho.kuozhi.v3.entity.CustomTitle;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
-import com.edusoho.kuozhi.v3.model.provider.SystemProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
@@ -36,6 +34,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.FixHeightListView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
@@ -124,21 +123,22 @@ public class CourseCatalogFragment extends BaseFragment {
         initCustomChapterSetting();
     }
 
-    protected void initCustomChapterSetting() {
-        new SystemProvider(getContext()).getCourseSetting()
-                .success(new NormalCallback<CustomTitle>() {
-                    @Override
-                    public void success(CustomTitle obj) {
-                        mCustomTitle = obj;
-                        if (mCustomTitle != null && "1".equals(mCustomTitle.getCustomChapterEnabled())) {
-                            mAdapter.chapterTitle = mCustomTitle.getChapterName();
-                            mAdapter.unitTitle = mCustomTitle.getPartName();
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-                }).fail(new NormalCallback<VolleyError>() {
+    private void initCustomChapterSetting() {
+        RequestUrl requestUrl = app.bindNewUrl("/api/setting/course", false);
+        app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
-            public void success(VolleyError obj) {
+            public void onResponse(String response) {
+                CustomTitle cusotmTitle = new Gson().fromJson(response, CustomTitle.class);
+                    if (cusotmTitle != null && "1".equals(cusotmTitle.getCustomChapterEnable())) {
+                        mAdapter.chapterTitle = cusotmTitle.getChapterName();
+                        mAdapter.unitTitle = cusotmTitle.getPartName();
+                        mAdapter.notifyDataSetChanged();
+                    }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                setLoadViewStatus(View.GONE);
             }
         });
     }
@@ -157,6 +157,9 @@ public class CourseCatalogFragment extends BaseFragment {
                     return;
                 }
                 mAdapter.changeSelected(position);
+                if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType()) || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
+                    return;
+                }
                 if (TextUtils.isEmpty(app.token)) {
                     CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
                     return;

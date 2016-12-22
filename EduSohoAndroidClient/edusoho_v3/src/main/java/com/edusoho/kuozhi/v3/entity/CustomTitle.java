@@ -1,26 +1,31 @@
 package com.edusoho.kuozhi.v3.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by DF on 2016/12/21.
  */
 
 public class CustomTitle {
 
-    private String custom_chapter_enabled;
-    private String chapter_name;
-    private String part_name;
+    @SerializedName("custom_chapter_enabled")
+    private String customChapterEnable;
 
+    @SerializedName("chapter_name")
+    private String chapterName;
 
-    public String getCustomChapterEnabled() {
-        return custom_chapter_enabled;
+    @SerializedName("part_name")
+    private String partName;
+
+    public String getCustomChapterEnable(){
+        return customChapterEnable;
     }
 
-    public String getChapterName() {
-        return chapter_name;
+    public String getChapterName(){
+        return chapterName;
     }
 
-    public String getPartName() {
-        return part_name;
+    public String getPartName(){
+        return partName;
     }
-
 }

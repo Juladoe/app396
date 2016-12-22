@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
 
-import com.edusoho.kuozhi.v3.entity.CustomTitle;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;

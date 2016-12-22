@@ -9,7 +9,6 @@ import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.v3.entity.CustomTitle;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -120,12 +119,4 @@ public class SystemProvider extends ModelProvider {
         return params;
     }
 
-    public ProviderListener<CustomTitle> getCourseSetting() {
-        RequestUrl requestUrl = new RequestUrl(String.format("%s/api/setting/course", getHost()));
-        requestUrl.getHeads().put("Auth-Token", ApiTokenUtil.getTokenString(mContext));
-        RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<CustomTitle>(){});
-
-        return requestOption.build();
-    }
 }
