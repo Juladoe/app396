@@ -82,9 +82,17 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
+            mMenuCallback.getMenu().dismiss();
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mMenuCallback != null) {
+        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
             mMenuCallback.getMenu().setVisibility(false);
         }
     }

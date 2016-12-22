@@ -101,13 +101,21 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
+            mMenuCallback.getMenu().dismiss();
+        }
+    }
+    
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mAudioCoverAnim != null) {
             mAudioCoverAnim.cancel();
             mAudioCoverAnim = null;
         }
-        if (mMenuCallback != null) {
+        if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
             mMenuCallback.getMenu().setVisibility(false);
         }
     }

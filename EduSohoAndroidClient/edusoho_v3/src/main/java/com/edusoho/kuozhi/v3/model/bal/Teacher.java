@@ -15,7 +15,7 @@ public class Teacher implements Serializable {
 
     public String getAvatar() {
         int schemIndex = avatar.lastIndexOf("http://");
-        if (schemIndex != 0) {
+        if (schemIndex != -1) {
             return avatar.substring(schemIndex);
         }
         return avatar;

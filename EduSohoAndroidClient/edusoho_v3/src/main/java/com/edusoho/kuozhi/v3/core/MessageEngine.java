@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MessageEngine {
 
-    private WeakHashMap<String, MessageCallback> sourceMap;
+    private Map<String, MessageCallback> sourceMap;
     private ConcurrentHashMap<String, ArrayList<String>> pubMsgMap;
 
     private static Object synchronizedObj = new Object();
@@ -26,8 +26,8 @@ public class MessageEngine {
     private static MessageEngine messageEngine;
 
     private MessageEngine() {
-        pubMsgMap = new ConcurrentHashMap<String, ArrayList<String>>();
-        sourceMap = new WeakHashMap<String, MessageCallback>();
+        pubMsgMap = new ConcurrentHashMap<>();
+        sourceMap = new ConcurrentHashMap<>();
     }
 
     public void destory() {

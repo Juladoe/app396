@@ -311,7 +311,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        onFragmentsFocusChange(getWindow().getDecorView(), hasFocus);
     }
 
     protected void onFragmentsFocusChange(View rootView, boolean hasFocus) {
@@ -327,6 +326,10 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void coursePause() {
         super.coursePause();
+        removePlayFragment();
+    }
+
+    private void removePlayFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_header_container);
         if (fragment == null) {
@@ -403,6 +406,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (fragment != null && fragment instanceof LessonAudioPlayerFragment) {
             ((LessonAudioPlayerFragment) fragment).destoryService();
         }
+        removePlayFragment();
     }
 
     @Override
