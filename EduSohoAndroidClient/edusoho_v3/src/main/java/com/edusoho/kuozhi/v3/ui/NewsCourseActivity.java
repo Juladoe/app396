@@ -309,7 +309,8 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                     MobclickAgent.onEvent(mContext, "dynamic_topRightCourseDetailsButton");
                     MobclickAgent.onEvent(mContext, "chatWindow_topRightCourseDetailsButton");
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
-                    startIntent.putExtra(Const.FROM_ID, mCourseId);
+                    startIntent.putExtra(Const.ACTIONBAR_TITLE, mCourse == null
+                            ? getResources().getString(R.string.news_course_profile) : mCourse.title);
 
                     String convNo = getIntent().getStringExtra(CONV_NO);
                     if (TextUtils.isEmpty(convNo)) {

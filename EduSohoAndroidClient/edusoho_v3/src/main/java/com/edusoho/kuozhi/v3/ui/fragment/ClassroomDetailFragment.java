@@ -227,9 +227,8 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     protected void vipInfo() {
         final String url = String.format(
                 Const.MOBILE_APP_URL,
-                EdusohoApp.app.schoolHost,
-                String.format("main#/viplist/%s/%s",
-                        "classroom", mClassroomId)
+                app.schoolHost,
+                "main#/viplist"
         );
         EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
                 , EdusohoApp.app.mActivity, new PluginRunCallback() {

@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -95,13 +96,9 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                 }
             });
         } else if (v.getId() == R.id.rl_entry) {
-            app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.CLASSROOM_COURSES, mFromId));
-                    startIntent.putExtra(Const.WEB_URL, url);
-                }
-            });
+            Bundle bundle = new Bundle();
+            bundle.putString(ClassroomActivity.CLASSROOM_ID, String.valueOf(mFromId));
+            CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomActivity", mContext, bundle);
         } else if (v.getId() == R.id.rl_clear_record) {
             PopupDialog popupDialog = PopupDialog.createMuilt(mContext, "提示", "删除聊天记录？", new PopupDialog.PopupClickListener() {
                 @Override

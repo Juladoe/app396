@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -115,9 +116,14 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void refreshView() {
+        DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
+                .showImageForEmptyUri(R.drawable.default_classroom)
+                .showImageOnFail(R.drawable.default_classroom)
+                .showImageOnLoading(R.drawable.default_classroom)
+                .build();
         ImageLoader.getInstance().displayImage(
                 mClassroomDetail.getClassRoom().getLargePicture(),
-                mIvMediaBackground);
+                mIvMediaBackground, imageOptions);
         Member member = mClassroomDetail.getMember();
         if (member == null) {
             mIsMemder = false;
