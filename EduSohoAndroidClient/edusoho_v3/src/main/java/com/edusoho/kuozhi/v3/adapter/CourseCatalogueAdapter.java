@@ -33,16 +33,15 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     private LessonHolder lessonHolder;
     private CourseCatalogue.LessonsBean lessonsBean;
 
-    public CourseCatalogueAdapter(Context context, CourseCatalogue courseCatalogue, boolean isJoin) {
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    public CourseCatalogueAdapter(Context context, CourseCatalogue courseCatalogue, boolean isJoin, String chapterTitle, String unitTitle) {
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE );
         this.courseCatalogue = courseCatalogue;
         this.mContext = context;
         this.isJoin = isJoin;
+        this.chapterTitle = chapterTitle;
+        this.unitTitle = unitTitle;
     }
 
-    public void setCourseCatalogue(CourseCatalogue courseCatalogue) {
-        this.courseCatalogue = courseCatalogue;
-    }
 
     public void changeSelected(int position) {
         if (position != mSelect) {

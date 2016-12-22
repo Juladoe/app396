@@ -33,7 +33,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.FixHeightListView;
+import com.edusoho.kuozhi.v3.view.FixCourseListView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -52,12 +52,13 @@ public class CourseCatalogFragment extends BaseFragment {
     private static final int ISMEMBER = 1;
     private static final int VISITOR = 2;
 
+    public boolean isJoin;
     public int mMemberStatus;
     public String mCourseId;
     public CustomTitle mCustomTitle;
     public CourseCatalogueAdapter mAdapter;
     private RelativeLayout mRlSpace;
-    private FixHeightListView mLvCatalog;
+    private FixCourseListView mLvCatalog;
     private CourseCatalogue mCourseCatalogue;
     private TextView tvSpace;
     private View view;
@@ -73,19 +74,16 @@ public class CourseCatalogFragment extends BaseFragment {
         view = inflater.inflate(R.layout.fragment_course_catalog, container, false);
         mCourseId = getArguments().getString("id");
         init();
-        initCatalogue();
         return view;
     }
 
     protected void init() {
         mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
-        mLvCatalog = (FixHeightListView) view.findViewById(R.id.lv_catalog);
+        mLvCatalog = (FixCourseListView) view.findViewById(R.id.lv_catalog);
         mLoadView = view.findViewById(R.id.ll_frame_load);
         tvSpace = (TextView) view.findViewById(R.id.tv_space);
         mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
         tvSpace.setOnClickListener(getCacheCourse());
-        mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, mMemberStatus == ISMEMBER);
-        mLvCatalog.setAdapter(mAdapter);
         initCache();
     }
 
@@ -96,21 +94,16 @@ public class CourseCatalogFragment extends BaseFragment {
     private void initCatalogue() {
         setLoadViewStatus(View.VISIBLE);
         setLessonEmptyViewVisibility(View.GONE);
-        if (mMemberStatus == ISMEMBER && !TextUtils.isEmpty(app.token)) {
-            mRlSpace.setVisibility(View.VISIBLE);
-            initCache();
-        }
         RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + mCourseId + "&token=" + app.token, true);
         requestUrl.heads.put("token", app.token);
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                setLoadViewStatus(View.GONE);
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
                 });
                 if (mCourseCatalogue.getLessons().size() != 0) {
-                    initLessonCatalog();
                     initFirstLearnLesson();
+                    initCustomChapterSetting();
                 } else {
                     setLessonEmptyViewVisibility(View.VISIBLE);
                 }
@@ -121,7 +114,6 @@ public class CourseCatalogFragment extends BaseFragment {
                 setLoadViewStatus(View.GONE);
             }
         });
-        initCustomChapterSetting();
     }
 
     private void initCustomChapterSetting() {
@@ -129,12 +121,17 @@ public class CourseCatalogFragment extends BaseFragment {
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                setLoadViewStatus(View.GONE);
+                if (mMemberStatus == ISMEMBER && !TextUtils.isEmpty(app.token)) {
+                    mRlSpace.setVisibility(View.VISIBLE);
+                    initFirstLearnLesson();
+                }
                 CustomTitle cusotmTitle = new Gson().fromJson(response, CustomTitle.class);
-                    if (cusotmTitle != null && "1".equals(cusotmTitle.getCustomChapterEnable())) {
-                        mAdapter.chapterTitle = cusotmTitle.getChapterName();
-                        mAdapter.unitTitle = cusotmTitle.getPartName();
-                        mAdapter.notifyDataSetChanged();
-                    }
+                if (cusotmTitle != null && "1".equals(cusotmTitle.getCustomChapterEnable())) {
+                    initLessonCatalog(cusotmTitle.getChapterName(), cusotmTitle.getPartName());
+                }else {
+                    initLessonCatalog(null,null);
+                }
             }
         }, new Response.ErrorListener() {
             @Override
@@ -148,40 +145,50 @@ public class CourseCatalogFragment extends BaseFragment {
         mLessonEmpytView.setVisibility(visibility);
     }
 
-    public void initLessonCatalog() {
-        mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, mMemberStatus == ISMEMBER);
+    public void initLessonCatalog(String chapter, String unit) {
+        mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, isJoin, chapter, unit);
         mLvCatalog.setAdapter(mAdapter);
+        final boolean[] isMove = {true};
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                if (mAdapter.isSelected(position)) {
-                    return;
+                if (!isMove[0]) {
+                    if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType()) || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
+                        return;
+                    }
+                    if (mAdapter.isSelected(position)) {
+                        return;
+                    }
+                    mAdapter.changeSelected(position);
+                    if (TextUtils.isEmpty(app.token)) {
+                        CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
+                        return;
+                    }
+                    if (mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
+                        CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
+                        return;
+                    }
+                    perpareStartLearnLesson(position);
                 }
-                mAdapter.changeSelected(position);
-                if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType()) || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
-                    return;
-                }
-                if (TextUtils.isEmpty(app.token)) {
-                    CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
-                    return;
-                }
-                if (mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
-                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
-                    return;
-                }
-                perpareStartLearnLesson(position);
             }
         });
         mLvCatalog.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        isMove[0] = true;
+                        break;
                     case MotionEvent.ACTION_MOVE:
-                        return true;
+                        isMove[0] = true;
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        isMove[0] = false;
+                        break;
                     default:
                         return false;
                 }
+                return false;
             }
         });
     }
@@ -348,14 +355,8 @@ public class CourseCatalogFragment extends BaseFragment {
      */
     public void reFreshView(boolean mIsJoin) {
         mMemberStatus = mIsJoin ? ISMEMBER : VISITOR;
-        if (mMemberStatus == ISMEMBER && !TextUtils.isEmpty(app.token)) {
-            mRlSpace.setVisibility(View.VISIBLE);
-            initFirstLearnLesson();
-        }
-
-        mAdapter.isJoin = mIsJoin;
-        mAdapter.courseCatalogue = mCourseCatalogue;
-        mAdapter.notifyDataSetChanged();
+        isJoin = mIsJoin;
+        initCatalogue();
     }
 
     /**
