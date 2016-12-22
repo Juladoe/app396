@@ -113,7 +113,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                     @Override
                     public void onFailure(String code, String message) {
                         setLoadStatus(View.GONE);
-                        if (message.equals("课程不存在")) {
+                        if ("课程不存在".equals(message)) {
                             CommonUtil.shortToast(CourseActivity.this, "课程不存在");
                             finish();
                         }
@@ -282,6 +282,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     protected void courseHastrial(String state, LessonItem lessonItem) {
         mContinueLessonItem = lessonItem;
         mPlayLastLayout.setVisibility(View.GONE);
+        mPlayButtonLayout.setVisibility(View.VISIBLE);
         switch (state) {
             case Const.COURSE_CHANGE_STATE_NONE:
                 mPlayLayout.setEnabled(true);
@@ -311,7 +312,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        onFragmentsFocusChange(getWindow().getDecorView(), hasFocus);
     }
 
     protected void onFragmentsFocusChange(View rootView, boolean hasFocus) {
@@ -327,6 +327,10 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void coursePause() {
         super.coursePause();
+        removePlayFragment();
+    }
+
+    private void removePlayFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_header_container);
         if (fragment == null) {
@@ -403,6 +407,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (fragment != null && fragment instanceof LessonAudioPlayerFragment) {
             ((LessonAudioPlayerFragment) fragment).destoryService();
         }
+        removePlayFragment();
     }
 
     @Override

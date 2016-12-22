@@ -45,7 +45,6 @@ public class ClassCatalogFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_class_catalog, container, false);
         mLvClass = (FixHeightListView) view.findViewById(R.id.lv_catalog);
         mLoadView = view.findViewById(R.id.il_class_catalog_load);
-        initData();
         return view;
     }
 
@@ -77,7 +76,7 @@ public class ClassCatalogFragment extends BaseFragment {
     }
 
     private void initView() {
-        ClassCatalogueAdapter classAdapter = new ClassCatalogueAdapter(getActivity(), mCourseList);
+        ClassCatalogueAdapter classAdapter = new ClassCatalogueAdapter(getActivity(), mCourseList, isJoin);
         mLvClass.setAdapter(classAdapter);
         mLvClass.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -99,5 +98,6 @@ public class ClassCatalogFragment extends BaseFragment {
 
     public void reFreshView(boolean mJoin){
         isJoin = mJoin;
+        initData();
     }
 }

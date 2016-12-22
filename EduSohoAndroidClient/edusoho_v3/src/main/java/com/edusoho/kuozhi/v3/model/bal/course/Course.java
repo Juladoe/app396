@@ -51,7 +51,7 @@ public class Course implements Serializable {
 
     public String getLargePicture() {
         int schemIndex = largePicture.lastIndexOf("http://");
-        if (schemIndex != 0) {
+        if (schemIndex != -1) {
             return largePicture.substring(schemIndex);
         }
         return largePicture;

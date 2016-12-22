@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.entity.lesson;
 
+import com.edusoho.kuozhi.v3.util.AppUtil;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +43,29 @@ public class CourseCatalogue {
         private String title;
         private String type;
         private String free;
+        private String mediaSource;
+
+        public LessonItem toLessonItem() {
+            LessonItem lessonItem = new LessonItem();
+            lessonItem.courseId = AppUtil.parseInt(courseId);
+            lessonItem.id = AppUtil.parseInt(id);
+            lessonItem.itemType = itemType;
+            lessonItem.length = length;
+            lessonItem.number = AppUtil.parseInt(number);
+            lessonItem.title = title;
+            lessonItem.type = type;
+            lessonItem.free = AppUtil.parseInt(free);
+            lessonItem.mediaSource = mediaSource;
+            return lessonItem;
+        }
+
+        public String getMediaSource() {
+            return mediaSource;
+        }
+
+        public void setMediaSource(String mediaSource) {
+            this.mediaSource = mediaSource;
+        }
 
         public String getContent() {
             return content;

@@ -75,6 +75,9 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
     protected View mPeopleLayout;
     protected View mTvStudentNone;
     protected View mReviewNoneLayout;
+    protected TextView mTvStudent1;
+    protected TextView mTvReview1;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -113,7 +116,8 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         mTvReviewMore = (TextView) view.findViewById(R.id.tv_review_more);
         mLvReview = (ListView) view.findViewById(R.id.lv_review);
         mTvTitleFull = (TextView) view.findViewById(R.id.tv_title_full);
-
+        mTvReview1 = (TextView) view.findViewById(R.id.tv_review1);
+        mTvStudent1 = (TextView) view.findViewById(R.id.tv_student1);
         mPeopleLayout = view.findViewById(R.id.people_rlayout);
         mTeacherLayout = view.findViewById(R.id.teacher_rlayout);
         mTvStudentNone = view.findViewById(R.id.tv_student_none);

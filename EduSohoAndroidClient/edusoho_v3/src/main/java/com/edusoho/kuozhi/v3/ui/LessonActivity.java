@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LiveLessonFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -91,10 +93,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         app.startPlayCacheServer(this);
     }
 
-    @Override
-    public void invoke(WidgetMessage message) {
-    }
-
     protected void share() {
         final LoadDialog loadDialog = LoadDialog.create(this);
         loadDialog.show();
@@ -123,16 +121,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 loadDialog.dismiss();
             }
         });
-    }
-
-
-    @Override
-    public MessageType[] getMsgTypes() {
-        String source = this.getClass().getSimpleName();
-        MessageType[] messageTypes = new MessageType[]{
-                new MessageType(HIDE_TOOLS, source)
-        };
-        return messageTypes;
     }
 
     public int getCourseId() {
@@ -174,16 +162,20 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
-        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        changeScreenOrientaion(newConfig.orientation);
+        super.onConfigurationChanged(newConfig);
+    }
+
+    private void changeScreenOrientaion(int orientation) {
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             showActionBar();
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.textIcons));
-        } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             hideActionBar();
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.transparent));
         }
-        super.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -395,7 +387,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(CONTENT, documentLessonItem.content.get("previewUrl"));
                 return documentLessonItem;
             case VIDEO:
-                //fragmentData.putSerializable(Const.STREAM_URL, streamInfos);
+                //fragmentData.putSerializable(LessonVideoPlayerFragment.PLAY_URI, lessonItem.mediaUri);
             case AUDIO:
             case TEXT:
             default:
@@ -423,7 +415,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(CONTENT, normalLesson.content);
                 if (courseLessonType == CourseLessonType.VIDEO
                         || courseLessonType == CourseLessonType.AUDIO) {
-                    fragmentData.putString(Const.MEDIA_URL, normalLesson.mediaUri);
+                    fragmentData.putString(LessonVideoPlayerFragment.PLAY_URI, normalLesson.mediaUri);
                     fragmentData.putBoolean(FROM_CACHE, mFromCache);
                     fragmentData.putString(Const.HEAD_URL, normalLesson.headUrl);
                     fragmentData.putString(Const.MEDIA_SOURCE, normalLesson.mediaSource);

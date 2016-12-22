@@ -114,8 +114,10 @@
     <string name="txt_suit_people">适宜人群</string>
     <string name="txt_talk_teacher">讲师</string>
     <string name="txt_course_student">课程学员</string>
+    <string name="txt_classroom_student">班级学员</string>
     <string name="txt_student_none">暂无学员，赶紧加入吧！</string>
     <string name="txt_course_review">课程评价</string>
+    <string name="txt_classroom_review">班级评价</string>
     <string name="txt_more_review">更多评价</string>
     <string name="txt_review_none">没有评价</string>
     <string name="txt_add_class">加入班级</string>

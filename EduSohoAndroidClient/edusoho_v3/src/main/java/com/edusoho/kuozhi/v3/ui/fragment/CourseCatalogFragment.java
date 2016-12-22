@@ -291,8 +291,17 @@ public class CourseCatalogFragment extends BaseFragment {
         }
     }
 
-    public void perpareStartLearnLesson(int position) {
-        final CourseCatalogue.LessonsBean lessonsBean = mCourseCatalogue.getLessons().get(position);
+    private void sendMessageToCourse(LessonItem lessonItem) {
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
+        MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
+
+        bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
+        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
+    }
+
+    private void getFullLessonFromServer(CourseCatalogue.LessonsBean lessonsBean) {
+        showProcessDialog();
         new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
                 .success(new NormalCallback<LessonItem>() {
                     @Override
@@ -310,6 +319,16 @@ public class CourseCatalogFragment extends BaseFragment {
                 hideProcesDialog();
             }
         });
+    }
+
+    public void perpareStartLearnLesson(int position) {
+        CourseCatalogue.LessonsBean lessonsBean = mCourseCatalogue.getLessons().get(position);
+        if ("self".equals(lessonsBean.getMediaSource())
+                && ("audio".equals(lessonsBean.getType()) || "video".equals(lessonsBean.getType()))) {
+            getFullLessonFromServer(lessonsBean);
+            return;
+        }
+        sendMessageToCourse(lessonsBean.toLessonItem());
     }
 
     public void startLessonActivity(int lessonId, int courseId) {
@@ -336,7 +355,6 @@ public class CourseCatalogFragment extends BaseFragment {
      */
     public void reFreshView(boolean mIsJoin) {
         mMemberStatus = mIsJoin ? ISMEMBER : VISITOR;
-
         isJoin = mIsJoin;
         initCatalogue();
     }
