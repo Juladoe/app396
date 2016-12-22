@@ -66,6 +66,8 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         super.initView(view);
         mAdapter = new ReviewAdapter();
         mLvReview.setAdapter(mAdapter);
+        mTvStudent1.setText(R.string.txt_classroom_student);
+        mTvReview1.setText(R.string.txt_classroom_review);
         initEvent();
         initData();
     }

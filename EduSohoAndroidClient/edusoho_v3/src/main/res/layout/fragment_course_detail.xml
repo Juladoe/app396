@@ -128,6 +128,7 @@
                     android:id="@+id/iv_vip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:src="@drawable/icon_vip"
                     android:layout_centerVertical="true" />
 
                 <TextView

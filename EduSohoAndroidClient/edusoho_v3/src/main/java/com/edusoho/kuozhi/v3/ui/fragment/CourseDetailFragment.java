@@ -67,6 +67,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
         super.initView(view);
         mAdapter = new ReviewAdapter();
         mLvReview.setAdapter(mAdapter);
+        mTvStudent1.setText(R.string.txt_course_student);
+        mTvReview1.setText(R.string.txt_course_review);
         initEvent();
         initData();
     }
@@ -178,8 +180,12 @@ public class CourseDetailFragment extends BaseDetailFragment {
             if (course.originPrice == 0) {
                 mTvPriceOld.setVisibility(View.GONE);
             } else {
-                mTvPriceOld.setVisibility(View.VISIBLE);
-                mTvPriceOld.setText("¥" + course.originPrice);
+                if(course.originPrice == course.price){
+                    mTvPriceOld.setVisibility(View.GONE);
+                }else {
+                    mTvPriceOld.setVisibility(View.VISIBLE);
+                    mTvPriceOld.setText("¥" + course.originPrice);
+                }
             }
         } else {
             mPriceLayout.setVisibility(View.GONE);
