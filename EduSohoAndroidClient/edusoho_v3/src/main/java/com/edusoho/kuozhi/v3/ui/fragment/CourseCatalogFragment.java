@@ -7,6 +7,7 @@ import android.os.StatFs;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -153,6 +154,9 @@ public class CourseCatalogFragment extends BaseFragment {
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+
+
                 if (mAdapter.isSelected(position)) {
                     return;
                 }
@@ -169,6 +173,17 @@ public class CourseCatalogFragment extends BaseFragment {
                     return;
                 }
                 perpareStartLearnLesson(position);
+            }
+        });
+        mLvCatalog.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_MOVE:
+                        return true;
+                    default:
+                        return false;
+                }
             }
         });
     }
