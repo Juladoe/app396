@@ -211,8 +211,6 @@ public class CourseCatalogFragment extends BaseFragment {
             }
 
             if (lessonsBean == null) {
-                bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, null);
-                MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
                 return;
             }
 
