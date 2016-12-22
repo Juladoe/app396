@@ -180,6 +180,7 @@ public class HeadStopScrollView extends ScrollView {
             if (view instanceof CanStopView) {
                 mChildScrolls.add((CanStopView) view);
                 ((CanStopView) view).bindParent(this);
+                continue;
             }
             if (view instanceof ViewGroup) {
                 searchCanScrollChild((ViewGroup) view);
