@@ -306,6 +306,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 .success(new NormalCallback<LessonItem>() {
                     @Override
                     public void success(LessonItem lessonItem) {
+                        hideProcesDialog();
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
                         MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
