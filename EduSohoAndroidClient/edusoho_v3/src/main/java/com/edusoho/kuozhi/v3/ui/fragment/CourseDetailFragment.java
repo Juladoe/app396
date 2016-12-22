@@ -93,6 +93,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                     @Override
                     public void onSuccess(CourseReviewDetail data) {
                         mReviews.clear();
+                        mTvReviewNum.setText(String.format("(%s)",data.getTotal()));
                         if (data.getData().size() == 0) {
                             mReviewNoneLayout.setVisibility(View.VISIBLE);
                         } else {
@@ -163,6 +164,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         Course course = mCourseDetail.getCourse();
         mTvTitle.setText(course.title);
         mTvTitleDesc.setHtml(course.about, new HtmlHttpImageGetter(mTvTitleDesc));
+        mTvStudentNum.setText(String.format("(%s)",mCourseDetail.getCourse().studentNum));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             mVipLayout.setVisibility(View.VISIBLE);
