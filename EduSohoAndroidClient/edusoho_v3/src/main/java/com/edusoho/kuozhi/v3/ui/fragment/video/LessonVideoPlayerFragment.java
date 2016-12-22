@@ -40,11 +40,11 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
 
     @Override
     public void onFocusChange(View v, boolean hasFocus) {
-//        if (hasFocus) {
-//            play();
-//        } else {
-//            pause();
-//        }
+        if (hasFocus) {
+            play();
+        } else {
+            pause();
+        }
     }
 
     @Override
