@@ -15,6 +15,9 @@ import com.edusoho.kuozhi.v3.ui.DetailActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
+
+import org.videolan.libvlc.IVLCVout;
+
 /**
  * Created by suju on 16/12/16.
  */
@@ -35,7 +38,9 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mMenuCallback = (DetailActivity) activity;
+        if (activity instanceof DetailActivity) {
+            mMenuCallback = (DetailActivity) activity;
+        }
     }
 
     @Override
@@ -50,7 +55,9 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        new LessonMenuHelper(getContext(), mLessonId, mCourseId).initMenu(mMenuCallback.getMenu());
+        if (mMenuCallback != null) {
+            new LessonMenuHelper(getContext(), mLessonId, mCourseId).initMenu(mMenuCallback.getMenu());
+        }
     }
 
     @Override

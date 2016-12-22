@@ -73,7 +73,7 @@ public class FileHandler implements HttpRequestHandler {
             throws HttpException, IOException {
 
         Header host = httpRequest.getFirstHeader("Host");
-        if (host == null || !HOST_TAG.equals(host.getValue())) {
+        if (host == null || !HOST_TAG.startsWith(host.getValue())) {
             return;
         }
         String url = httpRequest.getRequestLine().getUri();

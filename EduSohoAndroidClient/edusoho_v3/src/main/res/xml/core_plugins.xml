@@ -183,7 +183,7 @@
 
     <plugin
         name="VideoLessonFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.video.CustomVideoFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.video.InnerVideoPlayerFragment"
         version="1.0" />
 
     <plugin
