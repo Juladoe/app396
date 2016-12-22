@@ -113,7 +113,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                     @Override
                     public void onFailure(String code, String message) {
                         setLoadStatus(View.GONE);
-                        if (message.equals("课程不存在")) {
+                        if ("课程不存在".equals(message)) {
                             CommonUtil.shortToast(CourseActivity.this, "课程不存在");
                             finish();
                         }
@@ -282,6 +282,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     protected void courseHastrial(String state, LessonItem lessonItem) {
         mContinueLessonItem = lessonItem;
         mPlayLastLayout.setVisibility(View.GONE);
+        mPlayButtonLayout.setVisibility(View.VISIBLE);
         switch (state) {
             case Const.COURSE_CHANGE_STATE_NONE:
                 mPlayLayout.setEnabled(true);
