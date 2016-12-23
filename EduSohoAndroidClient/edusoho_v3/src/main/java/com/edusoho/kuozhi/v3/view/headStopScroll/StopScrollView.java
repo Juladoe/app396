@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ScrollView;
 
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 
 /**
@@ -27,20 +26,17 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
         super(context, attrs, defStyleAttr);
     }
 
-    private boolean mCanScroll = true;
     private HeadStopScrollView mParent;
 
 
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
-        if (oldt - t > 0 &&
-                t <= AppUtil.dp2px(getContext(), 10)) {
-            sendScrollState();
-        }
     }
 
     float moveY;
+    float moveYOld;
+    float moveByY;
     float startY;
 
     @Override
@@ -50,33 +46,58 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
                 startY = (int) ev.getRawY();
                 break;
             case MotionEvent.ACTION_MOVE:
+                moveYOld = moveY;
                 moveY = ev.getRawY() - startY;
-                if (moveY > 0 && getScrollY() == 0) {
-                    sendScrollState();
+                float move = moveY - moveYOld;
+                moveByY = move < 0 ? 0 : move;
+                if(mParent.isStay()){
+                    break;
                 }
-                break;
+                if (moveY > 0 && getScrollY() == 0) {
+                    mParent.scrollBy(0, (int) (-moveByY));
+                    return true;
+                }
+                if (firstViewHeight > Math.abs(mParent.getScrollY())
+                        && moveY < 0) {
+                    mParent.scrollTo(0, (int) -moveY);
+                    return true;
+                } else {
+                    break;
+                }
             case MotionEvent.ACTION_UP:
                 startY = 0;
+                moveY = 0;
+                moveByY = 0;
                 break;
         }
         return super.dispatchTouchEvent(ev);
     }
 
-    private void sendScrollState() {
-        mCanScroll = false;
-        if (mParent != null) {
-            mParent.stateChange();
-        }
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent ev) {
+//        switch (ev.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                startY = (int) ev.getRawY();
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                moveY = ev.getRawY() - startY;
+//                break;
+//            case MotionEvent.ACTION_UP:
+//                startY = 0;
+//                break;
+//        }
+//        if (getScrollY() == 0 && moveY > 0) {
+//            return true;
+//        } else {
+//            return super.onTouchEvent(ev);
+//        }
+//    }
+
+    private int firstViewHeight = 0;
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return mCanScroll ? super.onTouchEvent(ev) : false;
-    }
-
-    @Override
-    public void setCanScroll(boolean canScroll) {
-        mCanScroll = true;
+    public void setScrollHeight(int height) {
+        firstViewHeight = height;
     }
 
     @Override

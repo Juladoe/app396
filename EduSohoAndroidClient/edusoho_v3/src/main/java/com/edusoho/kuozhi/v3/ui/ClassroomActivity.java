@@ -54,6 +54,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         super.initView();
         mCollect.setVisibility(View.GONE);
         mPlayButtonLayout.setVisibility(View.GONE);
+        mPlayLayout2.setVisibility(View.GONE);
         mTvInclass.setVisibility(View.GONE);
         mTvAdd.setText(R.string.txt_add_class);
         mTvCatalog.setText(R.string.class_catalog);
@@ -96,7 +97,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                                     ((ClassCatalogFragment) mFragments.get(1)).reFreshView(false);
                                 } else {
                                     ((ClassCatalogFragment) mFragments.get(1)).reFreshView(true);
-                                    mContentVp.setCurrentItem(1);
+                                    tabPage(300);
                                 }
                             }
                             refreshView();

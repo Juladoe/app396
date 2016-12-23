@@ -103,7 +103,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
                             } else {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
-                                mContentVp.setCurrentItem(1);
+                                tabPage(300);
                             }
                         }
                         refreshView();
