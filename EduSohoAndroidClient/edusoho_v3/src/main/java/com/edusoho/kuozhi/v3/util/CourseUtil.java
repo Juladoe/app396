@@ -202,7 +202,7 @@ public class CourseUtil {
         void onAddCourseError(String response);
     }
 
-    private static void notLogin() {
+    public static void notLogin() {
 
         EdusohoApp.app.mEngine.runNormalPluginForResult("LoginActivity", EdusohoApp.app.mActivity
                 , DetailActivity.RESULT_LOGIN, new PluginRunCallback() {

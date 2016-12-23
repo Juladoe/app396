@@ -25,6 +25,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -88,18 +89,31 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 setLoadViewStatus(View.GONE);
             }
         });
-        CourseDetailModel.getCourseReviews(mCourseId, "5", "0",
+        CourseDetailModel.getCourseReviews(mCourseId, "10", "0",
                 new ResponseCallbackListener<CourseReviewDetail>() {
                     @Override
                     public void onSuccess(CourseReviewDetail data) {
                         mReviews.clear();
-                        mTvReviewNum.setText(String.format("(%s)",data.getTotal()));
+                        int length = data.getData().size();
+                        for (int i = 0; i < length; i++) {
+                            if (!data.getData().get(i).parentId.equals("0")) {
+                                data.getData().remove(i);
+                                i--;
+                                length--;
+                            }
+                        }
+                        mTvReviewNum.setText(String.format("(%s)", data.getTotal()));
                         if (data.getData().size() == 0) {
                             mReviewNoneLayout.setVisibility(View.VISIBLE);
                         } else {
                             mReviewNoneLayout.setVisibility(View.GONE);
                             mReviews.addAll(data.getData());
-                            mTvReviewMore.setText(String.format("更多评价（%s）", data.getTotal()));
+                            if (mReviews.size() < 5) {
+                                mTvReviewMore.setVisibility(View.GONE);
+                            } else {
+                                mTvReviewMore.setVisibility(View.VISIBLE);
+                                mTvReviewMore.setText("更多评价");
+                            }
                             mAdapter.notifyDataSetChanged();
                         }
                     }
@@ -164,7 +178,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         Course course = mCourseDetail.getCourse();
         mTvTitle.setText(course.title);
         mTvTitleDesc.setHtml(course.about, new HtmlHttpImageGetter(mTvTitleDesc));
-        mTvStudentNum.setText(String.format("(%s)",mCourseDetail.getCourse().studentNum));
+        mTvStudentNum.setText(String.format("(%s)", mCourseDetail.getCourse().studentNum));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             mVipLayout.setVisibility(View.VISIBLE);
@@ -182,9 +196,9 @@ public class CourseDetailFragment extends BaseDetailFragment {
             if (course.originPrice == 0) {
                 mTvPriceOld.setVisibility(View.GONE);
             } else {
-                if(course.originPrice == course.price){
+                if (course.originPrice == course.price) {
                     mTvPriceOld.setVisibility(View.GONE);
-                }else {
+                } else {
                     mTvPriceOld.setVisibility(View.VISIBLE);
                     mTvPriceOld.setText("¥" + course.originPrice);
                 }
@@ -251,6 +265,10 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
     @Override
     protected void vipInfo() {
+        if (EdusohoApp.app.loginUser == null) {
+            CourseUtil.notLogin();
+            return;
+        }
         final String url = String.format(
                 Const.MOBILE_APP_URL,
                 app.schoolHost,

@@ -59,6 +59,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mPlayLastLayout;
     protected TextView mTvLastTitle;
     protected TextView mTvCollect;
+    protected TextView mTvCollectTxt;
     protected TextView mTvPlay;
     protected TextView mTvAdd;
     protected View mPlayButtonLayout;
@@ -160,6 +161,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mBottomLayout = findViewById(R.id.bottom_layout);
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
+        mTvCollectTxt = (TextView) findViewById(R.id.tv_collect_txt);
         mConsult = findViewById(R.id.consult_layout);
         mTvAdd = (TextView) findViewById(R.id.tv_add);
         initViewPager();

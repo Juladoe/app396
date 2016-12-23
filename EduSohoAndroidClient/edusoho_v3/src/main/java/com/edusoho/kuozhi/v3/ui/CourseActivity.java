@@ -127,8 +127,13 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         mIsFavorite = mCourseDetail.isUserFavorited();
         if (mIsFavorite) {
             mTvCollect.setText(getResources().getString(R.string.new_font_collected));
+            mTvCollect.setTextColor(getResources().getColor(R.color.primary_color));
+            mTvCollectTxt.setTextColor(getResources().getColor(R.color.primary_color));
+
         } else {
             mTvCollect.setText(getResources().getString(R.string.new_font_collect));
+            mTvCollect.setTextColor(getResources().getColor(R.color.secondary_font_color));
+            mTvCollectTxt.setTextColor(getResources().getColor(R.color.secondary_font_color));
         }
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .showImageForEmptyUri(R.drawable.default_course)
@@ -220,14 +225,20 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             CourseUtil.uncollectCourse(mCourseId, new CourseUtil.OnCollectSucceeListener() {
                 @Override
                 public void onCollectSuccee() {
+                    mIsFavorite = false;
                     mTvCollect.setText(getResources().getString(R.string.new_font_collect));
+                    mTvCollect.setTextColor(getResources().getColor(R.color.secondary_font_color));
+                    mTvCollectTxt.setTextColor(getResources().getColor(R.color.secondary_font_color));
                 }
             });
         } else {
             CourseUtil.collectCourse(mCourseId, new CourseUtil.OnCollectSucceeListener() {
                 @Override
                 public void onCollectSuccee() {
+                    mIsFavorite = true;
                     mTvCollect.setText(getResources().getString(R.string.new_font_collected));
+                    mTvCollect.setTextColor(getResources().getColor(R.color.primary_color));
+                    mTvCollectTxt.setTextColor(getResources().getColor(R.color.primary_color));
                 }
             });
         }
@@ -321,7 +332,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         for (int i = 0; i < fragmentList.size(); i++) {
             Fragment fragment = fragmentList.get(i);
             if (fragment instanceof View.OnFocusChangeListener) {
-                ((View.OnFocusChangeListener)fragment).onFocusChange(null, hasFocus);
+                ((View.OnFocusChangeListener) fragment).onFocusChange(null, hasFocus);
             }
         }
     }

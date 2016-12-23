@@ -22,8 +22,10 @@ import com.edusoho.kuozhi.v3.model.bal.course.ClassroomMember;
 import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReview;
 import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReviewDetail;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -92,13 +94,26 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
                     @Override
                     public void onSuccess(ClassroomReviewDetail data) {
                         mReviews.clear();
-                        mTvReviewNum.setText(String.format("(%s)",data.getTotal()));
+                        int length = data.getData().size();
+                        for (int i = 0; i < length; i++) {
+                            if (!data.getData().get(i).parentId.equals("0")) {
+                                data.getData().remove(i);
+                                i--;
+                                length--;
+                            }
+                        }
+                        mTvReviewNum.setText(String.format("(%s)", data.getTotal()));
                         if (data.getData().size() == 0) {
                             mReviewNoneLayout.setVisibility(View.VISIBLE);
                         } else {
                             mReviewNoneLayout.setVisibility(View.GONE);
                             mReviews.addAll(data.getData());
-                            mTvReviewMore.setText(String.format("更多评价（%s）", data.getTotal()));
+                            if (mReviews.size() < 5) {
+                                mTvReviewMore.setVisibility(View.GONE);
+                            } else {
+                                mTvReviewMore.setVisibility(View.VISIBLE);
+                                mTvReviewMore.setText("更多评价");
+                            }
                             mAdapter.notifyDataSetChanged();
                         }
                     }
@@ -151,7 +166,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
                 txt.setText(data.get(i).user.nickname);
                 ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image,
                         app.mAvatarOptions);
-            }else{
+            } else {
                 txt.setText("");
                 image.setImageAlpha(0);
             }
@@ -164,8 +179,8 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Classroom classRoom = mClassroomDetail.getClassRoom();
         mTvTitle.setText(classRoom.title);
-        mTvTitleDesc.setHtml(classRoom.about.toString(),new HtmlHttpImageGetter(mTvTitleDesc));
-        mTvStudentNum.setText(String.format("(%s)",mClassroomDetail.getClassRoom().studentNum));
+        mTvTitleDesc.setHtml(classRoom.about.toString(), new HtmlHttpImageGetter(mTvTitleDesc));
+        mTvStudentNum.setText(String.format("(%s)", mClassroomDetail.getClassRoom().studentNum));
         if (mClassroomDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             mVipLayout.setVisibility(View.VISIBLE);
@@ -199,7 +214,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             mTeacherLayout.setVisibility(View.VISIBLE);
             Teacher teacher = classRoom.teachers[0];
             mTeacherId = String.valueOf(teacher.id);
-            ImageLoader.getInstance().displayImage(teacher.getAvatar(), mIvTeacherIcon,app.mAvatarOptions);
+            ImageLoader.getInstance().displayImage(teacher.getAvatar(), mIvTeacherIcon, app.mAvatarOptions);
             mTvTeacherName.setText(teacher.nickname);
             mTvTeacherDesc.setText(teacher.title);
         }
@@ -229,6 +244,10 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
 
     @Override
     protected void vipInfo() {
+        if (EdusohoApp.app.loginUser == null) {
+            CourseUtil.notLogin();
+            return;
+        }
         final String url = String.format(
                 Const.MOBILE_APP_URL,
                 app.schoolHost,
