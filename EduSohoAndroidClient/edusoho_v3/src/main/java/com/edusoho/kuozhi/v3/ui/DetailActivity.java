@@ -147,7 +147,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mParent.setFirstViewHeight(AppUtil.dp2px(this,
                 mMediaViewHeight - 43 - mTitleBarHeight));
-        mParent.setSize(3);
         mBottomLayout = findViewById(R.id.bottom_layout);
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
@@ -201,8 +200,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 if (!mParent.isCanScroll() && t != 0) {
                     mHeadRlayout.setVisibility(View.GONE);
                     mHeadRlayout2.setVisibility(View.VISIBLE);
-                    mParent.scrollTo(0, AppUtil.dp2px(DetailActivity.this,
-                            mMediaViewHeight - 43 - mTitleBarHeight));
+//                    mParent.scrollTo(0, AppUtil.dp2px(DetailActivity.this,
+//                            mMediaViewHeight - 43 - mTitleBarHeight));
                 } else if (mParent.getScrollY() < mParent.getFirstViewHeight() - 2) {
                     mHeadRlayout.setVisibility(View.VISIBLE);
                     mHeadRlayout2.setVisibility(View.GONE);
@@ -295,7 +294,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mIntro.setVisibility(View.GONE);
         mHour.setVisibility(View.GONE);
         mReview.setVisibility(View.GONE);
-        mParent.setCheckNum(num);
+//        mParent.setCheckNum(num);
         switch (num) {
             case 0:
                 mIntro.setVisibility(View.VISIBLE);
@@ -396,6 +395,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 if (mBottomLayout.getVisibility() != View.GONE) {
                     bottom += AppUtil.dp2px(this, 50);
                 }
+                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT){
+                    bottom += AppUtil.dp2px(this, 25);
+                }
                 params.height = AppUtil.getHeightPx(this) - bottom;
                 mContentVp.setLayoutParams(params);
             }
@@ -449,7 +451,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             params.width = -1;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
             mMediaRlayout.setLayoutParams(params);
-            mParent.setCanScroll(mParent.getScroll(mCheckNum));
+//            mParent.setCanScroll(mParent.getScroll(mCheckNum));
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
                 mBottomLayout.setVisibility(View.VISIBLE);

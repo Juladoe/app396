@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.view;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,21 +33,12 @@ public class HeadStopScrollView extends ScrollView {
 
     private int startY;
     /**
-     * 监听的滑动的子View
-     */
-    private View controlChildView;
-    /**
      * firstViewHeight 头View的高度，用来判断什么时候应该向下分发事件
      */
     private int firstViewHeight = 0;
-    public static final String HEADVIEW_CLASSNAME = "xxx";
 
     public void setFirstViewHeight(int firstViewHeight) {
         this.firstViewHeight = firstViewHeight;
-    }
-
-    public void setControlChildView(View controlChildView) {
-        this.controlChildView = controlChildView;
     }
 
     private void init() {
@@ -56,66 +46,45 @@ public class HeadStopScrollView extends ScrollView {
         setVerticalScrollBarEnabled(false);
     }
 
-    //    private List<Boolean> mCanScrolls = new ArrayList<>();
-//    private List<Integer> mScrollY = new ArrayList<>();
-    private int mCheckNum = 0;
     private boolean mStay = false;
 
-    public void setCheckNum(int position) {
-        mCheckNum = position;
-//        setCanScroll(mCanScrolls.get(position));
-//        scrollTo(0, mScrollY.get(position));
+    public void setCanScroll(boolean isScrolled) {
+        this.canScroll = isScrolled;
     }
 
-    public boolean getScroll(int position) {
-//        if (mCanScrolls.size() < position) {
-//            return false;
-//        }
-//        return mCanScrolls.get(position);
+    private boolean canScroll = true;
+
+    public boolean isCanScroll() {
         return canScroll;
-    }
-
-    public void setSize(int num) {
-//        for (int i = 0; i < num; i++) {
-//            mCanScrolls.add(true);
-//            mScrollY.add(0);
-//        }
-    }
-
-    public void stateChange() {
-        if (mStay) {
-            return;
-        }
-//        mCanScrolls.set(mCheckNum, true);
-        setCanScroll(true);
-        scrollTo(0, getScrollY() - 1);
     }
 
     public void setStay(boolean stay) {
         this.mStay = stay;
     }
 
-//    public void notifyCanScrolls(int position, boolean state) {
-//        if (mCanScrolls.size() > position) {
-//            mCanScrolls.set(position, state);
-//        }
-//    }
+    public boolean isStay() {
+        return mStay;
+    }
 
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
         if (t >= firstViewHeight && t - oldt >= 0) {
             setCanScroll(false);
+        }else{
+            setCanScroll(true);
         }
-//        if (mScrollY.size() > mCheckNum) {
-//            mScrollY.set(mCheckNum, t);
-//        }
-//        if (mCanScrolls.size() > mCheckNum) {
-//            mCanScrolls.set(mCheckNum, canScroll);
-//        }
         if (onScrollChangeListener != null) {
             onScrollChangeListener.onScrollChanged(l, t, oldl, oldt);
         }
+    }
+
+    @Override
+    public void scrollTo(int x, int y) {
+        if (mStay) {
+            return;
+        }
+        super.scrollTo(x, y);
     }
 
     private OnScrollChangeListener onScrollChangeListener;
@@ -130,27 +99,6 @@ public class HeadStopScrollView extends ScrollView {
 
     float moveY;
 
-    private boolean canScroll = true;
-
-    public void setCanScroll(boolean isScrolled) {
-        if(canScroll != isScrolled){
-            isTab = !isScrolled;
-        }
-        this.canScroll = isScrolled;
-//        if (mCanScrolls.size() > mCheckNum) {
-//            mCanScrolls.set(mCheckNum, isScrolled);
-//        }
-    }
-
-    public boolean isCanScroll() {
-        return canScroll;
-    }
-
-//    @Override
-//    public boolean onTouchEvent(MotionEvent motionEvent) {
-//        return canScroll ? super.onTouchEvent(motionEvent) : false;
-//    }
-
     private List<CanStopView> mChildScrolls = new ArrayList<>();
 
     @Override
@@ -164,14 +112,7 @@ public class HeadStopScrollView extends ScrollView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!canScroll) {
-            for (CanStopView view : mChildScrolls) {
-                if (view != null) {
-                    view.setCanScroll(true);
-                }
-            }
-        }
-        return canScroll ? super.onInterceptTouchEvent(ev) : false;
+        return false;
     }
 
     private void searchCanScrollChild(ViewGroup parent) {
@@ -180,6 +121,7 @@ public class HeadStopScrollView extends ScrollView {
             if (view instanceof CanStopView) {
                 mChildScrolls.add((CanStopView) view);
                 ((CanStopView) view).bindParent(this);
+                ((CanStopView) view).setScrollHeight(firstViewHeight);
                 continue;
             }
             if (view instanceof ViewGroup) {
@@ -196,18 +138,10 @@ public class HeadStopScrollView extends ScrollView {
                 break;
             case MotionEvent.ACTION_MOVE:
                 moveY = ev.getRawY() - startY;
-
-                if (moveY > 0 && getScrollY() >= firstViewHeight) {
-                    setCanScroll(false);
-                }
                 break;
             case MotionEvent.ACTION_UP:
                 startY = 0;
                 break;
-        }
-        if (!canScroll == isTab) {
-            ev.setAction(MotionEvent.ACTION_DOWN);
-            isTab = canScroll;
         }
         return super.dispatchTouchEvent(ev);
     }
@@ -215,9 +149,9 @@ public class HeadStopScrollView extends ScrollView {
     private boolean isTab = false;
 
     public interface CanStopView {
-        void setCanScroll(boolean canScroll);
-
         void bindParent(HeadStopScrollView headStopScrollView);
+
+        void setScrollHeight(int height);
     }
 
     public int getFirstViewHeight() {
