@@ -134,6 +134,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvInclass = findViewById(R.id.tv_inclass);
         mLoadingView = findViewById(R.id.ll_frame_load);
+        mTvCatalog = (TextView) findViewById(R.id.textView);
         mPlayLastLayout = findViewById(R.id.layout_play_last);
         mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
@@ -154,7 +155,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
         mConsult = findViewById(R.id.consult_layout);
         mTvAdd = (TextView) findViewById(R.id.tv_add);
-        mTvCatalog = (TextView) findViewById(R.id.textView);
         initViewPager();
         ViewGroup.LayoutParams headParams =
                 mHeadRlayout2.getLayoutParams();

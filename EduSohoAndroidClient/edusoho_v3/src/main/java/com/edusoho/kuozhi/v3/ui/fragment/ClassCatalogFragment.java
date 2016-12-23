@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -35,6 +36,7 @@ public class ClassCatalogFragment extends BaseFragment {
 
     private View mLoadView;
     private List<Course> mCourseList;
+    private LinearLayout mLessonEmpytView;
 
     public ClassCatalogFragment() {
     }
@@ -45,6 +47,7 @@ public class ClassCatalogFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_class_catalog, container, false);
         mLvClass = (FixHeightListView) view.findViewById(R.id.lv_catalog);
         mLoadView = view.findViewById(R.id.il_class_catalog_load);
+        mLessonEmpytView = (LinearLayout) view.findViewById(R.id.ll_course_catalog_empty);
         return view;
     }
 
@@ -64,7 +67,7 @@ public class ClassCatalogFragment extends BaseFragment {
                 if (mCourseList != null && !mCourseList.isEmpty()) {
                     initView();
                 } else {
-                    //CommonUtil.shortCenterToast(getActivity(), getString(R.string.class_catalog_hint));
+                    setLessonEmptyViewVisibility(View.VISIBLE);
                 }
             }
         }).fail(new NormalCallback<VolleyError>() {
@@ -99,5 +102,9 @@ public class ClassCatalogFragment extends BaseFragment {
     public void reFreshView(boolean mJoin){
         isJoin = mJoin;
         initData();
+    }
+
+    private void setLessonEmptyViewVisibility(int visibility) {
+        mLessonEmpytView.setVisibility(visibility);
     }
 }
