@@ -5,6 +5,8 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
@@ -25,8 +27,10 @@ import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
+import com.edusoho.kuozhi.v3.util.WeakReferenceHandler;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.edusoho.videoplayer.util.WeakHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +39,7 @@ import java.util.List;
  * Created by Zhang on 2016/12/8.
  */
 public abstract class DetailActivity extends BaseNoTitleActivity
-        implements View.OnClickListener {
+        implements View.OnClickListener, Handler.Callback {
     public static final int RESULT_REFRESH = 0x111;
     public static final int RESULT_LOGIN = 0x222;
     protected HeadStopScrollView mParent;
@@ -80,6 +84,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected LoadDialog mProcessDialog;
     protected MenuPop mMenuPop;
     protected TextView mTvCatalog;
+    protected static final int TAB_PAGE = 0;
+    protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -347,7 +353,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    protected void courseHastrial(String state, LessonItem lessonItem) {}
+    protected void courseHastrial(String state, LessonItem lessonItem) {
+    }
 
     /**
      * todo 获得课程相关信息
@@ -397,7 +404,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 if (mBottomLayout.getVisibility() != View.GONE) {
                     bottom += AppUtil.dp2px(this, 50);
                 }
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT){
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                     bottom += AppUtil.dp2px(this, 25);
                 }
                 params.height = AppUtil.getHeightPx(this) - bottom;
@@ -494,5 +501,31 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             hideProcesDialog();
             initData();
         }
+    }
+
+    protected void tabPage(final int sleepTime) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(sleepTime);
+                    mHandler.sendEmptyMessage(TAB_PAGE);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        switch (msg.what) {
+            case TAB_PAGE:
+                if (mContentVp != null) {
+                    mContentVp.setCurrentItem(1);
+                }
+                break;
+        }
+        return false;
     }
 }
