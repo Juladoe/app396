@@ -12,7 +12,7 @@
         android:scaleType="centerCrop"
         android:layout_width="@dimen/class_catalog_iv_weight"
         android:layout_height="@dimen/class_catalog_iv_height"
-        android:src="@drawable/video_thum_normal"
+        android:src="@drawable/oval_white_bg"
         android:layout_marginRight="@dimen/common_maring0"/>
 
     <RelativeLayout

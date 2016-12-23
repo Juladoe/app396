@@ -21,7 +21,6 @@ repositories {
 
 dependencies {
     compile project(':commonUtils')
-    compile project(':bdvideoplayer')
     compile project(':shard')
     compile project(':commonLib')
     compile project(':multi-image-selector')
