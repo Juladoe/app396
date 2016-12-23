@@ -5,6 +5,8 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
@@ -25,8 +27,10 @@ import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
+import com.edusoho.kuozhi.v3.util.WeakReferenceHandler;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.edusoho.videoplayer.util.WeakHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +39,7 @@ import java.util.List;
  * Created by Zhang on 2016/12/8.
  */
 public abstract class DetailActivity extends BaseNoTitleActivity
-        implements View.OnClickListener {
+        implements View.OnClickListener, Handler.Callback {
     public static final int RESULT_REFRESH = 0x111;
     public static final int RESULT_LOGIN = 0x222;
     protected HeadStopScrollView mParent;
@@ -79,7 +83,10 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mLoadingView;
     protected LoadDialog mProcessDialog;
     protected MenuPop mMenuPop;
+    protected View mTabLayout;
     protected TextView mTvCatalog;
+    protected static final int TAB_PAGE = 0;
+    protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +145,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mPlayLastLayout = findViewById(R.id.layout_play_last);
         mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
+        mTabLayout = findViewById(R.id.tab_rlayout);
 
         initFragment(mFragments);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -149,7 +157,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mParent.setFirstViewHeight(AppUtil.dp2px(this,
                 mMediaViewHeight - 43 - mTitleBarHeight));
-        mParent.setSize(3);
         mBottomLayout = findViewById(R.id.bottom_layout);
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
@@ -203,8 +210,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 if (!mParent.isCanScroll() && t != 0) {
                     mHeadRlayout.setVisibility(View.GONE);
                     mHeadRlayout2.setVisibility(View.VISIBLE);
-                    mParent.scrollTo(0, AppUtil.dp2px(DetailActivity.this,
-                            mMediaViewHeight - 43 - mTitleBarHeight));
+//                    mParent.scrollTo(0, AppUtil.dp2px(DetailActivity.this,
+//                            mMediaViewHeight - 43 - mTitleBarHeight));
                 } else if (mParent.getScrollY() < mParent.getFirstViewHeight() - 2) {
                     mHeadRlayout.setVisibility(View.VISIBLE);
                     mHeadRlayout2.setVisibility(View.GONE);
@@ -297,7 +304,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mIntro.setVisibility(View.GONE);
         mHour.setVisibility(View.GONE);
         mReview.setVisibility(View.GONE);
-        mParent.setCheckNum(num);
+//        mParent.setCheckNum(num);
         switch (num) {
             case 0:
                 mIntro.setVisibility(View.VISIBLE);
@@ -348,7 +355,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    protected void courseHastrial(String state, LessonItem lessonItem) {}
+    protected void courseHastrial(String state, LessonItem lessonItem) {
+    }
 
     /**
      * todo 获得课程相关信息
@@ -398,6 +406,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 if (mBottomLayout.getVisibility() != View.GONE) {
                     bottom += AppUtil.dp2px(this, 50);
                 }
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                    bottom += AppUtil.dp2px(this, 25);
+                }
                 params.height = AppUtil.getHeightPx(this) - bottom;
                 mContentVp.setLayoutParams(params);
             }
@@ -440,7 +451,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             params.height = AppUtil.getWidthPx(this);
             params.width = -1;
             mMediaRlayout.setLayoutParams(params);
-            mParent.setCanScroll(false);
+            mParent.setScrollStay(true);
             mBottomLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -451,7 +462,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             params.width = -1;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
             mMediaRlayout.setLayoutParams(params);
-            mParent.setCanScroll(mParent.getScroll(mCheckNum));
+            mParent.setScrollStay(false);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
                 mBottomLayout.setVisibility(View.VISIBLE);
@@ -492,5 +503,31 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             hideProcesDialog();
             initData();
         }
+    }
+
+    protected void tabPage(final int sleepTime) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(sleepTime);
+                    mHandler.sendEmptyMessage(TAB_PAGE);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        switch (msg.what) {
+            case TAB_PAGE:
+                if (mContentVp != null) {
+                    mContentVp.setCurrentItem(1);
+                }
+                break;
+        }
+        return false;
     }
 }

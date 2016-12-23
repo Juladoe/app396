@@ -165,7 +165,7 @@
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentStart="true"
                             android:gravity="center"
-                            android:text="课时"
+                            android:text="目录"
                             android:textColor="@color/secondary_font_color"
                             android:textSize="@dimen/font_l" />
                     </RelativeLayout>
