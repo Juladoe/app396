@@ -83,6 +83,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mLoadingView;
     protected LoadDialog mProcessDialog;
     protected MenuPop mMenuPop;
+    protected View mTabLayout;
     protected TextView mTvCatalog;
     protected static final int TAB_PAGE = 0;
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
@@ -144,6 +145,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mPlayLastLayout = findViewById(R.id.layout_play_last);
         mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
+        mTabLayout = findViewById(R.id.tab_rlayout);
 
         initFragment(mFragments);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -449,7 +451,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             params.height = AppUtil.getWidthPx(this);
             params.width = -1;
             mMediaRlayout.setLayoutParams(params);
-            mParent.setCanScroll(false);
+            mParent.setScrollStay(true);
             mBottomLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -460,7 +462,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             params.width = -1;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
             mMediaRlayout.setLayoutParams(params);
-//            mParent.setCanScroll(mParent.getScroll(mCheckNum));
+            mParent.setScrollStay(false);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
                 mBottomLayout.setVisibility(View.VISIBLE);

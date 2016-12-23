@@ -71,7 +71,7 @@ public class HeadStopScrollView extends ScrollView {
         super.onScrollChanged(l, t, oldl, oldt);
         if (t >= firstViewHeight && t - oldt >= 0) {
             setCanScroll(false);
-        }else{
+        } else {
             setCanScroll(true);
         }
         if (onScrollChangeListener != null) {
@@ -128,6 +128,17 @@ public class HeadStopScrollView extends ScrollView {
                 searchCanScrollChild((ViewGroup) view);
             }
         }
+    }
+
+    private boolean scrollStay = false;
+
+    public void setScrollStay(boolean scrollStay) {
+        this.scrollStay = scrollStay;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return scrollStay ? true : super.onTouchEvent(ev);
     }
 
     @Override
