@@ -18,7 +18,6 @@ import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
-import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
@@ -321,7 +320,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         for (int i = 0; i < fragmentList.size(); i++) {
             Fragment fragment = fragmentList.get(i);
             if (fragment instanceof View.OnFocusChangeListener) {
-                ((View.OnFocusChangeListener)fragment).onFocusChange(null, hasFocus);
+                ((View.OnFocusChangeListener) fragment).onFocusChange(null, hasFocus);
             }
         }
     }
@@ -418,5 +417,15 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (requestCode == LessonActivity.REQUEST_LEARN) {
             coursePause();
         }
+    }
+
+    @Override
+    public MenuPop getMenu() {
+        if (mContinueLessonItem != null
+                && mCourseDetail.getMember() == null
+                && 1 == mContinueLessonItem.free) {
+            return null;
+        }
+        return super.getMenu();
     }
 }
