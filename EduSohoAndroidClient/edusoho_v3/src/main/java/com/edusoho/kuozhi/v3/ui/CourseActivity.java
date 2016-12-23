@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
+import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
@@ -159,6 +160,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(NewsCourseActivity.COURSE_ID, Integer.parseInt(mCourseId));
+                startIntent.putExtra(NewsCourseActivity.SHOW_TYPE, NewsCourseActivity.DISCUSS_TYPE);
                 startIntent.putExtra(NewsCourseActivity.FROM_NAME, mCourseDetail.getCourse().title);
             }
         });

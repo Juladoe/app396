@@ -18,12 +18,14 @@ import java.util.List;
 
 public class ClassCatalogueAdapter extends BaseAdapter{
     public Context mContext;
+    public boolean isJoin;
     public List<Course> mCourseList;
 
 
-    public ClassCatalogueAdapter(Context mContext, List<Course> mCourseList) {
+    public ClassCatalogueAdapter(Context mContext, List<Course> mCourseList, boolean isJoin) {
         this.mContext = mContext;
         this.mCourseList = mCourseList;
+        this.isJoin = isJoin;
     }
 
     @Override
@@ -55,14 +57,18 @@ public class ClassCatalogueAdapter extends BaseAdapter{
         Course course = mCourseList.get(position);
         ImageLoader.getInstance().displayImage(course.middlePicture, classHolder.mIvClass);
         classHolder.mTvTitle.setText(course.title);
-        classHolder.mTvPeople.setText(
-                String.format(mContext.getResources().getString(R.string.class_catalog_people), course.studentNum));
-        if (course.price <= 0) {
-            classHolder.mTvFree.setText(R.string.class_catalog_free);
-            classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-        } else {
-            classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.secondary_color));
-            classHolder.mTvFree.setText(String.format("¥%.2f", course.price));
+        if (!isJoin) {
+            classHolder.mTvPeople.setText(
+                    String.format(mContext.getResources().getString(R.string.class_catalog_people), course.studentNum));
+        }
+        if (!isJoin) {
+            if (course.price <= 0) {
+                classHolder.mTvFree.setText(R.string.class_catalog_free);
+                classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+            } else {
+                classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.secondary_color));
+                classHolder.mTvFree.setText(String.format("¥%.2f", course.price));
+            }
         }
         return convertView;
     }

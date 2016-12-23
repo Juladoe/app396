@@ -23,6 +23,31 @@
             android:id="@+id/il_class_catalog_load"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:id="@+id/ll_course_catalog_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="55dp"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/no_review" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="还没有添加班级"
+                android:textColor="@color/secondary2_font_color"
+                android:textSize="@dimen/font_s" />
+        </LinearLayout>
+
     </RelativeLayout>
 
 </com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>

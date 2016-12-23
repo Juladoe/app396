@@ -36,6 +36,7 @@
     <string name="course_study_entrance">进入学习</string>
     <string name="study">学习</string>
     <string name="discuss">讨论</string>
+    <string name="class_catalog">目录</string>
 
     <!--TextView-->
     <string name="testpaper_menu_card">答题卡</string>
@@ -237,10 +238,10 @@
     <string name="catalog_lesson_audio">&#xe674;</string>
     <string name="catalog_lesson_video">&#xe673;</string>
     <string name="catalog_lesson_testPaper">&#xe680;</string>
-    <string name="catalog_lesson_doucument">&#xe682;</string>
+    <string name="catalog_lesson_doucument">&#xe690;</string>
     <string name="catalog_lesson_live">&#xe68e;</string>
     <string name="catalog_lesson_ppt">&#xe68f;</string>
-    <string name="catalog_lesson_text">&#xe690;</string>
+    <string name="catalog_lesson_text">&#xe682;</string>
     <string name="catalog_lesson_flash">&#xe689;</string>
     <string name="cache_course">缓存课程</string>
     <string name="cache_hint">本地剩余空间不足，无法缓存</string>

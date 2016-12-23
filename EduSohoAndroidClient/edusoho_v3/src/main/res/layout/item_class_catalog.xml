@@ -39,7 +39,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="免费"
+                android:text=""
                 android:id="@+id/tv_free_price"
                 android:textSize="@dimen/font_xs"
                 android:textColor="@color/secondary_color"
@@ -48,7 +48,7 @@
 
             <TextView
                 android:id="@+id/tv_people_num"
-                android:text="200人参与"
+                android:text=""
                 android:textSize="@dimen/font_xs"
                 android:layout_marginLeft="@dimen/common_margin"
                 android:textColor="@color/secondary_font_color"
