@@ -61,12 +61,14 @@ public class ClassCatalogueAdapter extends BaseAdapter{
             classHolder.mTvPeople.setText(
                     String.format(mContext.getResources().getString(R.string.class_catalog_people), course.studentNum));
         }
-        if (course.price <= 0) {
-            classHolder.mTvFree.setText(R.string.class_catalog_free);
-            classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-        } else {
-            classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.secondary_color));
-            classHolder.mTvFree.setText(String.format("¥%.2f", course.price));
+        if (!isJoin) {
+            if (course.price <= 0) {
+                classHolder.mTvFree.setText(R.string.class_catalog_free);
+                classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+            } else {
+                classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.secondary_color));
+                classHolder.mTvFree.setText(String.format("¥%.2f", course.price));
+            }
         }
         return convertView;
     }
