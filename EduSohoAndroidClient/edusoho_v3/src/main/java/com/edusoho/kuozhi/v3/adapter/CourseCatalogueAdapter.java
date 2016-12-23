@@ -153,7 +153,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
             lessonHolder.lessonTime.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         }
         lessonHolder.lessonTime.setText(lessonsBean.getLength());
-        lessonHolder.lessonTitle.setText(lessonsBean.getTitle());
+        lessonHolder.lessonTitle.setText(String.format("%s、%s", lessonsBean.getNumber(), lessonsBean.getTitle()));
         if ("1".equals(lessonsBean.getFree()) && !isJoin) {
             lessonHolder.lessonFree.setVisibility(View.VISIBLE);
         }
