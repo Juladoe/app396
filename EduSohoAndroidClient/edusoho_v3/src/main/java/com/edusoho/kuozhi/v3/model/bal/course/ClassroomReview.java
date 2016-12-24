@@ -15,6 +15,7 @@ public class ClassroomReview implements Serializable {
     private String content;
     private String rating;
     private String createdTime;
+    public String parentId;
     private User user;
 
     public String getId() {

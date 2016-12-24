@@ -126,8 +126,13 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         mIsFavorite = mCourseDetail.isUserFavorited();
         if (mIsFavorite) {
             mTvCollect.setText(getResources().getString(R.string.new_font_collected));
+            mTvCollect.setTextColor(getResources().getColor(R.color.primary_color));
+            mTvCollectTxt.setTextColor(getResources().getColor(R.color.primary_color));
+
         } else {
             mTvCollect.setText(getResources().getString(R.string.new_font_collect));
+            mTvCollect.setTextColor(getResources().getColor(R.color.secondary_font_color));
+            mTvCollectTxt.setTextColor(getResources().getColor(R.color.secondary_font_color));
         }
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .showImageForEmptyUri(R.drawable.default_course)
@@ -219,14 +224,20 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             CourseUtil.uncollectCourse(mCourseId, new CourseUtil.OnCollectSucceeListener() {
                 @Override
                 public void onCollectSuccee() {
+                    mIsFavorite = false;
                     mTvCollect.setText(getResources().getString(R.string.new_font_collect));
+                    mTvCollect.setTextColor(getResources().getColor(R.color.secondary_font_color));
+                    mTvCollectTxt.setTextColor(getResources().getColor(R.color.secondary_font_color));
                 }
             });
         } else {
             CourseUtil.collectCourse(mCourseId, new CourseUtil.OnCollectSucceeListener() {
                 @Override
                 public void onCollectSuccee() {
+                    mIsFavorite = true;
                     mTvCollect.setText(getResources().getString(R.string.new_font_collected));
+                    mTvCollect.setTextColor(getResources().getColor(R.color.primary_color));
+                    mTvCollectTxt.setTextColor(getResources().getColor(R.color.primary_color));
                 }
             });
         }
@@ -289,14 +300,17 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 mPlayLayout.setEnabled(true);
                 if (mCourseDetail == null || mCourseDetail.getMember() == null) {
                     mTvPlay.setText(R.string.txt_study_try);
+                    mTvPlay2.setText(R.string.txt_study_try);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
                 } else {
                     mTvPlay.setText(R.string.txt_study_start);
+                    mTvPlay2.setText(R.string.txt_study_start);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 }
                 break;
             case Const.COURSE_CHANGE_STATE_STARTED:
                 mTvPlay.setText(R.string.txt_study_continue);
+                mTvPlay2.setText(R.string.txt_study_continue);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(true);
                 mPlayLastLayout.setVisibility(View.VISIBLE);
@@ -304,6 +318,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 break;
             case Const.COURSE_CHANGE_STATE_FINISH:
                 mTvPlay.setText(R.string.txt_study_finish);
+                mTvPlay2.setText(R.string.txt_study_finish);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(false);
                 break;

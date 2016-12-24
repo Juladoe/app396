@@ -59,7 +59,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mPlayLastLayout;
     protected TextView mTvLastTitle;
     protected TextView mTvCollect;
+    protected TextView mTvCollectTxt;
     protected TextView mTvPlay;
+    protected TextView mTvPlay2;
     protected TextView mTvAdd;
     protected View mPlayButtonLayout;
     protected RelativeLayout mMediaRlayout;
@@ -139,6 +141,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mBack2 = findViewById(R.id.back2);
         mMenu = findViewById(R.id.iv_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
+        mTvPlay2 = (TextView) findViewById(R.id.tv_play2);
         mTvInclass = findViewById(R.id.tv_inclass);
         mLoadingView = findViewById(R.id.ll_frame_load);
         mTvCatalog = (TextView) findViewById(R.id.textView);
@@ -160,6 +163,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mBottomLayout = findViewById(R.id.bottom_layout);
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
+        mTvCollectTxt = (TextView) findViewById(R.id.tv_collect_txt);
         mConsult = findViewById(R.id.consult_layout);
         mTvAdd = (TextView) findViewById(R.id.tv_add);
         initViewPager();
