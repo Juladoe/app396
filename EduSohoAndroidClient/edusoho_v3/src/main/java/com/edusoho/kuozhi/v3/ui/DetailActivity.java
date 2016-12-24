@@ -61,6 +61,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected TextView mTvCollect;
     protected TextView mTvCollectTxt;
     protected TextView mTvPlay;
+    protected TextView mTvPlay2;
     protected TextView mTvAdd;
     protected View mPlayButtonLayout;
     protected RelativeLayout mMediaRlayout;
@@ -140,6 +141,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mBack2 = findViewById(R.id.back2);
         mMenu = findViewById(R.id.iv_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
+        mTvPlay2 = (TextView) findViewById(R.id.tv_play2);
         mTvInclass = findViewById(R.id.tv_inclass);
         mLoadingView = findViewById(R.id.ll_frame_load);
         mTvCatalog = (TextView) findViewById(R.id.textView);

@@ -300,14 +300,17 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 mPlayLayout.setEnabled(true);
                 if (mCourseDetail == null || mCourseDetail.getMember() == null) {
                     mTvPlay.setText(R.string.txt_study_try);
+                    mTvPlay2.setText(R.string.txt_study_try);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
                 } else {
                     mTvPlay.setText(R.string.txt_study_start);
+                    mTvPlay2.setText(R.string.txt_study_start);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 }
                 break;
             case Const.COURSE_CHANGE_STATE_STARTED:
                 mTvPlay.setText(R.string.txt_study_continue);
+                mTvPlay2.setText(R.string.txt_study_continue);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(true);
                 mPlayLastLayout.setVisibility(View.VISIBLE);
@@ -315,6 +318,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 break;
             case Const.COURSE_CHANGE_STATE_FINISH:
                 mTvPlay.setText(R.string.txt_study_finish);
+                mTvPlay2.setText(R.string.txt_study_finish);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(false);
                 break;
