@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.v3.ui.fragment.lesson;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,10 +16,12 @@ import android.widget.ImageView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.DetailActivity;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.ImageUtil;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.videoplayer.ui.AudioPlayerFragment;
 import com.edusoho.videoplayer.util.ControllerOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 
 /**
  * Created by suju on 16/12/18.
@@ -62,10 +66,18 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     }
 
     protected void initPlayContainer() {
-        View containerView = LayoutInflater.from(getContext()).inflate(R.layout.view_audio_container_layout, null);
+        final View containerView = LayoutInflater.from(getContext()).inflate(R.layout.view_audio_container_layout, null);
         setContainerView(containerView);
         mCoverImageView = (ImageView) containerView.findViewById(R.id.rl_audio_cover);
         ImageLoader.getInstance().displayImage(mCoverUrl, mCoverImageView);
+        ImageLoader.getInstance().loadImage(mCoverUrl, new SimpleImageLoadingListener() {
+            @Override
+            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                super.onLoadingComplete(imageUri, view, loadedImage);
+                Bitmap maskBg = ImageUtil.maskImage(getContext(), loadedImage);
+                containerView.setBackground(new BitmapDrawable(maskBg));
+            }
+        });
         initCoverSize();
     }
 
