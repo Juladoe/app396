@@ -46,8 +46,10 @@
         android:id="@+id/lesson_time"
         android:text="05:55"
         android:textSize="@dimen/font_s"
-        android:textColor="@color/secondary_font_color"
+        android:textColor="@color/item_lesson_tv_sel"
         android:paddingLeft="@dimen/common_marginl"
+        android:duplicateParentState="true"
+
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_width="wrap_content"
@@ -59,9 +61,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/font_s"
+        android:duplicateParentState="true"
 
         android:layout_centerVertical="true"
-        android:textColor="@color/secondary_font_color"
+        android:textColor="@color/item_lesson_tv_sel"
         android:layout_marginRight="@dimen/common_margin"
         android:ellipsize="end"
         android:maxEms="14"

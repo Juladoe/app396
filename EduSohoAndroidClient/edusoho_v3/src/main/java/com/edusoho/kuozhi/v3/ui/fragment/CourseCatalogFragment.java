@@ -149,42 +149,42 @@ public class CourseCatalogFragment extends BaseFragment {
     public void initLessonCatalog(String chapter, String unit) {
         mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, isJoin, chapter, unit);
         mLvCatalog.setAdapter(mAdapter);
-        final boolean[] isMove = {true};
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (!isMove[0]) {
-                    if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType()) || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
-                        return;
-                    }
-                    if (mAdapter.isSelected(position)) {
-                        return;
-                    }
-                    mAdapter.changeSelected(position);
-                    if (TextUtils.isEmpty(app.token)) {
-                        CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
-                        return;
-                    }
-                    if (mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
-                        CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
-                        return;
-                    }
-                    perpareStartLearnLesson(position);
+                if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType()) || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
+                    return;
                 }
+                if (mAdapter.isSelected(position)) {
+                    return;
+                }
+                if (TextUtils.isEmpty(app.token)) {
+                    CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
+                    return;
+                }
+                if (mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
+                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
+                    return;
+                }
+                perpareStartLearnLesson(position);
             }
         });
         mLvCatalog.setOnTouchListener(new View.OnTouchListener() {
+
+            private int downX;
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()){
                     case MotionEvent.ACTION_DOWN:
-                        isMove[0] = true;
+                        downX = (int) event.getX();
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        isMove[0] = true;
                         break;
                     case MotionEvent.ACTION_UP:
-                        isMove[0] = false;
+                        if (Math.abs(((int) event.getX()) - downX) > 0) {
+                            return true;
+                        }
                         break;
                     default:
                         return false;

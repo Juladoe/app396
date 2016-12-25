@@ -42,16 +42,12 @@ public class CourseCatalogueAdapter extends BaseAdapter {
         this.unitTitle = unitTitle;
     }
 
-
-    public void changeSelected(int position) {
-        if (position != mSelect) {
-            mSelect = position;
-            notifyDataSetChanged();
-        }
-    }
-
     public boolean isSelected(int position) {
-        return mSelect != -1 && position == mSelect;
+        if (mSelect == position) {
+            return true;
+        }
+        mSelect = position;
+        return false;
     }
 
     @Override
@@ -146,11 +142,6 @@ public class CourseCatalogueAdapter extends BaseAdapter {
                     lessonHolder.lessonUp.setVisibility(View.INVISIBLE);
                 }
             }
-        }
-        if (mSelect == position) {
-            lessonHolder.lessonTitle.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-            lessonHolder.lessonKind.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-            lessonHolder.lessonTime.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         }
         lessonHolder.lessonTime.setText(lessonsBean.getLength());
         lessonHolder.lessonTitle.setText(String.format("%s、%s", lessonsBean.getNumber(), lessonsBean.getTitle()));
