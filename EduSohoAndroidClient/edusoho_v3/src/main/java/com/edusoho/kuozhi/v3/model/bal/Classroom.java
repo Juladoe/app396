@@ -19,6 +19,7 @@ public class Classroom implements Serializable {
     public int studentNum;
     public String postNum;
     public String rating;
+    public String buyable;
     public String createdTime;
     public Object service;
     public Teacher[] teachers;

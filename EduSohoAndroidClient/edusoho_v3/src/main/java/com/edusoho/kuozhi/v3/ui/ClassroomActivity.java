@@ -154,7 +154,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void consult() {
-        if(app.loginUser == null){
+        if (app.loginUser == null) {
             CourseUtil.notLogin();
             return;
         }
@@ -179,6 +179,11 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     @Override
     protected void add() {
         if (mClassroomId != null) {
+            if (!"1".equals(mClassroomDetail.getClassRoom().buyable)) {
+                CommonUtil.shortToast(ClassroomActivity.this, getResources()
+                        .getString(R.string.add_error_close));
+                return;
+            }
             showProcessDialog();
             ClassroomUtil.addClassroom(new ClassroomUtil.ClassroomParamsBuilder()
                             .setCouponCode("")

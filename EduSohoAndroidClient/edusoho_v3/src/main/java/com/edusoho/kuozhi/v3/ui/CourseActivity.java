@@ -204,6 +204,11 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void add() {
         if (mCourseId != null) {
+            if (!"1".equals(mCourseDetail.getCourse().buyable)) {
+                CommonUtil.shortToast(CourseActivity.this, getResources()
+                        .getString(R.string.add_error_close));
+                return;
+            }
             showProcessDialog();
             if (app.loginUser != null && app.loginUser.vip != null
                     && app.loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
