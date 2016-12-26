@@ -105,6 +105,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                         mTvReviewNum.setText(String.format("(%s)", data.getTotal()));
                         if (data.getData().size() == 0) {
                             mReviewNoneLayout.setVisibility(View.VISIBLE);
+                            mTvReviewMore.setVisibility(View.GONE);
                         } else {
                             mReviewNoneLayout.setVisibility(View.GONE);
                             mReviews.addAll(data.getData());
@@ -181,7 +182,11 @@ public class CourseDetailFragment extends BaseDetailFragment {
         mTvStudentNum.setText(String.format("(%s)", mCourseDetail.getCourse().studentNum));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
-            mVipLayout.setVisibility(View.VISIBLE);
+            if(mCourseDetail.getCourse().vipLevelId == 0){
+                mVipLayout.setVisibility(View.GONE);
+            }else{
+                mVipLayout.setVisibility(View.VISIBLE);
+            }
             if (course.price == 0) {
                 mTvPriceNow.setText("免费");
                 mTvPriceNow.setTextSize(18);

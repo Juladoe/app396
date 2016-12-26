@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -153,6 +154,10 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void consult() {
+        if(app.loginUser == null){
+            CourseUtil.notLogin();
+            return;
+        }
         Teacher[] teachers = mClassroomDetail.getClassRoom().teachers;
         final Teacher teacher;
         if (teachers.length > 0) {
