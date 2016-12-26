@@ -205,6 +205,25 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     protected void add() {
         if (mCourseId != null) {
             showProcessDialog();
+            if (app.loginUser != null && app.loginUser.vip != null
+                    && app.loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
+                    && mCourseDetail.getCourse().vipLevelId != 0) {
+                CourseUtil.addCourseVip(mCourseId, new CourseUtil.OnAddCourseListener() {
+                    @Override
+                    public void onAddCourseSuccee(String response) {
+                        hideProcesDialog();
+                        CommonUtil.shortToast(CourseActivity.this, getResources()
+                                .getString(R.string.success_add_course));
+                        initData();
+                    }
+
+                    @Override
+                    public void onAddCourseError(String response) {
+                        hideProcesDialog();
+                    }
+                });
+                return;
+            }
             CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")
