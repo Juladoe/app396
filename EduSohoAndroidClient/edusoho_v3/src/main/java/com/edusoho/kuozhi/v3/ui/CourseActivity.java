@@ -419,10 +419,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     public void finish() {
         super.finish();
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fl_header_container);
-        if (fragment != null && fragment instanceof LessonAudioPlayerFragment) {
-            ((LessonAudioPlayerFragment) fragment).destoryService();
-        }
         removePlayFragment();
     }
 
