@@ -97,4 +97,18 @@ public class LessonProvider extends ModelProvider {
 
         return requestOption.build();
     }
+
+    public ProviderListener<Map<String, String>> getCourseLessonLearnStatus(int courseId) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        String token = ApiTokenUtil.getTokenString(mContext);
+
+        String url = String.format("%s/%s?courseId=%d", school.url, Const.LEARN_STATUS, courseId);
+        RequestUrl requestUrl = new RequestUrl(url);
+        requestUrl.heads.put("token", token);
+
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<Map<String, String>>(){});
+
+        return requestOption.build();
+    }
 }

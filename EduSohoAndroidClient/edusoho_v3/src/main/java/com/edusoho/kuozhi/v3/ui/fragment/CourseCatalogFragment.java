@@ -25,7 +25,9 @@ import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
@@ -146,13 +148,24 @@ public class CourseCatalogFragment extends BaseFragment {
         mLessonEmpytView.setVisibility(visibility);
     }
 
+    private void updateLessonStatuses() {
+        new LessonProvider(getContext()).getCourseLessonLearnStatus(AppUtil.parseInt(mCourseId))
+        .success(new NormalCallback<Map<String, String>>() {
+            @Override
+            public void success(Map<String, String> learnes) {
+                mAdapter.setLearnStatuses(learnes);
+            }
+        });
+    }
+
     public void initLessonCatalog(String chapter, String unit) {
         mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, isJoin, chapter, unit);
         mLvCatalog.setAdapter(mAdapter);
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType()) || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
+                if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType())
+                        || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
                     return;
                 }
                 if (mAdapter.isSelected(position)) {
@@ -391,5 +404,20 @@ public class CourseCatalogFragment extends BaseFragment {
         long blockSize = stat.getBlockSize();
         long availableBlocks = stat.getAvailableBlocks();
         return Formatter.formatFileSize(getActivity(), blockSize * availableBlocks).replace("B", "");
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        super.invoke(message);
+        if (Const.LESSON_STATUS_REFRESH.equals(message.type.type)) {
+            updateLessonStatuses();
+        }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[] {
+                new MessageType(Const.LESSON_STATUS_REFRESH)
+        };
     }
 }

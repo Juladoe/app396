@@ -14,6 +14,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 
+import java.util.Map;
+
 /**
  * Created by DF on 2016/12/14.
  */
@@ -32,10 +34,12 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     private SectionHolder sectionHolder;
     private LessonHolder lessonHolder;
     private CourseCatalogue.LessonsBean lessonsBean;
+    private Map<String, String> learnStatuses;
 
     public CourseCatalogueAdapter(Context context, CourseCatalogue courseCatalogue, boolean isJoin, String chapterTitle, String unitTitle) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE );
         this.courseCatalogue = courseCatalogue;
+        this.learnStatuses = courseCatalogue.getLearnStatuses();
         this.mContext = context;
         this.isJoin = isJoin;
         this.chapterTitle = chapterTitle;
@@ -150,9 +154,14 @@ public class CourseCatalogueAdapter extends BaseAdapter {
         }
     }
 
+    public void setLearnStatuses(Map<String, String> learnStatuses) {
+        this.learnStatuses = learnStatuses;
+        notifyDataSetChanged();
+    }
+
     private void decideStatu(int positon) {
-        if (courseCatalogue.getLearnStatuses().containsKey(lessonsBean.getId())) {
-            if ("learning".equals(courseCatalogue.getLearnStatuses().get(lessonsBean.getId()))) {
+        if (learnStatuses != null && learnStatuses.containsKey(lessonsBean.getId())) {
+            if ("learning".equals(learnStatuses.get(lessonsBean.getId()))) {
                 lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_learning);
             } else {
                 lessonHolder.lessonState.setImageResource(R.drawable.lesson_status_finish);
