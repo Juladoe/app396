@@ -72,18 +72,18 @@ public class CourseCatalogueAdapter extends BaseAdapter {
                 convertView = mInflater.inflate(R.layout.item_chapter_catalog, null);
                 chapterHolder = new ChapterHolder(convertView);
                 if (!TextUtils.isEmpty(chapterTitle)) {
-                    chapterHolder.chapterTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + chapterTitle  + "  " + lessonsBean.getTitle());
+                    chapterHolder.chapterTitle.setText(String.format("第%s%s:%s", lessonsBean.getNumber(), chapterTitle, lessonsBean.getTitle()));
                 }else {
-                    chapterHolder.chapterTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + "章" + "  " + lessonsBean.getTitle());
+                    chapterHolder.chapterTitle.setText(String.format("%s", lessonsBean.getTitle()));
                 }
                 break;
             case TYPE_SECTION:
                 convertView = mInflater.inflate(R.layout.item_section_catalog, null);
                 sectionHolder = new SectionHolder(convertView);
                 if (!TextUtils.isEmpty(unitTitle)) {
-                    sectionHolder.sectionTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + unitTitle  + "  " + lessonsBean.getTitle());
+                    sectionHolder.sectionTitle.setText(String.format("第%s%s:%s", lessonsBean.getNumber(), unitTitle, lessonsBean.getTitle()));
                 }else {
-                    sectionHolder.sectionTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + "节" + "  " + lessonsBean.getTitle());
+                    sectionHolder.sectionTitle.setText(String.format("%s", lessonsBean.getTitle()));
                 }
                 break;
             case TYPE_LESSON:
