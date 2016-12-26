@@ -67,6 +67,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     protected void initView(View view) {
         super.initView(view);
         mAdapter = new ReviewAdapter();
+        mVipLayout.setVisibility(View.GONE);
         mLvReview.setAdapter(mAdapter);
         mTvStudent1.setText(R.string.txt_classroom_student);
         mTvReview1.setText(R.string.txt_classroom_review);
@@ -105,6 +106,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
                         mTvReviewNum.setText(String.format("(%s)", data.getTotal()));
                         if (data.getData().size() == 0) {
                             mReviewNoneLayout.setVisibility(View.VISIBLE);
+                            mTvReviewMore.setVisibility(View.GONE);
                         } else {
                             mReviewNoneLayout.setVisibility(View.GONE);
                             mReviews.addAll(data.getData());
@@ -183,7 +185,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         mTvStudentNum.setText(String.format("(%s)", mClassroomDetail.getClassRoom().studentNum));
         if (mClassroomDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
-            mVipLayout.setVisibility(View.VISIBLE);
+            mVipLayout.setVisibility(View.GONE);
             if (classRoom.price == 0) {
                 mTvPriceNow.setText(R.string.txt_free);
                 mTvPriceNow.setTextSize(18);

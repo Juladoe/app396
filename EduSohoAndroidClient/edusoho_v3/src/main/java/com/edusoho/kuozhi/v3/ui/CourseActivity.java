@@ -156,6 +156,13 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }
+        if (app.loginUser != null && app.loginUser.vip != null &&
+                app.loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
+                && mCourseDetail.getCourse().vipLevelId != 0) {
+            mTvAdd.setText(R.string.txt_vip_free);
+        } else {
+            mTvAdd.setText(R.string.txt_add_course);
+        }
     }
 
     @Override
@@ -172,6 +179,10 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     @Override
     protected void consult() {
+        if (app.loginUser == null) {
+            CourseUtil.notLogin();
+            return;
+        }
         Teacher[] teachers = mCourseDetail.getCourse().teachers;
         final Teacher teacher;
         if (teachers.length > 0) {
@@ -193,7 +204,31 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void add() {
         if (mCourseId != null) {
+            if (!"1".equals(mCourseDetail.getCourse().buyable)) {
+                CommonUtil.shortToast(CourseActivity.this, getResources()
+                        .getString(R.string.add_error_close));
+                return;
+            }
             showProcessDialog();
+            if (app.loginUser != null && app.loginUser.vip != null
+                    && app.loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
+                    && mCourseDetail.getCourse().vipLevelId != 0) {
+                CourseUtil.addCourseVip(mCourseId, new CourseUtil.OnAddCourseListener() {
+                    @Override
+                    public void onAddCourseSuccee(String response) {
+                        hideProcesDialog();
+                        CommonUtil.shortToast(CourseActivity.this, getResources()
+                                .getString(R.string.success_add_course));
+                        initData();
+                    }
+
+                    @Override
+                    public void onAddCourseError(String response) {
+                        hideProcesDialog();
+                    }
+                });
+                return;
+            }
             CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")

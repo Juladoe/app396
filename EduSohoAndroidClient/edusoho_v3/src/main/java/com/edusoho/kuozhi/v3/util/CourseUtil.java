@@ -192,6 +192,36 @@ public class CourseUtil {
         });
     }
 
+    public static void addCourseVip(String courseId, final OnAddCourseListener
+            onAddCourseListener) {
+        if (EdusohoApp.app.loginUser == null) {
+            notLogin();
+            return;
+        }
+        RequestUrl url = EdusohoApp.app.bindUrl(String.format(Const.VIP_ORDER, courseId), true);
+        EdusohoApp.app.getUrl(url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (onAddCourseListener != null) {
+                            onAddCourseListener.onAddCourseSuccee(response);
+                        }
+                    }
+                }
+
+                , new Response.ErrorListener()
+
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (onAddCourseListener != null) {
+                            onAddCourseListener.onAddCourseError("volleyError");
+                        }
+                    }
+                }
+
+        );
+    }
+
     public interface OnCollectSucceeListener {
         void onCollectSuccee();
     }
@@ -200,6 +230,7 @@ public class CourseUtil {
         void onAddCourseSuccee(String response);
 
         void onAddCourseError(String response);
+
     }
 
     public static void notLogin() {

@@ -121,6 +121,7 @@
 
             <RelativeLayout
                 android:id="@+id/vip_rlayout"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="63dp">
 
