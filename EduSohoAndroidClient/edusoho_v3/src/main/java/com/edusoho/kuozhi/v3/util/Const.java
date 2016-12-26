@@ -135,6 +135,7 @@ public class Const {
     public static final String COURSE_HASTRIAL = "course_hastrial";//是否有试学
     public static final String COURSE_HASTRIAL_RESULT = "course_hastrial_result";
     public static final String COURSE_REFRESH = "course_refresh";//刷新课程Activity
+    public static final String LESSON_STATUS_REFRESH = "lesson_status_refresh";//刷新课时状态
 
     public static final String COURSE_START = "course_start";//开始课程
     public static final String COURSE_CHANGE = "course_change";//课程切换

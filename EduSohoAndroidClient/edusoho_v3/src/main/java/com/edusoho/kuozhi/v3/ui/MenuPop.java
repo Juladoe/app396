@@ -180,7 +180,6 @@ public class MenuPop {
                 layout.addView(view);
                 view.setBackgroundColor(Color.parseColor("#80000000"));
                 view.setGravity(Gravity.CENTER);
-                view.setTextColor(mContext.getResources().getColor(R.color.disabled2_hint_color));
                 view.setTextSize(13);
                 convertView = layout;
                 convertView.setTag(view);
@@ -196,6 +195,8 @@ public class MenuPop {
             }
             if (item.color != -1) {
                 view.setTextColor(item.color);
+            } else {
+                view.setTextColor(mContext.getResources().getColor(R.color.disabled2_hint_color));
             }
             return convertView;
         }

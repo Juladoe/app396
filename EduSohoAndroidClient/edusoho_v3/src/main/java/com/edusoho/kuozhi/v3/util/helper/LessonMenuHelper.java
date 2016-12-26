@@ -8,7 +8,9 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.view.View;
 
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
 import com.edusoho.kuozhi.v3.listener.LessonPluginCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
@@ -111,6 +113,9 @@ public class LessonMenuHelper {
                     @Override
                     public void success(LearnStatus state) {
                         view.setEnabled(true);
+                        if (state != null && LearnStatus.finished == state) {
+                            MessageEngine.getInstance().sendMsg(Const.LESSON_STATUS_REFRESH, null);
+                        }
                         setLearnBtnState(state);
                     }
                 });
@@ -119,7 +124,9 @@ public class LessonMenuHelper {
     private void setLearnBtnState(LearnStatus state) {
         if (state != null && LearnStatus.finished == state) {
             mCurrentLearnState = state;
-            mMenuPop.getItem(3).setName("已学完");
+            MenuPop.Item item = mMenuPop.getItem(3);
+            item.setName("已学完");
+            item.setColor(mContext.getResources().getColor(R.color.primary_color));
         } else {
             mMenuPop.getItem(3).setName("学完");
         }
