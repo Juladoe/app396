@@ -46,14 +46,6 @@ public class CourseCatalogueAdapter extends BaseAdapter {
         this.unitTitle = unitTitle;
     }
 
-    public boolean isSelected(int position) {
-        if (mSelect == position) {
-            return true;
-        }
-        mSelect = position;
-        return false;
-    }
-
     @Override
     public Object getItem(int position) {
         return courseCatalogue.getLessons().get(position);
@@ -72,18 +64,18 @@ public class CourseCatalogueAdapter extends BaseAdapter {
                 convertView = mInflater.inflate(R.layout.item_chapter_catalog, null);
                 chapterHolder = new ChapterHolder(convertView);
                 if (!TextUtils.isEmpty(chapterTitle)) {
-                    chapterHolder.chapterTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + chapterTitle  + "  " + lessonsBean.getTitle());
+                    chapterHolder.chapterTitle.setText(String.format("第%s%s:%s", lessonsBean.getNumber(), chapterTitle, lessonsBean.getTitle()));
                 }else {
-                    chapterHolder.chapterTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + "章" + "  " + lessonsBean.getTitle());
+                    chapterHolder.chapterTitle.setText(String.format("%s", lessonsBean.getTitle()));
                 }
                 break;
             case TYPE_SECTION:
                 convertView = mInflater.inflate(R.layout.item_section_catalog, null);
                 sectionHolder = new SectionHolder(convertView);
                 if (!TextUtils.isEmpty(unitTitle)) {
-                    sectionHolder.sectionTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + unitTitle  + "  " + lessonsBean.getTitle());
+                    sectionHolder.sectionTitle.setText(String.format("第%s%s:%s", lessonsBean.getNumber(), unitTitle, lessonsBean.getTitle()));
                 }else {
-                    sectionHolder.sectionTitle.setText("第" + getBigNum(lessonsBean.getNumber()) + "节" + "  " + lessonsBean.getTitle());
+                    sectionHolder.sectionTitle.setText(String.format("%s", lessonsBean.getTitle()));
                 }
                 break;
             case TYPE_LESSON:
@@ -244,27 +236,5 @@ public class CourseCatalogueAdapter extends BaseAdapter {
             lessonUp = itemView.findViewById(R.id.lesson_up);
             lessonDown = itemView.findViewById(R.id.lesson_down);
         }
-    }
-
-    /**
-     * 将数字转为大写的,考虑100以内
-     */
-    public String getBigNum(String num) {
-        final String[] tag = {"一", "二", "三", "四", "五", "六", "七", "八", "九"};
-        StringBuffer stringBuffer = new StringBuffer();
-        char[] cNum = num.toCharArray();
-        if (cNum.length == 1) {
-            stringBuffer.append(tag[Integer.valueOf(String.valueOf(cNum[0])) - 1]);
-        } else {
-            if (Integer.parseInt(num) % 10 == 0) {
-                stringBuffer.append(tag[Integer.valueOf(String.valueOf(cNum[0])) - 1] + "十");
-            } else if (Integer.parseInt(num) < 20) {
-                stringBuffer.append("十" + tag[Integer.valueOf(String.valueOf(cNum[1])) - 1]);
-            } else {
-                stringBuffer.append(tag[Integer.valueOf(String.valueOf(cNum[0])) - 1] + "十");
-                stringBuffer.append(tag[Integer.valueOf(String.valueOf(cNum[1])) - 1]);
-            }
-        }
-        return stringBuffer.toString();
     }
 }

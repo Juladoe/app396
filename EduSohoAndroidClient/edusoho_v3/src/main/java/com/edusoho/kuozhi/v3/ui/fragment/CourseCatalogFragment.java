@@ -90,7 +90,9 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     protected void setLoadViewStatus(int visibility) {
-        mLoadView.setVisibility(visibility);
+        if (mLoadView != null) {
+            mLoadView.setVisibility(visibility);
+        }
     }
 
     private void initCatalogue() {
@@ -166,9 +168,6 @@ public class CourseCatalogFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType())
                         || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
-                    return;
-                }
-                if (mAdapter.isSelected(position)) {
                     return;
                 }
                 if (TextUtils.isEmpty(app.token)) {
@@ -313,12 +312,15 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     private void getFullLessonFromServer(CourseCatalogue.LessonsBean lessonsBean) {
-        showProcessDialog();
+
         new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
                 .success(new NormalCallback<LessonItem>() {
                     @Override
                     public void success(LessonItem lessonItem) {
-                        hideProcesDialog();
+                        if ("waiting".equals(lessonItem.mediaConvertStatus)) {
+                            CommonUtil.shortCenterToast(getActivity(), getString(R.string.lesson_loading));
+                            return;
+                        }
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
                         MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
@@ -329,7 +331,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                hideProcesDialog();
+                CommonUtil.shortCenterToast(getActivity(), getString(R.string.lesson_loading_fail));
             }
         });
     }
