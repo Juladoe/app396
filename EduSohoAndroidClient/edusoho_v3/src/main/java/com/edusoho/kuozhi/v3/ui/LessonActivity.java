@@ -108,7 +108,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        String shareUrl = String.format("%s/course/%d/learn#lesson/%d/", app.host, mCourseId, mLessonId);
+                        String shareUrl = String.format("%s/course/%d", app.host, mCourseId);
                         ShareTool shareTool = new ShareTool(
                                 mActivity, shareUrl, course.title, mLessonItem.title, course.middlePicture);
                         shareTool.shardCourse();
