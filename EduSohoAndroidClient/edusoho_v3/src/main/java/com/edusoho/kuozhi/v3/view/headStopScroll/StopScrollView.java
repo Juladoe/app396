@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.OverScroller;
 import android.widget.ScrollView;
 import android.widget.Scroller;
@@ -42,7 +43,7 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     float moveYOld;
     float moveByY;
     float startY;
-    private View mChildView;
+    private ViewGroup mChildView;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -53,8 +54,10 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
                 mPointerId = ev.getPointerId(0);
                 mVelocityY = 0;
                 moveY = 0;
+                mUnClick = false;
                 moveByY = 0;
-                mChildView = getChildCount() == 0 ? null : getChildAt(0);
+                mChildView = getChildCount() == 0 ? null :
+                        getChildAt(0) instanceof ViewGroup ? (ViewGroup) getChildAt(0) : null;
                 break;
             case MotionEvent.ACTION_MOVE:
                 moveYOld = moveY;
@@ -63,8 +66,8 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
                 moveByY = move < 0 ? -move : move;
                 mVelocityTracker.computeCurrentVelocity(1000);
                 mVelocityY = (int) mVelocityTracker.getYVelocity(mPointerId);
-                if (move > 10 && mChildView != null) {
-                    mChildView.setEnabled(false);
+                if (Math.abs(moveY) > 10 && mChildView != null) {
+                    mUnClick = true;
                 }
                 if (mParent.isStay()) {
                     break;
@@ -92,8 +95,8 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
                         mParent.smoothScrollBy(0, -Math.abs(mVelocityY) / 5);
                     }
                 }
-                if (mChildView != null) {
-                    mChildView.setEnabled(true);
+                if (Math.abs(moveY) < 5 && mChildView != null) {
+                    mUnClick = false;
                 }
                 mVelocityTracker.recycle();
                 mVelocityTracker = null;
@@ -105,6 +108,12 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     private VelocityTracker mVelocityTracker;
     private int mVelocityY;
     private int mPointerId;
+    private boolean mUnClick = false;
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return mUnClick ? true : super.onInterceptTouchEvent(ev);
+    }
 
     private void acquireVelocityTracker(final MotionEvent event) {
         if (null == mVelocityTracker) {
