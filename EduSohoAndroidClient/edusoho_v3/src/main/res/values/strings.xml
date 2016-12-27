@@ -249,6 +249,8 @@
     <string name="cache_course">缓存课程</string>
     <string name="cache_hint">本地剩余空间不足，无法缓存</string>
     <string name="unjoin_course_hint">加入课程后才能开始学习</string>
+    <string name="lesson_loading">课时内容转码中，再给我一点时间吧>_&#060; </string>
+    <string name="lesson_loading_fail">课程获取失败</string>
 
     <string name="new_font_share">&#xe667;</string>
     <string name="new_font_back">&#xe668;</string>

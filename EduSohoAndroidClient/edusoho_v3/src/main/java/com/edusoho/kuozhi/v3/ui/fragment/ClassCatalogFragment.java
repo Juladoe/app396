@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -95,6 +96,28 @@ public class ClassCatalogFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putString(CourseActivity.COURSE_ID, String.valueOf(mCourseList.get(position).id));
                 CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);
+            }
+        });
+
+        mLvClass.setOnTouchListener(new View.OnTouchListener() {
+            private int downX;
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()){
+                    case MotionEvent.ACTION_DOWN:
+                        downX = (int) event.getX();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        if (Math.abs(((int) event.getX()) - downX) > 0) {
+                            return true;
+                        }
+                        break;
+                    default:
+                        return false;
+                }
+                return false;
             }
         });
     }
