@@ -84,28 +84,28 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     protected void initData() {
         if (mClassroomId != null) {
-            setLoadStatus(View.VISIBLE);
             CourseDetailModel.getClassroomDetail(mClassroomId,
                     new ResponseCallbackListener<ClassroomDetail>() {
                         @Override
                         public void onSuccess(ClassroomDetail data) {
-                            setLoadStatus(View.GONE);
                             mClassroomDetail = data;
                             if (mFragments.size() >= 2 && mFragments.get(1) != null
                                     && mFragments.get(1) instanceof ClassCatalogFragment) {
                                 if (mClassroomDetail.getMember() == null) {
                                     ((ClassCatalogFragment) mFragments.get(1)).reFreshView(false);
+                                    setLoadStatus(View.GONE);
                                 } else {
                                     ((ClassCatalogFragment) mFragments.get(1)).reFreshView(true);
                                     tabPage(300);
                                 }
+                            }else{
+                                setLoadStatus(View.GONE);
                             }
                             refreshView();
                         }
 
                         @Override
                         public void onFailure(String code, String message) {
-                            setLoadStatus(View.GONE);
                             if (message != null && message.equals("班级不存在")) {
                                 CommonUtil.shortToast(ClassroomActivity.this, "班级不存在");
                                 finish();

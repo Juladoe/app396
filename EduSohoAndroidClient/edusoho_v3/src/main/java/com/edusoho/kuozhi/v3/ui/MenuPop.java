@@ -13,8 +13,10 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +61,7 @@ public class MenuPop {
         Item item = new Item();
         item.name = name;
         mNames.add(item);
-        if(mPopup.isShowing() && mAdapter != null){
+        if (mPopup.isShowing() && mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
         return this;
@@ -70,7 +72,7 @@ public class MenuPop {
         item.name = name;
         item.color = textColor;
         mNames.add(item);
-        if(mPopup.isShowing() && mAdapter != null){
+        if (mPopup.isShowing() && mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
         return this;
@@ -81,7 +83,7 @@ public class MenuPop {
         item.name = name;
         item.color = textColor;
         mNames.add(item);
-        if(mPopup.isShowing() && mAdapter != null){
+        if (mPopup.isShowing() && mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
         return this;
@@ -92,7 +94,7 @@ public class MenuPop {
         item.name = name;
         item.drawable = drawable;
         mNames.add(item);
-        if(mPopup.isShowing() && mAdapter != null){
+        if (mPopup.isShowing() && mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
         return this;
@@ -102,7 +104,7 @@ public class MenuPop {
         if (position != -1 && position < (mNames.size() - 1)) {
             mNames.remove(position);
         }
-        if(mPopup.isShowing() && mAdapter != null){
+        if (mPopup.isShowing() && mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
         return this;
@@ -170,38 +172,36 @@ public class MenuPop {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                RelativeLayout layout = new RelativeLayout(mContext);
-                view = new TextView(mContext);
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                        AppUtil.dp2px(mContext, 68), AppUtil.dp2px(mContext, 40)
-                );
-                params.setMargins(0, AppUtil.dp2px(mContext, 1), 0, 0);
-                view.setLayoutParams(params);
-                layout.addView(view);
-                view.setBackgroundColor(Color.parseColor("#80000000"));
-                view.setGravity(Gravity.CENTER);
-                view.setTextSize(13);
-                convertView = layout;
-                convertView.setTag(view);
+                convertView = LayoutInflater.from(mContext)
+                        .inflate(R.layout.item_menu_pop, null, false);
+                viewHolder = new ViewHolder();
+                viewHolder.point = convertView.findViewById(R.id.v_menu_point);
+                viewHolder.txt = (TextView) convertView.findViewById(R.id.tv_menu_txt);
+                convertView.setTag(viewHolder);
             } else {
-                view = (TextView) convertView.getTag();
+                viewHolder = (ViewHolder) convertView.getTag();
             }
             Item item = mNames.get(position);
-            view.setText(item.name);
+            viewHolder.txt.setText(item.name);
             convertView.setTag(R.id.iv_menu, position);
             convertView.setOnClickListener(mOnClickListener);
+            if (item.hasPoint) {
+                viewHolder.point.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.point.setVisibility(View.GONE);
+            }
             if (item.drawable != null) {
-                view.setCompoundDrawables(item.drawable, null, null, null);
+                viewHolder.txt.setCompoundDrawables(item.drawable, null, null, null);
             }
             if (item.color != -1) {
-                view.setTextColor(item.color);
+                viewHolder.txt.setTextColor(item.color);
             } else {
-                view.setTextColor(mContext.getResources().getColor(R.color.disabled2_hint_color));
+                viewHolder.txt.setTextColor(mContext.getResources().getColor(R.color.disabled2_hint_color));
             }
             return convertView;
         }
 
-        TextView view;
+        ViewHolder viewHolder;
 
         private View.OnClickListener mOnClickListener =
                 new View.OnClickListener() {
@@ -215,29 +215,41 @@ public class MenuPop {
                 };
     }
 
+    private class ViewHolder {
+        TextView txt;
+        View point;
+    }
 
     public class Item {
         private String name;
         private int color = -1;
         private Drawable drawable;
+        private boolean hasPoint = false;
+
+        public void setHasPoint(boolean hasPoint) {
+            this.hasPoint = hasPoint;
+            if (mPopup.isShowing() && mAdapter != null) {
+                mAdapter.notifyDataSetChanged();
+            }
+        }
 
         public void setName(String name) {
             this.name = name;
-            if(mPopup.isShowing() && mAdapter != null){
+            if (mPopup.isShowing() && mAdapter != null) {
                 mAdapter.notifyDataSetChanged();
             }
         }
 
         public void setColor(int color) {
             this.color = color;
-            if(mPopup.isShowing() && mAdapter != null){
+            if (mPopup.isShowing() && mAdapter != null) {
                 mAdapter.notifyDataSetChanged();
             }
         }
 
         public void setDrawable(Drawable drawable) {
             this.drawable = drawable;
-            if(mPopup.isShowing() && mAdapter != null){
+            if (mPopup.isShowing() && mAdapter != null) {
                 mAdapter.notifyDataSetChanged();
             }
         }
@@ -252,6 +264,10 @@ public class MenuPop {
 
         public Drawable getDrawable() {
             return drawable;
+        }
+
+        public boolean isHasPoint() {
+            return hasPoint;
         }
     }
 

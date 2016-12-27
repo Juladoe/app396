@@ -91,7 +91,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             finish();
             return;
         }
-        setLoadStatus(View.VISIBLE);
         CourseDetailModel.getCourseDetail(mCourseId,
                 new ResponseCallbackListener<CourseDetail>() {
                     @Override
@@ -101,18 +100,19 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                                 && mFragments.get(1) instanceof CourseCatalogFragment) {
                             if (mCourseDetail.getMember() == null) {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
+                                setLoadStatus(View.GONE);
                             } else {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
                                 tabPage(300);
                             }
+                        }else{
+                            setLoadStatus(View.GONE);
                         }
                         refreshView();
-                        setLoadStatus(View.GONE);
                     }
 
                     @Override
                     public void onFailure(String code, String message) {
-                        setLoadStatus(View.GONE);
                         if ("课程不存在".equals(message)) {
                             CommonUtil.shortToast(CourseActivity.this, "课程不存在");
                             finish();
