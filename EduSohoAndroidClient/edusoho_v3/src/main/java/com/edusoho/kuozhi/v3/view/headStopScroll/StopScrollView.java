@@ -90,7 +90,7 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
                     mParent.smoothScrollBy(0, Math.abs(mVelocityY) / 5);
                 } else {
                     int scrollY = getScrollY();
-                    smoothScrollBy(0, -Math.abs(mVelocityY) / 5);
+                    smoothScrollBy(0, -Math.abs(mVelocityY) / 2);
                     if (scrollY - Math.abs(mVelocityY) / 5 <= 10) {
                         mParent.smoothScrollBy(0, -Math.abs(mVelocityY) / 5);
                     }
