@@ -3,10 +3,12 @@ package com.edusoho.kuozhi.v3.util;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -1317,5 +1319,31 @@ public class AppUtil {
         return statusBarHeight;
     }
 
+    public static Uri getUriById(Context context, int res){
+        try {
+            Context packageContext = context.createPackageContext(context.getPackageName(),
+                    Context.CONTEXT_RESTRICTED);
+            Resources resources = packageContext.getResources();
+            String appPkg = packageContext.getPackageName();
+            String resPkg = resources.getResourcePackageName(res);
+            String type = resources.getResourceTypeName(res);
+            String name = resources.getResourceEntryName(res);
+
+
+            Uri.Builder uriBuilder = new Uri.Builder();
+            uriBuilder.scheme(ContentResolver.SCHEME_ANDROID_RESOURCE);
+            uriBuilder.encodedAuthority(appPkg);
+            uriBuilder.appendEncodedPath(type);
+            if (!appPkg.equals(resPkg)) {
+                uriBuilder.appendEncodedPath(resPkg + ":" + name);
+            } else {
+                uriBuilder.appendEncodedPath(name);
+            }
+            return uriBuilder.build();
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
 }

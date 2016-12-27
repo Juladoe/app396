@@ -283,39 +283,20 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (mCourseDetail == null) {
             return;
         }
-        if (mIsPlay) {
-            if (mContinueLessonItem == null) {
-                return;
+        final ShareTool shareTool =
+                new ShareTool(this
+                        , app.host + "/course/" + mCourseDetail.getCourse().id
+                        , mCourseDetail.getCourse().title
+                        , mCourseDetail.getCourse().about.length() > 20 ?
+                        mCourseDetail.getCourse().about.substring(0, 20)
+                        : mCourseDetail.getCourse().about
+                        , mCourseDetail.getCourse().middlePicture);
+        new Handler((mActivity.getMainLooper())).post(new Runnable() {
+            @Override
+            public void run() {
+                shareTool.shardCourse();
             }
-            String shareUrl = String.format("%s/course/%s/learn#lesson/%d/", app.host, mCourseId, mContinueLessonItem.id);
-            final ShareTool shareTool =
-                    new ShareTool(this
-                            , shareUrl
-                            , mCourseDetail.getCourse().title
-                            , mContinueLessonItem.title
-                            , mCourseDetail.getCourse().middlePicture);
-            new Handler((mActivity.getMainLooper())).post(new Runnable() {
-                @Override
-                public void run() {
-                    shareTool.shardCourse();
-                }
-            });
-        } else {
-            final ShareTool shareTool =
-                    new ShareTool(this
-                            , app.host + "/course/" + mCourseDetail.getCourse().id
-                            , mCourseDetail.getCourse().title
-                            , mCourseDetail.getCourse().about.length() > 20 ?
-                            mCourseDetail.getCourse().about.substring(0, 20)
-                            : mCourseDetail.getCourse().about
-                            , mCourseDetail.getCourse().middlePicture);
-            new Handler((mActivity.getMainLooper())).post(new Runnable() {
-                @Override
-                public void run() {
-                    shareTool.shardCourse();
-                }
-            });
-        }
+        });
     }
 
     @Override

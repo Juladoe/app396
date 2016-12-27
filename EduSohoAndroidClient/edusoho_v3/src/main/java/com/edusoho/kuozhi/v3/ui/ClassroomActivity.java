@@ -216,7 +216,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         }
         final ShareTool shareTool =
                 new ShareTool(this
-                        , app.host + "/Classroom/" + mClassroomDetail.getClassRoom().id
+                        , app.host + "/classroom/" + mClassroomDetail.getClassRoom().id
                         , mClassroomDetail.getClassRoom().title
                         , mClassroomDetail.getClassRoom().about.toString().length() > 20 ?
                         mClassroomDetail.getClassRoom().about.toString().substring(0, 20)
