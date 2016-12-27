@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.entity.CustomTitle;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
@@ -35,6 +36,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.FixCourseListView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.Gson;
@@ -77,6 +79,12 @@ public class CourseCatalogFragment extends BaseFragment {
         mCourseId = getArguments().getString("id");
         init();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initCatalogue();
     }
 
     protected void init() {
@@ -161,6 +169,7 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     public void initLessonCatalog(String chapter, String unit) {
+        hideProcesDialog();
         mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, isJoin, chapter, unit);
         mLvCatalog.setAdapter(mAdapter);
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -182,9 +191,7 @@ public class CourseCatalogFragment extends BaseFragment {
             }
         });
         mLvCatalog.setOnTouchListener(new View.OnTouchListener() {
-
             private int downX;
-
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()){
@@ -194,7 +201,7 @@ public class CourseCatalogFragment extends BaseFragment {
                     case MotionEvent.ACTION_MOVE:
                         break;
                     case MotionEvent.ACTION_UP:
-                        if (Math.abs(((int) event.getX()) - downX) > 0) {
+                        if (Math.abs(((int) event.getX()) - downX) > 5) {
                             return true;
                         }
                         break;
@@ -231,7 +238,13 @@ public class CourseCatalogFragment extends BaseFragment {
             if (lessonsBean == null) {
                 return;
             }
-
+            for (CourseCatalogue.LessonsBean bean : lessonsBeanList) {
+                if (bean.getNumber().equals(lessonsBean.getNumber())) {
+//                    mLvCatalog.setItemChecked(Integer.parseInt(bean.getSeq()) - 1, true);
+                    mLvCatalog.setSelection(Integer.parseInt(bean.getSeq()));
+                }
+            }
+            mLvCatalog.setItemChecked(Integer.parseInt(lessonsBean.getNumber()) - 1, true);
             new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
                     .success(new NormalCallback<LessonItem>() {
                         @Override
@@ -344,6 +357,17 @@ public class CourseCatalogFragment extends BaseFragment {
                 return;
             }
         }
+
+        if ("live".equals(lessonsBean.getType())) {
+            final String url = String.format(SchoolUtil.getDefaultSchool(mContext).host + Const.WEB_LESSON, mCourseId, lessonsBean.getId() );
+            CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(Const.WEB_URL, url);
+                }
+            });
+            return;
+        }
         sendMessageToCourse(lessonsBean.toLessonItem());
     }
 
@@ -422,4 +446,6 @@ public class CourseCatalogFragment extends BaseFragment {
                 new MessageType(Const.LESSON_STATUS_REFRESH)
         };
     }
+
+
 }

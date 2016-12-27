@@ -44,6 +44,7 @@ public class CourseCatalogue {
         private String type;
         private String free;
         private String mediaSource;
+        private String seq;
 
         public LessonItem toLessonItem() {
             LessonItem lessonItem = new LessonItem();
@@ -56,9 +57,16 @@ public class CourseCatalogue {
             lessonItem.type = type;
             lessonItem.free = AppUtil.parseInt(free);
             lessonItem.mediaSource = mediaSource;
+            lessonItem.seq = AppUtil.parseInt(seq);
             return lessonItem;
         }
 
+        public String getSeq() {
+            return seq;
+        }
+        public void setSeq(String seq) {
+            this.seq = seq;
+        }
         public String getMediaSource() {
             return mediaSource;
         }
