@@ -30,7 +30,6 @@ import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.util.WeakReferenceHandler;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.edusoho.videoplayer.util.WeakHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,6 +87,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mTabLayout;
     protected TextView mTvCatalog;
     protected static final int TAB_PAGE = 0;
+    protected static final int LOADING_END = 1;
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
 
     @Override
@@ -173,6 +173,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
         mMenuPop = new MenuPop(this, mMenu);
+        setLoadStatus(View.VISIBLE);
     }
 
     protected abstract void initFragment(List<Fragment> fragments);
@@ -523,13 +524,31 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }).start();
     }
 
+    private void tabLoadingGone() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(200);
+                    mHandler.sendEmptyMessage(LOADING_END);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
     @Override
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case TAB_PAGE:
                 if (mContentVp != null) {
                     mContentVp.setCurrentItem(1);
+                    tabLoadingGone();
                 }
+                break;
+            case LOADING_END:
+                setLoadStatus(View.GONE);
                 break;
         }
         return false;

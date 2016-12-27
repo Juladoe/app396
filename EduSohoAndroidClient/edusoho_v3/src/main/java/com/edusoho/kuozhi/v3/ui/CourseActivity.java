@@ -91,7 +91,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             finish();
             return;
         }
-        setLoadStatus(View.VISIBLE);
         CourseDetailModel.getCourseDetail(mCourseId,
                 new ResponseCallbackListener<CourseDetail>() {
                     @Override
@@ -101,18 +100,19 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                                 && mFragments.get(1) instanceof CourseCatalogFragment) {
                             if (mCourseDetail.getMember() == null) {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
+                                setLoadStatus(View.GONE);
                             } else {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
                                 tabPage(300);
                             }
+                        }else{
+                            setLoadStatus(View.GONE);
                         }
                         refreshView();
-                        setLoadStatus(View.GONE);
                     }
 
                     @Override
                     public void onFailure(String code, String message) {
-                        setLoadStatus(View.GONE);
                         if ("课程不存在".equals(message)) {
                             CommonUtil.shortToast(CourseActivity.this, "课程不存在");
                             finish();
@@ -283,39 +283,20 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (mCourseDetail == null) {
             return;
         }
-        if (mIsPlay) {
-            if (mContinueLessonItem == null) {
-                return;
+        final ShareTool shareTool =
+                new ShareTool(this
+                        , app.host + "/course/" + mCourseDetail.getCourse().id
+                        , mCourseDetail.getCourse().title
+                        , mCourseDetail.getCourse().about.length() > 20 ?
+                        mCourseDetail.getCourse().about.substring(0, 20)
+                        : mCourseDetail.getCourse().about
+                        , mCourseDetail.getCourse().middlePicture);
+        new Handler((mActivity.getMainLooper())).post(new Runnable() {
+            @Override
+            public void run() {
+                shareTool.shardCourse();
             }
-            String shareUrl = String.format("%s/course/%s/learn#lesson/%d/", app.host, mCourseId, mContinueLessonItem.id);
-            final ShareTool shareTool =
-                    new ShareTool(this
-                            , shareUrl
-                            , mCourseDetail.getCourse().title
-                            , mContinueLessonItem.title
-                            , mCourseDetail.getCourse().middlePicture);
-            new Handler((mActivity.getMainLooper())).post(new Runnable() {
-                @Override
-                public void run() {
-                    shareTool.shardCourse();
-                }
-            });
-        } else {
-            final ShareTool shareTool =
-                    new ShareTool(this
-                            , app.host + "/course/" + mCourseDetail.getCourse().id
-                            , mCourseDetail.getCourse().title
-                            , mCourseDetail.getCourse().about.length() > 20 ?
-                            mCourseDetail.getCourse().about.substring(0, 20)
-                            : mCourseDetail.getCourse().about
-                            , mCourseDetail.getCourse().middlePicture);
-            new Handler((mActivity.getMainLooper())).post(new Runnable() {
-                @Override
-                public void run() {
-                    shareTool.shardCourse();
-                }
-            });
-        }
+        });
     }
 
     @Override

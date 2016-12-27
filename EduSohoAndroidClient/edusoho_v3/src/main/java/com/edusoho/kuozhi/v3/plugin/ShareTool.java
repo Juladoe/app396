@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
@@ -82,7 +83,8 @@ public class ShareTool {
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                CommonUtil.longToast(mContext, "课程图片获取失败");
+//                CommonUtil.longToast(mContext, "课程图片获取失败");
+                startShare(AppUtil.getUriById(mContext, R.drawable.default_classroom));
             }
         });
     }
@@ -99,6 +101,23 @@ public class ShareTool {
                 mUrl,
                 coverShareContent(mAbout, mUrl),
                 file,
+                EdusohoApp.app.host
+                , mDialogType
+        );
+        shareUtil.show(getShareHandler());
+    }
+
+    private void startShare(Uri imageUri) {
+        ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
+        shareUtil.setDismissEvent(mDismissEvent);
+        List<ListData> listDatas = shareUtil.getDataList();
+        listDatas.addAll(0, getCustomListData());
+        shareUtil.initShareParams(
+                R.mipmap.ic_launcher,
+                mTitle,
+                mUrl,
+                coverShareContent(mAbout, mUrl),
+                imageUri,
                 EdusohoApp.app.host
                 , mDialogType
         );

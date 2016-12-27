@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.shard;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.widget.AdapterView;
 
@@ -70,6 +71,25 @@ public class ShareUtil {
         if (imageFile.exists()) {
             mLocalImagePath = imageFile.getAbsolutePath();
             mOneKeyShare.setImagePath(mLocalImagePath);
+        } else {
+
+        }
+        mShareSite = ShareSite;
+        initOneKeyShare();
+        initDialog(type);
+        return this;
+    }
+
+    public ShareUtil initShareParams(
+            int icon, String shareTextTitle, String shareTitleUrl, String shareText, Uri imageFile, String ShareSite, int type
+    ) {
+        mOneKeyShare = new OnekeyShare();
+        mNotification_icon = icon;
+        mShareTextTitle = shareTextTitle;
+        mShareTitleUrl = shareTitleUrl;
+        mShareText = shareText;
+        if (imageFile != null) {
+            mOneKeyShare.setImagePath(imageFile.toString());
         } else {
 
         }
