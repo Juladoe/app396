@@ -335,6 +335,7 @@
     <string name="mine_items_collection">我的收藏</string>
     <string name="mine_items_setting">我的设置</string>
     <string name="mine_items_question">我的问答</string>
+    <string name="lesson_cache">缓存课时</string>
 
     <string name="qr_search_notice">将二维码放入框内，即可自动扫描</string>
 

@@ -71,7 +71,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lesson_downloading);
-        setBackMode(BACK, getResources().getString(R.string.mine_items_download));
+        setBackMode(BACK, getResources().getString(R.string.lesson_cache));
         mContext = this;
         initView();
     }
