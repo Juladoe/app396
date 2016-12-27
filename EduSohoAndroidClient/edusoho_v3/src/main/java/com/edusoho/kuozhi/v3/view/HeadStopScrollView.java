@@ -87,6 +87,14 @@ public class HeadStopScrollView extends ScrollView {
         super.scrollTo(x, y);
     }
 
+    @Override
+    public void scrollBy(int x, int y) {
+        if (mStay) {
+            return;
+        }
+        super.scrollBy(x, y);
+    }
+
     private OnScrollChangeListener onScrollChangeListener;
 
     public void setOnScrollChangeListener(OnScrollChangeListener onScrollChangeListener) {

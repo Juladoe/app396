@@ -182,10 +182,13 @@ public class CourseDetailFragment extends BaseDetailFragment {
         mTvStudentNum.setText(String.format("(%s)", mCourseDetail.getCourse().studentNum));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
-            if(mCourseDetail.getCourse().vipLevelId == 0){
+            if (mCourseDetail.getCourse().vipLevelId == 0) {
                 mVipLayout.setVisibility(View.GONE);
-            }else{
+            } else {
                 mVipLayout.setVisibility(View.VISIBLE);
+                mTvVipDesc.setText(String.format("加入%s会员，免费学习更多课程",
+                        mCourseDetail.getVipLevels().size() > course.vipLevelId - 1 ?
+                                mCourseDetail.getVipLevels().get(course.vipLevelId - 1).name : ""));
             }
             if (course.price == 0) {
                 mTvPriceNow.setText("免费");
