@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
@@ -398,7 +399,18 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             if (mContinueLessonItem == null) {
                 return;
             }
-            ((CourseCatalogFragment) fragment).startLessonActivity(mContinueLessonItem.id, mContinueLessonItem.courseId);
+            int memberState = CourseMember.NONE;
+            if (mCourseDetail != null && mCourseDetail.getMember() != null) {
+                memberState = CourseMember.MEMBER;
+                if (mCourseDetail.getMember().deadline <= 0) {
+                    memberState = CourseMember.EXPIRE;
+                }
+            }
+
+            ((CourseCatalogFragment) fragment).startLessonActivity(
+                    mContinueLessonItem.id,
+                    mContinueLessonItem.courseId,
+                    memberState);
         }
     }
 

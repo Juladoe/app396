@@ -13,7 +13,7 @@
         android:id="@+id/menu_more"
         android:icon="@drawable/icon_menu_more"
         android:title="更多"
-        android:visible="true"
+        android:visible="false"
         app:showAsAction="always" />
 
 </menu>
