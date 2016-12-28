@@ -55,12 +55,12 @@ public class LessonMenuHelper {
         mMenuPop.addItem("学完");
         mMenuPop.setVisibility(true);
         mMenuPop.setOnMenuClickListener(getMenuClickListener());
+        mMenuPop.setMenuShowListener(getMenuShowListener());
         loadLessonStatus();
     }
 
     public void show(View view, int x, int y) {
         mMenuPop.showAsDropDown(view, x, y);
-        updatePluginItemState();
     }
 
     private void updatePluginItemState() {
@@ -83,6 +83,15 @@ public class LessonMenuHelper {
                         setLearnBtnState(state.learnStatus);
                     }
                 });
+    }
+
+    private MenuPop.IMenuShowListener getMenuShowListener() {
+        return new MenuPop.IMenuShowListener() {
+            @Override
+            public void onShow(boolean isShow) {
+                updatePluginItemState();
+            }
+        };
     }
 
     private MenuPop.OnMenuClickListener getMenuClickListener() {

@@ -38,6 +38,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     protected ObjectAnimator mAudioCoverAnim;
     private ImageView mCoverImageView;
     private DetailActivity mMenuCallback;
+    private LessonMenuHelper mLessonMenuHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -62,7 +63,8 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
                 .build();
         mVideoControllerView.setControllerOptions(options);
         initPlayContainer();
-        new LessonMenuHelper(getContext(), mLessonId, mCourseId).initMenu(mMenuCallback.getMenu());
+        mLessonMenuHelper = new LessonMenuHelper(getContext(), mLessonId, mCourseId);
+        mLessonMenuHelper.initMenu(mMenuCallback.getMenu());
     }
 
     protected void initPlayContainer() {

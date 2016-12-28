@@ -30,6 +30,7 @@ public class MenuPop {
     private List<Item> mNames = new ArrayList<>();
     private MenuAdapter mAdapter = new MenuAdapter();
     private View mBindView;
+    private IMenuShowListener mIMenuShowListener;
 
     public MenuPop(Context context, View bindView) {
         this.mContext = context;
@@ -110,6 +111,10 @@ public class MenuPop {
         return this;
     }
 
+    public void setMenuShowListener(IMenuShowListener iMenuShowListener) {
+        this.mIMenuShowListener = iMenuShowListener;
+    }
+
     public void removeAll() {
         mNames.clear();
     }
@@ -146,10 +151,20 @@ public class MenuPop {
     public void showAsDropDown(View view, int x, int y) {
         mAdapter.notifyDataSetChanged();
         mPopup.showAsDropDown(view, x, y);
+        if (mIMenuShowListener != null) {
+            mIMenuShowListener.onShow(true);
+        }
     }
 
     public void dismiss() {
         mPopup.dismiss();
+        if (mIMenuShowListener != null) {
+            mIMenuShowListener.onShow(false);
+        }
+    }
+
+    public interface IMenuShowListener {
+        void onShow(boolean isShow);
     }
 
     private class MenuAdapter extends BaseAdapter {
