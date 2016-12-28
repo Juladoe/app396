@@ -17,6 +17,7 @@ import android.webkit.WebViewClient;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.webview.InnerWebView;
 
 import java.io.IOException;
@@ -30,12 +31,14 @@ import cn.trinea.android.common.util.FileUtils;
 public class TextLessonFragment extends BaseFragment implements NestedScrollView.OnScrollChangeListener {
 
     private static final String TEXT_CONFIG = "text_config";
-    private static final String TEXT_POSITION = "text_position";
+    private static final String TEXT_POSITION = "%d_%d_text_position";
 
     protected InnerWebView mLessonWebview;
     protected String mContent;
 
     private int mCurrentScrollPosition;
+    private int mLessonId;
+    private int mCourseId;
     protected Handler webViewHandler;
     private static final int SHOW_IMAGES = 0002;
 
@@ -60,12 +63,12 @@ public class TextLessonFragment extends BaseFragment implements NestedScrollView
 
     private void initConfig() {
         SharedPreferences sp = getContext().getSharedPreferences(TEXT_CONFIG, Context.MODE_PRIVATE);
-        mCurrentScrollPosition = sp.getInt(TEXT_POSITION, 0);
+        mCurrentScrollPosition = sp.getInt(String.format(TEXT_POSITION, mCourseId, mLessonId), 0);
     }
 
     private void saveConfig() {
         SharedPreferences sp = getContext().getSharedPreferences(TEXT_CONFIG, Context.MODE_PRIVATE);
-        sp.edit().putInt(TEXT_POSITION, mCurrentScrollPosition).commit();
+        sp.edit().putInt(String.format(TEXT_POSITION, mCourseId, mLessonId), mCurrentScrollPosition).commit();
     }
 
     protected void initWorkHandler() {
@@ -89,6 +92,8 @@ public class TextLessonFragment extends BaseFragment implements NestedScrollView
         super.onAttach(activity);
         Bundle bundle = getArguments();
         mContent = bundle.getString(LessonActivity.CONTENT);
+        mCourseId = bundle.getInt(Const.COURSE_ID);
+        mLessonId = bundle.getInt(Const.LESSON_ID);
     }
 
     @Override

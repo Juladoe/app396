@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.photo.HackyViewPager;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -42,7 +43,7 @@ import photoview.PhotoView;
 public class PptLessonFragment extends BaseFragment {
 
     private static final String PPT_CONFIG = "ppt_config";
-    private static final String PPT_INDEX = "ppt_index";
+    private static final String PPT_INDEX = "%d_%d_ppt_index";
 
     private HackyViewPager pptViewPager;
     private ArrayList<String> ppts;
@@ -55,6 +56,8 @@ public class PptLessonFragment extends BaseFragment {
 
     private boolean isScreen;
     private int mCurrentIndex;
+    private int mLessonId;
+    private int mCourseId;
 
     @Override
     public String getTitle() {
@@ -75,18 +78,20 @@ public class PptLessonFragment extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             ppts = bundle.getStringArrayList(LessonActivity.CONTENT);
+            mCourseId = bundle.getInt(Const.COURSE_ID);
+            mLessonId = bundle.getInt(Const.LESSON_ID);
         }
         initPPTConfig();
     }
 
     private void initPPTConfig() {
         SharedPreferences sp = getContext().getSharedPreferences(PPT_CONFIG, Context.MODE_PRIVATE);
-        mCurrentIndex = sp.getInt(PPT_INDEX, 0);
+        mCurrentIndex = sp.getInt(String.format(PPT_INDEX, mCourseId, mLessonId), 0);
     }
 
     private void savePPTConfig() {
         SharedPreferences sp = getContext().getSharedPreferences(PPT_CONFIG, Context.MODE_PRIVATE);
-        sp.edit().putInt(PPT_INDEX, mCurrentIndex).commit();
+        sp.edit().putInt(String.format(PPT_INDEX, mCourseId, mLessonId), mCurrentIndex).commit();
     }
 
     @Override

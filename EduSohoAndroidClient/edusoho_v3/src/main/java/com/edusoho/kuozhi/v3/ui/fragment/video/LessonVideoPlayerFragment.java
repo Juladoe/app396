@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui.fragment.video;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,8 +17,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
 
-import org.videolan.libvlc.IVLCVout;
-
 /**
  * Created by suju on 16/12/16.
  */
@@ -26,13 +25,21 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
 
     private int mLessonId;
     private int mCourseId;
+    private long mSaveSeekTime;
     private DetailActivity mMenuCallback;
+
+    private SharedPreferences mSeekPositionSetting;
+    private static final String SEEK_POSITION = "seek_position";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLessonId = getArguments().getInt(Const.LESSON_ID);
         mCourseId = getArguments().getInt(Const.COURSE_ID);
+        mSeekPositionSetting = getContext().getSharedPreferences(SEEK_POSITION, Context.MODE_PRIVATE);
+        mSaveSeekTime = mSeekPositionSetting.getLong(String.format("%d-%d", mCourseId, mLessonId), 0);
+
+        setSeekPosition(mSaveSeekTime);
     }
 
     @Override
@@ -102,5 +109,14 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
             mMenuCallback.getMenu().setVisibility(false);
         }
+    }
+
+    @Override
+    protected void savePosition(long seekTime) {
+        super.savePosition(seekTime);
+
+        SharedPreferences.Editor editor = mSeekPositionSetting.edit();
+        editor.putLong(String.format("%d-%d", mCourseId, mLessonId), seekTime);
+        editor.commit();
     }
 }
