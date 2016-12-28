@@ -9,6 +9,7 @@
     <include layout="@layout/load_layout"/>
 
     <LinearLayout
+        android:layout_marginTop="70dp"
         android:id="@+id/hw_result_head"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
