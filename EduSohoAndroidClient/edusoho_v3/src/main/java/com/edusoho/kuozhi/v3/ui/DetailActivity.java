@@ -290,7 +290,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else if (v.getId() == R.id.tv_inclass) {
             goClass();
         }
-
     }
 
     protected abstract void goClass();
