@@ -70,6 +70,8 @@ public class CourseCatalogFragment extends BaseFragment {
     private View mLoadView;
     private View mLessonEmpytView;
     private LoadDialog mProcessDialog;
+    private CourseCatalogue.LessonsBean lessonsBean;
+    private List<CourseCatalogue.LessonsBean> lessonsBeanList;
 
     public CourseCatalogFragment() {
     }
@@ -227,12 +229,12 @@ public class CourseCatalogFragment extends BaseFragment {
 
     private void initFirstLearnLesson() {
         if (mCourseCatalogue != null) {
-            List<CourseCatalogue.LessonsBean> lessonsBeanList = mCourseCatalogue.getLessons();
+            lessonsBeanList = mCourseCatalogue.getLessons();
             if (lessonsBeanList == null || lessonsBeanList.isEmpty()) {
                 return;
             }
             final Bundle bundle = new Bundle();
-            CourseCatalogue.LessonsBean lessonsBean = null;
+            lessonsBean =  null;
             Map<String, String> learnStatuses = mCourseCatalogue.getLearnStatuses();
             //没加入
             if (mMemberStatus != ISMEMBER) {
@@ -250,12 +252,7 @@ public class CourseCatalogFragment extends BaseFragment {
             if (lessonsBean == null) {
                 return;
             }
-            for (CourseCatalogue.LessonsBean bean : lessonsBeanList) {
-                if (bean.getNumber().equals(lessonsBean.getNumber())) {
-                    mLvCatalog.setSelection(Integer.parseInt(bean.getSeq()));
-                }
-            }
-            mLvCatalog.setItemChecked(Integer.parseInt(lessonsBean.getNumber()) - 1, true);
+
             new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
                     .success(new NormalCallback<LessonItem>() {
                         @Override
@@ -382,6 +379,7 @@ public class CourseCatalogFragment extends BaseFragment {
         sendMessageToCourse(lessonsBean.toLessonItem());
     }
 
+
     public void startLessonActivity(int lessonId, int courseId) {
         Bundle bundle = new Bundle();
         bundle.putInt(Const.LESSON_ID, lessonId);
@@ -399,6 +397,12 @@ public class CourseCatalogFragment extends BaseFragment {
             }
         }
         return lessonArray;
+    }
+
+    public void reFreshColor(){
+        if (mLvCatalog != null && lessonsBean != null) {
+            mLvCatalog.setItemChecked(Integer.parseInt(lessonsBean.getSeq()) - 1, true);
+        }
     }
 
     /**
