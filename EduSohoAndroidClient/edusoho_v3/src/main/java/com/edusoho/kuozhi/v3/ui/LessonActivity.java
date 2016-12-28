@@ -353,13 +353,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }
 
         CourseLessonType courseLessonType = CourseLessonType.value(lessonItem.type);
+        fragmentData.putInt(Const.COURSE_ID, lessonItem.courseId);
+        fragmentData.putInt(Const.LESSON_ID, lessonItem.id);
         switch (courseLessonType) {
             case LIVE:
                 fragmentData.putString(Const.ACTIONBAR_TITLE, lessonItem.title);
                 fragmentData.putLong(LiveLessonFragment.STARTTIME, Integer.valueOf(lessonItem.startTime) * 1000L);
                 fragmentData.putLong(LiveLessonFragment.ENDTIME, Integer.valueOf(lessonItem.endTime) * 1000L);
-                fragmentData.putInt(Const.COURSE_ID, lessonItem.courseId);
-                fragmentData.putInt(Const.LESSON_ID, lessonItem.id);
                 fragmentData.putString(LiveLessonFragment.SUMMARY, lessonItem.summary);
                 fragmentData.putString(LiveLessonFragment.REPLAYSTATUS, lessonItem.replayStatus);
                 return lessonItem;

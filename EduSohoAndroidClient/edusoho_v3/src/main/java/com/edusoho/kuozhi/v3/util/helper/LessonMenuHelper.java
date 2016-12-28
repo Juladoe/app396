@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.util.helper;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -12,14 +11,13 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
+import com.edusoho.kuozhi.v3.entity.lesson.PluginViewItem;
 import com.edusoho.kuozhi.v3.listener.LessonPluginCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.ui.MenuPop;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +30,7 @@ public class LessonMenuHelper {
     private int mLessonId;
     private int mCourseId;
     private LearnStatus mCurrentLearnState;
-    private List<ExerciseOptionDialog.GridViewItem> mExerciseItemList;
+    private List<LessonPluginViewItem> mExerciseItemList;
     private Context mContext;
     private MenuPop mMenuPop;
 
@@ -49,7 +47,9 @@ public class LessonMenuHelper {
         mExerciseItemList = getExerciseItemList();
         if (mExerciseItemList != null) {
             for (int i = 0; i < mExerciseItemList.size(); i++) {
-                mMenuPop.addItem(mExerciseItemList.get(i).title);
+                LessonPluginViewItem pluginViewItem = mExerciseItemList.get(i);
+                pluginViewItem.setPosition(i + 1);
+                mMenuPop.addItem(pluginViewItem.title);
             }
         }
         mMenuPop.addItem("学完");
@@ -60,6 +60,13 @@ public class LessonMenuHelper {
 
     public void show(View view, int x, int y) {
         mMenuPop.showAsDropDown(view, x, y);
+        updatePluginItemState();
+    }
+
+    private void updatePluginItemState() {
+        for (PluginViewItem item : mExerciseItemList) {
+            item.callback.initState(item);
+        }
     }
 
     /**
@@ -83,6 +90,7 @@ public class LessonMenuHelper {
             @Override
             public void onClick(View v, int position, String name) {
                 handlerMenuClick(v, position);
+                mMenuPop.dismiss();
             }
         };
     }
@@ -133,8 +141,8 @@ public class LessonMenuHelper {
     }
 
     private void startExerciseOrHomeWorkActivity(View v, int index) {
-        ExerciseOptionDialog.GridViewItem item = mExerciseItemList.get(index);
-        if (item.callback.click(null, v, index)) {
+        PluginViewItem item = mExerciseItemList.get(index);
+        if (!item.callback.click(v)) {
             return;
         }
         Intent intent = new Intent();
@@ -151,8 +159,8 @@ public class LessonMenuHelper {
         CoreEngine.create(mContext).runNormalPluginWithBundle("NoteActivity", mContext, bundle);
     }
 
-    private List<ExerciseOptionDialog.GridViewItem> getExerciseItemList() {
-        List<ExerciseOptionDialog.GridViewItem> list = new ArrayList<>();
+    private List<LessonPluginViewItem> getExerciseItemList() {
+        List<LessonPluginViewItem> list = new ArrayList<>();
 
         Bundle bundle = new Bundle();
         bundle.putInt("lessonId", mLessonId);
@@ -165,7 +173,7 @@ public class LessonMenuHelper {
                 intent, PackageManager.GET_ACTIVITIES);
 
         for (ResolveInfo resolveInfo : resolveInfos) {
-            ExerciseOptionDialog.GridViewItem item = new ExerciseOptionDialog.GridViewItem();
+            LessonPluginViewItem item = new LessonPluginViewItem();
             item.iconRes = mContext.getResources().getDrawable(resolveInfo.activityInfo.icon);
             item.title = resolveInfo.loadLabel(mContext.getPackageManager()).toString();
             item.bundle = intent.getExtras();
@@ -176,10 +184,25 @@ public class LessonMenuHelper {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
+            item.callback.initPlugin(item);
             list.add(item);
         }
 
         return list;
+    }
+
+    class LessonPluginViewItem extends PluginViewItem {
+
+        private int mPosition;
+
+        public void setPosition(int position) {
+            this.mPosition = position;
+        }
+
+        @Override
+        public void setStatus(int status) {
+            super.setStatus(status);
+            mMenuPop.getItem(mPosition).setHasPoint(status == NEW);
+        }
     }
 }

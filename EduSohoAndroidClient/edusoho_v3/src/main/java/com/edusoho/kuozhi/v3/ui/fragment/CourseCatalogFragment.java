@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
@@ -77,14 +78,20 @@ public class CourseCatalogFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_course_catalog, container, false);
         mCourseId = getArguments().getString("id");
-        init();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        init();
+        initCatalogue();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        initCatalogue();
+        updateLessonStatuses();
     }
 
     protected void init() {
@@ -111,6 +118,9 @@ public class CourseCatalogFragment extends BaseFragment {
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if (getActivity().isFinishing()) {
+                    return;
+                }
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
                 });
                 if (mCourseCatalogue.getLessons().size() != 0) {
@@ -163,7 +173,9 @@ public class CourseCatalogFragment extends BaseFragment {
         .success(new NormalCallback<Map<String, String>>() {
             @Override
             public void success(Map<String, String> learnes) {
-                mAdapter.setLearnStatuses(learnes);
+                if (mAdapter != null) {
+                    mAdapter.setLearnStatuses(learnes);
+                }
             }
         });
     }
@@ -240,7 +252,6 @@ public class CourseCatalogFragment extends BaseFragment {
             }
             for (CourseCatalogue.LessonsBean bean : lessonsBeanList) {
                 if (bean.getNumber().equals(lessonsBean.getNumber())) {
-//                    mLvCatalog.setItemChecked(Integer.parseInt(bean.getSeq()) - 1, true);
                     mLvCatalog.setSelection(Integer.parseInt(bean.getSeq()));
                 }
             }
@@ -446,6 +457,4 @@ public class CourseCatalogFragment extends BaseFragment {
                 new MessageType(Const.LESSON_STATUS_REFRESH)
         };
     }
-
-
 }
