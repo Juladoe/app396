@@ -186,7 +186,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 mVipLayout.setVisibility(View.GONE);
             } else {
                 mVipLayout.setVisibility(View.VISIBLE);
-                mTvVipDesc.setText(String.format("加入%s会员，免费学习更多课程",
+                mTvVipDesc.setText(String.format("加入%s，免费学习更多课程",
                         mCourseDetail.getVipLevels().size() > course.vipLevelId - 1 ?
                                 mCourseDetail.getVipLevels().get(course.vipLevelId - 1).name : ""));
             }
