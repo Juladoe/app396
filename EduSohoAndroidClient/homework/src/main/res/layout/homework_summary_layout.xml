@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:background="@color/grey_feedback1"
     android:gravity="center|top"
+    android:paddingTop="70dp"
     android:orientation="vertical">
 
     <include layout="@layout/load_layout" />
@@ -14,7 +15,6 @@
         android:id="@+id/homework_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
         android:padding="12dp"
         android:text="作业名称"
         android:textSize="@dimen/base_size" />
