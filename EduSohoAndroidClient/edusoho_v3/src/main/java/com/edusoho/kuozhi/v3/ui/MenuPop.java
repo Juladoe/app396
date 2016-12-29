@@ -1,17 +1,14 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -198,7 +195,7 @@ public class MenuPop {
             }
             Item item = mNames.get(position);
             viewHolder.txt.setText(item.name);
-            convertView.setTag(R.id.iv_menu, position);
+            convertView.setTag(R.id.layout_menu, position);
             convertView.setOnClickListener(mOnClickListener);
             if (item.hasPoint) {
                 viewHolder.point.setVisibility(View.VISIBLE);
@@ -222,7 +219,7 @@ public class MenuPop {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        int position = (int) v.getTag(R.id.iv_menu);
+                        int position = (int) v.getTag(R.id.layout_menu);
                         if (mOnMenuClickListener != null) {
                             mOnMenuClickListener.onClick(v, position, mNames.get(position).name);
                         }
