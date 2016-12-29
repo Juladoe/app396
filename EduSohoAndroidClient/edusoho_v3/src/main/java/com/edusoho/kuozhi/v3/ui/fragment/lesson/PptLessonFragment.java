@@ -17,16 +17,16 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.photo.HackyViewPager;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -51,7 +51,7 @@ public class PptLessonFragment extends BaseFragment {
     private LayoutInflater mLayoutInflater;
 
     private TextView mStartPageView;
-    private CheckBox mScreenView;
+    private EduSohoNewIconView mScreenView;
     private View mToolsView;
 
     private boolean isScreen;
@@ -116,7 +116,7 @@ public class PptLessonFragment extends BaseFragment {
         super.initView(view);
 
         mToolsView = view.findViewById(R.id.ppt_lesson_tools);
-        mScreenView = (CheckBox) view.findViewById(R.id.ppt_page_screen);
+        mScreenView = (EduSohoNewIconView) view.findViewById(R.id.ppt_page_screen);
         mStartPageView = (TextView) view.findViewById(R.id.ppt_page_start);
         pptViewPager = (HackyViewPager) view.findViewById(R.id.ppt_viewpager);
 
@@ -130,14 +130,16 @@ public class PptLessonFragment extends BaseFragment {
         pptViewPager.setOnPageChangeListener(adapter);
 
         pptViewPager.setCurrentItem(mCurrentIndex);
-        mScreenView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        mScreenView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onClick(View v) {
                 int orientation = mActivity.getRequestedOrientation();
                 if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
                     mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    mScreenView.setText(R.string.font_shrink_screen);
                 } else {
                     mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                    mScreenView.setText(R.string.font_full_screen);
                 }
             }
         });
@@ -150,7 +152,6 @@ public class PptLessonFragment extends BaseFragment {
                 for (int i = 1; i <= ppts.size(); i++) {
                     array.add(String.valueOf(i));
                 }
-
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                         mContext, R.layout.ppt_lesson_popwindow_list_item, array
                 );
