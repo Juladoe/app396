@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -89,7 +91,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lesson_layout);
-        ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.textIcons));
+        ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.transparent));
         fragmentData = new Bundle();
         initView();
         app.startPlayCacheServer(this);
@@ -169,20 +171,35 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK
+                && event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         changeScreenOrientaion(newConfig.orientation);
         super.onConfigurationChanged(newConfig);
     }
 
     private void changeScreenOrientaion(int orientation) {
+        invalidateOptionsMenu();
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
-            showActionBar();
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.textIcons));
+            mToolBar.setBackgroundColor(getResources().getColor(R.color.textIcons));
+            mToolBar.setNavigationIcon(R.drawable.action_icon_back);
+            mToolBarTitle.setTextColor(getResources().getColor(R.color.textSecondary));
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            hideActionBar();
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.transparent));
+            mToolBar.setBackgroundColor(getResources().getColor(R.color.transparent));
+            mToolBar.setNavigationIcon(R.drawable.icon_actionbar_back);
+            mToolBarTitle.setTextColor(getResources().getColor(R.color.textIcons));
         }
     }
 
@@ -218,6 +235,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             share();
             return true;
         }
+        if (item.getItemId() == android.R.id.home) {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                return true;
+            }
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -242,6 +265,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem menuItem = menu.findItem(R.id.menu_share);
         if (menuItem != null) {
+            int orientation = getResources().getConfiguration().orientation;
+            int icon = orientation == Configuration.ORIENTATION_LANDSCAPE ?
+                    R.drawable.icon_menu_white_share : R.drawable.ic_menu_share;
+            menuItem.setIcon(icon);
             menuItem.setEnabled(mLessonItem != null);
         }
         if (mIsMember != CourseMember.NONE && !"testpaper".equals(mLessonType)) {

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui.fragment.video;
 
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -43,8 +44,7 @@ public class InnerVideoPlayerFragment extends VideoPlayerFragment {
         }
     }
 
-    private void initFragmentSize() {
-        int height = getContext().getResources().getDimensionPixelOffset(com.edusoho.videoplayer.R.dimen.video_height);
+    private void initFragmentSize(int height) {
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
         setVideoSize(width, height);
     }
@@ -52,7 +52,7 @@ public class InnerVideoPlayerFragment extends VideoPlayerFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initFragmentSize();
+        initFragmentSize(getContext().getResources().getDimensionPixelOffset(com.edusoho.videoplayer.R.dimen.video_height));
         ViewGroup.LayoutParams lp = view.getLayoutParams();
         if (lp instanceof FrameLayout.LayoutParams) {
             ((FrameLayout.LayoutParams)lp).gravity = Gravity.CENTER;
@@ -67,18 +67,29 @@ public class InnerVideoPlayerFragment extends VideoPlayerFragment {
         if (orientation == getResources().getConfiguration().orientation) {
             return;
         }
+        int screenOrientation = orientation == Configuration.ORIENTATION_LANDSCAPE ?
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        getActivity().setRequestedOrientation(screenOrientation);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
         View playView = getView();
         ViewParent viewParent = playView.getParent();
         if (viewParent == null) {
             return;
         }
-        ViewGroup parent = (ViewGroup) viewParent.getParent();
+        ViewGroup parent = (ViewGroup) viewParent;
 
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         ViewGroup.LayoutParams lp = parent.getLayoutParams();
-        lp.height = orientation == Configuration.ORIENTATION_LANDSCAPE ?
+        int height = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ?
                 wm.getDefaultDisplay().getHeight() : getContext().getResources().getDimensionPixelOffset(com.edusoho.videoplayer.R.dimen.video_height);
         lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        initFragmentSize(height);
         parent.setLayoutParams(lp);
     }
 }
