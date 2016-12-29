@@ -251,6 +251,9 @@
     <string name="unjoin_course_hint">加入课程后才能开始学习</string>
     <string name="lesson_loading">课时内容转码中，再给我一点时间吧>_&#060; </string>
     <string name="lesson_loading_fail">课程获取失败</string>
+    <string name="live_state_finish">已结束</string>
+    <string name="live_state_replay">回放</string>
+    <string name="live_state_ing">直播中</string>
 
     <string name="new_font_share">&#xe667;</string>
     <string name="new_font_back">&#xe668;</string>

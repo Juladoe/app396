@@ -45,7 +45,7 @@ public class CourseCatalogue {
         private String free;
         private String mediaSource;
         private String seq;
-        private String createTime;
+        private String startTime;
         private String endTime;
         private String replayStatus;
 
@@ -61,18 +61,18 @@ public class CourseCatalogue {
             lessonItem.free = AppUtil.parseInt(free);
             lessonItem.mediaSource = mediaSource;
             lessonItem.seq = AppUtil.parseInt(seq);
-            lessonItem.createdTime = createTime;
+            lessonItem.startTime = startTime;
             lessonItem.endTime = endTime;
             lessonItem.replayStatus = replayStatus;
             return lessonItem;
         }
 
-        public String getCreateTime() {
-            return createTime;
+        public String getStartTime() {
+            return startTime;
         }
 
-        public void setCreateTime(String createTime) {
-            this.createTime = createTime;
+        public void setStartTime(String createdTime) {
+            this.startTime = startTime;
         }
 
         public String getEndTime() {

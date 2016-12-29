@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -150,8 +153,34 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     }
 
     private void initLiveState() {
-        long time = System.currentTimeMillis();
-//        lessonsBean.getCreateTime()
+        long time = System.currentTimeMillis() / 1000;
+        String start = lessonsBean.getStartTime();
+        String end = lessonsBean.getEndTime();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date(Long.parseLong(end) * 1000);
+        String startTime = sf.format(date);
+        lessonHolder.liveState.setVisibility(View.VISIBLE);
+        if (time <= Long.parseLong(start)) {
+            startTime = startTime.split("-", 2)[1].substring(0, startTime.split("-", 2)[1].lastIndexOf(":")).replace("-", "月").replace(" ", "号 ");
+            lessonHolder.liveState.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+            lessonHolder.liveState.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
+            lessonHolder.liveState.setText(startTime);
+        } else {
+            if (time > Long.parseLong(end)) {
+                if ("ungenerated".equals(lessonsBean.getReplayStatus())) {
+                    lessonHolder.liveState.setText(R.string.live_state_finish);
+                    lessonHolder.liveState.setBackground(mContext.getResources().getDrawable(R.drawable.live_state_finish));
+                } else {
+                    lessonHolder.liveState.setText(R.string.live_state_replay);
+                    lessonHolder.liveState.setTextColor(mContext.getResources().getColor(R.color.secondary2_color));
+                    lessonHolder.liveState.setBackground(mContext.getResources().getDrawable(R.drawable.live_state_replay));
+                }
+            } else {
+                lessonHolder.liveState.setText(R.string.live_state_ing);
+                lessonHolder.liveState.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+                lessonHolder.liveState.setBackground(mContext.getResources().getDrawable(R.drawable.live_state_ing));
+            }
+        }
     }
 
     public void setLearnStatuses(Map<String, String> learnStatuses) {

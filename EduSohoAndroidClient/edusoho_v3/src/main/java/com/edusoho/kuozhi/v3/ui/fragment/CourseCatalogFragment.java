@@ -70,6 +70,8 @@ public class CourseCatalogFragment extends BaseFragment {
     private View mLoadView;
     private View mLessonEmpytView;
     private LoadDialog mProcessDialog;
+    private List<CourseCatalogue.LessonsBean> lessonsBeanList;
+    private CourseCatalogue.LessonsBean lessonsBean;
 
     public CourseCatalogFragment() {
     }
@@ -147,7 +149,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 setLoadViewStatus(View.GONE);
                 if (mMemberStatus == ISMEMBER && !TextUtils.isEmpty(app.token)) {
                     mRlSpace.setVisibility(View.VISIBLE);
-//                    initFirstLearnLesson();
+                    initFirstLearnLesson();
                 }
                 CustomTitle cusotmTitle = new Gson().fromJson(response, CustomTitle.class);
                 if (cusotmTitle != null && "1".equals(cusotmTitle.getCustomChapterEnable())) {
@@ -184,6 +186,7 @@ public class CourseCatalogFragment extends BaseFragment {
         hideProcesDialog();
         mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, isJoin, chapter, unit);
         mLvCatalog.setAdapter(mAdapter);
+        reFreshColor();
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -227,12 +230,12 @@ public class CourseCatalogFragment extends BaseFragment {
 
     private void initFirstLearnLesson() {
         if (mCourseCatalogue != null) {
-            List<CourseCatalogue.LessonsBean> lessonsBeanList = mCourseCatalogue.getLessons();
-            if (lessonsBeanList == null || lessonsBeanList.isEmpty()) {
+            lessonsBeanList = mCourseCatalogue.getLessons();
+            if (lessonsBeanList == null || lessonsBeanList.isEmpty() || (mMemberStatus != ISMEMBER && findFreeLessonInList() == null)) {
                 return;
             }
             final Bundle bundle = new Bundle();
-            CourseCatalogue.LessonsBean lessonsBean = null;
+            lessonsBean = null;
             Map<String, String> learnStatuses = mCourseCatalogue.getLearnStatuses();
             //没加入
             if (mMemberStatus != ISMEMBER) {
@@ -245,25 +248,19 @@ public class CourseCatalogFragment extends BaseFragment {
             } else if (!learnStatuses.containsValue("learning")) {
                 //所有课时学完
                 lessonsBean = findFirstLessonInList();
-                bundle.putString(Const.COURSE_CHANGE_STATE_FINISH, Const.COURSE_CHANGE_STATE_NONE);
+                bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_FINISH);
             }else {
                 lessonsBean = findFirseLearnLessonWithStatus(mCourseCatalogue);
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
             }
-//            for (CourseCatalogue.LessonsBean bean : lessonsBeanList) {
-//                if (bean.getNumber().equals(lessonsBean.getNumber())) {
-//                    mLvCatalog.setSelection(Integer.parseInt(bean.getSeq()));
-//                }
-//            }
-//            mLvCatalog.setItemChecked(Integer.parseInt(lessonsBean.getNumber()) - 1, true);
+            reFreshColor();
             new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
                     .success(new NormalCallback<LessonItem>() {
                         @Override
                         public void success(LessonItem lessonItem) {
                             bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
                             MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
-                        }
-                    });
+                        }});
         }
     }
 
@@ -330,7 +327,6 @@ public class CourseCatalogFragment extends BaseFragment {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
         MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
-
         bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
         MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
     }
@@ -382,10 +378,11 @@ public class CourseCatalogFragment extends BaseFragment {
         sendMessageToCourse(lessonsBean.toLessonItem());
     }
 
-    public void startLessonActivity(int lessonId, int courseId) {
+    public void startLessonActivity(int lessonId, int courseId, int memberState) {
         Bundle bundle = new Bundle();
         bundle.putInt(Const.LESSON_ID, lessonId);
         bundle.putInt(Const.COURSE_ID, courseId);
+        bundle.putInt(LessonActivity.MEMBER_STATE, memberState);
         bundle.putIntegerArrayList(Const.LESSON_IDS, getLessonArray());
         CoreEngine.create(getContext()).runNormalPluginWithBundleForResult(
                 "LessonActivity", getActivity(), bundle, LessonActivity.REQUEST_LEARN);
@@ -399,6 +396,14 @@ public class CourseCatalogFragment extends BaseFragment {
             }
         }
         return lessonArray;
+    }
+
+    private boolean isOk = false;
+    public void reFreshColor(){
+        if (mLvCatalog != null && lessonsBean != null && isOk) {
+            mLvCatalog.setItemChecked(Integer.parseInt(lessonsBean.getSeq()) - 1, true);
+        }
+        isOk = true;
     }
 
     /**

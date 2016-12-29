@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui.fragment.video;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
@@ -57,6 +58,8 @@ public class InnerVideoPlayerFragment extends VideoPlayerFragment {
             ((FrameLayout.LayoutParams)lp).gravity = Gravity.CENTER;
             view.setLayoutParams(lp);
         }
+
+        ((View)view.getParent()).setBackgroundColor(Color.BLACK);
     }
 
     @Override

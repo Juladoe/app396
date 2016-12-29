@@ -35,8 +35,8 @@
                     android:id="@+id/layout_play_button"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:visibility="gone"
-                    android:background="#80000000">
+                    android:background="#80000000"
+                    android:visibility="gone">
 
                     <LinearLayout
                         android:id="@+id/layout_play_last"
@@ -243,19 +243,34 @@
             android:textSize="16dp"
             android:visibility="gone" />
 
-        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-            android:id="@+id/iv_menu"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/layout_menu"
+            android:layout_width="42dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="43dp"
-            android:gravity="center"
-            android:paddingLeft="13dp"
-            android:paddingRight="13dp"
-            android:text="@string/new_font_more_oper"
-            android:textColor="@color/disabled2_hint_color"
-            android:textSize="16dp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:layout_marginRight="43dp">
+
+            <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/new_font_more_oper"
+                android:textColor="@color/disabled2_hint_color"
+                android:textSize="16dp"
+                 />
+
+            <View
+                android:id="@+id/v_menu_point"
+                android:layout_width="5dp"
+                android:layout_height="5dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="13dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/shape_red_point" />
+        </RelativeLayout>
 
         <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
             android:id="@+id/iv_share"
