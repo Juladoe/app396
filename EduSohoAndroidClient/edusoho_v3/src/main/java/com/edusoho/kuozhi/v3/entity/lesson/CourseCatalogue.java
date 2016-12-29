@@ -45,6 +45,9 @@ public class CourseCatalogue {
         private String free;
         private String mediaSource;
         private String seq;
+        private String createTime;
+        private String endTime;
+        private String replayStatus;
 
         public LessonItem toLessonItem() {
             LessonItem lessonItem = new LessonItem();
@@ -58,7 +61,34 @@ public class CourseCatalogue {
             lessonItem.free = AppUtil.parseInt(free);
             lessonItem.mediaSource = mediaSource;
             lessonItem.seq = AppUtil.parseInt(seq);
+            lessonItem.createdTime = createTime;
+            lessonItem.endTime = endTime;
+            lessonItem.replayStatus = replayStatus;
             return lessonItem;
+        }
+
+        public String getCreateTime() {
+            return createTime;
+        }
+
+        public void setCreateTime(String createTime) {
+            this.createTime = createTime;
+        }
+
+        public String getEndTime() {
+            return endTime;
+        }
+
+        public void setEndTime(String endTime) {
+            this.endTime = endTime;
+        }
+
+        public String getReplayStatus() {
+            return replayStatus;
+        }
+
+        public void setReplayStatus(String replayStatus) {
+            this.replayStatus = replayStatus;
         }
 
         public String getSeq() {
@@ -67,6 +97,7 @@ public class CourseCatalogue {
         public void setSeq(String seq) {
             this.seq = seq;
         }
+
         public String getMediaSource() {
             return mediaSource;
         }

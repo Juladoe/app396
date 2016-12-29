@@ -144,6 +144,14 @@ public class CourseCatalogueAdapter extends BaseAdapter {
         if ("1".equals(lessonsBean.getFree()) && !isJoin) {
             lessonHolder.lessonFree.setVisibility(View.VISIBLE);
         }
+        if ("live".equals(lessonsBean.getType())) {
+            initLiveState();
+        }
+    }
+
+    private void initLiveState() {
+        long time = System.currentTimeMillis();
+//        lessonsBean.getCreateTime()
     }
 
     public void setLearnStatuses(Map<String, String> learnStatuses) {
@@ -223,6 +231,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
         public TextView lessonTitle;
         public TextView lessonFree;
         public TextView lessonTime;
+        public TextView liveState;
         public View lessonUp;
         public View lessonDown;
 
@@ -233,6 +242,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
             lessonTitle = (TextView) itemView.findViewById(R.id.lesson_title);
             lessonFree = (TextView) itemView.findViewById(R.id.lesson_free);
             lessonTime = (TextView) itemView.findViewById(R.id.lesson_time);
+            liveState = (TextView) itemView.findViewById(R.id.live_state);
             lessonUp = itemView.findViewById(R.id.lesson_up);
             lessonDown = itemView.findViewById(R.id.lesson_down);
         }

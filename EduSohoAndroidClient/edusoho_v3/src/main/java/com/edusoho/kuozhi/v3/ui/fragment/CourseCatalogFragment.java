@@ -147,7 +147,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 setLoadViewStatus(View.GONE);
                 if (mMemberStatus == ISMEMBER && !TextUtils.isEmpty(app.token)) {
                     mRlSpace.setVisibility(View.VISIBLE);
-                    initFirstLearnLesson();
+//                    initFirstLearnLesson();
                 }
                 CustomTitle cusotmTitle = new Gson().fromJson(response, CustomTitle.class);
                 if (cusotmTitle != null && "1".equals(cusotmTitle.getCustomChapterEnable())) {
@@ -242,20 +242,20 @@ public class CourseCatalogFragment extends BaseFragment {
                 //还没开始学,学第一个
                 lessonsBean = findFirstLessonInList();
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_NONE);
-            } else {
+            } else if (!learnStatuses.containsValue("learning")) {
+                //所有课时学完
+                lessonsBean = findFirstLessonInList();
+                bundle.putString(Const.COURSE_CHANGE_STATE_FINISH, Const.COURSE_CHANGE_STATE_NONE);
+            }else {
                 lessonsBean = findFirseLearnLessonWithStatus(mCourseCatalogue);
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
             }
-
-            if (lessonsBean == null) {
-                return;
-            }
-            for (CourseCatalogue.LessonsBean bean : lessonsBeanList) {
-                if (bean.getNumber().equals(lessonsBean.getNumber())) {
-                    mLvCatalog.setSelection(Integer.parseInt(bean.getSeq()));
-                }
-            }
-            mLvCatalog.setItemChecked(Integer.parseInt(lessonsBean.getNumber()) - 1, true);
+//            for (CourseCatalogue.LessonsBean bean : lessonsBeanList) {
+//                if (bean.getNumber().equals(lessonsBean.getNumber())) {
+//                    mLvCatalog.setSelection(Integer.parseInt(bean.getSeq()));
+//                }
+//            }
+//            mLvCatalog.setItemChecked(Integer.parseInt(lessonsBean.getNumber()) - 1, true);
             new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
                     .success(new NormalCallback<LessonItem>() {
                         @Override
