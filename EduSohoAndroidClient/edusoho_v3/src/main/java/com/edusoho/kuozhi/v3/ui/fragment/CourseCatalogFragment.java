@@ -379,11 +379,11 @@ public class CourseCatalogFragment extends BaseFragment {
         sendMessageToCourse(lessonsBean.toLessonItem());
     }
 
-
-    public void startLessonActivity(int lessonId, int courseId) {
+    public void startLessonActivity(int lessonId, int courseId, int memberState) {
         Bundle bundle = new Bundle();
         bundle.putInt(Const.LESSON_ID, lessonId);
         bundle.putInt(Const.COURSE_ID, courseId);
+        bundle.putInt(LessonActivity.MEMBER_STATE, memberState);
         bundle.putIntegerArrayList(Const.LESSON_IDS, getLessonArray());
         CoreEngine.create(getContext()).runNormalPluginWithBundleForResult(
                 "LessonActivity", getActivity(), bundle, LessonActivity.REQUEST_LEARN);

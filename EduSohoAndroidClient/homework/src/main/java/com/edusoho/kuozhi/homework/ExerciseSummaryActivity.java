@@ -77,7 +77,7 @@ public class ExerciseSummaryActivity extends HomeworkSummaryActivity {
             if (super.click(view)) {
                 return true;
             }
-            ToastUtil.getInstance(mContext).makeText("课程暂无练习", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "课程暂无练习", Toast.LENGTH_SHORT).show();
             return false;
         }
 

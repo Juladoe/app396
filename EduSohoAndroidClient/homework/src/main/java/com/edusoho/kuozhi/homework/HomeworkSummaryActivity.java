@@ -149,7 +149,7 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
             if (super.click(view)) {
                 return true;
             }
-            ToastUtil.getInstance(mContext).makeText("课程暂无作业", Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, "课程暂无作业", Toast.LENGTH_SHORT).show();
             return false;
         }
 

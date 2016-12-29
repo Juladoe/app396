@@ -1,19 +1,19 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -25,11 +25,10 @@ import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
-import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LiveLessonFragment;
@@ -63,6 +62,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     public static final String FROM_CACHE = "from_cache";
     public static final String LESSON_IDS = "lesson_ids";
     public static final String RESULT_ID = "resultId";
+    public static final String MEMBER_STATE = "member_state";
 
     private String mCurrentFragmentName;
     private Class mCurrentFragmentClass;
@@ -74,6 +74,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
 
     private int mCourseId;
     private int mLessonId;
+    private int mIsMember;
     private String mLessonType;
     private Bundle fragmentData;
     private boolean mFromCache;
@@ -81,6 +82,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private LessonItem mLessonItem;
     private Toolbar mToolBar;
     private TextView mToolBarTitle;
+    private View mLoadView;
     private LessonMenuHelper mLessonMenuHelper;
 
     @Override
@@ -135,16 +137,22 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return mLessonId;
     }
 
+    private void setLoadViewState(boolean isShow) {
+        mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
     private void initView() {
         try {
             Intent data = getIntent();
             mToolBar = (Toolbar) findViewById(R.id.toolbar);
+            mLoadView = findViewById(R.id.load_layout);
             mToolBarTitle = (TextView) findViewById(R.id.tv_toolbar_title);
 
             setSupportActionBar(mToolBar);
             if (data != null) {
                 mLessonId = data.getIntExtra(Const.LESSON_ID, 0);
                 mCourseId = data.getIntExtra(Const.COURSE_ID, 0);
+                mIsMember = data.getIntExtra(LessonActivity.MEMBER_STATE, CourseMember.NONE);
             }
 
             if (mCourseId == 0 || mLessonId == 0) {
@@ -236,10 +244,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (menuItem != null) {
             menuItem.setEnabled(mLessonItem != null);
         }
-        if ("testpaper".equals(mLessonType)) {
+        if (mIsMember != CourseMember.NONE && !"testpaper".equals(mLessonType)) {
             MenuItem moreItem = menu.findItem(R.id.menu_more);
             if (moreItem != null) {
-                moreItem.setVisible(false);
+                moreItem.setVisible(true);
             }
         }
         return super.onPrepareOptionsMenu(menu);
@@ -264,17 +272,15 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void initLessonIds() {
-
     }
 
     private void loadLessonFromNet() {
-        final LoadDialog loadDialog = LoadDialog.create(this);
-        loadDialog.show();
+        setLoadViewState(true);
         RequestUrl requestUrl = app.bindNewUrl(String.format(Const.LESSON, mLessonId), true);
         ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                loadDialog.dismiss();
+                setLoadViewState(false);
                 mLessonItem = getLessonResultType(response);
                 if (mLessonItem == null) {
                     CommonUtil.longToast(mContext, getResources().getString(R.string.lesson_not_exist));
@@ -293,7 +299,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                loadDialog.dismiss();
+                setLoadViewState(false);
             }
         });
 
@@ -387,7 +393,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(CONTENT, documentLessonItem.content.get("previewUrl"));
                 return documentLessonItem;
             case VIDEO:
-                //fragmentData.putSerializable(LessonVideoPlayerFragment.PLAY_URI, lessonItem.mediaUri);
+                if (!TextUtils.isEmpty(lessonItem.mediaUri)) {
+                    Uri uri = Uri.parse(lessonItem.mediaUri);
+                    lessonItem.mediaUri = String.format("%s://%s%s", uri.getScheme(), uri.getHost(), uri.getPath());
+                }
+                if (!TextUtils.isEmpty(lessonItem.headUrl)) {
+                    Uri headUri = Uri.parse(lessonItem.mediaUri);
+                    lessonItem.headUrl = String.format("%s://%s%s", headUri.getScheme(), headUri.getHost(), headUri.getPath());
+                }
             case AUDIO:
             case TEXT:
             default:
