@@ -2,13 +2,16 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import com.android.volley.Response;
@@ -79,6 +82,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     private LessonItem mLessonItem;
     private Toolbar mToolBar;
     private TextView mToolBarTitle;
+    private View mLoadView;
     private LessonMenuHelper mLessonMenuHelper;
 
     @Override
@@ -133,10 +137,15 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         return mLessonId;
     }
 
+    private void setLoadViewState(boolean isShow) {
+        mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
     private void initView() {
         try {
             Intent data = getIntent();
             mToolBar = (Toolbar) findViewById(R.id.toolbar);
+            mLoadView = findViewById(R.id.load_layout);
             mToolBarTitle = (TextView) findViewById(R.id.tv_toolbar_title);
 
             setSupportActionBar(mToolBar);
@@ -266,13 +275,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     }
 
     private void loadLessonFromNet() {
-        final LoadDialog loadDialog = LoadDialog.create(this);
-        loadDialog.show();
+        setLoadViewState(true);
         RequestUrl requestUrl = app.bindNewUrl(String.format(Const.LESSON, mLessonId), true);
         ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                loadDialog.dismiss();
+                setLoadViewState(false);
                 mLessonItem = getLessonResultType(response);
                 if (mLessonItem == null) {
                     CommonUtil.longToast(mContext, getResources().getString(R.string.lesson_not_exist));
@@ -291,7 +299,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                loadDialog.dismiss();
+                setLoadViewState(false);
             }
         });
 
@@ -385,7 +393,14 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 fragmentData.putString(CONTENT, documentLessonItem.content.get("previewUrl"));
                 return documentLessonItem;
             case VIDEO:
-                //fragmentData.putSerializable(LessonVideoPlayerFragment.PLAY_URI, lessonItem.mediaUri);
+                if (!TextUtils.isEmpty(lessonItem.mediaUri)) {
+                    Uri uri = Uri.parse(lessonItem.mediaUri);
+                    lessonItem.mediaUri = String.format("%s://%s%s", uri.getScheme(), uri.getHost(), uri.getPath());
+                }
+                if (!TextUtils.isEmpty(lessonItem.headUrl)) {
+                    Uri headUri = Uri.parse(lessonItem.mediaUri);
+                    lessonItem.headUrl = String.format("%s://%s%s", headUri.getScheme(), headUri.getHost(), headUri.getPath());
+                }
             case AUDIO:
             case TEXT:
             default:
