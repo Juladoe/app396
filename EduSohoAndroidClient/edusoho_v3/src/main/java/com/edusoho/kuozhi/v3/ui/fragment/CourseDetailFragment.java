@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -178,7 +179,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Course course = mCourseDetail.getCourse();
         mTvTitle.setText(course.title);
-        mTvTitleDesc.setHtml(course.about, new HtmlHttpImageGetter(mTvTitleDesc));
+        mTvTitleDesc.setHtml(course.about, new HtmlHttpImageGetter(mTvTitleDesc, null, true));
         mTvStudentNum.setText(String.format("(%s)", mCourseDetail.getCourse().studentNum));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
