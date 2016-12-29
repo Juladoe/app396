@@ -321,7 +321,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     bindListener();
                 }
                 switchLoadLessonContent(mLessonItem);
-                mActivity.supportInvalidateOptionsMenu();
+                supportInvalidateOptionsMenu();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -537,6 +537,15 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         Bundle bundle = new Bundle();
         bundle.putString("event", "lessonStatusRefresh");
         MessageEngine.getInstance().sendMsg(WebViewActivity.SEND_EVENT, bundle);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        Fragment fragment = mFragmentManager.findFragmentById(R.id.lesson_content);
+        if (fragment != null) {
+            mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
+        }
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui.fragment.video;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -16,10 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
 
 
@@ -29,10 +27,20 @@ import com.edusoho.videoplayer.ui.VideoPlayerFragment;
 
 public class InnerVideoPlayerFragment extends VideoPlayerFragment {
 
+    private int mLessonId;
+    private int mCourseId;
+    private long mSaveSeekTime;
+    private SharedPreferences mSeekPositionSetting;
+    private static final String SEEK_POSITION = "seek_position";
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hasOptionsMenu();
+
+        mSeekPositionSetting = getContext().getSharedPreferences(SEEK_POSITION, Context.MODE_PRIVATE);
+        mSaveSeekTime = mSeekPositionSetting.getLong(String.format("%d-%d", mCourseId, mLessonId), 0);
+        setSeekPosition(mSaveSeekTime);
     }
 
     @Override
@@ -91,5 +99,14 @@ public class InnerVideoPlayerFragment extends VideoPlayerFragment {
 
         initFragmentSize(height);
         parent.setLayoutParams(lp);
+    }
+
+    @Override
+    protected void savePosition(long seekTime) {
+        super.savePosition(seekTime);
+
+        SharedPreferences.Editor editor = mSeekPositionSetting.edit();
+        editor.putLong(String.format("%d-%d", mCourseId, mLessonId), seekTime);
+        editor.commit();
     }
 }
