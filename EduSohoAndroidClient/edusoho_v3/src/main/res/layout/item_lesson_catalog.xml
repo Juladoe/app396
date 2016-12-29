@@ -43,14 +43,27 @@
         android:layout_centerVertical="true" />
 
     <TextView
+        android:id="@+id/live_state"
+        android:text=""
+        android:textSize="@dimen/font_xxs"
+        android:padding="2dp"
+        android:visibility="invisible"
+        android:textColor="@color/secondary2_font_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
         android:id="@+id/lesson_time"
         android:text="05:55"
         android:textSize="@dimen/font_s"
         android:textColor="@color/item_lesson_tv_sel"
         android:paddingLeft="@dimen/common_marginl"
         android:duplicateParentState="true"
-        android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_toLeftOf="@id/live_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -79,4 +92,5 @@
         android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
 </RelativeLayout>
