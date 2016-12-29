@@ -70,8 +70,8 @@ public class CourseCatalogFragment extends BaseFragment {
     private View mLoadView;
     private View mLessonEmpytView;
     private LoadDialog mProcessDialog;
-    private CourseCatalogue.LessonsBean lessonsBean;
     private List<CourseCatalogue.LessonsBean> lessonsBeanList;
+    private CourseCatalogue.LessonsBean lessonsBean;
 
     public CourseCatalogFragment() {
     }
@@ -186,6 +186,7 @@ public class CourseCatalogFragment extends BaseFragment {
         hideProcesDialog();
         mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, isJoin, chapter, unit);
         mLvCatalog.setAdapter(mAdapter);
+        reFreshColor();
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -230,11 +231,11 @@ public class CourseCatalogFragment extends BaseFragment {
     private void initFirstLearnLesson() {
         if (mCourseCatalogue != null) {
             lessonsBeanList = mCourseCatalogue.getLessons();
-            if (lessonsBeanList == null || lessonsBeanList.isEmpty()) {
+            if (lessonsBeanList == null || lessonsBeanList.isEmpty() || (mMemberStatus != ISMEMBER && findFreeLessonInList() == null)) {
                 return;
             }
             final Bundle bundle = new Bundle();
-            lessonsBean =  null;
+            lessonsBean = null;
             Map<String, String> learnStatuses = mCourseCatalogue.getLearnStatuses();
             //没加入
             if (mMemberStatus != ISMEMBER) {
@@ -244,23 +245,22 @@ public class CourseCatalogFragment extends BaseFragment {
                 //还没开始学,学第一个
                 lessonsBean = findFirstLessonInList();
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_NONE);
-            } else {
+            } else if (!learnStatuses.containsValue("learning")) {
+                //所有课时学完
+                lessonsBean = findFirstLessonInList();
+                bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_FINISH);
+            }else {
                 lessonsBean = findFirseLearnLessonWithStatus(mCourseCatalogue);
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
             }
-
-            if (lessonsBean == null) {
-                return;
-            }
-
+            reFreshColor();
             new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
                     .success(new NormalCallback<LessonItem>() {
                         @Override
                         public void success(LessonItem lessonItem) {
                             bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
                             MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
-                        }
-                    });
+                        }});
         }
     }
 
@@ -327,7 +327,6 @@ public class CourseCatalogFragment extends BaseFragment {
         Bundle bundle = new Bundle();
         bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
         MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
-
         bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
         MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
     }
@@ -399,10 +398,12 @@ public class CourseCatalogFragment extends BaseFragment {
         return lessonArray;
     }
 
+    private boolean isOk = false;
     public void reFreshColor(){
-        if (mLvCatalog != null && lessonsBean != null) {
+        if (mLvCatalog != null && lessonsBean != null && isOk) {
             mLvCatalog.setItemChecked(Integer.parseInt(lessonsBean.getSeq()) - 1, true);
         }
+        isOk = true;
     }
 
     /**
