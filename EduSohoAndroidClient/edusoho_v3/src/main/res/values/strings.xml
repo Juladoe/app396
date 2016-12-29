@@ -224,6 +224,8 @@
     <string name="font_login_username">&#xe619;</string>
     <string name="font_login_password">&#xe616;</string>
     <string name="font_right_arrow">&#xe66f;</string>
+    <string name="font_shrink_screen">&#xe695;</string>
+    <string name="font_full_screen">&#xe67c;</string>
 
     <string name="learned_status">&#xe639;</string>
     <string name="learning_status">&#xe638;</string>
