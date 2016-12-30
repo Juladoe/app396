@@ -153,6 +153,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     }
 
     private void initLiveState() {
+        lessonHolder.lessonTitle.setMaxEms(10);
         long time = System.currentTimeMillis() / 1000;
         String start = lessonsBean.getStartTime();
         String end = lessonsBean.getEndTime();
