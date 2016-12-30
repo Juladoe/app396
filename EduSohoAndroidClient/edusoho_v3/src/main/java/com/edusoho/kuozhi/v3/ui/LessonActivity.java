@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -40,6 +41,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
+import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -91,7 +93,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lesson_layout);
-        ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.transparent));
+        ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.primary_color));
         fragmentData = new Bundle();
         initView();
         app.startPlayCacheServer(this);
@@ -192,11 +194,13 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         invalidateOptionsMenu();
         if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.primary_color));
             mToolBar.setBackgroundColor(getResources().getColor(R.color.textIcons));
             mToolBar.setNavigationIcon(R.drawable.action_icon_back);
             mToolBarTitle.setTextColor(getResources().getColor(R.color.textSecondary));
         } else if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.transparent));
             mToolBar.setBackgroundColor(getResources().getColor(R.color.transparent));
             mToolBar.setNavigationIcon(R.drawable.icon_actionbar_back);
             mToolBarTitle.setTextColor(getResources().getColor(R.color.textIcons));
