@@ -106,7 +106,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
                                 tabPage(300);
                             }
-                        }else{
+                        } else {
                             setLoadStatus(View.GONE);
                         }
                         refreshView();
@@ -312,6 +312,15 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         mContinueLessonItem = lessonItem;
         mPlayLastLayout.setVisibility(View.GONE);
         mPlayButtonLayout.setVisibility(View.VISIBLE);
+        if (mCourseDetail != null && mCourseDetail.getMember() != null) {
+            if ("1".equals(mCourseDetail.getMember().isLearned)) {
+                mTvPlay.setText(R.string.txt_study_finish);
+                mTvPlay2.setText(R.string.txt_study_finish);
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                mPlayLayout.setEnabled(false);
+                return;
+            }
+        }
         switch (state) {
             case Const.COURSE_CHANGE_STATE_NONE:
                 mPlayLayout.setEnabled(true);
@@ -332,12 +341,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 mPlayLayout.setEnabled(true);
                 mPlayLastLayout.setVisibility(View.VISIBLE);
                 mTvLastTitle.setText(String.valueOf(lessonItem == null ? null : lessonItem.title));
-                break;
-            case Const.COURSE_CHANGE_STATE_FINISH:
-                mTvPlay.setText(R.string.txt_study_finish);
-                mTvPlay2.setText(R.string.txt_study_finish);
-                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
-                mPlayLayout.setEnabled(false);
                 break;
         }
     }
