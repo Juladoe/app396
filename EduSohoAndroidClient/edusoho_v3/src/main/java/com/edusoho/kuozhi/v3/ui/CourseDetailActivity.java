@@ -149,10 +149,6 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                             @Override
                             public void onResponse(String response) {
                                 if (response.equals("true")) {
-                                    SqliteChatUtil chatUtil = SqliteChatUtil.getSqliteChatUtil(mContext, app.domain);
-                                    new NewsCourseDataSource(chatUtil).delete(mFromId, app.loginUser.id);
-                                    new CourseDiscussDataSource(chatUtil).delete(mFromId, app.loginUser.id);
-                                    new NewDataSource(chatUtil).delete(mFromId, PushUtil.CourseType.TYPE, app.loginUser.id);
                                     app.sendMsgToTarget(Const.REFRESH_LIST, new Bundle(), NewsFragment.class);
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
                                         @Override
