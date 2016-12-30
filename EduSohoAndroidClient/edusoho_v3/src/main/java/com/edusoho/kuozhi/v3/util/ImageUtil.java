@@ -44,7 +44,7 @@ public class ImageUtil {
     }
 
     public static Bitmap maskImage(Context context, Bitmap bitmap) {
-        Bitmap scaleBitmap = scaleBitmap(bitmap, 0.7f);
+        Bitmap scaleBitmap = scaleBitmap(bitmap, 0.3f);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return maskImageForSmallSDK17(scaleBitmap);
         }
@@ -52,7 +52,7 @@ public class ImageUtil {
         Allocation allocation = Allocation.createFromBitmap(rs, scaleBitmap);
         ScriptIntrinsicBlur blurScript = ScriptIntrinsicBlur.create(rs, allocation.getElement());
         blurScript.setInput(allocation);
-        blurScript.setRadius(10f);
+        blurScript.setRadius(24f);
         blurScript.forEach(allocation);
         allocation.copyTo(scaleBitmap);
         rs.destroy();
