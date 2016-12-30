@@ -280,7 +280,9 @@ public class CourseCatalogFragment extends BaseFragment {
                 currentFinishedLessonsBean = lessonsBean;
             }
         }
-
+        if ("finished".equals(learnStatuses.get(currentFinishedLessonsBean.getId()))) {
+            currentFinishedLessonsBean = lessonsBeanList.get(lessonsBeanList.indexOf(currentFinishedLessonsBean) + 1);
+        }
         return currentFinishedLessonsBean;
     }
 
