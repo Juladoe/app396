@@ -465,7 +465,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mBottomLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            mMenu.setVisibility(View.VISIBLE);
         } else {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
             mIsFullScreen = false;
@@ -481,7 +480,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                     mTvInclass.setVisibility(View.VISIBLE);
                 }
             }
-            mMenu.setVisibility(View.GONE);
         }
     }
 

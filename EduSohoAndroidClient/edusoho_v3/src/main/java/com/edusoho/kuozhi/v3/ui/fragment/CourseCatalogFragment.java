@@ -245,7 +245,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 //还没开始学,学第一个
                 lessonsBean = findFirstLessonInList();
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_NONE);
-            } else if (!learnStatuses.containsValue("learning")) {
+            } else if (!learnStatuses.containsValue("learning") && (learnStatuses.size() == lessonSize())) {
                 //所有课时学完
                 lessonsBean = findFirstLessonInList();
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_FINISH);
@@ -292,7 +292,6 @@ public class CourseCatalogFragment extends BaseFragment {
                 return lessonsBean;
             }
         }
-
         return null;
     }
 
@@ -305,6 +304,16 @@ public class CourseCatalogFragment extends BaseFragment {
             }
         }
         return null;
+    }
+
+    private int lessonSize() {
+        int count = 0;
+        for (CourseCatalogue.LessonsBean bean : mCourseCatalogue.getLessons()) {
+            if ("lesson".equals(bean.getItemType())) {
+                count++;
+            }
+        }
+        return count;
     }
 
     protected void showProcessDialog() {
@@ -401,7 +410,8 @@ public class CourseCatalogFragment extends BaseFragment {
     private boolean isOk = false;
     public void reFreshColor(){
         if (mLvCatalog != null && lessonsBean != null && isOk) {
-            mLvCatalog.setItemChecked(Integer.parseInt(lessonsBean.getSeq()) - 1, true);
+            int index = ((ArrayList) mCourseCatalogue.getLessons()).indexOf(lessonsBean);
+            mLvCatalog.setItemChecked(index, true);
         }
         isOk = true;
     }

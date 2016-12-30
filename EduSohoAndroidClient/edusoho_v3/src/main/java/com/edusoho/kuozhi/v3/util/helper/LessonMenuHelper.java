@@ -41,6 +41,9 @@ public class LessonMenuHelper {
     }
 
     public void initMenu(MenuPop menuPop) {
+        if(menuPop == null){
+            return;
+        }
         this.mMenuPop = menuPop;
         mMenuPop.removeAll();
         mMenuPop.addItem("记笔记");
