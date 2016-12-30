@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.v3.ui.fragment.video;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,10 +17,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
 
 
@@ -28,10 +27,20 @@ import com.edusoho.videoplayer.ui.VideoPlayerFragment;
 
 public class InnerVideoPlayerFragment extends VideoPlayerFragment {
 
+    private int mLessonId;
+    private int mCourseId;
+    private long mSaveSeekTime;
+    private SharedPreferences mSeekPositionSetting;
+    private static final String SEEK_POSITION = "seek_position";
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         hasOptionsMenu();
+
+        mSeekPositionSetting = getContext().getSharedPreferences(SEEK_POSITION, Context.MODE_PRIVATE);
+        mSaveSeekTime = mSeekPositionSetting.getLong(String.format("%d-%d", mCourseId, mLessonId), 0);
+        setSeekPosition(mSaveSeekTime);
     }
 
     @Override
@@ -43,8 +52,7 @@ public class InnerVideoPlayerFragment extends VideoPlayerFragment {
         }
     }
 
-    private void initFragmentSize() {
-        int height = getContext().getResources().getDimensionPixelOffset(com.edusoho.videoplayer.R.dimen.video_height);
+    private void initFragmentSize(int height) {
         int width = ViewGroup.LayoutParams.MATCH_PARENT;
         setVideoSize(width, height);
     }
@@ -52,7 +60,7 @@ public class InnerVideoPlayerFragment extends VideoPlayerFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initFragmentSize();
+        initFragmentSize(getContext().getResources().getDimensionPixelOffset(com.edusoho.videoplayer.R.dimen.video_height));
         ViewGroup.LayoutParams lp = view.getLayoutParams();
         if (lp instanceof FrameLayout.LayoutParams) {
             ((FrameLayout.LayoutParams)lp).gravity = Gravity.CENTER;
@@ -67,18 +75,38 @@ public class InnerVideoPlayerFragment extends VideoPlayerFragment {
         if (orientation == getResources().getConfiguration().orientation) {
             return;
         }
+        int screenOrientation = orientation == Configuration.ORIENTATION_LANDSCAPE ?
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+        getActivity().setRequestedOrientation(screenOrientation);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
         View playView = getView();
         ViewParent viewParent = playView.getParent();
         if (viewParent == null) {
             return;
         }
-        ViewGroup parent = (ViewGroup) viewParent.getParent();
+        ViewGroup parent = (ViewGroup) viewParent;
 
         WindowManager wm = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
         ViewGroup.LayoutParams lp = parent.getLayoutParams();
-        lp.height = orientation == Configuration.ORIENTATION_LANDSCAPE ?
+        int height = newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE ?
                 wm.getDefaultDisplay().getHeight() : getContext().getResources().getDimensionPixelOffset(com.edusoho.videoplayer.R.dimen.video_height);
         lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+
+        initFragmentSize(height);
         parent.setLayoutParams(lp);
+    }
+
+    @Override
+    protected void savePosition(long seekTime) {
+        super.savePosition(seekTime);
+
+        SharedPreferences.Editor editor = mSeekPositionSetting.edit();
+        editor.putLong(String.format("%d-%d", mCourseId, mLessonId), seekTime);
+        editor.commit();
     }
 }

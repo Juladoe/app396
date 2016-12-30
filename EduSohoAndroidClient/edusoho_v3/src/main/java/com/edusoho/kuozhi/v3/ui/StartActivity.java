@@ -174,12 +174,12 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     protected void onDestroy() {
         app.unRegistMsgSource(this);
         super.onDestroy();
-        Log.d(TAG, "onDestroy: " + "is finish");
+        Log.d(TAG, "onDestroy");
     }
 
     protected void checkSchoolAndUserToken(SystemInfo systemInfo) {
         startLoading("登录用户");
-        ajaxGet(String.format("%s/%s?version=2", systemInfo.mobileApiUrl, Const.CHECKTOKEN), new Response.Listener<String>() {
+        ajaxGet(String.format("%s/%s?version=2&token=%s", systemInfo.mobileApiUrl, Const.CHECKTOKEN, app.token), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 UserResult userResult = parseJsonValue(response.toString(), new TypeToken<UserResult>() {
@@ -198,6 +198,8 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                 app.setCurrentSchool(site);
                 if (userResult.user != null) {
                     app.saveToken(userResult);
+                } else {
+                    app.removeToken();
                 }
                 startApp();
             }

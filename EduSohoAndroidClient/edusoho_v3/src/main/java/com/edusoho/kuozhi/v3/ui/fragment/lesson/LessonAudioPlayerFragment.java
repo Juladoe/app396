@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -95,6 +96,12 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     @Override
     public void onPlayStatusChange(boolean isPlay) {
         super.onPlayStatusChange(isPlay);
+        updateAudioCoverViewStatus(isPlay);
+    }
+
+    @Override
+    protected void updateMediaPlayStatus(boolean isPlay) {
+        super.updateMediaPlayStatus(isPlay);
         updateAudioCoverViewStatus(isPlay);
     }
 
