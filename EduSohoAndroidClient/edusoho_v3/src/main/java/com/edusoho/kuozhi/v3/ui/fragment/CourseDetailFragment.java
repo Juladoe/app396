@@ -71,6 +71,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         mLvReview.setAdapter(mAdapter);
         mTvStudent1.setText(R.string.txt_course_student);
         mTvReview1.setText(R.string.txt_course_review);
+        mTvPeople1.setText(R.string.txt_suit_people);
         initEvent();
         initData();
     }

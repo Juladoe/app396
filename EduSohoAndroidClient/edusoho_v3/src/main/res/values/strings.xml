@@ -115,6 +115,13 @@
     <string name="txt_free">免费</string>
     <string name="txt_vip_desc">加入会员，免费学习更多课程</string>
     <string name="txt_suit_people">适宜人群</string>
+    <string name="txt_provision_services">提供服务</string>
+    <string name="txt_services_homeworkreview">24小时作业批改</string>
+    <string name="txt_services_testpaper">24小时阅卷点评</string>
+    <string name="txt_services_teacheranswer">提问必答</string>
+    <string name="txt_services_liveanswer">一对一在线答疑</string>
+    <string name="txt_services_event">班级活动</string>
+    <string name="txt_services_workadvise">就业指导</string>
     <string name="txt_talk_teacher">讲师</string>
     <string name="txt_course_student">课程学员</string>
     <string name="txt_classroom_student">班级学员</string>

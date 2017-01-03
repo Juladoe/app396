@@ -71,6 +71,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         mLvReview.setAdapter(mAdapter);
         mTvStudent1.setText(R.string.txt_classroom_student);
         mTvReview1.setText(R.string.txt_classroom_review);
+        mTvPeople1.setText(R.string.txt_provision_services);
         initEvent();
         initData();
     }
@@ -209,7 +210,36 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         } catch (Exception e) {
 
         }
-        mPeopleLayout.setVisibility(View.GONE);
+        if (classRoom.service == null || classRoom.service.length == 0) {
+            mPeopleLayout.setVisibility(View.GONE);
+        } else {
+            mPeopleLayout.setVisibility(View.VISIBLE);
+            StringBuilder sb = new StringBuilder();
+            for (String str : classRoom.service) {
+                switch (str) {
+                    case "homeworkReview":
+                        sb.append(getResources().getString(R.string.txt_services_homeworkreview));
+                        break;
+                    case "testpaperReview":
+                        sb.append(getResources().getString(R.string.txt_services_testpaper));
+                        break;
+                    case "teacherAnswer":
+                        sb.append(getResources().getString(R.string.txt_services_teacheranswer));
+                        break;
+                    case "liveAnswer":
+                        sb.append(getResources().getString(R.string.txt_services_liveanswer));
+                        break;
+                    case "event":
+                        sb.append(getResources().getString(R.string.txt_services_event));
+                        break;
+                    case "workAdvise":
+                        sb.append(getResources().getString(R.string.txt_services_workadvise));
+                        break;
+                }
+                sb.append("\n");
+            }
+            mTvPeopleDesc.setText(sb.substring(0, sb.length() - 1));
+        }
         if (classRoom.teachers.length == 0) {
             mTeacherLayout.setVisibility(View.GONE);
         } else {

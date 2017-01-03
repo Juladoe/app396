@@ -59,6 +59,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
     protected ImageView mIvVip;
     protected TextView mTvVipDesc;
     protected TextView mTvPeopleDesc;
+    protected TextView mTvPeople1;
     protected TextView mTvTeacherName;
     protected TextView mTvTeacherDesc;
     protected View mTeacherLayout;
@@ -118,6 +119,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         mTvTitleFull = (TextView) view.findViewById(R.id.tv_title_full);
         mTvReview1 = (TextView) view.findViewById(R.id.tv_review1);
         mTvStudent1 = (TextView) view.findViewById(R.id.tv_student1);
+        mTvPeople1 = (TextView) view.findViewById(R.id.tv_people1);
         mPeopleLayout = view.findViewById(R.id.people_rlayout);
         mTeacherLayout = view.findViewById(R.id.teacher_rlayout);
         mTvStudentNone = view.findViewById(R.id.tv_student_none);
