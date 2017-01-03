@@ -285,7 +285,8 @@ public class Const {
     public static final String FAVORITE = "Course/favoriteCourse";
     public static final String UNFAVORITE = "Course/unFavoriteCourse";
     public static final String CREATE_ORDER = "Order/createOrder";
-    public static final String VIP_ORDER = "Course/vipLearn?courseId=%s";
+    public static final String VIP_ORDER_COURSE = "Course/vipLearn?courseId=%s";
+    public static final String VIP_ORDER_CLASSROOM = "ClassRoom/learnByVip?classRoomId=%s";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
     public static final String VERIFYVERSION = "/systeminfo?version=2";
     public static final String LOGOUT = "User/logout";
