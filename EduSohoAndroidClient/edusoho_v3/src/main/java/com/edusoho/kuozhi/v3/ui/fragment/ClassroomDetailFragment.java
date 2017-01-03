@@ -186,7 +186,14 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         mTvStudentNum.setText(String.format("(%s)", mClassroomDetail.getClassRoom().studentNum));
         if (mClassroomDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
-            mVipLayout.setVisibility(View.GONE);
+            if (classRoom.vipLevelId == 0) {
+                mVipLayout.setVisibility(View.GONE);
+            } else {
+                mVipLayout.setVisibility(View.VISIBLE);
+                mTvVipDesc.setText(String.format("加入%s，免费学习更多课程",
+                        mClassroomDetail.getVipLevels().size() > classRoom.vipLevelId - 1 ?
+                                mClassroomDetail.getVipLevels().get(classRoom.vipLevelId - 1).name : ""));
+            }
             if (classRoom.price == 0) {
                 mTvPriceNow.setText(R.string.txt_free);
                 mTvPriceNow.setTextSize(18);

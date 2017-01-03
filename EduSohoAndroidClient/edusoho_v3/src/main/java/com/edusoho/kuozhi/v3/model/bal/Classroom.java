@@ -17,6 +17,7 @@ public class Classroom implements Serializable {
     public String middlePicture;
     public String largePicture;
     public int studentNum;
+    public int vipLevelId;
     public String postNum;
     public String rating;
     public String buyable;

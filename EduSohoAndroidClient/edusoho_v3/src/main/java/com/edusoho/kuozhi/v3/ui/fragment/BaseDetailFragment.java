@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -215,6 +216,23 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
 
     protected abstract void moreReview();
 
-    protected abstract void vipInfo();
+    protected void vipInfo(){
+        if (EdusohoApp.app.loginUser == null) {
+            CourseUtil.notLogin();
+            return;
+        }
+        final String url = String.format(
+                Const.MOBILE_APP_URL,
+                app.schoolHost,
+                "main#/viplist"
+        );
+        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
+                , mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.WEB_URL, url);
+                    }
+                });
+    }
 
 }

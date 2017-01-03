@@ -273,26 +273,6 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
     }
 
-    @Override
-    protected void vipInfo() {
-        if (EdusohoApp.app.loginUser == null) {
-            CourseUtil.notLogin();
-            return;
-        }
-        final String url = String.format(
-                Const.MOBILE_APP_URL,
-                app.schoolHost,
-                "main#/viplist"
-        );
-        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
-                , mContext, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.WEB_URL, url);
-                    }
-                });
-    }
-
     class ReviewAdapter extends BaseAdapter {
 
         @Override
