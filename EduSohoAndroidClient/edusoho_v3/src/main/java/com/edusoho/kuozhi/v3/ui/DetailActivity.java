@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -194,6 +195,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mTvAdd.setOnClickListener(this);
         mConsult.setOnClickListener(this);
         mBack2.setOnClickListener(this);
+        findViewById(R.id.back).setOnClickListener(this);
         mTvInclass.setOnClickListener(this);
         mMenu.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -217,8 +219,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 if (!mParent.isCanScroll() && t != 0) {
                     mHeadRlayout.setVisibility(View.GONE);
                     mHeadRlayout2.setVisibility(View.VISIBLE);
-//                    mParent.scrollTo(0, AppUtil.dp2px(DetailActivity.this,
-//                            mMediaViewHeight - 43 - mTitleBarHeight));
                 } else if (mParent.getScrollY() < mParent.getFirstViewHeight() - 2) {
                     mHeadRlayout.setVisibility(View.VISIBLE);
                     mHeadRlayout2.setVisibility(View.GONE);
@@ -285,7 +285,14 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             courseStart();
         } else if (v.getId() == R.id.consult_layout) {
             consult();
-        } else if (v.getId() == R.id.back2) {
+        } else if (v.getId() == R.id.back2 || v.getId() == R.id.back) {
+            if (isScreenLock) {
+                return;
+            }
+            if (mIsFullScreen) {
+                fullScreen();
+                return;
+            }
             finish();
         } else if (v.getId() == R.id.layout_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
@@ -314,7 +321,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mIntro.setVisibility(View.GONE);
         mHour.setVisibility(View.GONE);
         mReview.setVisibility(View.GONE);
-//        mParent.setCheckNum(num);
         switch (num) {
             case 0:
                 mIntro.setVisibility(View.VISIBLE);
