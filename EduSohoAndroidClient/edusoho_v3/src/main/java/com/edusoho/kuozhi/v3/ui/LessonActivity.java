@@ -3,7 +3,14 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -96,6 +103,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         ActivityUtil.setStatusViewBackgroud(this, getResources().getColor(R.color.primary_color));
         fragmentData = new Bundle();
         initView();
+        initMenuPop();
         app.startPlayCacheServer(this);
     }
 
@@ -255,12 +263,17 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (menuItem != null) {
             menuItem.setEnabled(mLessonItem != null);
         }
-        initMenuPop(menu);
         return true;
     }
 
-    private void initMenuPop(Menu menu) {
-        MenuPop menuPop = new MenuPop(getBaseContext(), menu.getItem(0).getActionView());
+    private void initMenuPop() {
+        MenuPop menuPop = new MenuPop(getBaseContext(), null);
+        menuPop.setMenuNoticeChangeListener(new MenuPop.IMenuNoticeChangeListener() {
+            @Override
+            public void onChange(boolean hasNotice) {
+                invalidateOptionsMenu();
+            }
+        });
         mLessonMenuHelper = new LessonMenuHelper(getBaseContext(), mLessonId, mCourseId);
         mLessonMenuHelper.initMenu(menuPop);
     }
@@ -279,9 +292,35 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             MenuItem moreItem = menu.findItem(R.id.menu_more);
             if (moreItem != null) {
                 moreItem.setVisible(true);
+                MenuPop menuPop = mLessonMenuHelper.getMenuPop();
+                if (menuPop != null) {
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_menu_more)
+                            .copy(Bitmap.Config.ARGB_8888, true);
+                    Drawable drawable = menuPop.isHasNotice() ?
+                            new BitmapDrawable(createNoticeBitmap(bitmap)) : new BitmapDrawable(bitmap);
+                    moreItem.setIcon(drawable);
+                }
             }
         }
         return super.onPrepareOptionsMenu(menu);
+    }
+
+    private Bitmap createNoticeBitmap(Bitmap bitmap) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+        if (w <= 0 || h <= 0) {
+            return null;
+        }
+
+        Canvas canvas = new Canvas(bitmap);
+
+        RectF rectF = new RectF(w - 15, 15, w - 5, 25);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.RED);
+        canvas.drawOval(rectF, paint);
+
+        return bitmap;
     }
 
     private void loadLesson() {
@@ -325,7 +364,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     bindListener();
                 }
                 switchLoadLessonContent(mLessonItem);
-                supportInvalidateOptionsMenu();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -359,7 +397,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             bindListener();
         }
         switchLoadLessonContent(mLessonItem);
-        mActivity.supportInvalidateOptionsMenu();
     }
 
     private String getLocalIpAddress() {
@@ -526,7 +563,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         fragmentTransaction.replace(R.id.lesson_content, fragment);
         fragmentTransaction.setCustomAnimations(
                 FragmentTransaction.TRANSIT_FRAGMENT_FADE, FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-        fragmentTransaction.commit();
+        fragmentTransaction.commitAllowingStateLoss();
 
         mCurrentFragment = fragment;
         mCurrentFragmentName = fragmentName;
@@ -555,6 +592,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onResume() {
         super.onResume();
+        invalidateOptionsMenu();
         app.resumePlayCacheServer();
     }
 

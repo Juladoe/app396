@@ -37,8 +37,10 @@ public class SchoolUtil {
 
 
     public static School getDefaultSchool(Context context) {
-
         School item = null;
+        if (context == null) {
+            return item;
+        }
         SharedPreferences sp = context.getSharedPreferences("defaultSchool", Context.MODE_PRIVATE);
         Map<String, String> map = (Map<String, String>) sp.getAll();
         if (!map.isEmpty()) {
