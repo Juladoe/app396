@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -39,6 +40,7 @@ import java.util.List;
  */
 public abstract class DetailActivity extends BaseNoTitleActivity
         implements View.OnClickListener, Handler.Callback {
+
     public static final int RESULT_REFRESH = 0x111;
     public static final int RESULT_LOGIN = 0x222;
     protected HeadStopScrollView mParent;
@@ -74,7 +76,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected RelativeLayout mReviewLayout;
     protected View mReview;
     protected View mMenu;
-    protected View mMenuPoint;
     protected List<Fragment> mFragments = new ArrayList<>();
     protected FragmentViewPagerAdapter mAdapter;
     protected int mCheckNum = 0;
@@ -143,7 +144,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mBack2 = findViewById(R.id.back2);
         mBack = findViewById(R.id.back);
         mMenu = findViewById(R.id.layout_menu);
-        mMenuPoint = findViewById(R.id.v_menu_point);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvPlay2 = (TextView) findViewById(R.id.tv_play2);
         mTvInclass = findViewById(R.id.tv_inclass);
@@ -233,8 +233,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 if (!mParent.isCanScroll() && t != 0) {
                     mHeadRlayout.setVisibility(View.GONE);
                     mHeadRlayout2.setVisibility(View.VISIBLE);
-//                    mParent.scrollTo(0, AppUtil.dp2px(DetailActivity.this,
-//                            mMediaViewHeight - 43 - mTitleBarHeight));
                 } else if (mParent.getScrollY() < mParent.getFirstViewHeight() - 2) {
                     mHeadRlayout.setVisibility(View.VISIBLE);
                     mHeadRlayout2.setVisibility(View.GONE);
@@ -330,10 +328,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected void collect() {
     }
 
-    protected void setMenuPointVisible(int visibility) {
-        mMenuPoint.setVisibility(visibility);
-    }
-
     protected abstract void share();
 
     private void checkTab(int num) {
@@ -341,7 +335,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mIntro.setVisibility(View.GONE);
         mHour.setVisibility(View.GONE);
         mReview.setVisibility(View.GONE);
-//        mParent.setCheckNum(num);
         switch (num) {
             case 0:
                 mIntro.setVisibility(View.VISIBLE);

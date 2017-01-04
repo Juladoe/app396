@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -439,8 +440,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         Bundle bundle = new Bundle();
         bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(mCourseId));
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
-        bundle.putString(LessonVideoPlayerFragment.PLAY_URI,
-                String.format("%s://%s%s", uri.getScheme(), uri.getHost(), uri.getPath()));
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
         transaction.commitAllowingStateLoss();
@@ -452,7 +451,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         LessonAudioPlayerFragment fragment = new LessonAudioPlayerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().largePicture);
-        bundle.putString(LessonAudioPlayerFragment.PLAY_URI, lessonItem.mediaUri);
         bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(mCourseId));
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
         fragment.setArguments(bundle);

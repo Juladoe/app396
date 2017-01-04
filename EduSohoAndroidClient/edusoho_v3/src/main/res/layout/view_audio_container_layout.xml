@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/base_black_normal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    android:background="@color/base_black_normal">
 
     <com.makeramen.roundedimageview.RoundedImageView
+        android:visibility="gone"
         android:id="@+id/rl_audio_cover"
         android:layout_width="96dp"
         android:layout_height="96dp"
@@ -17,4 +18,28 @@
         app:riv_border_width="5dp"
         app:riv_corner_radius="100dp" />
 
+    <LinearLayout
+        android:visibility="gone"
+        android:id="@+id/ll_audio_load"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/load_progress"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center"
+            android:indeterminateDrawable="@drawable/load" />
+
+        <TextView
+            android:id="@+id/loading_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="加载中.."
+            android:textColor="@color/textSecondary" />
+    </LinearLayout>
 </FrameLayout>

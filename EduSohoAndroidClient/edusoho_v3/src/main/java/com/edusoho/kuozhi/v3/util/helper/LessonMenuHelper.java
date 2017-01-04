@@ -40,6 +40,10 @@ public class LessonMenuHelper {
         this.mCourseId = courseId;
     }
 
+    public MenuPop getMenuPop() {
+        return mMenuPop;
+    }
+
     public void initMenu(MenuPop menuPop) {
         if(menuPop == null){
             return;
@@ -67,9 +71,15 @@ public class LessonMenuHelper {
     }
 
     private void updatePluginItemState() {
+        boolean hasNotice = false;
         for (PluginViewItem item : mExerciseItemList) {
+            if (item.status == PluginViewItem.NEW) {
+                hasNotice = true;
+            }
             item.callback.initState(item);
         }
+
+        mMenuPop.setNotice(hasNotice);
     }
 
     /**
@@ -215,6 +225,14 @@ public class LessonMenuHelper {
         public void setStatus(int status) {
             super.setStatus(status);
             mMenuPop.getItem(mPosition).setHasPoint(status == NEW);
+            boolean hasNotice = false;
+            for (MenuPop.Item item : mMenuPop.getItems()) {
+                if (item.isHasPoint()) {
+                    hasNotice = true;
+                }
+            }
+
+            mMenuPop.setNotice(hasNotice);
         }
     }
 }

@@ -1,6 +1,12 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -21,18 +27,66 @@ import java.util.List;
  * Created by remilia on 2016/12/19.
  */
 public class MenuPop {
+
     private PopupWindow mPopup;
     private Context mContext;
     private ListView mListView;
     private List<Item> mNames = new ArrayList<>();
     private MenuAdapter mAdapter = new MenuAdapter();
     private View mBindView;
+    private boolean mHasNotice;
     private IMenuShowListener mIMenuShowListener;
+    private IMenuNoticeChangeListener mIMenuNoticeChangeListener;
 
     public MenuPop(Context context, View bindView) {
         this.mContext = context;
         mBindView = bindView;
         init();
+    }
+
+    public void setNotice(boolean hasNotice) {
+        if (mHasNotice == hasNotice) {
+            return;
+        }
+        mHasNotice = hasNotice;
+        if (mBindView != null) {
+            Drawable bitmap = null;
+            if (mBindView == null) {
+                bitmap = new BitmapDrawable();
+            } else {
+                bitmap = hasNotice ?
+                        new BitmapDrawable(createNoticeBitmap(mBindView.getWidth(), mBindView.getHeight())) : new BitmapDrawable();
+            }
+
+            mBindView.setBackground(bitmap);
+        }
+        if (mIMenuNoticeChangeListener != null) {
+            mIMenuNoticeChangeListener.onChange(hasNotice);
+        }
+    }
+
+    public void setMenuNoticeChangeListener(IMenuNoticeChangeListener menuNoticeChangeListener) {
+        this.mIMenuNoticeChangeListener = menuNoticeChangeListener;
+    }
+
+    public boolean isHasNotice() {
+        return mHasNotice;
+    }
+
+    private Bitmap createNoticeBitmap(int w, int h) {
+        if (w <= 0 || h <= 0) {
+            return null;
+        }
+        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
+        Canvas canvas = new Canvas(bitmap);
+
+        RectF rectF = new RectF(w - 15, 15, w - 5, 25);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setColor(Color.RED);
+        canvas.drawOval(rectF, paint);
+
+        return bitmap;
     }
 
     private void init() {
@@ -120,6 +174,10 @@ public class MenuPop {
         return mNames.get(position);
     }
 
+    public List<Item> getItems() {
+        return mNames;
+    }
+
     public void setVisibility(boolean show) {
         if (mBindView != null) {
             if(mOnBindViewVisibleChangeListener != null){
@@ -175,6 +233,10 @@ public class MenuPop {
 
     public interface IMenuShowListener {
         void onShow(boolean isShow);
+    }
+
+    public interface IMenuNoticeChangeListener {
+        void onChange(boolean hasNotice);
     }
 
     private class MenuAdapter extends BaseAdapter {
