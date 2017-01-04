@@ -4,9 +4,7 @@ import android.content.Intent;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.DetailActivity;
@@ -195,6 +193,36 @@ public class ClassroomUtil {
         });
     }
 
+    public static void addClassroomVip(String classroomId, final OnAddClassroomListener
+            onAddclassroomListener) {
+        if (EdusohoApp.app.loginUser == null) {
+            notLogin();
+            return;
+        }
+        RequestUrl url = EdusohoApp.app.bindUrl(String.format(Const.VIP_ORDER_CLASSROOM, classroomId), true);
+        EdusohoApp.app.getUrl(url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (onAddclassroomListener != null) {
+                            onAddclassroomListener.onAddClassroomSuccee(response);
+                        }
+                    }
+                }
+
+                , new Response.ErrorListener()
+
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (onAddclassroomListener != null) {
+                            onAddclassroomListener.onAddClassroomError("volleyError");
+                        }
+                    }
+                }
+
+        );
+    }
+
     public interface OnCollectSucceeListener {
         void onCollectSuccee();
     }
@@ -215,4 +243,6 @@ public class ClassroomUtil {
                     }
                 });
     }
+
+
 }

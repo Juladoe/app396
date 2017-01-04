@@ -285,7 +285,8 @@ public class Const {
     public static final String FAVORITE = "Course/favoriteCourse";
     public static final String UNFAVORITE = "Course/unFavoriteCourse";
     public static final String CREATE_ORDER = "Order/createOrder";
-    public static final String VIP_ORDER = "Course/vipLearn?courseId=%s";
+    public static final String VIP_ORDER_COURSE = "Course/vipLearn?courseId=%s";
+    public static final String VIP_ORDER_CLASSROOM = "ClassRoom/learnByVip?classRoomId=%s";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
     public static final String VERIFYVERSION = "/systeminfo?version=2";
     public static final String LOGOUT = "User/logout";
@@ -309,7 +310,7 @@ public class Const {
     public static final String COURSE_GETREVIEWS = "Course/getReviews?courseId=%s&limit=%s&start=%s";
     public static final String COURSE_GETMEMBER = "/api/courses/%s/members";
     public static final String COURSE_GETCLASSROOM = "ClassRoom/getClassRoom?id=%s";
-    public static final String CLASSROOM_GETREVIEWS = "ClassRoom/getReviews?courseId=%s&limit=%s&start=%s";
+    public static final String CLASSROOM_GETREVIEWS = "ClassRoom/getReviews?classRoomId=%s&limit=%s&start=%s";
     public static final String CLASSROOM_GETMEMBER = "/api/classrooms/%s/members?limits=1";
 
     public static final String LESSONS = "Lesson/getCourseLessons";

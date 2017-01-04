@@ -17,11 +17,12 @@ public class Classroom implements Serializable {
     public String middlePicture;
     public String largePicture;
     public int studentNum;
+    public int vipLevelId;
     public String postNum;
     public String rating;
     public String buyable;
     public String createdTime;
-    public Object service;
+    public String[] service;
     public Teacher[] teachers;
     public String convNo;
 

@@ -139,6 +139,13 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }
+        if (app.loginUser != null && app.loginUser.vip != null &&
+                app.loginUser.vip.levelId >= mClassroomDetail.getClassRoom().vipLevelId
+                && mClassroomDetail.getClassRoom().vipLevelId != 0) {
+            mTvAdd.setText(R.string.txt_vip_free);
+        } else {
+            mTvAdd.setText(R.string.txt_add_course);
+        }
     }
 
     @Override
@@ -185,6 +192,25 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                 return;
             }
             showProcessDialog();
+            if (app.loginUser != null && app.loginUser.vip != null
+                    && app.loginUser.vip.levelId >= mClassroomDetail.getClassRoom().vipLevelId
+                    && mClassroomDetail.getClassRoom().vipLevelId != 0) {
+                ClassroomUtil.addClassroomVip(mClassroomId, new ClassroomUtil.OnAddClassroomListener() {
+                    @Override
+                    public void onAddClassroomSuccee(String response) {
+                        hideProcesDialog();
+                        CommonUtil.shortToast(ClassroomActivity.this, getResources()
+                                .getString(R.string.success_add_classroom));
+                        initData();
+                    }
+
+                    @Override
+                    public void onAddClassroomError(String response) {
+                        hideProcesDialog();
+                    }
+                });
+                return;
+            }
             ClassroomUtil.addClassroom(new ClassroomUtil.ClassroomParamsBuilder()
                             .setCouponCode("")
                             .setPayment("")

@@ -198,7 +198,7 @@ public class CourseUtil {
             notLogin();
             return;
         }
-        RequestUrl url = EdusohoApp.app.bindUrl(String.format(Const.VIP_ORDER, courseId), true);
+        RequestUrl url = EdusohoApp.app.bindUrl(String.format(Const.VIP_ORDER_COURSE, courseId), true);
         EdusohoApp.app.getUrl(url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

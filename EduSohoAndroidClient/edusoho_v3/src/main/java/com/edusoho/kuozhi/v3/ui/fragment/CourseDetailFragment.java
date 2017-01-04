@@ -71,6 +71,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         mLvReview.setAdapter(mAdapter);
         mTvStudent1.setText(R.string.txt_course_student);
         mTvReview1.setText(R.string.txt_course_review);
+        mTvPeople1.setText(R.string.txt_suit_people);
         initEvent();
         initData();
     }
@@ -270,26 +271,6 @@ public class CourseDetailFragment extends BaseDetailFragment {
     @Override
     protected void moreReview() {
 
-    }
-
-    @Override
-    protected void vipInfo() {
-        if (EdusohoApp.app.loginUser == null) {
-            CourseUtil.notLogin();
-            return;
-        }
-        final String url = String.format(
-                Const.MOBILE_APP_URL,
-                app.schoolHost,
-                "main#/viplist"
-        );
-        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
-                , mContext, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.WEB_URL, url);
-                    }
-                });
     }
 
     class ReviewAdapter extends BaseAdapter {
