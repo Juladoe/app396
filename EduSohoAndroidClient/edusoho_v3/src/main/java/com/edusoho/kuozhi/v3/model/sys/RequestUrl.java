@@ -89,12 +89,12 @@ public class RequestUrl {
         return params;
     }
 
-    public HashMap<String, Object> getAllParams() {
+    public Map<String, Object> getAllParams() {
         muiltParams.putAll(params);
         return muiltParams;
     }
 
-    public HashMap<String, String> getHeads() {
+    public Map<String, String> getHeads() {
         return heads;
     }
 

@@ -87,6 +87,7 @@ public class EdusohoApp extends Application {
     public School defaultSchool;
     public User loginUser;
     public String apiVersion;
+    public String schoolVersion;
     public String schoolHost = "";
     public CoreEngine mEngine;
 
@@ -113,6 +114,7 @@ public class EdusohoApp extends Application {
 
     private ImageLoaderConfiguration mImageLoaderConfiguration;
     public DisplayImageOptions mOptions;
+    public DisplayImageOptions mAvatarOptions;
 
     //cache 缓存服务器
     private CacheServer mResouceCacheServer;
@@ -182,7 +184,7 @@ public class EdusohoApp extends Application {
                     errorListener.onErrorResponse(error);
                     return;
                 }
-                if(error instanceof TimeoutError){
+                if (error instanceof TimeoutError) {
                     errorListener.onErrorResponse(error);
                     return;
                 }
@@ -373,6 +375,8 @@ public class EdusohoApp extends Application {
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).
                 showImageOnFail(R.drawable.defaultpic).build();
+        mAvatarOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.icon_default_avatar).
+                showImageOnFail(R.drawable.icon_default_avatar).build();
     }
 
     public HashMap<String, String> getPlatformInfo() {

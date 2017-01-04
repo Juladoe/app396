@@ -128,6 +128,29 @@ public class Const {
     public static final String CLEAR_HISTORY = "clear_history";
     public static final String DELETE_FRIEND = "delete_friend";
     public static final String DIALOG_DISMISS = "dialog_dismiss";
+    public static final String SCROLL_STATE_SAVE = "scroll_state_save";
+
+    public static final String FULL_SCREEN = "course_full_screen";
+    public static final String SCREEN_LOCK = "screen_lock";
+    public static final String COURSE_HASTRIAL = "course_hastrial";//是否有试学
+    public static final String COURSE_HASTRIAL_RESULT = "course_hastrial_result";
+    public static final String COURSE_REFRESH = "course_refresh";//刷新课程Activity
+    public static final String LESSON_STATUS_REFRESH = "lesson_status_refresh";//刷新课时状态
+
+    public static final String COURSE_START = "course_start";//开始课程
+    public static final String COURSE_CHANGE = "course_change";//课程切换
+    public static final String COURSE_CHANGE_OBJECT = "course_change_object";//课程切换
+
+    public static final String COURSE_CHANGE_TITLE = "course_change_title";//课程名字
+    public static final String COURSE_CHANGE_STATE = "course_change_state";//课程状态
+    public static final String COURSE_CHANGE_STATE_NONE = "0";//课程状态,未开始
+    public static final String COURSE_CHANGE_STATE_STARTED = "1";//课程状态,已开始
+    public static final String COURSE_CHANGE_STATE_FINISH = "2";//课程状态,学完了
+
+    public static final String COURSE_SHOW_BAR = "course_show_bar";//导航栏
+    public static final String COURSE_HIDE_BAR = "course_hide_bar";//导航栏
+    public static final String COURSE_PAUSE = "course_pause";//暂停课程后的UI处理
+    //public static final String COURSE_PPT = "course_ppt";//暂停课程后的UI处理
 
     public static final int OK = 200;
     public static final int ERROR_200 = 200;
@@ -157,6 +180,19 @@ public class Const {
     public static final String COURSELESSON = "Lesson/getLesson";
     public static final String DOWNLOAD_MATERIAL = "%sLesson/downMaterial?courseId=%d&materialId=%d&token=%s";
     public static final String UPLOAD_IMAGE = "Testpaper/uploadQuestionImage";
+
+    /**
+     * 课时类型
+     */
+    public static final String COURSE_CATALOG_PPT = "ppt";
+    public static final String COURSE_CATALOG_LIVE = "live";
+    public static final String COURSE_CATALOG_TEXT = "text";
+    public static final String COURSE_CATALOG_AUDIO = "audio";
+    public static final String COURSE_CATALOG_VIDEO = "video";
+    public static final String COUSRE_CATALOG_FLASH = "flash";
+    public static final String COURSE_CATALOG_TESTPAPER = "testPaper";
+    public static final String COURSE_CATALOG_DOCUMENT = "document";
+    public static final String COURSE_CATALOG_EMPTH = "empty";
 
     /**
      * mobile/{code}/version  *
@@ -235,7 +271,6 @@ public class Const {
     public static final String EDIT_QUESTION_INFO = "Course/updateThread";
 
     public static final String CHECKTOKEN = "User/loginWithToken";
-    public static final String BIND_PHONE = "/api/users/password";
     public static final String COMPLETE = "/api/sms_codes";
     public static final String LOGIN = "User/login";
     public static final String SMS_SEND = "User/smsSend";
@@ -249,6 +284,9 @@ public class Const {
     public static final String PAYCOURSE = "Order/payCourse";
     public static final String FAVORITE = "Course/favoriteCourse";
     public static final String UNFAVORITE = "Course/unFavoriteCourse";
+    public static final String CREATE_ORDER = "Order/createOrder";
+    public static final String VIP_ORDER_COURSE = "Course/vipLearn?courseId=%s";
+    public static final String VIP_ORDER_CLASSROOM = "ClassRoom/learnByVip?classRoomId=%s";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
     public static final String VERIFYVERSION = "/systeminfo?version=2";
     public static final String LOGOUT = "User/logout";
@@ -268,6 +306,13 @@ public class Const {
     public static final String USERTERMS = "School/getUserterms";
     public static final String USERINFO = "User/getUserInfo";
     public static final String REVIEWS = "Course/getReviews";
+    public static final String COURSE_GETCOURSE = "Course/getCourse?courseId=%s";
+    public static final String COURSE_GETREVIEWS = "Course/getReviews?courseId=%s&limit=%s&start=%s";
+    public static final String COURSE_GETMEMBER = "/api/courses/%s/members";
+    public static final String COURSE_GETCLASSROOM = "ClassRoom/getClassRoom?id=%s";
+    public static final String CLASSROOM_GETREVIEWS = "ClassRoom/getReviews?classRoomId=%s&limit=%s&start=%s";
+    public static final String CLASSROOM_GETMEMBER = "/api/classrooms/%s/members?limits=1";
+
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";
     public static final String SEARCH_COURSE = "Course/searchCourse";
@@ -291,14 +336,23 @@ public class Const {
     public static final String GET_UPLOAD_INFO = "/file/%s/upload/url?length=%d&filename=%s";
     public static final String SAVE_UPLOAD_INFO = "/file/%d/upload/succeed";
     public static final String GET_LATEST_OFFLINE_MSG = "/message/%d/newest/list";
-
+    public static final String LESSON_IDS = "lesson_ids";
+    public static final String STUDENT_LIST = "/api/courses/%s/members";
     /**
      * 获取课程状态（是否包含资料，学习状态）
      */
     public static final String LESSON_STATUS = "Lesson/getLessonStatus";
-
+    /**
+     * 获取课程目录
+     */
+    public static final String LESSON_CATALOG = "/mapi_v2/Lesson/getCourseLessons";
+    /**
+     * 获取班级目录
+     */
+    public static final String CLASS_CATALOG = "/mapi_v2/ClassRoom/getClassRoomCourses";
     /**
      * 获取考试课程详情
+     *
      */
     public static final String TESTPAPER_INFO = "Lesson/getTestpaperInfo";
 
@@ -464,7 +518,7 @@ public class Const {
      */
 
     public static final String SMS_CODES = "/api/sms_codes";
-    public static final String FIND_PASSWORD = "/api/users/password";
+    public static final String CHANGE_PASSWORD = "/api/users/password";
     public static final String EMAILS = "/api/emails";
     public static final String GET_API_TOKEN = "/api/mobileschools/token";
     public static final String USERS = "/api/users";
@@ -512,6 +566,7 @@ public class Const {
     public static final String MY_POSTED_THREADS = "/api/chaos_threads_posts/getThreadPosts";
 
     public static final String LESSON = "/api/lessons/%d";
+    public static final String WEB_LESSON = "/mapi_v2/mobile/main#/lesson/%s/%s";
 
     public static final String UPLOAD_SAVED_DATA_USAGE = "http://121.40.188.27:8001/video_player?size=%d&url=%s&source=mobile&type=cacheStats";
 

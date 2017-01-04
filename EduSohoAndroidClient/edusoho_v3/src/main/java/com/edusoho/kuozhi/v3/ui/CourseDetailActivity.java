@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.managar.IMConvManager;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
@@ -114,13 +115,9 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                 }
             });
         } else if (v.getId() == R.id.rl_entry) {
-            app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, String.format(Const.MOBILE_WEB_COURSE, mFromId));
-                    startIntent.putExtra(Const.WEB_URL, url);
-                }
-            });
+            Bundle bundle = new Bundle();
+            bundle.putString(CourseActivity.COURSE_ID, String.valueOf(mFromId));
+            CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
         } else if (v.getId() == R.id.rl_clear_record) {
             PopupDialog popupDialog = PopupDialog.createMuilt(mContext, "提示", "删除聊天记录？", new PopupDialog.PopupClickListener() {
                 @Override
@@ -152,10 +149,6 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                             @Override
                             public void onResponse(String response) {
                                 if (response.equals("true")) {
-                                    SqliteChatUtil chatUtil = SqliteChatUtil.getSqliteChatUtil(mContext, app.domain);
-                                    new NewsCourseDataSource(chatUtil).delete(mFromId, app.loginUser.id);
-                                    new CourseDiscussDataSource(chatUtil).delete(mFromId, app.loginUser.id);
-                                    new NewDataSource(chatUtil).delete(mFromId, PushUtil.CourseType.TYPE, app.loginUser.id);
                                     app.sendMsgToTarget(Const.REFRESH_LIST, new Bundle(), NewsFragment.class);
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
                                         @Override

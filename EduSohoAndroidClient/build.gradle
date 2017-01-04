@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.2.3'
         classpath 'com.antfortune.freeline:gradle:0.8.3'
     }
 }
@@ -15,5 +15,8 @@ allprojects {
     repositories {
         mavenLocal()
         jcenter()
+        maven { url "http://192.168.12.7:8081/repository/maven-snapshots/" }
+//        maven { url "http://localhost" }
+
     }
 }
