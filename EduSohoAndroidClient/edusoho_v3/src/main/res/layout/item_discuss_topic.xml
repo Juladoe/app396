@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingRight="15dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp">
+
+    <com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView
+        android:id="@+id/iv_user_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/icon_default_avatar"
+        android:scaleType="centerCrop" />
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:text="测试中"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/secondary_font_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:layout_toRightOf="@id/iv_user_icon"/>
+
+    <TextView
+        android:id="@+id/tv_kind"
+        android:text="话题"
+        android:textColor="@color/secondary2_color"
+        android:textSize="@dimen/font_xxs"
+        android:layout_above="@id/tv_kind"
+        android:layout_toRightOf="@id/iv_user_icon"
+        android:layout_below="@id/tv_user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:text="有些事情是交给时间处理的"
+        android:textColor="@color/primary_font_color"
+        android:textSize="@dimen/font_l"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tv_kind"
+        android:layout_marginLeft="10dp"
+        android:maxEms="15"
+        android:layout_alignTop="@id/tv_kind"/>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:text="1小时前"
+        android:textColor="@color/secondary2_font_color"
+        android:textSize="@dimen/font_xxs"
+        android:layout_alignLeft="@id/tv_kind"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_comment_num"
+        android:text="100"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/secondary2_font_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:id="@+id/tv_comment"
+        android:background="@color/grey_dddddd"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@id/tv_comment_num"
+        android:layout_marginRight="10dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp" />
+
+</RelativeLayout>

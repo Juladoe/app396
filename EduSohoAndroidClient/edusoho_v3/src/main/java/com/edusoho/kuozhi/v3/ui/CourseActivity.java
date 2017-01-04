@@ -80,6 +80,13 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             }
         });
         fragments.add(catafragment);
+//        Fragment discussFrament = app.mEngine.runPluginWithFragment("DiscussFragment", this, new PluginFragmentCallback() {
+//            @Override
+//            public void setArguments(Bundle bundle) {
+//                bundle.putString("id", mCourseId);
+//            }
+//        });
+//        fragments.add(discussFrament);
     }
 
     protected void initEvent() {

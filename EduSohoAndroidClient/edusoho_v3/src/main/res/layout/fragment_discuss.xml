@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <com.edusoho.kuozhi.v3.view.FixCourseListView
+        android:id="@+id/lv_discuss"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+        android:id="@+id/tv_edit_topic"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="65dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/shape_inclass_back"
+        android:gravity="center"
+        android:text="话题"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_s"
+        android:visibility="visible"/>
+
+</RelativeLayout>
