@@ -324,6 +324,7 @@ public class Const {
     public static final String UNLEARN_LESSON = "Lesson/unLearnLesson";
     public static final String LEARN_STATUS = "Lesson/getLearnStatus";
     public static final String VIP_LEARN_COURSE = "Course/vipLearn";
+    public static final String COURSE_COMMITCOURSE = "Course/commitCourse";
     public static final String USER_DATA_NUMBER = "User/getUserNum";
     public static final String CLASSROOM_UNLEARN = "ClassRoom/unlearn";
 

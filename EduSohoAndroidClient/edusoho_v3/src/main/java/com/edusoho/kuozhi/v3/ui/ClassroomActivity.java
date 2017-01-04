@@ -58,6 +58,8 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         mPlayLayout2.setVisibility(View.GONE);
         mTvAdd.setText(R.string.txt_add_class);
         mTvCatalog.setText(R.string.class_catalog);
+        mIvGrade.setVisibility(View.GONE);
+        mIvGrade2.setVisibility(View.GONE);
     }
 
     @Override
@@ -113,6 +115,17 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                         }
                     });
         }
+    }
+
+    @Override
+    protected void grade() {
+        app.mEngine.runNormalPlugin("ReviewActivity", mContext, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ReviewActivity.TYPE, ReviewActivity.TYPE_CLASSROOM);
+                startIntent.putExtra(ReviewActivity.ID, mClassroomId);
+            }
+        });
     }
 
     @Override

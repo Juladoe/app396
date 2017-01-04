@@ -241,7 +241,7 @@
             android:text="@string/new_font_grade"
             android:textColor="@color/disabled2_hint_color"
             android:textSize="16dp"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <RelativeLayout
             android:id="@+id/layout_menu"
@@ -347,7 +347,7 @@
                 android:text="@string/new_font_grade"
                 android:textColor="@color/secondary_font_color"
                 android:textSize="16dp"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                 android:id="@+id/iv_share2"
