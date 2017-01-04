@@ -157,7 +157,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                 && mClassroomDetail.getClassRoom().vipLevelId != 0) {
             mTvAdd.setText(R.string.txt_vip_free);
         } else {
-            mTvAdd.setText(R.string.txt_add_course);
+            mTvAdd.setText(R.string.txt_add_class);
         }
     }
 
