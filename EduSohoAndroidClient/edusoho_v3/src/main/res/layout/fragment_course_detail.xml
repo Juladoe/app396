@@ -346,6 +346,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="20dp"
                     android:paddingBottom="20dp"
+                    android:layout_marginRight="8dp"
                     android:text="@string/txt_more_review"
                     android:textColor="@color/primary_color"
                     android:textSize="@dimen/font_l" />

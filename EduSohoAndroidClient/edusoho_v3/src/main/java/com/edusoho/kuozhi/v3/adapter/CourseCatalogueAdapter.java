@@ -9,10 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 
 import java.text.SimpleDateFormat;
@@ -38,6 +40,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     private LessonHolder lessonHolder;
     private CourseCatalogue.LessonsBean lessonsBean;
     private Map<String, String> learnStatuses;
+    private RelativeLayout.LayoutParams params;
 
     public CourseCatalogueAdapter(Context context, CourseCatalogue courseCatalogue, boolean isJoin, String chapterTitle, String unitTitle) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE );
@@ -118,6 +121,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     }
 
     private void initView(int position) {
+
         if (!isJoin) {
             lessonHolder.lessonState.setVisibility(View.GONE);
             lessonHolder.lessonUp.setVisibility(View.GONE);
@@ -150,10 +154,16 @@ public class CourseCatalogueAdapter extends BaseAdapter {
         if ("live".equals(lessonsBean.getType())) {
             initLiveState();
         }
+        lessonHolder.lessonTitle.measure(0, 0);
+        params = (RelativeLayout.LayoutParams) lessonHolder.lessonTitle.getLayoutParams();
+        RelativeLayout.LayoutParams down = (RelativeLayout.LayoutParams) lessonHolder.lessonDown.getLayoutParams();
+        down.height = AppUtil.dp2px(mContext, 30) > lessonHolder.lessonTitle.getMeasuredHeight() - AppUtil.dp2px(mContext, 12f) ? AppUtil.dp2px(mContext, 30)
+                        : lessonHolder.lessonTitle.getMeasuredHeight();
+        lessonHolder.lessonDown.setLayoutParams(down);
     }
 
     private void initLiveState() {
-        lessonHolder.lessonTitle.setMaxEms(10);
+        lessonHolder.lessonTitle.setMaxEms(8);
         long time = System.currentTimeMillis() / 1000;
         String start = lessonsBean.getStartTime();
         String end = lessonsBean.getEndTime();

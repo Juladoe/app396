@@ -105,9 +105,9 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getClassroomReviews(String courseId, String limit, String start,
+    public static void getClassroomReviews(String classroomId, String limit, String start,
                                            final ResponseCallbackListener<ClassroomReviewDetail> callbackListener) {
-        String url = String.format(Const.CLASSROOM_GETREVIEWS, courseId, limit, start);
+        String url = String.format(Const.CLASSROOM_GETREVIEWS, classroomId, limit, start);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override

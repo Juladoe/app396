@@ -190,6 +190,10 @@ public class CourseCatalogFragment extends BaseFragment {
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if ("flash".equals(mCourseCatalogue.getLessons().get(position).getType())) {
+                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
+                    return;
+                }
                 if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType())
                         || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
                     return;
@@ -280,7 +284,9 @@ public class CourseCatalogFragment extends BaseFragment {
                 currentFinishedLessonsBean = lessonsBean;
             }
         }
-
+        if ("finished".equals(learnStatuses.get(currentFinishedLessonsBean.getId()))) {
+            currentFinishedLessonsBean = lessonsBeanList.get(lessonsBeanList.indexOf(currentFinishedLessonsBean) + 1);
+        }
         return currentFinishedLessonsBean;
     }
 
