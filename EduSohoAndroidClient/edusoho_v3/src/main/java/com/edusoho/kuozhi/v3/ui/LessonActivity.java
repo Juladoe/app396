@@ -48,7 +48,6 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
-import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
