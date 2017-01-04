@@ -260,17 +260,6 @@
                 android:textColor="@color/disabled2_hint_color"
                 android:textSize="16dp"
                  />
-
-            <View
-                android:visibility="gone"
-                android:id="@+id/v_menu_point"
-                android:layout_width="5dp"
-                android:layout_height="5dp"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginTop="13dp"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/shape_red_point" />
         </RelativeLayout>
 
         <com.edusoho.kuozhi.v3.view.EduSohoNewIconView

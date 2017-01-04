@@ -8,13 +8,19 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.ui.DetailActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.ImageUtil;
@@ -38,6 +44,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     protected float mAudioCoverAnimOffset;
     protected ObjectAnimator mAudioCoverAnim;
     private ImageView mCoverImageView;
+    private View mLoadView;
     private DetailActivity mMenuCallback;
     private LessonMenuHelper mLessonMenuHelper;
 
@@ -55,6 +62,36 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         mMenuCallback = (DetailActivity) activity;
     }
 
+    protected void setLoadViewState(boolean isShow) {
+        mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    protected void setCoverViewState(boolean isShow) {
+        mCoverImageView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    private void loadPlayUrl() {
+        setLoadViewState(true);
+        new LessonProvider(getContext()).getLesson(mLessonId)
+        .success(new NormalCallback<LessonItem>() {
+            @Override
+            public void success(LessonItem lessonItem) {
+                setLoadViewState(false);
+                setCoverViewState(true);
+                if (lessonItem == null || TextUtils.isEmpty(lessonItem.mediaUri)) {
+                    return;
+                }
+
+                playAudio(lessonItem.mediaUri);
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                setLoadViewState(false);
+            }
+        });
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -66,12 +103,14 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         initPlayContainer();
         mLessonMenuHelper = new LessonMenuHelper(getContext(), mLessonId, mCourseId);
         mLessonMenuHelper.initMenu(mMenuCallback.getMenu());
+        loadPlayUrl();
     }
 
     protected void initPlayContainer() {
         final View containerView = LayoutInflater.from(getContext()).inflate(R.layout.view_audio_container_layout, null);
         setContainerView(containerView);
         mCoverImageView = (ImageView) containerView.findViewById(R.id.rl_audio_cover);
+        mLoadView = containerView.findViewById(R.id.ll_audio_load);
         ImageLoader.getInstance().displayImage(mCoverUrl, mCoverImageView);
         ImageLoader.getInstance().loadImage(mCoverUrl, new SimpleImageLoadingListener() {
             @Override
@@ -100,6 +139,12 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     }
 
     @Override
+    protected void stopPlayback() {
+        super.stopPlayback();
+        updateAudioCoverViewStatus(false);
+    }
+
+    @Override
     protected void updateMediaPlayStatus(boolean isPlay) {
         super.updateMediaPlayStatus(isPlay);
         updateAudioCoverViewStatus(isPlay);
@@ -113,6 +158,9 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
             mAudioCoverAnim.setRepeatCount(-1);
         }
         if (isPlay) {
+            if (mAudioCoverAnim.isRunning()) {
+                return;
+            }
             mAudioCoverAnim.setFloatValues(mAudioCoverAnimOffset, mAudioCoverAnimOffset + 359f);
             mAudioCoverAnim.start();
         } else {

@@ -27,15 +27,6 @@ public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.M
 
     protected void initView() {
         hideActionBar();
-        View back = findViewById(R.id.back);
-        if (back != null) {
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
-        }
     }
 
     @Override

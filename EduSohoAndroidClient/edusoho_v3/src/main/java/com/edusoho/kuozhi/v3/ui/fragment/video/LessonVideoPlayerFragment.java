@@ -6,13 +6,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.view.WindowManager;
+
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.ui.DetailActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
@@ -52,6 +59,29 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     }
 
     @Override
+    protected void requestMediaUri() {
+        loadPlayUrl();
+    }
+
+    private void loadPlayUrl() {
+        new LessonProvider(getContext()).getLesson(mLessonId)
+                .success(new NormalCallback<LessonItem>() {
+                    @Override
+                    public void success(LessonItem lessonItem) {
+                        if (lessonItem == null || TextUtils.isEmpty(lessonItem.mediaUri)) {
+                            return;
+                        }
+                        Uri mediaUri = Uri.parse(lessonItem.mediaUri);
+                        playVideo(String.format("%s://%s%s", mediaUri.getScheme(), mediaUri.getHost(), mediaUri.getPath()));
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+            }
+        });
+    }
+
+    @Override
     public void onFocusChange(View v, boolean hasFocus) {
         if (hasFocus) {
             play();
@@ -66,6 +96,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
             new LessonMenuHelper(getContext(), mLessonId, mCourseId).initMenu(mMenuCallback.getMenu());
         }
+        loadPlayUrl();
     }
 
     @Override
