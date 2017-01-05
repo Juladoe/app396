@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/layout_my"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
+        android:layout_marginTop="16dp"
+        android:background="@color/disabled2_hint_color">
+
+        <com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp" />
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="26dp"
+            android:layout_toRightOf="@+id/iv_avatar"
+            android:text="罗志祥的卧蚕"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_l" />
+
+        <TextView
+            android:id="@+id/tv_avatar_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_name"
+            android:layout_below="@+id/tv_name"
+            android:layout_marginTop="10dp"
+            android:text="用户类型"
+            android:textColor="@color/secondary2_font_color"
+            android:textSize="@dimen/font_s" />
+
+        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/new_font_more"
+            android:layout_marginRight="25dp" />
+
+    </RelativeLayout>
+
+    <L
+
+</RelativeLayout>
