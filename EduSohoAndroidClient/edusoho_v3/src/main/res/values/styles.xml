@@ -263,4 +263,13 @@
         <item name="android:layout_marginRight">15dp</item>
         <item name="android:layout_alignParentBottom">true</item>
     </style>
+
+    <style name="DiscussDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/trans_color</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 </resources>

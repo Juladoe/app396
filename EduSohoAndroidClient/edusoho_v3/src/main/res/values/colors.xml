@@ -473,5 +473,6 @@
     <color name="register_send_auth">#2b333b</color>
     <color name="register_tv_show_hint">#bdc2c6</color>
     <color name="register_view">#d8d8d8</color>
+    <color name="trans_color">#00000000</color>
 
 </resources>

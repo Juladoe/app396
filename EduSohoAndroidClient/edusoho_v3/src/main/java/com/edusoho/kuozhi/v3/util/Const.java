@@ -351,6 +351,10 @@ public class Const {
      */
     public static final String CLASS_CATALOG = "/mapi_v2/ClassRoom/getClassRoomCourses";
     /**
+     * 获取课程讨论
+     */
+    public static final String LESSON_DISCUSS = "/api/courses/%s/threads?courseId=%s&limit=100&simplify=0&sort=posted";
+    /**
      * 获取考试课程详情
      *
      */

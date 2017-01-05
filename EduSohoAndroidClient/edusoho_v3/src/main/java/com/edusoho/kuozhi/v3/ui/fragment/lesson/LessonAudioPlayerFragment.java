@@ -82,7 +82,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
                     return;
                 }
 
-                playAudio(lessonItem.mediaUri);
+//                playAudio(lessonItem.mediaUri);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -138,11 +138,11 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         updateAudioCoverViewStatus(isPlay);
     }
 
-    @Override
-    protected void stopPlayback() {
-        super.stopPlayback();
-        updateAudioCoverViewStatus(false);
-    }
+//    @Override
+//    protected void stopPlayback() {
+//        super.stopPlayback();
+//        updateAudioCoverViewStatus(false);
+//    }
 
     @Override
     protected void updateMediaPlayStatus(boolean isPlay) {
