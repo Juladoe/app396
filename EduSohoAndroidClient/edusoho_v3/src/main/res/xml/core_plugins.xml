@@ -156,6 +156,11 @@
         version="1.0" />
 
     <plugin
+        name="MyTabFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.MyTabFragment"
+        version="1.0" />
+
+    <plugin
         name="DiscussFragment"
         package="com.edusoho.kuozhi.imserver.ui.MessageListFragment"
         version="1.0" />

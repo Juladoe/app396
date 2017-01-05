@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +11,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by remilia on 2017/1/5.
+ * Created by zhangruoyi on 2017/1/5.
  */
 public class MyFragment extends BaseFragment {
 
@@ -20,8 +29,13 @@ public class MyFragment extends BaseFragment {
     private ImageView mIvAvatar;
     private TextView mTvName;
     private TextView mTvAvatarType;
+    private HeadStopScrollView mParent;
     private View mLayoutMy;
     private ViewPager mVpContent;
+    private List<Fragment> mFragments = new ArrayList<>();
+    private FragmentViewPagerAdapter mAdapter;
+
+    private int mScrollHeadHeight = 121;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,14 +46,34 @@ public class MyFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         super.initView(view);
+        mParent = (HeadStopScrollView) view.findViewById(R.id.parent);
         mLayoutTab = (LinearLayout) view.findViewById(R.id.layout_tab);
         mIvAvatar = (ImageView) view.findViewById(R.id.iv_avatar);
         mTvName = (TextView) view.findViewById(R.id.tv_name);
         mTvAvatarType = (TextView) view.findViewById(R.id.tv_avatar_type);
         mLayoutMy = view.findViewById(R.id.layout_my);
         mVpContent = (ViewPager) view.findViewById(R.id.vp_content);
+        mAdapter = new FragmentViewPagerAdapter(getChildFragmentManager(), mFragments);
+        ImageLoader.getInstance().displayImage(app.loginUser.avatar, mIvAvatar);
+        mTvName.setText(app.loginUser.nickname);
+        mTvAvatarType.setText(app.loginUser.type);
+        mParent.setFirstViewHeight(AppUtil.dp2px(getActivity(), mScrollHeadHeight));
+        ViewGroup.LayoutParams vpParams = mVpContent.getLayoutParams();
+        if (vpParams != null) {
+            int bottom = AppUtil.dp2px(getActivity(), 44 + 50 + 50);
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+                bottom += AppUtil.dp2px(getActivity(), 25);
+            }
+            vpParams.height = AppUtil.getHeightPx(getActivity()) - bottom;
+            mParent.setLayoutParams(vpParams);
+        }
+        initFragment();
         initEvent();
-        initData();
+    }
+
+    private void initFragment() {
+
+        mAdapter.notifyDataSetChanged();
     }
 
     private void initEvent() {
@@ -79,10 +113,6 @@ public class MyFragment extends BaseFragment {
 
             }
         });
-    }
-
-    private void initData() {
-
     }
 
     private void setTab(int position) {
