@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 public class ReviewActivity extends BaseNoTitleActivity {
 
     private LinearLayout mLayoutStar;
+
     private EditText mEtReview;
     private View mTvSure;
     private SystemBarTintManager tintManager;
