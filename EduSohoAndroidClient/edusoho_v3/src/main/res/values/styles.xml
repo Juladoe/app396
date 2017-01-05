@@ -18,6 +18,24 @@
         <item name="android:windowExitAnimation">@anim/popwindow_hide</item>
     </style>
 
+    <style name="MyTab">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:textSize">@dimen/font_l</item>
+        <item name="android:textColor">@color/secondary_font_color</item>
+    </style>
+
+    <style name="MyTabLine">
+        <item name="android:layout_width">35dp</item>
+        <item name="android:layout_height">3dp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:background">@color/primary_color</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
     <style name="DialogWindowAnimation">
         <item name="android:windowEnterAnimation">@anim/dialog_window_enter</item>
         <item name="android:windowExitAnimation">@anim/dialog_window_exit</item>
