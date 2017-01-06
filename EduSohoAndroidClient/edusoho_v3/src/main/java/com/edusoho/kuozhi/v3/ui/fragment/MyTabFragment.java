@@ -67,7 +67,6 @@ public class MyTabFragment extends BaseFragment {
         mTvFilterArrow = (TextView) view.findViewById(R.id.tv_filter_arrow);
         mLvContent = (ListView) view.findViewById(R.id.lv_content);
         mLayoutDesc = (LinearLayout) view.findViewById(R.id.layout_filter_desc);
-
         switch (mType) {
             case TYPE_STUDY:
                 mLayoutFilter.setVisibility(View.VISIBLE);
@@ -91,9 +90,10 @@ public class MyTabFragment extends BaseFragment {
                     child.setLayoutParams(params);
                     mLayoutDesc.addView(child);
                 }
-                mMyStudyAdapter = new MyStudyAdapter();
+                mMyStudyAdapter = new MyStudyAdapter(getActivity(), 0);
                 mLvContent.setAdapter(mMyStudyAdapter);
                 mMyStudyAdapter.setType(0);
+                mTvFilterName.setText(TYPE_STUDY_DESC[0]);
                 break;
             case TYPE_CACHE:
                 mLayoutFilter.setVisibility(View.GONE);
@@ -102,7 +102,7 @@ public class MyTabFragment extends BaseFragment {
                 break;
             case TYPE_COLLECT:
                 mLayoutFilter.setVisibility(View.GONE);
-                mMyCollectAdapter = new MyCollectAdapter();
+                mMyCollectAdapter = new MyCollectAdapter(getActivity());
                 mLvContent.setAdapter(mMyCollectAdapter);
                 break;
             case TYPE_ASK:
@@ -127,7 +127,7 @@ public class MyTabFragment extends BaseFragment {
                     child.setLayoutParams(params);
                     mLayoutDesc.addView(child);
                 }
-                mMyAskAdapter = new MyAskAdapter();
+                mMyAskAdapter = new MyAskAdapter(getActivity(), 0);
                 mLvContent.setAdapter(mMyAskAdapter);
                 mMyAskAdapter.setType(0);
                 break;
@@ -163,7 +163,7 @@ public class MyTabFragment extends BaseFragment {
                         mTvFilterName.setText(TYPE_ASK_DESC[position]);
                         break;
                 }
-                mTvFilterArrow.setText(R.string.new_font_fold);
+                mTvFilterArrow.setText(R.string.new_font_unfold);
                 mLayoutDesc.setVisibility(View.GONE);
             }
         };
@@ -178,12 +178,12 @@ public class MyTabFragment extends BaseFragment {
         mLayoutFilterName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getResources().getString(R.string.new_font_fold)
+                if (getResources().getString(R.string.new_font_unfold)
                         .equals(mTvFilterArrow.getText())) {
-                    mTvFilterArrow.setText(R.string.new_font_unfold);
+                    mTvFilterArrow.setText(R.string.new_font_fold);
                     mLayoutDesc.setVisibility(View.VISIBLE);
                 } else {
-                    mTvFilterArrow.setText(R.string.new_font_fold);
+                    mTvFilterArrow.setText(R.string.new_font_unfold);
                     mLayoutDesc.setVisibility(View.GONE);
                 }
             }

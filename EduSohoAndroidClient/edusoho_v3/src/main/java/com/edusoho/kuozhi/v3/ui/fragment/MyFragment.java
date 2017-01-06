@@ -8,10 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
@@ -54,25 +56,58 @@ public class MyFragment extends BaseFragment {
         mLayoutMy = view.findViewById(R.id.layout_my);
         mVpContent = (ViewPager) view.findViewById(R.id.vp_content);
         mAdapter = new FragmentViewPagerAdapter(getChildFragmentManager(), mFragments);
-        ImageLoader.getInstance().displayImage(app.loginUser.avatar, mIvAvatar);
+        mVpContent.setAdapter(mAdapter);
+        ImageLoader.getInstance().displayImage(app.loginUser.avatar, mIvAvatar,app.mAvatarOptions);
         mTvName.setText(app.loginUser.nickname);
         mTvAvatarType.setText(app.loginUser.type);
         mParent.setFirstViewHeight(AppUtil.dp2px(getActivity(), mScrollHeadHeight));
-        ViewGroup.LayoutParams vpParams = mVpContent.getLayoutParams();
+        RelativeLayout.LayoutParams vpParams = (RelativeLayout.LayoutParams) mVpContent.getLayoutParams();
         if (vpParams != null) {
-            int bottom = AppUtil.dp2px(getActivity(), 44 + 50 + 50);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            int bottom = AppUtil.dp2px(getActivity(), 44 + 50 +50);
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
                 bottom += AppUtil.dp2px(getActivity(), 25);
             }
             vpParams.height = AppUtil.getHeightPx(getActivity()) - bottom;
-            mParent.setLayoutParams(vpParams);
+            mVpContent.setLayoutParams(vpParams);
         }
+        setTab(0);
         initFragment();
         initEvent();
     }
 
     private void initFragment() {
-
+        Fragment studyFragment = app.mEngine.runPluginWithFragment(
+                "MyTabFragment", getActivity(), new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putInt(MyTabFragment.TYPE,MyTabFragment.TYPE_STUDY);
+            }
+        });
+        mFragments.add(studyFragment);
+        Fragment cacheFragment = app.mEngine.runPluginWithFragment(
+                "MyTabFragment", getActivity(), new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putInt(MyTabFragment.TYPE,MyTabFragment.TYPE_CACHE);
+            }
+        });
+        mFragments.add(cacheFragment);
+        Fragment collectFragment = app.mEngine.runPluginWithFragment(
+                "MyTabFragment", getActivity(), new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putInt(MyTabFragment.TYPE,MyTabFragment.TYPE_COLLECT);
+            }
+        });
+        mFragments.add(collectFragment);
+        Fragment askFragment = app.mEngine.runPluginWithFragment(
+                "MyTabFragment", getActivity(), new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putInt(MyTabFragment.TYPE,MyTabFragment.TYPE_ASK);
+            }
+        });
+        mFragments.add(askFragment);
         mAdapter.notifyDataSetChanged();
     }
 
