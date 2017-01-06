@@ -9,8 +9,8 @@ public class CourseCode {
     public double afterAmount;
     public double decreaseAmount;
 
-    public static enum Code
+    public enum Code
     {
-        yes, no;
+        yes, no
     }
 }

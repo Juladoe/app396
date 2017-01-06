@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +20,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -117,10 +117,57 @@ public class LoginActivity extends ActionBarBaseActivity {
         }
     }
 
+    private void login() {
+        RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
+        HashMap<String, String> params = requestUrl.getParams();
+        params.put("_username", etUsername.getText().toString().trim());
+        params.put("_password", etPassword.getText().toString().trim());
+
+        mBtnLogin.setLoadingState();
+
+        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
+                });
+                if (userResult != null && userResult.user != null) {
+                    app.saveToken(userResult);
+                    setResult(LoginActivity.OK);
+                    SimpleDateFormat nowfmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    Date date = new Date();
+                    String entertime = nowfmt.format(date);
+                    saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
+                    app.sendMessage(Const.LOGIN_SUCCESS, null);
+                    new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
+                    mBtnLogin.setSuccessState();
+                    mBtnLogin.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            mActivity.finish();
+                        }
+                    }, 500);
+                } else {
+                    mBtnLogin.setInitState();
+                    if (!TextUtils.isEmpty(response)) {
+                        CommonUtil.longToast(mContext, response);
+                    } else {
+                        CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                mBtnLogin.setInitState();
+                CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+            }
+        });
+    }
+
     private View.OnClickListener mLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String username = etUsername.getText().toString().trim();
+            final String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
             if (TextUtils.isEmpty(username)) {
                 CommonUtil.longToast(mContext, "请输入用户名");
@@ -132,82 +179,12 @@ public class LoginActivity extends ActionBarBaseActivity {
                 etPassword.requestFocus();
                 return;
             }
-            RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
-            HashMap<String, String> params = requestUrl.getParams();
-            params.put("_username", etUsername.getText().toString().trim());
-            params.put("_password", etPassword.getText().toString().trim());
-
-            mBtnLogin.setLoadingState();
-
-            mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
-                    });
-                    if (userResult != null && userResult.user != null) {
-                        mActivity.app.saveToken(userResult);
-                        mActivity.setResult(LoginActivity.OK);
-                        SimpleDateFormat nowfmt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                        Date date = new Date();
-                        String entertime = nowfmt.format(date);
-                        saveEnterSchool(mActivity.app.defaultSchool.name, entertime, "登录账号：" + mActivity.app.loginUser.nickname, mActivity.app.domain);
-                        app.sendMessage(Const.LOGIN_SUCCESS, null);
-                        Bundle bundle = new Bundle();
-                        bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
-                        app.pushRegister(bundle);
-                        mBtnLogin.setSuccessState();
-                        mBtnLogin.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mActivity.finish();
-                            }
-                        }, 500);
-                    } else {
-                        mBtnLogin.setInitState();
-                        if (!TextUtils.isEmpty(response)) {
-                            CommonUtil.longToast(mContext, response);
-                        } else {
-                            CommonUtil.longToast(mContext, getResources().getString(R.string.user_not_exist));
-                        }
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    mBtnLogin.setInitState();
-                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
-                }
-            });
+            login();
         }
     };
 
-    private void bindOpenUser(String type, String id, String name, String avatar) {
-        RequestUrl requestUrl = app.bindNewUrl(Const.BIND_LOGIN, false);
-        requestUrl.setParams(new String[]{
-                "type", type,
-                "id", id,
-                "name", name,
-                "avatar", avatar
-        });
-        ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Log.d(TAG, response);
-                UserResult userResult = mActivity.parseJsonValue(
-                        response, new TypeToken<UserResult>() {
-                        });
-                app.saveToken(userResult);
-                app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                Bundle bundle = new Bundle();
-                bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUser.id));
-                app.pushRegister(bundle);
-                mActivity.finish();
-            }
-        }, null);
-    }
-
     private void loginByPlatform(String type) {
-        final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil((ActionBarBaseActivity) mActivity);
+        final OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mActivity);
         openLoginUtil.setLoginHandler(new NormalCallback<UserResult>() {
             @Override
             public void success(UserResult obj) {

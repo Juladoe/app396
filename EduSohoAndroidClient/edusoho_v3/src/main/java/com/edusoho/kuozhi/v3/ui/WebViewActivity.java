@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -24,20 +27,21 @@ public class WebViewActivity extends ActionBarBaseActivity {
 
     private final static String TAG = "WebViewActivity";
     public final static int CLOSE = 0x01;
-    public final static int BACK = 0x02;
     public final static String SEND_EVENT = "send_event";
+    public static final int BACK = 0x02;
 
     private String url = "";
     private ESWebView mWebView;
-
+    private Toolbar mToolbar;
+    private TextView mTitleView;
     private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        hideActionBar();
-        setBackMode(super.BACK, "标题");
         setContentView(R.layout.webview_activity);
+        mToolbar = (Toolbar) findViewById(R.id.tb_webview_toolbar);
+        mTitleView = (TextView) findViewById(R.id.tv_toolbar_title);
         initCordovaWebView();
     }
 
@@ -53,11 +57,17 @@ public class WebViewActivity extends ActionBarBaseActivity {
         }
 
         if (!url.startsWith(app.host)) {
-            showActionBar();
+            setSupportActionBar(mToolbar);
+            mToolbar.setVisibility(View.VISIBLE);
         }
         mWebView = (ESWebView) findViewById(R.id.webView);
         mWebView.initPlugin(mActivity);
         mWebView.loadUrl(url);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitleView.setText(title);
     }
 
     @Override

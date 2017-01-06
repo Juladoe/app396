@@ -20,6 +20,7 @@ public class LoadDialog extends Dialog {
     }
 
     private void initView() {
+        findViewById(R.id.load_layout).setBackgroundResource(R.drawable.load_bg);
         loading_txt = (TextView) findViewById(R.id.loading_txt);
         setCanceledOnTouchOutside(false);
     }

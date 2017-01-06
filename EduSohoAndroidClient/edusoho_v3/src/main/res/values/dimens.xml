@@ -150,4 +150,7 @@
     <dimen name="empty_list_icon">40sp</dimen>
 
     <dimen name="btn_loading_padding">15dp</dimen>
+
+    <dimen name="lesson_tool_height">48dp</dimen>
+    <dimen name="testpaper_tool_height">56dp</dimen>
 </resources>

@@ -31,26 +31,6 @@ public class NewsCourseEntity {
 
     }
 
-    public NewsCourseEntity(WrapperXGPushTextMessage xgMessage) {
-        V2CustomContent v2CustomContent = xgMessage.getV2CustomContent();
-        this.id = v2CustomContent.getMsgId();
-        this.courseId = v2CustomContent.getFrom().getId();
-        this.objectId = v2CustomContent.getBody().getId();
-        this.title = xgMessage.getTitle();
-        this.content = xgMessage.getContent();
-        this.fromType = v2CustomContent.getFrom().getType();
-        this.bodyType = v2CustomContent.getBody().getType();
-        this.lessonType = v2CustomContent.getBody().getLessonType();
-        this.userId = EdusohoApp.app.loginUser.id;
-        this.createdTime = v2CustomContent.getCreatedTime();
-        this.lessonId = v2CustomContent.getBody().getLessonId();
-        this.homworkResultId = v2CustomContent.getBody().getHomeworkResultId();
-        this.threadId = v2CustomContent.getBody().getThreadId();
-        this.isLessonfinished = v2CustomContent.getBody().getIsLessonFinished();
-        this.learnStartTime = v2CustomContent.getBody().getLearnStartTime();
-        this.learnFinishTime = v2CustomContent.getBody().getLearnFinishTime();
-    }
-
     public NewsCourseEntity(OffLineMsgEntity offlineMsgModel) {
         V2CustomContent v2CustomContent = offlineMsgModel.getCustom();
         this.id = v2CustomContent.getMsgId();

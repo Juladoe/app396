@@ -7,5 +7,5 @@ import com.edusoho.kuozhi.v3.util.Promise;
  */
 public interface PromiseCallback<T> {
 
-    public Promise invoke(T obj);
+    Promise invoke(T obj);
 }

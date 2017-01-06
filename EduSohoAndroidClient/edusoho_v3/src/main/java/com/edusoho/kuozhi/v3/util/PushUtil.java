@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.v3.util;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Created by JesseHuang on 15/9/16.
@@ -37,6 +35,8 @@ public class PushUtil {
         public static final String CLASSROOM = "classroom";
         public static final String COURSE = "course";
         public static final String STUDENT = "student";
+        public static final String NEWS = "news";
+        public static final String NOTIFY = "notify";
     }
 
     /**
@@ -47,6 +47,7 @@ public class PushUtil {
         public static final String AUDIO = "audio";
         public static final String IMAGE = "image";
         public static final String MULTI = "multi";
+        public static final String PUSH = "push";
     }
 
     public static class ThreadMsgType {
@@ -58,15 +59,21 @@ public class PushUtil {
         public static final int SUCCESS = 1;
         public static final int FAILED = 0;
         public static final int UPLOADING = 2;
+        public static final int NONE = -1;
     }
 
     public static class BulletinType {
-        public static final String TYPE = "bulletin";
+        public static final String TYPE = "global";
     }
 
     public static class ArticleType {
         public static final String TYPE = "news";
         public static final String NEWS_CREATE = "news.create";
+    }
+
+    public static class LessonType {
+        public static final String TYPE = "lesson";
+        public static final String LIVE_START = "live_start";
     }
 
     public static class FriendVerified {
@@ -78,30 +85,5 @@ public class PushUtil {
         public static final String DISCOUNT_FREE = "discount.free";
         public static final String DISCOUNT_DISCOUNT = "discount.discount";
         public static final String DISCOUNT_GLOBAL = "discount.global";
-    }
-
-    /**
-     * 处理公告消息，替换<img>标签为[图片]
-     *
-     * @param source html代码
-     * @return
-     */
-    public static String replaceImgTag(String source) {
-        Pattern pattern = Pattern.compile("<img[^>]+>", Pattern.DOTALL);
-        Matcher matcher = pattern.matcher(source);
-        return matcher.replaceAll("[图片]");
-    }
-
-    public static String getNotificationContent(String type) {
-        String result = null;
-        switch (type) {
-            case ChatMsgType.IMAGE:
-                result = "[图片]";
-                break;
-            case ChatMsgType.AUDIO:
-                result = "[语音]";
-                break;
-        }
-        return result;
     }
 }

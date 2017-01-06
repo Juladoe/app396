@@ -122,8 +122,8 @@ public class AddPhoneContactActivity extends ActionBarBaseActivity {
     public class AddPhoneContactAdapter extends BaseAdapter {
 
         public AddPhoneContactAdapter() {
-            mContactList = new ArrayList<PhoneContact>();
-            mTempList = new ArrayList<PhoneContact>();
+            mContactList = new ArrayList();
+            mTempList = new ArrayList();
         }
 
         @Override
@@ -158,12 +158,9 @@ public class AddPhoneContactActivity extends ActionBarBaseActivity {
             itemHolder.mContactName.setText(mContactList.get(position).contactName);
             itemHolder.mContactNumber.setText(mContactList.get(position).contactNumber);
             itemHolder.mContactImage.setImageBitmap(mContactList.get(position).contactImage);
-            if (position % 2 == 0 || position % 3 == 0) {
-                mContactList.get(position).isFriend = false;
-            } else {
-                mContactList.get(position).isFriend = true;
-            }
-            if (mContactList.get(position).isFriend == true) {
+
+            mContactList.get(position).isFriend = false;
+            if (mContactList.get(position).isFriend) {
                 itemHolder.mTag.setImageResource(R.drawable.have_add_friend_true);
             } else {
                 itemHolder.mTag.setImageResource(R.drawable.add_friend_selector);

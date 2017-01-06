@@ -67,7 +67,7 @@ import java.util.zip.GZIPOutputStream;
 
 import cn.trinea.android.common.util.DigestUtils;
 
-;
+
 
 public class CommonUtil {
 
@@ -720,7 +720,7 @@ public class CommonUtil {
     }
 
     /**
-     * 去掉字符串中的\n\t
+     * 去掉字符串中的\n\type
      *
      * @param content
      * @return
@@ -978,7 +978,7 @@ public class CommonUtil {
     }
 
     /**
-     * 去掉'\n','\t'
+     * 去掉'\n','\type'
      *
      * @return
      */
@@ -1163,7 +1163,7 @@ public class CommonUtil {
     }
 
     public static boolean isExitsSdcard() {
-        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ? true : false;
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
     public static boolean bundleHasKey(Bundle bundle, String key) {

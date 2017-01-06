@@ -52,6 +52,7 @@ import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -473,7 +474,7 @@ public class AppUtil {
     }
 
     /**
-     * 去掉字符串中的\n\t
+     * 去掉字符串中的\n\type
      *
      * @param content
      * @return
@@ -530,14 +531,14 @@ public class AppUtil {
 
     public static boolean isNetConnect(Context context) {
         ConnectivityManager connManager = (ConnectivityManager)
-                context.getSystemService(context.CONNECTIVITY_SERVICE);
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isAvailable();
     }
 
     public static boolean isWiFiConnect(Context context) {
         ConnectivityManager connManager = (ConnectivityManager)
-                context.getSystemService(context.CONNECTIVITY_SERVICE);
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
     }
@@ -578,6 +579,34 @@ public class AppUtil {
         }
 
         return appStorage;
+    }
+
+    public static File getAppInstallStorage() {
+        File store = getAppStorage();
+        File installStore = new File(store, "install");
+        if (!installStore.exists()) {
+            installStore.mkdirs();
+        }
+
+        return installStore;
+    }
+
+    public static File getImageStorage() {
+        File imageStore = new File(AppUtil.getAppStorage(), Const.UPLOAD_IMAGE_CACHE_FILE);
+        if (!imageStore.exists()) {
+            imageStore.mkdirs();
+        }
+
+        return imageStore;
+    }
+
+    public static File getThumbImageStorage() {
+        File imageStore = new File(AppUtil.getAppStorage(), Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
+        if (!imageStore.exists()) {
+            imageStore.mkdirs();
+        }
+
+        return imageStore;
     }
 
     public static File getHtmlPluginStorage(Context context, String domain) {
@@ -781,6 +810,9 @@ public class AppUtil {
 
     public static String convertMills2Date(long millis) {
         String result = "";
+        if (millis <= 0) {
+            return "";
+        }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm");
             String nowTime = sdf.format(System.currentTimeMillis());
@@ -842,6 +874,20 @@ public class AppUtil {
         time = time.replace(' ', 'T').substring(0, time.length() - 2)
                 + ":00";
         return time;
+    }
+
+    public static long convertUTCTimeToMilliSecond(String timeZone) {
+        long time = 0;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String tDate = timeZone.split("[+]")[0].replace('T', ' ');
+            time = sdf.parse(tDate).getTime() / 1000;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            return time;
+        }
     }
 
     public static long convertTimeZone2Millisecond(String timeZone) {

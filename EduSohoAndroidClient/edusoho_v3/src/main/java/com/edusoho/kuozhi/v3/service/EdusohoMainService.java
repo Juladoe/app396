@@ -13,45 +13,25 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
-import com.edusoho.kuozhi.v3.model.bal.push.Bulletin;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
-import com.edusoho.kuozhi.v3.model.bal.push.ClassroomDiscussEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.CourseDiscussEntity;
-import com.edusoho.kuozhi.v3.model.bal.push.New;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.OffLineMsgEntity;
 import com.edusoho.kuozhi.v3.model.bal.push.V2CustomContent;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.ChatActivity;
-import com.edusoho.kuozhi.v3.ui.ClassroomDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
-import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
-import com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.util.sql.BulletinDataSource;
 import com.edusoho.kuozhi.v3.util.sql.ChatDataSource;
-import com.edusoho.kuozhi.v3.util.sql.ClassroomDiscussDataSource;
-import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
-import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewsCourseDataSource;
-import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
 import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 
 /**
@@ -94,7 +74,7 @@ public class EdusohoMainService extends Service {
     private void loginWithToken() {
         final EdusohoApp app = getEduSohoApp();
         if (TextUtils.isEmpty(app.token)) {
-            app.pushRegister(null);
+            //app.pushRegister(null);
             return;
         }
         synchronized (this) {
@@ -126,7 +106,7 @@ public class EdusohoMainService extends Service {
                             app.removeToken();
                             app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
                         }
-                        app.pushRegister(bundle);
+                        //app.pushRegister(bundle);
 
                     } catch (Exception e) {
                         Log.d(TAG, e.getMessage());
@@ -171,143 +151,11 @@ public class EdusohoMainService extends Service {
 
         @Override
         public void handleMessage(Message msg) {
-            if (mEdusohoMainService == null) {
-                mEdusohoMainService = mWeakReference.get();
-            }
-            WrapperXGPushTextMessage xgMessage = (WrapperXGPushTextMessage) msg.obj;
-            switch (msg.what) {
-                case EXIT_USER:
-                    EdusohoApp app = mEdusohoMainService.getEduSohoApp();
-                    if (app != null) {
-                        app.loginUser = null;
-                    }
-                    break;
-                case LOGIN_WITH_TOKEN:
-                    mEdusohoMainService.loginWithToken();
-                    break;
-                case Const.ADD_ARTICLE_CREATE_MAG:
-                    //资讯推送
-                    ArticleModel articleModel = new ArticleModel(xgMessage);
-                    new ServiceProviderDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain)).create(articleModel);
-                    if (!xgMessage.isForeground) {
-                        //如果Activity不在最顶栈，显示通知
-                        NotificationUtil.showArticleNotification(EdusohoApp.app.mContext, xgMessage);
-                    }
-                    break;
-                case Const.ADD_MSG:
-                    //普通消息
-                    Chat chatModel = new Chat(xgMessage);
-                    ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
-                    chatDataSource.create(chatModel);
-                    if (!xgMessage.isForeground || (xgMessage.isForeground && ChatActivity.CurrentFromId != chatModel.fromId)) {
-                        NotificationUtil.showMsgNotification(EdusohoApp.app.mContext, xgMessage);
-                    }
-                    break;
-                case Const.ADD_BULLETIN_MSG:
-                    //公告消息消息
-                    Bulletin bulletin = new Bulletin(xgMessage);
-                    BulletinDataSource bulletinDataSource = new BulletinDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
-                    bulletinDataSource.create(bulletin);
-                    if (!xgMessage.isForeground) {
-                        NotificationUtil.showBulletinNotification(EdusohoApp.app.mContext, xgMessage);
-                    }
-                    break;
-                case Const.ADD_COURSE_MSG:
-                    NewsCourseEntity newsCourseEntity = new NewsCourseEntity(xgMessage);
-                    NewsCourseDataSource newsCourseDataSource = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
-                    newsCourseDataSource.create(newsCourseEntity);
-                    if (!xgMessage.isForeground) {
-                        NotificationUtil.showNewsCourseNotification(EdusohoApp.app.mContext, xgMessage);
-                    }
-                    break;
-                case Const.QUESTION_ANSWERD:
-                    NewsCourseEntity newsCourseEntity1 = new NewsCourseEntity(xgMessage);
-                    NewsCourseDataSource newsCourseDataSource1 = new NewsCourseDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
-                    newsCourseDataSource1.create(newsCourseEntity1);
-                    if (!xgMessage.isForeground) {
-                        NotificationUtil.showQuestionAnsweredNotification(EdusohoApp.app.mContext, xgMessage);
-                    }
-                    break;
-                case Const.ADD_DISCOUNT_PASS:
-                    NotificationUtil.showDiscountPass(EdusohoApp.app.mContext, xgMessage);
-                    break;
-                case Const.ADD_CLASSROOM_MSG:
-                    ClassroomDiscussEntity classroomDiscussEntity = new ClassroomDiscussEntity(xgMessage);
-                    ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
-                    classroomDiscussDataSource.create(classroomDiscussEntity);
-                    if (!xgMessage.isForeground || ClassroomDiscussActivity.CurrentClassroomId != classroomDiscussEntity.classroomId) {
-                        NotificationUtil.showClassroomDiscussMsg(EdusohoApp.app.mContext, xgMessage);
-                    }
-                    break;
-                case Const.ADD_COURSE_DISCUSS_MSG:
-                    CourseDiscussEntity courseDiscussEntity = new CourseDiscussEntity(xgMessage);
-                    CourseDiscussDataSource courseDiscussDataSource = new CourseDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mService, EdusohoApp.app.domain));
-                    courseDiscussDataSource.create(courseDiscussEntity);
-                    if (!xgMessage.isForeground || NewsCourseActivity.CurrentCourseId != courseDiscussEntity.courseId) {
-                        NotificationUtil.showCourseDiscuss(EdusohoApp.app.mContext, xgMessage);
-                    }
-                    break;
-                case Const.ADD_THREAD_POST:
-                    int threadId = xgMessage.getV2CustomContent().getBody().getThreadId();
-                    if (!xgMessage.isForeground || ThreadDiscussActivity.CurrentThreadId != threadId) {
-                        NotificationUtil.showThreadPost(EdusohoApp.app.mContext, xgMessage);
-                    }
-                    break;
-                case Const.QUESTION_CREATED:
-                    NotificationUtil.showQuestionCreatedNotification(EdusohoApp.app.mContext, xgMessage);
-                    break;
-            }
+            //// TODO: 2016/5/14  
         }
     }
 
     public void getOfflineMsgs() {
-        final EdusohoApp app = getEduSohoApp();
-        if (app == null || app.loginUser == null) {
-            return;
-        }
-        final ChatDataSource chatDataSource = new ChatDataSource(SqliteChatUtil.getSqliteChatUtil(EdusohoMainService.this, app.domain));
-        final NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(EdusohoMainService.this, app.domain));
-        final int id = (int) chatDataSource.getMaxId();
-        String path = id == 0 ? Const.GET_LATEST_OFFLINE_MSG : Const.GET_LATEST_OFFLINE_MSG + "?lastMaxId=" + id;
-        if (app.loginUser != null) {
-            RequestUrl url = app.bindPushUrl(String.format(path, app.loginUser.id));
-            app.getUrl(url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    ArrayList<OffLineMsgEntity> latestChat = app.parseJsonValue(response, new TypeToken<ArrayList<OffLineMsgEntity>>() {
-                    });
-                    if (latestChat.size() > 0 && latestChat.get(0).getCustom().getV() >= 2) {
-                        //Collections.reverse(latestChat);
-                        HashMap<Integer, ArrayList<OffLineMsgEntity>> latestHashMap = filterLatestChats(latestChat);
-                        Iterator<Map.Entry<Integer, ArrayList<OffLineMsgEntity>>> iterators = latestHashMap.entrySet().iterator();
-                        ArrayList<New> newArrayList = new ArrayList<>();
-                        while (iterators.hasNext()) {
-                            Map.Entry<Integer, ArrayList<OffLineMsgEntity>> iterator = iterators.next();
-                            save2DB(iterator.getValue());
-                            OffLineMsgEntity offlineMsgModel = iterator.getValue().get(iterator.getValue().size() - 1); //最新一个消息
-                            New newModel = new New(offlineMsgModel);
-                            List<New> news = newDataSource.getNews("WHERE FROMID = ? AND BELONGID = ?", offlineMsgModel.getCustom().getFrom().getId() + "", EdusohoApp.app.loginUser.id + "");
-                            if (news.size() == 0) {
-                                newModel.unread = iterator.getValue().size();
-                                newDataSource.create(newModel);
-                            } else {
-                                newModel.unread = news.get(0).unread + iterator.getValue().size();
-                                newDataSource.update(newModel);
-                            }
-                            newArrayList.add(newModel);
-                        }
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(Const.GET_PUSH_DATA, newArrayList);
-                        EdusohoApp.app.sendMsgToTarget(Const.ADD_CHAT_MSGS, bundle, NewsFragment.class);
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "error");
-                }
-            });
-        }
     }
 
     public ArrayList<Chat> save2DB(ArrayList<OffLineMsgEntity> offLineMsgEntityArrayList) {

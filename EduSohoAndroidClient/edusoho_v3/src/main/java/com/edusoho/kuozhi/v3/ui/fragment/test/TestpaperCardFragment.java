@@ -200,10 +200,7 @@ public class TestpaperCardFragment extends DialogFragment {
             getDialog().setOnKeyListener(new DialogInterface.OnKeyListener() {
                 @Override
                 public boolean onKey(DialogInterface dialogInterface, int i, KeyEvent keyEvent) {
-                    if (i == keyEvent.KEYCODE_BACK) {
-                        return true;
-                    }
-                    return false;
+                    return i == keyEvent.KEYCODE_BACK;
                 }
             });
             showSubmitDialog();

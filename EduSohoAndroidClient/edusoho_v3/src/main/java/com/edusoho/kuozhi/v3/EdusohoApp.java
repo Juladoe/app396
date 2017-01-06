@@ -27,18 +27,18 @@ import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.BuildConfig;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.handler.EduSohoUncaughtExceptionHandler;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.CoreEngineMsgCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.RequestParamsCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
-import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
-import com.edusoho.kuozhi.v3.model.result.CloudResult;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -61,7 +61,6 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.util.server.CacheServer;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
-import com.edusoho.kuozhi.v3.view.webview.ESCordovaWebViewFactory;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
@@ -69,20 +68,12 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.download.BaseImageDownloader;
-import com.tencent.android.tpush.XGIOperateCallback;
-import com.tencent.android.tpush.XGPushConfig;
-import com.tencent.android.tpush.XGPushManager;
-import com.tencent.android.tpush.common.Constants;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class EdusohoApp extends Application {
 
@@ -128,9 +119,6 @@ public class EdusohoApp extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "create application");
-        if (!"debug".equals(BuildConfig.BUILD_TYPE)) {
-            EduSohoUncaughtExceptionHandler.initCaughtHandler(this);
-        }
         init();
     }
 
@@ -140,9 +128,7 @@ public class EdusohoApp extends Application {
     }
 
     public static void log(String msg) {
-        if (EdusohoApp.debug) {
-            System.out.println(msg);
-        }
+        Log.d(TAG, msg);
     }
 
     public EdusohoMainService getService() {
@@ -180,7 +166,10 @@ public class EdusohoApp extends Application {
         return new StringVolleyRequest(method, requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                response = RequestUtil.handleRequestError(response);
+                try {
+                    response = RequestUtil.handleRequestError(response);
+                } catch (RequestUtil.RequestErrorException re) {
+                }
                 responseListener.onResponse(response);
             }
         }, new Response.ErrorListener() {
@@ -193,9 +182,13 @@ public class EdusohoApp extends Application {
                 if (error.networkResponse == null) {
                     return;
                 }
-                if (TextUtils.isEmpty(RequestUtil.handleRequestError(error.networkResponse.data))) {
-                    return;
+                try {
+                    if (TextUtils.isEmpty(RequestUtil.handleRequestError(error.networkResponse.data))) {
+                        return;
+                    }
+                } catch (RequestUtil.RequestErrorException re) {
                 }
+
                 if (errorListener == null) {
                     return;
                 }
@@ -251,7 +244,7 @@ public class EdusohoApp extends Application {
         mEngine.unRegistPubMessage(messageType, messageCallback);
     }
 
-    public ConcurrentHashMap<String, MessageEngine.MessageCallback> getSourceMap() {
+    public Map<String, MessageEngine.MessageCallback> getSourceMap() {
         return mEngine.getMessageEngine().getSourceMap();
     }
 
@@ -288,7 +281,6 @@ public class EdusohoApp extends Application {
         }
 
         SqliteUtil.getUtil(this).close();
-        ESCordovaWebViewFactory.getFactory().destory();
     }
 
     private void init() {
@@ -298,6 +290,23 @@ public class EdusohoApp extends Application {
         setHost(getString(R.string.app_host));
         notifyMap = new HashMap<>();
         initApp();
+
+        IMClient.getClient().init(this);
+        if (!TextUtils.isEmpty(app.token)) {
+            Log.d(TAG, "bindImServerHost");
+            bindImServerHost();
+        }
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    private void bindImServerHost() {
+        User user = getAppSettingProvider().getCurrentUser();
+        if (user != null) {
+            new IMServiceProvider(getBaseContext()).bindServer(user.id, user.nickname);
+        }
     }
 
     private String getDomain() {
@@ -310,13 +319,12 @@ public class EdusohoApp extends Application {
 
     public void initApp() {
         runTask = new HashMap<>();
+        FactoryManager.getInstance().initContext(getBaseContext());
         File workFile = initWorkSpace();
         initImageLoaderConfig(workFile);
         loadConfig();
 
         mEngine = CoreEngine.create(this);
-        installPlugin();
-        startMainService();
     }
 
     public void startMainService() {
@@ -394,13 +402,13 @@ public class EdusohoApp extends Application {
                         normalCallback.success(null);
                     }
                 } catch (Exception e) {
-                    Log.e(null, e.toString());
+                    Log.e(TAG, "registDevice error");
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.d(null, "regist failed");
+                Log.d(TAG, "regist failed");
             }
         });
     }
@@ -443,7 +451,18 @@ public class EdusohoApp extends Application {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = packageInfo.versionName;
         } catch (Exception e) {
+            Log.d(TAG, "get apk version error");
+        }
+        return version;
+    }
 
+    public int getApkVersionCode() {
+        int version = 0;
+        try {
+            PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            version = packageInfo.versionCode;
+        } catch (Exception e) {
+            Log.d(TAG, "get apk code error");
         }
         return version;
     }
@@ -453,6 +472,7 @@ public class EdusohoApp extends Application {
         app.schoolHost = school.url + "/";
         setHost(school.host);
         SchoolUtil.saveSchool(getBaseContext(), school);
+        getAppSettingProvider().setCurrentSchool(school);
     }
 
     private void loadDefaultSchool() {
@@ -471,7 +491,7 @@ public class EdusohoApp extends Application {
 
     public User loadUserInfo() {
         Map<String, ?> tokenMap = ApiTokenUtil.getToken(getBaseContext());
-        String strUser = tokenMap.get("userInfo").toString();
+        String strUser = tokenMap.containsKey("userInfo") ? tokenMap.get("userInfo").toString() : null;
         User user = null;
         if (!TextUtils.isEmpty(strUser)) {
             user = parseJsonValue(AppUtil.encode2(strUser), new TypeToken<User>() {
@@ -504,6 +524,7 @@ public class EdusohoApp extends Application {
             loginUser = userResult.user;
             SqliteUtil.saveUser(loginUser);
         }
+        getAppSettingProvider().setUser(userResult.user);
     }
 
     public void removeToken() {
@@ -518,7 +539,6 @@ public class EdusohoApp extends Application {
             return;
         }
         mService.sendMessage(EdusohoMainService.EXIT_USER, null);
-        Log.d(null, "remove->token data->" + loginUser);
     }
 
     public boolean taskIsRun(String name) {
@@ -551,6 +571,7 @@ public class EdusohoApp extends Application {
         }
 
         loadToken();
+        loginUser = loadUserInfo();
     }
 
     public int getMsgDisturbFromCourseId(int fromId) {
@@ -592,7 +613,7 @@ public class EdusohoApp extends Application {
     }
 
     public static File getWorkSpace() {
-        File file = new File(Environment.getExternalStorageDirectory() + "/edusoho");
+        File file = new File(Environment.getExternalStorageDirectory(), "/edusoho");
         return file;
     }
 
@@ -602,8 +623,8 @@ public class EdusohoApp extends Application {
 
     public void setDisplay(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
-        screenH = display.getHeight();
-        screenW = display.getWidth();
+        this.screenH = display.getHeight();
+        this.screenW = display.getWidth();
     }
 
     public String bindToken2Url(String url, boolean addToken) {
@@ -710,27 +731,6 @@ public class EdusohoApp extends Application {
         super.onLowMemory();
     }
 
-    public static int tabLeftBtnSel;
-    public static int tabRightBtnSel;
-
-    public static int popLeftBtnSel;
-    public static int popRightBtnSel;
-
-    private void loadCustomBtnStyle() {
-        int version = Build.VERSION.SDK_INT;
-        if ((version >= 8) && (version <= 10)) {
-            popRightBtnSel = R.drawable.popup_right_10_btn;
-            popLeftBtnSel = R.drawable.popup_left_10_btn;
-            tabLeftBtnSel = R.drawable.course_tab_left_10_sel;
-            tabRightBtnSel = R.drawable.course_tab_right_10_sel;
-        } else {
-            popRightBtnSel = R.drawable.popup_right_btn;
-            popLeftBtnSel = R.drawable.popup_left_btn;
-            tabRightBtnSel = R.drawable.course_tab_right_sel;
-            tabLeftBtnSel = R.drawable.course_tab_left_sel;
-        }
-    }
-
     public void startUpdateWebView(String url) {
         Intent intent = new Intent();
         intent.setAction("android.intent.action.VIEW");
@@ -740,14 +740,9 @@ public class EdusohoApp extends Application {
         startActivity(intent);
     }
 
-    private boolean mIsNotifyUpdate;
 
     public void addNotify(String type, Bundle bundle) {
         notifyMap.put(type, bundle);
-    }
-
-    public Bundle getNotify(String type) {
-        return notifyMap.get(type);
     }
 
     public Set<String> getNotifys() {
@@ -758,13 +753,6 @@ public class EdusohoApp extends Application {
         notifyMap.remove(type);
     }
 
-    public CacheServer getResouceCacheServer(ActionBarBaseActivity activity) {
-        if (mResouceCacheServer == null) {
-            mResouceCacheServer = new CacheServer(activity, Const.WEB_RES_PROT);
-        }
-
-        return mResouceCacheServer;
-    }
 
     /**
      * 启动播放器缓存server
@@ -800,127 +788,13 @@ public class EdusohoApp extends Application {
         }
     }
 
-    public void bindApiToken(final UserResult userResult) {
-        RequestUrl requestUrl = bindNewUrl(Const.GET_API_TOKEN, false);
-        getUrl(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Token token = ModelDecor.getInstance().decor(response, new TypeToken<Token>() {
-                });
-                if (token != null) {
-                    saveApiToken(token.token);
-                    Bundle bundle = new Bundle();
-                    bundle.putString(Const.BIND_USER_ID, userResult.user == null ? "" : userResult.user.id + "");
-                    pushRegister(bundle);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                CommonUtil.longToast(mActivity.getBaseContext(), "获取网校信息失败");
-            }
-        });
-    }
-
-    /**
-     * 注册到xg、教育云
-     *
-     * @param bundle
-     */
-    public void pushRegister(final Bundle bundle) {
-        XGPushConfig.enableDebug(this, false);
-        XGPushManager.registerPush(mContext, new XGIOperateCallback() {
-            @Override
-            public void onSuccess(final Object data, int flag) {
-                Log.w(Constants.LogTag, "+++ register push success. token:" + data);
-                final boolean isBind = (bundle != null && CommonUtil.bundleHasKey(bundle, Const.BIND_USER_ID));
-                String bindUrl = isBind ? Const.BIND : Const.ANONYMOUS_BIND;
-                NormalCallback<RequestUrl> normalCallback = new NormalCallback<RequestUrl>() {
-                    @Override
-                    public void success(RequestUrl requestUrl) {
-                        HashMap<String, String> params = requestUrl.getParams();
-                        params.put("appToken", data.toString());
-                        if (isBind) {
-                            params.put("studentId", bundle.getString(Const.BIND_USER_ID));
-                        }
-                        params.put("euqip", Const.EQUIP_TYPE);
-
-                        app.postUrl(requestUrl, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject resultObject = new JSONObject(response);
-                                    if (isBind) {
-                                        getService().getOfflineMsgs();
-                                    }
-                                    String result = resultObject.getString("result");
-                                    if (result.equals("success")) {
-                                        Log.d(TAG, "cloud register success");
-                                    }
-                                } catch (JSONException e) {
-                                    Log.d(TAG, "cloud register failed");
-                                    e.printStackTrace();
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d(TAG, error.toString());
-                            }
-                        });
-                    }
-                };
-                app.bindPushUrl(bindUrl, normalCallback);
-            }
-
-            @Override
-            public void onFail(Object data, int errCode, String msg) {
-                Log.w(Constants.LogTag, "+++ register push fail. token:" + data + ", errCode:" + errCode + ",msg:" + msg);
-            }
-        });
-    }
-
-    /**
-     * 注销到xg、教育云
-     *
-     * @param bundle
-     */
-    public void pushUnregister(final Bundle bundle) {
-        XGPushManager.unregisterPush(mContext, new XGIOperateCallback() {
-            @Override
-            public void onSuccess(Object data, int i) {
-                RequestUrl requestUrl = bindPushUrl(Const.UNBIND);
-                HashMap<String, String> hashMap = requestUrl.getParams();
-                hashMap.put("studentId", bundle.getString(Const.BIND_USER_ID));
-                postUrl(requestUrl, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        CloudResult pushResult = app.parseJsonValue(response, new TypeToken<CloudResult>() {
-                        });
-                        if (pushResult != null && pushResult.result.equals("success")) {
-                            Log.d(TAG, "cloud logout success");
-                        } else {
-                            Log.d(TAG, "cloud logout failed");
-                        }
-                    }
-                }, null);
-            }
-
-            @Override
-            public void onFail(Object data, int i, String s) {
-                Log.w(Constants.LogTag, "+++ unregister push fail. token:" + data + ", errCode:" + i + ",msg:" + s);
-            }
-        });
-    }
-
-
     public <T> T parseJsonValue(String json, TypeToken<T> typeToken) {
-        T value;
+        T value = null;
         try {
             value = gson.fromJson(
                     json, typeToken.getType());
         } catch (Exception e) {
-            return null;
+            Log.d(TAG, "parse error");
         }
 
         return value;
@@ -936,10 +810,7 @@ public class EdusohoApp extends Application {
         ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> task = manager.getRunningTasks(1);
         ComponentName componentInfo = task.get(0).topActivity;
-        if (componentInfo.getClassName().equals(activityName)) {
-            return true;
-        }
-        return false;
+        return componentInfo.getClassName().equals(activityName);
     }
 
     public String getCurrentUserRole() {
@@ -957,5 +828,4 @@ public class EdusohoApp extends Application {
         }
         return loginUser.role;
     }
-
 }

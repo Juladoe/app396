@@ -107,7 +107,7 @@ final class DecodeHandler extends Handler {
 
 		Handler handler = activity.getHandler();
 		if (rawResult != null) {
-			// Don't log the barcode contents for security.
+			// Don'type log the barcode contents for security.
 			long end = System.currentTimeMillis();
 			Log.d(TAG, "Found barcode in " + (end - start) + " ms");
 			if (handler != null) {

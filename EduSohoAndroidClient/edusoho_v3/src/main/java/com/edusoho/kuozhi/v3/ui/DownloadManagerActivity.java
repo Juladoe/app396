@@ -39,6 +39,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -118,6 +119,20 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
         final int pageMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources()
                 .getDisplayMetrics());
         mViewPagers.setPageMargin(pageMargin);
+        mViewPagers.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1) {
+                    MobclickAgent.onEvent(mContext, "i_cache_caching");
+                }
+            }
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
         mPagerTab.setViewPager(mViewPagers);
 
         mSqliteUtil = SqliteUtil.getUtil(mContext);
@@ -300,10 +315,10 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
                 }
             });
 
-            model.m3U8DbModles = M3U8Util.getM3U8ModelList(
+            model.m3U8DbModels = M3U8Util.getM3U8ModelList(
                     mContext, ids, app.loginUser.id, this.host, isFinish);
             for (LessonItem lessonItem : lessonItems) {
-                if (model.m3U8DbModles.indexOfKey(lessonItem.id) < 0) {
+                if (model.m3U8DbModels.indexOfKey(lessonItem.id) < 0) {
                     continue;
                 }
                 if (!model.mLocalLessons.containsKey(lessonItem.courseId)) {
@@ -319,7 +334,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
                 }
             }
 
-            filterLessons(isFinish, lessonItems, model.m3U8DbModles);
+            filterLessons(isFinish, lessonItems, model.m3U8DbModels);
         } else {
             model.mLocalCourses.clear();
             model.mLocalLessons.clear();
@@ -462,7 +477,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
 
     public class LocalCourseModel {
         public ArrayList<Course> mLocalCourses;
-        public SparseArray<M3U8DbModel> m3U8DbModles;
+        public SparseArray<M3U8DbModel> m3U8DbModels;
         public HashMap<Integer, ArrayList<LessonItem>> mLocalLessons;
 
         public LocalCourseModel() {

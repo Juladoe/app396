@@ -63,7 +63,7 @@
             app:radius="3dp"
             app:textColor="#FFFFFF"
             app:textSize="@dimen/medium_font_size"
-            app:textStr="在做一次" />
+            app:textStr="再做一次" />
 
         <com.edusoho.kuozhi.v3.view.EduSohoButton
             android:id="@+id/hw_result_parse"

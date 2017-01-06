@@ -23,6 +23,8 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.dialog.ExitCoursePopupDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+import com.umeng.analytics.MobclickAgent;
+
 import cn.trinea.android.common.util.ToastUtils;
 
 /**
@@ -63,7 +65,7 @@ public class DownloadingFragment extends BaseFragment {
         mListView = (ExpandableListView) view.findViewById(R.id.el_downloading);
         mActivityContainer = (DownloadManagerActivity) getActivity();
         DownloadManagerActivity.LocalCourseModel unFinishModel = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
-        mDownloadingAdapter = new DownloadingAdapter(mContext, mActivity, unFinishModel.m3U8DbModles, unFinishModel.mLocalCourses,
+        mDownloadingAdapter = new DownloadingAdapter(mContext, mActivity, unFinishModel.m3U8DbModels, unFinishModel.mLocalCourses,
                 unFinishModel.mLocalLessons, DownloadingAdapter.DownloadType.DOWNLOADING, R.layout.item_downloading_manager_lesson_child);
         mListView.setAdapter(mDownloadingAdapter);
 
@@ -72,6 +74,7 @@ public class DownloadingFragment extends BaseFragment {
             public void onClick(View v) {
                 TextView tv = (TextView) v;
                 if (tv.getText().equals("全选")) {
+                    MobclickAgent.onEvent(mContext, "i_cache_seleceAll");
                     tv.setText("取消");
                     mDownloadingAdapter.isSelectAll(true);
                 } else {
@@ -85,6 +88,7 @@ public class DownloadingFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 if (mActivityContainer != null) {
+                    MobclickAgent.onEvent(mContext, "i_cache_edit_delete");
                     mActivityContainer.clearLocalCache(mDownloadingAdapter.getSelectLessonId());
                     DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
                     mDownloadingAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);

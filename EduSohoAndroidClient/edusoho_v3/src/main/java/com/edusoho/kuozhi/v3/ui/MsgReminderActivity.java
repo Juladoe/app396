@@ -6,6 +6,7 @@ import android.widget.CheckBox;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by JesseHuang on 15/5/18.
@@ -29,6 +30,7 @@ public class MsgReminderActivity extends ActionBarBaseActivity {
         cbMsgSound.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "i_mySetting_newMessageNotification_sound");
                 app.config.msgSound = cbMsgSound.isChecked() ? 1 : 0;
                 app.saveConfig();
             }
@@ -36,6 +38,7 @@ public class MsgReminderActivity extends ActionBarBaseActivity {
         cbMsgVibrate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "i_mySetting_newMessageNotification_vibration");
                 app.config.msgVibrate = cbMsgVibrate.isChecked() ? 2 : 0;
                 app.saveConfig();
             }

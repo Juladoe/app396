@@ -17,10 +17,10 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
@@ -33,17 +33,14 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.EdusohoAutoCompleteTextView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.google.gson.reflect.TypeToken;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +72,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_net_school);
         app.addTask("NetSchoolActivity", this);
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         initView();
     }
 
@@ -85,8 +82,8 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         mSearchEdt = (EdusohoAutoCompleteTextView) findViewById(R.id.school_url_edit);
         mListView = (ListView) this.findViewById(R.id.net_school_listview);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        if (loadEnterSchool(EnterSchool).size() != 0) {
-            list = loadEnterSchool(EnterSchool);
+        if (loadEnterSchool().size() != 0) {
+            list = loadEnterSchool();
             Collections.reverse(list);
         } else {
             mtv.setVisibility(View.GONE);
@@ -127,6 +124,9 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         mSearchEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+                if (keyEvent != null && keyEvent.getAction() == KeyEvent.ACTION_UP) {
+                    return true;
+                }
                 String searchStr = mSearchEdt.getText().toString();
                 saveSearchHistory(searchStr);
                 searchSchool(searchStr);
@@ -172,8 +172,8 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         map.put("loginname", loginname);
         map.put("schoolhost", schoolhost);
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        if (loadEnterSchool(EnterSchool) != null) {
-            list = loadEnterSchool(EnterSchool);
+        if (loadEnterSchool() != null) {
+            list = loadEnterSchool();
         }
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i).get("schoolhost").toString().equals(map.get("schoolhost"))) {
@@ -210,7 +210,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         editor.apply();
     }
 
-    private List<Map<String, Object>> loadEnterSchool(String fileName) {
+    private List<Map<String, Object>> loadEnterSchool() {
         List<Map<String, Object>> datas = new ArrayList<Map<String, Object>>();
         SharedPreferences sp = getSharedPreferences("EnterSchool", Context.MODE_PRIVATE);
         String result = sp.getString(EnterSchool, "");
@@ -230,7 +230,6 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                 datas.add(itemMap);
             }
         } catch (JSONException e) {
-
         }
 
         return datas;
@@ -409,46 +408,52 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                 if (!checkMobileVersion(site, site.apiVersionRange)) {
                     return;
                 }
-                app.setCurrentSchool(site);
-                app.removeToken();
-                SqliteChatUtil.getSqliteChatUtil(mContext, app.domain).close();
-                app.registDevice(null);
-
                 bindApiToken(site);
-                SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
-                Date date = new Date();
-                String loginTime = nowfmt.format(date);
-                saveEnterSchool(site.name, loginTime, "登录账号：未登录", app.domain);
-                startSchoolActivity(site);
             }
         }, this);
     }
 
+    private void saveSchoolHistory(School site) {
+        SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String loginTime = nowfmt.format(date);
+        saveEnterSchool(site.name, loginTime, "登录账号：未登录", app.domain);
+        startSchoolActivity(site);
+    }
+
     protected void bindApiToken(final School site) {
-        final RequestUrl requestUrl = app.bindNewUrl(Const.GET_API_TOKEN, false);
+        StringBuffer sb = new StringBuffer(site.host);
+        sb.append(Const.GET_API_TOKEN);
+        RequestUrl requestUrl = new RequestUrl(sb.toString());
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                mLoading.dismiss();
                 Token token = parseJsonValue(response, new TypeToken<Token>() {
                 });
-                if (token != null) {
-                    app.saveApiToken(token.token);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putSerializable(Const.SHOW_SCH_SPLASH, new SwitchNetSchoolListener() {
-//                        @Override
-//                        public void showSplash() {
-//                            mLoading.dismiss();
-//                            showSchSplash(site.name, site.splashs);
-//                            SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
-//                            Date date = new Date();
-//                            String entertime = nowfmt.format(date);
-//                            saveEnterSchool(site.name, entertime, "登录账号：未登录", app.domain);
-//                        }
-//                    });
-//                    app.pushRegister(bundle);
+                if (token == null || TextUtils.isEmpty(token.token)) {
+                    CommonUtil.longToast(mContext, "获取网校信息失败");
+                    return;
                 }
+                app.setCurrentSchool(site);
+                app.removeToken();
+                app.registDevice(null);
+                app.saveApiToken(token.token);
+                getAppSettingProvider().setUser(null);
+                IMClient.getClient().destory();
+                saveSchoolHistory(site);
             }
-        }, this);
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                app.setCurrentSchool(site);
+                app.removeToken();
+                app.registDevice(null);
+                getAppSettingProvider().setUser(null);
+                IMClient.getClient().destory();
+                saveSchoolHistory(site);
+            }
+        });
     }
 
     private class MyAdapter extends BaseAdapter {

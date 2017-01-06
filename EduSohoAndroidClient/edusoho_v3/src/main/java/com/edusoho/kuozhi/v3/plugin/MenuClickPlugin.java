@@ -12,8 +12,11 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -23,13 +26,14 @@ import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.appview.CourseConsultAction;
+import com.edusoho.kuozhi.v3.plugin.appview.GenseeLivePlayerAction;
+import com.edusoho.kuozhi.v3.plugin.appview.LonginusLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.SooonerLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.ThreadCreateAction;
 import com.edusoho.kuozhi.v3.plugin.appview.ThreadDiscussAction;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -46,6 +50,7 @@ import com.edusoho.kuozhi.v3.view.webview.ESWebChromeClient;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BaseBridgePlugin;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgeCallback;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.BridgePluginContext;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -59,7 +64,7 @@ import java.util.List;
 /**
  * Created by JesseHuang on 15/6/2.
  */
-public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
+public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
 
     @Override
     public String getName() {
@@ -71,15 +76,6 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         String type = args.getString(0);
         JSONObject data = args.getJSONObject(1);
         if ("token_lose".equals(type)) {
-            /*
-            Bundle bundle = new Bundle();
-            bundle.putString(Const.BIND_USER_ID, "");
-            mActivity.app.pushUnregister(bundle);
-            mActivity.app.removeToken();
-            MessageEngine.getInstance().sendMsg(Const.LOGOUT_SUCCESS, null);
-            MessageEngine.getInstance().sendMsg(Const.TOKEN_LOSE, new Bundle());
-            MessageEngine.getInstance().sendMsgToTaget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
-            */
         }
         MessageEngine.getInstance().sendMsg(type, JsonObject2Bundle(data));
     }
@@ -88,7 +84,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     public void redirect(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
         JSONObject body = args.getJSONObject(0);
         final RedirectBody redirectBody = RedirectBody.createByJsonObj(body);
-        mActivity.app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(Const.ACTIONBAR_TITLE, "选择");
@@ -237,13 +233,13 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
 
     @JsAnnotation
     public void backWebView(JSONArray args, BridgeCallback callbackContext) throws JSONException {
-        mActivity.app.sendMsgToTarget(WebViewActivity.BACK, null, mPluginContext.getActivity());
+        MessageEngine.getInstance().sendMsgToTaget(WebViewActivity.BACK, null, mPluginContext.getActivity());
     }
 
     @JsAnnotation
     public void openWebView(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         final String strUrl = args.getString(0);
-        mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(Const.WEB_URL, strUrl);
@@ -253,7 +249,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
 
     @JsAnnotation
     public void closeWebView(JSONArray args, BridgeCallback callbackContext) throws JSONException {
-        mActivity.app.sendMsgToTarget(WebViewActivity.CLOSE, null, mPluginContext.getActivity());
+        MessageEngine.getInstance().sendMsgToTaget(WebViewActivity.CLOSE, null, mPluginContext.getActivity());
     }
 
     @JsAnnotation
@@ -261,7 +257,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
         JSONObject result = new JSONObject();
         User user = EdusohoApp.app.loginUser;
         if (user != null) {
-            result.put("user", new JSONObject(mActivity.gson.toJson(user)));
+            result.put("user", new JSONObject(new Gson().toJson(user)));
             result.put("token", EdusohoApp.app.token);
         }
 
@@ -310,29 +306,39 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     @JsAnnotation
     public void saveUserToken(JSONArray args, BridgeCallback callbackContext) throws JSONException {
 
+        EdusohoApp app = (EdusohoApp) mActivity.getApplication();
         UserResult userResult = new UserResult();
         userResult.token = args.length() > 1 ? args.getString(1) : "";
-        userResult.user = mActivity.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
+        userResult.user = app.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
         });
-        mActivity.app.saveToken(userResult);
-        mActivity.app.sendMessage(Const.LOGIN_SUCCESS, null);
+        app.saveToken(userResult);
+        app.sendMessage(Const.LOGIN_SUCCESS, null);
         Bundle bundle = new Bundle();
         bundle.putString(Const.BIND_USER_ID, userResult.user.id + "");
-        mActivity.app.pushRegister(bundle);
     }
 
     @JsAnnotation
     public void updateUser(JSONArray args, BridgeCallback callbackContext) throws JSONException {
 
+        EdusohoApp app = (EdusohoApp) mActivity.getApplication();
         UserResult userResult = new UserResult();
-        userResult.user = mActivity.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
+        userResult.user = app.parseJsonValue(args.getJSONObject(0).toString(), new TypeToken<User>() {
         });
-        userResult.token = mActivity.app.token;
-        mActivity.app.saveToken(userResult);
+        userResult.token = app.token;
+        app.saveToken(userResult);
+
+        User user = userResult.user;
+        if (user != null) {
+            Role role = new Role();
+            role.setRid(user.id);
+            role.setNickname(user.nickname);
+            role.setAvatar(user.mediumAvatar);
+            IMClient.getClient().getRoleManager().updateRole(role);
+        }
 
         Bundle bundle = new Bundle();
         bundle.putInt("id", userResult.user.id);
-        mActivity.app.sendMessage(Const.USER_UPDATE, bundle);
+        app.sendMessage(Const.USER_UPDATE, bundle);
     }
 
     @JsAnnotation
@@ -355,7 +361,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
     public void pay(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         final String mTitle = args.getString(0);
         final String payUrl = args.getString(1);
-        mActivity.app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+        CoreEngine.create(mContext).runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(FragmentPageActivity.FRAGMENT, "AlipayFragment");
@@ -399,19 +405,21 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
             imgPaths[i] = imageArray.getString(i);
         }
         bundle.putStringArray("images", imgPaths);
-        mActivity.app.mEngine.runNormalPluginWithBundle("ViewPagerActivity", mActivity, bundle);
+        CoreEngine.create(mContext).runNormalPluginWithBundle("ViewPagerActivity", mActivity, bundle);
     }
 
     @JsAnnotation
     public void clearUserToken(JSONArray args, BridgeCallback callbackContext) throws JSONException {
-        mActivity.app.removeToken();
-        mActivity.app.sendMessage(Const.LOGOUT_SUCCESS, null);
+
+        EdusohoApp app = (EdusohoApp) mActivity.getApplication();
+        app.removeToken();
+        app.sendMessage(Const.LOGOUT_SUCCESS, null);
     }
 
     @JsAnnotation
     public void showDownLesson(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         final int courseId = args.getInt(0);
-        mActivity.app.mEngine.runNormalPlugin(
+        CoreEngine.create(mContext).runNormalPlugin(
                 "LessonDownloadingActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -445,7 +453,7 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
             }
         }
         if ("Fragment".equals(type)) {
-            mActivity.app.mEngine.runPluginWithFragmentByBundle(name + "Fragment", mActivity, bundle);
+            CoreEngine.create(mContext).runPluginWithFragmentByBundle(name + "Fragment", mActivity, bundle);
         } else if ("courseConsult".equals(name)) {
             new CourseConsultAction(mActivity).invoke(bundle);
         } else if ("threadDiscuss".equals(name)) {
@@ -454,6 +462,47 @@ public class MenuClickPlugin extends BaseBridgePlugin<ActionBarBaseActivity> {
             new SooonerLivePlayerAction(mActivity).invoke(bundle);
         } else if ("threadCreate".equals(name)) {
             new ThreadCreateAction(mActivity).invoke(bundle);
+        } else if ("longinusLivePlayer".equals(name)) {
+            new LonginusLivePlayerAction(mActivity).invoke(bundle);
+        } else if ("genseeLivePlayer".equals(name)) {
+            new GenseeLivePlayerAction(mActivity).invoke(bundle);
+        }
+    }
+
+    @JsAnnotation
+    public JSONArray getSupportLiveClients(JSONArray args, BridgeCallback callbackContext) throws JSONException{
+        JSONArray result = new JSONArray();
+        result.put("gensee");
+        result.put("sooner");
+        result.put("longinus");
+
+        return result;
+    }
+
+    @JsAnnotation
+    public void showCourseSetting(JSONArray args, BridgeCallback callbackContext) throws JSONException {
+        final int chatRoomId = args.getInt(0);
+        final String type = args.getString(1);
+        if (type.equals("classroom")) {
+            CoreEngine.create(mContext).runNormalPlugin(
+                    "ClassroomDetailActivity", mActivity, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(Const.FROM_ID,chatRoomId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE,"班级详情");
+                        }
+                    }
+            );
+        } else {
+            CoreEngine.create(mContext).runNormalPlugin(
+                    "CourseDetailActivity", mActivity, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(Const.FROM_ID,chatRoomId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE,"课程详情");
+                        }
+                    }
+            );
         }
     }
 

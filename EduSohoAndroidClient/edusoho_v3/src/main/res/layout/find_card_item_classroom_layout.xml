@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/discovery_classroom_card_height"
             android:scaleType="centerCrop"
-            android:src="@drawable/default_course"
+            android:src="@drawable/default_classroom"
             app:riv_corner_radius="3dp" />
 
         <TextView

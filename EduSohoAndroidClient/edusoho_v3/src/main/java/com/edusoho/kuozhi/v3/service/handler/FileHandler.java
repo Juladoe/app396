@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.v3.service.handler;
 
 import android.net.Uri;
 import android.util.Log;
+import android.util.StringBuilderPrinter;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -11,6 +13,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
@@ -40,6 +45,7 @@ import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.protocol.HttpRequestExecutor;
 import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.http.util.EntityUtils;
+
 import cn.trinea.android.common.util.DigestUtils;
 
 /**
@@ -86,6 +92,7 @@ public class FileHandler implements HttpRequestHandler {
             M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
                     mActivity, loginUser.id, lessonId, this.mTargetHost, M3U8Util.ALL);
             if (m3U8DbModel != null) {
+                //m3U8DbModel.playList = filterUploadInfo(m3U8DbModel.playList);
                 StringEntity entity = new StringEntity(m3U8DbModel.playList, "utf-8");
                 entity.setContentType("application/vnd.apple.mpegurl");
                 entity.setContentEncoding("utf-8");
@@ -109,7 +116,11 @@ public class FileHandler implements HttpRequestHandler {
         }
 
         //本地ts文件
-        File videoFile = getLocalFile(queryName.toString());
+        String[] tsUrl = queryName.split("[?]");
+        if (tsUrl.length > 0) {
+            queryName = tsUrl[0];
+        }
+        File videoFile = getLocalFile(queryName);
         if (videoFile.exists()) {
             Log.d(null, "cache->" + videoFile);
             FileEntity fileEntity = new WrapFileEntity(videoFile, mTargetHost);
@@ -179,12 +190,12 @@ public class FileHandler implements HttpRequestHandler {
             //Args.notNull(outstream, "Output stream");
             M3U8Util.DigestInputStream instream = new M3U8Util.DigestInputStream(
                     new FileInputStream(this.file)
-                    ,mHost
+                    , mHost
             );
             try {
                 byte[] tmp = new byte[4096];
                 int l;
-                while((l = instream.read(tmp)) != -1) {
+                while ((l = instream.read(tmp)) != -1) {
                     outstream.write(tmp, 0, l);
                 }
                 outstream.flush();
@@ -269,5 +280,23 @@ public class FileHandler implements HttpRequestHandler {
                 .append(mTargetHost);
 
         return new File(dirBuilder.toString());
+    }
+
+    private String filterUploadInfo(String playList) {
+        Pattern pattern = Pattern.compile("\\?schoolId.*\\n");
+        Matcher matcher = pattern.matcher(playList);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, "\n");
+        }
+        return sb.toString() + "";
+    }
+
+    private String filterUploadUrl(String playUrl) {
+        String[] url = playUrl.split("[?]");
+        if (url.length > 0) {
+            return url[1];
+        }
+        return null;
     }
 }

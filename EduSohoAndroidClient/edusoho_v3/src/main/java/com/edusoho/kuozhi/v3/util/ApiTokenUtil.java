@@ -29,19 +29,31 @@ public class ApiTokenUtil {
     }
 
     public static Map<String,String> getToken(Context context) {
-        SharedPreferences sp = context.getSharedPreferences("token", context.MODE_APPEND);
+        SharedPreferences sp = context.getSharedPreferences("token", Context.MODE_APPEND);
         return (Map<String,String>) sp.getAll();
     }
 
+    public static String getTokenString(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("token", Context.MODE_APPEND);
+        Map<String,String> map = (Map<String,String>) sp.getAll();
+        return map.containsKey("token") ? map.get("token") : "";
+    }
+
+    public static String getApiToken(Context context) {
+        SharedPreferences sp = context.getSharedPreferences("token", Context.MODE_APPEND);
+        Map tokenMap = sp.getAll();
+        return tokenMap.containsKey("apiToken") ? tokenMap.get("apiToken").toString() : "";
+    }
+
     public static void saveApiToken(Context context, String apiToken) {
-        SharedPreferences sp = context.getSharedPreferences("token", context.MODE_APPEND);
+        SharedPreferences sp = context.getSharedPreferences("token", Context.MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("apiToken", apiToken);
         edit.apply();
     }
 
     public static void saveToken(Context context, UserResult userResult) {
-        SharedPreferences sp = context.getSharedPreferences("token", context.MODE_APPEND);
+        SharedPreferences sp = context.getSharedPreferences("token", Context.MODE_APPEND);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("token", userResult.token);
         edit.putString("userInfo", AppUtil.encode2(new Gson().toJson(userResult.user)));
@@ -49,7 +61,7 @@ public class ApiTokenUtil {
     }
 
     public static void removeToken(Context context) {
-        SharedPreferences sp = context.getSharedPreferences("token", context.MODE_PRIVATE);
+        SharedPreferences sp = context.getSharedPreferences("token", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = sp.edit();
         edit.putString("token", "");
         edit.putString("userInfo", "");

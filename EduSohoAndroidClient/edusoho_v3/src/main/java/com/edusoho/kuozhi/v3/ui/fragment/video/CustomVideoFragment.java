@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.net.TrafficStats;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -20,11 +23,13 @@ import com.android.volley.VolleyError;
 import com.baidu.cyberplayer.core.BVideoView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ShardDialog;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
@@ -32,12 +37,16 @@ import com.edusoho.kuozhi.v3.ui.NoteActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.DataUsageUploadUtil;
+import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.dialog.ExitCoursePopupDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment;
 import com.plugin.edusoho.bdvideoplayer.StreamInfo;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +68,7 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
     private boolean isDialogShowed = false;
 
     List<StreamInfo> streamInfoLists = new ArrayList<>();
+    private DataUsageUploadUtil dataUsageUploadUtil;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -190,6 +200,24 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                     return false;
                 }
             });
+        }
+    }
+
+    @Override
+    public void onPrepared() {
+        super.onPrepared();
+        if (isCacheVideo) {
+            dataUsageUploadUtil = new DataUsageUploadUtil(mLessonId, mDurationCount, lessonActivity);
+            dataUsageUploadUtil.startTimer();
+        }
+    }
+
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+
+        } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+
         }
     }
 
@@ -498,6 +526,34 @@ public class CustomVideoFragment extends BdVideoPlayerFragment implements Compou
                 tvLearn.setTextColor(lessonActivity.getResources().getColor(R.color.grey));
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (dataUsageUploadUtil == null) {
+            return;
+        }
+        dataUsageUploadUtil.stopTimer();
+        String uploadUrl = null;
+        try {
+            uploadUrl = URLEncoder.encode(dataUsageUploadUtil.getUploadUrl(), "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        if (uploadUrl != null && !("").equals(uploadUrl)) {
+            lessonActivity.ajaxGet(String.format(Const.UPLOAD_SAVED_DATA_USAGE, dataUsageUploadUtil.getDataUsageSave(), uploadUrl), new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            });
+        }
     }
 }
 

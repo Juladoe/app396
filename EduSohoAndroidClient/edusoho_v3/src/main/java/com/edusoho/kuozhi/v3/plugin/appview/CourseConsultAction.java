@@ -1,16 +1,17 @@
 package com.edusoho.kuozhi.v3.plugin.appview;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.ChatActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
+import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
@@ -20,28 +21,28 @@ import java.util.HashMap;
  */
 public class CourseConsultAction {
 
-    private BaseActivity mActivity;
+    private Activity mActivity;
 
-    public CourseConsultAction(BaseActivity activity)
+    public CourseConsultAction(Activity activity)
     {
         this.mActivity = activity;
     }
 
     public void invoke(final Bundle bundle) {
-        RequestUrl requestUrl = mActivity.app.bindUrl(Const.USERINFO, false);
+        final EdusohoApp app = (EdusohoApp) mActivity.getApplication();
+        RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
         HashMap<String, String> params = requestUrl.getParams();
         params.put("userId", bundle.getString("userId"));
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
+        app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                User user = mActivity.parseJsonValue(response, new TypeToken<User>() {
+                User user = app.parseJsonValue(response, new TypeToken<User>() {
                 });
                 if (user != null) {
-                    bundle.putString(Const.ACTIONBAR_TITLE, user.nickname);
-                    bundle.putInt(ChatActivity.FROM_ID, user.id);
-                    bundle.putString(ChatActivity.HEAD_IMAGE_URL, user.mediumAvatar);
-                    bundle.putString(Const.NEWS_TYPE, PushUtil.ChatUserType.TEACHER);
-                    mActivity.app.mEngine.runNormalPluginWithBundle("ChatActivity", mActivity, bundle);
+                    bundle.putString(ImChatActivity.FROM_NAME, user.nickname);
+                    bundle.putInt(ImChatActivity.FROM_ID, user.id);
+                    bundle.putString(ImChatActivity.HEAD_IMAGE_URL, user.mediumAvatar);
+                    CoreEngine.create(mActivity.getBaseContext()).runNormalPluginWithBundle("ImChatActivity", mActivity, bundle);
                 }
             }
         }, new Response.ErrorListener() {

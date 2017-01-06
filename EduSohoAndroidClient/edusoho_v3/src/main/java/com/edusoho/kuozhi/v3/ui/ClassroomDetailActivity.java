@@ -2,30 +2,36 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.ClassroomMember;
 import com.edusoho.kuozhi.v3.model.bal.ClassroomMemberResult;
-import com.edusoho.kuozhi.v3.model.bal.push.New;
+import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.util.sql.ClassroomDiscussDataSource;
-import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -35,10 +41,9 @@ import java.util.List;
  */
 public class ClassroomDetailActivity extends ChatItemBaseDetail {
 
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void initView() {
+        super.initView();
     }
 
     @Override
@@ -49,6 +54,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
             return;
         }
         mFromId = intent.getIntExtra(Const.FROM_ID, 0);
+        mConvNo = intent.getStringExtra(CONV_NO);
         setBackMode(BACK, intent.getStringExtra(Const.ACTIONBAR_TITLE));
 
         RequestUrl requestUrl = app.bindNewUrl(String.format(Const.CLASSROOM_MEMBERS, mFromId), true);
@@ -60,7 +66,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                 int total;
                 if (memberResult != null) {
                     total = memberResult.total;
-                    tvMemberSum.setText(String.format(getString(R.string.classroom_all_members) + "(%d)", total));
+                    tvMemberSum.setText(String.format("%s(%d)", getString(R.string.classroom_all_members), total));
                     if (memberResult.resources != null) {
                         MemberAvatarAdapter adapter = new MemberAvatarAdapter(Arrays.asList(memberResult.resources));
                         gvMemberAvatar.setAdapter(adapter);
@@ -100,15 +106,15 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                 @Override
                 public void onClick(int button) {
                     if (button == PopupDialog.OK) {
-                        ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                        classroomDiscussDataSource.delete(mFromId, app.loginUser.id);
-                        NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                        New newModel = newDataSource.getNew(mFromId, app.loginUser.id);
-                        newModel.content = "";
-                        newDataSource.update(newModel);
-                        Bundle bundle = new Bundle();
-                        bundle.putInt(Const.FROM_ID, mFromId);
-                        app.sendMsgToTarget(Const.REFRESH_LIST, bundle, NewsFragment.class);
+                        ConvEntity convEntity = IMClient.getClient().getConvManager()
+                                .getConvByTypeAndId(Destination.CLASSROOM, mFromId);
+                        if (convEntity == null) {
+                            return;
+                        }
+                        IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
+                        IMClient.getClient().getConvManager().clearLaterMsg(convEntity.getConvNo());
+                        MessageEngine.getInstance().sendMsgToTaget(
+                                ClassroomDiscussActivity.CLEAR, null, ClassroomDiscussActivity.class);
                     }
                 }
             });
@@ -127,10 +133,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                             @Override
                             public void onResponse(String response) {
                                 if (response.equals("true")) {
-                                    ClassroomDiscussDataSource classroomDiscussDataSource = new ClassroomDiscussDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                                    classroomDiscussDataSource.delete(mFromId, app.loginUser.id);
-                                    NewDataSource newDataSource = new NewDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
-                                    newDataSource.delete(mFromId + "", PushUtil.ChatUserType.CLASSROOM, app.loginUser.id + "");
+                                    removeClassRoomConvEntity();
                                     Bundle bundle = new Bundle();
                                     bundle.putInt(Const.FROM_ID, mFromId);
                                     app.sendMsgToTarget(Const.REFRESH_LIST, bundle, NewsFragment.class);
@@ -156,6 +159,65 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
             popupDialog.setOkText("确定");
             popupDialog.show();
         }
+    }
+
+    private void removeClassRoomConvEntity() {
+        ConvEntity convEntity = IMClient.getClient().getConvManager()
+                .getConvByTypeAndId(Destination.CLASSROOM, mFromId);
+        if (convEntity == null) {
+            return;
+        }
+        IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
+        IMClient.getClient().getConvManager().deleteConvByTypeAndId(Destination.CLASSROOM, mFromId);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        getMenuInflater().inflate(R.menu.news_course_profile_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.news_course_profile) {
+            final LoadDialog loadDialog = LoadDialog.create(mContext);
+            loadDialog.setTextVisible(View.GONE);
+            loadDialog.show();
+
+            new ClassRoomProvider(mContext).getClassRoom(mFromId)
+                    .success(new NormalCallback<Classroom>() {
+                        @Override
+                        public void success(Classroom classroom) {
+                            loadDialog.dismiss();
+                            if (classroom == null) {
+                                return;
+                            }
+                            String url = app.host + "/classroom/" + mFromId;
+                            String title = classroom.title;
+                            String about = classroom.about == null ? "" : AppUtil.coverCourseAbout(classroom.about.toString());
+                            String pic = classroom.middlePicture;
+
+                            final ShareTool shareTool = new ShareTool(mActivity, url, title, about, pic);
+                            new Handler((mActivity.getMainLooper())).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    shareTool.shardCourse();
+                                }
+                            });
+                            if (classroom == null) {
+                                CommonUtil.longToast(mContext, "获取班级信息失败");
+                            }
+                        }
+                    }).fail(new NormalCallback<VolleyError>() {
+                @Override
+                public void success(VolleyError obj) {
+                    loadDialog.dismiss();
+                    CommonUtil.longToast(mContext, "获取班级信息失败");
+                }
+            });
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public class MemberAvatarAdapter extends BaseAdapter {

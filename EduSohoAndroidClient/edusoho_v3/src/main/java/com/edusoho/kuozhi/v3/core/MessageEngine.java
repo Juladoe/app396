@@ -2,9 +2,11 @@ package com.edusoho.kuozhi.v3.core;
 
 import android.os.Bundle;
 import android.util.Log;
+
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -109,7 +111,6 @@ public class MessageEngine {
         while (iterator.hasNext()) {
             String name = iterator.next();
             MessageCallback messageCallback = sourceMap.get(name);
-            Log.d(null, "callback->" + messageCallback);
             if (messageCallback == null) {
                 iterator.remove();
                 continue;
@@ -171,17 +172,17 @@ public class MessageEngine {
         }
     }
 
-    public static interface MessageCallback {
-        public static final int REGIST_CLASS = 0;
-        public static final int REGIST_OBJECT = 1;
+    public interface MessageCallback {
+        int REGIST_CLASS = 0;
+        int REGIST_OBJECT = 1;
 
-        public static final int MSG_PAUSE = 0010;
-        public static final int MSG_RESUME = 0011;
+        int MSG_PAUSE = 0010;
+        int MSG_RESUME = 0011;
 
-        public void invoke(WidgetMessage message);
+        void invoke(WidgetMessage message);
 
-        public MessageType[] getMsgTypes();
+        MessageType[] getMsgTypes();
 
-        public int getMode();
+        int getMode();
     }
 }

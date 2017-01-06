@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -96,12 +97,26 @@ public class ShareTool {
                 R.mipmap.ic_launcher,
                 mTitle,
                 mUrl,
-                AppUtil.coverCourseAbout(mAbout),
+                coverShareContent(mAbout, mUrl),
                 file,
                 EdusohoApp.app.host
                 , mDialogType
         );
         shareUtil.show(getShareHandler());
+    }
+
+    private String coverShareContent(String content, String url) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        String formatString  = Html.fromHtml(content).toString();
+        int contentSize = 140 - url.length() - 3;
+        if (formatString.length() > contentSize) {
+            formatString = formatString.substring(0, contentSize);
+        }
+        stringBuilder.append(formatString);
+        stringBuilder.append(" \r\n").append(url);
+
+        return stringBuilder.toString();
     }
 
     private ShareHandler getShareHandler() {

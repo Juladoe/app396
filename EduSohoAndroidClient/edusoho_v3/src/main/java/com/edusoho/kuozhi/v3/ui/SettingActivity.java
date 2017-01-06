@@ -15,14 +15,18 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.NotificationUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 
@@ -105,7 +109,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     }
 
     private void initData() {
-        float size = getCacheSize(app.getWorkSpace()) / 1024.0f / 1024.0f;
+        float size = getCacheSize(EdusohoApp.getWorkSpace()) / 1024.0f / 1024.0f;
         if (size == 0) {
             tvCache.setText("0M");
         } else {
@@ -118,6 +122,11 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener setOfflineTypeListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (cbOfflineType.isChecked()) {
+                MobclickAgent.onEvent(mContext, "i_mySetting_4gCachESwitch_on");
+            } else {
+                MobclickAgent.onEvent(mContext, "i_mySetting_4gCacheSwitch_off");
+            }
             app.config.offlineType = cbOfflineType.isChecked() ? 1 : 0;
             app.saveConfig();
         }
@@ -144,6 +153,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener scanClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext,"i_mySetting_sweep");
             mActivity.app.mEngine.runNormalPlugin("QrSchoolActivity", mActivity, null);
         }
     };
@@ -151,6 +161,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener msgClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "i_mySetting_newMessageNotification");
             mActivity.app.mEngine.runNormalPlugin("MsgReminderActivity", mActivity, null);
         }
     };
@@ -158,6 +169,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener aboutClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "i_mySetting_about");
             mActivity.app.mEngine.runNormalPlugin("AboutActivity", mActivity, null);
         }
     };
@@ -165,37 +177,41 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener logoutClickLister = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "i_my_Setting_logout");
             if (TextUtils.isEmpty(app.loginUser.thirdParty)) {
                 RequestUrl requestUrl = app.bindUrl(Const.LOGOUT, true);
                 mActivity.ajaxPostWithLoading(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
+
+                        new IMServiceProvider(getBaseContext()).unBindServer();
+                        getAppSettingProvider().setUser(null);
                         app.removeToken();
                         btnLogout.setVisibility(View.INVISIBLE);
                         app.sendMessage(Const.LOGOUT_SUCCESS, null);
                         app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
-                        NotificationUtil.cancelAll();
                         finish();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-
                     }
                 }, "");
                 Bundle bundle = new Bundle();
                 bundle.putString(Const.BIND_USER_ID, app.loginUser.id + "");
-                app.pushUnregister(bundle);
             } else {
+                new IMServiceProvider(getBaseContext()).unBindServer();
+                getAppSettingProvider().setUser(null);
                 ThirdPartyLogin.getInstance(mContext).loginOut(app.loginUser.thirdParty);
                 app.removeToken();
                 btnLogout.setVisibility(View.INVISIBLE);
                 app.sendMessage(Const.LOGOUT_SUCCESS, null);
                 app.sendMsgToTarget(Const.SWITCH_TAB, null, DefaultPageActivity.class);
-                NotificationUtil.cancelAll();
                 finish();
             }
-
+            getNotificationProvider().cancelAllNotification();
             M3U8DownService service = M3U8DownService.getService();
             if (service != null) {
                 service.cancelAllDownloadTask();
@@ -220,13 +236,13 @@ public class SettingActivity extends ActionBarBaseActivity {
     }
 
     private void clearCache() {
-        deleteFile(app.getWorkSpace());
+        deleteFile(EdusohoApp.getWorkSpace());
         mContext.deleteDatabase("webview.db");
         mContext.deleteDatabase("webviewCache.db");
 
         SqliteUtil.getUtil(mContext).delete("lesson_resource", "", null);
 
-        float size = getCacheSize(app.getWorkSpace()) / 1024.0f / 1024.0f;
+        float size = getCacheSize(EdusohoApp.getWorkSpace()) / 1024.0f / 1024.0f;
         if (size == 0) {
             tvCache.setText("0M");
         } else {
@@ -263,5 +279,9 @@ public class SettingActivity extends ActionBarBaseActivity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return super.onKeyDown(keyCode, event);
+    }
+
+    protected NotificationProvider getNotificationProvider() {
+        return FactoryManager.getInstance().create(NotificationProvider.class);
     }
 }

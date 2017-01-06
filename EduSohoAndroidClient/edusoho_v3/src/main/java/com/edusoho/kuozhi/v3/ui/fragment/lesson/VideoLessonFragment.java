@@ -1,243 +1,229 @@
 package com.edusoho.kuozhi.v3.ui.fragment.lesson;
 
-import android.app.Activity;
-import android.media.MediaPlayer;
-import android.net.Uri;
+
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.text.TextUtils;
+import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.VideoView;
-
-import com.android.volley.Response;
+import com.baidu.cyberplayer.core.BVideoView;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
+import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.view.dialog.ExitCoursePopupDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import com.edusoho.kuozhi.v3.view.video.CustomMediaController;
-import com.google.gson.reflect.TypeToken;
-
-import java.util.Timer;
+import com.plugin.edusoho.bdvideoplayer.BdVideoPlayerFragment;
+import cn.trinea.android.common.util.PreferencesUtils;
 
 /**
  * Created by howzhi on 14-9-26.
  */
-public class VideoLessonFragment extends BaseFragment {
+public class VideoLessonFragment extends BdVideoPlayerFragment {
 
-    private VideoView mVideoView;
-    private Timer hideLoadTimer;
-    private MediaPlayer mMediaPlayer;
-    private boolean isPlayed;
-
-    private int mCourseId;
-    private int mLessonId;
-
-    public static final int HIDE_LOADING = 0001;
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        Bundle bundle = getArguments();
-        String url = bundle.getString(Const.MEDIA_URL);
-        mCourseId = bundle.getInt(Const.COURSE_ID);
-        mLessonId = bundle.getInt(Const.LESSON_ID);
-        if (url != null && !TextUtils.isEmpty(url)) {
-            mUri = Uri.parse(url);
-        }
-        Log.d(null, "uri->" + mUri);
-        autoHideTimer = new Timer();
-    }
+    public static final String PLAYER_POSITION_PREF = "lesson_video_seek";
+    ActionBarBaseActivity lessonActivity = null;
+    PopupDialog backPopupDialog = null;
+    private static final int NO_LESSON = 10001;
+    private boolean isDialogShowed = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        hideLoadTimer = new Timer();
-        setContainerView(R.layout.video_lesson_fragment_layout);
+        lessonActivity = (FragmentPageActivity) getActivity();
+        mDecodeMode = getMediaCoderType() == 0 ? BVideoView.DECODE_SW : BVideoView.DECODE_HW;
+        if (!isCacheVideo && !AppUtil.isWiFiConnect(getActivity()) && lessonActivity.app.config.offlineType == 0) {
+            PopupDialog popupDialog = PopupDialog.createMuilt(lessonActivity,
+                    lessonActivity.getString(R.string.notification),
+                    lessonActivity.getString(R.string.player_4g_info), new PopupDialog.PopupClickListener() {
+                        @Override
+                        public void onClick(int button) {
+                            isDialogShowed = false;
+                            if (button == PopupDialog.CANCEL) {
+                                lessonActivity.finish();
+                            } else {
+                                lessonActivity.app.config.offlineType = 1;
+                                lessonActivity.app.saveConfig();
+                                resumePlay();
+                            }
+                        }
+                    });
+            popupDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+                @Override
+                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        lessonActivity.finish();
+                    }
+                    return false;
+                }
+            });
+            popupDialog.setOkText(lessonActivity.getString(R.string.yes));
+            popupDialog.setCancelText(lessonActivity.getString(R.string.no));
+            popupDialog.setCanceledOnTouchOutside(false);
+            popupDialog.show();
+            isDialogShowed = true;
+        }
+        setCurrentPos(PreferencesUtils.getInt(PLAYER_POSITION_PREF, lessonActivity, lessonActivity.app.loginUser.id + ":" + lessonActivity.app.domain + "/api/lessons/" + mLessonId, 0));
+    }
+
+    protected int getMediaCoderType() {
+        SharedPreferences sp = lessonActivity.getSharedPreferences("mediaCoder", Context.MODE_PRIVATE);
+        return sp.getInt("type", 0);
+    }
+
+    private void setViewStatus(boolean isHidden) {
+        ivLearnStatus.setVisibility(View.INVISIBLE);
+        ivShare.setVisibility(View.INVISIBLE);
+        ivQuestion.setVisibility(View.INVISIBLE);
+        ivNote.setVisibility(View.INVISIBLE);
+        tvLearn.setVisibility(View.INVISIBLE);
+        tvStreamType.setVisibility(View.INVISIBLE);
     }
 
     @Override
     protected void initView(View view) {
         super.initView(view);
+        tvVideoTitle.setText(mLessonName);
 
-        mVideoView = (VideoView) view.findViewById(R.id.video_view);
-        mLoadView = view.findViewById(R.id.load_layout);
-
-        mMediaController = (CustomMediaController) view.findViewById(R.id.custom_mediaController);
-        mMediaController.setActivity(mActivity);
-        mMediaController.setVideoView(mVideoView);
-        mMediaController.setHideListener(mVideoView);
-
-        mVideoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+        setViewStatus(isCacheVideo);
+        backPopupDialog = PopupDialog.createMuilt(lessonActivity, getString(R.string.player_exit_dialog_title), getString(R.string.player_exit_dialog_msg), new PopupDialog.PopupClickListener() {
             @Override
-            public void onPrepared(final MediaPlayer mediaPlayer) {
-                mediaPlayer.start();
-                mMediaPlayer = mediaPlayer;
-                mVideoView.requestLayout();
-                mMediaController.ready(new CustomMediaController.MediaControllerListener() {
-                    @Override
-                    public void startPlay() {
-                        isPlayed = true;
-                        hideLoadTimer.cancel();
-                        workHandler.obtainMessage(HIDE_LOADING).sendToTarget();
-                    }
-                });
-            }
-        });
-
-        mVideoView.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mediaPlayer, int what, int i2) {
-                Log.d(null, "play error-> " + what + "  -> " + i2);
-                mLoadView.setVisibility(View.GONE);
-                Log.d(null, "isPlayed> " + isPlayed);
-                if (isPlayed) {
-                    switch (what) {
-                        case MediaPlayer.MEDIA_ERROR_SERVER_DIED:
-                            Log.d(null, "error->MEDIA_ERROR_SERVER_DIED");
-                            mediaPlayer.reset();
-                            break;
-                    }
+            public void onClick(int button) {
+                if (button == PopupDialog.OK) {
+                    getActivity().onBackPressed();
                 }
-                reloadLessonMediaUrl();
-                return true;
             }
         });
-
-        mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                mMediaController.stop(mediaPlayer);
-            }
-        });
+        backPopupDialog.setOkText("退出");
     }
 
     @Override
-    public String getTitle() {
-        return "视频课时";
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        if (getView() != null) {
+            getView().setOnKeyListener(new View.OnKeyListener() {
+                @Override
+                public boolean onKey(View v, int keyCode, KeyEvent event) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                            backPopupDialog.show();
+                        }
+                    }
+                    return false;
+                }
+            });
+        }
     }
 
-    private Handler workHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case HIDE_LOADING:
-                    mLoadView.setVisibility(View.GONE);
-                    break;
-            }
+    @Override
+    protected void resumePlay() {
+        /**
+         * 发起一次播放任务,当然您不一定要在这发起
+         */
+        if (isCacheVideo) {
+            mEventHandler.sendEmptyMessage(EVENT_START);
+            return;
         }
-    };
 
-    private void changeBDPlayFragment(final LessonItem lessonItem) {
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        Fragment fragment = app.mEngine.runPluginWithFragment(
-                "BDVideoLessonFragment", mActivity, new PluginFragmentCallback() {
+        Log.d(TAG, "resumePlay: " + mCurMediaSource);
+        if (isDialogShowed) {
+            return;
+        }
+        if (mCurMediaSource != null) {
+            mEventHandler.sendEmptyMessage(EVENT_START);
+        }
+    }
+
+    @Override
+    public void onCompletion() {
+        super.onCompletion();
+        PreferencesUtils.putInt(PLAYER_POSITION_PREF, lessonActivity, lessonActivity.app.loginUser.id + ":" + lessonActivity.app.domain + "/api/lessons/" + mLessonId, getCurrentPos());
+    }
+
+    protected View createNetErrorView() {
+        return LayoutInflater.from(getActivity().getBaseContext()).inflate(R.layout.view_net_error_layout, null);
+    }
+
+    /**
+     * 100
+     *
+     * @param what
+     * @param extra
+     */
+    @Override
+    protected void showErrorDialog(int what, int extra) {
+        Log.d(getClass().getSimpleName(), String.format("what：%d, extra：%d", what, extra));
+        if (!isCacheVideo) {
+            mViewContainerView.addView(createNetErrorView());
+            return;
+        }
+        if (what == NO_LESSON) {
+            PopupDialog popupDialog = PopupDialog.createNormal(
+                    getActivity(), "播放提示", "课时不存在");
+            popupDialog.setOkListener(new PopupDialog.PopupClickListener() {
+                @Override
+                public void onClick(int button) {
+                    getActivity().finish();
+                }
+            });
+            popupDialog.show();
+            return;
+        }
+        if (what == 100 || what == -38) {
+            resumePlay();
+            return;
+        }
+        showSwiftMediaCoderDlg();
+    }
+
+    protected ExitCoursePopupDialog getMediaCoderInfoDlg() {
+        ExitCoursePopupDialog dialog = ExitCoursePopupDialog.createNormal(
+                getActivity(), "视频播放选择", new ExitCoursePopupDialog.PopupClickListener() {
                     @Override
-                    public void setArguments(Bundle bundle) {
-                        //String proxyUrl = "http://localhost:5820/" + lessonItem.mediaUri;
-                        bundle.putString(Const.MEDIA_URL, lessonItem.mediaUri);
-                        bundle.putString(Const.HEAD_URL, lessonItem.headUrl);
+                    public void onClick(int button, int position, String selStr) {
+                        if (button == ExitCoursePopupDialog.CANCEL) {
+                            return;
+                        }
+
+                        saveMediaCoderType(position);
+                    }
+                }
+        );
+        dialog.setStringArray(R.array.mediacoder_array);
+        return dialog;
+    }
+
+    protected void saveMediaCoderType(int type) {
+        SharedPreferences sp = getActivity().getSharedPreferences("mediaCoder", Context.MODE_PRIVATE);
+        sp.edit().putInt("type", type).commit();
+    }
+
+    protected void showSwiftMediaCoderDlg() {
+        PopupDialog popupDialog = PopupDialog.createMuilt(
+                getActivity(),
+                "播放提示",
+                "视频播放出了点问题\n可以去尝试设置里选择播放器解码方式解决",
+                new PopupDialog.PopupClickListener() {
+                    @Override
+                    public void onClick(int button) {
+                        if (button == PopupDialog.OK) {
+                            getMediaCoderInfoDlg().show();
+                        }
                     }
                 });
-        fragmentTransaction.replace(R.id.lesson_content, fragment);
-        fragmentTransaction.setCustomAnimations(
-                FragmentTransaction.TRANSIT_FRAGMENT_FADE, FragmentTransaction.TRANSIT_FRAGMENT_CLOSE);
-        fragmentTransaction.commit();
-    }
-
-    private void reloadLessonMediaUrl() {
-        mLoadView.setVisibility(View.VISIBLE);
-        RequestUrl requestUrl = app.bindUrl(Const.COURSELESSON, true);
-        requestUrl.setParams(new String[]{
-                "courseId", mCourseId + "",
-                "lessonId", mLessonId + ""
-        });
-
-        mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                mLoadView.setVisibility(View.GONE);
-                LessonItem lessonItem = mActivity.parseJsonValue(
-                        response, new TypeToken<LessonItem<String>>() {
-                        });
-                if (lessonItem == null) {
-                    showErrorDialog();
-                    return;
-                }
-
-                changeBDPlayFragment(lessonItem);
-            }
-        }, null);
-    }
-
-    private void showErrorDialog() {
-        PopupDialog popupDialog = PopupDialog.createNormal(mActivity, "播放提示", "该视频播放出现了问题！请联系网站管理员!");
-        popupDialog.setOkListener(new PopupDialog.PopupClickListener() {
-            @Override
-            public void onClick(int button) {
-                getActivity().finish();
-            }
-        });
+        popupDialog.setOkText("去设置");
         popupDialog.show();
     }
 
-    private View mLoadView;
-    private Uri mUri;
-    private int mPositionWhenPaused = -1;
-
-    private CustomMediaController mMediaController;
-    private Timer autoHideTimer;
-
     @Override
-    public void onStart() {
-        // Play Video
-        if (mUri != null) {
-            mVideoView.setVideoURI(mUri);
-            mMediaController.play(0);
-        }
-        System.out.println("start->play");
-        super.onStart();
-    }
-
-    @Override
-    public void onPause() {
-        // Stop video when the activity is pause.
-        mPositionWhenPaused = mVideoView.getCurrentPosition();
-        mMediaController.pause();
-        mVideoView.pause();
-        super.onPause();
-    }
-
-    @Override
-    public void onResume() {
-        // Resume video player
-        if (mPositionWhenPaused >= 0) {
-            mVideoView.seekTo(mPositionWhenPaused);
-            mPositionWhenPaused = -1;
-        }
-
-        super.onResume();
-    }
-
-    @Override
-    public void onDestroy() {
-        System.out.println("video player distory");
-        super.onDestroy();
-        if (autoHideTimer != null) {
-            autoHideTimer.cancel();
-        }
-        mMediaController.destroy();
-        if (mMediaPlayer != null) {
-            mMediaPlayer.release();
-        }
-        mVideoView = null;
-        hideLoadTimer = null;
+    protected void setPlayerFunctionButton(int visibility) {
+        //none
     }
 }

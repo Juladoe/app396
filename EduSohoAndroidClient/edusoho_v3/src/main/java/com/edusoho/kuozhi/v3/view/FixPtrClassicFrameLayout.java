@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;

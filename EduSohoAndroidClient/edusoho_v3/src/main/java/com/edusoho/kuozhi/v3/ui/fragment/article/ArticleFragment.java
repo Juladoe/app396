@@ -22,15 +22,24 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
+import com.edusoho.kuozhi.imserver.entity.ConvEntity;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
+import com.edusoho.kuozhi.imserver.entity.Role;
+import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
+import com.edusoho.kuozhi.imserver.entity.message.Source;
+import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
 import com.edusoho.kuozhi.v3.adapter.article.ArticleCardAdapter;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.NotificationProvider;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.article.Article;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
 import com.edusoho.kuozhi.v3.model.bal.article.MenuItem;
-import com.edusoho.kuozhi.v3.model.bal.push.ServiceProviderModel;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.provider.ArticleProvider;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -39,18 +48,21 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.ServiceProviderActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.ServiceProfileFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.ServiceProviderDataSource;
-import com.edusoho.kuozhi.v3.util.sql.SqliteChatUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.UUID;
+
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -75,6 +87,7 @@ public class ArticleFragment extends BaseFragment {
 
     private int mStart;
     private int mServiceProvierId;
+    private String mConvNo;
     private SparseArray<Integer> mCategoryCacheArray;
 
     private PtrHandler mMessageListPtrHandler = new PtrHandler() {
@@ -96,10 +109,13 @@ public class ArticleFragment extends BaseFragment {
     };
 
     private void showArticleProfile() {
+        MobclickAgent.onEvent(mContext, "alumni_serviceBulletin_informationFloorButton");
         app.mEngine.runNormalPlugin("FragmentPageActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ServiceProfileFragment.SERVICE_ID, mServiceProvierId);
+                startIntent.putExtra(ServiceProfileFragment.SERVICE_TITLE, getTitle());
+                startIntent.putExtra(ServiceProfileFragment.SERVICE_CONVNO, mConvNo);
                 startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ServiceProfileFragment");
             }
         });
@@ -126,7 +142,6 @@ public class ArticleFragment extends BaseFragment {
         setHasOptionsMenu(true);
         setContainerView(R.layout.article_layout);
         ModelProvider.init(mContext, this);
-        mSPDataSource = new ServiceProviderDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain));
     }
 
     @Override
@@ -160,13 +175,14 @@ public class ArticleFragment extends BaseFragment {
             }
         });
         initData();
-        sendNewFragment2UpdateItemBadge();
     }
 
     @Override
     public void onResume() {
         super.onResume();
         initMenu();
+        getNotificationProvider().cancelNotification(mConvNo.hashCode());
+        IMClient.getClient().getConvManager().clearReadCount(mConvNo);
     }
 
     private void showArticle(int id) {
@@ -181,6 +197,7 @@ public class ArticleFragment extends BaseFragment {
 
     private void initData() {
         mStart = 0;
+        mConvNo = Destination.ARTICLE;
         mServiceProvierId = getArguments().getInt(ServiceProviderActivity.SERVICE_ID);
         mArticleAdapter = new ArticleCardAdapter(mContext);
         mMessageListView.setAdapter(mArticleAdapter);
@@ -211,12 +228,6 @@ public class ArticleFragment extends BaseFragment {
             menuItem.action = String.format(app.domain + Const.ARTICELS, menuItem.id);
             menuItems.add(menuItem);
         }
-    }
-
-    private void sendNewFragment2UpdateItemBadge() {
-        Bundle bundle = new Bundle();
-        bundle.putInt(Const.FROM_ID, mServiceProvierId);
-        app.sendMsgToTarget(NewsFragment.UPDATE_UNREAD_ARTICLE_CREATE, bundle, NewsFragment.class);
     }
 
     private List<MenuItem> coverMenuItem(List<LinkedHashMap> menuList) {
@@ -283,21 +294,21 @@ public class ArticleFragment extends BaseFragment {
     }
 
     private class MenuClickListener implements View.OnClickListener {
-
         @Override
         public void onClick(View v) {
             MenuItem menuItem = (MenuItem) v.getTag();
+            HashMap<String,String> map = new HashMap<String, String>();
+            map.put("title",menuItem.title);
+            MobclickAgent.onEvent(mContext,"alumni_serviceBulletin_information_bottomButton",map);
             handleClick(v, menuItem);
         }
     }
 
     private ArrayList<ArticleModel> getChatList(int start) {
-        ArrayList<ServiceProviderModel> mList = mSPDataSource.getServiceProviderMsgs(app.loginUser.id, start, 5);
-        Collections.reverse(mList);
-
+        List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConvNo).getMessageList(start);
         ArrayList<ArticleModel> articleModels = new ArrayList<>();
-        for (ServiceProviderModel model : mList) {
-            articleModels.add(new ArticleModel(model));
+        for (MessageEntity messageEntity : messageEntityList) {
+            articleModels.add(new ArticleModel(messageEntity));
         }
         return articleModels;
     }
@@ -339,7 +350,23 @@ public class ArticleFragment extends BaseFragment {
                 ArticleModel articleModel = ArticleModel.create(app.loginUser.id, articleList.resources);
                 mArticleAdapter.addArticleChat(articleModel);
                 expandArticle();
-                new ServiceProviderDataSource(SqliteChatUtil.getSqliteChatUtil(mContext, app.domain)).create(articleModel);
+
+                MessageEntity messageEntity = createMessageEntityByBody(createArticleMessageBody(articleModel.body, PushUtil.ChatMsgType.PUSH));
+                IMClient.getClient().getMessageManager().createMessage(messageEntity);
+
+                ConvEntity convEntity = IMClient.getClient().getConvManager().getConvByConvNo(mConvNo);
+                if (convEntity == null) {
+                    convEntity = createConvEntity(messageEntity);
+                    Role role = IMClient.getClient().getRoleManager().getRole(convEntity.getType(), convEntity.getTargetId());
+                    if (role.getRid() != 0) {
+                        convEntity.setTargetName(role.getNickname());
+                        convEntity.setAvatar(role.getAvatar());
+                    }
+                    IMClient.getClient().getConvManager().createConv(convEntity);
+                }
+                convEntity.setLaterMsg(messageEntity.getMsg());
+                convEntity.setUpdatedTime(messageEntity.getTime() * 1000L);
+                IMClient.getClient().getConvManager().updateConvByConvNo(convEntity);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -347,6 +374,43 @@ public class ArticleFragment extends BaseFragment {
                 loadDialog.dismiss();
             }
         });
+    }
+
+    private ConvEntity createConvEntity(MessageEntity messageEntity) {
+        ConvEntity convEntity = new ConvEntity();
+
+        convEntity.setTargetName("资讯");
+        convEntity.setLaterMsg(messageEntity.getMsg());
+        convEntity.setConvNo(mConvNo);
+        convEntity.setCreatedTime(messageEntity.getTime() * 1000L);
+        convEntity.setType(Destination.ARTICLE);
+        convEntity.setTargetId(mServiceProvierId);
+        convEntity.setUpdatedTime(messageEntity.getTime() * 1000L);
+        return convEntity;
+    }
+
+    protected MessageBody createArticleMessageBody(String content, String type) {
+        MessageBody messageBody = new MessageBody(MessageBody.VERSION, type, content);
+        messageBody.setCreatedTime(System.currentTimeMillis());
+        messageBody.setDestination(new Destination(0, Destination.GLOBAL));
+        messageBody.setSource(new Source(mServiceProvierId, Destination.ARTICLE));
+        messageBody.setConvNo(mConvNo);
+        messageBody.setMessageId(UUID.randomUUID().toString());
+        return messageBody;
+    }
+
+    private MessageEntity createMessageEntityByBody(MessageBody messageBody) {
+        return new MessageEntityBuildr()
+                .addUID(messageBody.getMessageId())
+                .addConvNo(messageBody.getConvNo())
+                .addToId("all")
+                .addToName("资讯")
+                .addFromId("0")
+                .addFromName("系统消息")
+                .addCmd("message")
+                .addMsg(messageBody.toJson())
+                .addTime((int) (messageBody.getCreatedTime() / 1000))
+                .builder();
     }
 
     private void expandArticle() {
@@ -371,6 +435,9 @@ public class ArticleFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MenuItem menuItem = (MenuItem) parent.getItemAtPosition(position);
+                HashMap<String,String> map = new HashMap<String, String>();
+                map.put("title",menuItem.title);
+                MobclickAgent.onEvent(mContext,"alumni_serviceBulletin_information_bottomButton",map);
                 handleClick(view, menuItem);
                 hideMenuPop();
             }
@@ -438,18 +505,8 @@ public class ArticleFragment extends BaseFragment {
             if (serviceId == mServiceProvierId) {
                 clearArticleList();
             }
+        }
 
-            return;
-        }
-        switch (messageType.code) {
-            case Const.ADD_ARTICLE_CREATE_MAG:
-                WrapperXGPushTextMessage wrapperMessage = (WrapperXGPushTextMessage) message.data.get(Const.GET_PUSH_DATA);
-                ArticleModel articleModel = new ArticleModel(wrapperMessage);
-                mMessageListView.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
-                mArticleAdapter.addArticleChat(articleModel);
-                expandArticle();
-                break;
-        }
     }
 
     @Override
@@ -459,5 +516,13 @@ public class ArticleFragment extends BaseFragment {
             new MessageType(Const.ADD_ARTICLE_CREATE_MAG, source),
             new MessageType(Const.CLEAR_HISTORY)
         };
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    protected NotificationProvider getNotificationProvider() {
+        return FactoryManager.getInstance().create(NotificationProvider.class);
     }
 }

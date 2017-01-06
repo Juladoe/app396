@@ -62,12 +62,12 @@
 
     <plugin
         name="ChatActivity"
-        package="com.edusoho.kuozhi.v3.ui.ChatActivity"
+        package="com.edusoho.kuozhi.v3.ui.ImChatActivity"
         version="1.0" />
 
     <plugin
         name="ThreadDiscussActivity"
-        package="com.edusoho.kuozhi.v3.ui.ThreadDiscussActivity"
+        package="com.edusoho.kuozhi.v3.ui.ThreadDiscussChatActivity"
         version="1.0" />
 
     <plugin
@@ -152,7 +152,7 @@
 
     <plugin
         name="DiscussFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment"
+        package="com.edusoho.kuozhi.imserver.ui.MessageListFragment"
         version="1.0" />
 
     <plugin
@@ -386,7 +386,22 @@
         version="1.0" />
 
     <plugin
+        name="ImChatActivity"
+        package="com.edusoho.kuozhi.v3.ui.ImChatActivity"
+        version="1.0" />
+
+    <plugin
         name="ThreadCreateActivity"
         package="com.edusoho.kuozhi.v3.ui.ThreadCreateActivity"
+        version="1.0" />
+
+    <plugin
+        name="VideoFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.lesson.VideoLessonFragment"
+        version="1.0" />
+
+    <plugin
+        name="NotifyActivity"
+        package="com.edusoho.kuozhi.v3.ui.NotifyActivity"
         version="1.0" />
 </plugins>

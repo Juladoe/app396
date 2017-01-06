@@ -1,8 +1,5 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,27 +13,25 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AdapterView;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.FriendFragmentAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
-import com.edusoho.kuozhi.v3.model.bal.SchoolApp;
 import com.edusoho.kuozhi.v3.model.bal.UserRole;
 import com.edusoho.kuozhi.v3.model.provider.FriendProvider;
+import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.result.FriendResult;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.ChatActivity;
+import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.friend.CharacterParser;
 import com.edusoho.kuozhi.v3.ui.friend.FriendComparator;
@@ -45,8 +40,8 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
-import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
 import com.edusoho.kuozhi.v3.view.SideBar;
+import com.umeng.analytics.MobclickAgent;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -67,7 +62,8 @@ public class FriendFragment extends BaseFragment {
     private CharacterParser characterParser;
     private FriendComparator friendComparator;
     private TextView dialog;
-    private FrameLayout mLoading;
+    private View mLoading;
+    private boolean mLoadLock;
 
     private FriendProvider mFriendProvider;
 
@@ -93,7 +89,7 @@ public class FriendFragment extends BaseFragment {
         characterParser = CharacterParser.getInstance();
         friendComparator = new FriendComparator();
 
-        mLoading = (FrameLayout) view.findViewById(R.id.friend_fragment_loading);
+        mLoading = view.findViewById(R.id.friend_fragment_loading);
         mFootView = mActivity.getLayoutInflater().inflate(R.layout.friend_list_foot, null);
         mFriendList = (ListView) mContainerView.findViewById(R.id.friends_list);
         mSidebar = (SideBar) mContainerView.findViewById(R.id.sidebar);
@@ -115,15 +111,19 @@ public class FriendFragment extends BaseFragment {
         mFriendList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                    CommonUtil.longToast(mContext, "聊天功能已关闭");
+                    return;
+                }
                 final Friend friend = (Friend) parent.getAdapter().getItem(position);
-                app.mEngine.runNormalPlugin("ChatActivity", mActivity, new PluginRunCallback() {
+                app.mEngine.runNormalPlugin("ImChatActivity", mActivity, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ChatActivity.FROM_ID, friend.id);
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, friend.nickname);
+                        startIntent.putExtra(ImChatActivity.FROM_ID, friend.id);
+                        startIntent.putExtra(ImChatActivity.FROM_NAME, friend.nickname);
                         startIntent.putExtra(Const.NEWS_TYPE, CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), friend.roles) ?
                                 PushUtil.ChatUserType.TEACHER : PushUtil.ChatUserType.FRIEND);
-                        startIntent.putExtra(ChatActivity.HEAD_IMAGE_URL, friend.mediumAvatar);
+                        startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, friend.mediumAvatar);
                     }
                 });
             }
@@ -142,12 +142,19 @@ public class FriendFragment extends BaseFragment {
             public void onClick(View v) {
                 int i = v.getId();
                 if (i == R.id.search_friend_btn) {
+                    MobclickAgent.onEvent(mContext, "alumni_searchBar");
                     showSearchDialog();
                 }
                 if (i == R.id.discussion_group) {
+                    if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+                        CommonUtil.longToast(mContext, "聊天功能已关闭,请联系管理员");
+                        return;
+                    }
+                    MobclickAgent.onEvent(mContext, "alumni_discussionGroup");
                     app.mEngine.runNormalPlugin("GroupListActivity", mActivity, null);
                 }
                 if (i == R.id.service) {
+                    MobclickAgent.onEvent(mContext, "alumni_serviceBulletin");
                     app.mEngine.runNormalPlugin("ServiceListActivity", mActivity, null);
 
                 }
@@ -172,6 +179,7 @@ public class FriendFragment extends BaseFragment {
             Toast.makeText(mContext, "无网络连接", Toast.LENGTH_LONG).show();
         } else {
             mFriendAdapter.clearList();
+            mFriendAdapter.notifyDataSetChanged();
         }
         loadFriend().then(new PromiseCallback() {
             @Override
@@ -182,49 +190,34 @@ public class FriendFragment extends BaseFragment {
         });
     }
 
-    public Promise loadSchoolApps() {
-        mFriendAdapter.clearList();
-        RequestUrl requestUrl = app.bindNewUrl(Const.SCHOOL_APPS, true);
-        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        requestUrl.url = stringBuffer.toString();
-
+    public synchronized Promise loadFriend() {
         final Promise promise = new Promise();
-        mFriendProvider.getSchoolApps(requestUrl)
-                .success(new NormalCallback<List<SchoolApp>>() {
-                    @Override
-                    public void success(List<SchoolApp> schoolAppResult) {
-                        if (schoolAppResult.size() != 0) {
-                            mFriendAdapter.addSchoolList(schoolAppResult);
-                        }
-                        promise.resolve(schoolAppResult);
-                    }
-                });
-
-        return promise;
-    }
-
-    public Promise loadFriend() {
-        RequestUrl requestUrl = app.bindNewUrl(Const.MY_FRIEND, true);
-        StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
-        stringBuffer.append("?start=0&limit=10000/");
-        requestUrl.url = stringBuffer.toString();
-
-        final Promise promise = new Promise();
-        mFriendProvider.getFriend(requestUrl)
+        if (mLoadLock) {
+            return promise;
+        }
+        mLoadLock = true;
+        mFriendProvider.getFriendList()
                 .success(new NormalCallback<FriendResult>() {
                     @Override
                     public void success(FriendResult friendResult) {
+                        mLoadLock = false;
                         if (friendResult.data.length != 0) {
                             List<Friend> list = Arrays.asList(friendResult.data);
                             setChar(list);
                             Collections.sort(list, friendComparator);
                             mFriendAdapter.clearList();
                             mFriendAdapter.addFriendList(list);
+                            new IMProvider(mContext).updateRoles(list);
                         }
                         setFriendsCount(friendResult.data.length + "");
                         promise.resolve(friendResult);
                     }
-                });
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                mLoadLock = false;
+            }
+        });
 
         return promise;
     }
@@ -254,6 +247,9 @@ public class FriendFragment extends BaseFragment {
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
             mActivity.setTitle(getString(R.string.title_friends));
+            if (mLoading.getVisibility() == View.GONE) {
+                loadFriend();
+            }
         }
         super.onHiddenChanged(hidden);
     }
@@ -266,7 +262,7 @@ public class FriendFragment extends BaseFragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-        if (isNews == true) {
+        if (isNews) {
             menu.findItem(R.id.friends_news).setIcon(R.drawable.icon_menu_notification_news);
         } else {
             menu.findItem(R.id.friends_news).setIcon(R.drawable.icon_menu_notification);
@@ -282,6 +278,7 @@ public class FriendFragment extends BaseFragment {
             app.saveConfig();
             item.setIcon(R.drawable.icon_menu_notification);
             mActivity.supportInvalidateOptionsMenu();
+            MobclickAgent.onEvent(mContext, "alumni_friendsNotificationBellButton");
             app.mEngine.runNormalPlugin("FriendNewsActivity", mActivity, null);
         }
         return super.onOptionsItemSelected(item);

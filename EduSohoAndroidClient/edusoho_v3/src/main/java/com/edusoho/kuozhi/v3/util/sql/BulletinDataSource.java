@@ -63,9 +63,6 @@ public class BulletinDataSource {
         this.openWrite();
         ContentValues cv = new ContentValues();
         cv.put(allColumns[0], bulletin.id);
-        cv.put(allColumns[1], bulletin.content);
-        cv.put(allColumns[2], bulletin.schoolDomain);
-        cv.put(allColumns[3], bulletin.createdTime);
         long insertId = mDataBase.insert(TABLE_NAME, null, cv);
         this.close();
         return insertId;
@@ -86,9 +83,6 @@ public class BulletinDataSource {
     private Bulletin cursorToBulletin(Cursor cursor) {
         Bulletin bulletin = new Bulletin();
         bulletin.id = cursor.getInt(0);
-        bulletin.content = cursor.getString(1);
-        bulletin.schoolDomain = cursor.getString(2);
-        bulletin.createdTime = cursor.getInt(3);
         return bulletin;
     }
 

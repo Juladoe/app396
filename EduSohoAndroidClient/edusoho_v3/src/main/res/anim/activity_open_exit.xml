@@ -20,7 +20,7 @@
     android:background="#ff000000"
     android:zAdjustment="normal">
     <alpha
-        android:duration="300"
+        android:duration="200"
         android:fillAfter="true"
         android:fillBefore="false"
         android:fillEnabled="true"

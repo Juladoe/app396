@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">ACTIVITY_ENTRY_NAME</string>
+    <string name="app_name">阔知学堂直播插件</string>
     <string name="liveClassroomId_username_userpwd">房间ID、用户名、密码不能为空</string>
     <string name="liveClassroomId_null">房间ID不能为空</string>
     <string name="liveClassroomId_validate">校验码不能为空</string>

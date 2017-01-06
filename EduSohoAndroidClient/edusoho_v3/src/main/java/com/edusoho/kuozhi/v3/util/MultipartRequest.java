@@ -100,7 +100,7 @@ public class MultipartRequest extends BaseVolleyRequest<String> {
         try {
             data = new String(response.data, "UTF-8");
         } catch (Exception e) {
-            Log.e(TAG, String.format("Couldn't API parse JSON response. NetworkResponse:%s", response.toString()), e);
+            Log.e(TAG, String.format("Couldn'type API parse JSON response. NetworkResponse:%s", response.toString()), e);
         }
         return data;
     }
