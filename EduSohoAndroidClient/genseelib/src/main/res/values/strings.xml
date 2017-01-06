@@ -1,5 +1,54 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <resources>
+    <string name="app_name">PlayerDemo</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="zhandianwangzhi">domain</string>
+    <string name="bianhao">number</string>
+    <string name="zhandian">account</string>
+    <string name="zhandianpassword">pwd</string>
+    <string name="roomnickname">nickName</string>
+    <string name="roompassword">joinPwd</string>
+    <string name="join_reconnecting">网络不给力,重连中...</string>
+    <string name="exit">退出</string>
+    <string name="webcast_type">webcast</string>
+    <string name="training_type">training</string>
+    <string name="public_chat">公聊</string>
+    <!-- vod -->
+    <string name="editvoddomin">请输入站点</string>
+    <string name="editvodnumble">请输入编号</string>
+    <string name="editvodnicknam">请输入昵称</string>
+    <string name="editvodaccount">请输入登录帐号</string>
+    <string name="editvodloginpassword">请输入登录密码</string>
+    <string name="editvodpassword">请输入点播密码</string>
+    <string name="init">init</string>
+    <string name="chapter_list_btn">章节列表</string>
+    <string name="chapter_title">章节：</string>
+    <string name="doc_title">文档：</string>
+    <string name="chapter_time">时间：</string>
+    <!-- main -->
+    <string name="live">直播</string>
+    <string name="vod">点播</string>
+    <string name="video_close">关闭视频</string>
+    <string name="video_open">打开视频</string>
+    <string name="audio_close">关闭音频</string>
+    <string name="audio_open">打开音频</string>
+    <string name="mic_close">停止讲话</string>
+    <string name="video_rate_low">低清</string>
+    <string name="video_rate_nor">标清</string>
+    <string-array name="speeds">
+        <item>speed1.00</item>
+        <item>speed1.25</item>
+        <item>speed1.50</item>
+        <item>speed1.75</item>
+        <item>speed2.00</item>
+        <item>speed2.50</item>
+        <item>speed3.00</item>
+        <item>speed3.50</item>
+        <item>speed4.00</item>
+    </string-array>
+    <string name="speed_choice">选择播放速度</string>
+    <string name="idcSwitch">网络切换</string>
 
     <!-- chat -->
     <string name="brow_nh_cn">【emotion.smile.gif】</string>
@@ -69,6 +118,7 @@
     <string name="vote_have_commit">已提交</string>
     <string name="commit">提交</string>
     <string name="vote_qiangzhi_tip">当前为强制投票，需要提交后才能关闭</string>
+    <string name="card_qiangzhi_tip">当前为答题卡，需要提交后才能关闭</string>
     <string name="single_choice">【单选】</string>
     <string name="multi_choice">【多选】</string>
     <string name="text_wd">【问答】</string>
@@ -79,6 +129,7 @@
     <string name="vote_deadline_tip">抱歉! 本试卷已被终止，不能提交了。</string>
     <string name="vote_please_dawan">请先答题再提交</string>
     <string name="vote_please_dawan_all">请回答完所有问题</string>
+    <string name="gs_card_subject">答题卡</string>
     <!-- chat -->
     <string name="brow_nh_cn_text">【你好】</string>
     <string name="brow_zj_cn_text">【再见】</string>
@@ -118,5 +169,4 @@
     <string name="emotion_yun_cn_text">【晕】</string>
     <string name="chat_context_max">聊天内容总数不能大于512个</string>
     <string name="chat_context_avatar_max">聊天内容表情数不能大于20个</string>
-
 </resources>
