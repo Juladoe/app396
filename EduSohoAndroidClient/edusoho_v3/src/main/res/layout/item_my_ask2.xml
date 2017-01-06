@@ -5,82 +5,71 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="20dp">
 
         <com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView
             android:id="@+id/iv_avatar"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginLeft="15dp"
             android:layout_marginTop="21dp"
             android:scaleType="centerCrop" />
 
         <TextView
-            android:id="@+id/tv_nickname"
+            android:id="@+id/tv_nickname_answer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/iv_avatar"
-            android:layout_marginLeft="5dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/iv_avatar"
             android:textColor="@color/secondary_font_color"
             android:textSize="@dimen/font_s" />
-
-        <TextView
-            android:id="@+id/tv_type"
-            android:layout_width="28dp"
-            android:layout_height="15dp"
-            android:layout_alignLeft="@+id/tv_nickname"
-            android:layout_below="@+id/tv_nickname"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/shape_ask_type_red"
-            android:gravity="center"
-            android:text="话题"
-            android:textColor="#FFA9A9"
-            android:textSize="@dimen/font_xxs" />
-
-        <TextView
-            android:id="@+id/tv_content"
-            android:layout_width="220dp"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/tv_type"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@+id/tv_type"
-            android:gravity="left|top"
-            android:textColor="@color/primary_font_color"
-            android:textSize="@dimen/font_l" />
 
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/tv_nickname"
-            android:layout_below="@+id/tv_content"
-            android:layout_marginTop="15dp"
+            android:layout_alignLeft="@+id/tv_nickname_answer"
+            android:layout_below="@+id/tv_nickname_answer"
+            android:layout_marginTop="7dp"
             android:textColor="@color/secondary2_font_color"
             android:textSize="@dimen/font_xxs" />
 
         <TextView
-            android:id="@+id/tv_review_num"
+            android:id="@+id/tv_content_answer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/tv_content"
+            android:layout_alignLeft="@+id/tv_time"
+            android:layout_below="@+id/tv_time"
             android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"
-            android:textColor="@color/secondary2_font_color"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/primary_font_color"
             android:textSize="@dimen/font_s" />
 
-        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+        <TextView
+            android:id="@+id/tv_nickname_ask"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/tv_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="13dp"
-            android:layout_toLeftOf="@+id/tv_review_num"
-            android:text="@string/new_font_grade"
-            android:textColor="@color/disabled_hint_color"
-            android:textSize="16dp" />
+            android:layout_alignLeft="@+id/tv_content_answer"
+            android:layout_below="@+id/tv_content_answer"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@color/secondary_font_color"
+            android:textSize="@dimen/font_s" />
+
+        <TextView
+            android:id="@+id/tv_content_ask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/tv_nickname_ask"
+            android:layout_below="@+id/tv_nickname_ask"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_s"
+            />
 
     </RelativeLayout>
 
