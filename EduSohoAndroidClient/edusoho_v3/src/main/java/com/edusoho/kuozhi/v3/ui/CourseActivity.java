@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -148,8 +149,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (member == null) {
             mIsMemder = false;
             mBottomLayout.setVisibility(View.VISIBLE);
-            mIvGrade.setVisibility(View.GONE);
-            mIvGrade2.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
         } else {
@@ -309,6 +308,18 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
+    protected void grade() {
+        app.mEngine.runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
+                ,new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ReviewActivity.TYPE, ReviewActivity.TYPE_COURSE);
+                startIntent.putExtra(ReviewActivity.ID, mCourseId);
+            }
+        });
+    }
+
+    @Override
     protected void courseHastrial(String state, LessonItem lessonItem) {
         mContinueLessonItem = lessonItem;
         mPlayLastLayout.setVisibility(View.GONE);
@@ -418,6 +429,8 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         }
     }
 
+
+
     private void playVideoLesson(LessonItem lessonItem) {
         Uri uri = Uri.parse(lessonItem.mediaUri);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -456,6 +469,12 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LessonActivity.REQUEST_LEARN) {
             coursePause();
+        }
+        if(requestCode == ReviewActivity.REVIEW_RESULT){
+            Fragment fragment = mFragments.get(0);
+            if(fragment != null && fragment instanceof CourseDetailFragment){
+                ((CourseDetailFragment) fragment).refreshReview();
+            }
         }
     }
 

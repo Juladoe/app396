@@ -56,6 +56,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mConsult;
     protected View mCollect;
     protected View mBack2;
+    protected View mBack;
     protected View mTvInclass;
     protected View mPlayLastLayout;
     protected TextView mTvLastTitle;
@@ -141,6 +142,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mHour = findViewById(R.id.hour);
         mReview = findViewById(R.id.review);
         mBack2 = findViewById(R.id.back2);
+        mBack = findViewById(R.id.back);
         mMenu = findViewById(R.id.layout_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvPlay2 = (TextView) findViewById(R.id.tv_play2);
@@ -175,6 +177,19 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
         mMenuPop = new MenuPop(this, mMenu);
+        mMenuPop.setOnBindViewVisibleChangeListener(
+                new MenuPop.OnBindViewVisibleChangeListener() {
+            @Override
+            public void onVisibleChange(boolean show) {
+                if(show){
+                    mIvGrade.setVisibility(View.GONE);
+                    mIvGrade2.setVisibility(View.GONE);
+                }else{
+                    mIvGrade.setVisibility(View.VISIBLE);
+                    mIvGrade2.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         setLoadStatus(View.VISIBLE);
     }
 
@@ -194,7 +209,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mTvAdd.setOnClickListener(this);
         mConsult.setOnClickListener(this);
         mBack2.setOnClickListener(this);
-        findViewById(R.id.back).setOnClickListener(this);
+        mBack.setOnClickListener(this);
         mTvInclass.setOnClickListener(this);
         mMenu.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -271,6 +286,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mContentVp.setCurrentItem(2);
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
+            grade();
         } else if (v.getId() == R.id.iv_share ||
                 v.getId() == R.id.iv_share2) {
             share();
@@ -284,20 +300,23 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             courseStart();
         } else if (v.getId() == R.id.consult_layout) {
             consult();
-        } else if (v.getId() == R.id.back2 || v.getId() == R.id.back) {
-            if (isScreenLock) {
-                return;
-            }
-            if (mIsFullScreen) {
-                fullScreen();
-                return;
-            }
+        } else if (v.getId() == R.id.back2) {
             finish();
+        } else if (v.getId() == R.id.back) {
+            if(mIsFullScreen){
+                fullScreen();
+            }else {
+                finish();
+            }
         } else if (v.getId() == R.id.layout_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
         } else if (v.getId() == R.id.tv_inclass) {
             goClass();
         }
+    }
+
+    protected void grade(){
+
     }
 
     protected abstract void goClass();

@@ -180,12 +180,25 @@ public class MenuPop {
 
     public void setVisibility(boolean show) {
         if (mBindView != null) {
+            if(mOnBindViewVisibleChangeListener != null){
+                mOnBindViewVisibleChangeListener.onVisibleChange(show);
+            }
             if (show) {
                 mBindView.setVisibility(View.VISIBLE);
             } else {
                 mBindView.setVisibility(View.GONE);
             }
         }
+    }
+
+    private OnBindViewVisibleChangeListener mOnBindViewVisibleChangeListener;
+
+    public void setOnBindViewVisibleChangeListener(OnBindViewVisibleChangeListener onBindViewVisibleChangeListener) {
+        this.mOnBindViewVisibleChangeListener = onBindViewVisibleChangeListener;
+    }
+
+    public interface OnBindViewVisibleChangeListener{
+        void onVisibleChange(boolean show);
     }
 
     private OnMenuClickListener mOnMenuClickListener;

@@ -21,6 +21,32 @@ import java.util.Map;
 
 public class CourseUtil {
 
+    public static void reviewCourse(String courseId, int rating, String content
+            , final OnReviewCourseListener onReviewCourseListener) {
+        if (EdusohoApp.app.loginUser == null) {
+            notLogin();
+            return;
+        }
+        String url = String.format(Const.COURSE_COMMITCOURSE + "?courseId=%s&rating=%s&content=%s",
+                courseId, rating, content, EdusohoApp.app.loginUser.id);
+        EdusohoApp.app.getUrl(EdusohoApp.app.bindUrl(url, true)
+                , new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (onReviewCourseListener != null) {
+                            onReviewCourseListener.onReviewCourseSuccee(response);
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (onReviewCourseListener != null) {
+                            onReviewCourseListener.onReviewCourseError(error.getMessage());
+                        }
+                    }
+                });
+    }
+
     public static void collectCourse(String courseId, final OnCollectSucceeListener onCollectSucceeListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
@@ -230,7 +256,12 @@ public class CourseUtil {
         void onAddCourseSuccee(String response);
 
         void onAddCourseError(String response);
+    }
 
+    public interface OnReviewCourseListener {
+        void onReviewCourseSuccee(String response);
+
+        void onReviewCourseError(String response);
     }
 
     public static void notLogin() {

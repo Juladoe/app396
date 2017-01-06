@@ -345,6 +345,10 @@
         package="com.edusoho.kuozhi.v3.ui.QrSearchActivity"
         version="1.0" />
     <plugin
+        name="ReviewActivity"
+        package="com.edusoho.kuozhi.v3.ui.ReviewActivity"
+        version="1.0" />
+    <plugin
         name="AboutFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.AboutFragment"
         version="1.0" />
