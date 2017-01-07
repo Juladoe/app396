@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">FastSdkDemo</string>
-
     <!-- test login -->
     <string name="publish_mode">发布端</string>
     <string name="watch_mode">观看端</string>
