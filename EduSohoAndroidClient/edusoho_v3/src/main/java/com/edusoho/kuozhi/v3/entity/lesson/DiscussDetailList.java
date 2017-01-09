@@ -1,15 +1,12 @@
-package com.edusoho.kuozhi.v3.entity.course;
+package com.edusoho.kuozhi.v3.entity.lesson;
 
-import com.google.gson.annotations.SerializedName;
-
-import java.io.Serializable;
 import java.util.List;
 
 /**
- * Created by DF on 2017/1/4.
+ * Created by DF on 2017/1/6.
  */
-public class DiscussDetail implements Serializable {
 
+public class DiscussDetailList {
     private String total;
     private List<ResourcesBean> resources;
 
@@ -29,28 +26,15 @@ public class DiscussDetail implements Serializable {
         this.resources = resources;
     }
 
-    public static class ResourcesBean implements Serializable {
-
+    public static class ResourcesBean {
         private String id;
         private String courseId;
         private String lessonId;
-        private String targetId;
+        private String threadId;
         private String userId;
-        private String type;
-        private String isStick;
         private String isElite;
-        private String isClosed;
-        @SerializedName("private")
-        private String privateX;
-        private String title;
         private String content;
-        private String postNum;
-        private String hitNum;
-        private String followNum;
-        private String latestPostUserId;
-        private String latestPostTime;
         private String createdTime;
-        private String updatedTime;
         private UserBean user;
 
         public String getId() {
@@ -77,12 +61,12 @@ public class DiscussDetail implements Serializable {
             this.lessonId = lessonId;
         }
 
-        public String getTargetId() {
-            return targetId;
+        public String getThreadId() {
+            return threadId;
         }
 
-        public void setTargetId(String targetId){
-            this.targetId = targetId;
+        public void setThreadId(String threadId) {
+            this.threadId = threadId;
         }
 
         public String getUserId() {
@@ -93,52 +77,12 @@ public class DiscussDetail implements Serializable {
             this.userId = userId;
         }
 
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getIsStick() {
-            return isStick;
-        }
-
-        public void setIsStick(String isStick) {
-            this.isStick = isStick;
-        }
-
         public String getIsElite() {
             return isElite;
         }
 
         public void setIsElite(String isElite) {
             this.isElite = isElite;
-        }
-
-        public String getIsClosed() {
-            return isClosed;
-        }
-
-        public void setIsClosed(String isClosed) {
-            this.isClosed = isClosed;
-        }
-
-        public String getPrivateX() {
-            return privateX;
-        }
-
-        public void setPrivateX(String privateX) {
-            this.privateX = privateX;
-        }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
         }
 
         public String getContent() {
@@ -149,60 +93,12 @@ public class DiscussDetail implements Serializable {
             this.content = content;
         }
 
-        public String getPostNum() {
-            return postNum;
-        }
-
-        public void setPostNum(String postNum) {
-            this.postNum = postNum;
-        }
-
-        public String getHitNum() {
-            return hitNum;
-        }
-
-        public void setHitNum(String hitNum) {
-            this.hitNum = hitNum;
-        }
-
-        public String getFollowNum() {
-            return followNum;
-        }
-
-        public void setFollowNum(String followNum) {
-            this.followNum = followNum;
-        }
-
-        public String getLatestPostUserId() {
-            return latestPostUserId;
-        }
-
-        public void setLatestPostUserId(String latestPostUserId) {
-            this.latestPostUserId = latestPostUserId;
-        }
-
-        public String getLatestPostTime() {
-            return latestPostTime;
-        }
-
-        public void setLatestPostTime(String latestPostTime) {
-            this.latestPostTime = latestPostTime;
-        }
-
         public String getCreatedTime() {
             return createdTime;
         }
 
         public void setCreatedTime(String createdTime) {
             this.createdTime = createdTime;
-        }
-
-        public String getUpdatedTime() {
-            return updatedTime;
-        }
-
-        public void setUpdatedTime(String updatedTime) {
-            this.updatedTime = updatedTime;
         }
 
         public UserBean getUser() {
@@ -213,7 +109,8 @@ public class DiscussDetail implements Serializable {
             this.user = user;
         }
 
-        public static class UserBean implements Serializable{
+        public static class UserBean {
+
             private String id;
             private String nickname;
             private String title;

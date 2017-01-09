@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingTop="20dp"
     android:paddingBottom="20dp">
 
-    <com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/iv_user_icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="5dp"
         android:src="@drawable/icon_default_avatar"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        app:riv_oval="true"/>
 
     <TextView
         android:id="@+id/tv_user_name"
-        android:text="测试中"
+        android:text=""
         android:textSize="@dimen/font_s"
         android:textColor="@color/secondary_font_color"
         android:layout_width="wrap_content"
@@ -27,7 +30,7 @@
 
     <TextView
         android:id="@+id/tv_kind"
-        android:text="话题"
+        android:text=""
         android:textSize="@dimen/font_xxs"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
@@ -40,19 +43,19 @@
 
     <TextView
         android:id="@+id/tv_content"
-        android:text="        有些事情是交给时间处理的"
+        android:text=""
         android:textColor="@color/primary_font_color"
         android:paddingTop="-1dp"
         android:textSize="@dimen/font_l"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxEms="12"
+        android:maxEms="15"
         android:layout_below="@+id/tv_user_name"
         android:layout_toRightOf="@+id/iv_user_icon"/>
 
     <TextView
         android:id="@+id/tv_time"
-        android:text="1小时前"
+        android:text=""
         android:textColor="@color/secondary2_font_color"
         android:textSize="@dimen/font_xxs"
         android:layout_alignLeft="@id/tv_kind"
@@ -80,7 +83,7 @@
 
         <TextView
             android:id="@+id/tv_comment_num"
-            android:text="100"
+            android:text=""
             android:textSize="@dimen/font_s"
             android:textColor="@color/secondary2_font_color"
             android:layout_width="wrap_content"

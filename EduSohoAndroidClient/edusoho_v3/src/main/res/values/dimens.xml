@@ -189,6 +189,9 @@
     <dimen name="register_btn_next">17sp</dimen>
     <dimen name="complete_iv_width">80dp</dimen>
     <dimen name="complete_iv_height">40dp</dimen>
+    <dimen name="common_height_xl">50dp</dimen>
+    <dimen name="common_dimen_xl">40dp</dimen>
+    <dimen name="common_dimen_l">30dp</dimen>
     <dimen name="catalog_margin_left">25dp</dimen>
     <dimen name="common_margin_right">15dp</dimen>
     <dimen name="common_maring0">15dp</dimen>

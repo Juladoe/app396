@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,19 +56,23 @@ public class CatalogueAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         DiscussDetail.ResourcesBean resourcesBean =  mList.get(position);
-        ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), viewHolder.ivUser);
+        if (TextUtils.isEmpty(resourcesBean.getUser().getAvatar())) {
+            viewHolder.ivUser.setImageResource(R.drawable.icon_default_avatar);
+        } else {
+            ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), viewHolder.ivUser);
+        }
         viewHolder.tvUserName.setText(resourcesBean.getUser().getNickname());
         viewHolder.tvContent.setText(String.format("         %s", resourcesBean.getTitle()));
         viewHolder.tvCommentNum.setText(resourcesBean.getPostNum());
-        viewHolder.tvTime.setText(resourcesBean.getLatestPostTime().split("T")[0]);
+        viewHolder.tvTime.setText(resourcesBean.getCreatedTime().split("T")[0]);
         if ("question".equals(resourcesBean.getType())) {
             viewHolder.tvKind.setText("问题");
             viewHolder.tvKind.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-            viewHolder.tvKind.setBackground(mContext.getResources().getDrawable(R.drawable.discuss_question));
+            viewHolder.tvKind.setBackgroundResource(R.drawable.discuss_question);
         } else {
             viewHolder.tvKind.setText("话题");
             viewHolder.tvKind.setTextColor(mContext.getResources().getColor(R.color.secondary2_color));
-            viewHolder.tvKind.setBackground(mContext.getResources().getDrawable(R.drawable.discuss_topic));
+            viewHolder.tvKind.setBackgroundResource(R.drawable.discuss_topic);
         }
         return convertView;
     }
