@@ -52,6 +52,12 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    freeline {
+        hack true
+        productFlavor 'zhongheedu'
+    }
+
 }
 
 dependencies {
