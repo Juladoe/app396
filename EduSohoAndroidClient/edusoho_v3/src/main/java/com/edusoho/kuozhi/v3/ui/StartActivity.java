@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -51,7 +52,12 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         }
         initView();
         app.registMsgSource(this);
-        startAnim();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startSplash();
+            }
+        }, 200);
     }
 
     @Override
@@ -65,7 +71,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     }
 
     private void startAnim() {
-        final View nameView =  findViewById(R.id.tv_start_name);
+        final View nameView = findViewById(R.id.tv_start_name);
         final View titleView = findViewById(R.id.tv_start_title);
         View iconView = findViewById(R.id.tv_start_icon);
 

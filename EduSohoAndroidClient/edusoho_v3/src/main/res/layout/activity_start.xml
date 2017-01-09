@@ -4,10 +4,11 @@
     android:layout_height="fill_parent">
 
     <FrameLayout
-        android:layout_marginTop="80dp"
-        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="80dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/tv_start_icon_bg"
@@ -15,10 +16,10 @@
             android:layout_height="240dp" />
 
         <ImageView
-            android:layout_gravity="center"
             android:id="@+id/tv_start_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:src="@mipmap/ic_launcher" />
 
     </FrameLayout>
@@ -30,7 +31,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="32dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_start_name"
@@ -51,13 +53,13 @@
     </LinearLayout>
 
     <include
-        android:visibility="gone"
         android:id="@+id/li_start_load"
+        layout="@layout/load_dig_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:background="@drawable/load_bg"
-        layout="@layout/load_dig_layout" />
+        android:visibility="gone" />
 
 </RelativeLayout>
