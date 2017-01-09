@@ -70,13 +70,16 @@ public class LessonMenuHelper {
         mMenuPop.showAsDropDown(view, x, y);
     }
 
-    private void updatePluginItemState() {
+    public void updatePluginItemState() {
+        if (mExerciseItemList == null || mExerciseItemList.isEmpty()) {
+            return;
+        }
         boolean hasNotice = false;
         for (PluginViewItem item : mExerciseItemList) {
+            item.callback.initState(item);
             if (item.status == PluginViewItem.NEW) {
                 hasNotice = true;
             }
-            item.callback.initState(item);
         }
 
         mMenuPop.setNotice(hasNotice);

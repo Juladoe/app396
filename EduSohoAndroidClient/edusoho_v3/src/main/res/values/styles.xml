@@ -59,6 +59,13 @@
         <item name="windowActionBar">true</item>
     </style>
 
+    <style name="StarStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">30dp</item>
+        <item name="android:text">@string/font_news</item>
+    </style>
+
     <style name="loadDlgTheme" parent="android:Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>

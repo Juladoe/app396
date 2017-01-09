@@ -108,6 +108,10 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".v3.ui.ReviewActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".v3.ui.LoginActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTask"

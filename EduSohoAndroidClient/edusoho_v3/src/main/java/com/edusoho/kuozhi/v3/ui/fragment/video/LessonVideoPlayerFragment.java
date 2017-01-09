@@ -35,7 +35,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     private int mCourseId;
     private long mSaveSeekTime;
     private DetailActivity mMenuCallback;
-
+    private LessonMenuHelper mLessonMenuHelper;
     private SharedPreferences mSeekPositionSetting;
     private static final String SEEK_POSITION = "seek_position";
 
@@ -94,7 +94,8 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
-            new LessonMenuHelper(getContext(), mLessonId, mCourseId).initMenu(mMenuCallback.getMenu());
+            mLessonMenuHelper = new LessonMenuHelper(getContext(), mLessonId, mCourseId);
+            mLessonMenuHelper.initMenu(mMenuCallback.getMenu());
         }
         loadPlayUrl();
     }
@@ -140,6 +141,14 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         super.onDestroy();
         if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
             mMenuCallback.getMenu().setVisibility(false);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mLessonMenuHelper != null) {
+            mLessonMenuHelper.updatePluginItemState();
         }
     }
 
