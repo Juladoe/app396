@@ -342,7 +342,7 @@
     </string-array>
 
     <string name="mine_items_learn">我的学习</string>
-    <string name="mine_items_download">我的缓存</string>
+    <string name="mine_items_download">课程缓存</string>
     <string name="mine_items_buy_vip">开通会员</string>
     <string name="mine_items_collection">我的收藏</string>
     <string name="mine_items_setting">我的设置</string>

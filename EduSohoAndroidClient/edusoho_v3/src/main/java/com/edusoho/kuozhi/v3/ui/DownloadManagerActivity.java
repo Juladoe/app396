@@ -17,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -34,6 +35,7 @@ import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.DownloadingFragment;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
@@ -79,6 +81,11 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     }
 
     @Override
+    protected int getStatusBarColor() {
+        return getResources().getColor(R.color.action_bar_dark_bg);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if (mDownLoadStatusReceiver == null) {
@@ -109,7 +116,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     };
 
     private void initView() {
-        setBackMode(BACK, getResources().getString(R.string.mine_items_download));
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         mPagerTab = (PagerSlidingTabStrip) findViewById(R.id.tab_download);
         pbDownloadDeviceInfo = (ProgressBar) findViewById(R.id.pb_download_device_info);
         mViewPagers = (ViewPager) findViewById(R.id.viewpager_download);
@@ -123,12 +130,14 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
+
             @Override
             public void onPageSelected(int position) {
                 if (position == 1) {
                     MobclickAgent.onEvent(mContext, "i_cache_caching");
                 }
             }
+
             @Override
             public void onPageScrollStateChanged(int state) {
             }
