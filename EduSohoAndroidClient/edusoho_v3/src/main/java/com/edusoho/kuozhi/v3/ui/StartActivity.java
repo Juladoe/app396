@@ -3,9 +3,9 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -14,8 +14,10 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.SystemInfo;
 import com.edusoho.kuozhi.v3.model.result.SchoolResult;
@@ -24,6 +26,7 @@ import com.edusoho.kuozhi.v3.model.sys.AppConfig;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -31,6 +34,10 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
+
+import java.io.File;
+import java.io.FileOutputStream;
+
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.HashMap;
@@ -126,12 +133,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     }
 
     public void startSplash() {
-        if (app.config.showSplash) {
-            app.mEngine.runNormalPlugin("SplashActivity", this, null);
-            app.config.showSplash = false;
-            app.saveConfig();
-            return;
-        }
         app.sendMessage(INIT_APP, null);
     }
 
@@ -157,7 +158,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             startApp();
             return;
         }
-
         checkSchoolApiVersion();
     }
 
@@ -202,12 +202,47 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                 if (userResult.user != null) {
                     app.saveToken(userResult);
                 }
-                startApp();
+
+                bindApiToken(site, new NormalCallback<Boolean>() {
+                    @Override
+                    public void success(Boolean obj) {
+                        if (app.config.showSplash) {
+                            app.mEngine.runNormalPlugin("SplashActivity", StartActivity.this, null);
+                            app.config.showSplash = false;
+                            app.saveConfig();
+                        } else {
+                            startApp();
+                        }
+                    }
+                });
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 hideLoading();
+            }
+        });
+    }
+
+    private void bindApiToken(School site, final NormalCallback<Boolean> callback) {
+        ajaxGet(site.host + Const.GET_API_TOKEN, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Token token = parseJsonValue(response, new TypeToken<Token>() {
+                });
+                if (token == null || TextUtils.isEmpty(token.token)) {
+                    CommonUtil.longToast(mContext, "获取网校信息失败");
+                    return;
+                }
+                app.registDevice(null);
+                app.saveApiToken(token.token);
+                IMClient.getClient().destory();
+                callback.success(true);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callback.success(false);
             }
         });
     }
@@ -320,10 +355,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                     return;
                 }
 
-                if (TextUtils.isEmpty(app.token)) {
-                    checkSchoolVersion(info);
-                    return;
-                }
                 checkSchoolAndUserToken(info);
             }
         }, new Response.ErrorListener() {
