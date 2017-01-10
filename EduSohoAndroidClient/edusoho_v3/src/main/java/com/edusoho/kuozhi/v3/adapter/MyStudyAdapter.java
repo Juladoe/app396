@@ -47,7 +47,7 @@ public class MyStudyAdapter extends BaseAdapter {
     private int type = 0;
     private List<Object> mLists = new ArrayList<>();
     private int mPage = 0;
-    private boolean mCanLoad = true;
+    private boolean mCanLoad = false;
 
     public MyStudyAdapter(Context context, int type) {
         this.mContext = context;
@@ -73,7 +73,9 @@ public class MyStudyAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (position == getCount() - 1 && mCanLoad) {
+            mCanLoad = false;
             mPage++;
+            Log.e("page","" + mPage);
             addData();
         }
         if (convertView == null) {
@@ -109,7 +111,7 @@ public class MyStudyAdapter extends BaseAdapter {
                                 viewHolder.layoutClass.setVisibility(View.VISIBLE);
                                 viewHolder.tvClassName.setText(study.getClassroomTitle());
                             }
-                            getProgress(Integer.parseInt(study.getId()), viewHolder.tvStudyState);
+//                            getProgress(Integer.parseInt(study.getId()), viewHolder.tvStudyState);
                             break;
                         case "course":
                             ImageLoader.getInstance().displayImage(study.getLargePicture()
@@ -120,7 +122,7 @@ public class MyStudyAdapter extends BaseAdapter {
                                 viewHolder.layoutClass.setVisibility(View.VISIBLE);
                                 viewHolder.tvClassName.setText(study.getClassroomTitle());
                             }
-                            getProgress(Integer.parseInt(study.getId()), viewHolder.tvStudyState);
+//                            getProgress(Integer.parseInt(study.getId()), viewHolder.tvStudyState);
                             break;
                     }
                 }
@@ -131,7 +133,7 @@ public class MyStudyAdapter extends BaseAdapter {
                     ImageLoader.getInstance().displayImage(course.largePicture, viewHolder.ivPic,
                             EdusohoApp.app.mOptions);
                     viewHolder.tvTitle.setText(String.valueOf(course.title));
-                    getProgress(course.id, viewHolder.tvStudyState);
+//                    getProgress(course.id, viewHolder.tvStudyState);
                 }
                 break;
             case 2:
@@ -140,7 +142,7 @@ public class MyStudyAdapter extends BaseAdapter {
                     ImageLoader.getInstance().displayImage(course.largePicture, viewHolder.ivPic,
                             EdusohoApp.app.mOptions);
                     viewHolder.tvTitle.setText(String.valueOf(course.title));
-                    getProgress(course.id, viewHolder.tvStudyState);
+//                    getProgress(course.id, viewHolder.tvStudyState);
                 }
                 break;
             case 3:

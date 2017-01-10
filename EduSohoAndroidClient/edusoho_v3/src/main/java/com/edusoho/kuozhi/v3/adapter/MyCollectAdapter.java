@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,8 +38,8 @@ public class MyCollectAdapter extends BaseAdapter {
     private Context mContext;
     private List<Course> mLists = new ArrayList<>();
     private int mPage = 0;
-    private boolean mCanLoadLive = true;
-    private boolean mCanLoadNor = true;
+    private boolean mCanLoadLive = false;
+    private boolean mCanLoadNor = false;
 
 
     public MyCollectAdapter(Context context) {
@@ -64,6 +65,8 @@ public class MyCollectAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (position == getCount() - 1 && (mCanLoadLive || mCanLoadNor)) {
+            mCanLoadLive = false;
+            mCanLoadNor = false;
             mPage++;
             addData();
         }
