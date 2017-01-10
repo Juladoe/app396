@@ -26,7 +26,7 @@
             android:layout_alignTop="@+id/iv_pic"
             android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/iv_pic"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView

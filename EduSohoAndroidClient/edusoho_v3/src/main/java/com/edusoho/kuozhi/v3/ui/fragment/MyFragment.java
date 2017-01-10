@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,10 +13,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -57,13 +62,13 @@ public class MyFragment extends BaseFragment {
         mVpContent = (ViewPager) view.findViewById(R.id.vp_content);
         mAdapter = new FragmentViewPagerAdapter(getChildFragmentManager(), mFragments);
         mVpContent.setAdapter(mAdapter);
-        ImageLoader.getInstance().displayImage(app.loginUser.avatar, mIvAvatar,app.mAvatarOptions);
+        ImageLoader.getInstance().displayImage(app.loginUser.avatar, mIvAvatar, app.mAvatarOptions);
         mTvName.setText(app.loginUser.nickname);
         mTvAvatarType.setText(app.loginUser.type);
         mParent.setFirstViewHeight(AppUtil.dp2px(getActivity(), mScrollHeadHeight));
         RelativeLayout.LayoutParams vpParams = (RelativeLayout.LayoutParams) mVpContent.getLayoutParams();
         if (vpParams != null) {
-            int bottom = AppUtil.dp2px(getActivity(), 44 + 50 +50);
+            int bottom = AppUtil.dp2px(getActivity(), 44 + 50 + 45);
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
                 bottom += AppUtil.dp2px(getActivity(), 25);
             }
@@ -78,35 +83,35 @@ public class MyFragment extends BaseFragment {
     private void initFragment() {
         Fragment studyFragment = app.mEngine.runPluginWithFragment(
                 "MyTabFragment", getActivity(), new PluginFragmentCallback() {
-            @Override
-            public void setArguments(Bundle bundle) {
-                bundle.putInt(MyTabFragment.TYPE,MyTabFragment.TYPE_STUDY);
-            }
-        });
+                    @Override
+                    public void setArguments(Bundle bundle) {
+                        bundle.putInt(MyTabFragment.TYPE, MyTabFragment.TYPE_STUDY);
+                    }
+                });
         mFragments.add(studyFragment);
         Fragment cacheFragment = app.mEngine.runPluginWithFragment(
                 "MyTabFragment", getActivity(), new PluginFragmentCallback() {
-            @Override
-            public void setArguments(Bundle bundle) {
-                bundle.putInt(MyTabFragment.TYPE,MyTabFragment.TYPE_CACHE);
-            }
-        });
+                    @Override
+                    public void setArguments(Bundle bundle) {
+                        bundle.putInt(MyTabFragment.TYPE, MyTabFragment.TYPE_CACHE);
+                    }
+                });
         mFragments.add(cacheFragment);
         Fragment collectFragment = app.mEngine.runPluginWithFragment(
                 "MyTabFragment", getActivity(), new PluginFragmentCallback() {
-            @Override
-            public void setArguments(Bundle bundle) {
-                bundle.putInt(MyTabFragment.TYPE,MyTabFragment.TYPE_COLLECT);
-            }
-        });
+                    @Override
+                    public void setArguments(Bundle bundle) {
+                        bundle.putInt(MyTabFragment.TYPE, MyTabFragment.TYPE_COLLECT);
+                    }
+                });
         mFragments.add(collectFragment);
         Fragment askFragment = app.mEngine.runPluginWithFragment(
                 "MyTabFragment", getActivity(), new PluginFragmentCallback() {
-            @Override
-            public void setArguments(Bundle bundle) {
-                bundle.putInt(MyTabFragment.TYPE,MyTabFragment.TYPE_ASK);
-            }
-        });
+                    @Override
+                    public void setArguments(Bundle bundle) {
+                        bundle.putInt(MyTabFragment.TYPE, MyTabFragment.TYPE_ASK);
+                    }
+                });
         mFragments.add(askFragment);
         mAdapter.notifyDataSetChanged();
     }
@@ -134,6 +139,10 @@ public class MyFragment extends BaseFragment {
             public void onClick(View v) {
                 int position = (int) v.getTag();
                 setTab(position);
+                Fragment fragment = mFragments.get(position);
+                if(fragment instanceof MyTabFragment){
+                    ((MyTabFragment) fragment).refresh();
+                }
                 mVpContent.setCurrentItem(position);
             }
         };
@@ -145,7 +154,19 @@ public class MyFragment extends BaseFragment {
         mLayoutMy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final String url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        String.format("main#/userinfo/%s",
+                                app.loginUser.id)
+                );
+                CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
+                        , getActivity(), new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(Const.WEB_URL, url);
+                            }
+                        });
             }
         });
     }

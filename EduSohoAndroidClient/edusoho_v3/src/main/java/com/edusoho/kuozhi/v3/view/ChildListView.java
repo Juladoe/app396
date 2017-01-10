@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.widget.ListView;
 
 /**
@@ -28,4 +29,8 @@ public class ChildListView extends ListView {
         super.onMeasure(widthMeasureSpec, expandSpec);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        return false;
+    }
 }

@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +11,23 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
+import com.edusoho.kuozhi.v3.model.provider.MyThreadProvider;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.ThreadDiscussChatActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.Promise;
+
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -20,7 +37,7 @@ public class MyAskAdapter extends BaseAdapter {
 
     private Context mContext;
     private int type = 0;
-    private List<Object> mLists = new ArrayList<>();
+    private List<MyThreadEntity> mLists = new ArrayList<>();
 
     public MyAskAdapter(Context context, int type) {
         this.mContext = context;
@@ -48,7 +65,7 @@ public class MyAskAdapter extends BaseAdapter {
         if (type == 0) {
             convertView = buildAskView(position, convertView, parent);
         } else {
-            convertView = buildAskView(position, convertView, parent);
+            convertView = buildAnswerView(position, convertView, parent);
         }
         return convertView;
     }
@@ -57,16 +74,31 @@ public class MyAskAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_ask1, null, false);
             viewHolderAsk = new ViewHolderAsk();
-            viewHolderAsk.ivAvatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
-            viewHolderAsk.tvNickname = (TextView) convertView.findViewById(R.id.tv_nickname);
             viewHolderAsk.tvType = (TextView) convertView.findViewById(R.id.tv_type);
             viewHolderAsk.tvContent = (TextView) convertView.findViewById(R.id.tv_content);
             viewHolderAsk.tvTime = (TextView) convertView.findViewById(R.id.tv_time);
             viewHolderAsk.tvReviewNum = (TextView) convertView.findViewById(R.id.tv_review_num);
+            viewHolderAsk.tvOrder = (TextView) convertView.findViewById(R.id.tv_order);
             convertView.setTag(viewHolderAsk);
         } else {
             viewHolderAsk = (ViewHolderAsk) convertView.getTag();
         }
+        MyThreadEntity entity = mLists.get(position);
+        if ("question".equals(entity.getType())) {
+            viewHolderAsk.tvType.setText("问题");
+            viewHolderAsk.tvType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+            viewHolderAsk.tvType.setBackgroundResource(R.drawable.shape_ask_type_blue);
+        } else {
+            viewHolderAsk.tvType.setText("话题");
+            viewHolderAsk.tvType.setTextColor(mContext.getResources().getColor(R.color.secondary2_color));
+            viewHolderAsk.tvType.setBackgroundResource(R.drawable.shape_ask_type_red);
+        }
+        viewHolderAsk.tvContent.setText(entity.getTitle());
+        viewHolderAsk.tvOrder.setText(entity.getCourse().title);
+        viewHolderAsk.tvTime.setText(CommonUtil.getPostDays(entity.getCreatedTime()));
+        viewHolderAsk.tvReviewNum.setText(entity.getPostNum());
+        convertView.setTag(R.id.tv_order, position);
+        convertView.setOnClickListener(mAskOnClickListener);
         return convertView;
     }
 
@@ -74,46 +106,125 @@ public class MyAskAdapter extends BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_ask2, null, false);
             viewHolderAnswer = new ViewHolderAnswer();
-            viewHolderAnswer.ivAvatar = (ImageView) convertView.findViewById(R.id.iv_avatar);
-            viewHolderAnswer.tvNicknameAnswer = (TextView) convertView.findViewById(R.id.tv_nickname_answer);
             viewHolderAnswer.tvTime = (TextView) convertView.findViewById(R.id.tv_time);
-            viewHolderAnswer.tvContentAnswer = (TextView) convertView.findViewById(R.id.tv_content_answer);
-            viewHolderAnswer.tvNicknameAsk = (TextView) convertView.findViewById(R.id.tv_nickname_ask);
+            viewHolderAnswer.tvContentAnswer = (HtmlTextView) convertView.findViewById(R.id.tv_content_answer);
             viewHolderAnswer.tvContentAsk = (TextView) convertView.findViewById(R.id.tv_content_ask);
+            viewHolderAnswer.tvOrder = (TextView) convertView.findViewById(R.id.tv_order);
             convertView.setTag(viewHolderAnswer);
         } else {
             viewHolderAnswer = (ViewHolderAnswer) convertView.getTag();
         }
+        MyThreadEntity entity = mLists.get(position);
+        viewHolderAnswer.tvOrder.setText(entity.getCourse().title);
+        viewHolderAnswer.tvTime.setText(CommonUtil.getPostDays(entity.getCreatedTime()));
+        viewHolderAnswer.tvContentAsk.setText(entity.getTitle());
+        viewHolderAnswer.tvContentAnswer.setHtml(entity.getContent(),
+                new HtmlHttpImageGetter(viewHolderAnswer.tvContentAnswer, null, true));
+        convertView.setTag(R.id.tv_order, position);
+        convertView.setOnClickListener(mAnswerOnClickListener);
         return convertView;
     }
 
-    private void initData() {
+    private View.OnClickListener mAskOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (int) v.getTag(R.id.tv_order);
+            final MyThreadEntity entity = mLists.get(position);
+            EdusohoApp.app.mEngine.runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_ID, entity.getCourse().id);
+                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_TYPE, "course");
+                    startIntent.putExtra(ThreadDiscussChatActivity.FROM_ID, Integer.parseInt(entity.getId()));
+                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TYPE, entity.getType());
+                }
+            });
+        }
+    };
 
+
+    private View.OnClickListener mAnswerOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (int) v.getTag(R.id.tv_order);
+            final MyThreadEntity entity = mLists.get(position);
+            EdusohoApp.app.mEngine.runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_ID, entity.getCourse().id);
+                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_TYPE, "course");
+                    startIntent.putExtra(ThreadDiscussChatActivity.FROM_ID, Integer.parseInt(entity.getThreadId()));
+                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TYPE, entity.getType());
+                }
+            });
+        }
+    };
+
+    private MyThreadProvider mProvider;
+
+    public void initData() {
+        RequestUrl requestUrl;
+        StringBuffer stringBuffer;
+        mLists.clear();
+        notifyDataSetChanged();
+        switch (type) {
+            case 0:
+                requestUrl = EdusohoApp.app.bindNewUrl(Const.MY_CREATED_THREADS, true);
+                stringBuffer = new StringBuffer(requestUrl.url);
+                stringBuffer.append("?start=0&limit=10000/");
+                requestUrl.url = stringBuffer.toString();
+
+                mProvider = new MyThreadProvider(mContext);
+                mProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
+                    @Override
+                    public void success(MyThreadEntity[] entities) {
+                        mLists.clear();
+                        mLists.addAll(Arrays.asList(entities));
+                        notifyDataSetChanged();
+                    }
+
+                });
+                break;
+            case 1:
+                requestUrl = EdusohoApp.app.bindNewUrl(Const.MY_POSTED_THREADS, true);
+                stringBuffer = new StringBuffer(requestUrl.url);
+                stringBuffer.append("?start=0&limit=10000/");
+                requestUrl.url = stringBuffer.toString();
+
+                mProvider = new MyThreadProvider(mContext);
+                mProvider.getMyPostedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
+                    @Override
+                    public void success(MyThreadEntity[] entities) {
+                        mLists.clear();
+                        mLists.addAll(Arrays.asList(entities));
+                        notifyDataSetChanged();
+                    }
+                });
+                break;
+        }
     }
 
     private static ViewHolderAsk viewHolderAsk;
     private static ViewHolderAnswer viewHolderAnswer;
 
     private class ViewHolderAsk {
-        ImageView ivAvatar;
-        TextView tvNickname;
         TextView tvType;
         TextView tvContent;
         TextView tvTime;
         TextView tvReviewNum;
+        TextView tvOrder;
     }
 
     private class ViewHolderAnswer {
-        ImageView ivAvatar;
-        TextView tvNicknameAnswer;
         TextView tvTime;
-        TextView tvContentAnswer;
-        TextView tvNicknameAsk;
+        HtmlTextView tvContentAnswer;
         TextView tvContentAsk;
+        TextView tvOrder;
     }
 
     public void setType(int type) {
         this.type = type;
         initData();
     }
+
 }

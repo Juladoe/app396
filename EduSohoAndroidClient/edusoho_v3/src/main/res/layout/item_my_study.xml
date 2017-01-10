@@ -54,7 +54,7 @@
             android:layout_alignTop="@+id/iv_pic"
             android:layout_marginLeft="15dp"
             android:layout_toRightOf="@+id/iv_pic"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
@@ -92,9 +92,10 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_below="@+id/iv_pic"
-            android:layout_alignParentRight="true"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/iv_pic"
             android:layout_marginRight="15dp"
-            android:visibility="gone"
+            android:visibility="visible"
             >
 
             <View
@@ -109,6 +110,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/secondary2_color"
                 android:textSize="@dimen/font_s"
+                android:layout_marginTop="15dp"
                 android:text="来自班级 | "
                 />
 

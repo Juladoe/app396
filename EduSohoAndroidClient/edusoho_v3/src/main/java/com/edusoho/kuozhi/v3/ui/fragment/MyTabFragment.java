@@ -188,6 +188,29 @@ public class MyTabFragment extends BaseFragment {
                 }
             }
         });
+
     }
 
+    public void refresh() {
+        switch (mType) {
+            case TYPE_ASK:
+                if (mMyAskAdapter != null) {
+                    mMyAskAdapter.initData();
+                }
+                break;
+            case TYPE_CACHE:
+                //todo 刷新
+                break;
+            case TYPE_COLLECT:
+                if (mMyCollectAdapter != null) {
+                    mMyCollectAdapter.initData();
+                }
+                break;
+            case TYPE_STUDY:
+                if (mMyStudyAdapter != null) {
+                    mMyStudyAdapter.initData();
+                }
+                break;
+        }
+    }
 }
