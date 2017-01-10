@@ -244,7 +244,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             Fragment fragment = app.mEngine.runPluginWithFragment(mLists[i], mActivity, new PluginFragmentCallback() {
                 @Override
                 public void setArguments(Bundle bundle) {
-
+                    bundle.putAll(getIntent().getExtras());
                 }
             });
             return fragment;

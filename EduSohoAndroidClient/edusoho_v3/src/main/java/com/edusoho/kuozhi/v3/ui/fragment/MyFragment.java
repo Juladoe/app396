@@ -90,7 +90,7 @@ public class MyFragment extends BaseFragment {
                 });
         mFragments.add(studyFragment);
         Fragment cacheFragment = app.mEngine.runPluginWithFragment(
-                "MyTabFragment", getActivity(), new PluginFragmentCallback() {
+                "MyDownloadFragment", getActivity(), new PluginFragmentCallback() {
                     @Override
                     public void setArguments(Bundle bundle) {
                         bundle.putInt(MyTabFragment.TYPE, MyTabFragment.TYPE_CACHE);

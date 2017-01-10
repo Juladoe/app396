@@ -35,7 +35,6 @@ public class LessonDownloadingAdapter extends BaseAdapter {
 
     private Context mContex;
     private SparseArray<M3U8DbModel> m3u8ModelList;
-    private List<Course> mGroupItems;
     private List<LessonItem> mChildItems;
     private boolean mSelectedShow = false;
     private DownloadingAdapter.DownloadType mType;
@@ -45,14 +44,20 @@ public class LessonDownloadingAdapter extends BaseAdapter {
     public LessonDownloadingAdapter(Context ctx, SparseArray<M3U8DbModel> m3u8List, List<LessonItem> localLessons, DownloadingAdapter.DownloadType type, int childResId) {
         mContex = ctx;
         m3u8ModelList = m3u8List;
-        mChildItems = localLessons;
+        mChildItems = new ArrayList<>();
         mType = type;
         mChildLayoutId = childResId;
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).
-                showImageOnFail(R.drawable.defaultpic).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_course).
+                showImageOnFail(R.drawable.default_course).build();
+        if (localLessons != null) {
+            mChildItems.addAll(localLessons);
+        }
     }
 
     public void updateLocalData(List<LessonItem> localLessons) {
+        if (localLessons == null || localLessons.isEmpty()) {
+            return;
+        }
         mChildItems.addAll(localLessons);
         notifyDataSetChanged();
     }

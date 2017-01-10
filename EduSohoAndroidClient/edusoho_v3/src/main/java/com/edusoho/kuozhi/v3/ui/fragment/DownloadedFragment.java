@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -48,20 +47,16 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
     private View mToolsLayout;
     private TextView mSelectAllBtn;
     private View mDelBtn;
+    private View mEmptyView;
     private LessonDownloadingAdapter mDownloadedAdapter;
     private DownloadManagerActivity mActivityContainer;
     public static final String FINISH = "finish";
-
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContainerView(R.layout.fragment_downloaded);
+        mCourseId = getArguments().getInt(Const.COURSE_ID, 0);
     }
 
     @Override
@@ -80,13 +75,14 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
 
     @Override
     protected void initView(View view) {
+        mEmptyView = view.findViewById(R.id.ll_downloading_empty);
         mToolsLayout = view.findViewById(R.id.download_tools_layout);
         mSelectAllBtn = (TextView) view.findViewById(R.id.tv_select_all);
         mDelBtn = view.findViewById(R.id.tv_delete);
         mListView = (ListView) view.findViewById(R.id.el_downloaded);
         mActivityContainer = (DownloadManagerActivity) getActivity();
         DownloadManagerActivity.LocalCourseModel finishModel = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
-        mCourseId = finishModel.mLocalCourses.get(0).id;
+
         mDownloadedAdapter = new LessonDownloadingAdapter(mContext, finishModel.m3U8DbModels, finishModel.mLocalLessons.get(mCourseId),
                 DownloadingAdapter.DownloadType.DOWNLOADED, R.layout.item_downloaded_manager_lesson_child);
         mListView.setAdapter(mDownloadedAdapter);
@@ -160,12 +156,18 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
                 Log.d("setOnItemClickListener", "1");
             }
         });
+        setEmptyState(mDownloadedAdapter.getCount() == 0);
+    }
+
+    private void setEmptyState(boolean isEmpty) {
+        mEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
     private void delLocalLesson(ArrayList<Integer> ids) {
         mActivityContainer.clearLocalCache(ids);
         DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
         mDownloadedAdapter.updateLocalData(model.mLocalLessons.get(mCourseId));
+        setEmptyState(mDownloadedAdapter.getCount() == 0);
     }
 
     private void filterCourseLocalCache(DownloadManagerActivity.LocalCourseModel localCourseModels) {
@@ -255,6 +257,7 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
                 if (model.mLocalCourses.isEmpty()) {
                 } else {
                     mDownloadedAdapter.updateLocalData(model.mLocalLessons.get(mCourseId));
+                    setEmptyState(mDownloadedAdapter.getCount() == 0);
                 }
             }
         }

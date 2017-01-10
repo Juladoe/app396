@@ -2,102 +2,72 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/grey_bg"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:padding="8dp">
+        android:layout_height="88dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bottom_dark_line_bg"
+        android:orientation="horizontal"
+        android:paddingBottom="15dp">
 
         <ImageView
             android:id="@+id/iv_avatar"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="5"
-            android:scaleType="fitXY"
-            android:src="@drawable/defaultpic" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="130dp"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:orientation="vertical">
+            android:layout_gravity="center_vertical"
+            android:scaleType="fitXY"
+            android:src="@drawable/default_course" />
 
-            <RelativeLayout
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp">
+
+            <TextView
+                android:id="@+id/tv_course_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/iv_indicator"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="title"
+                android:textColor="@color/edit_text_color"
+                android:textSize="@dimen/medium_font_size" />
 
-                <TextView
-                    android:id="@+id/tv_course_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="12dp"
-                    android:layout_toLeftOf="@+id/iv_indicator"
-                    android:ellipsize="end"
-                    android:maxLines="2"
-                    android:text="title"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/medium_font_size" />
-
-                <com.edusoho.kuozhi.v3.view.EduSohoIconView
-                    android:id="@+id/iv_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="left|center_vertical"
-                    android:layout_marginRight="24dp"
-                    android:text="@string/font_more"
-                    android:textColor="@color/green_alpha"
-                    android:textSize="@dimen/x_small_font_size" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tv_video_sum"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal">
+                android:layout_below="@id/tv_course_title"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/primary_color"
+                android:textSize="@dimen/xx_small_font_size" />
 
-                <TextView
-                    android:id="@+id/tv_video_sum"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="12dp"
-                    android:layout_marginRight="24dp"
-                    android:text="视频"
-                    android:textColor="@color/grey"
-                    android:textSize="@dimen/small_font_size" />
+            <TextView
+                android:id="@+id/tv_video_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_course_title"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="16dp"
+                android:layout_toRightOf="@+id/tv_video_sum"
+                android:textColor="@color/secondary_font_color"
+                android:textSize="@dimen/xx_small_font_size" />
 
-                <TextView
-                    android:id="@+id/tv_video_size"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/tv_video_sum"
-                    android:text="大小"
-                    android:textColor="@color/grey_alpha"
-                    android:visibility="gone" />
+        </RelativeLayout>
 
-            </RelativeLayout>
-
-        </LinearLayout>
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:background="@color/disabled_hint_color" />
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/line"
-        android:layout_width="match_parent"
-        android:layout_height="2px"
-        android:background="@drawable/login_line_bg" />
 
 </LinearLayout>
