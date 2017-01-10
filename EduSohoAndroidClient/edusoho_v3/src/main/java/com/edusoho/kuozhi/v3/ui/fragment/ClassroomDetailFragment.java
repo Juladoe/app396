@@ -48,10 +48,6 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     public ClassroomDetailFragment() {
     }
 
-    public ClassroomDetailFragment(String courseId) {
-        this.mClassroomId = courseId;
-    }
-
     public void setClassroomId(String classroomId) {
         this.mClassroomId = classroomId;
         initData();
@@ -182,7 +178,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Classroom classRoom = mClassroomDetail.getClassRoom();
         mTvTitle.setText(classRoom.title);
-        mTvTitleDesc.setHtml(classRoom.about.toString(), new HtmlHttpImageGetter(mTvTitleDesc));
+        mTvTitleDesc.setHtml(classRoom.about.toString(), new HtmlHttpImageGetter(mTvTitleDesc,null,true));
         mTvStudentNum.setText(String.format("(%s)", mClassroomDetail.getClassRoom().studentNum));
         if (mClassroomDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);

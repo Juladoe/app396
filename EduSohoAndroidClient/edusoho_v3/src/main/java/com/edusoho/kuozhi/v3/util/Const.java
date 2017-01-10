@@ -286,6 +286,7 @@ public class Const {
     public static final String UNFAVORITE = "Course/unFavoriteCourse";
     public static final String CREATE_ORDER = "Order/createOrder";
     public static final String VIP_ORDER_COURSE = "Course/vipLearn?courseId=%s";
+    public static final String COURSE_UNLEARNCOURSE = "Course/unLearnCourse?courseId=%s";
     public static final String VIP_ORDER_CLASSROOM = "ClassRoom/learnByVip?classRoomId=%s";
     public static final String VERIFYSCHOOL = "/School/getSchoolSite";
     public static final String VERIFYVERSION = "/systeminfo?version=2";
@@ -312,10 +313,16 @@ public class Const {
     public static final String COURSE_GETCLASSROOM = "ClassRoom/getClassRoom?id=%s";
     public static final String CLASSROOM_GETREVIEWS = "ClassRoom/getReviews?classRoomId=%s&limit=%s&start=%s";
     public static final String CLASSROOM_GETMEMBER = "/api/classrooms/%s/members?limits=1";
+    public static final String CLASSROOM_MY = "ClassRoom/myClassRooms";
+
 
     public static final String LESSONS = "Lesson/getCourseLessons";
     public static final String DOWN_LESSONS = "Lesson/getCourseDownLessons";
     public static final String SEARCH_COURSE = "Course/searchCourse";
+    public static final String FAV_NOR_COURSE = "Course/getFavoriteNormalCourse";
+    public static final String MY_LEARNING = "/api/my/learning";
+    public static final String FAV_LIVE_COURSE = "Course/getFavoriteLiveCourse";
+    public static final String COURSE_PROGRESS = "/api/courses_learn_progress";
     public static final String TEACHER_COURSES = "Course/getTeacherCourses";
     public static final String COURSE_NOTICE = "Course/getCourseNotice";
     public static final String UN_LEARN_COURSE = "Course/unLearnCourse";

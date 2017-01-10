@@ -230,7 +230,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             tag = "FriendFragment";
             setTitle(getString(R.string.title_friends));
         } else {
-            tag = "MineFragment";
+            tag = "MyFragment";
             setTitle(getString(R.string.title_mine));
         }
         if (tag.equals(mCurrentTag)) {

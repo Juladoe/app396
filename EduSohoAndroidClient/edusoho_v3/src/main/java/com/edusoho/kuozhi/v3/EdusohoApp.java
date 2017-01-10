@@ -114,7 +114,7 @@ public class EdusohoApp extends Application {
 
     private ImageLoaderConfiguration mImageLoaderConfiguration;
     public DisplayImageOptions mOptions;
-    public DisplayImageOptions mAvatarOptions;
+    public  DisplayImageOptions mAvatarOptions;
 
     //cache 缓存服务器
     private CacheServer mResouceCacheServer;

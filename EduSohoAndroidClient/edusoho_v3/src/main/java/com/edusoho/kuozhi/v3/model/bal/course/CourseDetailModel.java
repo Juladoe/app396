@@ -5,6 +5,10 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
+import com.edusoho.kuozhi.v3.entity.course.CourseProgress;
+import com.edusoho.kuozhi.v3.entity.course.LearningClassroom;
+import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
+import com.edusoho.kuozhi.v3.entity.course.Study;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
 import com.edusoho.kuozhi.v3.model.base.ApiResponse;
@@ -181,6 +185,174 @@ public class CourseDetailModel implements Serializable {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbackListener.onFailure("Error", error.getMessage());
+            }
+        });
+    }
+
+
+    public static void getAllUserCourses(int limit, int start,
+                                         final ResponseCallbackListener<LearningCourse> callbackListener) {
+        String url = String.format(Const.LEARNING + "?limit=%s&start=%s", limit, start);
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                LearningCourse apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<LearningCourse>() {
+                        });
+                if (apiResponse != null) {
+                    callbackListener.onSuccess(apiResponse);
+                } else if (apiResponse != null) {
+                    callbackListener.onFailure("Error", response);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbackListener.onFailure("Error", error.getMessage());
+            }
+        });
+    }
+
+    public static void getAllUserClassroom(int limit, int start,
+                                           final ResponseCallbackListener<LearningClassroom> callbackListener) {
+        String url = String.format(Const.CLASSROOM_MY + "?limit=%s&start=%s", limit, start);
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                LearningClassroom apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<LearningClassroom>() {
+                        });
+                if (apiResponse != null) {
+                    callbackListener.onSuccess(apiResponse);
+                } else if (apiResponse != null) {
+                    callbackListener.onFailure("Error", response);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbackListener.onFailure("Error", error.getMessage());
+            }
+        });
+    }
+
+    public static void getLiveCourses(int limit, int start,
+                                      final ResponseCallbackListener<LearningCourse> callbackListener) {
+        String url = String.format(Const.LIVING_COURSE + "?limit=%s&start=%s", limit, start);
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                LearningCourse apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<LearningCourse>() {
+                        });
+                if (apiResponse != null) {
+                    callbackListener.onSuccess(apiResponse);
+                } else if (apiResponse != null) {
+                    callbackListener.onFailure("Error", response);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbackListener.onFailure("Error", error.getMessage());
+            }
+        });
+    }
+
+    public static void getLiveCollect(int limit, int start,
+                                      final ResponseCallbackListener<LearningCourse> callbackListener) {
+        String url = String.format(Const.FAV_LIVE_COURSE + "?limit=%s&start=%s", limit, start);
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                LearningCourse apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<LearningCourse>() {
+                        });
+                if (apiResponse != null) {
+                    callbackListener.onSuccess(apiResponse);
+                } else if (apiResponse != null) {
+                    callbackListener.onFailure("Error", response);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbackListener.onFailure("Error", error.getMessage());
+            }
+        });
+    }
+
+    public static void getNormalCollect(int limit, int start,
+                                      final ResponseCallbackListener<LearningCourse> callbackListener) {
+        String url = String.format(Const.FAV_NOR_COURSE + "?limit=%s&start=%s", limit, start);
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                LearningCourse apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<LearningCourse>() {
+                        });
+                if (apiResponse != null) {
+                    callbackListener.onSuccess(apiResponse);
+                } else if (apiResponse != null) {
+                    callbackListener.onFailure("Error", response);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbackListener.onFailure("Error", error.getMessage());
+            }
+        });
+    }
+
+    public static void getCourseProgress(int courseId,
+                                         final ResponseCallbackListener<CourseProgress> callbackListener) {
+        String url = String.format(Const.COURSE_PROGRESS + "?courseIds=%s", courseId);
+        RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                CourseProgress apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<CourseProgress>() {
+                        });
+                if (apiResponse != null) {
+                    callbackListener.onSuccess(apiResponse);
+                } else if (apiResponse != null) {
+                    callbackListener.onFailure("Error", response);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbackListener.onFailure("Error", error.getMessage());
+            }
+        });
+    }
+
+    public static void getStudy(final ResponseCallbackListener<Study> callbackListener){
+        String url = String.format(Const.MY_LEARNING);
+        RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Study apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<Study>() {
+                        });
+                if (apiResponse != null) {
+                    callbackListener.onSuccess(apiResponse);
+                } else if (apiResponse != null) {
+                    callbackListener.onFailure("Error", response);
                 }
             }
         }, new Response.ErrorListener() {

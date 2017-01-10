@@ -14,7 +14,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
  * Created by DEL on 2016/11/24.
  */
 
-public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.MessageCallback  {
+public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.MessageCallback {
 
     protected int mRunStatus;
 
@@ -27,6 +27,15 @@ public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.M
 
     protected void initView() {
         hideActionBar();
+        View view = findViewById(R.id.back);
+        if (view != null) {
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
     }
 
     @Override
