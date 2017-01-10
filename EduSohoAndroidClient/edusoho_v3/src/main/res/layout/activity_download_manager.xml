@@ -17,7 +17,7 @@
             android:ellipsize="end"
             android:gravity="center"
             android:lines="1"
-            android:textColor="@color/textSecondary"
+            android:textColor="@color/primary_font_color"
             android:textSize="@dimen/base_large_size"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -70,6 +70,7 @@
         android:layout_below="@+id/rl_tab" />
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/ll_download_device_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -89,7 +90,6 @@
             android:layout_marginLeft="8dp"
             android:layout_marginTop="5dp"
             android:gravity="center"
-            android:text="123"
             android:textColor="@color/grey_alpha"
             android:textSize="@dimen/x_small_font_size" />
 

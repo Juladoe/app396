@@ -214,6 +214,18 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="DownLoadTheme" parent="@style/AppThemeNoActionBar">
+        <item name="android:actionMenuTextColor">@color/primary_color</item>
+        <item name="android:actionMenuTextAppearance">@style/DownLoadActionBarMenu</item>
+        <item name="actionMenuTextAppearance">@style/DownLoadActionBarMenu</item>
+        <item name="actionMenuTextColor">@color/primary_color</item>
+    </style>
+
+    <style name="DownLoadActionBarMenu" parent="@android:style/TextAppearance.Holo.Large">
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">@dimen/base_large_size</item>
+    </style>
+
     <style name="AppViewPaperTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowAnimationStyle">@style/EdusohoActivityAnim</item>

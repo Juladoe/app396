@@ -34,6 +34,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.IDownloadFragmenntListener;
 import com.edusoho.kuozhi.v3.ui.fragment.DownloadingFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -49,6 +50,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import cn.trinea.android.common.util.FileUtils;
 import extensions.PagerSlidingTabStrip;
@@ -135,6 +137,13 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             public void onPageSelected(int position) {
                 if (position == 1) {
                     MobclickAgent.onEvent(mContext, "i_cache_caching");
+                }
+                List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+                for (int i = 0; i < fragmentList.size(); i++) {
+                    Fragment fragment = fragmentList.get(i);
+                    if (fragment instanceof IDownloadFragmenntListener) {
+                        ((IDownloadFragmenntListener)fragment).onSelected(position == i);
+                    }
                 }
             }
 
@@ -337,7 +346,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
                     }
                 }
 
-                ArrayList<LessonItem> lessons = model.mLocalLessons.get(lessonItem.courseId);
+                List<LessonItem> lessons = model.mLocalLessons.get(lessonItem.courseId);
                 if (lessons != null) {
                     lessons.add(lessonItem);
                 }
@@ -487,7 +496,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     public class LocalCourseModel {
         public ArrayList<Course> mLocalCourses;
         public SparseArray<M3U8DbModel> m3U8DbModels;
-        public HashMap<Integer, ArrayList<LessonItem>> mLocalLessons;
+        public HashMap<Integer, List<LessonItem>> mLocalLessons;
 
         public LocalCourseModel() {
             mLocalCourses = new ArrayList<>();

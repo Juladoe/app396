@@ -208,8 +208,8 @@
     <string name="font_downloading">&#xe614;</string>
     <string name="font_stop_downloading">&#xe612;</string>
     <string name="font_wait_downloading">&#xe60f;</string>
-    <string name="font_download_select">&#xe610;</string>
-    <string name="font_download_unselect">&#xe613;</string>
+    <string name="font_download_select">&#xe69a;</string>
+    <string name="font_download_unselect">&#xe699;</string>
     <string name="font_less">&#xe625;</string>
     <string name="font_more">&#xe624;</string>
     <string name="font_wrong">&#xe655;</string>

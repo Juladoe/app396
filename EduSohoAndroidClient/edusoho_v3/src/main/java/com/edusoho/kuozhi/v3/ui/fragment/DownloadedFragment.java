@@ -1,22 +1,25 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ExpandableListView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.DownloadingAdapter;
+import com.edusoho.kuozhi.v3.adapter.LessonDownloadingAdapter;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
@@ -27,23 +30,25 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.ui.base.IDownloadFragmenntListener;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
-import java.util.List;
+
 
 /**
  * Created by JesseHuang on 15/6/22.
  */
-public class DownloadedFragment extends BaseFragment {
-    private ExpandableListView mListView;
+public class DownloadedFragment extends BaseFragment implements IDownloadFragmenntListener {
+
+    private int mCourseId;
+    private ListView mListView;
     private View mToolsLayout;
     private TextView mSelectAllBtn;
     private View mDelBtn;
-    private DownloadingAdapter mDownloadedAdapter;
+    private LessonDownloadingAdapter mDownloadedAdapter;
     private DownloadManagerActivity mActivityContainer;
     public static final String FINISH = "finish";
 
@@ -66,14 +71,23 @@ public class DownloadedFragment extends BaseFragment {
     }
 
     @Override
+    public void onSelected(boolean isSelected) {
+        if (!isSelected) {
+            mDownloadedAdapter.setSelectShow(false);
+            getActivity().invalidateOptionsMenu();
+        }
+    }
+
+    @Override
     protected void initView(View view) {
         mToolsLayout = view.findViewById(R.id.download_tools_layout);
         mSelectAllBtn = (TextView) view.findViewById(R.id.tv_select_all);
         mDelBtn = view.findViewById(R.id.tv_delete);
-        mListView = (ExpandableListView) view.findViewById(R.id.el_downloaded);
+        mListView = (ListView) view.findViewById(R.id.el_downloaded);
         mActivityContainer = (DownloadManagerActivity) getActivity();
         DownloadManagerActivity.LocalCourseModel finishModel = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
-        mDownloadedAdapter = new DownloadingAdapter(mContext, mActivity, finishModel.m3U8DbModels, finishModel.mLocalCourses, finishModel.mLocalLessons,
+        mCourseId = finishModel.mLocalCourses.get(0).id;
+        mDownloadedAdapter = new LessonDownloadingAdapter(mContext, finishModel.m3U8DbModels, finishModel.mLocalLessons.get(mCourseId),
                 DownloadingAdapter.DownloadType.DOWNLOADED, R.layout.item_downloaded_manager_lesson_child);
         mListView.setAdapter(mDownloadedAdapter);
         filterCourseLocalCache(finishModel);
@@ -97,40 +111,47 @@ public class DownloadedFragment extends BaseFragment {
             public void onClick(View v) {
                 if (mActivityContainer != null) {
                     MobclickAgent.onEvent(mContext, "i_cache_edit_delete");
-                    mActivityContainer.clearLocalCache(mDownloadedAdapter.getSelectLessonId());
-                    DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
-                    mDownloadedAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);
+                    ArrayList<Integer> selectedList = mDownloadedAdapter.getSelectLessonId();
+                    if (selectedList == null || selectedList.isEmpty()) {
+                        return;
+                    }
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("提醒")
+                            .setMessage("确认删除缓存课时")
+                            .setNegativeButton("取消", null)
+                            .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    delLocalLesson(mDownloadedAdapter.getSelectLessonId());
+                                }
+                            })
+                            .create()
+                            .show();
                 }
             }
         });
 
-        mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mToolsLayout.getVisibility() == View.GONE) {
-                    final Course course = mDownloadedAdapter.getGroup(groupPosition);
-                    final LessonItem lessonItem = mDownloadedAdapter.getChild(groupPosition, childPosition);
-                    if (course.courseDeadline < 0) {
-                        CommonUtil.longToast(mContext, getResources().getString(R.string.course_expired));
-                    } else {
-                        app.mEngine.runNormalPlugin(
-                                LessonActivity.TAG, mContext, new PluginRunCallback() {
-                                    @Override
-                                    public void setIntentDate(Intent startIntent) {
-                                        startIntent.putExtra(Const.COURSE_ID, lessonItem.courseId);
-                                        startIntent.putExtra(LessonActivity.FROM_CACHE, true);
-                                        startIntent.putExtra(Const.FREE, lessonItem.free);
-                                        startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
-                                        startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
-                                        startIntent.putExtra(Const.ACTIONBAR_TITLE, lessonItem.title);
-                                    }
+                    final LessonItem lessonItem = mDownloadedAdapter.getItem(position);
+                    app.mEngine.runNormalPlugin(
+                            LessonActivity.TAG, mContext, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra(Const.COURSE_ID, lessonItem.courseId);
+                                    startIntent.putExtra(LessonActivity.FROM_CACHE, true);
+                                    startIntent.putExtra(Const.FREE, lessonItem.free);
+                                    startIntent.putExtra(Const.LESSON_ID, lessonItem.id);
+                                    startIntent.putExtra(Const.LESSON_TYPE, lessonItem.type);
+                                    startIntent.putExtra(Const.ACTIONBAR_TITLE, lessonItem.title);
                                 }
-                        );
-                    }
+                            }
+                    );
                 } else {
-                    mDownloadedAdapter.setItemDownloadStatus(groupPosition, childPosition);
+                    mDownloadedAdapter.setItemDownloadStatus(position);
                 }
-                return false;
             }
         });
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -139,25 +160,12 @@ public class DownloadedFragment extends BaseFragment {
                 Log.d("setOnItemClickListener", "1");
             }
         });
+    }
 
-        mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                if (v.getTag() instanceof DownloadingAdapter.GroupPanel && mToolsLayout.getVisibility() == View.VISIBLE) {
-                    DownloadingAdapter.GroupPanel gp = (DownloadingAdapter.GroupPanel) v.getTag();
-                    if (parent.isGroupExpanded(groupPosition)) {
-                        gp.ivIndicator.setText(getString(R.string.font_less));
-                    } else {
-                        gp.ivIndicator.setText(getString(R.string.font_more));
-                    }
-                }
-                return false;
-            }
-        });
-
-        for (int i = 0; i < mDownloadedAdapter.getGroupCount(); i++) {
-            mListView.expandGroup(i);
-        }
+    private void delLocalLesson(ArrayList<Integer> ids) {
+        mActivityContainer.clearLocalCache(ids);
+        DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
+        mDownloadedAdapter.updateLocalData(model.mLocalLessons.get(mCourseId));
     }
 
     private void filterCourseLocalCache(DownloadManagerActivity.LocalCourseModel localCourseModels) {
@@ -172,7 +180,7 @@ public class DownloadedFragment extends BaseFragment {
                     }
                     if (courseDetailsResult != null && courseDetailsResult.member != null && courseDetailsResult.member.deadline < 0) {
                         course.courseDeadline = courseDetailsResult.member.deadline;
-                        mDownloadedAdapter.setCourseExpired(course);
+                        //mDownloadedAdapter.setCourseExpired(course);
                     }
                 }
             }, new Response.ErrorListener() {
@@ -185,25 +193,28 @@ public class DownloadedFragment extends BaseFragment {
     }
 
     private synchronized void deleteLocalCacheByCourseId(int courseId) {
-        List<LessonItem> lessonItems = mDownloadedAdapter.getChildrenItemsByCourseId(courseId);
-        ArrayList<Integer> lessonIds = new ArrayList<>();
-        for (LessonItem lessonItem : lessonItems) {
-            lessonIds.add(lessonItem.id);
-        }
-        mActivityContainer.clearLocalCache(lessonIds);
+        mActivityContainer.clearLocalCache(mDownloadedAdapter.getSelectLessonId());
         DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
-        mDownloadedAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);
+        mDownloadedAdapter.updateLocalData(model.mLocalLessons.get(mCourseId));
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.offline_menu_edit, menu);
+    } @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if (mDownloadedAdapter.isSelectedShow()) {
+            showBtnLayout();
+        } else {
+            hideBtnLayout();
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.offline_menu_edit) {
-            if (item.isChecked()) {
+            if (mDownloadedAdapter.isSelectedShow()) {
                 hideBtnLayout();
                 item.setTitle("编辑");
                 mDownloadedAdapter.setSelectShow(false);
@@ -213,7 +224,6 @@ public class DownloadedFragment extends BaseFragment {
                 item.setTitle("取消");
                 mDownloadedAdapter.setSelectShow(true);
             }
-            item.setChecked(!item.isChecked());
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -244,7 +254,7 @@ public class DownloadedFragment extends BaseFragment {
                 DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
                 if (model.mLocalCourses.isEmpty()) {
                 } else {
-                    mDownloadedAdapter.updateLocalData(model.mLocalCourses, model.mLocalLessons);
+                    mDownloadedAdapter.updateLocalData(model.mLocalLessons.get(mCourseId));
                 }
             }
         }
