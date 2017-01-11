@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReview;
 import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReviewDetail;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
+import com.edusoho.kuozhi.v3.ui.AllReviewActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -274,7 +275,14 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
 
     @Override
     protected void moreReview() {
-
+        EdusohoApp.app.mEngine.runNormalPlugin("AllReviewActivity"
+                , mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(AllReviewActivity.ID, Integer.valueOf(mClassroomId));
+                        startIntent.putExtra(AllReviewActivity.TYPE,AllReviewActivity.TYPE_CLASSROOM);
+                    }
+                });
     }
 
     @Override

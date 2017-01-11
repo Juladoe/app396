@@ -86,7 +86,6 @@ public class MyStudyAdapter extends BaseAdapter {
         if (position == getCount() - 1 && mCanLoad) {
             mCanLoad = false;
             mPage++;
-            Log.e("page", "" + mPage);
             addData();
         }
         if (convertView == null) {
