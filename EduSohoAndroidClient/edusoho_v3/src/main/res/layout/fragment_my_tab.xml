@@ -58,6 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/layout_filter"
+        android:background="@color/disabled2_hint_color"
         android:scrollbars="none">
 
         <com.edusoho.kuozhi.v3.view.ChildListView

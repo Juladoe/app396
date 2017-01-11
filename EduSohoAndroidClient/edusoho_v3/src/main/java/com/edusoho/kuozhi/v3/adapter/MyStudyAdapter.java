@@ -48,6 +48,7 @@ public class MyStudyAdapter extends BaseAdapter {
     private List<Object> mLists = new ArrayList<>();
     private int mPage = 0;
     private boolean mCanLoad = false;
+    private boolean mEmpty = false;
 
     public MyStudyAdapter(Context context, int type) {
         this.mContext = context;
@@ -57,7 +58,7 @@ public class MyStudyAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mLists.size();
+        return mEmpty && mLists.size() == 0 ? 1 : mLists.size();
     }
 
     @Override
@@ -71,6 +72,16 @@ public class MyStudyAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return mEmpty ? mLists.size() == 0 && position == 0 ? 1 : 0 : 0;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (position == getCount() - 1 && mCanLoad) {
             mCanLoad = false;
@@ -79,20 +90,29 @@ public class MyStudyAdapter extends BaseAdapter {
             addData();
         }
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_study, null, false);
-            viewHolder = new ViewHolder();
-            viewHolder.ivPic = (ImageView) convertView.findViewById(R.id.iv_pic);
-            viewHolder.layoutLive = convertView.findViewById(R.id.layout_live);
-            viewHolder.tvLiveIcon = (TextView) convertView.findViewById(R.id.tv_live_icon);
-            viewHolder.tvLive = (TextView) convertView.findViewById(R.id.tv_live);
-            viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
-            viewHolder.tvStudyState = (TextView) convertView.findViewById(R.id.tv_study_state);
-            viewHolder.tvMore = (TextView) convertView.findViewById(R.id.tv_more);
-            viewHolder.layoutClass = convertView.findViewById(R.id.layout_class);
-            viewHolder.tvClassName = (TextView) convertView.findViewById(R.id.tv_class_name);
-            convertView.setTag(viewHolder);
+            if (getItemViewType(position) == 0) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_study, null, false);
+                viewHolder = new ViewHolder();
+                viewHolder.ivPic = (ImageView) convertView.findViewById(R.id.iv_pic);
+                viewHolder.layoutLive = convertView.findViewById(R.id.layout_live);
+                viewHolder.tvLiveIcon = (TextView) convertView.findViewById(R.id.tv_live_icon);
+                viewHolder.tvLive = (TextView) convertView.findViewById(R.id.tv_live);
+                viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
+                viewHolder.tvStudyState = (TextView) convertView.findViewById(R.id.tv_study_state);
+                viewHolder.tvMore = (TextView) convertView.findViewById(R.id.tv_more);
+                viewHolder.layoutClass = convertView.findViewById(R.id.layout_class);
+                viewHolder.tvClassName = (TextView) convertView.findViewById(R.id.tv_class_name);
+                convertView.setTag(viewHolder);
+            } else {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.view_empty, null, false);
+                return convertView;
+            }
         } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            if (getItemViewType(position) == 0) {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }else{
+                return convertView;
+            }
         }
         viewHolder.layoutClass.setVisibility(View.GONE);
         viewHolder.layoutLive.setVisibility(View.GONE);
@@ -367,6 +387,7 @@ public class MyStudyAdapter extends BaseAdapter {
     public void initData() {
         mPage = 0;
         mLists.clear();
+        mEmpty = false;
         notifyDataSetChanged();
         switch (type) {
             case 0:
@@ -376,6 +397,9 @@ public class MyStudyAdapter extends BaseAdapter {
                         mLists.clear();
                         addAll(data.getResources());
                         mCanLoad = false;
+                        if (data.getResources().size() == 0) {
+                            mEmpty = true;
+                        }
                         notifyDataSetChanged();
                     }
 
@@ -396,6 +420,9 @@ public class MyStudyAdapter extends BaseAdapter {
                         } else {
                             mCanLoad = true;
                         }
+                        if (data.getData().size() == 0) {
+                            mEmpty = true;
+                        }
                         notifyDataSetChanged();
                     }
 
@@ -415,6 +442,9 @@ public class MyStudyAdapter extends BaseAdapter {
                         } else {
                             mCanLoad = true;
                         }
+                        if (data.getData().size() == 0) {
+                            mEmpty = true;
+                        }
                         notifyDataSetChanged();
                     }
 
@@ -433,6 +463,9 @@ public class MyStudyAdapter extends BaseAdapter {
                             mCanLoad = false;
                         } else {
                             mCanLoad = true;
+                        }
+                        if (data.getData().size() == 0) {
+                            mEmpty = true;
                         }
                         notifyDataSetChanged();
                     }

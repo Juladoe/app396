@@ -38,6 +38,7 @@ public class MyAskAdapter extends BaseAdapter {
     private Context mContext;
     private int type = 0;
     private List<MyThreadEntity> mLists = new ArrayList<>();
+    private boolean mEmpty = false;
 
     public MyAskAdapter(Context context, int type) {
         this.mContext = context;
@@ -45,8 +46,19 @@ public class MyAskAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return mEmpty ? mLists.size() == 0 && position == 0 ? 2 :
+                type : type;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 3;
+    }
+
+    @Override
     public int getCount() {
-        return mLists.size();
+        return mEmpty && mLists.size() == 0 ? 1 : mLists.size();
     }
 
     @Override
@@ -62,12 +74,19 @@ public class MyAskAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (type == 0) {
-            convertView = buildAskView(position, convertView, parent);
+        if (getItemViewType(position) == 2) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.view_empty, null, false);
+            }
+            return convertView;
         } else {
-            convertView = buildAnswerView(position, convertView, parent);
+            if (getItemViewType(position) == 0) {
+                convertView = buildAskView(position, convertView, parent);
+            } else {
+                convertView = buildAnswerView(position, convertView, parent);
+            }
+            return convertView;
         }
-        return convertView;
     }
 
     private View buildAskView(int position, View convertView, ViewGroup parent) {
@@ -93,7 +112,9 @@ public class MyAskAdapter extends BaseAdapter {
             viewHolderAsk.tvType.setTextColor(mContext.getResources().getColor(R.color.secondary2_color));
             viewHolderAsk.tvType.setBackgroundResource(R.drawable.shape_ask_type_red);
         }
-        viewHolderAsk.tvContent.setText(entity.getTitle());
+        viewHolderAsk.tvContent.setText(Html.fromHtml("<html><body>&nbsp;&nbsp;&nbsp;" +
+                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                + entity.getTitle() + "</body></html>"));
         viewHolderAsk.tvOrder.setText(entity.getCourse().title);
         viewHolderAsk.tvTime.setText(CommonUtil.getPostDays(entity.getCreatedTime()));
         viewHolderAsk.tvReviewNum.setText(entity.getPostNum());
@@ -166,6 +187,7 @@ public class MyAskAdapter extends BaseAdapter {
         RequestUrl requestUrl;
         StringBuffer stringBuffer;
         mLists.clear();
+        mEmpty = false;
         notifyDataSetChanged();
         switch (type) {
             case 0:
@@ -180,6 +202,9 @@ public class MyAskAdapter extends BaseAdapter {
                     public void success(MyThreadEntity[] entities) {
                         mLists.clear();
                         mLists.addAll(Arrays.asList(entities));
+                        if (entities.length == 0) {
+                            mEmpty = true;
+                        }
                         notifyDataSetChanged();
                     }
 
@@ -197,6 +222,9 @@ public class MyAskAdapter extends BaseAdapter {
                     public void success(MyThreadEntity[] entities) {
                         mLists.clear();
                         mLists.addAll(Arrays.asList(entities));
+                        if (entities.length == 0) {
+                            mEmpty = true;
+                        }
                         notifyDataSetChanged();
                     }
                 });
