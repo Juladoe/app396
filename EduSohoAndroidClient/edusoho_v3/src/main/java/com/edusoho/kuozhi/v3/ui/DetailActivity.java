@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -10,7 +11,9 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -31,6 +34,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.util.WeakReferenceHandler;
+import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
@@ -58,6 +62,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mConsult;
     protected View mCollect;
     protected View mBack2;
+    protected View mBack;
     protected View mTvInclass;
     protected View mPlayLastLayout;
     protected TextView mTvLastTitle;
@@ -94,6 +99,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
+    private EduSohoNewIconView mTvEditTopic;
+    private Dialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +151,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mHour = findViewById(R.id.hour);
         mReview = findViewById(R.id.review);
         mBack2 = findViewById(R.id.back2);
+        mBack = findViewById(R.id.back);
         mMenu = findViewById(R.id.layout_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvPlay2 = (TextView) findViewById(R.id.tv_play2);
@@ -154,6 +162,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
         mTabLayout = findViewById(R.id.tab_rlayout);
+        mTvEditTopic = (EduSohoNewIconView) findViewById(R.id.tv_edit_topic);
 
         initFragment(mFragments);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -178,6 +187,19 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mHeadRlayout2.setLayoutParams(headParams);
         mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
         mMenuPop = new MenuPop(this, mMenu);
+        mMenuPop.setOnBindViewVisibleChangeListener(
+                new MenuPop.OnBindViewVisibleChangeListener() {
+            @Override
+            public void onVisibleChange(boolean show) {
+                if(show){
+                    mIvGrade.setVisibility(View.GONE);
+                    mIvGrade2.setVisibility(View.GONE);
+                }else{
+                    mIvGrade.setVisibility(View.VISIBLE);
+                    mIvGrade2.setVisibility(View.VISIBLE);
+                }
+            }
+        });
         setLoadStatus(View.VISIBLE);
     }
 
@@ -197,9 +219,10 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mTvAdd.setOnClickListener(this);
         mConsult.setOnClickListener(this);
         mBack2.setOnClickListener(this);
-        findViewById(R.id.back).setOnClickListener(this);
+        mBack.setOnClickListener(this);
         mTvInclass.setOnClickListener(this);
         mMenu.setOnClickListener(this);
+        mTvEditTopic.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -208,6 +231,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             @Override
             public void onPageSelected(int position) {
                 checkTab(position);
+                showEditTopic(position);
             }
 
             @Override
@@ -228,6 +252,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             }
         });
     }
+
 
     protected void showProcessDialog() {
         if (mProcessDialog == null) {
@@ -279,6 +304,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             }
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
+            grade();
         } else if (v.getId() == R.id.iv_share ||
                 v.getId() == R.id.iv_share2) {
             share();
@@ -292,20 +318,25 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             courseStart();
         } else if (v.getId() == R.id.consult_layout) {
             consult();
-        } else if (v.getId() == R.id.back2 || v.getId() == R.id.back) {
-            if (isScreenLock) {
-                return;
-            }
-            if (mIsFullScreen) {
-                fullScreen();
-                return;
-            }
+        } else if (v.getId() == R.id.back2) {
             finish();
+        } else if (v.getId() == R.id.back) {
+            if(mIsFullScreen){
+                fullScreen();
+            }else {
+                finish();
+            }
         } else if (v.getId() == R.id.layout_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
         } else if (v.getId() == R.id.tv_inclass) {
             goClass();
+        } else if (v.getId() == R.id.tv_edit_topic) {
+            showPopup();
         }
+    }
+
+    protected void grade(){
+
     }
 
     protected abstract void goClass();
@@ -564,5 +595,51 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 break;
         }
         return false;
+    }
+
+
+    protected void showEditTopic(int position){
+        if (position == 2) {
+            mTvEditTopic.setVisibility(View.VISIBLE);
+        } else {
+            mTvEditTopic.setVisibility(View.GONE);
+        }
+    }
+
+    public boolean isAdd;
+    private void showPopup() {
+        if (!isAdd) {
+            isAdd = true;
+            dialog = new Dialog(this, R.style.DiscussDialog);
+            View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_discuss_publish, null);
+            EduSohoNewIconView tvTopic = (EduSohoNewIconView) dialogView.findViewById(R.id.tv_topic);
+            tvTopic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialogView.findViewById(R.id.tv_question).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialogView.findViewById(R.id.tv_close).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.setContentView(dialogView);
+            dialog.setCanceledOnTouchOutside(false);
+            Window mWindow = dialog.getWindow();
+            mWindow .setGravity(Gravity.LEFT | Gravity.TOP);
+            WindowManager.LayoutParams lp = mWindow.getAttributes();
+            lp.x = (int) mTvEditTopic.getX();
+            lp.y = (int) (mTvEditTopic.getY() - AppUtil.dp2px(this, 149));
+            mWindow.setAttributes(lp);
+        }
+        dialog.show();
     }
 }

@@ -57,9 +57,10 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
 
     @Override
     public void addItem(MessageEntity messageBody) {
-        mMessageList.add(0, messageBody);
+        mMessageList.add(1, messageBody);
         notifyDataSetChanged();
     }
+
 
     @Override
     public int getItemViewType(int position) {

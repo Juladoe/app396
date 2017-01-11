@@ -23,6 +23,8 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
+import com.edusoho.kuozhi.v3.ui.AllReviewActivity;
+import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -47,10 +49,6 @@ public class CourseDetailFragment extends BaseDetailFragment {
     private ReviewAdapter mAdapter;
 
     public CourseDetailFragment() {
-    }
-
-    public CourseDetailFragment(String courseId) {
-        this.mCourseId = courseId;
     }
 
     public void setCourseId(String courseId) {
@@ -91,40 +89,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 setLoadViewStatus(View.GONE);
             }
         });
-        CourseDetailModel.getCourseReviews(mCourseId, "10", "0",
-                new ResponseCallbackListener<CourseReviewDetail>() {
-                    @Override
-                    public void onSuccess(CourseReviewDetail data) {
-                        mReviews.clear();
-                        int length = data.getData().size();
-                        for (int i = 0; i < length; i++) {
-                            if (!data.getData().get(i).parentId.equals("0")) {
-                                data.getData().remove(i);
-                                i--;
-                                length--;
-                            }
-                        }
-                        mTvReviewNum.setText(String.format("(%s)", data.getTotal()));
-                        if (data.getData().size() == 0) {
-                            mReviewNoneLayout.setVisibility(View.VISIBLE);
-                            mTvReviewMore.setVisibility(View.GONE);
-                        } else {
-                            mReviewNoneLayout.setVisibility(View.GONE);
-                            mReviews.addAll(data.getData());
-                            if (mReviews.size() < 5) {
-                                mTvReviewMore.setVisibility(View.GONE);
-                            } else {
-                                mTvReviewMore.setVisibility(View.VISIBLE);
-                                mTvReviewMore.setText("更多评价");
-                            }
-                            mAdapter.notifyDataSetChanged();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(String code, String message) {
-                    }
-                });
+        refreshReview();
         CourseDetailModel.getCourseMember(mCourseId,
                 new ResponseCallbackListener<List<CourseMember>>() {
                     @Override
@@ -270,7 +235,14 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
     @Override
     protected void moreReview() {
-
+        EdusohoApp.app.mEngine.runNormalPlugin("AllReviewActivity"
+                , mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(AllReviewActivity.ID, Integer.valueOf(mCourseId));
+                        startIntent.putExtra(AllReviewActivity.TYPE,AllReviewActivity.TYPE_COURSE);
+                    }
+                });
     }
 
     class ReviewAdapter extends BaseAdapter {
@@ -348,6 +320,43 @@ public class CourseDetailFragment extends BaseDetailFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.WEB_URL, url);
+                    }
+                });
+    }
+
+    public void refreshReview() {
+        CourseDetailModel.getCourseReviews(mCourseId, "10", "0",
+                new ResponseCallbackListener<CourseReviewDetail>() {
+                    @Override
+                    public void onSuccess(CourseReviewDetail data) {
+                        mReviews.clear();
+                        int length = data.getData().size();
+                        for (int i = 0; i < length; i++) {
+                            if (!data.getData().get(i).parentId.equals("0")) {
+                                data.getData().remove(i);
+                                i--;
+                                length--;
+                            }
+                        }
+                        mTvReviewNum.setText(String.format("(%s)", data.getTotal()));
+                        if (data.getData().size() == 0) {
+                            mReviewNoneLayout.setVisibility(View.VISIBLE);
+                            mTvReviewMore.setVisibility(View.GONE);
+                        } else {
+                            mReviewNoneLayout.setVisibility(View.GONE);
+                            mReviews.addAll(data.getData());
+                            if (mReviews.size() < 5) {
+                                mTvReviewMore.setVisibility(View.GONE);
+                            } else {
+                                mTvReviewMore.setVisibility(View.VISIBLE);
+                                mTvReviewMore.setText("更多评价");
+                            }
+                            mAdapter.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(String code, String message) {
                     }
                 });
     }

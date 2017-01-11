@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.edusoho.kuozhi.v3.view.HeadStopScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/layout_my"
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/disabled2_hint_color">
+
+            <com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView
+                android:id="@+id/iv_avatar"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginTop="26dp"
+                android:layout_toRightOf="@+id/iv_avatar"
+                android:text="罗志祥的卧蚕"
+                android:textColor="@color/primary_font_color"
+                android:textSize="@dimen/font_l" />
+
+            <TextView
+                android:id="@+id/tv_avatar_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/tv_name"
+                android:layout_below="@+id/tv_name"
+                android:layout_marginTop="10dp"
+                android:text="用户类型"
+                android:textColor="@color/secondary2_font_color"
+                android:textSize="@dimen/font_s" />
+
+            <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="25dp"
+                android:text="@string/new_font_more" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_tab"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/layout_my"
+            android:layout_marginTop="15dp"
+            android:background="@color/disabled2_hint_color"
+            android:orientation="horizontal">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    style="@style/MyTab"
+                    android:text="学习" />
+
+                <View style="@style/MyTabLine" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    style="@style/MyTab"
+                    android:text="缓存" />
+
+                <View style="@style/MyTabLine" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    style="@style/MyTab"
+                    android:text="收藏" />
+
+                <View style="@style/MyTabLine" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <TextView
+                    style="@style/MyTab"
+                    android:text="问答" />
+
+                <View style="@style/MyTabLine" />
+            </RelativeLayout>
+        </LinearLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/vp_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_tab"
+            />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@drawable/shape_line_shadow2"
+            android:layout_below="@+id/vp_content"
+            />
+
+    </RelativeLayout>
+</com.edusoho.kuozhi.v3.view.HeadStopScrollView>

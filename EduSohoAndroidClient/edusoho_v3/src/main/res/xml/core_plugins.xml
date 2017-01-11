@@ -61,6 +61,11 @@
         version="1.0" />
 
     <plugin
+        name="AllReviewActivity"
+        package="com.edusoho.kuozhi.v3.ui.AllReviewActivity"
+        version="1.0" />
+
+    <plugin
         name="ChatActivity"
         package="com.edusoho.kuozhi.v3.ui.ImChatActivity"
         version="1.0" />
@@ -148,6 +153,16 @@
     <plugin
         name="MineFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.MineFragment"
+        version="1.0" />
+
+    <plugin
+        name="MyFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.MyFragment"
+        version="1.0" />
+
+    <plugin
+        name="MyTabFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.MyTabFragment"
         version="1.0" />
 
     <plugin
@@ -333,6 +348,10 @@
     <plugin
         name="QrSearchActivity"
         package="com.edusoho.kuozhi.v3.ui.QrSearchActivity"
+        version="1.0" />
+    <plugin
+        name="ReviewActivity"
+        package="com.edusoho.kuozhi.v3.ui.ReviewActivity"
         version="1.0" />
     <plugin
         name="AboutFragment"

@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReview;
 import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReviewDetail;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
+import com.edusoho.kuozhi.v3.ui.AllReviewActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -46,10 +47,6 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     private ReviewAdapter mAdapter;
 
     public ClassroomDetailFragment() {
-    }
-
-    public ClassroomDetailFragment(String courseId) {
-        this.mClassroomId = courseId;
     }
 
     public void setClassroomId(String classroomId) {
@@ -182,7 +179,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Classroom classRoom = mClassroomDetail.getClassRoom();
         mTvTitle.setText(classRoom.title);
-        mTvTitleDesc.setHtml(classRoom.about.toString(), new HtmlHttpImageGetter(mTvTitleDesc));
+        mTvTitleDesc.setHtml(classRoom.about.toString(), new HtmlHttpImageGetter(mTvTitleDesc,null,true));
         mTvStudentNum.setText(String.format("(%s)", mClassroomDetail.getClassRoom().studentNum));
         if (mClassroomDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
@@ -278,7 +275,14 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
 
     @Override
     protected void moreReview() {
-
+        EdusohoApp.app.mEngine.runNormalPlugin("AllReviewActivity"
+                , mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(AllReviewActivity.ID, Integer.valueOf(mClassroomId));
+                        startIntent.putExtra(AllReviewActivity.TYPE,AllReviewActivity.TYPE_CLASSROOM);
+                    }
+                });
     }
 
     @Override

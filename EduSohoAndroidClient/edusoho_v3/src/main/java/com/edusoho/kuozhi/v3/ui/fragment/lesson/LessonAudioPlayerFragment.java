@@ -170,6 +170,14 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (mLessonMenuHelper != null) {
+            mLessonMenuHelper.updatePluginItemState();
+        }
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
         if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
