@@ -47,6 +47,10 @@ public class GenseeVodPlayerActivity extends AppCompatActivity implements
     private static final int DURITME = 2000;
     private static final String DURATION = "DURATION";
 
+    @Override
+    public void onDocInfo(List<DocInfo> list) {
+    }
+
     public interface RESULT {;
         int ON_GET_VODOBJ = 100;
         int HIDE_CONTROLLER = 101;
@@ -271,7 +275,7 @@ public class GenseeVodPlayerActivity extends AppCompatActivity implements
         }
 
         mVodPlayer.setGSVideoView(mGSVideoView);
-        mVodPlayer.play(vodId, this, "");
+        mVodPlayer.play(vodId, this, "", false);
         mHandler.sendEmptyMessage(RESULT.SHOW_VIDEO_LOAD);
     }
 

@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 
 import com.gensee.rtmpresourcelib.R;
 
+
 public class CustomXListView extends XListView {
 
 	public CustomXListView(Context context, AttributeSet attrs, int defStyle) {

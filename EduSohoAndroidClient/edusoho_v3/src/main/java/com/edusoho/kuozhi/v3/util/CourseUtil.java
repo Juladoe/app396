@@ -248,6 +248,65 @@ public class CourseUtil {
         );
     }
 
+    public static void deleteCourse(int courseId , final CallBack callBack){
+        RequestUrl url = EdusohoApp.app.bindUrl(
+                String.format(Const.COURSE_UNLEARNCOURSE, courseId), true);
+        EdusohoApp.app.getUrl(url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (callBack != null) {
+                            callBack.onSuccee(response);
+                        }
+                    }
+                }
+
+                , new Response.ErrorListener()
+
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (callBack != null) {
+                            callBack.onError("volleyError");
+                        }
+                    }
+                }
+
+        );
+    }
+
+    public static void deleteClassroom(int classroomId , final CallBack callBack){
+        RequestUrl url = EdusohoApp.app.bindUrl(
+                String.format(Const.CLASSROOM_UNLEARN + "?targetType=classroom&classRoomId=%s", classroomId), true);
+        EdusohoApp.app.getUrl(url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (callBack != null) {
+                            callBack.onSuccee(response);
+                        }
+                    }
+                }
+
+                , new Response.ErrorListener()
+
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if (callBack != null) {
+                            callBack.onError("volleyError");
+                        }
+                    }
+                }
+
+        );
+    }
+
+    public interface CallBack {
+        void onSuccee(String response);
+
+        void onError(String response);
+    }
+
+
     public interface OnCollectSucceeListener {
         void onCollectSuccee();
     }
@@ -274,4 +333,5 @@ public class CourseUtil {
                     }
                 });
     }
+
 }
