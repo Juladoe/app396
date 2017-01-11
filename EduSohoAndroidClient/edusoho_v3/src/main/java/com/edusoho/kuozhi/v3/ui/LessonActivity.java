@@ -383,6 +383,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 "lesson-" + mLessonId
         );
 
+        setLoadViewState(false);
         LessonItem lessonItem = getLessonResultType(object);
         if (lessonItem == null) {
             finish();

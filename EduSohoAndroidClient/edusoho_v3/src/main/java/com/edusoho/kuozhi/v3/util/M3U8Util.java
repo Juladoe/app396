@@ -105,12 +105,20 @@ public class M3U8Util {
             this.mTargetHost = hostUri.getHost();
         }
 
-        mFutures = new ArrayList<>();
-        mTimeOutList = new Hashtable<>();
-        mDownloadQueue = new ArrayDeque<>();
-        mThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
-        mThreadPoolExecutor.setMaximumPoolSize(1);
+        initDownloadEnv();
         mSqliteUtil = SqliteUtil.getUtil(mContext);
+    }
+
+    public int getCourseId() {
+        return mCourseId;
+    }
+
+    public int getLessonId() {
+        return mLessonId;
+    }
+
+    public int getUserId() {
+        return mUserId;
     }
 
     private static M3U8DbModel parseM3U8Model(Cursor cursor) {
@@ -281,6 +289,8 @@ public class M3U8Util {
 
         setDownloadStatus(DOWNING);
 
+        isCancel = false;
+        initDownloadEnv();
         if (checkHasLocalM3U8Task(mLessonId, mUserId)) {
             for (int i = 0; i < 5; i++) {
                 prepareDownload();
@@ -303,7 +313,7 @@ public class M3U8Util {
         loadLessonUrl(lessonId, courseId);
     }
 
-    private void setDownloadStatus(int status) {
+    public void setDownloadStatus(int status) {
         this.mDownloadStatus = status;
         if (status == ERROR) {
             ContentValues cv = new ContentValues();
@@ -766,18 +776,44 @@ public class M3U8Util {
 
     public void cancelDownload() {
         isCancel = true;
-        mDownloadQueue.clear();
-        mTimeOutList.clear();
 
         for (Future future : mFutures) {
             future.cancel(true);
         }
-        mThreadPoolExecutor.purge();
-        mThreadPoolExecutor.shutdown();
+        clearDownloadEnv();
+    }
+
+    private void clearDownloadEnv() {
+        if (mThreadPoolExecutor != null) {
+            mThreadPoolExecutor.purge();
+            mThreadPoolExecutor.shutdown();
+        }
+
+        if (mDownloadQueue != null) {
+            mDownloadQueue.clear();
+        }
+
+        if (mTimeOutList != null) {
+            mTimeOutList.clear();
+        }
 
         mThreadPoolExecutor = null;
         mDownloadQueue = null;
         mTimeOutList = null;
+    }
+
+    private void initDownloadEnv() {
+        if (mFutures != null
+                && mTimeOutList != null
+                && mDownloadQueue != null
+                && mThreadPoolExecutor != null) {
+            return;
+        }
+        mFutures = new ArrayList<>();
+        mTimeOutList = new Hashtable<>();
+        mDownloadQueue = new ArrayDeque<>();
+        mThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
+        mThreadPoolExecutor.setMaximumPoolSize(1);
     }
 
     private String createLocalM3U8File(M3U8DbModel m3U8DbModel) throws FileNotFoundException {

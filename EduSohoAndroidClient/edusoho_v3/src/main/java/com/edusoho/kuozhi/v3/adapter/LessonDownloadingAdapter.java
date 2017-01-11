@@ -187,7 +187,7 @@ public class LessonDownloadingAdapter extends BaseAdapter {
     protected int getDownloadStatus(int lessonId) {
         M3U8DownService service = M3U8DownService.getService();
         if (service == null) {
-            return M3U8Util.NONE;
+            return M3U8Util.PAUSE;
         }
         return service.getTaskStatus(lessonId);
     }

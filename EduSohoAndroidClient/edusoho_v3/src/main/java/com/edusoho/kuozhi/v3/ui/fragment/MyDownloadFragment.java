@@ -157,18 +157,29 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
                 }
             }
 
-            filterLessons(isFinish, lessonItems, m3U8DbModels);
-
             for (DownloadCourse course : localCourses) {
                 List<LessonItem> lessons = localLessons.get(course.id);
-                course.setCachedLessonNum(lessons.size());
-                course.setCachedSize(getDownloadLessonListSize(getLessonIds(lessons)));
+                int[] cachedLessonIds = getCachedLessonIds(lessons, m3U8DbModels);
+                course.setCachedLessonNum(cachedLessonIds.length);
+                course.setCachedSize(getDownloadLessonListSize(cachedLessonIds));
             }
         } else {
             localCourses.clear();
             lessonItems.clear();
         }
         return localCourses;
+    }
+
+    private int[] getCachedLessonIds(List<LessonItem> lessons, SparseArray<M3U8DbModel> m3U8DbModels) {
+        List<LessonItem> cachedLessons = new ArrayList<>();
+        for (LessonItem lessonItem : lessons) {
+            M3U8DbModel m3U8DbModel = m3U8DbModels.get(lessonItem.id);
+            if (m3U8DbModel != null && m3U8DbModel.finish == M3U8Util.FINISH) {
+                cachedLessons.add(lessonItem);
+            }
+        }
+
+        return getLessonIds(cachedLessons);
     }
 
     private long getDownloadLessonListSize(int[] lessonIds) {

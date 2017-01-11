@@ -150,12 +150,6 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
                 }
             }
         });
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.d("setOnItemClickListener", "1");
-            }
-        });
         setEmptyState(mDownloadedAdapter.getCount() == 0);
     }
 
