@@ -43,7 +43,9 @@ import java.util.Map;
 
 public class MyDownloadFragment extends Fragment implements AdapterView.OnItemClickListener {
 
+    private View mEmptyView;
     private ListView mListView;
+    private CourseDownloadAdapter mAdapter;
 
     @Nullable
     @Override
@@ -60,15 +62,21 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mListView = (ListView) view.findViewById(R.id.listview);
-
+        mEmptyView = view.findViewById(R.id.ll_mydownload_empty);
+        mAdapter = new CourseDownloadAdapter(getContext());
+        mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        CourseDownloadAdapter adapter = new CourseDownloadAdapter(getContext(), getLocalCourseList(M3U8Util.FINISH, null, null));
-        mListView.setAdapter(adapter);
+        mAdapter.setCourseList(getLocalCourseList(M3U8Util.ALL, null, null));
+        setEmptyState(mAdapter.getCount() == 0);
+    }
+
+    private void setEmptyState(boolean isEmpty) {
+        mEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
     @Override

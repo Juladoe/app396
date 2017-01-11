@@ -55,6 +55,7 @@ public class LessonDownloadingAdapter extends BaseAdapter {
     }
 
     public void updateLocalData(List<LessonItem> localLessons) {
+        mChildItems.clear();
         if (localLessons == null || localLessons.isEmpty()) {
             return;
         }
@@ -249,12 +250,14 @@ public class LessonDownloadingAdapter extends BaseAdapter {
 
         public void setDownloasState(int downStatus) {
             switch (downStatus) {
-                case M3U8Util.DOWNING:
-                    tvProgress.setBackgroundResource(R.drawable.icon_download_pause);
+                case M3U8Util.ERROR:
+                case M3U8Util.PAUSE:
+                    tvProgress.setBackgroundResource(R.drawable.icon_download_start);
                     break;
                 case M3U8Util.NONE:
+                case M3U8Util.DOWNING:
                 default:
-                    tvProgress.setBackgroundResource(R.drawable.icon_download_start);
+                    tvProgress.setBackgroundResource(R.drawable.icon_download_pause);
 
             }
         }

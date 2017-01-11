@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -62,6 +63,12 @@
                 android:textColor="@color/secondary_font_color"
                 android:textSize="@dimen/xx_small_font_size" />
 
+            <TextView
+                android:id="@+id/tv_download_source"
+                android:text="来自班级"
+                android:layout_below="@id/tv_video_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </RelativeLayout>
 
         <ImageView

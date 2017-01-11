@@ -369,4 +369,8 @@
     <!-- lesson -->
     <string name="lesson_not_exist">课时信息不存在</string>
 
+    <!-- download -->
+    <string name="download_no_local_course">没有本地缓存课程</string>
+    <string name="download_no_complete_lesson">没有已缓存的课时</string>
+    <string name="download_no_task">没有课时下载任务</string>
 </resources>

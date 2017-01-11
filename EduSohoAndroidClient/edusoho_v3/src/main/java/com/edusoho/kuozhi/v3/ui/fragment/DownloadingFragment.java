@@ -177,11 +177,9 @@ public class DownloadingFragment extends BaseFragment implements IDownloadFragme
                 return;
             }
 
-            //ivDownloadSign.setText(getString(R.string.font_stop_downloading));
             M3U8DownService.startDown(
                     mActivity.getBaseContext(), lessonItem.id, lessonItem.courseId, lessonItem.title);
         } else {
-            //ivDownloadSign.setText(getResources().getString(R.string.font_stop_downloading));
             service.cancelDownloadTask(lessonItem.id);
         }
     }

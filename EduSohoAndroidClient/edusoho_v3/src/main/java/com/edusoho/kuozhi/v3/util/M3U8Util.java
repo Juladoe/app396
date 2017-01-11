@@ -62,6 +62,7 @@ public class M3U8Util {
     public static final int DOWNING = 0;
     public static final int NONE = 1;
     public static final int ERROR = 2;
+    public static final int PAUSE = 3;
 
     public static final int FINISH = 1;
     public static final int UN_FINISH = 0;

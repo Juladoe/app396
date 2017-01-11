@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,10 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.DownloadCourse;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,9 +27,9 @@ public class CourseDownloadAdapter extends BaseAdapter {
     private Context mContext;
     private List<DownloadCourse> mList;
 
-    public CourseDownloadAdapter(Context context, List<DownloadCourse> list) {
+    public CourseDownloadAdapter(Context context) {
         this.mContext = context;
-        this.mList = list;
+        this.mList = new ArrayList<>();
     }
 
     @Override
@@ -47,6 +49,12 @@ public class CourseDownloadAdapter extends BaseAdapter {
         return convertView;
     }
 
+    public void setCourseList(List<DownloadCourse> courseList) {
+        mList.clear();
+        mList.addAll(courseList);
+        notifyDataSetChanged();
+    }
+
     @Override
     public long getItemId(int position) {
         return position;
@@ -58,8 +66,10 @@ public class CourseDownloadAdapter extends BaseAdapter {
     }
 
     public static class DownloadCourseItem {
+
         public ImageView ivCover;
         public TextView tvCourseTitle;
+        public TextView tvSourse;
         public TextView ivVideoSum;
         public TextView ivVideoSizes;
 
@@ -68,6 +78,7 @@ public class CourseDownloadAdapter extends BaseAdapter {
             tvCourseTitle = (TextView) view.findViewById(R.id.tv_course_title);
             ivVideoSum = (TextView) view.findViewById(R.id.tv_video_sum);
             ivVideoSizes = (TextView) view.findViewById(R.id.tv_video_size);
+            tvSourse = (TextView) view.findViewById(R.id.tv_download_source);
         }
 
         public void renderData(DownloadCourse course) {
@@ -75,6 +86,14 @@ public class CourseDownloadAdapter extends BaseAdapter {
             tvCourseTitle.setText(course.title);
             ivVideoSizes.setText(getCacheSize(course.getCachedSize()));
             ivVideoSum.setText(String.format("已缓存%d课", course.getCachedLessonNum()));
+
+            if (!"classroom".equals(course.getSource())) {
+                tvSourse.setVisibility(View.VISIBLE);
+                tvSourse.setText(AppUtil.getColorTextAfter("来自班级", "班级1", Color.BLUE));
+            } else {
+                tvSourse.setVisibility(View.GONE);
+                tvSourse.setText("");
+            }
         }
 
         private String getCacheSize(long size) {
