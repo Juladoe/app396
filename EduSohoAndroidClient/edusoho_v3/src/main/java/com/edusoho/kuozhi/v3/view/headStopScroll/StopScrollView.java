@@ -3,22 +3,17 @@ package com.edusoho.kuozhi.v3.view.headStopScroll;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.OverScroller;
 import android.widget.ScrollView;
-import android.widget.Scroller;
-
-import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 
 /**
  * Created by Zhang on 2016/12/9.
  */
 
-public class StopScrollView extends ScrollView implements HeadStopScrollView.CanStopView {
+public class StopScrollView extends ScrollView {
     public StopScrollView(Context context) {
         super(context);
     }
@@ -31,12 +26,20 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
         super(context, attrs, defStyleAttr);
     }
 
-    private HeadStopScrollView mParent;
+    private CanStopView mParent;
 
 
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        if (changed) {
+            getStopParent(this);
+        }
     }
 
     float moveY;
@@ -48,6 +51,7 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         acquireVelocityTracker(ev);
+        firstViewHeight = mParent.getFirstViewHeight();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 startY = (int) ev.getRawY();
@@ -110,6 +114,15 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     private int mPointerId;
     private boolean mUnClick = false;
 
+    private void getStopParent(View child) {
+        View view = (View) child.getParent();
+        if (view instanceof CanStopView) {
+            mParent = (CanStopView) view;
+        } else {
+            getStopParent(view);
+        }
+    }
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         return mUnClick ? true : super.onInterceptTouchEvent(ev);
@@ -125,17 +138,8 @@ public class StopScrollView extends ScrollView implements HeadStopScrollView.Can
     private int firstViewHeight = 0;
 
     @Override
-    public void setScrollHeight(int height) {
-        firstViewHeight = height;
-    }
-
-    @Override
-    public void bindParent(HeadStopScrollView headStopScrollView) {
-        mParent = headStopScrollView;
-    }
-
-    @Override
     protected int computeScrollDeltaToGetChildRectOnScreen(Rect rect) {
         return 0;
     }
+
 }
