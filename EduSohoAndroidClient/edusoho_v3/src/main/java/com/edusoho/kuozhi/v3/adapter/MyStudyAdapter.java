@@ -48,6 +48,7 @@ public class MyStudyAdapter extends BaseAdapter {
     private List<Object> mLists = new ArrayList<>();
     private int mPage = 0;
     private boolean mCanLoad = false;
+    private boolean mEmpty = false;
 
     public MyStudyAdapter(Context context, int type) {
         this.mContext = context;
@@ -57,7 +58,7 @@ public class MyStudyAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mLists.size();
+        return mEmpty && mLists.size() == 0 ? 1 : mLists.size();
     }
 
     @Override
@@ -71,28 +72,46 @@ public class MyStudyAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return mEmpty ? mLists.size() == 0 && position == 0 ? 1 : 0 : 0;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (position == getCount() - 1 && mCanLoad) {
             mCanLoad = false;
             mPage++;
-            Log.e("page","" + mPage);
             addData();
         }
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_study, null, false);
-            viewHolder = new ViewHolder();
-            viewHolder.ivPic = (ImageView) convertView.findViewById(R.id.iv_pic);
-            viewHolder.layoutLive = convertView.findViewById(R.id.layout_live);
-            viewHolder.tvLiveIcon = (TextView) convertView.findViewById(R.id.tv_live_icon);
-            viewHolder.tvLive = (TextView) convertView.findViewById(R.id.tv_live);
-            viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
-            viewHolder.tvStudyState = (TextView) convertView.findViewById(R.id.tv_study_state);
-            viewHolder.tvMore = (TextView) convertView.findViewById(R.id.tv_more);
-            viewHolder.layoutClass = convertView.findViewById(R.id.layout_class);
-            viewHolder.tvClassName = (TextView) convertView.findViewById(R.id.tv_class_name);
-            convertView.setTag(viewHolder);
+            if (getItemViewType(position) == 0) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_study, null, false);
+                viewHolder = new ViewHolder();
+                viewHolder.ivPic = (ImageView) convertView.findViewById(R.id.iv_pic);
+                viewHolder.layoutLive = convertView.findViewById(R.id.layout_live);
+                viewHolder.tvLiveIcon = (TextView) convertView.findViewById(R.id.tv_live_icon);
+                viewHolder.tvLive = (TextView) convertView.findViewById(R.id.tv_live);
+                viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
+                viewHolder.tvStudyState = (TextView) convertView.findViewById(R.id.tv_study_state);
+                viewHolder.tvMore = (TextView) convertView.findViewById(R.id.tv_more);
+                viewHolder.layoutClass = convertView.findViewById(R.id.layout_class);
+                viewHolder.tvClassName = (TextView) convertView.findViewById(R.id.tv_class_name);
+                convertView.setTag(viewHolder);
+            } else {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.view_empty, null, false);
+                return convertView;
+            }
         } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            if (getItemViewType(position) == 0) {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }else{
+                return convertView;
+            }
         }
         viewHolder.layoutClass.setVisibility(View.GONE);
         viewHolder.layoutLive.setVisibility(View.GONE);
@@ -111,7 +130,6 @@ public class MyStudyAdapter extends BaseAdapter {
                                 viewHolder.layoutClass.setVisibility(View.VISIBLE);
                                 viewHolder.tvClassName.setText(study.getClassroomTitle());
                             }
-//                            getProgress(Integer.parseInt(study.getId()), viewHolder.tvStudyState);
                             break;
                         case "course":
                             ImageLoader.getInstance().displayImage(study.getLargePicture()
@@ -122,9 +140,9 @@ public class MyStudyAdapter extends BaseAdapter {
                                 viewHolder.layoutClass.setVisibility(View.VISIBLE);
                                 viewHolder.tvClassName.setText(study.getClassroomTitle());
                             }
-//                            getProgress(Integer.parseInt(study.getId()), viewHolder.tvStudyState);
                             break;
                     }
+                    setProgressStr(study.getLearnedNum(), study.getTotalLesson(), viewHolder.tvStudyState);
                 }
                 break;
             case 1:
@@ -133,7 +151,7 @@ public class MyStudyAdapter extends BaseAdapter {
                     ImageLoader.getInstance().displayImage(course.largePicture, viewHolder.ivPic,
                             EdusohoApp.app.mOptions);
                     viewHolder.tvTitle.setText(String.valueOf(course.title));
-//                    getProgress(course.id, viewHolder.tvStudyState);
+                    setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
                 }
                 break;
             case 2:
@@ -142,7 +160,7 @@ public class MyStudyAdapter extends BaseAdapter {
                     ImageLoader.getInstance().displayImage(course.largePicture, viewHolder.ivPic,
                             EdusohoApp.app.mOptions);
                     viewHolder.tvTitle.setText(String.valueOf(course.title));
-//                    getProgress(course.id, viewHolder.tvStudyState);
+                    setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
                 }
                 break;
             case 3:
@@ -204,7 +222,13 @@ public class MyStudyAdapter extends BaseAdapter {
             int position = (int) v.getTag();
             final Object object = mLists.get(position);
             MoreDialog dialog = new MoreDialog(mContext);
-            dialog.init("退出课程", new MoreDialog.MoreCallBack() {
+            String txt;
+            if (object instanceof Classroom) {
+                txt = "退出班级";
+            } else {
+                txt = "退出课程";
+            }
+            dialog.init(txt, new MoreDialog.MoreCallBack() {
                 @Override
                 public void onMoveClick(View v, final Dialog dialog) {
                     if (object instanceof Classroom) {
@@ -212,7 +236,7 @@ public class MyStudyAdapter extends BaseAdapter {
                         new SureDialog(mContext).init("是否退出班级?",
                                 new SureDialog.CallBack() {
                                     @Override
-                                    public void onSureClick(View v,final Dialog dialog2) {
+                                    public void onSureClick(View v, final Dialog dialog2) {
                                         CourseUtil.deleteClassroom(classroom.id, new CourseUtil.CallBack() {
                                             @Override
                                             public void onSuccee(String response) {
@@ -240,7 +264,7 @@ public class MyStudyAdapter extends BaseAdapter {
                         new SureDialog(mContext).init("是否退出课程?",
                                 new SureDialog.CallBack() {
                                     @Override
-                                    public void onSureClick(View v,final Dialog dialog2) {
+                                    public void onSureClick(View v, final Dialog dialog2) {
                                         CourseUtil.deleteCourse(course.id, new CourseUtil.CallBack() {
                                             @Override
                                             public void onSuccee(String response) {
@@ -268,7 +292,7 @@ public class MyStudyAdapter extends BaseAdapter {
                         new SureDialog(mContext).init("是否退出课程?",
                                 new SureDialog.CallBack() {
                                     @Override
-                                    public void onSureClick(View v,final Dialog dialog2) {
+                                    public void onSureClick(View v, final Dialog dialog2) {
                                         CourseUtil.deleteCourse(Integer.parseInt(study.getId()), new CourseUtil.CallBack() {
                                             @Override
                                             public void onSuccee(String response) {
@@ -362,6 +386,7 @@ public class MyStudyAdapter extends BaseAdapter {
     public void initData() {
         mPage = 0;
         mLists.clear();
+        mEmpty = false;
         notifyDataSetChanged();
         switch (type) {
             case 0:
@@ -369,8 +394,11 @@ public class MyStudyAdapter extends BaseAdapter {
                     @Override
                     public void onSuccess(Study data) {
                         mLists.clear();
-                        mLists.addAll(data.getResources());
+                        addAll(data.getResources());
                         mCanLoad = false;
+                        if (data.getResources().size() == 0) {
+                            mEmpty = true;
+                        }
                         notifyDataSetChanged();
                     }
 
@@ -385,11 +413,14 @@ public class MyStudyAdapter extends BaseAdapter {
                     @Override
                     public void onSuccess(LearningCourse data) {
                         mLists.clear();
-                        mLists.addAll(data.getData());
+                        addAll(data.getData());
                         if (data.getData().size() < 10) {
                             mCanLoad = false;
                         } else {
                             mCanLoad = true;
+                        }
+                        if (data.getData().size() == 0) {
+                            mEmpty = true;
                         }
                         notifyDataSetChanged();
                     }
@@ -404,11 +435,14 @@ public class MyStudyAdapter extends BaseAdapter {
                     @Override
                     public void onSuccess(LearningCourse data) {
                         mLists.clear();
-                        mLists.addAll(data.getData());
+                        addAll(data.getData());
                         if (data.getData().size() < 10) {
                             mCanLoad = false;
                         } else {
                             mCanLoad = true;
+                        }
+                        if (data.getData().size() == 0) {
+                            mEmpty = true;
                         }
                         notifyDataSetChanged();
                     }
@@ -423,11 +457,14 @@ public class MyStudyAdapter extends BaseAdapter {
                     @Override
                     public void onSuccess(LearningClassroom data) {
                         mLists.clear();
-                        mLists.addAll(data.getData());
+                        addAll(data.getData());
                         if (data.getData().size() < 10) {
                             mCanLoad = false;
                         } else {
                             mCanLoad = true;
+                        }
+                        if (data.getData().size() == 0) {
+                            mEmpty = true;
                         }
                         notifyDataSetChanged();
                     }
@@ -452,7 +489,7 @@ public class MyStudyAdapter extends BaseAdapter {
                     public void onSuccess(LearningCourse data) {
                         if (data.getData().size() > 0 && (mLists.size() == 0 || mLists.get(0).getClass()
                                 .equals(data.getData().get(0).getClass()))) {
-                            mLists.addAll(data.getData());
+                            addAll(data.getData());
                         }
                         if (data.getData().size() < 10) {
                             mCanLoad = false;
@@ -474,7 +511,7 @@ public class MyStudyAdapter extends BaseAdapter {
                     public void onSuccess(LearningCourse data) {
                         if (data.getData().size() > 0 && (mLists.size() == 0 || mLists.get(0).getClass()
                                 .equals(data.getData().get(0).getClass()))) {
-                            mLists.addAll(data.getData());
+                            addAll(data.getData());
                         }
                         if (data.getData().size() < 10) {
                             mCanLoad = false;
@@ -496,7 +533,7 @@ public class MyStudyAdapter extends BaseAdapter {
                     public void onSuccess(LearningClassroom data) {
                         if (data.getData().size() > 0 && (mLists.size() == 0 || mLists.get(0).getClass()
                                 .equals(data.getData().get(0).getClass()))) {
-                            mLists.addAll(data.getData());
+                            addAll(data.getData());
                         }
                         if (data.getData().size() < 10) {
                             mCanLoad = false;
@@ -520,30 +557,72 @@ public class MyStudyAdapter extends BaseAdapter {
         initData();
     }
 
-    private void getProgress(int courseId, final TextView view) {
-        view.setTag(courseId);
-        CourseDetailModel.getCourseProgress(courseId, new ResponseCallbackListener<CourseProgress>() {
-            @Override
-            public void onSuccess(CourseProgress data) {
-                int id = (int) view.getTag();
-                CourseProgress.Progress progress = data.resources.get(0);
-                if (progress != null && id == progress.courseId) {
-                    if (progress.learnedNum == 0) {
-                        view.setText("未开始学习");
-                        view.setTextColor(Color.parseColor("#71777d"));
+    private void addAll(final List<? extends Object> list) {
+        mLists.addAll(list);
+        if (list.size() > 0) {
+            Object obj = list.get(0);
+            final int start = mLists.indexOf(obj);
+            if (obj instanceof Course || obj instanceof Study.Resource) {
+                List<Integer> ids = new ArrayList<>();
+                for (Object object : list) {
+                    if (object instanceof Course) {
+                        ids.add(((Course) object).id);
+                    } else if (object instanceof Study.Resource) {
+                        ids.add(Integer.parseInt(((Study.Resource) object).getId()));
                     } else {
-                        view.setText(String.format("已学习%s/%s课"
-                                , progress.learnedNum, progress.totalLesson));
-                        view.setTextColor(Color.parseColor("#03c777"));
+                        return;
                     }
                 }
-            }
+                CourseDetailModel.getCourseProgress(ids, new ResponseCallbackListener<CourseProgress>() {
+                    @Override
+                    public void onSuccess(CourseProgress data) {
+                        int length = data.resources.size();
+                        List<CourseProgress.Progress> progresses = data.resources;
+                        out:
+                        for (int i = 0; i < length; i++) {
+                            for (int j = start; j < start + 10 && j < mLists.size(); j++) {
+                                if (mLists.get(j) instanceof Course) {
+                                    Course course = (Course) mLists.get(j);
+                                    CourseProgress.Progress progress = progresses.get(i);
+                                    if (course.id == progress.courseId) {
+                                        course.totalLesson = progress.totalLesson;
+                                        course.learnedNum = progress.learnedNum;
+                                        continue out;
+                                    }
+                                } else if (mLists.get(j) instanceof Study.Resource) {
+                                    Study.Resource study = (Study.Resource) mLists.get(j);
+                                    CourseProgress.Progress progress = progresses.get(i);
+                                    if (Integer.parseInt(study.getId()) == progress.courseId) {
+                                        study.setLearnedNum(progress.learnedNum);
+                                        study.setTotalLesson(progress.totalLesson);
+                                        continue out;
+                                    }
+                                } else {
+                                    return;
+                                }
+                            }
+                        }
+                        notifyDataSetChanged();
+                    }
 
-            @Override
-            public void onFailure(String code, String message) {
+                    @Override
+                    public void onFailure(String code, String message) {
 
+                    }
+                });
             }
-        });
+        }
     }
 
+    private void setProgressStr(int now, int total, TextView view) {
+        String str;
+        if (now == 0) {
+            str = "未开始学习";
+            view.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+        } else {
+            str = String.format("已学习%s/%s课", now, total);
+            view.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+        }
+        view.setText(str);
+    }
 }

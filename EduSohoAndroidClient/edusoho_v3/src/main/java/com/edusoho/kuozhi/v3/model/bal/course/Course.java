@@ -44,6 +44,8 @@ public class Course implements Serializable {
     public String type;
     public String buyable;
     public String convNo;
+    public int learnedNum;
+    public int totalLesson;
     public long courseDeadline;
 
     private String sourceName;

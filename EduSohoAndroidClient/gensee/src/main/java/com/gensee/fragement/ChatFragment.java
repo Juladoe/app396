@@ -49,7 +49,7 @@ public class ChatFragment extends Fragment {
 
 		mView = inflater.inflate(R.layout.imchat, null);
 		mGSImplChatView = (GSImplChatView) mView.findViewById(R.id.impchatview);
-		mChatView = (XListView) mGSImplChatView.findViewById(R.id.talkingcontext);
+		mChatView = (XListView) mGSImplChatView.findViewById(R.id.gs_talkingcontext);
 		mPlayer.setGSChatView(mGSImplChatView);
 		mChatView.getAdapter().registerDataSetObserver(new DataSetObserver() {
 			@Override
@@ -65,14 +65,15 @@ public class ChatFragment extends Fragment {
 		});
 
 		mPlayer.setOnChatListener(new OnChatListener() {
+
 			@Override
-			public void onChatWithPerson(long userId, String sSendName, String text, String rich, int onChatID) {
-				mGSImplChatView.onChatWithPerson(userId, sSendName, text, rich, onChatID);
+			public void onChatWithPerson(long userId, String sSendName, int senderRole, String text, String rich, int onChatID) {
+				mGSImplChatView.onChatWithPerson(userId, sSendName, senderRole, text, rich, onChatID);
 			}
 
 			@Override
-			public void onChatWithPublic(long userId, java.lang.String sSendName, java.lang.String text, java.lang.String rich, int onChatID) {
-				mGSImplChatView.onChatWithPublic(userId, sSendName, text, rich, onChatID);
+			public void onChatWithPublic(long userId, String sSendName, int senderRole, String text, String rich, int onChatID) {
+				mGSImplChatView.onChatWithPublic(userId, sSendName, senderRole, text, rich, onChatID);
 			}
 
 			@Override

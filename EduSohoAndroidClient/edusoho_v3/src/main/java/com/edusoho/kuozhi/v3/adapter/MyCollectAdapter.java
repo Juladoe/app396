@@ -40,7 +40,7 @@ public class MyCollectAdapter extends BaseAdapter {
     private int mPage = 0;
     private boolean mCanLoadLive = false;
     private boolean mCanLoadNor = false;
-
+    private boolean mEmpty = false;
 
     public MyCollectAdapter(Context context) {
         this.mContext = context;
@@ -49,7 +49,7 @@ public class MyCollectAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mLists.size();
+        return mEmpty && mLists.size() == 0 ? 1 : mLists.size();
     }
 
     @Override
@@ -63,6 +63,16 @@ public class MyCollectAdapter extends BaseAdapter {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return mEmpty ? mLists.size() == 0 && position == 0 ? 1 : 0 : 0;
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (position == getCount() - 1 && (mCanLoadLive || mCanLoadNor)) {
             mCanLoadLive = false;
@@ -71,15 +81,24 @@ public class MyCollectAdapter extends BaseAdapter {
             addData();
         }
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_collect, null, false);
-            viewHolder = new ViewHolder();
-            viewHolder.ivPic = (ImageView) convertView.findViewById(R.id.iv_pic);
-            viewHolder.tvAddNum = (TextView) convertView.findViewById(R.id.tv_add_num);
-            viewHolder.tvMore = (TextView) convertView.findViewById(R.id.tv_more);
-            viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
-            convertView.setTag(viewHolder);
+            if (getItemViewType(position) == 1) {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.view_empty, null, false);
+                return convertView;
+            } else {
+                convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_collect, null, false);
+                viewHolder = new ViewHolder();
+                viewHolder.ivPic = (ImageView) convertView.findViewById(R.id.iv_pic);
+                viewHolder.tvAddNum = (TextView) convertView.findViewById(R.id.tv_add_num);
+                viewHolder.tvMore = (TextView) convertView.findViewById(R.id.tv_more);
+                viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
+                convertView.setTag(viewHolder);
+            }
         } else {
-            viewHolder = (ViewHolder) convertView.getTag();
+            if (getItemViewType(position) == 1) {
+                return convertView;
+            } else {
+                viewHolder = (ViewHolder) convertView.getTag();
+            }
         }
         Course course = mLists.get(position);
         ImageLoader.getInstance().displayImage(course.largePicture
@@ -89,7 +108,7 @@ public class MyCollectAdapter extends BaseAdapter {
         viewHolder.tvTitle.setText(String.valueOf(course.title));
         viewHolder.tvMore.setTag(position);
         viewHolder.tvMore.setOnClickListener(mOnClickListener);
-        convertView.setTag(R.id.tv_title,position);
+        convertView.setTag(R.id.tv_title, position);
         convertView.setOnClickListener(mViewOnClickListener);
         return convertView;
     }
@@ -182,6 +201,7 @@ public class MyCollectAdapter extends BaseAdapter {
 
     public void initData() {
         mLists.clear();
+        mEmpty = false;
         notifyDataSetChanged();
         CourseDetailModel.getLiveCourses(10, 10 * mPage, new ResponseCallbackListener<LearningCourse>() {
             @Override
@@ -191,6 +211,9 @@ public class MyCollectAdapter extends BaseAdapter {
                     mCanLoadLive = false;
                 } else {
                     mCanLoadLive = true;
+                }
+                if (data.getData().size() == 0) {
+                    mEmpty = true;
                 }
                 notifyDataSetChanged();
             }
@@ -208,6 +231,9 @@ public class MyCollectAdapter extends BaseAdapter {
                     mCanLoadNor = false;
                 } else {
                     mCanLoadNor = true;
+                }
+                if (data.getData().size() == 0) {
+                    mEmpty = true;
                 }
                 notifyDataSetChanged();
             }

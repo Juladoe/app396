@@ -293,7 +293,7 @@ public class CourseDetailModel implements Serializable {
     }
 
     public static void getNormalCollect(int limit, int start,
-                                      final ResponseCallbackListener<LearningCourse> callbackListener) {
+                                        final ResponseCallbackListener<LearningCourse> callbackListener) {
         String url = String.format(Const.FAV_NOR_COURSE + "?limit=%s&start=%s", limit, start);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
@@ -316,9 +316,13 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getCourseProgress(int courseId,
+    public static void getCourseProgress(List<Integer> courseIds,
                                          final ResponseCallbackListener<CourseProgress> callbackListener) {
-        String url = String.format(Const.COURSE_PROGRESS + "?courseIds=%s", courseId);
+        StringBuilder sb = new StringBuilder();
+        for (Integer id : courseIds) {
+            sb.append(id + ",");
+        }
+        String url = String.format(Const.COURSE_PROGRESS + "?courseIds=%s", sb.substring(0, sb.length() - 1));
         RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
@@ -340,7 +344,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getStudy(final ResponseCallbackListener<Study> callbackListener){
+    public static void getStudy(final ResponseCallbackListener<Study> callbackListener) {
         String url = String.format(Const.MY_LEARNING);
         RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {

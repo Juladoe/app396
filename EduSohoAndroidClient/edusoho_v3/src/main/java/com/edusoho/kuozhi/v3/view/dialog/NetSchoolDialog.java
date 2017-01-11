@@ -149,11 +149,9 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 dismiss();
             }
         });
-        mPattern = Pattern.compile("([a-z]([a-z0-9\\-]*[\\.。])" +
-                "+([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)" +
-                "|(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))" +
-                "(:[0-9]{1,5})?" +
-                "(\\/[a-z0-9_\\-\\.~]+)*(\\/([a-z0-9_\\-\\.]*)(\\?[a-z0-9+_\\-\\.%=&]*)?)?(#[a-z][a-z0-9_]*)?$"
+        mPattern = Pattern.compile("([a-z0-9]([a-z0-9\\-]*[\\.。])+" +
+                "([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)" +
+                "|([0-9]{1,3}\\.){1,3}[0-9]{1,3})(:[0-9]{1,5})?$"
         );
         mSearchEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

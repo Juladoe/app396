@@ -23,6 +23,8 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
+import com.edusoho.kuozhi.v3.ui.AllReviewActivity;
+import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -47,10 +49,6 @@ public class CourseDetailFragment extends BaseDetailFragment {
     private ReviewAdapter mAdapter;
 
     public CourseDetailFragment() {
-    }
-
-    public CourseDetailFragment(String courseId) {
-        this.mCourseId = courseId;
     }
 
     public void setCourseId(String courseId) {
@@ -237,7 +235,14 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
     @Override
     protected void moreReview() {
-
+        EdusohoApp.app.mEngine.runNormalPlugin("AllReviewActivity"
+                , mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(AllReviewActivity.ID, Integer.valueOf(mCourseId));
+                        startIntent.putExtra(AllReviewActivity.TYPE,AllReviewActivity.TYPE_COURSE);
+                    }
+                });
     }
 
     class ReviewAdapter extends BaseAdapter {

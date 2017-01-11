@@ -28,7 +28,8 @@ public class Study implements Serializable {
     }
 
     public static class Resource {
-
+        private int learnedNum;
+        private int totalLesson;
         private String id;
         private String title;
         private String subtitle;
@@ -91,6 +92,22 @@ public class Study implements Serializable {
         private List<String> goals;
         private List<String> audiences;
         private List<?> tags;
+
+        public int getLearnedNum() {
+            return learnedNum;
+        }
+
+        public void setLearnedNum(int learnedNum) {
+            this.learnedNum = learnedNum;
+        }
+
+        public int getTotalLesson() {
+            return totalLesson;
+        }
+
+        public void setTotalLesson(int totalLesson) {
+            this.totalLesson = totalLesson;
+        }
 
         public String getId() {
             return id;

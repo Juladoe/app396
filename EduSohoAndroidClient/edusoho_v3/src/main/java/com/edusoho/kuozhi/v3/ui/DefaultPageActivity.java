@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -42,6 +44,7 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.LinkedHashMap;
 import java.util.Queue;
@@ -61,6 +64,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private EduSohoTextBtn mDownTabMine;
     private Toolbar tbActionBar;
     private TextView tvTitle;
+    private TextView tvSitting;
     private View viewTitleLoading;
     private NavDownTabClickListener mNavDownTabClickListener;
     private Queue<Request<String>> mAjaxQueue;
@@ -157,6 +161,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mDownTabMine = (EduSohoTextBtn) findViewById(R.id.nav_tab_mine);
         tbActionBar = (Toolbar) findViewById(R.id.tb_action_bar);
         tvTitle = (TextView) findViewById(R.id.tv_title);
+        tvSitting = (TextView) findViewById(R.id.tv_sitting);
         viewTitleLoading = findViewById(R.id.ll_title_loading);
         setSupportActionBar(tbActionBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -180,6 +185,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         if (app.config.newVerifiedNotify) {
             mDownTabFriends.setBageIcon(true);
         }
+        tvSitting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "i_mySettings");
+                mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
+            }
+        });
     }
 
     @Override
@@ -219,7 +231,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             });
             return;
         }
-
+        mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));
+        tvTitle.setTextColor(Color.parseColor("#ffffff"));
+        tvSitting.setVisibility(View.GONE);
         if (id == R.id.nav_tab_find) {
             tag = "FindFragment";
             setTitle(getSchoolTitle());
@@ -232,6 +246,9 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         } else {
             tag = "MyFragment";
             setTitle(getString(R.string.title_mine));
+            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
+            tvTitle.setTextColor(getResources().getColor(R.color.primary_font_color));
+            tvSitting.setVisibility(View.VISIBLE);
         }
         if (tag.equals(mCurrentTag)) {
             return;
