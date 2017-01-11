@@ -10,6 +10,11 @@ android {
         minSdkVersion 16
         targetSdkVersion 21
         manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+        multiDexEnabled true
     }
 
     //签名
