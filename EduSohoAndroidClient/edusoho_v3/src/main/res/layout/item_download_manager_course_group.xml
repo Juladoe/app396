@@ -2,31 +2,29 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="88dp"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginTop="15dp"
         android:background="@drawable/bottom_dark_line_bg"
-        android:orientation="horizontal"
-        android:paddingBottom="15dp">
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/iv_avatar"
             android:layout_width="130dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
+            android:layout_height="73dp"
+            android:layout_gravity="top"
             android:scaleType="fitXY"
             android:src="@drawable/default_course" />
 
         <RelativeLayout
+            android:layout_gravity="center_vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp">
 
@@ -35,11 +33,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/iv_indicator"
                 android:ellipsize="end"
                 android:maxLines="2"
-                android:text="title"
                 android:textColor="@color/edit_text_color"
                 android:textSize="@dimen/medium_font_size" />
 
@@ -48,37 +43,42 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_course_title"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:textColor="@color/primary_color"
                 android:textSize="@dimen/xx_small_font_size" />
 
             <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                 android:layout_marginLeft="15dp"
-                android:layout_marginTop="16dp"
+                android:gravity="bottom"
                 android:id="@+id/tv_video_size_label"
-                android:layout_below="@id/tv_course_title"
-                android:layout_toRightOf="@+id/tv_video_sum"
+                android:layout_alignBottom="@id/tv_video_sum"
+                android:layout_toRightOf="@id/tv_video_sum"
                 android:text="@string/download_size_label"
                 android:textColor="@color/secondary_font_color"
-                android:textSize="@dimen/xx_small_font_size"
+                android:textSize="11sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <TextView
+                android:gravity="bottom"
                 android:id="@+id/tv_video_size"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tv_course_title"
+                android:layout_alignBottom="@id/tv_video_sum"
                 android:layout_marginLeft="5dp"
-                android:layout_marginTop="16dp"
-                android:layout_toRightOf="@+id/tv_video_size_label"
+                android:layout_toRightOf="@id/tv_video_size_label"
                 android:textColor="@color/secondary_font_color"
                 android:textSize="@dimen/xx_small_font_size" />
 
             <TextView
+                android:layout_marginTop="7dp"
+                android:paddingTop="7dp"
+                android:textSize="@dimen/_x_small_font_size"
                 android:id="@+id/tv_download_source"
                 android:text="来自班级"
-                android:layout_below="@id/tv_video_size"
+                android:background="@drawable/top_dark_line_bg"
+                android:textColor="@color/secondary2_color"
+                android:layout_below="@id/tv_video_sum"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </RelativeLayout>

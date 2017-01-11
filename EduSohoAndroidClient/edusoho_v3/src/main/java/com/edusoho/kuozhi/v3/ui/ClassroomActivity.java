@@ -75,6 +75,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             @Override
             public void setArguments(Bundle bundle) {
                 bundle.putString("id", mClassroomId);
+                bundle.putString("source", mClassroomDetail != null ? mClassroomDetail.getClassRoom().title : null);
             }
         });
         fragments.add(catafragment);
