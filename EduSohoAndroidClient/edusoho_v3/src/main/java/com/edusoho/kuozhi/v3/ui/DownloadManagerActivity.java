@@ -322,13 +322,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             Collections.sort(lessonItems, new Comparator<LessonItem>() {
                 @Override
                 public int compare(LessonItem lhs, LessonItem rhs) {
-                    if (lhs.courseId > rhs.courseId) {
-                        return 1;
-                    } else if (lhs.courseId == rhs.courseId) {
-                        return 0;
-                    } else {
-                        return -1;
-                    }
+                    return lhs.number - rhs.number;
                 }
             });
 

@@ -244,6 +244,7 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_fb</item>
         <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textSize">@dimen/base_large_size</item>
         <item name="actionBarSize">44dp</item>
         <item name="android:windowAnimationStyle">@style/SlideToWindowAnimTheme</item>
         <item name="android:windowContentOverlay">@null</item>

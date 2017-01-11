@@ -93,7 +93,6 @@ public class LessonDownloadingAdapter extends BaseAdapter {
             childPanel.tvProgress.setProgress(model.downloadNum);
 
             int downStatus = getDownloadStatus(lessonItem.id);
-            int downStatusIconRes = downStatus == M3U8Util.DOWNING ? R.string.font_downloading : R.string.font_stop_downloading;
             if (model.finish == M3U8Util.DOWNLOAD_ERROR) {
                 //childPanel.tvProgress.setText("下载失败");
             }
