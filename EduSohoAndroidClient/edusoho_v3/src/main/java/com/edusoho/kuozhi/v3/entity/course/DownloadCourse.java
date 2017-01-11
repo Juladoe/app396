@@ -10,13 +10,9 @@ import com.edusoho.kuozhi.v3.model.bal.course.Course;
 
 public class DownloadCourse extends Course {
 
-    private String source;
-
     private int cachedLessonNum;
 
     private long cachedSize;
-
-    private String targetClassRoomName;
 
     public int getCachedLessonNum() {
         return cachedLessonNum;
@@ -32,22 +28,6 @@ public class DownloadCourse extends Course {
 
     public void setCachedSize(long cachedSize) {
         this.cachedSize = cachedSize;
-    }
-
-    public String getSource() {
-        return source;
-    }
-
-    public void setSource(String source) {
-        this.source = source;
-    }
-
-    public String getTargetClassRoomName() {
-        return targetClassRoomName;
-    }
-
-    public void setTargetClassRoomName(String targetClassRoomName) {
-        this.targetClassRoomName = targetClassRoomName;
     }
 
     public String getPicture() {

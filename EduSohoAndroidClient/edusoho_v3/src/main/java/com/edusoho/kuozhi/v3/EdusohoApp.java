@@ -373,8 +373,8 @@ public class EdusohoApp extends Application {
                 .diskCache(new UnlimitedDiscCache(file)).imageDownloader(new BaseImageDownloader(this, Const.TIMEOUT, Const.TIMEOUT))
                 .build();
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).
-                showImageOnFail(R.drawable.defaultpic).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_course).
+                showImageOnFail(R.drawable.default_course).build();
         mAvatarOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.icon_default_avatar).
                 showImageOnFail(R.drawable.icon_default_avatar).build();
     }

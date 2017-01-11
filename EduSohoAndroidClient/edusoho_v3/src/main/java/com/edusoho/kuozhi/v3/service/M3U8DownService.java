@@ -262,7 +262,7 @@ public class M3U8DownService extends Service {
             }
         }
 
-        createNotification(lessonId, lessonTitle);
+        createNotification(courseId, lessonId, lessonTitle);
         m3U8Util.download(lessonId, courseId, EdusohoApp.app.loginUser.id);
     }
 
@@ -297,7 +297,7 @@ public class M3U8DownService extends Service {
         return m3U8Util.getDownloadStatus();
     }
 
-    private void createNotification(int lessonId, String title) {
+    private void createNotification(int courseId, int lessonId, String title) {
         notificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -308,6 +308,7 @@ public class M3U8DownService extends Service {
         notification.defaults = Notification.DEFAULT_LIGHTS;
 
         Intent notificationIntent = new Intent(this, DownloadManagerActivity.class);
+        notificationIntent.putExtra(Const.COURSE_ID, courseId);
         notification.contentIntent = PendingIntent.getActivity(
                 this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.download_notification_layout);

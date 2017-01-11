@@ -49,6 +49,7 @@ public class Course implements Serializable {
     public long courseDeadline;
 
     private String sourceName;
+    public String source;
 
     public String getSourceName() {
         return sourceName;
@@ -62,6 +63,9 @@ public class Course implements Serializable {
         int schemIndex = largePicture.lastIndexOf("http://");
         if (schemIndex != -1) {
             return largePicture.substring(schemIndex);
+        }
+        if (largePicture.startsWith("//")) {
+            return "http:" + largePicture;
         }
         return largePicture;
     }

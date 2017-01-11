@@ -101,7 +101,7 @@ public class MyCollectAdapter extends BaseAdapter {
             }
         }
         Course course = mLists.get(position);
-        ImageLoader.getInstance().displayImage(course.largePicture
+        ImageLoader.getInstance().displayImage(course.getLargePicture()
                 , viewHolder.ivPic, EdusohoApp.app
                         .mOptions);
         viewHolder.tvAddNum.setText(String.format("%s人参与", course.hitNum));
@@ -161,7 +161,6 @@ public class MyCollectAdapter extends BaseAdapter {
                             dialog2.dismiss();
                         }
                     }).show();
-
                 }
 
                 @Override

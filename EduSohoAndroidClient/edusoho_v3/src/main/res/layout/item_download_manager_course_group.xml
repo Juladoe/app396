@@ -71,11 +71,14 @@
                 android:textSize="@dimen/xx_small_font_size" />
 
             <TextView
+                android:layout_marginBottom="8dp"
                 android:layout_marginTop="7dp"
                 android:paddingTop="7dp"
                 android:textSize="@dimen/_x_small_font_size"
                 android:id="@+id/tv_download_source"
                 android:text="来自班级"
+                android:maxLines="2"
+                android:ellipsize="end"
                 android:background="@drawable/top_dark_line_bg"
                 android:textColor="@color/secondary2_color"
                 android:layout_below="@id/tv_video_sum"

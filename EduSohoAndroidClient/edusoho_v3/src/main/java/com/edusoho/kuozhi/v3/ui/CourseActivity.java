@@ -135,14 +135,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     private void saveCourseToCache(Course course) {
         course.setSourceName(getIntent().getStringExtra(SOURCE));
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(getBaseContext());
-        Object obj = sqliteUtil.queryForObj(
-                new TypeToken<Object>() {
-                },
-                "where type=? and key=?",
-                Const.CACHE_COURSE_TYPE,
-                "course-" + course.id
-        );
-
         sqliteUtil.saveLocalCache(Const.CACHE_COURSE_TYPE, "course-" + course.id, new Gson().toJson(course));
     }
 

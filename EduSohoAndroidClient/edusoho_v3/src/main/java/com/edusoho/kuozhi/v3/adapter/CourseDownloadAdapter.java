@@ -87,9 +87,9 @@ public class CourseDownloadAdapter extends BaseAdapter {
             ivVideoSizes.setText(getCacheSize(course.getCachedSize()));
             ivVideoSum.setText(String.format("已缓存%d课", course.getCachedLessonNum()));
 
-            if ("classroom".equals(course.getSource())) {
+            if ("classroom".equals(course.source)) {
                 tvSourse.setVisibility(View.VISIBLE);
-                tvSourse.setText(AppUtil.getColorTextAfter("来自班级 | ", course.getSource(), Color.rgb(113, 119, 125)));
+                tvSourse.setText(AppUtil.getColorTextAfter("来自班级 | ", course.getSourceName(), Color.rgb(113, 119, 125)));
             } else {
                 tvSourse.setVisibility(View.GONE);
                 tvSourse.setText("");
