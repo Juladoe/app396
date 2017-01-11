@@ -1,11 +1,12 @@
 package com.gensee.view;
 
-import com.gensee.rtmpresourcelib.R;
 
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+
+import com.gensee.rtmpresourcelib.R;
 
 public class GSImplQaView extends GSQaView {
 
@@ -31,11 +32,6 @@ public class GSImplQaView extends GSQaView {
 	 */
 	public GSImplQaView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-	}
-
-	public void setReadOnly() {
-		findViewById(getQaEditId()).setVisibility(GONE);
-		findViewById(getQaSendBtnId()).setVisibility(GONE);
 	}
 
 	@Override
@@ -74,7 +70,7 @@ public class GSImplQaView extends GSQaView {
 	}
 	
 	
-	public class QaAdapter extends AbsQaAdapter{
+	class QaAdapter extends AbsQaAdapter{
 
 		public QaAdapter(Context context) {
 			super(context);
