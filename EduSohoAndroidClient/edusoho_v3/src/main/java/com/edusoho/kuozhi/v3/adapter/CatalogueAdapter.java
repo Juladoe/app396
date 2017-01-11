@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -56,11 +56,7 @@ public class CatalogueAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) convertView.getTag();
         }
         DiscussDetail.ResourcesBean resourcesBean =  mList.get(position);
-        if (TextUtils.isEmpty(resourcesBean.getUser().getAvatar())) {
-            viewHolder.ivUser.setImageResource(R.drawable.icon_default_avatar);
-        } else {
-            ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), viewHolder.ivUser);
-        }
+        ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), viewHolder.ivUser, EdusohoApp.app.mAvatarOptions);
         viewHolder.tvUserName.setText(resourcesBean.getUser().getNickname());
         viewHolder.tvContent.setText(String.format("         %s", resourcesBean.getTitle()));
         viewHolder.tvCommentNum.setText(resourcesBean.getPostNum());

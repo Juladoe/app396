@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -50,6 +52,7 @@ public class DiscussFragment extends BaseFragment {
     public DiscussDetail discussDetail;
     public CatalogueAdapter catalogueAdapter;
     private TextView mTvEmpty;
+    private LinearLayout mUnJoinView;
 
     public DiscussFragment() {
     }
@@ -65,24 +68,31 @@ public class DiscussFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initWidget();
+        if (TextUtils.isEmpty(app.token)) {
+            mUnJoinView.setVisibility(View.VISIBLE);
+        } else {
+            initData();
+        }
     }
 
     private void initWidget() {
         dialog = new Dialog(getActivity(), R.style.DiscussDialog);
+        mUnJoinView = (LinearLayout) mView.findViewById(R.id.ll_course_catalog_empty);
         mLvDiscuss = (RefreshListView) mView.findViewById(R.id.lv_discuss);
-        mTvEdit = (EduSohoNewIconView) mView.findViewById(R.id.tv_edit_topic);
+//        mTvEdit = (EduSohoNewIconView) mView.findViewById(R.id.tv_edit_topic);
         mLoadView = mView.findViewById(R.id.ll_frame_load);
         mEmpty = mView.findViewById(R.id.ll_discuss_empty);
         mTvEmpty = (TextView) mView.findViewById(R.id.tv_empty);
-        mTvEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPopup();
-            }
-        });
+//        mTvEdit.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                showPopup();
+//            }
+//        });
     }
 
     private void initData() {
+        mLoadView.setVisibility(View.VISIBLE);
         RequestUrl requestUrl;
         if (getActivity() instanceof CourseActivity) {
             requestUrl = app.bindNewUrl(String.format(Const.LESSON_DISCUSS, mCouseId, mCouseId, 0), true);
@@ -126,10 +136,8 @@ public class DiscussFragment extends BaseFragment {
     }
 
     public void reFreshView(boolean isJoin, String title) {
-        mLoadView.setVisibility(View.VISIBLE);
         this.isJoin = isJoin;
         this.title = title;
-        initData();
     }
 
     public boolean isAdd;
@@ -185,7 +193,6 @@ public class DiscussFragment extends BaseFragment {
             bundle.putString(AbstractIMChatActivity.FROM_NAME, discussDetail.getResources().get(position).getUser().getNickname());
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, discussDetail.getResources().get(position).getType());
             bundle.putString(AbstractIMChatActivity.CONV_NO, discussDetail.getResources().get(position).getId());
-//            mActivity.app.mEngine.runNormalPluginWithBundle("ThreadDiscussChatActivity", mActivity, bundle);
             Intent intent = new Intent(mActivity, DiscussDetailActivity.class);
             intent.putExtras(bundle);
             startActivity(intent);

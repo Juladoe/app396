@@ -117,8 +117,6 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
     @Override
     protected View createView() {
         mContentLayout = LayoutInflater.from(mContext).inflate(R.layout.activity_discuss_detail, null);
-        mHeaderView = mContentLayout.findViewById(R.id.td_head_layout);
-        mTvTitle = (TextView) mContentLayout.findViewById(R.id.tv_title);
         mContentLayout.findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,13 +140,13 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
                     }
                     mThreadInfo = linkedHashMap;
                     setBackMode(BACK, mThreadInfo.get("title").toString());
-                    initHeaderInfo(mThreadInfo);
+//                    initHeaderInfo(mThreadInfo);
                     initThreadPostList();
                 }
             });
             return;
         }
-        initHeaderInfo(mThreadInfo);
+//        initHeaderInfo(mThreadInfo);
         initThreadPostList();
     }
 
@@ -211,9 +209,9 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 int keyHeight = getWindowManager().getDefaultDisplay().getHeight() / 3;
                 if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
-                    hideHeaderLayout();
+//                    hideHeaderLayout();
                 } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
-                    showHeaderLayout();
+//                    showHeaderLayout();
                 }
             }
         };
@@ -683,6 +681,8 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
     @Override
     protected MessageListFragment createFragment() {
         DiscussDetailMessageListFragment discussDetailMessageListFragment = (DiscussDetailMessageListFragment) Fragment.instantiate(mContext, DiscussDetailMessageListFragment.class.getName());
+        Bundle bundle = getIntent().getExtras();
+        discussDetailMessageListFragment.setArguments(bundle);
         MessageRecyclerListAdapter messageRecyclerListAdapter = new QuestionAnswerAdapter(mContext);
 //        messageRecyclerListAdapter.setCurrentId(AppUtil.parseInt(mClientId));
         discussDetailMessageListFragment.setAdapter(messageRecyclerListAdapter);

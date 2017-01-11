@@ -9,8 +9,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -25,7 +25,9 @@ import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.util.WeakReferenceHandler;
@@ -80,6 +82,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected int mCheckNum = 0;
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
+    protected String mTitle;
     private int mTitleBarHeight;
     public int mMediaViewHeight = 210;
     private SystemBarTintManager tintManager;
@@ -268,7 +271,12 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else if (v.getId() == R.id.hour_rlayout) {
             mContentVp.setCurrentItem(1);
         } else if (v.getId() == R.id.review_rlayout) {
-            mContentVp.setCurrentItem(2);
+            if (TextUtils.isEmpty(app.token)) {
+                CommonUtil.shortCenterToast(this, "请先登录");
+            } else {
+                mContentVp.setCurrentItem(2);
+                ((DiscussFragment) mFragments.get(2)).reFreshView(mIsMemder, mTitle);
+            }
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
         } else if (v.getId() == R.id.iv_share ||

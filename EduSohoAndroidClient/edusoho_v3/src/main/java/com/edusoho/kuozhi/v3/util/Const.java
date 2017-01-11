@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.util;
 
+
 public class Const {
     public static final long ONE_DAY_MILLISECOND = 24 * 60 * 60 * 1000;
 

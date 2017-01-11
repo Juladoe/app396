@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -22,6 +21,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -81,13 +81,13 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             }
         });
         fragments.add(catafragment);
-//        Fragment discussFrament = app.mEngine.runPluginWithFragment("DiscussFragment", this, new PluginFragmentCallback() {
-//            @Override
-//            public void setArguments(Bundle bundle) {
-//                bundle.putString("id", mCourseId);
-//            }
-//        });
-//        fragments.add(discussFrament);
+        Fragment discussFrament = app.mEngine.runPluginWithFragment("DiscussFragment", this, new PluginFragmentCallback() {
+            @Override
+            public void setArguments(Bundle bundle) {
+                bundle.putString("id", mCourseId);
+            }
+        });
+        fragments.add(discussFrament);
     }
 
     protected void initEvent() {
@@ -109,14 +109,17 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                                 && mFragments.get(1) instanceof CourseCatalogFragment) {
                             if (mCourseDetail.getMember() == null) {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
+                                ((DiscussFragment) mFragments.get(2)).reFreshView(false, mCourseDetail.getCourse().title);
                                 setLoadStatus(View.GONE);
                             } else {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
+                                ((DiscussFragment) mFragments.get(2)).reFreshView(true, mCourseDetail.getCourse().title);
                                 tabPage(300);
                             }
                         } else {
                             setLoadStatus(View.GONE);
                         }
+                        mTitle = mCourseDetail.getCourse().title;
                         refreshView();
                     }
 
