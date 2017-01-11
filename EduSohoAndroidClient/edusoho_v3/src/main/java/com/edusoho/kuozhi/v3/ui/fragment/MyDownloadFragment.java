@@ -281,7 +281,7 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
                 queryParser,
                 "select * from data_cache where type=? and key=?",
                 Const.CACHE_COURSE_TYPE,
-                "course-" + courseId
+                String.format("course-%d", courseId)
         );
         return course;
     }

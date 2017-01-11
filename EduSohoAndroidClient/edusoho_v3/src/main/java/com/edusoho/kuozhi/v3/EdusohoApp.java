@@ -50,6 +50,7 @@ import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -785,7 +786,7 @@ public class EdusohoApp extends Application {
      * @param activity
      * @return
      */
-    public CacheServer startPlayCacheServer(ActionBarBaseActivity activity) {
+    public CacheServer startPlayCacheServer(BaseActivity activity) {
         if (mPlayCacheServer == null) {
             mPlayCacheServer = new CacheServer(activity, Const.CACHE_PROT);
             mPlayCacheServer.start();

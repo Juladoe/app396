@@ -63,6 +63,8 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         initView();
         initEvent();
         initData();
+
+        app.startPlayCacheServer(this);
     }
 
     @Override
@@ -135,7 +137,11 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     private void saveCourseToCache(Course course) {
         course.setSourceName(getIntent().getStringExtra(SOURCE));
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(getBaseContext());
-        sqliteUtil.saveLocalCache(Const.CACHE_COURSE_TYPE, "course-" + course.id, new Gson().toJson(course));
+        sqliteUtil.saveLocalCache(
+                Const.CACHE_COURSE_TYPE,
+                String.format("course-%d", course.id),
+                new Gson().toJson(course)
+        );
     }
 
     @Override
@@ -476,6 +482,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     public void finish() {
         super.finish();
         removePlayFragment();
+        app.stopPlayCacheServer();
     }
 
     @Override
