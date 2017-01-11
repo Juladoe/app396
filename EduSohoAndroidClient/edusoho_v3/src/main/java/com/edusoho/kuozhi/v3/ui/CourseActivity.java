@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
