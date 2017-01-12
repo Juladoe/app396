@@ -29,7 +29,6 @@
                 android:layout_marginLeft="15dp"
                 android:layout_marginTop="26dp"
                 android:layout_toRightOf="@+id/iv_avatar"
-                android:text="罗志祥的卧蚕"
                 android:textColor="@color/primary_font_color"
                 android:textSize="@dimen/font_l" />
 
