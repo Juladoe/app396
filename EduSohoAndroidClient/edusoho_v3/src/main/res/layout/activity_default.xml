@@ -47,17 +47,19 @@
             android:textSize="@dimen/medium_font_size"
             android:visibility="visible" />
 
-        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-            android:id="@+id/tv_sitting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|right"
-            android:layout_marginRight="23dp"
-            android:text="设置"
-            android:textColor="@color/primary_color"
-            android:textSize="@dimen/font_xl"
-            android:visibility="gone" />
     </android.support.v7.widget.Toolbar>
+
+    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+        android:id="@+id/tv_sitting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="23dp"
+        android:text="设置"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/font_xl"
+        android:layout_marginTop="13.5dp"
+        android:visibility="gone" />
 
     <FrameLayout
         android:id="@+id/fragment_container"

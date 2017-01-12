@@ -278,6 +278,7 @@ public class Const {
     public static final String ADDCOMMENT = "Course/commitCourse";
     public static final String ABOUT = "School/getSchoolInfo";
     public static final String LEARNING = "Course/getLearningCourse";
+    public static final String LEARNING_NEW = "/api/me/courses";
     public static final String LEARNING_WITHOUT_TOKEN = "Course/getLearningCourseWithoutToken";
     public static final String LEARNED = "Course/getLearnedCourse";
     public static final String FAVORITES = "Course/getFavoriteCoruse";
@@ -309,6 +310,7 @@ public class Const {
     public static final String REVIEWS = "Course/getReviews";
     public static final String COURSE_GETCOURSE = "Course/getCourse?courseId=%s";
     public static final String COURSE_GETREVIEWS = "Course/getReviews?courseId=%s&limit=%s&start=%s";
+    public static final String COURSE_GETREVIEWS_NEW = "/api/courses/%s/reviews?limit=%s&start=%s";
     public static final String COURSE_GETMEMBER = "/api/courses/%s/members";
     public static final String COURSE_GETCLASSROOM = "ClassRoom/getClassRoom?id=%s";
     public static final String CLASSROOM_GETREVIEWS = "ClassRoom/getReviews?classRoomId=%s&limit=%s&start=%s";

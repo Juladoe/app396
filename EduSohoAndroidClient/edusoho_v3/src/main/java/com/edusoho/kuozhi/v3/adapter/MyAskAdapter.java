@@ -98,6 +98,7 @@ public class MyAskAdapter extends BaseAdapter {
             viewHolderAsk.tvTime = (TextView) convertView.findViewById(R.id.tv_time);
             viewHolderAsk.tvReviewNum = (TextView) convertView.findViewById(R.id.tv_review_num);
             viewHolderAsk.tvOrder = (TextView) convertView.findViewById(R.id.tv_order);
+            viewHolderAsk.vLine = convertView.findViewById(R.id.v_line);
             convertView.setTag(viewHolderAsk);
         } else {
             viewHolderAsk = (ViewHolderAsk) convertView.getTag();
@@ -120,6 +121,11 @@ public class MyAskAdapter extends BaseAdapter {
         viewHolderAsk.tvReviewNum.setText(entity.getPostNum());
         convertView.setTag(R.id.tv_order, position);
         convertView.setOnClickListener(mAskOnClickListener);
+        if (position == getCount() - 1) {
+            viewHolderAsk.vLine.setVisibility(View.GONE);
+        }else{
+            viewHolderAsk.vLine.setVisibility(View.VISIBLE);
+        }
         return convertView;
     }
 
@@ -131,6 +137,7 @@ public class MyAskAdapter extends BaseAdapter {
             viewHolderAnswer.tvContentAnswer = (HtmlTextView) convertView.findViewById(R.id.tv_content_answer);
             viewHolderAnswer.tvContentAsk = (TextView) convertView.findViewById(R.id.tv_content_ask);
             viewHolderAnswer.tvOrder = (TextView) convertView.findViewById(R.id.tv_order);
+            viewHolderAnswer.vLine = convertView.findViewById(R.id.v_line);
             convertView.setTag(viewHolderAnswer);
         } else {
             viewHolderAnswer = (ViewHolderAnswer) convertView.getTag();
@@ -143,6 +150,11 @@ public class MyAskAdapter extends BaseAdapter {
                 new HtmlHttpImageGetter(viewHolderAnswer.tvContentAnswer, null, true));
         convertView.setTag(R.id.tv_order, position);
         convertView.setOnClickListener(mAnswerOnClickListener);
+        if (position == getCount() - 1) {
+            viewHolderAnswer.vLine.setVisibility(View.GONE);
+        }else{
+            viewHolderAnswer.vLine.setVisibility(View.VISIBLE);
+        }
         return convertView;
     }
 
@@ -241,6 +253,7 @@ public class MyAskAdapter extends BaseAdapter {
         TextView tvTime;
         TextView tvReviewNum;
         TextView tvOrder;
+        View vLine;
     }
 
     private class ViewHolderAnswer {
@@ -248,6 +261,7 @@ public class MyAskAdapter extends BaseAdapter {
         HtmlTextView tvContentAnswer;
         TextView tvContentAsk;
         TextView tvOrder;
+        View vLine;
     }
 
     public void setType(int type) {
