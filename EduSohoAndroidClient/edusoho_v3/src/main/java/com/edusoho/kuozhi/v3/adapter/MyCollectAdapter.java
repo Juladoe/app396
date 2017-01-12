@@ -91,6 +91,7 @@ public class MyCollectAdapter extends BaseAdapter {
                 viewHolder.tvAddNum = (TextView) convertView.findViewById(R.id.tv_add_num);
                 viewHolder.tvMore = (TextView) convertView.findViewById(R.id.tv_more);
                 viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
+                viewHolder.vLine = convertView.findViewById(R.id.v_line);
                 convertView.setTag(viewHolder);
             }
         } else {
@@ -110,6 +111,11 @@ public class MyCollectAdapter extends BaseAdapter {
         viewHolder.tvMore.setOnClickListener(mOnClickListener);
         convertView.setTag(R.id.tv_title, position);
         convertView.setOnClickListener(mViewOnClickListener);
+        if (position == getCount() - 1) {
+            viewHolder.vLine.setVisibility(View.GONE);
+        }else{
+            viewHolder.vLine.setVisibility(View.VISIBLE);
+        }
         return convertView;
     }
 
@@ -197,6 +203,7 @@ public class MyCollectAdapter extends BaseAdapter {
         TextView tvAddNum;
         TextView tvTitle;
         TextView tvMore;
+        View vLine;
     }
 
     public void initData() {

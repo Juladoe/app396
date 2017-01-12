@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -107,11 +108,8 @@ public class MyTabFragment extends BaseFragment {
                 break;
             case TYPE_ASK:
                 mLayoutFilter.setVisibility(View.VISIBLE);
-                ViewGroup.LayoutParams params2 = mLayoutDesc.getLayoutParams();
-                if (params2 != null) {
-                    params2.width = AppUtil.getWidthPx(getActivity()) / 2;
-                    mLayoutDesc.setLayoutParams(params2);
-                }
+                mLayoutDesc.setPadding(AppUtil.getWidthPx(getActivity()) / 4
+                        , 0, AppUtil.getWidthPx(getActivity()) / 4, 0);
                 for (int i = 0; i < 2; i++) {
                     TextView child = new TextView(getActivity());
                     child.setGravity(Gravity.CENTER);

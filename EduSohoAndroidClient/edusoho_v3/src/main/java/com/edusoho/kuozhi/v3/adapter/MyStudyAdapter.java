@@ -102,6 +102,7 @@ public class MyStudyAdapter extends BaseAdapter {
                 viewHolder.tvMore = (TextView) convertView.findViewById(R.id.tv_more);
                 viewHolder.layoutClass = convertView.findViewById(R.id.layout_class);
                 viewHolder.tvClassName = (TextView) convertView.findViewById(R.id.tv_class_name);
+                viewHolder.vLine = convertView.findViewById(R.id.v_line);
                 convertView.setTag(viewHolder);
             } else {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.view_empty, null, false);
@@ -177,6 +178,11 @@ public class MyStudyAdapter extends BaseAdapter {
         convertView.setOnClickListener(mViewOnClickListener);
         viewHolder.tvMore.setTag(position);
         viewHolder.tvMore.setOnClickListener(mOnClickListener);
+        if (position == getCount() - 1) {
+            viewHolder.vLine.setVisibility(View.GONE);
+        }else{
+            viewHolder.vLine.setVisibility(View.VISIBLE);
+        }
         return convertView;
     }
 
@@ -382,6 +388,7 @@ public class MyStudyAdapter extends BaseAdapter {
         TextView tvMore;
         View layoutClass;
         TextView tvClassName;
+        View vLine;
     }
 
     public void initData() {

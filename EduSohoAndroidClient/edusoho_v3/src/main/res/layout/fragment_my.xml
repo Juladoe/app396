@@ -121,10 +121,9 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="2dp"
+            android:layout_height="6dp"
             android:background="@drawable/shape_line_shadow2"
-            android:layout_below="@+id/vp_content"
+            android:layout_below="@+id/layout_tab"
             />
-
     </RelativeLayout>
 </com.edusoho.kuozhi.v3.view.HeadStopScrollView>
