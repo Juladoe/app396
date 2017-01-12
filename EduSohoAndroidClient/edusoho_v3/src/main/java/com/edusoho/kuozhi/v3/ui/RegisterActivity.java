@@ -123,6 +123,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                                 Intent registerIntent = new Intent(mContext, RegisterConfirmActivity.class);
                                 registerIntent.putExtra("num", phoneNum);
                                 startActivity(registerIntent);
+//                                app.mEngine.runNormalPlugin("RegisterConfirmActivity", mContext, null);
                             } else {
                                 if (response.equals(getString(R.string.registered_hint))) {
                                     showDialog();

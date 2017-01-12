@@ -3,11 +3,11 @@ package com.edusoho.kuozhi.v3.view;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
@@ -22,9 +22,13 @@ import com.google.gson.reflect.TypeToken;
 
 public class RefreshListView extends ListView{
 
-    public LinearLayout mFooterView;
-    public int start = 20;
-    public boolean isRequest = true;
+    private RefreshFooter mFooterView;
+    private int start = 20;
+    private boolean isRequest = true;
+
+    public void setRequest(boolean request) {
+        isRequest = request;
+    }
 
     public RefreshListView(Context context) {
         this(context, null);
@@ -36,11 +40,11 @@ public class RefreshListView extends ListView{
 
     public RefreshListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        mFooterView = new RefreshFooter(getContext());
+        addFooterView(mFooterView);
     }
 
     public void initWithContext(final BaseActivity baseActivity, final DiscussFragment discussFragment, final String mCouseId) {
-        mFooterView = new RefreshFooter(baseActivity);
-        addFooterView(mFooterView);
         mFooterView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,7 +73,7 @@ public class RefreshListView extends ListView{
                         }
                     });
                 } else {
-                    CommonUtil.shortCenterToast(getContext(), "已加载完");
+                    CommonUtil.shortCenterToast(getContext(), getResources().getString(R.string.discuss_load_data_finish));
                 }
             }
         });
@@ -86,7 +90,7 @@ public class RefreshListView extends ListView{
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                CommonUtil.shortCenterToast(getContext(), "加载成功");
+                CommonUtil.shortCenterToast(getContext(), getResources().getString(R.string.discuss_load_data_success));
                 discussFragment.mLoadView.setVisibility(GONE);
             }
         }, 2000);

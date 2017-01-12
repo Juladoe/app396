@@ -24,7 +24,6 @@ public class CatalogueAdapter extends BaseAdapter {
     public List<DiscussDetail.ResourcesBean> mList;
     private Context mContext;
 
-
     public CatalogueAdapter(List<DiscussDetail.ResourcesBean> mList, Context mContext) {
         this.mList = mList;
         this.mContext = mContext;

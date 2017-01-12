@@ -485,4 +485,8 @@
     <plugin name="QuestionAnswerActivity"
         package="com.edusoho.kuozhi.v3.ui.QuestionAnswerActivity"
         version="1.0"/>
+
+    <plugin name="DiscussDetailActivity"
+        package="com.edusoho.kuozhi.v3.ui.DiscussDetailActivity"
+        version="1.0"/>
 </plugins>

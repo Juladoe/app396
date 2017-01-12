@@ -16,11 +16,4 @@
         android:textColor="@color/primary_color"
         android:textSize="20sp" />
 
-    <ProgressBar
-        android:id="@+id/pb_more"
-        android:visibility="gone"
-        android:layout_marginLeft="5dp"
-        android:layout_width="26dp"
-        android:layout_height="26dp" />
-
 </LinearLayout>

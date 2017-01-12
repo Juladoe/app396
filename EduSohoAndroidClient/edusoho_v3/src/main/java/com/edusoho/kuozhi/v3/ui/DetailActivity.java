@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.animation.ObjectAnimator;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -101,6 +103,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
     private EduSohoNewIconView mTvEditTopic;
     private Dialog dialog;
+    private EduSohoNewIconView tvTopic;
+    private EduSohoNewIconView tvQuestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -331,7 +335,12 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else if (v.getId() == R.id.tv_inclass) {
             goClass();
         } else if (v.getId() == R.id.tv_edit_topic) {
-            showPopup();
+            if (DetailActivity.this instanceof CourseActivity ? ((CourseActivity) DetailActivity.this).mCourseDetail.getMember() == null
+                    : ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getMember() == null) {
+                CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_hint));
+            } else {
+                showDialog();
+            }
         }
     }
 
@@ -608,19 +617,22 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     public boolean isAdd;
-    private void showPopup() {
+    private void showDialog() {
         if (!isAdd) {
             isAdd = true;
             dialog = new Dialog(this, R.style.DiscussDialog);
             View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_discuss_publish, null);
-            dialogView.findViewById(R.id.tv_topic).setOnClickListener(new View.OnClickListener() {
+            tvTopic = (EduSohoNewIconView) dialogView.findViewById(R.id.tv_topic);
+            tvTopic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     startActivity("discussion");
                     dialog.dismiss();
                 }
             });
-            dialogView.findViewById(R.id.tv_question).setOnClickListener(new View.OnClickListener() {
+            tvQuestion = (EduSohoNewIconView) dialogView.findViewById(R.id.tv_question);
+            tvQuestion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity("question");
@@ -639,10 +651,11 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mWindow .setGravity(Gravity.LEFT | Gravity.TOP);
             WindowManager.LayoutParams lp = mWindow.getAttributes();
             lp.x = (int) mTvEditTopic.getX();
-            lp.y = (int) (mTvEditTopic.getY() - AppUtil.dp2px(this, 149));
+            lp.y = (int) (mTvEditTopic.getY() - AppUtil.dp2px(this, 151));
             mWindow.setAttributes(lp);
         }
         dialog.show();
+        startAnimation();
     }
 
     private void startActivity(String type) {
@@ -655,7 +668,17 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         bundle.putString(ThreadCreateActivity.TARGET_TYPE, DetailActivity.this instanceof CourseActivity ? "" : "classroom");
         bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
         bundle.putString(ThreadCreateActivity.THREAD_TYPE, "question".equals(type) ? "course" : "common");
-
         app.mEngine.runNormalPluginWithBundle("ThreadCreateActivity", DetailActivity.this, bundle);
+    }
+
+    public void startAnimation() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(tvQuestion, "translationY", 0, -AppUtil.dp2px(DetailActivity.this, 75));
+        ObjectAnimator animator1 = ObjectAnimator.ofFloat(tvTopic, "translationY", 0, -AppUtil.dp2px(DetailActivity.this, 150));
+        animator.setInterpolator(new LinearInterpolator());
+        animator1.setInterpolator(new LinearInterpolator());
+        animator.setDuration(250);
+        animator1.setDuration(500);
+        animator.start();
+        animator1.start();
     }
 }

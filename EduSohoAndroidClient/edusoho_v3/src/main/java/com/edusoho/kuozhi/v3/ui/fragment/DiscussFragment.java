@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -17,6 +16,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CatalogueAdapter;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
@@ -37,6 +37,7 @@ public class DiscussFragment extends BaseFragment {
     public String title;
     public DiscussDetail discussDetail;
     public CatalogueAdapter catalogueAdapter;
+    public final static String SEND_EVENT = "send_event";
     private String mCouseId ;
     private View mView;
     private RefreshListView mLvDiscuss;
@@ -53,19 +54,9 @@ public class DiscussFragment extends BaseFragment {
         mView = inflater.inflate(R.layout.fragment_discuss, container, false);
         mCouseId = getArguments().getString("id");
         initWidget();
-        if (TextUtils.isEmpty(app.token)) {
-            mUnJoinView.setVisibility(View.VISIBLE);
-        } else {
-            initData();
-        }
         return mView;
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-    }
 
     private void initWidget() {
         mUnJoinView = (LinearLayout) mView.findViewById(R.id.ll_course_catalog_empty);
@@ -73,24 +64,28 @@ public class DiscussFragment extends BaseFragment {
         mLoadView = mView.findViewById(R.id.ll_frame_load);
         mEmpty = mView.findViewById(R.id.ll_discuss_empty);
         mTvEmpty = (TextView) mView.findViewById(R.id.tv_empty);
+        if (TextUtils.isEmpty(app.token)) {
+            mUnJoinView.setVisibility(View.VISIBLE);
+        } else {
+            initData();
+        }
     }
 
     private void initData() {
         mLoadView.setVisibility(View.VISIBLE);
-        RequestUrl requestUrl;
-        if (getActivity() instanceof CourseActivity) {
-            requestUrl = app.bindNewUrl(String.format(Const.LESSON_DISCUSS, mCouseId, mCouseId, 0), true);
-        } else {
-            requestUrl = app.bindNewUrl(String.format(Const.CLASS_DISCUSS, mCouseId, mCouseId, 0), true);
-        }
+        RequestUrl requestUrl = app.bindNewUrl(String.format(getActivity() instanceof CourseActivity ? Const.LESSON_DISCUSS : Const.CLASS_DISCUSS, mCouseId, mCouseId,0), true);
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 discussDetail = ((BaseActivity) getActivity()).parseJsonValue(response, new TypeToken<DiscussDetail>() {});
                 if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0) {
+                    if (discussDetail.getResources().size() < 20) {
+                        mLvDiscuss.setRequest(false);
+                    }
                     initDiscuss();
                 } else {
                     mEmpty.setVisibility(View.VISIBLE);
+                    mLoadView.setVisibility(View.GONE);
                 }
             }
         }, new Response.ErrorListener() {
@@ -124,6 +119,14 @@ public class DiscussFragment extends BaseFragment {
         this.title = title;
     }
 
+    @Override
+    public void invoke(WidgetMessage message) {
+        super.invoke(message);
+        if (SEND_EVENT.equals(message.type.type)) {
+            initData();
+        }
+    }
+
     public void startThreadActivity(int position){
         if (isJoin) {
             Bundle bundle = new Bundle();
@@ -132,20 +135,15 @@ public class DiscussFragment extends BaseFragment {
             bundle.putString(DiscussDetailActivity.THREAD_TYPE, discussDetail.getResources().get(position).getType());
             bundle.putString(DiscussDetailActivity.THREAD_TARGET_TYPE, getActivity() instanceof CourseActivity ? "course" : "classroom");
             bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, Integer.parseInt(discussDetail.getResources().get(position).getId()));
-            if (getActivity() instanceof CourseActivity) {
-                bundle.putInt(DiscussDetailActivity.LESSON_ID, Integer.parseInt(discussDetail.getResources().get(position).getLessonId()));
-            } else {
-                bundle.putInt(DiscussDetailActivity.LESSON_ID, Integer.parseInt(discussDetail.getResources().get(position).getTargetId()));
-            }
+            bundle.putInt(DiscussDetailActivity.LESSON_ID, getActivity() instanceof CourseActivity ?
+                    Integer.parseInt(discussDetail.getResources().get(position).getLessonId()) : Integer.parseInt(discussDetail.getResources().get(position).getTargetId()));
             bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(discussDetail.getResources().get(position).getId()));
             bundle.putString(AbstractIMChatActivity.FROM_NAME, discussDetail.getResources().get(position).getUser().getNickname());
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, discussDetail.getResources().get(position).getType());
             bundle.putString(AbstractIMChatActivity.CONV_NO, discussDetail.getResources().get(position).getId());
-            Intent intent = new Intent(mActivity, DiscussDetailActivity.class);
-            intent.putExtras(bundle);
-            startActivity(intent);
+            app.mEngine.runNormalPluginWithBundle("DiscussDetailActivity", mActivity, bundle);
         } else {
-            CommonUtil.shortCenterToast(mContext, "加入课程后才能查看详情");
+            CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_look_hint));
         }
     }
 }
