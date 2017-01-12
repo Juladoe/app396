@@ -71,10 +71,7 @@ public class MyFragment extends BaseFragment {
         mParent.setFirstViewHeight(AppUtil.dp2px(getActivity(), mScrollHeadHeight));
         RelativeLayout.LayoutParams vpParams = (RelativeLayout.LayoutParams) mVpContent.getLayoutParams();
         if (vpParams != null) {
-            int bottom = AppUtil.dp2px(getActivity(), 44 + 50 + 45);
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
-                bottom += AppUtil.dp2px(getActivity(), 25);
-            }
+            int bottom = AppUtil.dp2px(getActivity(), 44 + 50 + 45 + 25);
             vpParams.height = AppUtil.getHeightPx(getActivity()) - bottom;
             mVpContent.setLayoutParams(vpParams);
         }
