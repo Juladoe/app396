@@ -103,21 +103,22 @@ public class LessonDownloadingAdapter extends BaseAdapter {
         //选择框是否显示
         if (mSelectedShow) {
             childPanel.ivDownloadSelected.setVisibility(View.VISIBLE);
-            if (lessonItem.isSelected) {
-                childPanel.ivDownloadSelected.setText(mContex.getString(R.string.font_download_select));
-            } else {
-                childPanel.ivDownloadSelected.setText(mContex.getString(R.string.font_download_unselect));
-            }
+            String icon = getDownloadSelectedIcon(lessonItem.isSelected);
+            int iconColor = getDownloadSelectedColor(lessonItem.isSelected);
+
+            childPanel.ivDownloadSelected.setText(icon);
+            childPanel.ivDownloadSelected.setTextColor(iconColor);
             childPanel.ivDownloadSelected.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (childPanel.ivDownloadSelected.getText().equals(mContex.getString(R.string.font_download_unselect))) {
-                        childPanel.ivDownloadSelected.setText(mContex.getString(R.string.font_download_select));
-                        lessonItem.isSelected = true;
-                    } else {
-                        childPanel.ivDownloadSelected.setText(mContex.getString(R.string.font_download_unselect));
-                        lessonItem.isSelected = false;
-                    }
+
+                    boolean isSelected = childPanel.ivDownloadSelected.getText().equals(
+                            mContex.getString(R.string.font_download_unselect));
+                    String icon = getDownloadSelectedIcon(isSelected);
+                    int iconColor = getDownloadSelectedColor(isSelected);
+
+                    childPanel.ivDownloadSelected.setText(icon);
+                    childPanel.ivDownloadSelected.setTextColor(iconColor);
                 }
             });
         } else {
@@ -125,6 +126,16 @@ public class LessonDownloadingAdapter extends BaseAdapter {
         }
 
         return convertView;
+    }
+
+    private String getDownloadSelectedIcon(boolean isSelected) {
+        return isSelected ? mContex.getString(R.string.font_download_select) :
+                mContex.getString(R.string.font_download_unselect);
+    }
+
+    private int getDownloadSelectedColor(boolean isSelected) {
+        return isSelected ? mContex.getResources().getColor(R.color.primary_color) :
+                mContex.getResources().getColor(R.color.secondary2_font_color);
     }
 
     private String getDownloadLessonSize(int lessonId) {
@@ -229,7 +240,6 @@ public class LessonDownloadingAdapter extends BaseAdapter {
         public EduSohoNewIconView ivDownloadSelected;
         public TextView tvLessonTitle;
         public View viewDownloadProgress;
-        public TextView ivDownloadSign;
         public ProgressBar tvProgress;
         public TextView tvVideoLength;
 
