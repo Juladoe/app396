@@ -148,7 +148,7 @@ public class MyStudyAdapter extends BaseAdapter {
             case 1:
                 if (object instanceof Course) {
                     Course course = (Course) object;
-                    ImageLoader.getInstance().displayImage(course.largePicture, viewHolder.ivPic,
+                    ImageLoader.getInstance().displayImage(course.getLargePicture(), viewHolder.ivPic,
                             EdusohoApp.app.mOptions);
                     viewHolder.tvTitle.setText(String.valueOf(course.title));
                     setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
@@ -157,7 +157,7 @@ public class MyStudyAdapter extends BaseAdapter {
             case 2:
                 if (object instanceof Course) {
                     Course course = (Course) object;
-                    ImageLoader.getInstance().displayImage(course.largePicture, viewHolder.ivPic,
+                    ImageLoader.getInstance().displayImage(course.getLargePicture(), viewHolder.ivPic,
                             EdusohoApp.app.mOptions);
                     viewHolder.tvTitle.setText(String.valueOf(course.title));
                     setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
@@ -167,7 +167,7 @@ public class MyStudyAdapter extends BaseAdapter {
                 if (object instanceof Classroom) {
                     Classroom classroom = (Classroom) object;
                     viewHolder.tvTitle.setText(String.valueOf(classroom.title));
-                    ImageLoader.getInstance().displayImage(classroom.largePicture, viewHolder.ivPic,
+                    ImageLoader.getInstance().displayImage(classroom.getLargePicture(), viewHolder.ivPic,
                             EdusohoApp.app.mOptions);
                 }
                 break;
@@ -190,7 +190,7 @@ public class MyStudyAdapter extends BaseAdapter {
                         EdusohoApp.app.mEngine.runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, classroom.id);
+                                startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, String.valueOf(classroom.id));
                             }
                         });
                     } else if (object instanceof Course) {

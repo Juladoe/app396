@@ -1,5 +1,10 @@
 package com.edusoho.kuozhi.v3.model.bal;
 
+import android.text.TextUtils;
+
+import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.PushUtil;
+
 import java.io.Serializable;
 
 /**
@@ -38,6 +43,24 @@ public class User implements Serializable {
         if (schemIndex != -1) {
             return mediumAvatar.substring(schemIndex);
         }
+        if (mediumAvatar.startsWith("//")) {
+            return "http:" + mediumAvatar;
+        }
         return mediumAvatar;
+    }
+
+    public String userRole2String() {
+        if (roles == null || roles.length == 0) {
+            return "学员";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (UserRole userRole : roles) {
+            if (userRole != null) {
+                sb.append(userRole.getRoleName()).append(" ");
+            }
+        }
+
+        return sb.toString();
     }
 }

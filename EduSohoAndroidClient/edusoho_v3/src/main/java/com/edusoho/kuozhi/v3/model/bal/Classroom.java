@@ -31,6 +31,9 @@ public class Classroom implements Serializable {
         if (schemIndex != -1) {
             return largePicture.substring(schemIndex);
         }
+        if (largePicture.startsWith("//")) {
+            return "http:" + largePicture;
+        }
         return largePicture;
     }
 }
