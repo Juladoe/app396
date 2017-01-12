@@ -246,7 +246,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         } else {
             tag = "MyFragment";
             setTitle(getString(R.string.title_mine));
-            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
+            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ccf9f9f9")));
             tvTitle.setTextColor(getResources().getColor(R.color.primary_font_color));
             tvSitting.setVisibility(View.VISIBLE);
         }
