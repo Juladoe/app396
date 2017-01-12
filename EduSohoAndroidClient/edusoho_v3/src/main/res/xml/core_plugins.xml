@@ -61,6 +61,11 @@
         version="1.0" />
 
     <plugin
+        name="AllReviewActivity"
+        package="com.edusoho.kuozhi.v3.ui.AllReviewActivity"
+        version="1.0" />
+
+    <plugin
         name="ChatActivity"
         package="com.edusoho.kuozhi.v3.ui.ImChatActivity"
         version="1.0" />
