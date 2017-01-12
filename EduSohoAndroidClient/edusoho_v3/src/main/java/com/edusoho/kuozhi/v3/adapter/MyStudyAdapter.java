@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.CourseProgress;
 import com.edusoho.kuozhi.v3.entity.course.LearningClassroom;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
+import com.edusoho.kuozhi.v3.entity.course.LearningCourse2;
 import com.edusoho.kuozhi.v3.entity.course.Study;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
@@ -36,6 +37,7 @@ import com.edusoho.kuozhi.v3.view.dialog.SureDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -110,7 +112,7 @@ public class MyStudyAdapter extends BaseAdapter {
         } else {
             if (getItemViewType(position) == 0) {
                 viewHolder = (ViewHolder) convertView.getTag();
-            }else{
+            } else {
                 return convertView;
             }
         }
@@ -131,6 +133,7 @@ public class MyStudyAdapter extends BaseAdapter {
                                 viewHolder.layoutClass.setVisibility(View.VISIBLE);
                                 viewHolder.tvClassName.setText(study.getClassroomTitle());
                             }
+                            viewHolder.tvMore.setVisibility(View.GONE);
                             break;
                         case "course":
                             ImageLoader.getInstance().displayImage(study.getLargePicture()
@@ -141,6 +144,7 @@ public class MyStudyAdapter extends BaseAdapter {
                                 viewHolder.layoutClass.setVisibility(View.VISIBLE);
                                 viewHolder.tvClassName.setText(study.getClassroomTitle());
                             }
+                            viewHolder.tvMore.setVisibility(View.VISIBLE);
                             break;
                     }
                     setProgressStr(study.getLearnedNum(), study.getTotalLesson(), viewHolder.tvStudyState);
@@ -179,7 +183,7 @@ public class MyStudyAdapter extends BaseAdapter {
         viewHolder.tvMore.setOnClickListener(mOnClickListener);
         if (position == getCount() - 1) {
             viewHolder.vLine.setVisibility(View.GONE);
-        }else{
+        } else {
             viewHolder.vLine.setVisibility(View.VISIBLE);
         }
         return convertView;
@@ -401,11 +405,13 @@ public class MyStudyAdapter extends BaseAdapter {
                     @Override
                     public void onSuccess(Study data) {
                         mLists.clear();
+                        Collections.reverse(data.getResources());
                         addAll(data.getResources());
                         mCanLoad = false;
                         if (data.getResources().size() == 0) {
                             mEmpty = true;
                         }
+
                         notifyDataSetChanged();
                     }
 
@@ -416,17 +422,26 @@ public class MyStudyAdapter extends BaseAdapter {
                 });
                 break;
             case 1:
-                CourseDetailModel.getAllUserCourses(10, mPage * 10, new ResponseCallbackListener<LearningCourse>() {
+                CourseDetailModel.getAllUserCourses(10, mPage * 10, new ResponseCallbackListener<LearningCourse2>() {
                     @Override
-                    public void onSuccess(LearningCourse data) {
+                    public void onSuccess(LearningCourse2 data) {
                         mLists.clear();
-                        addAll(data.getData());
-                        if (data.getData().size() < 10) {
+                        int length = data.getResources().size();
+                        for (int i = 0; i < length; i++) {
+                            Course course = data.getResources().get(i);
+                            if (course.type.equals("live")) {
+                                data.getResources().remove(course);
+                                i--;
+                                length--;
+                            }
+                        }
+                        addAll(data.getResources());
+                        if (data.getResources().size() < 10) {
                             mCanLoad = false;
                         } else {
                             mCanLoad = true;
                         }
-                        if (data.getData().size() == 0) {
+                        if (data.getResources().size() == 0) {
                             mEmpty = true;
                         }
                         notifyDataSetChanged();
@@ -491,14 +506,23 @@ public class MyStudyAdapter extends BaseAdapter {
             case 0:
                 break;
             case 1:
-                CourseDetailModel.getAllUserCourses(10, mPage * 10, new ResponseCallbackListener<LearningCourse>() {
+                CourseDetailModel.getAllUserCourses(10, mPage * 10, new ResponseCallbackListener<LearningCourse2>() {
                     @Override
-                    public void onSuccess(LearningCourse data) {
-                        if (data.getData().size() > 0 && (mLists.size() == 0 || mLists.get(0).getClass()
-                                .equals(data.getData().get(0).getClass()))) {
-                            addAll(data.getData());
+                    public void onSuccess(LearningCourse2 data) {
+                        if (data.getResources().size() > 0 && (mLists.size() == 0 || mLists.get(0).getClass()
+                                .equals(data.getResources().get(0).getClass()))) {
+                            int length = data.getResources().size();
+                            for (int i = 0; i < length; i++) {
+                                Course course = data.getResources().get(i);
+                                if (course.type.equals("live")) {
+                                    data.getResources().remove(course);
+                                    i--;
+                                    length--;
+                                }
+                            }
+                            addAll(data.getResources());
                         }
-                        if (data.getData().size() < 10) {
+                        if (data.getResources().size() < 10) {
                             mCanLoad = false;
                         } else {
                             mCanLoad = true;
