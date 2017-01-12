@@ -240,8 +240,11 @@ public class FindCardItemAdapter extends BaseAdapter {
         if (mCourseLessonsCache.get(courseId) != null) {
             callback.success(mCourseLessonsCache.get(courseId));
         } else {
-            String[] conditions = new String[]{"status", "published"};
-            mLessonModel.getLessonByCourseId(courseId, conditions, new ResponseCallbackListener<List<Lesson>>() {
+            String[] conditions = new String[]{
+                    "status", "published",
+                    "courseId", String.valueOf(courseId)
+            };
+            mLessonModel.getLessonByCourseId(conditions, new ResponseCallbackListener<List<Lesson>>() {
                 @Override
                 public void onSuccess(List<Lesson> data) {
                     callback.success(data);
