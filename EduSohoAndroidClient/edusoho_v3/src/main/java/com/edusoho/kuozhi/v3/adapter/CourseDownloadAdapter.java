@@ -101,7 +101,7 @@ public class CourseDownloadAdapter extends BaseAdapter {
             if (realSize == 0) {
                 return "0M";
             } else {
-                return String.format("%.0f%s", realSize, "M");
+                return String.format("%.1f%s", realSize, "M");
             }
         }
     }
