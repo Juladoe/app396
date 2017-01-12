@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseProgress;
 import com.edusoho.kuozhi.v3.entity.course.LearningClassroom;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
@@ -187,7 +188,7 @@ public class MyStudyAdapter extends BaseAdapter {
                     Object object = mLists.get(position);
                     if (object instanceof Classroom) {
                         final Classroom classroom = (Classroom) object;
-                        EdusohoApp.app.mEngine.runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
+                        CoreEngine.create(mContext).runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
                                 startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, String.valueOf(classroom.id));
@@ -195,7 +196,7 @@ public class MyStudyAdapter extends BaseAdapter {
                         });
                     } else if (object instanceof Course) {
                         final Course course = (Course) object;
-                        EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity"
+                        CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
                                 , mContext, new PluginRunCallback() {
                                     @Override
                                     public void setIntentDate(Intent startIntent) {
@@ -204,11 +205,12 @@ public class MyStudyAdapter extends BaseAdapter {
                                 });
                     } else {
                         final Study.Resource study = (Study.Resource) object;
-                        EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity"
+                        CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
                                 , mContext, new PluginRunCallback() {
                                     @Override
                                     public void setIntentDate(Intent startIntent) {
-                                        startIntent.putExtra(CourseActivity.COURSE_ID, study.getId() + "");
+                                        startIntent.putExtra(CourseActivity.COURSE_ID, String.valueOf(study.getId()));
+                                        startIntent.putExtra(CourseActivity.SOURCE, study.getTitle());
                                     }
                                 });
                     }
