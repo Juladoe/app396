@@ -41,7 +41,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     public static final String COURSE_ID = "course_id";
     private String mCourseId;
     private boolean mIsFavorite = false;
-    private CourseDetail mCourseDetail;
+    public CourseDetail mCourseDetail;
     private LessonItem mContinueLessonItem;
 
     @Override

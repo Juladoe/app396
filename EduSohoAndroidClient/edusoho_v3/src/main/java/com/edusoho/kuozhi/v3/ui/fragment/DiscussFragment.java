@@ -1,16 +1,12 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,10 +22,8 @@ import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.RefreshListView;
 import com.google.gson.reflect.TypeToken;
 
@@ -39,18 +33,15 @@ import com.google.gson.reflect.TypeToken;
 
 public class DiscussFragment extends BaseFragment {
 
-    private String mCouseId ;
-    private View mView;
-    private RefreshListView mLvDiscuss;
-    private EduSohoNewIconView mTvEdit;
-    private View mEmpty;
-    private EduSohoNewIconView tvTopic;
-    private Dialog dialog;
-    private boolean isJoin;
     public View mLoadView;
     public String title;
     public DiscussDetail discussDetail;
     public CatalogueAdapter catalogueAdapter;
+    private String mCouseId ;
+    private View mView;
+    private RefreshListView mLvDiscuss;
+    private View mEmpty;
+    private boolean isJoin;
     private TextView mTvEmpty;
     private LinearLayout mUnJoinView;
 
@@ -61,34 +52,27 @@ public class DiscussFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_discuss, container, false);
         mCouseId = getArguments().getString("id");
-        return mView;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         initWidget();
         if (TextUtils.isEmpty(app.token)) {
             mUnJoinView.setVisibility(View.VISIBLE);
         } else {
             initData();
         }
+        return mView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
     }
 
     private void initWidget() {
-        dialog = new Dialog(getActivity(), R.style.DiscussDialog);
         mUnJoinView = (LinearLayout) mView.findViewById(R.id.ll_course_catalog_empty);
         mLvDiscuss = (RefreshListView) mView.findViewById(R.id.lv_discuss);
-//        mTvEdit = (EduSohoNewIconView) mView.findViewById(R.id.tv_edit_topic);
         mLoadView = mView.findViewById(R.id.ll_frame_load);
         mEmpty = mView.findViewById(R.id.ll_discuss_empty);
         mTvEmpty = (TextView) mView.findViewById(R.id.tv_empty);
-//        mTvEdit.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showPopup();
-//            }
-//        });
     }
 
     private void initData() {
@@ -138,42 +122,6 @@ public class DiscussFragment extends BaseFragment {
     public void reFreshView(boolean isJoin, String title) {
         this.isJoin = isJoin;
         this.title = title;
-    }
-
-    public boolean isAdd;
-    private void showPopup() {
-        if (!isAdd) {
-            isAdd = true;
-            View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_discuss_publish, null);
-            tvTopic = (EduSohoNewIconView) dialogView.findViewById(R.id.tv_topic);
-            tvTopic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            dialogView.findViewById(R.id.tv_question).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            dialogView.findViewById(R.id.tv_close).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-            dialog.setContentView(dialogView);
-            dialog.setCanceledOnTouchOutside(false);
-            Window mWindow = dialog.getWindow();
-            mWindow .setGravity(Gravity.LEFT | Gravity.TOP);
-            WindowManager.LayoutParams lp = mWindow.getAttributes();
-            lp.x = (int) mTvEdit.getX();
-            lp.y = (int) (mTvEdit.getY() - AppUtil.dp2px(getActivity(), 103));
-            mWindow.setAttributes(lp);
-        }
-        dialog.show();
     }
 
     public void startThreadActivity(int position){

@@ -612,16 +612,17 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             isAdd = true;
             dialog = new Dialog(this, R.style.DiscussDialog);
             View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_discuss_publish, null);
-            EduSohoNewIconView tvTopic = (EduSohoNewIconView) dialogView.findViewById(R.id.tv_topic);
-            tvTopic.setOnClickListener(new View.OnClickListener() {
+            dialogView.findViewById(R.id.tv_topic).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    startActivity("discussion");
                     dialog.dismiss();
                 }
             });
             dialogView.findViewById(R.id.tv_question).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    startActivity("question");
                     dialog.dismiss();
                 }
             });
@@ -641,5 +642,19 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mWindow.setAttributes(lp);
         }
         dialog.show();
+    }
+
+    private void startActivity(String type) {
+        Bundle bundle = new Bundle();
+        if (DetailActivity.this instanceof CourseActivity) {
+            bundle.putInt(ThreadCreateActivity.TARGET_ID, ((CourseActivity) DetailActivity.this).mCourseDetail.getCourse().id);
+        } else {
+            bundle.putInt(ThreadCreateActivity.TARGET_ID, ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getClassRoom().id);
+        }
+        bundle.putString(ThreadCreateActivity.TARGET_TYPE, DetailActivity.this instanceof CourseActivity ? "classroom" : "");
+        bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
+        bundle.putString(ThreadCreateActivity.THREAD_TYPE, "question".equals(type) ? "course" : "common");
+
+        app.mEngine.runNormalPluginWithBundle("ThreadCreateActivity", DetailActivity.this, bundle);
     }
 }

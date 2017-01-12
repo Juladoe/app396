@@ -33,7 +33,7 @@ import java.util.List;
 public class ClassroomActivity extends DetailActivity implements View.OnClickListener {
     public static final String CLASSROOM_ID = "Classroom_id";
     private String mClassroomId;
-    private ClassroomDetail mClassroomDetail;
+    public ClassroomDetail mClassroomDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
