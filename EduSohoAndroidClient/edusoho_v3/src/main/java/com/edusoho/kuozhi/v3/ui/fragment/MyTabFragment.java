@@ -70,6 +70,7 @@ public class MyTabFragment extends BaseFragment {
         mLayoutDesc = (LinearLayout) view.findViewById(R.id.layout_filter_desc);
         switch (mType) {
             case TYPE_STUDY:
+                mLvContent.setPadding(0, AppUtil.dp2px(getActivity(), 50), 0, 0);
                 mLayoutFilter.setVisibility(View.VISIBLE);
                 ViewGroup.LayoutParams params1 = mLayoutDesc.getLayoutParams();
                 if (params1 != null) {
@@ -97,16 +98,19 @@ public class MyTabFragment extends BaseFragment {
                 mTvFilterName.setText(TYPE_STUDY_DESC[0]);
                 break;
             case TYPE_CACHE:
+                mLvContent.setPadding(0, 0, 0, 0);
                 mLayoutFilter.setVisibility(View.GONE);
                 mMyCacheAdapter = new MyCacheAdapter();
                 mLvContent.setAdapter(mMyCacheAdapter);
                 break;
             case TYPE_COLLECT:
+                mLvContent.setPadding(0, 0, 0, 0);
                 mLayoutFilter.setVisibility(View.GONE);
                 mMyCollectAdapter = new MyCollectAdapter(getActivity());
                 mLvContent.setAdapter(mMyCollectAdapter);
                 break;
             case TYPE_ASK:
+                mLvContent.setPadding(0, AppUtil.dp2px(getActivity(), 50), 0, 0);
                 mLayoutFilter.setVisibility(View.VISIBLE);
                 mLayoutDesc.setPadding(AppUtil.getWidthPx(getActivity()) / 4
                         , 0, AppUtil.getWidthPx(getActivity()) / 4, 0);
