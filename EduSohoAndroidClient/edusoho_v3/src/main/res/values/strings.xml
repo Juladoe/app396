@@ -375,4 +375,6 @@
     <string name="download_no_task">没有课时下载任务</string>
     <string name="download_no_network">网络不太好,不能继续下载</string>
     <string name="download_size_label">&#xe672;</string>
+    <string name="download_size_cached">已缓存%d课</string>
+    <string name="download_size_course_source">来自班级 | </string>
 </resources>
