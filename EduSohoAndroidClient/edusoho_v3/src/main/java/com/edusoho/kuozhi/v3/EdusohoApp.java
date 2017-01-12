@@ -375,8 +375,8 @@ public class EdusohoApp extends Application {
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
         mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).
                 showImageOnFail(R.drawable.defaultpic).build();
-        mAvatarOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.icon_default_avatar).
-                showImageOnFail(R.drawable.icon_default_avatar).build();
+        mAvatarOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.icon_def_avatar).
+                showImageOnFail(R.drawable.icon_def_avatar).build();
     }
 
     public HashMap<String, String> getPlatformInfo() {
