@@ -418,7 +418,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         return super.onKeyDown(keyCode, event);
     }
 
-    private void changeBar(boolean show) {
+    protected void changeBar(boolean show) {
         if (show) {
             mHeadRlayout.setVisibility(View.VISIBLE);
         } else {
@@ -468,6 +468,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mIsPlay = false;
         mParent.setStay(false);
         mPlayButtonLayout.setVisibility(View.VISIBLE);
+        changeBar(true);
     }
 
     protected boolean mIsFullScreen = false;

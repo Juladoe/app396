@@ -37,6 +37,7 @@ import java.util.List;
  * Created by Zhang on 2016/12/8.
  */
 public class CourseActivity extends DetailActivity implements View.OnClickListener {
+
     public static final String COURSE_ID = "course_id";
     private String mCourseId;
     private boolean mIsFavorite = false;
@@ -309,13 +310,13 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void grade() {
         app.mEngine.runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
-                ,new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ReviewActivity.TYPE, ReviewActivity.TYPE_COURSE);
-                startIntent.putExtra(ReviewActivity.ID, mCourseId);
-            }
-        });
+                , new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(ReviewActivity.TYPE, ReviewActivity.TYPE_COURSE);
+                        startIntent.putExtra(ReviewActivity.ID, mCourseId);
+                    }
+                });
     }
 
     @Override
@@ -429,7 +430,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
 
-
     private void playVideoLesson(LessonItem lessonItem) {
         Uri uri = Uri.parse(lessonItem.mediaUri);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -469,9 +469,9 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (requestCode == LessonActivity.REQUEST_LEARN) {
             coursePause();
         }
-        if(requestCode == ReviewActivity.REVIEW_RESULT){
+        if (requestCode == ReviewActivity.REVIEW_RESULT) {
             Fragment fragment = mFragments.get(0);
-            if(fragment != null && fragment instanceof CourseDetailFragment){
+            if (fragment != null && fragment instanceof CourseDetailFragment) {
                 ((CourseDetailFragment) fragment).refreshReview();
             }
         }
