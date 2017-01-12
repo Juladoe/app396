@@ -210,7 +210,7 @@ public class MyCollectAdapter extends BaseAdapter {
         mLists.clear();
         mEmpty = false;
         notifyDataSetChanged();
-        CourseDetailModel.getLiveCourses(10, 10 * mPage, new ResponseCallbackListener<LearningCourse>() {
+        CourseDetailModel.getLiveCollect(10, 10 * mPage, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(LearningCourse data) {
                 mLists.addAll(data.getData());
@@ -273,7 +273,7 @@ public class MyCollectAdapter extends BaseAdapter {
             });
         }
         if (mCanLoadLive) {
-            CourseDetailModel.getLiveCourses(10, 10 * mPage, new ResponseCallbackListener<LearningCourse>() {
+            CourseDetailModel.getLiveCollect(10, 10 * mPage, new ResponseCallbackListener<LearningCourse>() {
                 @Override
                 public void onSuccess(LearningCourse data) {
                     mLists.addAll(data.getData());
