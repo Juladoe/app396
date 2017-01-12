@@ -45,6 +45,7 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -293,7 +294,15 @@ public class M3U8Util {
 
         isCancel = false;
         initDownloadEnv();
-        if (checkHasLocalM3U8Task(mLessonId, mUserId)) {
+        M3U8DbModel localM3U8DbModel = checkHasLocalM3U8Task(mLessonId, mUserId);
+        if (localM3U8DbModel != null) {
+            Log.d(TAG, "continue M3U8DbModle");
+            if (localM3U8DbModel.downloadNum == localM3U8DbModel.totalNum) {
+                completeTask(localM3U8DbModel);
+                return;
+            }
+            M3U8File m3U8File = getM3U8FileFromModel(localM3U8DbModel);
+            addM3U8SourceToQueue(m3U8File);
             for (int i = 0; i < 5; i++) {
                 prepareDownload();
             }
@@ -326,22 +335,23 @@ public class M3U8Util {
         sendBroadcast(status);
     }
 
-    private boolean checkHasLocalM3U8Task(int lessonId, int userId) {
+    private M3U8DbModel checkHasLocalM3U8Task(int lessonId, int userId) {
         M3U8DbModel m3U8DbModel = queryM3U8Model(mContext, userId, lessonId, mTargetHost, ALL);
         if (m3U8DbModel == null) {
-            return false;
+            return null;
+        }
+
+        Map<String, Integer> downloadM3U8ItemMap = getDownloadM3U8ItemMap(lessonId);
+        if (downloadM3U8ItemMap != null) {
+            m3U8DbModel.downloadNum = downloadM3U8ItemMap.size();
         }
 
         if (m3U8DbModel.finish == FINISH
                 || TextUtils.isEmpty(m3U8DbModel.playList)
                 || (m3U8DbModel.downloadNum > 0 && m3U8DbModel.downloadNum == m3U8DbModel.totalNum)) {
-            return false;
+            return null;
         }
-
-        Log.d(TAG, "continue M3U8DbModle");
-        M3U8File m3U8File = getM3U8FileFromModel(m3U8DbModel);
-        addM3U8SourceToQueue(m3U8File);
-        return true;
+        return m3U8DbModel;
     }
 
     private void loadLessonUrl(final int lessonId, int courseId) {
@@ -457,10 +467,8 @@ public class M3U8Util {
         }
     }
 
-    private M3U8File getM3U8FileFromModel(M3U8DbModel m3U8DbModel) {
-        StringReader reader = new StringReader(m3U8DbModel.playList);
-
-        final HashMap<String, Integer> filters = new HashMap<>();
+    private Map<String, Integer> getDownloadM3U8ItemMap(int lessonId) {
+        final Map<String, Integer> filters = new HashMap<>();
         SqliteUtil.QueryParser<HashMap<String, Integer>> queryCallBack =
                 new SqliteUtil.QueryParser<HashMap<String, Integer>>() {
                     @Override
@@ -476,8 +484,16 @@ public class M3U8Util {
                 queryCallBack,
                 "select * from data_m3u8_url where finish=? and lessonId=?",
                 "1",
-                String.valueOf(m3U8DbModel.lessonId)
+                String.valueOf(lessonId)
         );
+
+        return filters;
+    }
+
+    private M3U8File getM3U8FileFromModel(M3U8DbModel m3U8DbModel) {
+        StringReader reader = new StringReader(m3U8DbModel.playList);
+
+        Map<String, Integer> filters = getDownloadM3U8ItemMap(m3U8DbModel.lessonId);
         M3U8File m3U8File = parseM3u8ListFile(new BufferedReader(reader), filters);
         return m3U8File;
     }
@@ -532,10 +548,6 @@ public class M3U8Util {
             }
         }
     }
-
-    private void downloadSingleFile(String url) {
-    }
-
 
     private int updateM3U8Model(ContentValues cv, int lessonId, String host) {
         return mSqliteUtil.update(
@@ -697,33 +709,45 @@ public class M3U8Util {
             //更新总计数器
             M3U8DbModel m3U8DbModel = updateM3U8DownloadNum();
             if (m3U8DbModel != null && m3U8DbModel.downloadNum == m3U8DbModel.totalNum) {
-                if (checkHasLocalM3U8Task(mLessonId, mUserId)) {
+                M3U8DbModel localM3U8DbModel = checkHasLocalM3U8Task(mLessonId, mUserId);
+                if (localM3U8DbModel != null) {
+                    Log.d(TAG, "resume donwload m3u8");
+                    M3U8File m3U8File = getM3U8FileFromModel(localM3U8DbModel);
+                    addM3U8SourceToQueue(m3U8File);
                     prepareDownload();
                     return;
                 }
-                try {
-                    String playListStr = createLocalM3U8File(m3U8DbModel);
-                    Log.d(TAG, "finish");
-                    cv.put("play_list", playListStr);
-                    mSqliteUtil.update(
-                            "data_m3u8",
-                            cv,
-                            "host=? and lessonId=? and userId=?",
-                            new String[]{
-                                    mTargetHost,
-                                    String.valueOf(mLessonId),
-                                    String.valueOf(mUserId)
-                            }
-                    );
-                    sendSuccessBroadcast();
-                } catch (FileNotFoundException fe) {
-                    Log.d(TAG, fe.getMessage());
-                }
+                completeTask(m3U8DbModel);
             }
         }
 
         prepareDownload();
         Log.d(TAG, "update m3u8 src status " + downloadModel.url);
+    }
+
+    private void completeTask(M3U8DbModel m3U8DbModel) {
+        ContentValues cv = new ContentValues();
+        cv.put("finish", FINISH);
+        try {
+            String playListStr = createLocalM3U8File(m3U8DbModel);
+            Log.d(TAG, "finish");
+            cv.put("play_list", playListStr);
+            mSqliteUtil.update(
+                    "data_m3u8",
+                    cv,
+                    "host=? and lessonId=? and userId=?",
+                    new String[]{
+                            mTargetHost,
+                            String.valueOf(mLessonId),
+                            String.valueOf(mUserId)
+                    }
+            );
+            mDownloadQueue.clear();
+            sendSuccessBroadcast();
+            Log.d(TAG, "completeTask");
+        } catch (FileNotFoundException fe) {
+            Log.d(TAG, fe.getMessage());
+        }
     }
 
     private void saveKey(String key, String content) {
@@ -767,7 +791,7 @@ public class M3U8Util {
         }
         ContentValues cv = new ContentValues();
         cv.put("download_num", m3U8DbModel.downloadNum + 1);
-        int result = mSqliteUtil.update(
+        mSqliteUtil.update(
                 "data_m3u8",
                 cv,
                 "host=? and lessonId=? and userId=?",
@@ -778,9 +802,8 @@ public class M3U8Util {
                 }
         );
 
-        if (result > 0) {
-            m3U8DbModel.downloadNum = m3U8DbModel.downloadNum + 1;
-        }
+        Map<String, Integer> m3u8ItemMap = getDownloadM3U8ItemMap(mLessonId);
+        m3U8DbModel.downloadNum = m3u8ItemMap == null ? 0 : m3u8ItemMap.size();
         return m3U8DbModel;
     }
 
@@ -843,8 +866,7 @@ public class M3U8Util {
                 if (!new File(m3u8Dir, key).exists()) {
                     throw new FileNotFoundException(key + "file not exists");
                 }
-//                matcher.appendReplacement(
-//                        stringBuffer, replaceStr + key);
+
                 matcher.appendReplacement(
                         stringBuffer, replaceStr + key + "?" + url.split("[?]")[1]);
             }
@@ -895,10 +917,6 @@ public class M3U8Util {
         }
     }
 
-    private void pushTaskToQueue(String url, String type) {
-
-    }
-
     private void prepareDownload() {
         if (mDownloadQueue.isEmpty()) {
             return;
@@ -947,7 +965,7 @@ public class M3U8Util {
         解析m3u8列表
     */
     private M3U8File parseM3u8ListFile(
-            BufferedReader reader, HashMap<String, Integer> filters) {
+            BufferedReader reader, Map<String, Integer> filters) {
         M3U8File m3U8File = new M3U8File();
         StringBuilder stringBuilder = new StringBuilder();
         int pos = -1;

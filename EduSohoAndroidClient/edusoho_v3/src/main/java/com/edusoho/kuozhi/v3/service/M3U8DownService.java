@@ -82,7 +82,7 @@ public class M3U8DownService extends Service {
                 case DownloadManager.ERROR_INSUFFICIENT_SPACE:
                 case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
                 case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
-                case DownloadManager.Pa:
+                case DownloadManager.PAUSED_UNKNOWN:
                 case DownloadManager.STATUS_FAILED:
                     Log.d(TAG, "onChange" + selfChange + " status fail:" + status);
                     m3U8Util.updateDownloadStatus(downloadModel, DownloadManager.STATUS_FAILED);
