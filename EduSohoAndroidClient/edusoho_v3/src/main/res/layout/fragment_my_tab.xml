@@ -64,6 +64,7 @@
         <com.edusoho.kuozhi.v3.view.ChildListView
             android:id="@+id/lv_content"
             android:layout_width="match_parent"
+            android:divider="@color/transparent"
             android:layout_height="match_parent" />
 
     </com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>

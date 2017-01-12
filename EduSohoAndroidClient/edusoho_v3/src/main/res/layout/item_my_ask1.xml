@@ -44,6 +44,7 @@
             android:layout_below="@+id/tv_content"
             android:layout_marginTop="15dp"
             android:maxEms="7"
+            android:maxLines="1"
             android:padding="2dp"
             android:ellipsize="end"
             />
