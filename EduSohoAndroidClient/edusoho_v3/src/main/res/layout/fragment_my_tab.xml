@@ -65,6 +65,7 @@
             android:id="@+id/lv_content"
             android:dividerHeight="0px"
             android:layout_width="match_parent"
+            android:divider="@color/transparent"
             android:layout_height="match_parent" />
 
     </com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>
