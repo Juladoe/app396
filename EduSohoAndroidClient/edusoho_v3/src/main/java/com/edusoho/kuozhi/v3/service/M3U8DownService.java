@@ -72,9 +72,20 @@ public class M3U8DownService extends Service {
                 return;
             }
             int status = m3U8Util.queryDownloadUriStatus(reference);
-            if (status == DownloadManager.STATUS_FAILED) {
-                Log.d(TAG, "onChange" + selfChange + " status fail:" + status);
-                m3U8Util.updateDownloadStatus(downloadModel, status);
+            Log.d(TAG, "onChange:" + status);
+            switch (status) {
+                case DownloadManager.ERROR_CANNOT_RESUME:
+                case DownloadManager.ERROR_DEVICE_NOT_FOUND:
+                case DownloadManager.ERROR_HTTP_DATA_ERROR:
+                case DownloadManager.ERROR_UNKNOWN:
+                case DownloadManager.ERROR_FILE_ERROR:
+                case DownloadManager.ERROR_INSUFFICIENT_SPACE:
+                case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
+                case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
+                case DownloadManager.Pa:
+                case DownloadManager.STATUS_FAILED:
+                    Log.d(TAG, "onChange" + selfChange + " status fail:" + status);
+                    m3U8Util.updateDownloadStatus(downloadModel, DownloadManager.STATUS_FAILED);
             }
         }
     };

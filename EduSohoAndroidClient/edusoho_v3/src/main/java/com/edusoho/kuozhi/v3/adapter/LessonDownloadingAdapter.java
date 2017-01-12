@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +20,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -94,7 +96,7 @@ public class LessonDownloadingAdapter extends BaseAdapter {
 
             int downStatus = getDownloadStatus(lessonItem.id);
             if (model.finish == M3U8Util.DOWNLOAD_ERROR) {
-                //childPanel.tvProgress.setText("下载失败");
+                childPanel.tvLessonTitle.setText(AppUtil.getColorTextAfter(lessonItem.title, " 下载失败", Color.RED));
             }
             childPanel.setDownloasState(downStatus);
         }
@@ -257,7 +259,6 @@ public class LessonDownloadingAdapter extends BaseAdapter {
                 case M3U8Util.DOWNING:
                 default:
                     tvProgress.setBackgroundResource(R.drawable.icon_download_pause);
-
             }
         }
     }

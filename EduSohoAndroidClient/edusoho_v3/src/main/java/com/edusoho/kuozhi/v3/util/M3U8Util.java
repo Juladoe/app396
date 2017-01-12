@@ -10,9 +10,11 @@ import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseArray;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.broadcast.DownloadStatusReceiver;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
@@ -319,6 +321,7 @@ public class M3U8Util {
             ContentValues cv = new ContentValues();
             cv.put("finish", DOWNLOAD_ERROR);
             updateM3U8Model(cv, mLessonId, mTargetHost);
+            clearDownloadEnv();
         }
         sendBroadcast(status);
     }
@@ -496,6 +499,9 @@ public class M3U8Util {
 
             Log.d(TAG, "start parse m3u8 file " + m3U8File);
             InputStream inputStream = readStreamFromNet(url);
+            if (inputStream == null) {
+                return null;
+            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             m3U8File = parseM3u8ListFile(reader, null);
             type = m3U8File.type;
@@ -624,6 +630,10 @@ public class M3U8Util {
     public void updateDownloadStatus(DownloadModel downloadModel, int status) {
         if (status == DownloadManager.STATUS_SUCCESSFUL) {
             updateDownloadFinish(downloadModel);
+            return;
+        }
+        if (status == DownloadManager.STATUS_FAILED) {
+            setDownloadStatus(ERROR);
             return;
         }
         mDownloadQueue.add(new DownloadItem(downloadModel.url, downloadModel.type));
@@ -784,17 +794,16 @@ public class M3U8Util {
     }
 
     private void clearDownloadEnv() {
-        if (mThreadPoolExecutor != null) {
-            mThreadPoolExecutor.purge();
-            mThreadPoolExecutor.shutdown();
-        }
-
         if (mDownloadQueue != null) {
             mDownloadQueue.clear();
         }
 
         if (mTimeOutList != null) {
             mTimeOutList.clear();
+        }
+        if (mThreadPoolExecutor != null) {
+            mThreadPoolExecutor.purge();
+            mThreadPoolExecutor.shutdown();
         }
 
         mThreadPoolExecutor = null;
@@ -1132,6 +1141,8 @@ public class M3U8Util {
         @Override
         public void run() {
             if (!AppUtil.isWiFiConnect(mContext) && EdusohoApp.app.config.offlineType == 0) {
+                ToastUtils.show(mContext, R.string.download_no_network);
+                setDownloadStatus(ERROR);
                 return;
             }
             String key = DigestUtils.md5(url);
