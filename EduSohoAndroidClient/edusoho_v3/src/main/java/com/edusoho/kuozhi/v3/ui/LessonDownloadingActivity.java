@@ -35,6 +35,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
+import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 
@@ -607,9 +608,8 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
     public static class ChildPanel {
         TextView tvUnitTitle;
         TextView tvLessonTitle;
-        //EduSohoIconView ivDownload;
         TextView tvDownloadFinish;
-        EduSohoIconView ivDownloadSelected;
+        EduSohoNewIconView ivDownloadSelected;
         View viewLessonInfo;
         View viewLessonUnitTitle;
 
@@ -617,8 +617,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             tvUnitTitle = (TextView) view.findViewById(R.id.tv_lesson_chapter);
             tvLessonTitle = (TextView) view.findViewById(R.id.tv_lesson_name);
             tvDownloadFinish = (TextView) view.findViewById(R.id.iv_download_finish);
-            //ivDownload = (EduSohoIconView) view.findViewById(R.id.iv_download);
-            ivDownloadSelected = (EduSohoIconView) view.findViewById(R.id.iv_download_selected);
+            ivDownloadSelected = (EduSohoNewIconView) view.findViewById(R.id.iv_download_selected);
             viewLessonInfo = view.findViewById(R.id.rl_lesson_info);
             viewLessonUnitTitle = view.findViewById(R.id.rl_unit_title);
         }

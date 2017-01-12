@@ -126,6 +126,10 @@ public class CourseCatalogFragment extends BaseFragment {
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
                 });
                 if (mCourseCatalogue.getLessons().size() != 0) {
+                    if (mMemberStatus == ISMEMBER && !TextUtils.isEmpty(app.token)) {
+                        mRlSpace.setVisibility(View.VISIBLE);
+                        initFirstLearnLesson();
+                    }
                     initFirstLearnLesson();
                     initCustomChapterSetting();
                 } else {
@@ -147,10 +151,6 @@ public class CourseCatalogFragment extends BaseFragment {
             @Override
             public void onResponse(String response) {
                 setLoadViewStatus(View.GONE);
-                if (mMemberStatus == ISMEMBER && !TextUtils.isEmpty(app.token)) {
-                    mRlSpace.setVisibility(View.VISIBLE);
-                    initFirstLearnLesson();
-                }
                 CustomTitle cusotmTitle = new Gson().fromJson(response, CustomTitle.class);
                 if (cusotmTitle != null && "1".equals(cusotmTitle.getCustomChapterEnable())) {
                     initLessonCatalog(cusotmTitle.getChapterName(), cusotmTitle.getPartName());
@@ -162,6 +162,7 @@ public class CourseCatalogFragment extends BaseFragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 setLoadViewStatus(View.GONE);
+                initLessonCatalog(null,null);
             }
         });
     }

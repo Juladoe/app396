@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -18,6 +17,7 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
@@ -29,6 +29,9 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
+import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -38,7 +41,9 @@ import java.util.List;
  * Created by Zhang on 2016/12/8.
  */
 public class CourseActivity extends DetailActivity implements View.OnClickListener {
+
     public static final String COURSE_ID = "course_id";
+    public static final String SOURCE = "source";
     private String mCourseId;
     private boolean mIsFavorite = false;
     private CourseDetail mCourseDetail;
@@ -58,6 +63,8 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         initView();
         initEvent();
         initData();
+
+        app.startPlayCacheServer(this);
     }
 
     @Override
@@ -112,6 +119,9 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                             setLoadStatus(View.GONE);
                         }
                         refreshView();
+                        if (data != null && data.getCourse() != null) {
+                            saveCourseToCache(data.getCourse());
+                        }
                     }
 
                     @Override
@@ -122,6 +132,16 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                         }
                     }
                 });
+    }
+
+    private void saveCourseToCache(Course course) {
+        course.setSourceName(getIntent().getStringExtra(SOURCE));
+        SqliteUtil sqliteUtil = SqliteUtil.getUtil(getBaseContext());
+        sqliteUtil.saveLocalCache(
+                Const.CACHE_COURSE_TYPE,
+                String.format("course-%d", course.id),
+                new Gson().toJson(course)
+        );
     }
 
     @Override
@@ -310,13 +330,13 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void grade() {
         app.mEngine.runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
-                ,new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ReviewActivity.TYPE, ReviewActivity.TYPE_COURSE);
-                startIntent.putExtra(ReviewActivity.ID, mCourseId);
-            }
-        });
+                , new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(ReviewActivity.TYPE, ReviewActivity.TYPE_COURSE);
+                        startIntent.putExtra(ReviewActivity.ID, mCourseId);
+                    }
+                });
     }
 
     @Override
@@ -430,7 +450,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
 
-
     private void playVideoLesson(LessonItem lessonItem) {
         Uri uri = Uri.parse(lessonItem.mediaUri);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -462,6 +481,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     public void finish() {
         super.finish();
         removePlayFragment();
+        app.stopPlayCacheServer();
     }
 
     @Override
@@ -470,9 +490,9 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (requestCode == LessonActivity.REQUEST_LEARN) {
             coursePause();
         }
-        if(requestCode == ReviewActivity.REVIEW_RESULT){
+        if (requestCode == ReviewActivity.REVIEW_RESULT) {
             Fragment fragment = mFragments.get(0);
-            if(fragment != null && fragment instanceof CourseDetailFragment){
+            if (fragment != null && fragment instanceof CourseDetailFragment) {
                 ((CourseDetailFragment) fragment).refreshReview();
             }
         }

@@ -273,6 +273,7 @@
     <color name="qr_school_url_btn_pressed">#77d1d1d1</color>
 
     <color name="action_bar_title">#ffffff</color>
+    <color name="action_bar_dark_bg">#c8f9f9f9</color>
     <color name="action_bar_bg">#38bf6c</color>
     <color name="action_bar_bg_alpha">#0038bf6c</color>
     <color name="system_bg">#ffffff</color>
