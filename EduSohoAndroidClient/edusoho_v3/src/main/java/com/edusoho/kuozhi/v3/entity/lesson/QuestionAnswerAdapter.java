@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.ui.adapter.MessageRecyclerListAdapter;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -202,7 +203,7 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(resourcesBean.getCreatedTime().split("T")[0]);
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(resourcesBean.getTitle());
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(resourcesBean.getContent());
-        ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar));
+        ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_nickname)).setText(resourcesBean.getUser().getNickname());
         if ("question".equals(resourcesBean.getType())) {
             ((TextView) VIEW_HEADER.findViewById(R.id.tdh_label)).setText("问题");

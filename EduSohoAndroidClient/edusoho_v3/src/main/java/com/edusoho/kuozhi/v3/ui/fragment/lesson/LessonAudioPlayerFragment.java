@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -18,6 +17,7 @@ import android.widget.ImageView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
@@ -76,6 +76,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         .success(new NormalCallback<LessonItem>() {
             @Override
             public void success(LessonItem lessonItem) {
+                changeToolBarState(false);
                 setLoadViewState(false);
                 setCoverViewState(true);
                 if (lessonItem == null || TextUtils.isEmpty(lessonItem.mediaUri)) {
@@ -143,6 +144,18 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
 //        super.stopPlayback();
 //        updateAudioCoverViewStatus(false);
 //    }
+
+    @Override
+    public void onChangeOverlay(boolean isShow) {
+        super.onChangeOverlay(isShow);
+        changeToolBarState(isShow);
+    }
+
+    private void changeToolBarState(boolean isShow) {
+        String changeBarEvent = isShow ?
+                Const.COURSE_SHOW_BAR : Const.COURSE_HIDE_BAR;
+        MessageEngine.getInstance().sendMsg(changeBarEvent, null);
+    }
 
     @Override
     protected void updateMediaPlayStatus(boolean isPlay) {

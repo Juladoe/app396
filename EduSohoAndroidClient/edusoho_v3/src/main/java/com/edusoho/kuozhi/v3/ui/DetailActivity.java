@@ -438,7 +438,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         return super.onKeyDown(keyCode, event);
     }
 
-    private void changeBar(boolean show) {
+    protected void changeBar(boolean show) {
         if (show) {
             mHeadRlayout.setVisibility(View.VISIBLE);
         } else {
@@ -488,6 +488,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mIsPlay = false;
         mParent.setStay(false);
         mPlayButtonLayout.setVisibility(View.VISIBLE);
+        changeBar(true);
     }
 
     protected boolean mIsFullScreen = false;
@@ -651,7 +652,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else {
             bundle.putInt(ThreadCreateActivity.TARGET_ID, ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getClassRoom().id);
         }
-        bundle.putString(ThreadCreateActivity.TARGET_TYPE, DetailActivity.this instanceof CourseActivity ? "classroom" : "");
+        bundle.putString(ThreadCreateActivity.TARGET_TYPE, DetailActivity.this instanceof CourseActivity ? "" : "classroom");
         bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
         bundle.putString(ThreadCreateActivity.THREAD_TYPE, "question".equals(type) ? "course" : "common");
 
