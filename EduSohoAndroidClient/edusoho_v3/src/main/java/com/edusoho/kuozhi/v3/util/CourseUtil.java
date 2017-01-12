@@ -20,16 +20,20 @@ import java.util.Map;
  */
 
 public class CourseUtil {
-
     public static void reviewCourse(String courseId, int rating, String content
             , final OnReviewCourseListener onReviewCourseListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
             return;
         }
-        String url = String.format(Const.COURSE_COMMITCOURSE + "?courseId=%s&rating=%s&content=%s",
-                courseId, rating, content, EdusohoApp.app.loginUser.id);
-        EdusohoApp.app.getUrl(EdusohoApp.app.bindUrl(url, true)
+        String url = String.format(Const.COURSE_COMMITCOURSE_NEW,
+                courseId);
+        RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
+        Map<String, String> params = new HashMap<>();
+        params.put("rating", String.valueOf(rating));
+        params.put("content", content);
+        requestUrl.setParams(params);
+        EdusohoApp.app.postUrl(requestUrl
                 , new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -248,7 +252,7 @@ public class CourseUtil {
         );
     }
 
-    public static void deleteCourse(int courseId , final CallBack callBack){
+    public static void deleteCourse(int courseId, final CallBack callBack) {
         RequestUrl url = EdusohoApp.app.bindUrl(
                 String.format(Const.COURSE_UNLEARNCOURSE, courseId), true);
         EdusohoApp.app.getUrl(url, new Response.Listener<String>() {
@@ -274,7 +278,7 @@ public class CourseUtil {
         );
     }
 
-    public static void deleteClassroom(int classroomId , final CallBack callBack){
+    public static void deleteClassroom(int classroomId, final CallBack callBack) {
         RequestUrl url = EdusohoApp.app.bindUrl(
                 String.format(Const.CLASSROOM_UNLEARN + "?targetType=classroom&classRoomId=%s", classroomId), true);
         EdusohoApp.app.getUrl(url, new Response.Listener<String>() {
