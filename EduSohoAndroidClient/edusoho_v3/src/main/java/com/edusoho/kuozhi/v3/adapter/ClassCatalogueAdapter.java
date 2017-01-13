@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.List;
@@ -55,7 +56,7 @@ public class ClassCatalogueAdapter extends BaseAdapter{
         }
 
         Course course = mCourseList.get(position);
-        ImageLoader.getInstance().displayImage(course.middlePicture, classHolder.mIvClass);
+        ImageLoader.getInstance().displayImage(course.middlePicture, classHolder.mIvClass, EdusohoApp.app.mOptions);
         classHolder.mTvTitle.setText(course.title);
         if (!isJoin) {
             classHolder.mTvPeople.setText(

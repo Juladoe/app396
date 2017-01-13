@@ -71,6 +71,9 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
     @Override
     public void onResume() {
         super.onResume();
+        if (getAppSettingProvider().getCurrentUser() == null) {
+            return;
+        }
         mAdapter.setCourseList(getLocalCourseList(M3U8Util.ALL, null, null));
         setEmptyState(mAdapter.getCount() == 0);
     }

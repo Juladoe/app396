@@ -41,12 +41,15 @@ public class ReviewStarView extends LinearLayout {
 
     public void setRating(int rating) {
         this.rating = rating;
-        for (int i = 0; i < rating; i++) {
-            ((TextView)((ViewGroup)getChildAt(0)).getChildAt(i))
+        if (getChildAt(0) == null) {
+            return;
+        }
+        for (int i = 0; i < rating && i < 5; i++) {
+            ((TextView) ((ViewGroup) getChildAt(0)).getChildAt(i))
                     .setTextColor(getResources().getColor(R.color.secondary2_color));
         }
         for (int i = rating; i < 5; i++) {
-            ((TextView)((ViewGroup)getChildAt(0)).getChildAt(i))
+            ((TextView) ((ViewGroup) getChildAt(0)).getChildAt(i))
                     .setTextColor(getResources().getColor(R.color.disabled_hint_color));
         }
     }

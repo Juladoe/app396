@@ -76,7 +76,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
             if (s.length() > 0) {
                 tvNext.setAlpha(1f);
                 ivClear.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 tvNext.setAlpha(0.6f);
                 ivClear.setVisibility(View.INVISIBLE);
             }
@@ -111,7 +111,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
             final String phoneNum = etAccount.getText().toString().trim();
             if (Validator.isPhone(phoneNum)) {
                 RequestUrl requestUrl = app.bindUrl(Const.SMS_SEND, false);
-                Map<String,String> params = requestUrl.getParams();
+                Map<String, String> params = requestUrl.getParams();
                 params.put("phoneNumber", String.valueOf(phoneNum));
                 mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
                     @Override
@@ -120,13 +120,14 @@ public class RegisterActivity extends ActionBarBaseActivity {
                             MsgCode result = parseJsonValue(response, new TypeToken<MsgCode>() {
                             });
                             if (result != null && result.code == 200) {
-                                Intent registerIntent = new Intent(mContext,RegisterConfirmActivity.class);
+                                Intent registerIntent = new Intent(mContext, RegisterConfirmActivity.class);
                                 registerIntent.putExtra("num", phoneNum);
                                 startActivity(registerIntent);
+//                                app.mEngine.runNormalPlugin("RegisterConfirmActivity", mContext, null);
                             } else {
                                 if (response.equals(getString(R.string.registered_hint))) {
                                     showDialog();
-                                }else{
+                                } else {
                                     CommonUtil.longToast(mContext, response);
                                 }
                             }
@@ -157,7 +158,7 @@ public class RegisterActivity extends ActionBarBaseActivity {
                 .setNegativeButton(R.string.register_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        CommonUtil.longToast(mContext,getString(R.string.register_modify_phone));
+                        CommonUtil.longToast(mContext, getString(R.string.register_modify_phone));
                     }
                 }).show();
 
