@@ -477,4 +477,9 @@
         name="WebViewDataActivity"
         package="com.edusoho.kuozhi.v3.ui.WebViewDataActivity"
         version="1.0" />
+
+    <plugin
+        name="MyDownloadFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.MyDownloadFragment"
+        version="1.0" />
 </plugins>

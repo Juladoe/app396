@@ -35,10 +35,6 @@ public class Course implements Serializable {
     public String about;
     public String[] goals;
     public String[] audiences;
-    public String recommended;
-    public String recommendedSeq;
-    public String recommendedTime;
-    public String locationId;
     public String address;
     public String hitNum;
     public String userId;
@@ -53,10 +49,24 @@ public class Course implements Serializable {
     public long courseDeadline;
     public int liveState;
 
+    private String sourceName;
+    public String source;
+
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
+    }
+
     public String getLargePicture() {
         int schemIndex = largePicture.lastIndexOf("http://");
         if (schemIndex != -1) {
             return largePicture.substring(schemIndex);
+        }
+        if (largePicture.startsWith("//")) {
+            return "http:" + largePicture;
         }
         return largePicture;
     }

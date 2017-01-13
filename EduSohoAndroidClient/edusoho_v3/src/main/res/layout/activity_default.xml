@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:text="接收中..."
                 android:textColor="@color/action_bar_title"
-                android:textSize="@dimen/large_font_size" />
+                android:textSize="@dimen/medium_font_size" />
         </LinearLayout>
 
         <TextView
@@ -44,7 +44,7 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="@color/action_bar_title"
-            android:textSize="@dimen/large_font_size"
+            android:textSize="@dimen/medium_font_size"
             android:visibility="visible" />
 
     </android.support.v7.widget.Toolbar>

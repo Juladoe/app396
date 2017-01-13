@@ -15,13 +15,17 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.ClassCatalogueAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.FixHeightListView;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
 
@@ -79,6 +83,21 @@ public class ClassCatalogFragment extends BaseFragment {
         });
     }
 
+    private String getClassRoomName(int classRoomId) {
+        SqliteUtil sqliteUtil = SqliteUtil.getUtil(getContext());
+        Classroom classroom = sqliteUtil.queryForObj(
+                new TypeToken<Classroom>() {
+                },
+                "where type=? and key=?",
+                Const.CACHE_COURSE_TYPE,
+                "classroom-" + classRoomId
+        );
+        if (classroom != null) {
+            return classroom.title;
+        }
+        return "";
+    }
+
     private void initView() {
         ClassCatalogueAdapter classAdapter = new ClassCatalogueAdapter(getActivity(), mCourseList, isJoin);
         mLvClass.setAdapter(classAdapter);
@@ -95,6 +114,7 @@ public class ClassCatalogFragment extends BaseFragment {
                 }
                 Bundle bundle = new Bundle();
                 bundle.putString(CourseActivity.COURSE_ID, String.valueOf(mCourseList.get(position).id));
+                bundle.putString(CourseActivity.SOURCE, getClassRoomName(AppUtil.parseInt(mClassRoomId)));
                 CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);
             }
         });

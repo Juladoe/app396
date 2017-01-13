@@ -293,7 +293,10 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 moreItem.setVisible(true);
                 MenuPop menuPop = mLessonMenuHelper.getMenuPop();
                 if (menuPop != null) {
-                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.icon_menu_more)
+                    int orientation = getResources().getConfiguration().orientation;
+                    int icon = orientation == Configuration.ORIENTATION_LANDSCAPE ?
+                            R.drawable.icon_menu_white_more : R.drawable.icon_menu_more;
+                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), icon)
                             .copy(Bitmap.Config.ARGB_8888, true);
                     Drawable drawable = menuPop.isHasNotice() ?
                             new BitmapDrawable(createNoticeBitmap(bitmap)) : new BitmapDrawable(bitmap);
@@ -383,6 +386,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 "lesson-" + mLessonId
         );
 
+        setLoadViewState(false);
         LessonItem lessonItem = getLessonResultType(object);
         if (lessonItem == null) {
             finish();

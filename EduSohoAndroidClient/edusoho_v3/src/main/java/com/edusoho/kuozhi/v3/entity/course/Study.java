@@ -328,6 +328,13 @@ public class Study implements Serializable {
         }
 
         public String getLargePicture() {
+            int schemIndex = largePicture.lastIndexOf("http://");
+            if (schemIndex != -1) {
+                return largePicture.substring(schemIndex);
+            }
+            if (largePicture.startsWith("//")) {
+                return "http:" + largePicture;
+            }
             return largePicture;
         }
 
