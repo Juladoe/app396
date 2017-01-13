@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<plugins>
-    <plugin name="DefaultPageActivity" version="1.0" package="com.edusoho.sandyunke.v3.ui.CustomDefaultPageActivity"></plugin>
-
-</plugins>

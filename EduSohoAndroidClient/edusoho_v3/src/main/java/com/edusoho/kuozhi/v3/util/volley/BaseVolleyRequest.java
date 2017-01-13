@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.util.volley;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -19,6 +20,7 @@ import java.util.Map;
 public abstract class BaseVolleyRequest<T> extends Request<T> {
 
     private static final String TAG = "BaseVolleyRequest";
+    private static final int DEFUALT_TIME_OUT = 100 * 1000;
 
     protected static final int CACHE_MAX_AGE = 604800;
 
@@ -38,19 +40,15 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     protected int mCacheUseMode = AUTO_USE_CACHE;
     private RequestLocalManager mRequestLocalManager;
 
-    public BaseVolleyRequest(
-            int method,
-            RequestUrl requestUrl,
-            Response.Listener<T> listener,
-            Response.ErrorListener errorListener
-    ) {
+    public BaseVolleyRequest(int method, RequestUrl requestUrl, Response.Listener<T> listener,
+                             Response.ErrorListener errorListener) {
         super(method, requestUrl.url, errorListener);
-
         this.mRequestUrl = requestUrl;
         mListener = listener;
         mErrorListener = errorListener;
         initRequest(method);
         mRequestLocalManager = RequestLocalManager.getManager();
+        this.setRetryPolicy(new DefaultRetryPolicy(DEFUALT_TIME_OUT, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
     }
 
     protected void initRequest(int method) {

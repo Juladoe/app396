@@ -577,8 +577,10 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 //是否选中
                 if (item.isSelected) {
                     childPanel.ivDownloadSelected.setText(getResources().getString(R.string.font_download_select));
+                    childPanel.ivDownloadSelected.setTextColor(getResources().getColor(R.color.primary_color));
                 } else {
                     childPanel.ivDownloadSelected.setText(getResources().getString(R.string.font_download_unselect));
+                    childPanel.ivDownloadSelected.setTextColor(getResources().getColor(R.color.secondary2_font_color));
                 }
             } else {
                 childPanel.viewLessonUnitTitle.setVisibility(View.VISIBLE);

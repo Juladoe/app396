@@ -176,6 +176,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
+            android:name=".v3.ui.DiscussDetailActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
             android:name=".v3.ui.RegisterConfirmActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait"

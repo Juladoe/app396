@@ -84,24 +84,31 @@ public class CourseDownloadAdapter extends BaseAdapter {
         public void renderData(DownloadCourse course) {
             ImageLoader.getInstance().displayImage(course.getPicture(), ivCover);
             tvCourseTitle.setText(course.title);
-            ivVideoSizes.setText(getCacheSize(course.getCachedSize()));
-            ivVideoSum.setText(String.format("已缓存%d课", course.getCachedLessonNum()));
+            ivVideoSizes.setText(getCacheSize(ivVideoSizes.getContext(), course.getCachedSize()));
+            ivVideoSum.setText(String.format(
+                    ivVideoSum.getResources().getString(R.string.download_size_cached),
+                    course.getCachedLessonNum()
+            ));
 
             if ("classroom".equals(course.source)) {
                 tvSourse.setVisibility(View.VISIBLE);
-                tvSourse.setText(AppUtil.getColorTextAfter("来自班级 | ", course.getSourceName(), Color.rgb(113, 119, 125)));
+                tvSourse.setText(AppUtil.getColorTextAfter(
+                        tvSourse.getResources().getString(R.string.download_size_course_source),
+                        course.getSourceName(),
+                        Color.rgb(113, 119, 125)
+                ));
             } else {
                 tvSourse.setVisibility(View.GONE);
                 tvSourse.setText("");
             }
         }
 
-        private String getCacheSize(long size) {
+        private String getCacheSize(Context context, long size) {
             float realSize = size / 1024.0f / 1024.0f;
             if (realSize == 0) {
                 return "0M";
             } else {
-                return String.format("%.0f%s", realSize, "M");
+                return String.format("%.1f%s", realSize, "M");
             }
         }
     }
