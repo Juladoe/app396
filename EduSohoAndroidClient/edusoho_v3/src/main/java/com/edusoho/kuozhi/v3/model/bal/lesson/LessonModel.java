@@ -17,8 +17,9 @@ import java.util.List;
  * Created by JesseHuang on 16/3/9.
  */
 public class LessonModel {
-    public void getLessonByCourseId(String[] conditions, final ResponseCallbackListener<List<Lesson>> callbackListener) {
-        RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(Api.LESSONS, false);
+    public static void getLessonByCourseId(String[] conditions, final ResponseCallbackListener<List<Lesson>> callbackListener) {
+        String url = String.format(Api.LESSONS);
+        RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, false);
         requestUrl.setGetParams(conditions);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override

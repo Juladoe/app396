@@ -438,6 +438,9 @@ public class LoginActivity extends BaseNoTitleActivity {
     @Override
     public void finish() {
         super.finish();
+        if (app.loginUser == null) {
+            setResult(DefaultPageActivity.LOGIN_CANCEL);
+        }
         overridePendingTransition(R.anim.none, R.anim.up_to_down);
     }
 

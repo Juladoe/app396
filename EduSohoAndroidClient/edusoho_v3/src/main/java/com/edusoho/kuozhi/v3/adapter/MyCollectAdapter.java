@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
+import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
@@ -92,6 +94,9 @@ public class MyCollectAdapter extends BaseAdapter {
                 viewHolder.tvMore = (TextView) convertView.findViewById(R.id.tv_more);
                 viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
                 viewHolder.vLine = convertView.findViewById(R.id.v_line);
+                viewHolder.layoutLive = convertView.findViewById(R.id.layout_live);
+                viewHolder.tvLiveIcon = (TextView) convertView.findViewById(R.id.tv_live_icon);
+                viewHolder.tvLive = (TextView) convertView.findViewById(R.id.tv_live);
                 convertView.setTag(viewHolder);
             }
         } else {
@@ -111,6 +116,18 @@ public class MyCollectAdapter extends BaseAdapter {
         viewHolder.tvMore.setOnClickListener(mOnClickListener);
         convertView.setTag(R.id.tv_title, position);
         convertView.setOnClickListener(mViewOnClickListener);
+        if (course.type.equals("live")) {
+            viewHolder.layoutLive.setVisibility(View.VISIBLE);
+            if (course.liveState == 1) {
+                viewHolder.tvLive.setText("正在直播");
+                viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
+            } else {
+                viewHolder.tvLive.setText("直播");
+                viewHolder.tvLiveIcon.setVisibility(View.GONE);
+            }
+        }else{
+            viewHolder.layoutLive.setVisibility(View.GONE);
+        }
         if (position == getCount() - 1) {
             viewHolder.vLine.setVisibility(View.GONE);
         }else{
@@ -202,6 +219,9 @@ public class MyCollectAdapter extends BaseAdapter {
         TextView tvAddNum;
         TextView tvTitle;
         TextView tvMore;
+        View layoutLive;
+        TextView tvLiveIcon;
+        TextView tvLive;
         View vLine;
     }
 
@@ -213,6 +233,29 @@ public class MyCollectAdapter extends BaseAdapter {
             @Override
             public void onSuccess(LearningCourse data) {
                 mLists.addAll(data.getData());
+                if(data.getData().size() > 0){
+                    int start = mLists.indexOf(data.getData().get(0));
+                    int length = mLists.size();
+                    for (int i = start; i < length; i++) {
+                        final  Course course = data.getData().get(i);
+                        CourseDetailModel.getLiveLesson(course.id,
+                                new NormalCallback<List<Lesson>>() {
+                                    @Override
+                                    public void success(List<Lesson> lessons) {
+                                        if (lessons != null) {
+                                            for (Lesson lesson : lessons) {
+                                                long currentTime = System.currentTimeMillis();
+                                                if (lesson.startTime * 1000 < currentTime && lesson.endTime * 1000 > currentTime) {
+                                                    course.liveState = 1;
+                                                    notifyDataSetChanged();
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
+                    }
+                }
                 if (data.getData().size() < 10) {
                     mCanLoadLive = false;
                 } else {
