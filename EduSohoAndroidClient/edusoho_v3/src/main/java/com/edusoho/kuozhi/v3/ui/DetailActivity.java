@@ -61,6 +61,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mPlayLayout;
     protected View mPlayLayout2;
     protected View mBottomLayout;
+    protected View mAddLayout;
     protected View mConsult;
     protected View mCollect;
     protected View mBack2;
@@ -179,6 +180,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mParent.setFirstViewHeight(AppUtil.dp2px(this,
                 mMediaViewHeight - 43 - mTitleBarHeight));
         mBottomLayout = findViewById(R.id.bottom_layout);
+        mAddLayout = findViewById(R.id.bottom_add_layout);
         mCollect = findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
         mTvCollectTxt = (TextView) findViewById(R.id.tv_collect_txt);
