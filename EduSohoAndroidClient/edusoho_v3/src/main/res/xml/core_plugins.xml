@@ -478,8 +478,8 @@
         package="com.edusoho.kuozhi.v3.ui.WebViewDataActivity"
         version="1.0" />
 
-    <plugin name="DiscussFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment"
+    <plugin name="CourseDiscussFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment"
         version="1.0"/>
 
     <plugin name="QuestionAnswerActivity"

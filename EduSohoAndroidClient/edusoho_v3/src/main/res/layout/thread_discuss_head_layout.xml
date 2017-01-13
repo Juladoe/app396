@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -17,7 +18,6 @@
             android:layout_height="@dimen/common_dimen_xl"
             android:layout_marginLeft="@dimen/common_maring0"
             android:layout_marginRight="@dimen/common_marginl"
-            android:src="@drawable/default_avatar"
             android:scaleType="centerCrop"
             app:riv_oval="true"/>
 

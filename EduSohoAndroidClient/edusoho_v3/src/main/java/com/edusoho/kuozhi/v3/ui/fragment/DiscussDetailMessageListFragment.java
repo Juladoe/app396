@@ -31,11 +31,8 @@ public class DiscussDetailMessageListFragment extends MessageListFragment {
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(com.edusoho.kuozhi.imserver.R.id.rotate_header_list_view_frame);
         mMessageListView = (RecyclerView) view.findViewById(com.edusoho.kuozhi.imserver.R.id.listview);
         ViewGroup inputViewGroup = (ViewGroup) view.findViewById(com.edusoho.kuozhi.imserver.R.id.message_input_view);
-//        inputView = LayoutInflater.from(getActivity()).inflate(R.layout.discuss_message_input_view, null);
-//        inputViewGroup.addView(inputView);
         mMessageInputView = new NewTextMessageInputView(getActivity());
         inputViewGroup.addView(((View) mMessageInputView));
-
         mLayoutManager = new LinearLayoutManager(getActivity());
         mMessageListView.setLayoutManager(mLayoutManager);
         mMessageListView.setAdapter(mListAdapter);

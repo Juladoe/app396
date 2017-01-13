@@ -16,11 +16,10 @@ import com.edusoho.kuozhi.imserver.ui.adapter.MessageRecyclerListAdapter;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.util.TimeUtil;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
-import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -198,24 +197,41 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         }
     }
 
-    private void initHeadInfo(Bundle info) {
-        DiscussDetail.ResourcesBean resourcesBean = (DiscussDetail.ResourcesBean) info.getSerializable("coursebean");
-        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(resourcesBean.getCreatedTime().split("T")[0]);
-        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(resourcesBean.getTitle());
-        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(resourcesBean.getContent());
-        ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);
-        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_nickname)).setText(resourcesBean.getUser().getNickname());
-        if ("question".equals(resourcesBean.getType())) {
+    private void initHeadInfo(Bundle bundle) {
+        LinkedHashMap info = (LinkedHashMap<String, String>) bundle.getSerializable("info");
+        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(info.get("createdTime").toString().split("T")[0]);
+        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(info.get("title").toString());
+        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(info.get("content").toString());
+        ImageLoader.getInstance().displayImage(((LinkedHashMap<String, String>) info.get("user")).get("avatar"), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);
+        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_nickname)).setText(((LinkedHashMap<String, String>) info.get("user")).get("nickname"));
+        if ("question".equals(info.get("type").toString())) {
             ((TextView) VIEW_HEADER.findViewById(R.id.tdh_label)).setText("问题");
         } else {
             ((TextView) VIEW_HEADER.findViewById(R.id.tdh_label)).setText("话题");
         }
         VIEW_HEADER.findViewById(R.id.tdh_label).setBackgroundResource(R.drawable.shape_question_answer);
-        if ("course".equals(info.getString(DiscussDetailActivity.THREAD_TARGET_TYPE))) {
-            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自课程《%s》", info.getString("title")));
+        if ("course".equals(bundle.getString("kind"))) {
+            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自课程《%s》", ((LinkedHashMap<String, String>) info.get("course")).get("title")));
         } else {
-            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自班级《%s》", info.getString("title")));
+            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自班级《%s》", ((LinkedHashMap<String, String>) info.get("target")).get("title")));
         }
+//        DiscussDetail.ResourcesBean resourcesBean = (DiscussDetail.ResourcesBean) info.getSerializable("coursebean");
+//        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(resourcesBean.getCreatedTime().split("T")[0]);
+//        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(resourcesBean.getTitle());
+//        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(resourcesBean.getContent());
+//        ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);
+//        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_nickname)).setText(resourcesBean.getUser().getNickname());
+//        if ("question".equals(resourcesBean.getType())) {
+//            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_label)).setText("问题");
+//        } else {
+//            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_label)).setText("话题");
+//        }
+//        VIEW_HEADER.findViewById(R.id.tdh_label).setBackgroundResource(R.drawable.shape_question_answer);
+//        if ("course".equals(info.getString(DiscussDetailActivity.THREAD_TARGET_TYPE))) {
+//            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自课程《%s》", info.getString("title")));
+//        } else {
+//            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自班级《%s》", info.getString("title")));
+//        }
     }
 
     public void addHeaderView(View headerView, Bundle info) {
@@ -245,26 +261,6 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         return messageEntity instanceof QuestionHeaderMessageEntity;
     }
 
-    public boolean isAdd;
-    private void showBigImage(String url) {
-        if (!isAdd) {
-            isAdd = true;
-            dialog = new Dialog(mContext, R.style.dialog_big_image);
-            View dialogView = LayoutInflater.from(mContext).inflate(R.layout.dialog_image, null);
-            ivBig = (ImageView) dialogView.findViewById(R.id.iv_big);
-            dialogView.findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    ivBig.setImageResource(R.drawable.oval_white_bg);
-                }
-            });
-            dialog.setContentView(dialogView);
-            dialog.setCancelable(false);
-        }
-        ImageLoader.getInstance().displayImage(url, ivBig);
-        dialog.show();
-    }
 
     class QuestionHeaderMessageEntity extends MessageEntity {
 
