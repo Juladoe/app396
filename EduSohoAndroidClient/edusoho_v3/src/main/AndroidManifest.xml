@@ -191,6 +191,7 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:theme="@style/DownLoadTheme"
             android:name=".v3.ui.DownloadManagerActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />

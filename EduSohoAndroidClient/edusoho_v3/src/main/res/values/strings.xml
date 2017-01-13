@@ -208,8 +208,8 @@
     <string name="font_downloading">&#xe614;</string>
     <string name="font_stop_downloading">&#xe612;</string>
     <string name="font_wait_downloading">&#xe60f;</string>
-    <string name="font_download_select">&#xe610;</string>
-    <string name="font_download_unselect">&#xe613;</string>
+    <string name="font_download_select">&#xe69a;</string>
+    <string name="font_download_unselect">&#xe699;</string>
     <string name="font_less">&#xe625;</string>
     <string name="font_more">&#xe624;</string>
     <string name="font_wrong">&#xe655;</string>
@@ -351,7 +351,7 @@
     </string-array>
 
     <string name="mine_items_learn">我的学习</string>
-    <string name="mine_items_download">我的缓存</string>
+    <string name="mine_items_download">课程缓存</string>
     <string name="mine_items_buy_vip">开通会员</string>
     <string name="mine_items_collection">我的收藏</string>
     <string name="mine_items_setting">我的设置</string>
@@ -378,4 +378,10 @@
     <!-- lesson -->
     <string name="lesson_not_exist">课时信息不存在</string>
 
+    <!-- download -->
+    <string name="download_no_local_course">没有本地缓存课程</string>
+    <string name="download_no_complete_lesson">没有已缓存的课时</string>
+    <string name="download_no_task">没有课时下载任务</string>
+    <string name="download_no_network">网络不太好,不能继续下载</string>
+    <string name="download_size_label">&#xe672;</string>
 </resources>

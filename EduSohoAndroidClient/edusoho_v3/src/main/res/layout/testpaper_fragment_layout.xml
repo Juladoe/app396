@@ -68,6 +68,7 @@
     </LinearLayout>
 
     <ListView
+        android:layout_marginTop="44dp"
         android:id="@+id/testpaper_listview"
         android:layout_above="@id/testpaper_tools_layout"
         android:dividerHeight="1px"

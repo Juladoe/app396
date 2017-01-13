@@ -22,7 +22,9 @@ import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.ui.DetailActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
+import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Created by suju on 16/12/16.
@@ -63,6 +65,12 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
 //    }
 
     private void loadPlayUrl() {
+        LessonItem cachedLesson = getCachedLesson();
+        if (cachedLesson != null) {
+            cachedLesson.mediaUri = String.format("http://%s:8800/playlist/%d.m3u8", "localhost", mLessonId);
+            playVideo(cachedLesson.mediaUri);
+            return;
+        }
         new LessonProvider(getContext()).getLesson(mLessonId)
                 .success(new NormalCallback<LessonItem>() {
                     @Override
@@ -78,6 +86,16 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
             public void success(VolleyError obj) {
             }
         });
+    }
+
+    private LessonItem getCachedLesson() {
+        SqliteUtil sqliteUtil = SqliteUtil.getUtil(getContext());
+        return sqliteUtil.queryForObj(
+                new TypeToken<LessonItem>(){},
+                "where type=? and key=?",
+                Const.CACHE_LESSON_TYPE,
+                "lesson-" + mLessonId
+        );
     }
 
     @Override

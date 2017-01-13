@@ -91,6 +91,7 @@ public class MyCollectAdapter extends BaseAdapter {
                 viewHolder.tvAddNum = (TextView) convertView.findViewById(R.id.tv_add_num);
                 viewHolder.tvMore = (TextView) convertView.findViewById(R.id.tv_more);
                 viewHolder.tvTitle = (TextView) convertView.findViewById(R.id.tv_title);
+                viewHolder.vLine = convertView.findViewById(R.id.v_line);
                 convertView.setTag(viewHolder);
             }
         } else {
@@ -101,7 +102,7 @@ public class MyCollectAdapter extends BaseAdapter {
             }
         }
         Course course = mLists.get(position);
-        ImageLoader.getInstance().displayImage(course.largePicture
+        ImageLoader.getInstance().displayImage(course.getLargePicture()
                 , viewHolder.ivPic, EdusohoApp.app
                         .mOptions);
         viewHolder.tvAddNum.setText(String.format("%s人参与", course.hitNum));
@@ -110,6 +111,11 @@ public class MyCollectAdapter extends BaseAdapter {
         viewHolder.tvMore.setOnClickListener(mOnClickListener);
         convertView.setTag(R.id.tv_title, position);
         convertView.setOnClickListener(mViewOnClickListener);
+        if (position == getCount() - 1) {
+            viewHolder.vLine.setVisibility(View.GONE);
+        }else{
+            viewHolder.vLine.setVisibility(View.VISIBLE);
+        }
         return convertView;
     }
 
@@ -161,7 +167,6 @@ public class MyCollectAdapter extends BaseAdapter {
                             dialog2.dismiss();
                         }
                     }).show();
-
                 }
 
                 @Override
@@ -197,13 +202,14 @@ public class MyCollectAdapter extends BaseAdapter {
         TextView tvAddNum;
         TextView tvTitle;
         TextView tvMore;
+        View vLine;
     }
 
     public void initData() {
         mLists.clear();
         mEmpty = false;
         notifyDataSetChanged();
-        CourseDetailModel.getLiveCourses(10, 10 * mPage, new ResponseCallbackListener<LearningCourse>() {
+        CourseDetailModel.getLiveCollect(10, 10 * mPage, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(LearningCourse data) {
                 mLists.addAll(data.getData());
@@ -266,7 +272,7 @@ public class MyCollectAdapter extends BaseAdapter {
             });
         }
         if (mCanLoadLive) {
-            CourseDetailModel.getLiveCourses(10, 10 * mPage, new ResponseCallbackListener<LearningCourse>() {
+            CourseDetailModel.getLiveCollect(10, 10 * mPage, new ResponseCallbackListener<LearningCourse>() {
                 @Override
                 public void onSuccess(LearningCourse data) {
                     mLists.addAll(data.getData());

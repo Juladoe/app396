@@ -83,7 +83,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
                     return;
                 }
 
-//                playAudio(lessonItem.mediaUri);
+                playAudio(lessonItem.mediaUri);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -139,11 +139,11 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         updateAudioCoverViewStatus(isPlay);
     }
 
-//    @Override
-//    protected void stopPlayback() {
-//        super.stopPlayback();
-//        updateAudioCoverViewStatus(false);
-//    }
+    @Override
+    protected void stopPlayback() {
+        super.stopPlayback();
+        updateAudioCoverViewStatus(false);
+    }
 
     @Override
     public void onChangeOverlay(boolean isShow) {
@@ -156,6 +156,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
                 Const.COURSE_SHOW_BAR : Const.COURSE_HIDE_BAR;
         MessageEngine.getInstance().sendMsg(changeBarEvent, null);
     }
+
 
     @Override
     protected void updateMediaPlayStatus(boolean isPlay) {
