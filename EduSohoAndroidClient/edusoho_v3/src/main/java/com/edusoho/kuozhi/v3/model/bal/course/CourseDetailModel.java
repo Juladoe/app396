@@ -372,8 +372,11 @@ public class CourseDetailModel implements Serializable {
     }
 
     public static void getLiveLesson(final int courseId, final NormalCallback<List<Lesson>> callback) {
-        String[] conditions = new String[]{"status", "published"};
-        LessonModel.getLessonByCourseId(courseId, conditions, new ResponseCallbackListener<List<Lesson>>() {
+        String[] conditions = new String[]{
+                "status", "published",
+                "courseId", String.valueOf(courseId)
+        };
+        LessonModel.getLessonByCourseId(conditions, new ResponseCallbackListener<List<Lesson>>() {
             @Override
             public void onSuccess(List<Lesson> data) {
                 callback.success(data);
