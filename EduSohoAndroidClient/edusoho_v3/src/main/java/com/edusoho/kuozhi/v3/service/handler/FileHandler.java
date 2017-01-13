@@ -21,6 +21,7 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
@@ -57,9 +58,9 @@ public class FileHandler implements HttpRequestHandler {
     private static final String HOST_TAG = "localhost:8800";
 
     private String mTargetHost;
-    private ActionBarBaseActivity mActivity;
+    private BaseActivity mActivity;
 
-    public FileHandler(String targetHost, ActionBarBaseActivity actionBarBaseActivity) {
+    public FileHandler(String targetHost, BaseActivity actionBarBaseActivity) {
         Uri hostUri = Uri.parse(targetHost);
         if (hostUri != null) {
             this.mTargetHost = hostUri.getHost();

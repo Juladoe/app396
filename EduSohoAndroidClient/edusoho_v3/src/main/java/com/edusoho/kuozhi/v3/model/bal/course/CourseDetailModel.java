@@ -8,6 +8,7 @@ import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.entity.course.CourseProgress;
 import com.edusoho.kuozhi.v3.entity.course.LearningClassroom;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
+import com.edusoho.kuozhi.v3.entity.course.LearningCourse2;
 import com.edusoho.kuozhi.v3.entity.course.Study;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
@@ -197,14 +198,14 @@ public class CourseDetailModel implements Serializable {
 
 
     public static void getAllUserCourses(int limit, int start,
-                                         final ResponseCallbackListener<LearningCourse> callbackListener) {
-        String url = String.format(Const.LEARNING + "?limit=%s&start=%s", limit, start);
-        RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
+                                         final ResponseCallbackListener<LearningCourse2> callbackListener) {
+        String url = String.format(Const.LEARNING_NEW + "?limit=%s&start=%s&relation=learn", limit, start);
+        RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                LearningCourse apiResponse = ModelDecor.getInstance().
-                        decor(response, new TypeToken<LearningCourse>() {
+                LearningCourse2 apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<LearningCourse2>() {
                         });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);

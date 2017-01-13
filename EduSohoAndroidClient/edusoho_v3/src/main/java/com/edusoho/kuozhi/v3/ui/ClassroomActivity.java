@@ -12,15 +12,21 @@ import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
+import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -75,6 +81,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             @Override
             public void setArguments(Bundle bundle) {
                 bundle.putString("id", mClassroomId);
+                bundle.putString("source", mClassroomDetail != null ? mClassroomDetail.getClassRoom().title : null);
             }
         });
         fragments.add(catafragment);
@@ -82,6 +89,11 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     protected void initEvent() {
         super.initEvent();
+    }
+
+    private void saveClassRoomToCache(Classroom classroom) {
+        SqliteUtil sqliteUtil = SqliteUtil.getUtil(getBaseContext());
+        sqliteUtil.saveLocalCache(Const.CACHE_COURSE_TYPE, "classroom-" + classroom.id, new Gson().toJson(classroom));
     }
 
     protected void initData() {
@@ -104,6 +116,9 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                                 setLoadStatus(View.GONE);
                             }
                             refreshView();
+                            if (data != null && data.getClassRoom() != null) {
+                                saveClassRoomToCache(data.getClassRoom());
+                            }
                         }
 
                         @Override

@@ -17,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
@@ -33,6 +34,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.IDownloadFragmenntListener;
 import com.edusoho.kuozhi.v3.ui.fragment.DownloadingFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -47,6 +49,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import cn.trinea.android.common.util.FileUtils;
 import extensions.PagerSlidingTabStrip;
@@ -76,6 +79,11 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download_manager);
         initView();
+    }
+
+    @Override
+    protected int getStatusBarColor() {
+        return getResources().getColor(R.color.action_bar_dark_bg);
     }
 
     @Override
@@ -109,7 +117,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     };
 
     private void initView() {
-        setBackMode(BACK, getResources().getString(R.string.mine_items_download));
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         mPagerTab = (PagerSlidingTabStrip) findViewById(R.id.tab_download);
         pbDownloadDeviceInfo = (ProgressBar) findViewById(R.id.pb_download_device_info);
         mViewPagers = (ViewPager) findViewById(R.id.viewpager_download);
@@ -123,12 +131,21 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
+
             @Override
             public void onPageSelected(int position) {
                 if (position == 1) {
                     MobclickAgent.onEvent(mContext, "i_cache_caching");
                 }
+                List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
+                for (int i = 0; i < fragmentList.size(); i++) {
+                    Fragment fragment = fragmentList.get(i);
+                    if (fragment instanceof IDownloadFragmenntListener) {
+                        ((IDownloadFragmenntListener)fragment).onSelected(position == i);
+                    }
+                }
             }
+
             @Override
             public void onPageScrollStateChanged(int state) {
             }
@@ -226,7 +243,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             Fragment fragment = app.mEngine.runPluginWithFragment(mLists[i], mActivity, new PluginFragmentCallback() {
                 @Override
                 public void setArguments(Bundle bundle) {
-
+                    bundle.putAll(getIntent().getExtras());
                 }
             });
             return fragment;
@@ -305,13 +322,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             Collections.sort(lessonItems, new Comparator<LessonItem>() {
                 @Override
                 public int compare(LessonItem lhs, LessonItem rhs) {
-                    if (lhs.courseId > rhs.courseId) {
-                        return 1;
-                    } else if (lhs.courseId == rhs.courseId) {
-                        return 0;
-                    } else {
-                        return -1;
-                    }
+                    return lhs.number - rhs.number;
                 }
             });
 
@@ -328,7 +339,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
                     }
                 }
 
-                ArrayList<LessonItem> lessons = model.mLocalLessons.get(lessonItem.courseId);
+                List<LessonItem> lessons = model.mLocalLessons.get(lessonItem.courseId);
                 if (lessons != null) {
                     lessons.add(lessonItem);
                 }
@@ -478,7 +489,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     public class LocalCourseModel {
         public ArrayList<Course> mLocalCourses;
         public SparseArray<M3U8DbModel> m3U8DbModels;
-        public HashMap<Integer, ArrayList<LessonItem>> mLocalLessons;
+        public HashMap<Integer, List<LessonItem>> mLocalLessons;
 
         public LocalCourseModel() {
             mLocalCourses = new ArrayList<>();

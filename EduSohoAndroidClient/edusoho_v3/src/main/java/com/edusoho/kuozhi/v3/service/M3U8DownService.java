@@ -72,9 +72,20 @@ public class M3U8DownService extends Service {
                 return;
             }
             int status = m3U8Util.queryDownloadUriStatus(reference);
-            if (status == DownloadManager.STATUS_FAILED) {
-                Log.d(TAG, "onChange" + selfChange + " status fail:" + status);
-                m3U8Util.updateDownloadStatus(downloadModel, status);
+            Log.d(TAG, "onChange:" + status);
+            switch (status) {
+                case DownloadManager.ERROR_CANNOT_RESUME:
+                case DownloadManager.ERROR_DEVICE_NOT_FOUND:
+                case DownloadManager.ERROR_HTTP_DATA_ERROR:
+                case DownloadManager.ERROR_UNKNOWN:
+                case DownloadManager.ERROR_FILE_ERROR:
+                case DownloadManager.ERROR_INSUFFICIENT_SPACE:
+                case DownloadManager.ERROR_UNHANDLED_HTTP_CODE:
+                case DownloadManager.ERROR_TOO_MANY_REDIRECTS:
+                case DownloadManager.PAUSED_UNKNOWN:
+                case DownloadManager.STATUS_FAILED:
+                    Log.d(TAG, "onChange" + selfChange + " status fail:" + status);
+                    m3U8Util.updateDownloadStatus(downloadModel, DownloadManager.STATUS_FAILED);
             }
         }
     };
@@ -165,7 +176,7 @@ public class M3U8DownService extends Service {
         }
         M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
         m3U8Util.cancelDownload();
-        mM3U8UitlList.remove(lessonId);
+        m3U8Util.setDownloadStatus(M3U8Util.PAUSE);
         notificationList.remove(lessonId);
         notificationManager.cancel(lessonId);
     }
@@ -211,22 +222,69 @@ public class M3U8DownService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void startTask(int lessonId, int courseId, String lessonTitle) {
+    public void changeTaskState(int lessonId, int courseId, String lessonTitle) {
+        M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
+        if (m3U8Util == null) {
+            Log.d(TAG, "changeTaskState: no task");
+            startTask(lessonId, courseId, lessonTitle);
+            return;
+        }
+        int state = m3U8Util.getDownloadStatus();
+        switch (state) {
+            case M3U8Util.NONE:
+                if (hasDownloadingTask()) {
+                    m3U8Util.setDownloadStatus(M3U8Util.PAUSE);
+                    return;
+                }
+                startTask(lessonId, courseId, lessonTitle);
+                break;
+            case M3U8Util.DOWNING:
+                cancelDownloadTask(lessonId);
+                break;
+            case M3U8Util.PAUSE:
+                if (hasDownloadingTask()) {
+                    m3U8Util.setDownloadStatus(M3U8Util.NONE);
+                    return;
+                }
+                m3U8Util.setDownloadStatus(M3U8Util.NONE);
+                startTask(lessonId, courseId, lessonTitle);
+        }
+    }
+
+    public void startTask(int lessonId, int courseId, String lessonTitle) {
         if (EdusohoApp.app.loginUser == null) {
             return;
         }
         Log.d(TAG, "m3u8 download_service onStartCommand");
+        M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
+        if (m3U8Util == null) {
+            m3U8Util = new M3U8Util(mContext);
+            mM3U8UitlList.put(lessonId, m3U8Util);
+            Log.d(TAG, "add m3u8 download");
+        }
+
+        if (m3U8Util.getDownloadStatus() == M3U8Util.PAUSE) {
+            return;
+        }
         synchronized (mLock) {
-            if (mM3U8UitlList.size() > 0) {
-                Log.d(TAG, "mM3U8UtilList list is full");
+            if (hasDownloadingTask()) {
+                Log.d(TAG, "has download");
                 return;
             }
         }
 
-        M3U8Util m3U8Util = new M3U8Util(mContext);
-        mM3U8UitlList.put(lessonId, m3U8Util);
-        createNotification(lessonId, lessonTitle);
+        createNotification(courseId, lessonId, lessonTitle);
         m3U8Util.download(lessonId, courseId, EdusohoApp.app.loginUser.id);
+    }
+
+    private boolean hasDownloadingTask() {
+        for (int i = 0; i < mM3U8UitlList.size(); i++) {
+            M3U8Util m3U8Util = mM3U8UitlList.valueAt(i);
+            if (m3U8Util.getDownloadStatus() == M3U8Util.DOWNING) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean isRunDownloadTask() {
@@ -250,7 +308,7 @@ public class M3U8DownService extends Service {
         return m3U8Util.getDownloadStatus();
     }
 
-    private void createNotification(int lessonId, String title) {
+    private void createNotification(int courseId, int lessonId, String title) {
         notificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -261,6 +319,7 @@ public class M3U8DownService extends Service {
         notification.defaults = Notification.DEFAULT_LIGHTS;
 
         Intent notificationIntent = new Intent(this, DownloadManagerActivity.class);
+        notificationIntent.putExtra(Const.COURSE_ID, courseId);
         notification.contentIntent = PendingIntent.getActivity(
                 this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.download_notification_layout);
@@ -360,9 +419,6 @@ public class M3U8DownService extends Service {
                     Const.CACHE_LESSON_TYPE,
                     "lesson-" + m3U8DbModel.lessonId
             );
-            if (mM3U8UitlList.indexOfKey(m3U8DbModel.lessonId) >= 0) {
-                continue;
-            }
             startTask(m3U8DbModel.lessonId, lessonItem.courseId, lessonItem.title);
         }
     }

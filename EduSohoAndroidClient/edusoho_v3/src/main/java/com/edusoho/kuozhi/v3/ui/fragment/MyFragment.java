@@ -65,9 +65,9 @@ public class MyFragment extends BaseFragment {
         mVpContent = (ViewPager) view.findViewById(R.id.vp_content);
         mAdapter = new FragmentViewPagerAdapter(getChildFragmentManager(), mFragments);
         mVpContent.setAdapter(mAdapter);
-        ImageLoader.getInstance().displayImage(app.loginUser.avatar, mIvAvatar, app.mAvatarOptions);
+        ImageLoader.getInstance().displayImage(app.loginUser.getMediumAvatar(), mIvAvatar, app.mAvatarOptions);
         mTvName.setText(app.loginUser.nickname);
-        mTvAvatarType.setText(app.loginUser.type);
+        mTvAvatarType.setText(app.loginUser.userRole2String());
         mParent.setFirstViewHeight(AppUtil.dp2px(getActivity(), mScrollHeadHeight));
         RelativeLayout.LayoutParams vpParams = (RelativeLayout.LayoutParams) mVpContent.getLayoutParams();
         if (vpParams != null) {
@@ -90,7 +90,7 @@ public class MyFragment extends BaseFragment {
                 });
         mFragments.add(studyFragment);
         Fragment cacheFragment = app.mEngine.runPluginWithFragment(
-                "MyTabFragment", getActivity(), new PluginFragmentCallback() {
+                "MyDownloadFragment", getActivity(), new PluginFragmentCallback() {
                     @Override
                     public void setArguments(Bundle bundle) {
                         bundle.putInt(MyTabFragment.TYPE, MyTabFragment.TYPE_CACHE);

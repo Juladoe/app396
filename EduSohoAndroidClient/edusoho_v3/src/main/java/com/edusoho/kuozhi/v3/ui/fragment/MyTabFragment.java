@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -69,6 +70,7 @@ public class MyTabFragment extends BaseFragment {
         mLayoutDesc = (LinearLayout) view.findViewById(R.id.layout_filter_desc);
         switch (mType) {
             case TYPE_STUDY:
+                mLvContent.setPadding(0, AppUtil.dp2px(getActivity(), 50), 0, 0);
                 mLayoutFilter.setVisibility(View.VISIBLE);
                 ViewGroup.LayoutParams params1 = mLayoutDesc.getLayoutParams();
                 if (params1 != null) {
@@ -96,22 +98,22 @@ public class MyTabFragment extends BaseFragment {
                 mTvFilterName.setText(TYPE_STUDY_DESC[0]);
                 break;
             case TYPE_CACHE:
+                mLvContent.setPadding(0, 0, 0, 0);
                 mLayoutFilter.setVisibility(View.GONE);
                 mMyCacheAdapter = new MyCacheAdapter();
                 mLvContent.setAdapter(mMyCacheAdapter);
                 break;
             case TYPE_COLLECT:
+                mLvContent.setPadding(0, 0, 0, 0);
                 mLayoutFilter.setVisibility(View.GONE);
                 mMyCollectAdapter = new MyCollectAdapter(getActivity());
                 mLvContent.setAdapter(mMyCollectAdapter);
                 break;
             case TYPE_ASK:
+                mLvContent.setPadding(0, AppUtil.dp2px(getActivity(), 50), 0, 0);
                 mLayoutFilter.setVisibility(View.VISIBLE);
-                ViewGroup.LayoutParams params2 = mLayoutDesc.getLayoutParams();
-                if (params2 != null) {
-                    params2.width = AppUtil.getWidthPx(getActivity()) / 2;
-                    mLayoutDesc.setLayoutParams(params2);
-                }
+                mLayoutDesc.setPadding(AppUtil.getWidthPx(getActivity()) / 4
+                        , 0, AppUtil.getWidthPx(getActivity()) / 4, 0);
                 for (int i = 0; i < 2; i++) {
                     TextView child = new TextView(getActivity());
                     child.setGravity(Gravity.CENTER);
