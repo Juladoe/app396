@@ -19,15 +19,11 @@ android {
             keyAlias "cn"
             keyPassword "10001000"
         }
-
-
     }
 
     productFlavors {
-
         kaoshi60 {
             signingConfig signingConfigs.debugConfig
-
             applicationId "com.edusoho.kaoshi60"
             manifestPlaceholders = [wxpkg: "com.edusoho.kaoshi60", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
 
@@ -35,13 +31,10 @@ android {
     }
 
     sourceSets {
-
-
         kaoshi60 {
             java.srcDirs = ['src/kaoshi60/java']
             res.srcDirs = ['src/kaoshi60/res']
             assets.srcDirs = ['src/kaoshi60/assets']
-
         }
     }
 

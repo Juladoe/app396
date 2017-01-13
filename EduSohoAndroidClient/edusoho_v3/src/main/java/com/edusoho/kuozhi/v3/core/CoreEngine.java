@@ -256,7 +256,6 @@ public class CoreEngine {
             if (bundle != null) {
                 startIntent.putExtras(bundle);
             }
-
             serverActivity.startActivity(startIntent);
         }
     }

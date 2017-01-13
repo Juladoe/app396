@@ -157,6 +157,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         MessageEngine.getInstance().sendMsg(changeBarEvent, null);
     }
 
+
     @Override
     protected void updateMediaPlayStatus(boolean isPlay) {
         super.updateMediaPlayStatus(isPlay);

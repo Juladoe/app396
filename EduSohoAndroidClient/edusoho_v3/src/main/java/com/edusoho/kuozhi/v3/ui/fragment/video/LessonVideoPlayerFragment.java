@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -60,10 +59,10 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         }
     }
 
-    @Override
-    protected void requestMediaUri() {
-        loadPlayUrl();
-    }
+//    @Override
+//    protected void requestMediaUri() {
+//        loadPlayUrl();
+//    }
 
     private void loadPlayUrl() {
         LessonItem cachedLesson = getCachedLesson();
@@ -80,7 +79,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                             return;
                         }
                         Uri mediaUri = Uri.parse(lessonItem.mediaUri);
-                        playVideo(String.format("%s://%s%s", mediaUri.getScheme(), mediaUri.getHost(), mediaUri.getPath()));
+//                        playVideo(String.format("%s://%s%s", mediaUri.getScheme(), mediaUri.getHost(), mediaUri.getPath()));
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override

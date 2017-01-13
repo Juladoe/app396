@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<plugins>
-    <plugin name="DefaultPageActivity" version="1.0" package="com.edusoho.tcmmook.v3.ui.CustomDefaultPageActivity"></plugin>
-    <plugin name="CommandFactory" version="1.0" package="com.edusoho.tcmmook.v3.service.push.CustomCommandFactory"></plugin>
-    <plugin name="SplashActivity" version="1.0" package="com.edusoho.kuozhi.CustomSplashActivity"></plugin>
-</plugins>

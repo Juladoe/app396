@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.util;
 
+
 public class Const {
     public static final long ONE_DAY_MILLISECOND = 24 * 60 * 60 * 1000;
 
@@ -361,6 +362,22 @@ public class Const {
      * 获取班级目录
      */
     public static final String CLASS_CATALOG = "/mapi_v2/ClassRoom/getClassRoomCourses";
+    /**
+     * 获取课程讨论
+     */
+    public static final String LESSON_DISCUSS = "/api/courses/%s/threads?courseId=%s&limit=20&start=%s&simplify=0&sort=posted";
+    /**
+     * 获取班级讨论
+     */
+    public static final String CLASS_DISCUSS = "/api/classrooms/%s/threads?classRoomId=%s&limit=20&start=%s&simplify=0&sort=posted ";
+    /**
+     * 获取问答详情
+     */
+    public static final String QUESTION_ANSWER = "/api/thread/%s/posts?type=course";
+    /**
+     * 发送问答回复
+     */
+    public static final String REPLAY_QUESTION = "/api/chaos_threads_posts";
     /**
      * 获取考试课程详情
      *

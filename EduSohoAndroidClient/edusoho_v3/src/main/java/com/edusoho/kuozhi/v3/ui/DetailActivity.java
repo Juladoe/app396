@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.animation.ObjectAnimator;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -9,12 +11,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -25,10 +30,13 @@ import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.util.WeakReferenceHandler;
+import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
@@ -81,6 +89,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected int mCheckNum = 0;
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
+    protected String mTitle;
     private int mTitleBarHeight;
     public int mMediaViewHeight = 210;
     private SystemBarTintManager tintManager;
@@ -92,6 +101,10 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
+    private EduSohoNewIconView mTvEditTopic;
+    private Dialog dialog;
+    private EduSohoNewIconView tvTopic;
+    private EduSohoNewIconView tvQuestion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,6 +166,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
         mTabLayout = findViewById(R.id.tab_rlayout);
+        mTvEditTopic = (EduSohoNewIconView) findViewById(R.id.tv_edit_topic);
 
         initFragment(mFragments);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
@@ -212,6 +226,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mBack.setOnClickListener(this);
         mTvInclass.setOnClickListener(this);
         mMenu.setOnClickListener(this);
+        mTvEditTopic.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -220,6 +235,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             @Override
             public void onPageSelected(int position) {
                 checkTab(position);
+                showEditTopic(position);
             }
 
             @Override
@@ -240,6 +256,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             }
         });
     }
+
 
     protected void showProcessDialog() {
         if (mProcessDialog == null) {
@@ -283,7 +300,12 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else if (v.getId() == R.id.hour_rlayout) {
             mContentVp.setCurrentItem(1);
         } else if (v.getId() == R.id.review_rlayout) {
-            mContentVp.setCurrentItem(2);
+            if (TextUtils.isEmpty(app.token)) {
+                CommonUtil.shortCenterToast(this, "请先登录");
+            } else {
+                mContentVp.setCurrentItem(2);
+                ((DiscussFragment) mFragments.get(2)).reFreshView(mIsMemder, mTitle);
+            }
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
             grade();
@@ -312,6 +334,13 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
         } else if (v.getId() == R.id.tv_inclass) {
             goClass();
+        } else if (v.getId() == R.id.tv_edit_topic) {
+            if (DetailActivity.this instanceof CourseActivity ? ((CourseActivity) DetailActivity.this).mCourseDetail.getMember() == null
+                    : ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getMember() == null) {
+                CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_hint));
+            } else {
+                showDialog();
+            }
         }
     }
 
@@ -576,5 +605,80 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 break;
         }
         return false;
+    }
+
+
+    protected void showEditTopic(int position){
+        if (position == 2) {
+            mTvEditTopic.setVisibility(View.VISIBLE);
+        } else {
+            mTvEditTopic.setVisibility(View.GONE);
+        }
+    }
+
+    public boolean isAdd;
+    private void showDialog() {
+        if (!isAdd) {
+            isAdd = true;
+            dialog = new Dialog(this, R.style.DiscussDialog);
+            View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_discuss_publish, null);
+            tvTopic = (EduSohoNewIconView) dialogView.findViewById(R.id.tv_topic);
+            tvTopic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    startActivity("discussion");
+                    dialog.dismiss();
+                }
+            });
+            tvQuestion = (EduSohoNewIconView) dialogView.findViewById(R.id.tv_question);
+            tvQuestion.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity("question");
+                    dialog.dismiss();
+                }
+            });
+            dialogView.findViewById(R.id.tv_close).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.setContentView(dialogView);
+            dialog.setCanceledOnTouchOutside(false);
+            Window mWindow = dialog.getWindow();
+            mWindow .setGravity(Gravity.LEFT | Gravity.TOP);
+            WindowManager.LayoutParams lp = mWindow.getAttributes();
+            lp.x = (int) mTvEditTopic.getX();
+            lp.y = (int) (mTvEditTopic.getY() - AppUtil.dp2px(this, 151));
+            mWindow.setAttributes(lp);
+        }
+        dialog.show();
+        startAnimation();
+    }
+
+    private void startActivity(String type) {
+        Bundle bundle = new Bundle();
+        if (DetailActivity.this instanceof CourseActivity) {
+            bundle.putInt(ThreadCreateActivity.TARGET_ID, ((CourseActivity) DetailActivity.this).mCourseDetail.getCourse().id);
+        } else {
+            bundle.putInt(ThreadCreateActivity.TARGET_ID, ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getClassRoom().id);
+        }
+        bundle.putString(ThreadCreateActivity.TARGET_TYPE, DetailActivity.this instanceof CourseActivity ? "" : "classroom");
+        bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
+        bundle.putString(ThreadCreateActivity.THREAD_TYPE, "question".equals(type) ? "course" : "common");
+        app.mEngine.runNormalPluginWithBundle("ThreadCreateActivity", DetailActivity.this, bundle);
+    }
+
+    public void startAnimation() {
+        ObjectAnimator animator = ObjectAnimator.ofFloat(tvQuestion, "translationY", 0, -AppUtil.dp2px(DetailActivity.this, 75));
+        ObjectAnimator animator1 = ObjectAnimator.ofFloat(tvTopic, "translationY", 0, -AppUtil.dp2px(DetailActivity.this, 150));
+        animator.setInterpolator(new LinearInterpolator());
+        animator1.setInterpolator(new LinearInterpolator());
+        animator.setDuration(250);
+        animator1.setDuration(500);
+        animator.start();
+        animator1.start();
     }
 }
