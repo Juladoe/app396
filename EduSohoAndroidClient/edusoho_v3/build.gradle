@@ -25,7 +25,7 @@ dependencies {
     compile project(':commonLib')
     compile project(':multi-image-selector')
     compile project(':imserver')
-    compile 'com.edusoho.videoplayer:es-videoplayer:1.1.1-SNAPSHOT@aar'
+    compile 'com.edusoho.videoplayer:es-videoplayer:1.+@aar'
 
     compile 'com.czt.mp3recorder:library:1.0.4'
     compile files('libs/core-3.2.0.jar')

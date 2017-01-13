@@ -26,6 +26,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,19 +155,17 @@ public class MyFragment extends BaseFragment {
         mLayoutMy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String url = String.format(
-                        Const.MOBILE_APP_URL,
-                        EdusohoApp.app.schoolHost,
-                        String.format("main#/userinfo/%s",
-                                app.loginUser.id)
-                );
-                CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
-                        , getActivity(), new PluginRunCallback() {
-                            @Override
-                            public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(Const.WEB_URL, url);
-                            }
-                        });
+                if (app.loginUser == null) {
+                    return;
+                }
+                MobclickAgent.onEvent(mContext, "i_userInfo");
+                mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_INFO);
+                        startIntent.putExtra(Const.WEB_URL, url);
+                    }
+                });
             }
         });
     }

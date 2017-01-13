@@ -277,7 +277,7 @@
     <string name="new_font_back">&#xe668;</string>
     <string name="new_font_play">&#xe669;</string>
     <string name="new_font_collect">&#xe66a;</string>
-    <string name="new_font_consult">&#xe66b;</string>
+    <string name="new_font_consult">&#xe696;</string>
     <string name="new_font_star_grade">&#xe66c;</string>
     <string name="new_font_unfold">&#xe66d;</string>
     <string name="new_font_fold">&#xe66e;</string>
@@ -384,4 +384,6 @@
     <string name="download_no_task">没有课时下载任务</string>
     <string name="download_no_network">网络不太好,不能继续下载</string>
     <string name="download_size_label">&#xe672;</string>
+    <string name="download_size_cached">已缓存%d课</string>
+    <string name="download_size_course_source">来自班级 | </string>
 </resources>

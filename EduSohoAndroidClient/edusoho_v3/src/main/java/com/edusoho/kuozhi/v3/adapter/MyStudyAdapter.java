@@ -16,11 +16,14 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseProgress;
 import com.edusoho.kuozhi.v3.entity.course.LearningClassroom;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse2;
 import com.edusoho.kuozhi.v3.entity.course.Study;
+import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
@@ -125,9 +128,6 @@ public class MyStudyAdapter extends BaseAdapter {
                     Study.Resource study = (Study.Resource) object;
                     switch (study.getJoinedType()) {
                         case "classroom":
-                            ImageLoader.getInstance().displayImage(study.getLargePicture()
-                                    , viewHolder.ivPic, EdusohoApp.app.mOptions);
-                            viewHolder.tvTitle.setText(String.valueOf(study.getTitle()));
                             if (study.getClassroomTitle() != null &&
                                     study.getClassroomTitle().length() > 0) {
                                 viewHolder.layoutClass.setVisibility(View.VISIBLE);
@@ -136,9 +136,7 @@ public class MyStudyAdapter extends BaseAdapter {
                             viewHolder.tvMore.setVisibility(View.GONE);
                             break;
                         case "course":
-                            ImageLoader.getInstance().displayImage(study.getLargePicture()
-                                    , viewHolder.ivPic, EdusohoApp.app.mOptions);
-                            viewHolder.tvTitle.setText(String.valueOf(study.getTitle()));
+
                             if (study.getClassroomTitle() != null &&
                                     study.getClassroomTitle().length() > 0) {
                                 viewHolder.layoutClass.setVisibility(View.VISIBLE);
@@ -146,6 +144,19 @@ public class MyStudyAdapter extends BaseAdapter {
                             }
                             viewHolder.tvMore.setVisibility(View.VISIBLE);
                             break;
+                    }
+                    ImageLoader.getInstance().displayImage(study.getLargePicture()
+                            , viewHolder.ivPic, EdusohoApp.app.mOptions);
+                    viewHolder.tvTitle.setText(String.valueOf(study.getTitle()));
+                    if (study.getType().equals("live")) {
+                        viewHolder.layoutLive.setVisibility(View.VISIBLE);
+                        if (study.liveState == 1) {
+                            viewHolder.tvLive.setText("正在直播");
+                            viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
+                        } else {
+                            viewHolder.tvLive.setText("直播");
+                            viewHolder.tvLiveIcon.setVisibility(View.GONE);
+                        }
                     }
                     setProgressStr(study.getLearnedNum(), study.getTotalLesson(), viewHolder.tvStudyState);
                 }
@@ -166,6 +177,16 @@ public class MyStudyAdapter extends BaseAdapter {
                             EdusohoApp.app.mOptions);
                     viewHolder.tvTitle.setText(String.valueOf(course.title));
                     setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
+                    if (course.type.equals("live")) {
+                        viewHolder.layoutLive.setVisibility(View.VISIBLE);
+                        if (course.liveState == 1) {
+                            viewHolder.tvLive.setText("正在直播");
+                            viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
+                        } else {
+                            viewHolder.tvLive.setText("直播");
+                            viewHolder.tvLiveIcon.setVisibility(View.GONE);
+                        }
+                    }
                 }
                 break;
             case 3:
@@ -197,7 +218,7 @@ public class MyStudyAdapter extends BaseAdapter {
                     Object object = mLists.get(position);
                     if (object instanceof Classroom) {
                         final Classroom classroom = (Classroom) object;
-                        EdusohoApp.app.mEngine.runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
+                        CoreEngine.create(mContext).runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
                                 startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, String.valueOf(classroom.id));
@@ -205,7 +226,7 @@ public class MyStudyAdapter extends BaseAdapter {
                         });
                     } else if (object instanceof Course) {
                         final Course course = (Course) object;
-                        EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity"
+                        CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
                                 , mContext, new PluginRunCallback() {
                                     @Override
                                     public void setIntentDate(Intent startIntent) {
@@ -214,11 +235,12 @@ public class MyStudyAdapter extends BaseAdapter {
                                 });
                     } else {
                         final Study.Resource study = (Study.Resource) object;
-                        EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity"
+                        CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
                                 , mContext, new PluginRunCallback() {
                                     @Override
                                     public void setIntentDate(Intent startIntent) {
-                                        startIntent.putExtra(CourseActivity.COURSE_ID, study.getId() + "");
+                                        startIntent.putExtra(CourseActivity.COURSE_ID, String.valueOf(study.getId()));
+                                        startIntent.putExtra(CourseActivity.SOURCE, study.getTitle());
                                     }
                                 });
                     }
@@ -593,13 +615,49 @@ public class MyStudyAdapter extends BaseAdapter {
         if (list.size() > 0) {
             Object obj = list.get(0);
             final int start = mLists.indexOf(obj);
+            int length = mLists.size();
             if (obj instanceof Course || obj instanceof Study.Resource) {
                 List<Integer> ids = new ArrayList<>();
-                for (Object object : list) {
+                for (int i = start; i < length; i++) {
+                    Object object = mLists.get(i);
                     if (object instanceof Course) {
-                        ids.add(((Course) object).id);
+                        final Course course = (Course) object;
+                        ids.add(course.id);
+                        CourseDetailModel.getLiveLesson(course.id,
+                                new NormalCallback<List<Lesson>>() {
+                                    @Override
+                                    public void success(List<Lesson> lessons) {
+                                        if (lessons != null) {
+                                            for (Lesson lesson : lessons) {
+                                                long currentTime = System.currentTimeMillis();
+                                                if (lesson.startTime * 1000 < currentTime && lesson.endTime * 1000 > currentTime) {
+                                                    course.liveState = 1;
+                                                    notifyDataSetChanged();
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
                     } else if (object instanceof Study.Resource) {
-                        ids.add(Integer.parseInt(((Study.Resource) object).getId()));
+                        final Study.Resource study = (Study.Resource) object;
+                        ids.add(Integer.parseInt(study.getId()));
+                        CourseDetailModel.getLiveLesson(Integer.parseInt(study.getId()),
+                                new NormalCallback<List<Lesson>>() {
+                                    @Override
+                                    public void success(List<Lesson> lessons) {
+                                        if (lessons != null) {
+                                            for (Lesson lesson : lessons) {
+                                                long currentTime = System.currentTimeMillis();
+                                                if (lesson.startTime * 1000 < currentTime && lesson.endTime * 1000 > currentTime) {
+                                                    study.liveState = 1;
+                                                    notifyDataSetChanged();
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                });
                     } else {
                         return;
                     }

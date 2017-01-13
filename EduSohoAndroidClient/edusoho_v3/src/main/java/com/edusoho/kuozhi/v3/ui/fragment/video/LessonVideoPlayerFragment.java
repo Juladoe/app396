@@ -59,10 +59,10 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         }
     }
 
-//    @Override
-//    protected void requestMediaUri() {
-//        loadPlayUrl();
-//    }
+    @Override
+    protected void requestMediaUri() {
+        loadPlayUrl();
+    }
 
     private void loadPlayUrl() {
         LessonItem cachedLesson = getCachedLesson();
@@ -79,7 +79,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                             return;
                         }
                         Uri mediaUri = Uri.parse(lessonItem.mediaUri);
-//                        playVideo(String.format("%s://%s%s", mediaUri.getScheme(), mediaUri.getHost(), mediaUri.getPath()));
+                        playVideo(String.format("%s://%s%s", mediaUri.getScheme(), mediaUri.getHost(), mediaUri.getPath()));
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override

@@ -164,14 +164,14 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         Member member = mClassroomDetail.getMember();
         if (member == null) {
             mIsMemder = false;
-            mBottomLayout.setVisibility(View.VISIBLE);
+            mAddLayout.setVisibility(View.VISIBLE);
             mIvGrade.setVisibility(View.GONE);
             mIvGrade2.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
         } else {
             mIsMemder = true;
-            mBottomLayout.setVisibility(View.GONE);
+            mAddLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }

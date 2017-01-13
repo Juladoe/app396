@@ -26,9 +26,14 @@
             android:layout_alignRight="@+id/iv_pic"
             android:layout_alignTop="@+id/iv_pic"
             android:layout_marginRight="5dp"
+            android:background="@drawable/shape_live_background"
             android:layout_marginTop="5dp"
             android:orientation="horizontal"
-            android:padding="5dp">
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            >
 
             <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                 android:id="@+id/tv_live_icon"
@@ -70,7 +75,7 @@
                 android:id="@+id/tv_study_state"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:textColor="@color/secondary_font_color"
                 android:textSize="@dimen/font_xs" />
         </LinearLayout>
@@ -82,6 +87,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/iv_pic"
             android:layout_marginRight="25dp"
+            android:layout_marginTop="-5dp"
             android:text="@string/new_font_more_oper"
             android:textColor="@color/secondary2_font_color"
             android:textSize="20dp" />
