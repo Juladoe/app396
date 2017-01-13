@@ -47,6 +47,7 @@ public class Course implements Serializable {
     public int learnedNum;
     public int totalLesson;
     public long courseDeadline;
+    public int liveState;
 
     private String sourceName;
     public String source;
