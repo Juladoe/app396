@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.imserver.broadcast.IMServiceStartedBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.listener.IMConnectStatusListener;
 import com.edusoho.kuozhi.imserver.listener.IMMessageReceiver;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
+import com.edusoho.kuozhi.imserver.util.SystemUtil;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -119,7 +120,7 @@ public class LiveImClient {
     }
 
     private Intent getIMServiceIntent() {
-        Intent intent = new Intent("com.edusoho.kuozhi.imserver.IImMemServerAidlInterface");
+        Intent intent = new Intent(SystemUtil.MEM_IM_SERVER);
         intent.setPackage(mContext.getPackageName());
         return intent;
     }
@@ -149,7 +150,7 @@ public class LiveImClient {
             }
         };
         boolean result = mContext.bindService(
-                new Intent("com.edusoho.kuozhi.imserver.IImMemServerAidlInterface")
+                new Intent(SystemUtil.MEM_IM_SERVER)
                         .setPackage(mContext.getPackageName()),
                 mServiceConnection,
                 Context.BIND_AUTO_CREATE

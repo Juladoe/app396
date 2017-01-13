@@ -152,7 +152,7 @@ public class IMClient {
     }
 
     private Intent getIMServiceIntent() {
-        Intent intent = new Intent("com.edusoho.kuozhi.imserver.IImServerAidlInterface");
+        Intent intent = new Intent(SystemUtil.IM_SERVICE_ACTION);
         intent.setPackage(mContext.getPackageName());
         return intent;
     }
@@ -199,7 +199,7 @@ public class IMClient {
             }
         };
         boolean result = mContext.bindService(
-                new Intent("com.edusoho.kuozhi.imserver.IImServerAidlInterface")
+                new Intent(SystemUtil.IM_SERVICE_ACTION)
                         .setPackage(mContext.getPackageName()),
                 mServiceConnection,
                 Context.BIND_AUTO_CREATE
@@ -379,7 +379,7 @@ public class IMClient {
             return false;
         }
 
-        IMMessageReceiver receiver = mMessageReceiverList.get(mMessageReceiverList.size() -  1);
+        IMMessageReceiver receiver = mMessageReceiverList.get(mMessageReceiverList.size() - 1);
         if (receiver == null || (receiverInfo = receiver.getType()) == null) {
             return false;
         }

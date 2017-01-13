@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
+
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.listener.IConnectManagerListener;
+import com.edusoho.kuozhi.imserver.util.SystemUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ import java.util.List;
 public class IMBroadcastReceiver extends BroadcastReceiver {
 
     public static final String ACTION = "action";
-    public static final String ACTION_NAME = "com.edusoho.kuozhi.push.action.IM_MESSAGE";
+    public static final String ACTION_NAME = SystemUtil.IM_BROADCAST_ACTION;
     public static final int RECEIVER = 0;
     public static final int STATUS_CHANGE = 1;
     public static final int OFFLINE_MSG = 2;

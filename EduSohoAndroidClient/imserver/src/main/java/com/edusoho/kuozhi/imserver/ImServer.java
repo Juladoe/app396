@@ -170,7 +170,7 @@ public class ImServer {
             public void run() {
                 if (isCancel()) {
                     Log.d(TAG, "reConnect");
-                    reConnectCount ++;
+                    reConnectCount++;
                     start();
                 }
             }
@@ -185,7 +185,7 @@ public class ImServer {
     }
 
     private void sendConnectStatusBroadcast(int status) {
-        Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
+        Intent intent = new Intent(SystemUtil.IM_BROADCAST_ACTION);
         intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.STATUS_CHANGE);
         intent.putExtra("status", status);
         intent.putExtra("isConnected", isConnected());
@@ -301,7 +301,7 @@ public class ImServer {
             } catch (MessageSaveFailException e) {
             }
         }
-        Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
+        Intent intent = new Intent(SystemUtil.IM_BROADCAST_ACTION);
         intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.OFFLINE_MSG);
         intent.putExtra("message", entities);
         mContext.sendBroadcast(intent);
@@ -334,7 +334,7 @@ public class ImServer {
     }
 
     private boolean isSignalMessage(String cmd) {
-        String[] signalArray = { "memberJoined" };
+        String[] signalArray = {"memberJoined"};
         for (String signal : signalArray) {
             if (signal.equals(cmd)) {
                 return true;
@@ -419,7 +419,7 @@ public class ImServer {
     }
 
     public void onReceiveSignal(MessageEntity messageEntity) {
-        Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
+        Intent intent = new Intent(SystemUtil.IM_BROADCAST_ACTION);
         intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.SIGNAL);
         intent.putExtra("message", messageEntity);
         mContext.sendBroadcast(intent);
@@ -450,7 +450,7 @@ public class ImServer {
             if (messageEntity == null) {
                 return;
             }
-            Intent intent = new Intent("com.edusoho.kuozhi.push.action.IM_MESSAGE");
+            Intent intent = new Intent(SystemUtil.IM_BROADCAST_ACTION);
             intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.RECEIVER);
             intent.putExtra("message", messageEntity);
             mContext.sendBroadcast(intent);

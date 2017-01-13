@@ -14,6 +14,10 @@ import android.widget.Toast;
  */
 public class SystemUtil {
 
+    public static final String IM_SERVICE_ACTION = "com.edusoho.zhongheedu.imserver.IImServerAidlInterface";
+    public static final String IM_BROADCAST_ACTION = "com.edusoho.zhongheedu.push.action.IM_MESSAGE";
+    public static final String MEM_IM_SERVER = "com.edusoho.zhongheedu.imserver.IImMemServerAidlInterface";
+
     public static final int SHOW_KEYBOARD = 1;
     public static final int HIDE_KEYBOARD = 2;
 

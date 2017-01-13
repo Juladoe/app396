@@ -12,7 +12,7 @@
 
         <receiver android:name=".broadcast.IMBroadcastReceiver">
             <intent-filter>
-                <action android:name="com.edusoho.kuozhi.push.action.IM_MESSAGE"/>
+                <action android:name="com.edusoho.zhongheedu.push.action.IM_MESSAGE"/>
             </intent-filter>
         </receiver>
 
@@ -21,7 +21,7 @@
             android:process=":imserver">
             <intent-filter>
                 <!--  指定调用AIDL服务的ID  -->
-                <action android:name="com.edusoho.kuozhi.imserver.IImServerAidlInterface"/>
+                <action android:name="com.edusoho.zhongheedu.imserver.IImServerAidlInterface"/>
             </intent-filter>
         </service>
 
@@ -30,7 +30,7 @@
             android:process=":im_mem_server">
             <intent-filter>
                 <!--  指定调用AIDL服务的ID  -->
-                <action android:name="com.edusoho.kuozhi.imserver.IImMemServerAidlInterface"/>
+                <action android:name="com.edusoho.zhongheedu.imserver.IImMemServerAidlInterface"/>
             </intent-filter>
         </service>
     </application>
