@@ -10,8 +10,11 @@ import com.edusoho.kuozhi.v3.entity.course.LearningClassroom;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse2;
 import com.edusoho.kuozhi.v3.entity.course.Study;
+import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.http.ModelDecor;
+import com.edusoho.kuozhi.v3.model.bal.lesson.LessonModel;
 import com.edusoho.kuozhi.v3.model.base.ApiResponse;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -364,6 +367,20 @@ public class CourseDetailModel implements Serializable {
             @Override
             public void onErrorResponse(VolleyError error) {
                 callbackListener.onFailure("Error", error.getMessage());
+            }
+        });
+    }
+
+    public static void getLiveLesson(final int courseId, final NormalCallback<List<Lesson>> callback) {
+        String[] conditions = new String[]{"status", "published"};
+        LessonModel.getLessonByCourseId(courseId, conditions, new ResponseCallbackListener<List<Lesson>>() {
+            @Override
+            public void onSuccess(List<Lesson> data) {
+                callback.success(data);
+            }
+            @Override
+            public void onFailure(String code, String message) {
+                callback.success(null);
             }
         });
     }

@@ -88,6 +88,8 @@ public class Study implements Serializable {
         private String joinedType;
         private String convNo;
         private String classroomTitle;
+        public int liveState;
+
         private List<String> teacherIds;
         private List<String> goals;
         private List<String> audiences;

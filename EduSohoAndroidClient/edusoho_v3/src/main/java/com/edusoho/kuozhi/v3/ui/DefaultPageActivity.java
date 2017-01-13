@@ -54,7 +54,7 @@ import java.util.Queue;
  */
 public class DefaultPageActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
     public static final String TAG = "DefaultPageActivity";
-
+    public static final int LOGIN_CANCEL = 0x001;
     private String mCurrentTag;
     private int mSelectBtn;
     private LinearLayout mNavLayout;
@@ -110,20 +110,20 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                             getAppSettingProvider().saveConfig(appConfig);
                         }
 
-                        if(isEnableIMChat) {
+                        if (isEnableIMChat) {
                             reConnectServer();
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
-                    @Override
-                    public void success(VolleyError volleyError) {
-                        if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
-                            return;
-                        }
-                        AppConfig appConfig = getAppSettingProvider().getAppConfig();
-                        appConfig.isEnableIMChat = false;
-                        getAppSettingProvider().saveConfig(appConfig);
-                    }
+            @Override
+            public void success(VolleyError volleyError) {
+                if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
+                    return;
+                }
+                AppConfig appConfig = getAppSettingProvider().getAppConfig();
+                appConfig.isEnableIMChat = false;
+                getAppSettingProvider().saveConfig(appConfig);
+            }
         });
     }
 
@@ -503,5 +503,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     public AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOGIN_CANCEL) {
+            selectDownTab(R.id.nav_tab_find);
+        }
     }
 }

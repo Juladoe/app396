@@ -51,6 +51,7 @@ public class Course implements Serializable {
     public int learnedNum;
     public int totalLesson;
     public long courseDeadline;
+    public int liveState;
 
     public String getLargePicture() {
         int schemIndex = largePicture.lastIndexOf("http://");

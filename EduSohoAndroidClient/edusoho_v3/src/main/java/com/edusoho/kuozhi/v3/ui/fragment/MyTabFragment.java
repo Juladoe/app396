@@ -16,6 +16,8 @@ import com.edusoho.kuozhi.v3.adapter.MyAskAdapter;
 import com.edusoho.kuozhi.v3.adapter.MyCacheAdapter;
 import com.edusoho.kuozhi.v3.adapter.MyCollectAdapter;
 import com.edusoho.kuozhi.v3.adapter.MyStudyAdapter;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 
@@ -32,6 +34,7 @@ public class MyTabFragment extends BaseFragment {
     private TextView mTvFilterArrow;
     private ListView mLvContent;
     private LinearLayout mLayoutDesc;
+    private int mLoginId;
 
     private MyAskAdapter mMyAskAdapter;
     private MyCacheAdapter mMyCacheAdapter;
@@ -57,6 +60,7 @@ public class MyTabFragment extends BaseFragment {
         if (bundle != null) {
             mType = bundle.getInt(TYPE, TYPE_STUDY);
         }
+        mLoginId = app.loginUser.id;
     }
 
     @Override
@@ -191,6 +195,18 @@ public class MyTabFragment extends BaseFragment {
             }
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(app.loginUser == null){
+            return;
+        }
+        if(mLoginId != app.loginUser.id){
+            refresh();
+            mLoginId = app.loginUser.id;
+        }
     }
 
     public void refresh() {
