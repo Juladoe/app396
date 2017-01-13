@@ -247,8 +247,8 @@
             android:layout_width="42dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:visibility="gone"
-            android:layout_marginRight="43dp">
+            android:layout_marginRight="43dp"
+            android:visibility="gone">
 
             <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                 android:layout_width="wrap_content"
@@ -257,8 +257,7 @@
                 android:layout_centerVertical="true"
                 android:text="@string/new_font_more_oper"
                 android:textColor="@color/disabled2_hint_color"
-                android:textSize="16dp"
-                 />
+                android:textSize="16dp" />
         </RelativeLayout>
 
         <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
@@ -352,106 +351,108 @@
         </RelativeLayout>
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/disabled2_hint_color"
-        android:orientation="horizontal">
+        android:background="@color/disabled2_hint_color">
 
         <LinearLayout
-            android:id="@+id/consult_layout"
-            android:layout_width="55dp"
+            android:id="@+id/bottom_add_layout"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/new_font_consult"
-                android:textColor="@color/secondary_font_color"
-                android:textSize="14dp" />
+            <LinearLayout
+                android:id="@+id/consult_layout"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/new_font_consult"
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="14dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="咨询"
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="@dimen/font_xxs" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/collect_layout"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                    android:id="@+id/tv_collect"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/new_font_collect"
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="14dp" />
+
+                <TextView
+                    android:id="@+id/tv_collect_txt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="收藏"
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="@dimen/font_xxs" />
+
+            </LinearLayout>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="咨询"
-                android:textColor="@color/secondary_font_color"
-                android:textSize="@dimen/font_xxs" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/collect_layout"
-            android:layout_width="55dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical">
-
-            <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-                android:id="@+id/tv_collect"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/new_font_collect"
-                android:textColor="@color/secondary_font_color"
-                android:textSize="14dp" />
-
-            <TextView
-                android:id="@+id/tv_collect_txt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="收藏"
-                android:textColor="@color/secondary_font_color"
-                android:textSize="@dimen/font_xxs" />
-
+                android:id="@+id/tv_add"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/primary_color"
+                android:gravity="center"
+                android:text="加入课程"
+                android:textColor="@color/disabled2_hint_color"
+                android:textSize="@dimen/font_xl" />
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tv_add"
+            android:id="@+id/tv_inclass"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/primary_color"
             android:gravity="center"
-            android:text="加入课程"
+            android:text="进入教室"
             android:textColor="@color/disabled2_hint_color"
-            android:textSize="@dimen/font_xl" />
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/tv_inclass"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginBottom="65dp"
-        android:layout_marginRight="15dp"
-        android:background="@drawable/shape_inclass_back"
-        android:gravity="center"
-        android:text="进入\n教室"
-        android:textColor="@color/disabled2_hint_color"
-        android:textSize="@dimen/font_s"
-        android:visibility="gone" />
+            android:textSize="@dimen/font_xl"
+            android:visibility="gone" />
+    </RelativeLayout>
 
     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
         android:id="@+id/tv_edit_topic"
         android:layout_width="54dp"
         android:layout_height="54dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_marginBottom="64dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/shape_inclass_back"
         android:gravity="center"
         android:text="&#xe697;"
         android:textColor="@color/disabled2_hint_color"
         android:textSize="@dimen/font_s"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="15dp" />
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/ll_frame_load"
