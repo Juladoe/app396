@@ -15,11 +15,10 @@ import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -27,7 +26,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -86,7 +84,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             }
         });
         fragments.add(catafragment);
-        Fragment discussFrament = app.mEngine.runPluginWithFragment("DiscussFragment", this, new PluginFragmentCallback() {
+        Fragment discussFrament = app.mEngine.runPluginWithFragment("CourseDiscussFragment", this, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
                 bundle.putString("id", mClassroomId);
@@ -115,11 +113,11 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                                     && mFragments.get(1) instanceof ClassCatalogFragment) {
                                 if (mClassroomDetail.getMember() == null) {
                                     ((ClassCatalogFragment) mFragments.get(1)).reFreshView(false);
-                                    ((DiscussFragment) mFragments.get(2)).reFreshView(false, mClassroomDetail.getClassRoom().title);
+                                    ((CourseDiscussFragment) mFragments.get(2)).reFreshView(false, mClassroomDetail.getClassRoom().title);
                                     setLoadStatus(View.GONE);
                                 } else {
                                     ((ClassCatalogFragment) mFragments.get(1)).reFreshView(true);
-                                    ((DiscussFragment) mFragments.get(2)).reFreshView(true, mClassroomDetail.getClassRoom().title);
+                                    ((CourseDiscussFragment) mFragments.get(2)).reFreshView(true, mClassroomDetail.getClassRoom().title);
                                     tabPage(300);
                                 }
                             }else{
@@ -166,14 +164,14 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         Member member = mClassroomDetail.getMember();
         if (member == null) {
             mIsMemder = false;
-            mBottomLayout.setVisibility(View.VISIBLE);
+            mAddLayout.setVisibility(View.VISIBLE);
             mIvGrade.setVisibility(View.GONE);
             mIvGrade2.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
         } else {
             mIsMemder = true;
-            mBottomLayout.setVisibility(View.GONE);
+            mAddLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }

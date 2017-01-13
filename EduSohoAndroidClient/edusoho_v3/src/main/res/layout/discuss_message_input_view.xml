@@ -79,6 +79,7 @@
             android:layout_height="wrap_content"
             android:hint="输入回复内容"
             android:textColorHint="@color/disabled_hint_color"
+            android:minLines="4"
             android:textSize="@dimen/font_l"
             android:layout_below="@id/rl_choice"
             android:gravity="left|top"

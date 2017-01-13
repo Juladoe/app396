@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
+import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
@@ -31,13 +32,12 @@ import com.google.gson.reflect.TypeToken;
  * Created by DF on 2017/1/4.
  */
 
-public class DiscussFragment extends BaseFragment {
+public class CourseDiscussFragment extends BaseFragment {
 
     public View mLoadView;
     public String title;
     public DiscussDetail discussDetail;
     public CatalogueAdapter catalogueAdapter;
-    public final static String SEND_EVENT = "send_event";
     private String mCouseId ;
     private View mView;
     private RefreshListView mLvDiscuss;
@@ -46,7 +46,7 @@ public class DiscussFragment extends BaseFragment {
     private TextView mTvEmpty;
     private LinearLayout mUnJoinView;
 
-    public DiscussFragment() {
+    public CourseDiscussFragment() {
     }
 
     @Override
@@ -122,7 +122,7 @@ public class DiscussFragment extends BaseFragment {
     @Override
     public void invoke(WidgetMessage message) {
         super.invoke(message);
-        if (SEND_EVENT.equals(message.type.type)) {
+        if (WebViewActivity.SEND_EVENT.equals(message.type.type)) {
             initData();
         }
     }
@@ -130,17 +130,10 @@ public class DiscussFragment extends BaseFragment {
     public void startThreadActivity(int position){
         if (isJoin) {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("coursebean", discussDetail.getResources().get(position));
-            bundle.putString("title", title);
-            bundle.putString(DiscussDetailActivity.THREAD_TYPE, discussDetail.getResources().get(position).getType());
             bundle.putString(DiscussDetailActivity.THREAD_TARGET_TYPE, getActivity() instanceof CourseActivity ? "course" : "classroom");
             bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, Integer.parseInt(discussDetail.getResources().get(position).getId()));
-            bundle.putInt(DiscussDetailActivity.LESSON_ID, getActivity() instanceof CourseActivity ?
-                    Integer.parseInt(discussDetail.getResources().get(position).getLessonId()) : Integer.parseInt(discussDetail.getResources().get(position).getTargetId()));
             bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(discussDetail.getResources().get(position).getId()));
-            bundle.putString(AbstractIMChatActivity.FROM_NAME, discussDetail.getResources().get(position).getUser().getNickname());
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, discussDetail.getResources().get(position).getType());
-            bundle.putString(AbstractIMChatActivity.CONV_NO, discussDetail.getResources().get(position).getId());
             app.mEngine.runNormalPluginWithBundle("DiscussDetailActivity", mActivity, bundle);
         } else {
             CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_look_hint));

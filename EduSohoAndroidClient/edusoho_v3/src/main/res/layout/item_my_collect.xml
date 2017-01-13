@@ -75,7 +75,7 @@
                 android:id="@+id/tv_add_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="6dp"
                 android:textColor="@color/secondary_font_color"
                 android:textSize="@dimen/font_xs" />
         </LinearLayout>
@@ -86,6 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/iv_pic"
+            android:layout_marginTop="-5dp"
             android:layout_marginRight="25dp"
             android:text="@string/new_font_more_oper"
             android:textColor="@color/secondary2_font_color"

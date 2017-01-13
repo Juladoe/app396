@@ -197,8 +197,8 @@
     <dimen name="common_maring0">15dp</dimen>
     <dimen name="common_margin">10dp</dimen>
     <dimen name="common_margin1">9dp</dimen>
-    <dimen name="common_marginl">5dp</dimen>
     <dimen name="common_margin2">6dp</dimen>
+    <dimen name="common_marginl">5dp</dimen>
     <dimen name="space_height">53dp</dimen>
     <dimen name="catelog_chapter_height">54dp</dimen>
     <dimen name="catelog_section_height">34dp</dimen>

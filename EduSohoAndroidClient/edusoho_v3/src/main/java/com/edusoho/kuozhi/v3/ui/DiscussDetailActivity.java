@@ -8,7 +8,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -139,6 +141,22 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
                         return;
                     }
                     mThreadInfo = linkedHashMap;
+
+
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    Fragment fragment = getSupportFragmentManager().findFragmentByTag("im_container");
+                    if (fragment != null) {
+                        mMessageListFragment = (MessageListFragment) fragment;
+                    } else {
+                        mMessageListFragment = createFragment();
+                        fragmentTransaction.add(R.id.chat_content, mMessageListFragment, "im_container");
+                        fragmentTransaction.commitAllowingStateLoss();
+                    }
+                    mIMessageListPresenter = createProsenter();
+                    mIMessageListPresenter.addMessageControllerListener(getMessageControllerListener());
+                    mContentLayout.addOnLayoutChangeListener(getOnLayoutChangeListener());
+
+
                     setBackMode(BACK, mThreadInfo.get("title").toString());
 //                    initHeaderInfo(mThreadInfo);
                     initThreadPostList();
@@ -161,8 +179,8 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
 
     @Override
     protected void attachMessageListFragment() {
-        super.attachMessageListFragment();
-        mContentLayout.addOnLayoutChangeListener(getOnLayoutChangeListener());
+        Log.d(TAG, "attachMessageListFragment");
+
     }
 
     @Override
@@ -681,10 +699,11 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
     @Override
     protected MessageListFragment createFragment() {
         DiscussDetailMessageListFragment discussDetailMessageListFragment = (DiscussDetailMessageListFragment) Fragment.instantiate(mContext, DiscussDetailMessageListFragment.class.getName());
-        Bundle bundle = getIntent().getExtras();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("info", mThreadInfo);
+        bundle.putString("kind", mThreadTargetType);
         discussDetailMessageListFragment.setArguments(bundle);
         MessageRecyclerListAdapter messageRecyclerListAdapter = new QuestionAnswerAdapter(mContext);
-//        messageRecyclerListAdapter.setCurrentId(AppUtil.parseInt(mClientId));
         discussDetailMessageListFragment.setAdapter(messageRecyclerListAdapter);
         return discussDetailMessageListFragment;
     }
