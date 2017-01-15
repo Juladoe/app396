@@ -195,6 +195,7 @@ public class MyStudyAdapter extends BaseAdapter {
                     viewHolder.tvTitle.setText(String.valueOf(classroom.title));
                     ImageLoader.getInstance().displayImage(classroom.getLargePicture(), viewHolder.ivPic,
                             EdusohoApp.app.mOptions);
+                    viewHolder.tvStudyState.setText("");
                 }
                 break;
         }
@@ -708,7 +709,10 @@ public class MyStudyAdapter extends BaseAdapter {
         if (now == 0) {
             str = "未开始学习";
             view.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
-        } else {
+        } else if (now == total){
+            str = "已学完";
+            view.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+        }else {
             str = String.format("已学习%s/%s课", now, total);
             view.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         }
