@@ -34,6 +34,7 @@ public class DiscussDetailMessageListFragment extends MessageListFragment {
         mMessageInputView = new NewTextMessageInputView(getActivity());
         inputViewGroup.addView(((View) mMessageInputView));
         mLayoutManager = new LinearLayoutManager(getActivity());
+        mLayoutManager.setReverseLayout(true);
         mMessageListView.setLayoutManager(mLayoutManager);
         mMessageListView.setAdapter(mListAdapter);
         ((QuestionAnswerAdapter) mListAdapter).addHeaderView(inflate, getArguments());
@@ -63,7 +64,7 @@ public class DiscussDetailMessageListFragment extends MessageListFragment {
 
     @Override
     public void onAttach(Activity activity) {
-        mListAdapter = new QuestionAnswerAdapter(getActivity());
+        mListAdapter = new QuestionAnswerAdapter(getActivity(), mLayoutManager);
         inflate = LayoutInflater.from(getActivity()).inflate(R.layout.thread_discuss_head_layout, null);
         mListAdapter.setMessageListItemController(getMessageListItemClickListener());
         super.onAttach(activity);

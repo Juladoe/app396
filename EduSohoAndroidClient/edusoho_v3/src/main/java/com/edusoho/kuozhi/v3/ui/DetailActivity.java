@@ -648,7 +648,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 }
             });
             dialog.setContentView(dialogView);
-            dialog.setCanceledOnTouchOutside(false);
+            dialog.setCanceledOnTouchOutside(true);
             Window mWindow = dialog.getWindow();
             mWindow .setGravity(Gravity.LEFT | Gravity.TOP);
             WindowManager.LayoutParams lp = mWindow.getAttributes();

@@ -19,7 +19,6 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
-import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
@@ -71,7 +70,7 @@ public class CourseDiscussFragment extends BaseFragment {
         }
     }
 
-    private void initData() {
+    public void initData() {
         mLoadView.setVisibility(View.VISIBLE);
         RequestUrl requestUrl = app.bindNewUrl(String.format(getActivity() instanceof CourseActivity ? Const.LESSON_DISCUSS : Const.CLASS_DISCUSS, mCouseId, mCouseId,0), true);
         app.getUrl(requestUrl, new Response.Listener<String>() {
@@ -119,24 +118,34 @@ public class CourseDiscussFragment extends BaseFragment {
         this.title = title;
     }
 
+    private int i = 0;
     @Override
     public void invoke(WidgetMessage message) {
         super.invoke(message);
-        if (WebViewActivity.SEND_EVENT.equals(message.type.type)) {
-            initData();
+        if ("success".equals(message.type.type)) {
+            i = 1;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+//        if (i == 1) {
+            initData();
+//        }
     }
 
     public void startThreadActivity(int position){
         if (isJoin) {
             Bundle bundle = new Bundle();
             bundle.putString(DiscussDetailActivity.THREAD_TARGET_TYPE, getActivity() instanceof CourseActivity ? "course" : "classroom");
-            bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, Integer.parseInt(discussDetail.getResources().get(position).getId()));
+            bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, Integer.parseInt(discussDetail.getResources().get(position).getCourseId()));
             bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(discussDetail.getResources().get(position).getId()));
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, discussDetail.getResources().get(position).getType());
-            app.mEngine.runNormalPluginWithBundle("DiscussDetailActivity", mActivity, bundle);
+            app.mEngine.runNormalPluginWithBundleForResult("DiscussDetailActivity", mActivity, bundle, 0);
         } else {
             CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_look_hint));
         }
     }
+
 }

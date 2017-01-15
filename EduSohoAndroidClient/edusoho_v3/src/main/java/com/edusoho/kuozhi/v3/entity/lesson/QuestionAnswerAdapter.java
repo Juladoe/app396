@@ -1,12 +1,12 @@
 package com.edusoho.kuozhi.v3.entity.lesson;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -32,20 +33,32 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
     private Bundle info;
     //Type
     private static final int TYPE_HEADER = 1001;
-    private Dialog dialog;
-    private ImageView ivBig;
+    private LinearLayoutManager linearLayoutManager;
+    private boolean isFirst;
 
-
-    public QuestionAnswerAdapter(Context context) {
+    public QuestionAnswerAdapter(Context context){
         super(context);
+    }
+
+    public QuestionAnswerAdapter(Context context, LinearLayoutManager linearLayoutManager) {
+        super(context);
+        this.linearLayoutManager = linearLayoutManager;
     }
 
     @Override
     public void setList(List<MessageEntity> messageBodyList) {
+        if (messageBodyList.size() == 0) {
+            return;
+        }
         mMessageList.clear();
-        mMessageList.add(new QuestionHeaderMessageEntity());
         mMessageList.addAll(messageBodyList);
+        mMessageList.add(new QuestionHeaderMessageEntity());
+        if (!isFirst && linearLayoutManager != null) {
+            isFirst = true;
+            linearLayoutManager.scrollToPositionWithOffset(10, 0);
+        }
         notifyDataSetChanged();
+
     }
 
     @Override
@@ -57,10 +70,19 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
 
     @Override
     public void addItem(MessageEntity messageBody) {
-        mMessageList.add(1, messageBody);
+        mMessageList.add(0, messageBody);
         notifyDataSetChanged();
     }
 
+    @Override
+    public void insertList(List<MessageEntity> messageBodyList) {
+        if (messageBodyList.isEmpty()) {
+            return;
+        }
+        Collections.reverse(messageBodyList);
+        mMessageList.addAll(0, messageBodyList);
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemViewType(int position) {
@@ -200,8 +222,8 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
     private void initHeadInfo(Bundle bundle) {
         LinkedHashMap info = (LinkedHashMap<String, String>) bundle.getSerializable("info");
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(info.get("createdTime").toString().split("T")[0]);
-        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(info.get("title").toString());
-        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(info.get("content").toString());
+        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(Html.fromHtml(info.get("title").toString()));
+        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(Html.fromHtml(info.get("content").toString()));
         ImageLoader.getInstance().displayImage(((LinkedHashMap<String, String>) info.get("user")).get("avatar"), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_nickname)).setText(((LinkedHashMap<String, String>) info.get("user")).get("nickname"));
         if ("question".equals(info.get("type").toString())) {
@@ -215,23 +237,6 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         } else {
             ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自班级《%s》", ((LinkedHashMap<String, String>) info.get("target")).get("title")));
         }
-//        DiscussDetail.ResourcesBean resourcesBean = (DiscussDetail.ResourcesBean) info.getSerializable("coursebean");
-//        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(resourcesBean.getCreatedTime().split("T")[0]);
-//        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(resourcesBean.getTitle());
-//        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(resourcesBean.getContent());
-//        ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);
-//        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_nickname)).setText(resourcesBean.getUser().getNickname());
-//        if ("question".equals(resourcesBean.getType())) {
-//            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_label)).setText("问题");
-//        } else {
-//            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_label)).setText("话题");
-//        }
-//        VIEW_HEADER.findViewById(R.id.tdh_label).setBackgroundResource(R.drawable.shape_question_answer);
-//        if ("course".equals(info.getString(DiscussDetailActivity.THREAD_TARGET_TYPE))) {
-//            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自课程《%s》", info.getString("title")));
-//        } else {
-//            ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自班级《%s》", info.getString("title")));
-//        }
     }
 
     public void addHeaderView(View headerView, Bundle info) {
