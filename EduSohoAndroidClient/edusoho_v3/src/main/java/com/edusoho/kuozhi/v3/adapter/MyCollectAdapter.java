@@ -85,6 +85,7 @@ public class MyCollectAdapter extends BaseAdapter {
         if (convertView == null) {
             if (getItemViewType(position) == 1) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.view_empty, null, false);
+                ((TextView) convertView.findViewById(R.id.tv_empty_text)).setText(mContext.getString(R.string.no_collection_record));
                 return convertView;
             } else {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_collect, null, false);
@@ -125,12 +126,12 @@ public class MyCollectAdapter extends BaseAdapter {
                 viewHolder.tvLive.setText("直播");
                 viewHolder.tvLiveIcon.setVisibility(View.GONE);
             }
-        }else{
+        } else {
             viewHolder.layoutLive.setVisibility(View.GONE);
         }
         if (position == getCount() - 1) {
             viewHolder.vLine.setVisibility(View.GONE);
-        }else{
+        } else {
             viewHolder.vLine.setVisibility(View.VISIBLE);
         }
         return convertView;
@@ -233,11 +234,11 @@ public class MyCollectAdapter extends BaseAdapter {
             @Override
             public void onSuccess(LearningCourse data) {
                 mLists.addAll(data.getData());
-                if(data.getData().size() > 0){
+                if (data.getData().size() > 0) {
                     int start = mLists.indexOf(data.getData().get(0));
                     int length = mLists.size();
                     for (int i = start; i < length; i++) {
-                        final  Course course = data.getData().get(i);
+                        final Course course = data.getData().get(i);
                         CourseDetailModel.getLiveLesson(course.id,
                                 new NormalCallback<List<Lesson>>() {
                                     @Override

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.v3.entity.lesson.QuestionAnswerAdapter;
 import com.edusoho.kuozhi.v3.view.NewTextMessageInputView;
@@ -63,10 +64,15 @@ public class DiscussDetailMessageListFragment extends MessageListFragment {
 
     @Override
     public void onAttach(Activity activity) {
-        mListAdapter = new QuestionAnswerAdapter(getActivity());
+        mListAdapter = new QuestionAnswerAdapter(getActivity(), mLayoutManager);
         inflate = LayoutInflater.from(getActivity()).inflate(R.layout.thread_discuss_head_layout, null);
         mListAdapter.setMessageListItemController(getMessageListItemClickListener());
         super.onAttach(activity);
     }
 
+    @Override
+    public void insertMessage(MessageEntity messageEntity) {
+        mListAdapter.addItem(messageEntity);
+        mMessageListView.postDelayed(mListViewScrollToBottomRunnable, 50);
+    }
 }

@@ -13,7 +13,6 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginRight="5dp"
-        android:src="@drawable/icon_default_avatar"
         android:scaleType="centerCrop"
         app:riv_oval="true"/>
 
