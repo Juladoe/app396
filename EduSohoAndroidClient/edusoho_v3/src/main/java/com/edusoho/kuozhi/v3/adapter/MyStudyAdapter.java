@@ -391,6 +391,7 @@ public class MyStudyAdapter extends BaseAdapter {
                             shareTool.shardCourse();
                         }
                     });
+                    dialog.dismiss();
                 }
 
                 @Override

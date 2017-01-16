@@ -13,9 +13,7 @@
 
     <string name="shard_title">分 享</string>
     <string name="shard_cancel">取  消</string>
-    <string-array
-        name="shard_filter"
-        >
+    <string-array name="shard_filter">
         <item>WechatFavorite</item>
         <item>shareToUser</item>
     </string-array>
