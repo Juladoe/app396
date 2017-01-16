@@ -15,10 +15,12 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CatalogueAdapter;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
+import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
@@ -31,13 +33,12 @@ import com.google.gson.reflect.TypeToken;
  * Created by DF on 2017/1/4.
  */
 
-public class DiscussFragment extends BaseFragment {
+public class CourseDiscussFragment extends BaseFragment {
 
     public View mLoadView;
     public String title;
     public DiscussDetail discussDetail;
     public CatalogueAdapter catalogueAdapter;
-    public final static String SEND_EVENT = "send_event";
     private String mCouseId ;
     private View mView;
     private RefreshListView mLvDiscuss;
@@ -45,8 +46,8 @@ public class DiscussFragment extends BaseFragment {
     private boolean isJoin;
     private TextView mTvEmpty;
     private LinearLayout mUnJoinView;
-
-    public DiscussFragment() {
+    private int i = 0;
+    public CourseDiscussFragment() {
     }
 
     @Override
@@ -71,7 +72,7 @@ public class DiscussFragment extends BaseFragment {
         }
     }
 
-    private void initData() {
+    public void initData() {
         mLoadView.setVisibility(View.VISIBLE);
         RequestUrl requestUrl = app.bindNewUrl(String.format(getActivity() instanceof CourseActivity ? Const.LESSON_DISCUSS : Const.CLASS_DISCUSS, mCouseId, mCouseId,0), true);
         app.getUrl(requestUrl, new Response.Listener<String>() {
@@ -84,8 +85,8 @@ public class DiscussFragment extends BaseFragment {
                     }
                     initDiscuss();
                 } else {
-                    mEmpty.setVisibility(View.VISIBLE);
                     mLoadView.setVisibility(View.GONE);
+                    mEmpty.setVisibility(View.VISIBLE);
                 }
             }
         }, new Response.ErrorListener() {
@@ -120,30 +121,44 @@ public class DiscussFragment extends BaseFragment {
     }
 
     @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{new MessageType(WebViewActivity.SEND_EVENT)};
+    }
+
     public void invoke(WidgetMessage message) {
         super.invoke(message);
-        if (SEND_EVENT.equals(message.type.type)) {
-            initData();
+        if (WebViewActivity.SEND_EVENT.equals(message.type.type)) {
+            i = 1;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (i == 1) {
+            initData();
+            mEmpty.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        i = 0;
     }
 
     public void startThreadActivity(int position){
         if (isJoin) {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("coursebean", discussDetail.getResources().get(position));
-            bundle.putString("title", title);
-            bundle.putString(DiscussDetailActivity.THREAD_TYPE, discussDetail.getResources().get(position).getType());
             bundle.putString(DiscussDetailActivity.THREAD_TARGET_TYPE, getActivity() instanceof CourseActivity ? "course" : "classroom");
-            bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, Integer.parseInt(discussDetail.getResources().get(position).getId()));
-            bundle.putInt(DiscussDetailActivity.LESSON_ID, getActivity() instanceof CourseActivity ?
-                    Integer.parseInt(discussDetail.getResources().get(position).getLessonId()) : Integer.parseInt(discussDetail.getResources().get(position).getTargetId()));
+            bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, getActivity() instanceof CourseActivity ? Integer.parseInt(discussDetail.getResources().get(position).getCourseId())
+                                        : Integer.parseInt(discussDetail.getResources().get(position).getTargetId()));
             bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(discussDetail.getResources().get(position).getId()));
-            bundle.putString(AbstractIMChatActivity.FROM_NAME, discussDetail.getResources().get(position).getUser().getNickname());
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, discussDetail.getResources().get(position).getType());
-            bundle.putString(AbstractIMChatActivity.CONV_NO, discussDetail.getResources().get(position).getId());
-            app.mEngine.runNormalPluginWithBundle("DiscussDetailActivity", mActivity, bundle);
+            app.mEngine.runNormalPluginWithBundleForResult("DiscussDetailActivity", mActivity, bundle, 0);
         } else {
             CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_look_hint));
         }
     }
+
 }

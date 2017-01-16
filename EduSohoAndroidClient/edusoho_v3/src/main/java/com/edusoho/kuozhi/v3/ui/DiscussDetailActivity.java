@@ -1,19 +1,17 @@
 package com.edusoho.kuozhi.v3.ui;
 
 
-import android.animation.ObjectAnimator;
-import android.animation.PropertyValuesHolder;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.VolleyError;
@@ -39,11 +37,9 @@ import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.util.AudioUtil;
 import com.edusoho.kuozhi.imserver.util.MessageEntityBuildr;
-import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.QuestionAnswerAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.push.CourseThreadPostResult;
 import com.edusoho.kuozhi.v3.model.bal.thread.CourseThreadPostEntity;
@@ -55,16 +51,11 @@ import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.DiscussDetailMessageListFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.edusoho.kuozhi.v3.view.EduSohoAnimWrap;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -139,14 +130,27 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
                         return;
                     }
                     mThreadInfo = linkedHashMap;
+
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    Fragment fragment = getSupportFragmentManager().findFragmentByTag("im_container");
+                    if (fragment != null) {
+                        mMessageListFragment = (MessageListFragment) fragment;
+                    } else {
+                        mMessageListFragment = createFragment();
+                        fragmentTransaction.add(R.id.chat_content, mMessageListFragment, "im_container");
+                        fragmentTransaction.commitAllowingStateLoss();
+                    }
+                    mIMessageListPresenter = createProsenter();
+                    mIMessageListPresenter.addMessageControllerListener(getMessageControllerListener());
+                    mContentLayout.addOnLayoutChangeListener(getOnLayoutChangeListener());
+
+
                     setBackMode(BACK, mThreadInfo.get("title").toString());
-//                    initHeaderInfo(mThreadInfo);
                     initThreadPostList();
                 }
             });
             return;
         }
-//        initHeaderInfo(mThreadInfo);
         initThreadPostList();
     }
 
@@ -161,8 +165,8 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
 
     @Override
     protected void attachMessageListFragment() {
-        super.attachMessageListFragment();
-        mContentLayout.addOnLayoutChangeListener(getOnLayoutChangeListener());
+        Log.d(TAG, "attachMessageListFragment");
+
     }
 
     @Override
@@ -181,38 +185,10 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
                 mMessageListFragment);
     }
 
-    private void hideHeaderLayout() {
-        mHeaderViewHeight = mHeaderView.getHeight();
-        PropertyValuesHolder heightPVH = PropertyValuesHolder.ofInt("height", mHeaderViewHeight, 0);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(new EduSohoAnimWrap(mHeaderView), heightPVH)
-                .setDuration(240);
-        objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        objectAnimator.start();
-    }
-
-    private void showHeaderLayout() {
-        if (mHeaderViewHeight == 0) {
-            mHeaderView.measure(0, 0);
-            mHeaderViewHeight = mHeaderView.getMeasuredHeight();
-        }
-        PropertyValuesHolder heightPVH = PropertyValuesHolder.ofInt("height", 0, mHeaderViewHeight);
-        PropertyValuesHolder translationYPVH = PropertyValuesHolder.ofFloat("translationY", -mHeaderViewHeight, 0);
-        ObjectAnimator objectAnimator = ObjectAnimator.ofPropertyValuesHolder(new EduSohoAnimWrap(mHeaderView), heightPVH, translationYPVH)
-                .setDuration(240);
-        objectAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        objectAnimator.start();
-    }
-
     protected View.OnLayoutChangeListener getOnLayoutChangeListener() {
         return new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                int keyHeight = getWindowManager().getDefaultDisplay().getHeight() / 3;
-                if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
-//                    hideHeaderLayout();
-                } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
-//                    showHeaderLayout();
-                }
             }
         };
     }
@@ -396,11 +372,12 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
                                 mMessageListFragment.updateListByEntity(messageEntity);
                             }
                         }
+                        MessageEngine.getInstance().sendMsg(WebViewActivity.SEND_EVENT, null);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError error) {
-            }
+                    @Override
+                    public void success(VolleyError error) {
+                    }
         });
     }
 
@@ -481,99 +458,6 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
         });
     }
 
-    private String getFromInfoTime(String time) {
-        try {
-            time = time.replace("T", " ");
-            Date timeDate = new SimpleDateFormat("yyyy-MM-dd").parse(time);
-            SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy/MM/dd");
-            return timeFormat.format(timeDate);
-        } catch (Exception e) {
-        }
-
-        return "";
-    }
-
-    private void fillThreaLabelData(LinkedHashMap threadInfo) {
-        String type = threadInfo.get("type").toString();
-        TextView labelView = (TextView) findViewById(R.id.tdh_label);
-        if ("question".equals(type)) {
-            labelView.setText("问题");
-        } else {
-            labelView.setText("话题");
-        }
-        labelView.setBackgroundResource(R.drawable.shape_question_answer);
-        labelView.setTextColor(getResources().getColor(R.color.thread_type_discuss));
-        TextView titleView = (TextView) findViewById(R.id.tdh_title);
-        titleView.setText(threadInfo.get("title").toString());
-        TextView timeView = (TextView) findViewById(R.id.tdh_time);
-        timeView.setText(getFromInfoTime(threadInfo.get("createdTime").toString()));
-
-        TextView contentView = (TextView) findViewById(R.id.tdh_content);
-        contentView.setText(AppUtil.coverCourseAbout(threadInfo.get("content").toString()));
-
-        LinkedHashMap<String, String> user = (LinkedHashMap<String, String>) threadInfo.get("user");
-        TextView nicknameView = (TextView) findViewById(R.id.tdh_nickname);
-        nicknameView.setText(user.get("nickname"));
-        ImageView userAvatar = (ImageView) findViewById(R.id.tdh_avatar);
-        ImageLoader.getInstance().displayImage(user.get("avatar"), userAvatar);
-    }
-
-
-    private void initHeaderInfo(LinkedHashMap threadInfo) {
-        fillThreaLabelData(threadInfo);
-        if ("course".equals(mThreadTargetType)) {
-            initThreadInfoByCourse(threadInfo);
-            return;
-        }
-        if ("classroom".equals(mThreadTargetType)) {
-            initThreadInfoByClassRoom(threadInfo);
-            return;
-        }
-    }
-
-    private void initThreadInfoByClassRoom(final LinkedHashMap threadInfo) {
-        LinkedHashMap<String, String> classroom = (LinkedHashMap<String, String>) threadInfo.get("target");
-        TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
-        fromCourseView.setText(String.format("来自班级《%s》", classroom.get("title")));
-        fromCourseView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String url = String.format(
-                        Const.MOBILE_APP_URL,
-                        EdusohoApp.app.schoolHost,
-                        String.format(Const.CLASSROOM_COURSES, AppUtil.parseInt(threadInfo.get("targetId").toString()))
-                );
-                CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.WEB_URL, url);
-                    }
-                });
-            }
-        });
-    }
-
-    private void initThreadInfoByCourse(LinkedHashMap threadInfo) {
-        LinkedHashMap<String, String> course = (LinkedHashMap<String, String>) threadInfo.get("course");
-        TextView fromCourseView = (TextView) findViewById(R.id.tdh_from_course);
-        fromCourseView.setText(String.format("来自课程《%s》", course.get("title")));
-        fromCourseView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final String url = String.format(
-                        Const.MOBILE_APP_URL,
-                        EdusohoApp.app.schoolHost,
-                        String.format(Const.MOBILE_WEB_COURSE, mThreadTargetId)
-                );
-                CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.WEB_URL, url);
-                    }
-                });
-            }
-        });
-    }
 
     @Override
     public void sendMessage(MessageEntity messageEntity) {
@@ -681,10 +565,11 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
     @Override
     protected MessageListFragment createFragment() {
         DiscussDetailMessageListFragment discussDetailMessageListFragment = (DiscussDetailMessageListFragment) Fragment.instantiate(mContext, DiscussDetailMessageListFragment.class.getName());
-        Bundle bundle = getIntent().getExtras();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("info", mThreadInfo);
+        bundle.putString("kind", mThreadTargetType);
         discussDetailMessageListFragment.setArguments(bundle);
         MessageRecyclerListAdapter messageRecyclerListAdapter = new QuestionAnswerAdapter(mContext);
-//        messageRecyclerListAdapter.setCurrentId(AppUtil.parseInt(mClientId));
         discussDetailMessageListFragment.setAdapter(messageRecyclerListAdapter);
         return discussDetailMessageListFragment;
     }
@@ -692,4 +577,5 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
     @Override
     public void setBackMode(String backTitle, String title) {
     }
+
 }

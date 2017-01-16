@@ -11,7 +11,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
@@ -44,7 +44,7 @@ public class RefreshListView extends ListView{
         addFooterView(mFooterView);
     }
 
-    public void initWithContext(final BaseActivity baseActivity, final DiscussFragment discussFragment, final String mCouseId) {
+    public void initWithContext(final BaseActivity baseActivity, final CourseDiscussFragment discussFragment, final String mCouseId) {
         mFooterView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,7 +86,7 @@ public class RefreshListView extends ListView{
         super.onMeasure(widthMeasureSpec, expandSpec);
     }
 
-    public void hideLoadView(final DiscussFragment discussFragment){
+    public void hideLoadView(final CourseDiscussFragment discussFragment){
         postDelayed(new Runnable() {
             @Override
             public void run() {

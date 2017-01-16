@@ -30,7 +30,7 @@ import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.DiscussFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -306,7 +306,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 CommonUtil.shortCenterToast(this, "请先登录");
             } else {
                 mContentVp.setCurrentItem(2);
-                ((DiscussFragment) mFragments.get(2)).reFreshView(mIsMemder, mTitle);
+                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(mIsMemder, mTitle);
             }
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
@@ -618,7 +618,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    public boolean isAdd;
+    private boolean isAdd;
     private void showDialog() {
         if (!isAdd) {
             isAdd = true;
@@ -648,12 +648,12 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 }
             });
             dialog.setContentView(dialogView);
-            dialog.setCanceledOnTouchOutside(false);
+            dialog.setCanceledOnTouchOutside(true);
             Window mWindow = dialog.getWindow();
             mWindow .setGravity(Gravity.LEFT | Gravity.TOP);
             WindowManager.LayoutParams lp = mWindow.getAttributes();
             lp.x = (int) mTvEditTopic.getX();
-            lp.y = (int) (mTvEditTopic.getY() - AppUtil.dp2px(this, 151));
+            lp.y = (int) (mTvEditTopic.getY() - AppUtil.dp2px(this, 150));
             mWindow.setAttributes(lp);
         }
         dialog.show();
@@ -669,17 +669,17 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         bundle.putString(ThreadCreateActivity.TARGET_TYPE, DetailActivity.this instanceof CourseActivity ? "" : "classroom");
         bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
-        bundle.putString(ThreadCreateActivity.THREAD_TYPE, "question".equals(type) ? "course" : "common");
+        bundle.putString(ThreadCreateActivity.THREAD_TYPE, DetailActivity.this instanceof CourseActivity ? "course" : "common");
         app.mEngine.runNormalPluginWithBundle("ThreadCreateActivity", DetailActivity.this, bundle);
     }
 
     public void startAnimation() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(tvQuestion, "translationY", 0, -AppUtil.dp2px(DetailActivity.this, 75));
-        ObjectAnimator animator1 = ObjectAnimator.ofFloat(tvTopic, "translationY", 0, -AppUtil.dp2px(DetailActivity.this, 150));
+        ObjectAnimator animator = ObjectAnimator.ofFloat(tvQuestion, "translationY", 0, -AppUtil.dp2px(DetailActivity.this, 73));
+        ObjectAnimator animator1 = ObjectAnimator.ofFloat(tvTopic, "translationY", 0, -AppUtil.dp2px(DetailActivity.this, 146));
         animator.setInterpolator(new LinearInterpolator());
         animator1.setInterpolator(new LinearInterpolator());
-        animator.setDuration(250);
-        animator1.setDuration(500);
+        animator.setDuration(150);
+        animator1.setDuration(300);
         animator.start();
         animator1.start();
     }

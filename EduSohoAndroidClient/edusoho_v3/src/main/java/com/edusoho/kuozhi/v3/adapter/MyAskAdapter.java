@@ -1,27 +1,24 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
-import android.content.Intent;
+import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.model.provider.MyThreadProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.ThreadDiscussChatActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
+import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.Promise;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -118,7 +115,7 @@ public class MyAskAdapter extends BaseAdapter {
                 "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                 + entity.getTitle() + "</body></html>"));
         viewHolderAsk.tvOrder.setText(entity.getCourse().title);
-        viewHolderAsk.tvTime.setText(CommonUtil.getPostDays(entity.getCreatedTime()));
+        viewHolderAsk.tvTime.setText(CommonUtil.secondTransformTime(entity.getCourse().createdTime));
         viewHolderAsk.tvReviewNum.setText(entity.getPostNum());
         convertView.setTag(R.id.tv_order, position);
         convertView.setOnClickListener(mAskOnClickListener);
@@ -145,7 +142,7 @@ public class MyAskAdapter extends BaseAdapter {
         }
         MyThreadEntity entity = mLists.get(position);
         viewHolderAnswer.tvOrder.setText(entity.getCourse().title);
-        viewHolderAnswer.tvTime.setText(CommonUtil.getPostDays(entity.getCreatedTime()));
+        viewHolderAnswer.tvTime.setText(CommonUtil.secondTransformTime(entity.getCreatedTime()));
         viewHolderAnswer.tvContentAsk.setText(entity.getTitle());
         viewHolderAnswer.tvContentAnswer.setHtml(entity.getContent(),
                 new HtmlHttpImageGetter(viewHolderAnswer.tvContentAnswer, null, true));
@@ -162,17 +159,7 @@ public class MyAskAdapter extends BaseAdapter {
     private View.OnClickListener mAskOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            int position = (int) v.getTag(R.id.tv_order);
-            final MyThreadEntity entity = mLists.get(position);
-            EdusohoApp.app.mEngine.runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_ID, entity.getCourse().id);
-                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_TYPE, "course");
-                    startIntent.putExtra(ThreadDiscussChatActivity.FROM_ID, Integer.parseInt(entity.getId()));
-                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TYPE, entity.getType());
-                }
-            });
+            startDiscussDetailActivity(v, true);
         }
     };
 
@@ -180,17 +167,7 @@ public class MyAskAdapter extends BaseAdapter {
     private View.OnClickListener mAnswerOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            int position = (int) v.getTag(R.id.tv_order);
-            final MyThreadEntity entity = mLists.get(position);
-            EdusohoApp.app.mEngine.runNormalPlugin("ThreadDiscussActivity", mContext, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_ID, entity.getCourse().id);
-                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TARGET_TYPE, "course");
-                    startIntent.putExtra(ThreadDiscussChatActivity.FROM_ID, Integer.parseInt(entity.getThreadId()));
-                    startIntent.putExtra(ThreadDiscussChatActivity.THREAD_TYPE, entity.getType());
-                }
-            });
+            startDiscussDetailActivity(v, false);
         }
     };
 
@@ -268,6 +245,18 @@ public class MyAskAdapter extends BaseAdapter {
     public void setType(int type) {
         this.type = type;
         initData();
+    }
+
+
+    public void startDiscussDetailActivity(View v, boolean kind) {
+        int position = (int) v.getTag(R.id.tv_order);
+        final MyThreadEntity entity = mLists.get(position);
+        Bundle bundle = new Bundle();
+        bundle.putString(DiscussDetailActivity.THREAD_TARGET_TYPE, "course");
+        bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID,  entity.getCourse().id);
+        bundle.putInt(AbstractIMChatActivity.FROM_ID, kind ? Integer.parseInt(entity.getId()) : Integer.parseInt(entity.getThreadId()));
+        bundle.putString(AbstractIMChatActivity.TARGET_TYPE, entity.getType());
+        EdusohoApp.app.mEngine.runNormalPluginWithBundle("DiscussDetailActivity", mContext, bundle);
     }
 
 }

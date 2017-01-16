@@ -53,7 +53,6 @@ import java.util.Map;
  */
 public class CourseCatalogFragment extends BaseFragment {
 
-    private static final int NONE = 0;
     private static final int ISMEMBER = 1;
     private static final int VISITOR = 2;
 
@@ -120,7 +119,7 @@ public class CourseCatalogFragment extends BaseFragment {
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (getActivity().isFinishing()) {
+                if (getActivity() != null && getActivity().isFinishing()) {
                     return;
                 }
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {

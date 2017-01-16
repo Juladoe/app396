@@ -12,9 +12,7 @@
         android:id="@+id/iv_user_icon"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_marginLeft="15dp"
         android:layout_marginRight="5dp"
-        android:src="@drawable/icon_default_avatar"
         android:scaleType="centerCrop"
         app:riv_oval="true"/>
 
@@ -25,7 +23,6 @@
         android:textColor="@color/secondary_font_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:includeFontPadding="false"
         android:layout_toRightOf="@id/iv_user_icon"/>
 
     <TextView
@@ -34,10 +31,11 @@
         android:textSize="@dimen/font_xxs"
         android:paddingLeft="2dp"
         android:paddingRight="2dp"
+        android:gravity="center"
         android:textColor="@color/secondary2_color"
         android:layout_toRightOf="@id/iv_user_icon"
         android:layout_below="@id/tv_user_name"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
@@ -45,12 +43,12 @@
         android:id="@+id/tv_content"
         android:text=""
         android:textColor="@color/primary_font_color"
-        android:paddingTop="-1dp"
         android:textSize="@dimen/font_l"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:maxEms="15"
         android:layout_below="@+id/tv_user_name"
+        android:layout_marginTop="8dp"
         android:layout_toRightOf="@+id/iv_user_icon"/>
 
     <TextView
@@ -77,6 +75,7 @@
             android:id="@+id/tv_comment"
             android:text="&#xe698;"
             android:textSize="16sp"
+            android:textColor="@color/disabled_hint_color"
             android:layout_marginRight="14dp"
             android:layout_width="16dp"
             android:layout_height="16dp" />

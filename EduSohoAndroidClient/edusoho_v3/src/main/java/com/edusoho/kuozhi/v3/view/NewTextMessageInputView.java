@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.view;
 
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +57,24 @@ public class NewTextMessageInputView extends FrameLayout implements IMessageInpu
         mRlReplay.setOnClickListener(onClickListener);
         mTvCancel.setOnClickListener(onClickListener);
         mTvIssue.setOnClickListener(onClickListener);
+        mEtContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (mEtContent.length() > 0) {
+                    mTvIssue.setTextColor(getResources().getColor(R.color.primary));
+                } else {
+                    mTvIssue.setTextColor(getResources().getColor(R.color.secondary2_font_color));
+                }
+            }
+        });
     }
 
     @Override
@@ -89,6 +109,7 @@ public class NewTextMessageInputView extends FrameLayout implements IMessageInpu
                     mEtContent.setText("");
                     mRlReplayEdit.setVisibility(GONE);
                     mRlReplay.setVisibility(VISIBLE);
+                    hideKeyBoard();
                 }
             }
         };

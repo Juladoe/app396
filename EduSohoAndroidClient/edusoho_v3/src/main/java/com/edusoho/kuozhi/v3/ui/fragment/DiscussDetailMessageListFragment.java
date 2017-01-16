@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.v3.entity.lesson.QuestionAnswerAdapter;
 import com.edusoho.kuozhi.v3.view.NewTextMessageInputView;
@@ -31,11 +32,8 @@ public class DiscussDetailMessageListFragment extends MessageListFragment {
         mPtrFrame = (PtrClassicFrameLayout) view.findViewById(com.edusoho.kuozhi.imserver.R.id.rotate_header_list_view_frame);
         mMessageListView = (RecyclerView) view.findViewById(com.edusoho.kuozhi.imserver.R.id.listview);
         ViewGroup inputViewGroup = (ViewGroup) view.findViewById(com.edusoho.kuozhi.imserver.R.id.message_input_view);
-//        inputView = LayoutInflater.from(getActivity()).inflate(R.layout.discuss_message_input_view, null);
-//        inputViewGroup.addView(inputView);
         mMessageInputView = new NewTextMessageInputView(getActivity());
         inputViewGroup.addView(((View) mMessageInputView));
-
         mLayoutManager = new LinearLayoutManager(getActivity());
         mMessageListView.setLayoutManager(mLayoutManager);
         mMessageListView.setAdapter(mListAdapter);
@@ -66,10 +64,15 @@ public class DiscussDetailMessageListFragment extends MessageListFragment {
 
     @Override
     public void onAttach(Activity activity) {
-        mListAdapter = new QuestionAnswerAdapter(getActivity());
+        mListAdapter = new QuestionAnswerAdapter(getActivity(), mLayoutManager);
         inflate = LayoutInflater.from(getActivity()).inflate(R.layout.thread_discuss_head_layout, null);
         mListAdapter.setMessageListItemController(getMessageListItemClickListener());
         super.onAttach(activity);
     }
 
+    @Override
+    public void insertMessage(MessageEntity messageEntity) {
+        mListAdapter.addItem(messageEntity);
+        mMessageListView.postDelayed(mListViewScrollToBottomRunnable, 50);
+    }
 }
