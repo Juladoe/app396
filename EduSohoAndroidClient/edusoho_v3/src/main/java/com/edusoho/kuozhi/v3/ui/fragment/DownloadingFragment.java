@@ -158,24 +158,22 @@ public class DownloadingFragment extends BaseFragment implements IDownloadFragme
         if (mDownloadingAdapter.isSelectedShow()) {
             return;
         }
-
+        if (!app.getNetIsConnect()) {
+            ToastUtils.show(mActivity, "当前无网络连接!");
+            return;
+        }
+        int offlineType = app.config.offlineType;
+        if (offlineType == Const.NET_NONE) {
+            showAlertDialog("当前设置视频课时观看、下载为禁止模式!\n模式可以在设置里修改。");
+            return;
+        }
+        if (offlineType == Const.NET_WIFI && !app.getNetIsWiFi()) {
+            showAlertDialog("当前设置视频课时观看、下载为WiFi模式!\n模式可以在设置里修改。");
+            return;
+        }
         LessonItem lessonItem = mDownloadingAdapter.getItem(position);
         M3U8DownService service = M3U8DownService.getService();
         if (service == null) {
-            if (!app.getNetIsConnect()) {
-                ToastUtils.show(mActivity, "当前无网络连接!");
-                return;
-            }
-            int offlineType = app.config.offlineType;
-            if (offlineType == Const.NET_NONE) {
-                showAlertDialog("当前设置视频课时观看、下载为禁止模式!\n模式可以在设置里修改。");
-                return;
-            }
-            if (offlineType == Const.NET_WIFI && !app.getNetIsWiFi()) {
-                showAlertDialog("当前设置视频课时观看、下载为WiFi模式!\n模式可以在设置里修改。");
-                return;
-            }
-
             M3U8DownService.startDown(
                     mActivity.getBaseContext(), lessonItem.id, lessonItem.courseId, lessonItem.title);
             return;

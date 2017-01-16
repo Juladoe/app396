@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import java.util.List;
@@ -172,7 +173,7 @@ public class WebVideoLessonFragment extends BaseFragment {
         mWebView = (WebView) view.findViewById(R.id.webvideo_webview);
 
         Bundle bundle = getArguments();
-        mUri = bundle.getString(Const.MEDIA_URL);
+        mUri = bundle.getString(LessonVideoPlayerFragment.PLAY_URI);
         isAutoScreen = bundle.getBoolean("AutoScreen", false);
         mMediaSourceType = LessonItem.MediaSourceType.cover(
                 bundle.getString(Const.MEDIA_SOURCE));
