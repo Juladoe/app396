@@ -64,7 +64,7 @@ public class DiscussDetailMessageListFragment extends MessageListFragment {
 
     @Override
     public void onAttach(Activity activity) {
-        mListAdapter = new QuestionAnswerAdapter(getActivity(), mLayoutManager);
+        mListAdapter = new QuestionAnswerAdapter(getActivity());
         inflate = LayoutInflater.from(getActivity()).inflate(R.layout.thread_discuss_head_layout, null);
         mListAdapter.setMessageListItemController(getMessageListItemClickListener());
         super.onAttach(activity);

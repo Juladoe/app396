@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.entity.lesson;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,16 +31,9 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
     private Bundle info;
     //Type
     private static final int TYPE_HEADER = 1001;
-    private LinearLayoutManager linearLayoutManager;
-    private boolean isFirst;
 
     public QuestionAnswerAdapter(Context context){
         super(context);
-    }
-
-    public QuestionAnswerAdapter(Context context, LinearLayoutManager linearLayoutManager) {
-        super(context);
-        this.linearLayoutManager = linearLayoutManager;
     }
 
     @Override
