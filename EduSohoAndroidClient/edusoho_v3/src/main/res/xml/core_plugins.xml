@@ -496,4 +496,9 @@
         name="MyDownloadFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.MyDownloadFragment"
         version="1.0" />
+
+    <plugin
+        name="VideoPlayerActivity"
+        package="com.edusoho.kuozhi.v3.ui.VideoPlayerActivity"
+        version="1.0" />
 </plugins>

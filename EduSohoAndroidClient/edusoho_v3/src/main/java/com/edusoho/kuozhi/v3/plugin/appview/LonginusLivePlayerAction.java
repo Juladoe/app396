@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
@@ -44,8 +45,8 @@ public class LonginusLivePlayerAction {
 
     private void startReplyActivity(Context context, Bundle bundle) {
         bundle.putString(LessonVideoPlayerFragment.PLAY_URI, bundle.getString("playUrl"));
-        bundle.putString(FragmentPageActivity.FRAGMENT, "VideoLessonFragment");
-        CoreEngine.create(context).runNormalPluginWithBundle("FragmentPageActivity", context, bundle);
+        bundle.putString(Const.ACTIONBAR_TITLE, context.getString(R.string.video_replay_title));
+        CoreEngine.create(context).runNormalPluginWithBundle("VideoPlayerActivity", context, bundle);
     }
 
 
