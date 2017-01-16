@@ -478,17 +478,20 @@
         package="com.edusoho.kuozhi.v3.ui.WebViewDataActivity"
         version="1.0" />
 
-    <plugin name="CourseDiscussFragment"
+    <plugin
+        name="CourseDiscussFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment"
-        version="1.0"/>
+        version="1.0" />
 
-    <plugin name="QuestionAnswerActivity"
+    <plugin
+        name="QuestionAnswerActivity"
         package="com.edusoho.kuozhi.v3.ui.QuestionAnswerActivity"
-        version="1.0"/>
+        version="1.0" />
 
-    <plugin name="DiscussDetailActivity"
+    <plugin
+        name="DiscussDetailActivity"
         package="com.edusoho.kuozhi.v3.ui.DiscussDetailActivity"
-        version="1.0"/>
+        version="1.0" />
     <plugin
         name="MyDownloadFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.MyDownloadFragment"

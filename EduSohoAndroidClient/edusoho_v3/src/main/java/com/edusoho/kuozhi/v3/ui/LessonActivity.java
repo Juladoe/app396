@@ -314,15 +314,20 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             return null;
         }
 
-        Canvas canvas = new Canvas(bitmap);
-
-        RectF rectF = new RectF(w - 15, 15, w - 5, 25);
+        Bitmap iconBm = Bitmap.createBitmap(AppUtil.dp2px(mContext, 56), AppUtil.dp2px(mContext, 44), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(iconBm);
+        canvas.drawBitmap(bitmap, 0, 0, new Paint());
+        RectF rectF = new RectF(iconBm.getWidth() - AppUtil.dp2px(mContext, 12),
+                0,
+                iconBm.getWidth(),
+                AppUtil.dp2px(mContext, 12)
+        );
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.RED);
         canvas.drawOval(rectF, paint);
 
-        return bitmap;
+        return iconBm;
     }
 
     private void loadLesson() {

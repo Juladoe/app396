@@ -131,6 +131,12 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         mList = list;
         mAdapter = new EnterSchoolAdapter(this);
         mLoginNearLv.setAdapter(mAdapter);
+        initVersion();
+    }
+
+    private void initVersion() {
+        TextView versionView = (TextView) findViewById(R.id.tv_version);
+        versionView.setText(AppUtil.getApkVersion(getBaseContext()));
     }
 
     private ValueAnimator mAnimatorUp;

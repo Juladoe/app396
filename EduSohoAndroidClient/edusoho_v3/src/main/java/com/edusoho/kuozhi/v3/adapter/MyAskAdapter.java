@@ -74,6 +74,7 @@ public class MyAskAdapter extends BaseAdapter {
         if (getItemViewType(position) == 2) {
             if (convertView == null) {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.view_empty, null, false);
+                ((TextView) convertView.findViewById(R.id.tv_empty_text)).setText(mContext.getString(R.string.no_question_record));
             }
             return convertView;
         } else {
@@ -120,7 +121,7 @@ public class MyAskAdapter extends BaseAdapter {
         convertView.setOnClickListener(mAskOnClickListener);
         if (position == getCount() - 1) {
             viewHolderAsk.vLine.setVisibility(View.GONE);
-        }else{
+        } else {
             viewHolderAsk.vLine.setVisibility(View.VISIBLE);
         }
         return convertView;
@@ -149,7 +150,7 @@ public class MyAskAdapter extends BaseAdapter {
         convertView.setOnClickListener(mAnswerOnClickListener);
         if (position == getCount() - 1) {
             viewHolderAnswer.vLine.setVisibility(View.GONE);
-        }else{
+        } else {
             viewHolderAnswer.vLine.setVisibility(View.VISIBLE);
         }
         return convertView;

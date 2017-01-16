@@ -1,14 +1,11 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -16,12 +13,8 @@ import com.edusoho.kuozhi.v3.adapter.MyAskAdapter;
 import com.edusoho.kuozhi.v3.adapter.MyCacheAdapter;
 import com.edusoho.kuozhi.v3.adapter.MyCollectAdapter;
 import com.edusoho.kuozhi.v3.adapter.MyStudyAdapter;
-import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-
-import me.nereo.multi_image_selector.bean.Image;
 
 /**
  * Created by remilia on 2017/1/5.
@@ -200,10 +193,10 @@ public class MyTabFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(app.loginUser == null){
+        if (app.loginUser == null) {
             return;
         }
-        if(mLoginId != app.loginUser.id){
+        if (mLoginId != app.loginUser.id) {
             refresh();
             mLoginId = app.loginUser.id;
         }

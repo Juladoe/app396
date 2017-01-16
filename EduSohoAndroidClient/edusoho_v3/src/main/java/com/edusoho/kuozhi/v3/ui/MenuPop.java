@@ -80,7 +80,12 @@ public class MenuPop {
         Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
         Canvas canvas = new Canvas(bitmap);
 
-        RectF rectF = new RectF(w - 15, 15, w - 5, 25);
+        RectF rectF = new RectF(
+                w - AppUtil.dp2px(mContext, 8),
+                AppUtil.dp2px(mContext, 12),
+                w - AppUtil.dp2px(mContext, 4),
+                AppUtil.dp2px(mContext, 16)
+        );
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setColor(Color.RED);
