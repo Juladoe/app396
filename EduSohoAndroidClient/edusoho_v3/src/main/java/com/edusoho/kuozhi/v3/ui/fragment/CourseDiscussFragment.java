@@ -85,8 +85,8 @@ public class CourseDiscussFragment extends BaseFragment {
                     }
                     initDiscuss();
                 } else {
-                    mEmpty.setVisibility(View.VISIBLE);
                     mLoadView.setVisibility(View.GONE);
+                    mEmpty.setVisibility(View.VISIBLE);
                 }
             }
         }, new Response.ErrorListener() {
@@ -137,6 +137,7 @@ public class CourseDiscussFragment extends BaseFragment {
         super.onResume();
         if (i == 1) {
             initData();
+            mEmpty.setVisibility(View.GONE);
         }
     }
 
