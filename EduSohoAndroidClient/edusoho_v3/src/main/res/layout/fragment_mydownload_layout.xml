@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/disabled2_hint_color">
 
     <ListView
         android:id="@id/listview"
@@ -9,27 +10,12 @@
         android:layout_height="wrap_content"
         android:divider="@color/transparent"
         android:dividerHeight="1px"
-        android:listSelector="@color/transparent"></ListView>
+        android:listSelector="@color/transparent" />
 
-    <LinearLayout
-        android:layout_marginTop="48dp"
-        android:id="@+id/ll_mydownload_empty"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
+    <include
+        android:id="@+id/ll_empty"
+        layout="@layout/view_empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/no_review" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/download_no_local_course" />
-    </LinearLayout>
 </FrameLayout>

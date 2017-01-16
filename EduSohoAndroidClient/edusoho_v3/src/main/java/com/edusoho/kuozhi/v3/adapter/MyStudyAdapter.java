@@ -54,6 +54,7 @@ public class MyStudyAdapter extends BaseAdapter {
     private int mPage = 0;
     private boolean mCanLoad = false;
     private boolean mEmpty = false;
+    private ViewHolder viewHolder;
 
     public MyStudyAdapter(Context context, int type) {
         this.mContext = context;
@@ -110,6 +111,7 @@ public class MyStudyAdapter extends BaseAdapter {
                 convertView.setTag(viewHolder);
             } else {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.view_empty, null, false);
+                ((TextView) convertView.findViewById(R.id.tv_empty_text)).setText(mContext.getString(R.string.no_study_record));
                 return convertView;
             }
         } else {
@@ -211,45 +213,43 @@ public class MyStudyAdapter extends BaseAdapter {
         return convertView;
     }
 
-    private View.OnClickListener mViewOnClickListener =
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = (int) v.getTag(R.id.tv_title);
-                    Object object = mLists.get(position);
-                    if (object instanceof Classroom) {
-                        final Classroom classroom = (Classroom) object;
-                        CoreEngine.create(mContext).runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
+    private View.OnClickListener mViewOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = (int) v.getTag(R.id.tv_title);
+            Object object = mLists.get(position);
+            if (object instanceof Classroom) {
+                final Classroom classroom = (Classroom) object;
+                CoreEngine.create(mContext).runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, String.valueOf(classroom.id));
+                    }
+                });
+            } else if (object instanceof Course) {
+                final Course course = (Course) object;
+                CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
+                        , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, String.valueOf(classroom.id));
+                                startIntent.putExtra(CourseActivity.COURSE_ID, course.id + "");
                             }
                         });
-                    } else if (object instanceof Course) {
-                        final Course course = (Course) object;
-                        CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
-                                , mContext, new PluginRunCallback() {
-                                    @Override
-                                    public void setIntentDate(Intent startIntent) {
-                                        startIntent.putExtra(CourseActivity.COURSE_ID, course.id + "");
-                                    }
-                                });
-                    } else {
-                        final Study.Resource study = (Study.Resource) object;
-                        CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
-                                , mContext, new PluginRunCallback() {
-                                    @Override
-                                    public void setIntentDate(Intent startIntent) {
-                                        startIntent.putExtra(CourseActivity.COURSE_ID, String.valueOf(study.getId()));
-                                        startIntent.putExtra(CourseActivity.SOURCE, study.getTitle());
-                                    }
-                                });
-                    }
-                }
-            };
+            } else {
+                final Study.Resource study = (Study.Resource) object;
+                CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
+                        , mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(CourseActivity.COURSE_ID, String.valueOf(study.getId()));
+                                startIntent.putExtra(CourseActivity.SOURCE, study.getTitle());
+                            }
+                        });
+            }
+        }
+    };
 
-    private View.OnClickListener mOnClickListener
-            = new View.OnClickListener() {
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             int position = (int) v.getTag();
@@ -401,10 +401,7 @@ public class MyStudyAdapter extends BaseAdapter {
         }
     };
 
-
-    private static ViewHolder viewHolder;
-
-    private class ViewHolder {
+    private static class ViewHolder {
         ImageView ivPic;
         View layoutLive;
         TextView tvLiveIcon;
@@ -709,10 +706,10 @@ public class MyStudyAdapter extends BaseAdapter {
         if (now == 0) {
             str = "未开始学习";
             view.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
-        } else if (now == total){
+        } else if (now == total) {
             str = "已学完";
             view.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-        }else {
+        } else {
             str = String.format("已学习%s/%s课", now, total);
             view.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         }

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -27,6 +28,7 @@ import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,6 +46,7 @@ import java.util.Map;
 public class MyDownloadFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private View mEmptyView;
+    private TextView tvEmptyText;
     private ListView mListView;
     private CourseDownloadAdapter mAdapter;
 
@@ -62,7 +65,9 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mListView = (ListView) view.findViewById(R.id.listview);
-        mEmptyView = view.findViewById(R.id.ll_mydownload_empty);
+        mEmptyView = view.findViewById(R.id.ll_empty);
+        tvEmptyText = (TextView) view.findViewById(R.id.tv_empty_text);
+        tvEmptyText.setText(getContext().getText(R.string.no_lesson_cache));
         mAdapter = new CourseDownloadAdapter(getContext());
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(this);
