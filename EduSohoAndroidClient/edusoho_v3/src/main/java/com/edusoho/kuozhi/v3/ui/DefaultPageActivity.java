@@ -234,21 +234,25 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));
         tvTitle.setTextColor(Color.parseColor("#ffffff"));
         tvSitting.setVisibility(View.GONE);
-        if (id == R.id.nav_tab_find) {
-            tag = "FindFragment";
-            setTitle(getSchoolTitle());
-        } else if (id == R.id.nav_tab_news) {
+        if (id == R.id.nav_tab_news) {
             tag = "NewsFragment";
             setTitle(getString(R.string.title_news));
+            setTitleLoading(true);
+        } else if (id == R.id.nav_tab_find) {
+            tag = "FindFragment";
+            setTitle(getSchoolTitle());
+            setTitleLoading(false);
         } else if (id == R.id.nav_tab_friends) {
             tag = "FriendFragment";
             setTitle(getString(R.string.title_friends));
+            setTitleLoading(false);
         } else {
             tag = "MyFragment";
             setTitle(getString(R.string.title_mine));
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ccf9f9f9")));
             tvTitle.setTextColor(getResources().getColor(R.color.primary_font_color));
             tvSitting.setVisibility(View.VISIBLE);
+            setTitleLoading(false);
         }
         if (tag.equals(mCurrentTag)) {
             return;
