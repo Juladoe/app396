@@ -669,7 +669,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         bundle.putString(ThreadCreateActivity.TARGET_TYPE, DetailActivity.this instanceof CourseActivity ? "" : "classroom");
         bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
-        bundle.putString(ThreadCreateActivity.THREAD_TYPE, "question".equals(type) ? "course" : "common");
+        bundle.putString(ThreadCreateActivity.THREAD_TYPE, DetailActivity.this instanceof CourseActivity ? "course" : "common");
         app.mEngine.runNormalPluginWithBundle("ThreadCreateActivity", DetailActivity.this, bundle);
     }
 
