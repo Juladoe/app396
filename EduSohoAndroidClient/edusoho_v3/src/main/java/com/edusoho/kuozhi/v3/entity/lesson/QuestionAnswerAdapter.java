@@ -14,8 +14,8 @@ import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.ui.adapter.MessageRecyclerListAdapter;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
-import com.edusoho.kuozhi.imserver.util.TimeUtil;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -177,7 +177,7 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         @Override
         public void setMessageBody(MessageBody messageBody, int position) {
             nicknameView.setText(messageBody.getSource().getNickname());
-            timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
+            timeView.setText(CommonUtil.convertMills2Date(messageBody.getCreatedTime()));
         }
     }
 
@@ -190,7 +190,7 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         @Override
         public void setMessageBody(MessageBody messageBody, int position) {
             nicknameView.setText(messageBody.getSource().getNickname());
-            timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
+            timeView.setText(CommonUtil.convertMills2Date(messageBody.getCreatedTime()));
         }
     }
 
@@ -202,7 +202,7 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
 
         @Override
         public void setMessageBody(MessageBody messageBody, int position) {
-            timeView.setText(TimeUtil.convertMills2Date(messageBody.getCreatedTime()));
+            timeView.setText(CommonUtil.convertMills2Date(messageBody.getCreatedTime()));
         }
     }
 

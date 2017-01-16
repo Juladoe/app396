@@ -114,7 +114,7 @@ public class MyAskAdapter extends BaseAdapter {
                 "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                 + entity.getTitle() + "</body></html>"));
         viewHolderAsk.tvOrder.setText(entity.getCourse().title);
-        viewHolderAsk.tvTime.setText(CommonUtil.secondTransformTime(entity.getCourse().createdTime));
+        viewHolderAsk.tvTime.setText(CommonUtil.convertMills2Date(Long.parseLong(entity.getCourse().createdTime) * 1000));
         viewHolderAsk.tvReviewNum.setText(entity.getPostNum());
         convertView.setTag(R.id.tv_order, position);
         convertView.setOnClickListener(mAskOnClickListener);
@@ -141,7 +141,7 @@ public class MyAskAdapter extends BaseAdapter {
         }
         MyThreadEntity entity = mLists.get(position);
         viewHolderAnswer.tvOrder.setText(entity.getCourse().title);
-        viewHolderAnswer.tvTime.setText(CommonUtil.secondTransformTime(entity.getCreatedTime()));
+        viewHolderAnswer.tvTime.setText(CommonUtil.convertMills2Date(Long.parseLong(entity.getCreatedTime()) * 1000));
         viewHolderAnswer.tvContentAsk.setText(entity.getTitle());
         viewHolderAnswer.tvContentAnswer.setHtml(entity.getContent(),
                 new HtmlHttpImageGetter(viewHolderAnswer.tvContentAnswer, null, true));
