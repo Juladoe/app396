@@ -45,7 +45,6 @@ public class DiscoveryLoadHelper
         @Override
         public void onResult(DiscoveryColumn discoveryColumn) {
             if (discoveryColumn != null && discoveryColumn.data != null && !discoveryColumn.data.isEmpty()) {
-                Log.d("onResult", "onResult:" + mIndex);
                 mDiscoveryCardPropertieList.put(mIndex, discoveryColumn);
             }
             mTaskCount --;
@@ -58,8 +57,10 @@ public class DiscoveryLoadHelper
             List<DiscoveryColumn> list = new ArrayList<>();
             int size = mTaskList.size();
             for (int i = 0; i < size; i++) {
-                Log.d("onResult", "get:" + i);
-                list.add(mDiscoveryCardPropertieList.get(i));
+                DiscoveryColumn dc = mDiscoveryCardPropertieList.get(i);
+                if (dc != null) {
+                    list.add(dc);
+                }
             }
 
             return list;
