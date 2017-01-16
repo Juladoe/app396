@@ -95,7 +95,7 @@ public class LessonDownloadingAdapter extends BaseAdapter {
             childPanel.tvProgress.setProgress(model.downloadNum);
 
             int downStatus = getDownloadStatus(lessonItem.id);
-            if (model.finish == M3U8Util.DOWNLOAD_ERROR) {
+            if (downStatus == M3U8Util.ERROR) {
                 childPanel.tvLessonTitle.setText(AppUtil.getColorTextAfter(lessonItem.title, " 下载失败", Color.RED));
             }
             childPanel.setDownloasState(downStatus);

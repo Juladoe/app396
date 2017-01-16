@@ -98,7 +98,7 @@ public class M3U8DownService extends Service {
             int status = intent.getIntExtra(Const.STATUS, M3U8Util.NONE);
             int lessonId = intent.getIntExtra(Const.LESSON_ID, 0);
             if (status == M3U8Util.ERROR) {
-                cancelDownloadTask(lessonId);
+                cancelDownloadTask(lessonId, M3U8Util.ERROR);
             }
         }
     };
@@ -171,12 +171,16 @@ public class M3U8DownService extends Service {
     }
 
     public void cancelDownloadTask(int lessonId) {
+        cancelDownloadTask(lessonId, M3U8Util.PAUSE);
+    }
+
+    public void cancelDownloadTask(int lessonId, int status) {
         if (mM3U8UitlList.indexOfKey(lessonId) < 0) {
             return;
         }
         M3U8Util m3U8Util = mM3U8UitlList.get(lessonId);
         m3U8Util.cancelDownload();
-        m3U8Util.setDownloadStatus(M3U8Util.PAUSE);
+        m3U8Util.setDownloadStatus(status);
         notificationList.remove(lessonId);
         notificationManager.cancel(lessonId);
     }
@@ -184,7 +188,7 @@ public class M3U8DownService extends Service {
     public void cancelAllDownloadTask() {
         int size = mM3U8UitlList.size();
         for (int i = 0; i < size; i++) {
-            cancelDownloadTask(mM3U8UitlList.keyAt(i));
+            cancelDownloadTask(mM3U8UitlList.keyAt(i), M3U8Util.PAUSE);
         }
     }
 
@@ -239,7 +243,7 @@ public class M3U8DownService extends Service {
                 startTask(lessonId, courseId, lessonTitle);
                 break;
             case M3U8Util.DOWNING:
-                cancelDownloadTask(lessonId);
+                cancelDownloadTask(lessonId, M3U8Util.PAUSE);
                 break;
             case M3U8Util.PAUSE:
                 if (hasDownloadingTask()) {
@@ -247,6 +251,12 @@ public class M3U8DownService extends Service {
                     return;
                 }
                 m3U8Util.setDownloadStatus(M3U8Util.NONE);
+                startTask(lessonId, courseId, lessonTitle);
+                break;
+            case M3U8Util.ERROR:
+                if (hasDownloadingTask()) {
+                    return;
+                }
                 startTask(lessonId, courseId, lessonTitle);
         }
     }
@@ -285,14 +295,6 @@ public class M3U8DownService extends Service {
             }
         }
         return false;
-    }
-
-    public boolean isRunDownloadTask() {
-        if (mM3U8UitlList == null) {
-            return false;
-        }
-
-        return mM3U8UitlList.size() > 0;
     }
 
     public int getTaskStatus(int lessonId) {
