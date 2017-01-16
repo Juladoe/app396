@@ -524,6 +524,17 @@ public class CommonUtil {
     }
 
     /**
+     * 将服务器传回来的秒转换为年月日 时分
+     */
+    public static String secondTransformTime(String time){
+        long intTime = Long.parseLong(time);
+        Date date = new Date(intTime * 1000);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String stringTime = simpleDateFormat.format(date);
+        return stringTime;
+    }
+
+    /**
      * 计算多久之后开始直播时间 格式为13位毫秒单位
      */
     public static String getLiveTime(long startTime) {

@@ -131,7 +131,6 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
                     }
                     mThreadInfo = linkedHashMap;
 
-
                     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
                     Fragment fragment = getSupportFragmentManager().findFragmentByTag("im_container");
                     if (fragment != null) {
@@ -147,13 +146,11 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
 
 
                     setBackMode(BACK, mThreadInfo.get("title").toString());
-//                    initHeaderInfo(mThreadInfo);
                     initThreadPostList();
                 }
             });
             return;
         }
-//        initHeaderInfo(mThreadInfo);
         initThreadPostList();
     }
 
@@ -192,12 +189,6 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
         return new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                int keyHeight = getWindowManager().getDefaultDisplay().getHeight() / 3;
-                if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
-//                    hideHeaderLayout();
-                } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
-//                    showHeaderLayout();
-                }
             }
         };
     }
@@ -381,7 +372,7 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
                                 mMessageListFragment.updateListByEntity(messageEntity);
                             }
                         }
-                        MessageEngine.getInstance().sendMsg("success", null);
+                        MessageEngine.getInstance().sendMsg(WebViewActivity.SEND_EVENT, null);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
                     @Override

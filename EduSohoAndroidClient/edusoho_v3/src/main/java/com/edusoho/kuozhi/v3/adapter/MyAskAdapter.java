@@ -17,15 +17,14 @@ import com.edusoho.kuozhi.v3.model.provider.MyThreadProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -115,7 +114,7 @@ public class MyAskAdapter extends BaseAdapter {
                 "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
                 + entity.getTitle() + "</body></html>"));
         viewHolderAsk.tvOrder.setText(entity.getCourse().title);
-        viewHolderAsk.tvTime.setText(timeTransform(entity.getCourse().createdTime));
+        viewHolderAsk.tvTime.setText(CommonUtil.secondTransformTime(entity.getCourse().createdTime));
         viewHolderAsk.tvReviewNum.setText(entity.getPostNum());
         convertView.setTag(R.id.tv_order, position);
         convertView.setOnClickListener(mAskOnClickListener);
@@ -142,7 +141,7 @@ public class MyAskAdapter extends BaseAdapter {
         }
         MyThreadEntity entity = mLists.get(position);
         viewHolderAnswer.tvOrder.setText(entity.getCourse().title);
-        viewHolderAnswer.tvTime.setText(timeTransform(entity.getCreatedTime()));
+        viewHolderAnswer.tvTime.setText(CommonUtil.secondTransformTime(entity.getCreatedTime()));
         viewHolderAnswer.tvContentAsk.setText(entity.getTitle());
         viewHolderAnswer.tvContentAnswer.setHtml(entity.getContent(),
                 new HtmlHttpImageGetter(viewHolderAnswer.tvContentAnswer, null, true));
@@ -257,14 +256,6 @@ public class MyAskAdapter extends BaseAdapter {
         bundle.putInt(AbstractIMChatActivity.FROM_ID, kind ? Integer.parseInt(entity.getId()) : Integer.parseInt(entity.getThreadId()));
         bundle.putString(AbstractIMChatActivity.TARGET_TYPE, entity.getType());
         EdusohoApp.app.mEngine.runNormalPluginWithBundle("DiscussDetailActivity", mContext, bundle);
-    }
-
-    private String timeTransform(String time){
-        long intTime = Long.parseLong(time);
-        Date date = new Date(intTime * 1000);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String stringTime = simpleDateFormat.format(date);
-        return stringTime;
     }
 
 }

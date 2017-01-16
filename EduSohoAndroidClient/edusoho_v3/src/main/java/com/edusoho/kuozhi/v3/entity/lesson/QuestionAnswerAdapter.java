@@ -19,7 +19,6 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -52,11 +51,7 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         }
         mMessageList.clear();
         mMessageList.addAll(messageBodyList);
-        mMessageList.add(new QuestionHeaderMessageEntity());
-        if (!isFirst && linearLayoutManager != null) {
-            isFirst = true;
-            linearLayoutManager.scrollToPositionWithOffset(10, 0);
-        }
+        mMessageList.add(0, new QuestionHeaderMessageEntity());
         notifyDataSetChanged();
 
     }
@@ -64,13 +59,13 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
     @Override
     public void clear() {
         mMessageList.clear();
-        mMessageList.add(new QuestionHeaderMessageEntity());
+        mMessageList.add(0, new QuestionHeaderMessageEntity());
         notifyDataSetChanged();
     }
 
     @Override
     public void addItem(MessageEntity messageBody) {
-        mMessageList.add(0, messageBody);
+        mMessageList.add(1, messageBody);
         notifyDataSetChanged();
     }
 
@@ -79,8 +74,7 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         if (messageBodyList.isEmpty()) {
             return;
         }
-        Collections.reverse(messageBodyList);
-        mMessageList.addAll(0, messageBodyList);
+        mMessageList.addAll(1, messageBodyList);
         notifyDataSetChanged();
     }
 

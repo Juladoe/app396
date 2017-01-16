@@ -15,10 +15,12 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CatalogueAdapter;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
+import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
@@ -44,7 +46,7 @@ public class CourseDiscussFragment extends BaseFragment {
     private boolean isJoin;
     private TextView mTvEmpty;
     private LinearLayout mUnJoinView;
-
+    private int i = 0;
     public CourseDiscussFragment() {
     }
 
@@ -118,11 +120,14 @@ public class CourseDiscussFragment extends BaseFragment {
         this.title = title;
     }
 
-    private int i = 0;
     @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{new MessageType(WebViewActivity.SEND_EVENT)};
+    }
+
     public void invoke(WidgetMessage message) {
         super.invoke(message);
-        if ("success".equals(message.type.type)) {
+        if (WebViewActivity.SEND_EVENT.equals(message.type.type)) {
             i = 1;
         }
     }
@@ -130,16 +135,23 @@ public class CourseDiscussFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-//        if (i == 1) {
+        if (i == 1) {
             initData();
-//        }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        i = 0;
     }
 
     public void startThreadActivity(int position){
         if (isJoin) {
             Bundle bundle = new Bundle();
             bundle.putString(DiscussDetailActivity.THREAD_TARGET_TYPE, getActivity() instanceof CourseActivity ? "course" : "classroom");
-            bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, Integer.parseInt(discussDetail.getResources().get(position).getCourseId()));
+            bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, getActivity() instanceof CourseActivity ? Integer.parseInt(discussDetail.getResources().get(position).getCourseId())
+                                        : Integer.parseInt(discussDetail.getResources().get(position).getTargetId()));
             bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(discussDetail.getResources().get(position).getId()));
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, discussDetail.getResources().get(position).getType());
             app.mEngine.runNormalPluginWithBundleForResult("DiscussDetailActivity", mActivity, bundle, 0);

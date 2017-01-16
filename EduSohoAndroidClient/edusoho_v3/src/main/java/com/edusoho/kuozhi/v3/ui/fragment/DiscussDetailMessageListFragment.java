@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.entity.MessageEntity;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.v3.entity.lesson.QuestionAnswerAdapter;
 import com.edusoho.kuozhi.v3.view.NewTextMessageInputView;
@@ -34,7 +35,6 @@ public class DiscussDetailMessageListFragment extends MessageListFragment {
         mMessageInputView = new NewTextMessageInputView(getActivity());
         inputViewGroup.addView(((View) mMessageInputView));
         mLayoutManager = new LinearLayoutManager(getActivity());
-        mLayoutManager.setReverseLayout(true);
         mMessageListView.setLayoutManager(mLayoutManager);
         mMessageListView.setAdapter(mListAdapter);
         ((QuestionAnswerAdapter) mListAdapter).addHeaderView(inflate, getArguments());
@@ -70,4 +70,9 @@ public class DiscussDetailMessageListFragment extends MessageListFragment {
         super.onAttach(activity);
     }
 
+    @Override
+    public void insertMessage(MessageEntity messageEntity) {
+        mListAdapter.addItem(messageEntity);
+        mMessageListView.postDelayed(mListViewScrollToBottomRunnable, 50);
+    }
 }

@@ -618,7 +618,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    public boolean isAdd;
+    private boolean isAdd;
     private void showDialog() {
         if (!isAdd) {
             isAdd = true;

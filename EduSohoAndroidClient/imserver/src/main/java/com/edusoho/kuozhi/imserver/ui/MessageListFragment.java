@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,11 +19,10 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
+
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.R;
 import com.edusoho.kuozhi.imserver.entity.MessageEntity;
@@ -34,7 +32,6 @@ import com.edusoho.kuozhi.imserver.ui.adapter.MessageRecyclerListAdapter;
 import com.edusoho.kuozhi.imserver.ui.broadcast.ResourceStatusReceiver;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageHelper;
-import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.AudioPlayStatusListener;
 import com.edusoho.kuozhi.imserver.ui.listener.InputViewControllerListener;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageItemOnClickListener;
@@ -45,13 +42,14 @@ import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.imserver.ui.view.MessageInputView;
 import com.edusoho.kuozhi.imserver.ui.view.TextMessageInputView;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
