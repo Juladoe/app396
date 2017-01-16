@@ -44,7 +44,6 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     protected float mAudioCoverAnimOffset;
     protected ObjectAnimator mAudioCoverAnim;
     private ImageView mCoverImageView;
-    private View mLoadView;
     private DetailActivity mMenuCallback;
     private LessonMenuHelper mLessonMenuHelper;
 
@@ -62,22 +61,16 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         mMenuCallback = (DetailActivity) activity;
     }
 
-    protected void setLoadViewState(boolean isShow) {
-        mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
-    }
-
     protected void setCoverViewState(boolean isShow) {
         mCoverImageView.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
     private void loadPlayUrl() {
-        setLoadViewState(true);
         new LessonProvider(getContext()).getLesson(mLessonId)
         .success(new NormalCallback<LessonItem>() {
             @Override
             public void success(LessonItem lessonItem) {
                 changeToolBarState(false);
-                setLoadViewState(false);
                 setCoverViewState(true);
                 if (lessonItem == null || TextUtils.isEmpty(lessonItem.mediaUri)) {
                     return;
@@ -88,7 +81,6 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                setLoadViewState(false);
             }
         });
     }
@@ -111,7 +103,6 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         final View containerView = LayoutInflater.from(getContext()).inflate(R.layout.view_audio_container_layout, null);
         setContainerView(containerView);
         mCoverImageView = (ImageView) containerView.findViewById(R.id.rl_audio_cover);
-        mLoadView = containerView.findViewById(R.id.ll_audio_load);
         ImageLoader.getInstance().displayImage(mCoverUrl, mCoverImageView);
         ImageLoader.getInstance().loadImage(mCoverUrl, new SimpleImageLoadingListener() {
             @Override
@@ -156,7 +147,6 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
                 Const.COURSE_SHOW_BAR : Const.COURSE_HIDE_BAR;
         MessageEngine.getInstance().sendMsg(changeBarEvent, null);
     }
-
 
     @Override
     protected void updateMediaPlayStatus(boolean isPlay) {

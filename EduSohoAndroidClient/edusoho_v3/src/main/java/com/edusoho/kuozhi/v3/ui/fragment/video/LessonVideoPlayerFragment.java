@@ -75,6 +75,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                 .success(new NormalCallback<LessonItem>() {
                     @Override
                     public void success(LessonItem lessonItem) {
+                        changeHeaderViewStatus(false);
                         if (lessonItem == null || TextUtils.isEmpty(lessonItem.mediaUri)) {
                             return;
                         }
