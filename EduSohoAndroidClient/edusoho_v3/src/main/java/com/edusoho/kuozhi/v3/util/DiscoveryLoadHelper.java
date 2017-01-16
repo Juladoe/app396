@@ -1,5 +1,8 @@
 package com.edusoho.kuozhi.v3.util;
 
+import android.util.Log;
+import android.util.SparseArray;
+
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryColumn;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,13 +13,13 @@ import java.util.List;
 public class DiscoveryLoadHelper
 {
     private int mTaskCount;
-    private List<DiscoveryColumn> mDiscoveryCardPropertieList;
+    private SparseArray<DiscoveryColumn> mDiscoveryCardPropertieList;
     private List<DiscoveryLoadTask> mTaskList;
     private ResultCallback mResultCallback;
 
     public DiscoveryLoadHelper() {
         mTaskList = new ArrayList<>();
-        mDiscoveryCardPropertieList = new ArrayList<>();
+        mDiscoveryCardPropertieList = new SparseArray<>();
     }
 
     public void addTask(DiscoveryColumn discoveryColumn) {
@@ -26,19 +29,40 @@ public class DiscoveryLoadHelper
 
     public void invoke(ResultCallback resultCallback) {
         this.mResultCallback = resultCallback;
-        for (DiscoveryLoadTask loadTask : mTaskList) {
-            loadTask.exectue(new DiscoveryLoadTask.TaskCallback() {
-                @Override
-                public void onResult(DiscoveryColumn discoveryColumn) {
-                    if (discoveryColumn != null && discoveryColumn.data != null && !discoveryColumn.data.isEmpty()) {
-                        mDiscoveryCardPropertieList.add(discoveryColumn);
-                    }
-                    mTaskCount --;
-                    if (mTaskCount <= 0) {
-                        mResultCallback.onResult(mDiscoveryCardPropertieList);
-                    }
-                }
-            });
+        for (int i = 0; i < mTaskList.size(); i++) {
+            DiscoveryLoadTask loadTask = mTaskList.get(i);
+            loadTask.exectue(new DiscoveryLoadTaskCallback(i));
+        }
+    }
+
+    private class DiscoveryLoadTaskCallback implements DiscoveryLoadTask.TaskCallback {
+
+        private int mIndex;
+        public DiscoveryLoadTaskCallback(int index) {
+            mIndex = index;
+        }
+
+        @Override
+        public void onResult(DiscoveryColumn discoveryColumn) {
+            if (discoveryColumn != null && discoveryColumn.data != null && !discoveryColumn.data.isEmpty()) {
+                Log.d("onResult", "onResult:" + mIndex);
+                mDiscoveryCardPropertieList.put(mIndex, discoveryColumn);
+            }
+            mTaskCount --;
+            if (mTaskCount <= 0) {
+                mResultCallback.onResult(sortDataList());
+            }
+        }
+
+        private List<DiscoveryColumn> sortDataList() {
+            List<DiscoveryColumn> list = new ArrayList<>();
+            int size = mTaskList.size();
+            for (int i = 0; i < size; i++) {
+                Log.d("onResult", "get:" + i);
+                list.add(mDiscoveryCardPropertieList.get(i));
+            }
+
+            return list;
         }
     }
 
