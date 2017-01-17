@@ -42,13 +42,11 @@ public class LonginusLivePlayerAction {
         mActivity.startActivity(intent);
     }
 
-
     private void startReplyActivity(Context context, Bundle bundle) {
         bundle.putString(LessonVideoPlayerFragment.PLAY_URI, bundle.getString("playUrl"));
-        bundle.putString(Const.ACTIONBAR_TITLE, context.getString(R.string.video_replay_title));
+        bundle.putString(Const.ACTIONBAR_TITLE, bundle.getString("title"));
         CoreEngine.create(context).runNormalPluginWithBundle("VideoPlayerActivity", context, bundle);
     }
-
 
     private boolean checkLiveAppIsExist(Intent intent) {
         return mActivity.getBaseContext().getPackageManager().resolveActivity(intent, 0) == null;
