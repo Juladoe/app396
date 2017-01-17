@@ -71,6 +71,10 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
     }
 
     @Override
+    public void updateItem(MessageEntity updateMessageEntity) {
+    }
+
+    @Override
     public int getItemViewType(int position) {
         if (isHeaderView(position)) {
             return TYPE_HEADER;
