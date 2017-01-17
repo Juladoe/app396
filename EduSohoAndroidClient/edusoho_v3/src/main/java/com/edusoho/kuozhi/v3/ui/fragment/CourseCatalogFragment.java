@@ -154,14 +154,14 @@ public class CourseCatalogFragment extends BaseFragment {
                 if (cusotmTitle != null && "1".equals(cusotmTitle.getCustomChapterEnable())) {
                     initLessonCatalog(cusotmTitle.getChapterName(), cusotmTitle.getPartName());
                 }else {
-                    initLessonCatalog(null,null);
+                    initLessonCatalog(null, null);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 setLoadViewStatus(View.GONE);
-                initLessonCatalog(null,null);
+                initLessonCatalog(null, null);
             }
         });
     }
