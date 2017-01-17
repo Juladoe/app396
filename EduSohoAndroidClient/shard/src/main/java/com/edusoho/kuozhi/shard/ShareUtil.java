@@ -116,14 +116,14 @@ public class ShareUtil {
 
     private void initPlatformList() {
         Platform[] platforms = mShareSDKUtil.getPlatformList();
-        mList = new ArrayList<ListData>();
+        mList = new ArrayList<>();
 
         for (Platform platform : platforms) {
             String name = platform.getName();
             if (filterPlat(name)) {
                 continue;
             }
-            String resName = "logo_" + name;
+            String resName = ("logo_" + name).toLowerCase();
             int resId = getBitmapRes(mContext, resName);
             ListData data = new ListData(mContext.getResources().getDrawable(resId), name, mContext);
             mList.add(data);
