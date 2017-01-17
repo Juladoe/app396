@@ -68,7 +68,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import cn.trinea.android.common.util.DigestUtils;
-
+import cn.trinea.android.common.util.ResourceUtils;
 
 
 public class CommonUtil {
@@ -483,8 +483,6 @@ public class CommonUtil {
             Log.d("AppUtil.getPostDays", ex.toString());
         }
         return result;
-
-
     }
 
     /**
@@ -524,14 +522,58 @@ public class CommonUtil {
     }
 
     /**
-     * 将服务器传回来的秒转换为年月日 时分
+     * 将服务器放回的秒转化
+     * 当天则显示时分
+     * 近期的则显示星期 + 时分
+     * 远的则显示年月日时分
      */
-    public static String secondTransformTime(String time){
-        long intTime = Long.parseLong(time);
-        Date date = new Date(intTime * 1000);
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String stringTime = simpleDateFormat.format(date);
-        return stringTime;
+    public static final long ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
+    public static String convertMills2Date(long millis) {
+        String result = "";
+        String showTime = "";
+        if (millis <= 0) {
+            return "";
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm");
+            String nowTime = sdf.format(System.currentTimeMillis());
+            showTime = sdf.format(millis);
+            if (nowTime.substring(0, 8).equals(showTime.substring(0, 8))) {
+                // 如果是当天
+                return showTime.substring(9);
+            } else if (System.currentTimeMillis() - millis < ONE_WEEK) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(millis);
+                switch (calendar.get(Calendar.DAY_OF_WEEK) - 1) {
+                    case 1:
+                        result = "星期一";
+                        break;
+                    case 2:
+                        result = "星期二";
+                        break;
+                    case 3:
+                        result = "星期三";
+                        break;
+                    case 4:
+                        result = "星期四";
+                        break;
+                    case 5:
+                        result = "星期五";
+                        break;
+                    case 6:
+                        result = "星期六";
+                        break;
+                    default:
+                        result = "星期日";
+                        break;
+                }
+            } else {
+                return showTime;
+            }
+        } catch (Exception ex) {
+            Log.e("convertMills2Date", ex.getMessage());
+        }
+        return result + " " + showTime.substring(9);
     }
 
     /**

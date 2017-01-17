@@ -143,8 +143,6 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
                     mIMessageListPresenter = createProsenter();
                     mIMessageListPresenter.addMessageControllerListener(getMessageControllerListener());
                     mContentLayout.addOnLayoutChangeListener(getOnLayoutChangeListener());
-
-
                     setBackMode(BACK, mThreadInfo.get("title").toString());
                     initThreadPostList();
                 }
@@ -337,16 +335,7 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
 
     @Override
     public void sendMessage(String convNo, MessageBody messageBody) {
-        switch (messageBody.getType()) {
-            case PushUtil.ChatMsgType.TEXT:
-                sendMessageToServer(messageBody.getMid(), messageBody.getBody());
-                break;
-            case PushUtil.ChatMsgType.IMAGE:
-                sendMessageToServer(messageBody.getMid(), String.format(IMAGE_FORMAT, messageBody.getBody()));
-                break;
-            case PushUtil.ChatMsgType.AUDIO:
-                sendMessageToServer(messageBody.getMid(), messageBody.getBody());
-        }
+        sendMessageToServer(messageBody.getMid(), messageBody.getBody());
     }
 
     @Override
