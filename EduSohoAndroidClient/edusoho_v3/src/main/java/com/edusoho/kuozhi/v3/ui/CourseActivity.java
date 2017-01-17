@@ -453,6 +453,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             }
 
             ((CourseCatalogFragment) fragment).startLessonActivity(
+                    mContinueLessonItem.type,
                     mContinueLessonItem.id,
                     mContinueLessonItem.courseId,
                     memberState);
@@ -461,7 +462,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
 
     private void playVideoLesson(LessonItem lessonItem) {
-        Uri uri = Uri.parse(lessonItem.mediaUri);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
