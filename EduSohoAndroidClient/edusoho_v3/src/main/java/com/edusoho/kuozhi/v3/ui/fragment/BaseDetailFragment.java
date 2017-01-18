@@ -216,7 +216,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
 
     protected abstract void moreReview();
 
-    protected void vipInfo(){
+    protected void vipInfo() {
         if (EdusohoApp.app.loginUser == null) {
             CourseUtil.notLogin();
             return;

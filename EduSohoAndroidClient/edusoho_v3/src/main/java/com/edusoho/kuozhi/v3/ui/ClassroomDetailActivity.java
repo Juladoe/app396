@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -100,63 +102,75 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
             bundle.putString(ClassroomActivity.CLASSROOM_ID, String.valueOf(mFromId));
             CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomActivity", mContext, bundle);
         } else if (v.getId() == R.id.rl_clear_record) {
-            PopupDialog popupDialog = PopupDialog.createMuilt(mContext, "提示", "删除聊天记录？", new PopupDialog.PopupClickListener() {
-                @Override
-                public void onClick(int button) {
-                    if (button == PopupDialog.OK) {
-                        ConvEntity convEntity = IMClient.getClient().getConvManager()
-                                .getConvByTypeAndId(Destination.CLASSROOM, mFromId);
-                        if (convEntity == null) {
-                            return;
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("提示")
+                    .setMessage("删除聊天记录?")
+                    .setPositiveButton("清空", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            clearHistory();
                         }
-                        IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
-                        IMClient.getClient().getConvManager().clearLaterMsg(convEntity.getConvNo());
-                        MessageEngine.getInstance().sendMsgToTaget(
-                                ClassroomDiscussActivity.CLEAR, null, ClassroomDiscussActivity.class);
-                    }
-                }
-            });
-            popupDialog.setOkText("清空");
-            popupDialog.show();
+                    })
+                    .setNegativeButton("取消", null)
+                    .create()
+                    .show();
         } else if (v.getId() == R.id.btn_del_and_quit) {
-            PopupDialog popupDialog = PopupDialog.createMuilt(mContext, "提示", "退出班级？", new PopupDialog.PopupClickListener() {
-                @Override
-                public void onClick(int button) {
-                    if (button == PopupDialog.OK) {
-                        RequestUrl requestUrl = app.bindUrl(Const.CLASSROOM_UNLEARN, true);
-                        Map<String, String> params = requestUrl.getParams();
-                        params.put("classRoomId", mFromId + "");
-                        params.put("targetType", "classroom");
-                        ajaxPost(requestUrl, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                if (response.equals("true")) {
-                                    removeClassRoomConvEntity();
-                                    Bundle bundle = new Bundle();
-                                    bundle.putInt(Const.FROM_ID, mFromId);
-                                    app.sendMsgToTarget(Const.REFRESH_LIST, bundle, NewsFragment.class);
-                                    app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
-                                        @Override
-                                        public void setIntentDate(Intent startIntent) {
-                                            startIntent.putExtra(Const.SWITCH_NEWS_TAB, true);
-                                        }
-                                    });
-                                } else {
-                                    CommonUtil.shortToast(mContext, "退出失败");
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                CommonUtil.shortToast(mContext, "退出失败");
-                            }
-                        });
-                    }
-                }
-            });
-            popupDialog.setOkText("确定");
-            popupDialog.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("退出班级")
+                    .setMessage("退出班级将删除该课程下所有离线缓存内容?")
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            unLearnClassRoom();
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .create()
+                    .show();
         }
+    }
+
+    private void clearHistory() {
+        ConvEntity convEntity = IMClient.getClient().getConvManager()
+                .getConvByTypeAndId(Destination.CLASSROOM, mFromId);
+        if (convEntity == null) {
+            return;
+        }
+        IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
+        IMClient.getClient().getConvManager().clearLaterMsg(convEntity.getConvNo());
+        MessageEngine.getInstance().sendMsgToTaget(
+                ClassroomDiscussActivity.CLEAR, null, ClassroomDiscussActivity.class);
+    }
+
+    private void unLearnClassRoom() {
+        RequestUrl requestUrl = app.bindUrl(Const.CLASSROOM_UNLEARN, true);
+        Map<String, String> params = requestUrl.getParams();
+        params.put("classRoomId", mFromId + "");
+        params.put("targetType", "classroom");
+        ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (response.equals("true")) {
+                    removeClassRoomConvEntity();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(Const.FROM_ID, mFromId);
+                    app.sendMsgToTarget(Const.REFRESH_LIST, bundle, NewsFragment.class);
+                    app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(Const.SWITCH_NEWS_TAB, true);
+                        }
+                    });
+                } else {
+                    CommonUtil.shortToast(mContext, "退出失败");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                CommonUtil.shortToast(mContext, "退出失败");
+            }
+        });
     }
 
     private void removeClassRoomConvEntity() {
