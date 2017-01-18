@@ -425,15 +425,15 @@
                 android:textSize="@dimen/font_xl" />
         </LinearLayout>
 
-        <!--<TextView-->
-        <!--android:id="@+id/tv_inclass"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:background="@color/primary_color"-->
-        <!--android:gravity="center"-->
-        <!--android:text="进入教室"-->
-        <!--android:textColor="@color/disabled2_hint_color"-->
-        <!--android:textSize="@dimen/font_xl" />-->
+        <TextView
+            android:id="@+id/tv_inclass"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/primary_color"
+            android:gravity="center"
+            android:text="进入教室"
+            android:textColor="@color/disabled2_hint_color"
+            android:textSize="@dimen/font_xl" />
     </RelativeLayout>
 
     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView

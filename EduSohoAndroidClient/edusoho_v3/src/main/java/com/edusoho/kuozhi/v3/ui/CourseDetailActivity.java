@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -119,59 +121,71 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
             bundle.putString(CourseActivity.COURSE_ID, String.valueOf(mFromId));
             CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
         } else if (v.getId() == R.id.rl_clear_record) {
-            PopupDialog popupDialog = PopupDialog.createMuilt(mContext, "提示", "删除聊天记录？", new PopupDialog.PopupClickListener() {
-                @Override
-                public void onClick(int button) {
-                    if (button == PopupDialog.OK) {
-                        User user = getAppSettingProvider().getCurrentUser();
-                        IMConvManager imConvManager = IMClient.getClient().getConvManager();
-                        ConvEntity convEntity = imConvManager.getConvByTypeAndId(Destination.COURSE, mFromId);
-                        if (convEntity == null) {
-                            return;
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("提示")
+                    .setMessage("删除聊天记录?")
+                    .setPositiveButton("清空", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            clearHistory();
                         }
-                        IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
-                        IMClient.getClient().getConvManager().clearLaterMsg(convEntity.getConvNo());
-                        MessageEngine.getInstance().sendMsgToTaget(NewsCourseActivity.CLEAR, null, NewsCourseActivity.class);
-                    }
-                }
-            });
-            popupDialog.setOkText("清空");
-            popupDialog.show();
+                    })
+                    .setNegativeButton("取消", null)
+                    .create()
+                    .show();
+
         } else if (v.getId() == R.id.btn_del_and_quit) {
-            PopupDialog popupDialog = PopupDialog.createMuilt(mContext, "提示", "退出学习？", new PopupDialog.PopupClickListener() {
-                @Override
-                public void onClick(int button) {
-                    if (button == PopupDialog.OK) {
-                        RequestUrl requestUrl = app.bindUrl(Const.UN_LEARN_COURSE, true);
-                        Map<String, String> params = requestUrl.getParams();
-                        params.put("courseId", mFromId + "");
-                        ajaxPost(requestUrl, new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                                if (response.equals("true")) {
-                                    app.sendMsgToTarget(Const.REFRESH_LIST, new Bundle(), NewsFragment.class);
-                                    app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
-                                        @Override
-                                        public void setIntentDate(Intent startIntent) {
-                                            startIntent.putExtra(Const.SWITCH_NEWS_TAB, true);
-                                        }
-                                    });
-                                } else {
-                                    CommonUtil.shortToast(mContext, "退出失败");
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                CommonUtil.shortToast(mContext, "退出失败");
-                            }
-                        });
-                    }
-                }
-            });
-            popupDialog.setOkText("确定");
-            popupDialog.show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setTitle("退出课程")
+                    .setMessage("退出课程将删除该课程下所有离线缓存内容?")
+                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            unLearnCourse();
+                        }
+                    })
+                    .setNegativeButton("取消", null)
+                    .create()
+                    .show();
         }
+    }
+
+    private void unLearnCourse() {
+        RequestUrl requestUrl = app.bindUrl(Const.UN_LEARN_COURSE, true);
+        Map<String, String> params = requestUrl.getParams();
+        params.put("courseId", mFromId + "");
+        ajaxPost(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (response.equals("true")) {
+                    app.sendMsgToTarget(Const.REFRESH_LIST, new Bundle(), NewsFragment.class);
+                    app.mEngine.runNormalPlugin("DefaultPageActivity", mActivity, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(Const.SWITCH_NEWS_TAB, true);
+                        }
+                    });
+                } else {
+                    CommonUtil.shortToast(mContext, "退出失败");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                CommonUtil.shortToast(mContext, "退出失败");
+            }
+        });
+    }
+
+    private void clearHistory() {
+        IMConvManager imConvManager = IMClient.getClient().getConvManager();
+        ConvEntity convEntity = imConvManager.getConvByTypeAndId(Destination.COURSE, mFromId);
+        if (convEntity == null) {
+            return;
+        }
+        IMClient.getClient().getMessageManager().deleteByConvNo(convEntity.getConvNo());
+        IMClient.getClient().getConvManager().clearLaterMsg(convEntity.getConvNo());
+        MessageEngine.getInstance().sendMsgToTaget(NewsCourseActivity.CLEAR, null, NewsCourseActivity.class);
     }
 
     @Override
