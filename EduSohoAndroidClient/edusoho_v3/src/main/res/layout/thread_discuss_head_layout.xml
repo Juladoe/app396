@@ -78,7 +78,6 @@
         android:id="@+id/tdh_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
         android:textSize="@dimen/font_l"
         android:textColor="@color/secondary_font_color"
         android:layout_marginTop="@dimen/common_margin"
@@ -96,14 +95,14 @@
 
     <TextView
         android:id="@+id/tdh_from_course"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/common_maring0"
         android:layout_marginRight="@dimen/common_maring0"
         android:text=""
         android:textColor="@color/secondary2_font_color"
         android:textSize="@dimen/font_s"
-        android:layout_marginTop="@dimen/common_maring0"
+        android:paddingTop="@dimen/common_maring0"
         android:paddingBottom="@dimen/common_maring0"/>
 
     <ImageView
