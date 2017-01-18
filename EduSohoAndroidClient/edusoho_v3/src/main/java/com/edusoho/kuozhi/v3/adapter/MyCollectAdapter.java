@@ -203,6 +203,7 @@ public class MyCollectAdapter extends BaseAdapter {
                             shareTool.shardCourse();
                         }
                     });
+                    dialog.dismiss();
                 }
 
                 @Override
