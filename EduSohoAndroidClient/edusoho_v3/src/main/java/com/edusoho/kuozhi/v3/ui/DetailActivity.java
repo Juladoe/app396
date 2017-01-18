@@ -119,7 +119,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setNavigationBarTintEnabled(true);
-            tintManager.setTintColor(Color.parseColor("#00000000"));
+            tintManager.setTintColor(getResources().getColor(R.color.transparent));
         }
     }
 
