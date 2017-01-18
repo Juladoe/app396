@@ -66,7 +66,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mCollect;
     protected View mBack2;
     protected View mBack;
-    protected View mTvInclass;
+    //    protected View mTvInclass;
     protected View mPlayLastLayout;
     protected TextView mTvLastTitle;
     protected TextView mTvCollect;
@@ -160,7 +160,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mMenu = findViewById(R.id.layout_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvPlay2 = (TextView) findViewById(R.id.tv_play2);
-        mTvInclass = findViewById(R.id.tv_inclass);
+//        mTvInclass = findViewById(R.id.tv_inclass);
         mLoadingView = findViewById(R.id.ll_frame_load);
         mTvCatalog = (TextView) findViewById(R.id.textView);
         mPlayLastLayout = findViewById(R.id.layout_play_last);
@@ -195,17 +195,17 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mMenuPop = new MenuPop(this, mMenu);
         mMenuPop.setOnBindViewVisibleChangeListener(
                 new MenuPop.OnBindViewVisibleChangeListener() {
-            @Override
-            public void onVisibleChange(boolean show) {
-                if(show){
-                    mIvGrade.setVisibility(View.GONE);
-                    mIvGrade2.setVisibility(View.GONE);
-                }else{
-                    mIvGrade.setVisibility(View.VISIBLE);
-                    mIvGrade2.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+                    @Override
+                    public void onVisibleChange(boolean show) {
+                        if (show) {
+                            mIvGrade.setVisibility(View.GONE);
+                            mIvGrade2.setVisibility(View.GONE);
+                        } else {
+                            mIvGrade.setVisibility(View.VISIBLE);
+                            mIvGrade2.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
         setLoadStatus(View.VISIBLE);
     }
 
@@ -226,7 +226,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mConsult.setOnClickListener(this);
         mBack2.setOnClickListener(this);
         mBack.setOnClickListener(this);
-        mTvInclass.setOnClickListener(this);
+//        mTvInclass.setOnClickListener(this);
         mMenu.setOnClickListener(this);
         mTvEditTopic.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -327,16 +327,18 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else if (v.getId() == R.id.back2) {
             finish();
         } else if (v.getId() == R.id.back) {
-            if(mIsFullScreen){
+            if (mIsFullScreen) {
                 fullScreen();
-            }else {
+            } else {
                 finish();
             }
         } else if (v.getId() == R.id.layout_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
-        } else if (v.getId() == R.id.tv_inclass) {
-            goClass();
-        } else if (v.getId() == R.id.tv_edit_topic) {
+        }
+//        else if (v.getId() == R.id.tv_inclass) {
+//            goClass();
+//        }
+        else if (v.getId() == R.id.tv_edit_topic) {
             if (DetailActivity.this instanceof CourseActivity ? ((CourseActivity) DetailActivity.this).mCourseDetail.getMember() == null
                     : ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getMember() == null) {
                 CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_hint));
@@ -346,7 +348,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    protected void grade(){
+    protected void grade() {
 
     }
 
@@ -515,7 +517,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mMediaRlayout.setLayoutParams(params);
             mParent.setScrollStay(true);
             mBottomLayout.setVisibility(View.GONE);
-            mTvInclass.setVisibility(View.GONE);
+//            mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
@@ -526,11 +528,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mParent.setScrollStay(false);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
-                mBottomLayout.setVisibility(View.VISIBLE);
+                mBottomLayout.setVisibility(View.GONE);
             } else {
-                if (this instanceof CourseActivity) {
-                    mTvInclass.setVisibility(View.VISIBLE);
-                }
+                mBottomLayout.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -610,7 +610,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
 
-    protected void showEditTopic(int position){
+    protected void showEditTopic(int position) {
         if (position == 2) {
             mTvEditTopic.setVisibility(View.VISIBLE);
         } else {
@@ -619,6 +619,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     private boolean isAdd;
+
     private void showDialog() {
         if (!isAdd) {
             isAdd = true;
@@ -650,7 +651,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             dialog.setContentView(dialogView);
             dialog.setCanceledOnTouchOutside(true);
             Window mWindow = dialog.getWindow();
-            mWindow .setGravity(Gravity.LEFT | Gravity.TOP);
+            mWindow.setGravity(Gravity.LEFT | Gravity.TOP);
             WindowManager.LayoutParams lp = mWindow.getAttributes();
             lp.x = (int) mTvEditTopic.getX();
             lp.y = (int) (mTvEditTopic.getY() - AppUtil.dp2px(this, 150));

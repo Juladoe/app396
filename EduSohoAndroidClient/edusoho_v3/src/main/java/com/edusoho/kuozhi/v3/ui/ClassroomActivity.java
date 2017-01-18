@@ -120,7 +120,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                                     ((CourseDiscussFragment) mFragments.get(2)).reFreshView(true, mClassroomDetail.getClassRoom().title);
                                     tabPage(300);
                                 }
-                            }else{
+                            } else {
                                 setLoadStatus(View.GONE);
                             }
                             refreshView();
@@ -167,12 +167,12 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             mAddLayout.setVisibility(View.VISIBLE);
             mIvGrade.setVisibility(View.GONE);
             mIvGrade2.setVisibility(View.GONE);
-            mTvInclass.setVisibility(View.GONE);
+            //mTvInclass.setVisibility(View.GONE);
             initViewPager();
         } else {
             mIsMemder = true;
             mAddLayout.setVisibility(View.GONE);
-            mTvInclass.setVisibility(View.VISIBLE);
+            //mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }
         if (app.loginUser != null && app.loginUser.vip != null &&

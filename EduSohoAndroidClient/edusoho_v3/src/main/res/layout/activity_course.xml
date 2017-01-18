@@ -356,7 +356,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/disabled2_hint_color">
+        android:background="@color/disabled2_hint_color"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/bottom_add_layout"
@@ -425,16 +426,15 @@
                 android:textSize="@dimen/font_xl" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_inclass"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/primary_color"
-            android:gravity="center"
-            android:text="进入教室"
-            android:textColor="@color/disabled2_hint_color"
-            android:textSize="@dimen/font_xl"
-            android:visibility="gone" />
+        <!--<TextView-->
+        <!--android:id="@+id/tv_inclass"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:background="@color/primary_color"-->
+        <!--android:gravity="center"-->
+        <!--android:text="进入教室"-->
+        <!--android:textColor="@color/disabled2_hint_color"-->
+        <!--android:textSize="@dimen/font_xl" />-->
     </RelativeLayout>
 
     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
