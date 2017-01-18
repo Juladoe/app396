@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.homework;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,11 +16,14 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.homework.model.HomeWorkModel;
 import com.edusoho.kuozhi.homework.model.HomeWorkResult;
 import com.edusoho.kuozhi.homework.model.HomeworkProvider;
+import com.edusoho.kuozhi.homework.util.HomeWorkLearnConfig;
+import com.edusoho.kuozhi.v3.entity.lesson.PluginViewItem;
 import com.edusoho.kuozhi.v3.listener.BaseLessonPluginCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.ToastUtil;
@@ -103,6 +107,9 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
             public void success(HomeWorkResult homeWorkModel) {
                 mLoading.setVisibility(View.GONE);
                 renderHomeworkView(homeWorkModel);
+                if (homeWorkModel != null) {
+                    HomeWorkLearnConfig.saveHomeworkLocalLearnConfig(mContext, "homework", homeWorkModel.homeworkId, true);
+                }
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -121,6 +128,9 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
     }
 
     public static class Callback extends BaseLessonPluginCallback {
+
+        private int mHomeworkId;
+
         public Callback(Context context) {
             super(context);
         }
@@ -135,12 +145,19 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
         }
 
         @Override
-        public boolean click(AdapterView<?> parent, View view, int position) {
-            if (!view.isEnabled()) {
-                ToastUtil.getInstance(mContext).makeText("课程暂无作业", Toast.LENGTH_SHORT).show();
+        public boolean click(View view) {
+            if (super.click(view)) {
                 return true;
             }
+            Toast.makeText(mContext, "课程暂无作业", Toast.LENGTH_SHORT).show();
             return false;
+        }
+
+        @Override
+        public void initState(PluginViewItem item) {
+            super.initState(item);
+            boolean isLearn = HomeWorkLearnConfig.getHomeworkLocalLearnConfig(mContext, "homework", mHomeworkId);
+            setViewLearnState(isLearn);
         }
 
         @Override
@@ -151,7 +168,14 @@ public class HomeworkSummaryActivity extends ActionBarBaseActivity {
             provider.getHomeWork(requestUrl).success(new NormalCallback<HomeWorkModel>() {
                 @Override
                 public void success(HomeWorkModel homeWorkModel) {
-                    setViewStatus(homeWorkModel != null && homeWorkModel.getId() != 0);
+                    if (homeWorkModel == null || homeWorkModel.getId() == 0) {
+                        setViewStatus(PluginViewItem.UNENABLE);
+                        return;
+                    }
+
+                    mHomeworkId = homeWorkModel.getId();
+                    boolean isLearn = HomeWorkLearnConfig.getHomeworkLocalLearnConfig(mContext, "homework", homeWorkModel.getId());
+                    setViewStatus(isLearn ? PluginViewItem.ENABLE : PluginViewItem.NEW);
                 }
             }).fail(this);
         }

@@ -269,4 +269,13 @@ public class GSImplVoteView extends GSVoteView {
 		return new VotePopView(parentView, interfaceSelectOther, searchList);
 	}
 
+	@Override
+	protected String getCardSubject() {
+		//返回答题卡的标题内容
+		return getResources().getString(R.string.gs_card_subject);
+	}
+	@Override
+	protected String getCardQianzhiTip() {
+		return getResources().getString(R.string.card_qiangzhi_tip);
+	}
 }

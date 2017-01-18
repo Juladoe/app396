@@ -41,6 +41,10 @@ public class VodDocFragment extends Fragment {
 			public void onPageOpenComplete(int i, int i1) {
 				showDocView();
 			}
+
+			@Override
+			public void onPageOpenFileFailure(int i) {
+			}
 		});
 		return mView;
 	}

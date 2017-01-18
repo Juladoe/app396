@@ -131,6 +131,12 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         mList = list;
         mAdapter = new EnterSchoolAdapter(this);
         mLoginNearLv.setAdapter(mAdapter);
+        initVersion();
+    }
+
+    private void initVersion() {
+        TextView versionView = (TextView) findViewById(R.id.tv_version);
+        versionView.setText(AppUtil.getApkVersion(getBaseContext()));
     }
 
     private ValueAnimator mAnimatorUp;
@@ -153,15 +159,11 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
 
             @Override
             public void onAnimationEnd(Animator animation) {
-//                if(!isShow){
                 netSchoolDialog.show();
-//                }
-//                isShow = false;
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
-//                isShow = false;
             }
 
             @Override
@@ -172,19 +174,16 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         mAnimatorDown.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
-//                isShow = true;
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 mSearchLayout.setEnabled(true);
-//                isShow = false;
             }
 
             @Override
             public void onAnimationCancel(Animator animation) {
                 mSearchLayout.setEnabled(true);
-//                isShow = false;
             }
 
             @Override
@@ -199,7 +198,6 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
         mAnimatorUpSet.play(mAnimatorUp);
         mAnimatorDownSet.play(mAnimatorDown);
     }
-//    private boolean isShow = false;
 
     ValueAnimator.AnimatorUpdateListener mBottomListener =
             new ValueAnimator.AnimatorUpdateListener() {
@@ -256,7 +254,7 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
             app.mEngine.runNormalPlugin("WebViewDataActivity", mActivity, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(WebViewDataActivity.TITLE,"使用帮助");
+                    startIntent.putExtra(WebViewDataActivity.TITLE, "使用帮助");
                     startIntent.putExtra(WebViewDataActivity.DATA,
                             "<p>一、扫一扫进入网校：<p style=\\\"text-indent:2em;\\\">" +
                                     "1、点击 <strong>网校首页</strong>—<strong>侧边栏</strong>" +
@@ -534,6 +532,8 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
                     PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
                     return;
                 }
+
+                app.schoolVersion = systemInfo.version;
 
                 getSchoolApi(systemInfo);
             }

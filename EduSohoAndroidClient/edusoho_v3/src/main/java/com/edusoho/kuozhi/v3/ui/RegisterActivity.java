@@ -123,8 +123,9 @@ public class RegisterActivity extends ActionBarBaseActivity {
                                 Intent registerIntent = new Intent(mContext, RegisterConfirmActivity.class);
                                 registerIntent.putExtra("num", phoneNum);
                                 startActivity(registerIntent);
+//                                app.mEngine.runNormalPlugin("RegisterConfirmActivity", mContext, null);
                             } else {
-                                if (response.equals(getString(R.string.register_hint))) {
+                                if (response.equals(getString(R.string.registered_hint))) {
                                     showDialog();
                                 } else {
                                     CommonUtil.longToast(mContext, response);
@@ -146,11 +147,11 @@ public class RegisterActivity extends ActionBarBaseActivity {
      */
     private void showDialog() {
         new AlertDialog.Builder(RegisterActivity.this)
-                .setTitle(R.string.notification)
                 .setMessage(R.string.register_hint)
-                .setPositiveButton(R.string.register_confirm, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.register_login, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                         RegisterActivity.this.finish();
                     }
                 })

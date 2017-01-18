@@ -43,7 +43,7 @@ public class RequestUtil {
 
         if (errorResult.containsKey("code")) {
             String message = errorResult.containsKey("message") ? errorResult.get("message").toString() : "";
-            if (!TextUtils.isEmpty(message) && message.startsWith("API Token")) {
+            if (!TextUtils.isEmpty(message) && message.startsWith("API Token 已过期")) {
                 MessageEngine.getInstance().sendMsg(Const.TOKEN_LOSE, new Bundle());
                 return null;
             }

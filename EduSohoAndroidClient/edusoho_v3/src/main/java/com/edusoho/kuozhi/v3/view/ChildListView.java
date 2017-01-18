@@ -33,5 +33,4 @@ public class ChildListView extends ListView {
     public boolean onTouchEvent(MotionEvent ev) {
         return false;
     }
-
 }

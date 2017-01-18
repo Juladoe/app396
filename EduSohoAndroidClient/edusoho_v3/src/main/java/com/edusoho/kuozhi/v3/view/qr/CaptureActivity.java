@@ -197,13 +197,14 @@ public class CaptureActivity extends ActionBarBaseActivity implements
         }
 
         if (status == 1) {
-            Intent intent = new Intent();
-            Bundle bundle = new Bundle();
-            bundle.putString("result", msg);
-            bundle.putInt("status", status);
-            intent.putExtras(bundle);
-            setResult(QrSchoolActivity.RESULT_QR, intent);
-            finish();
+//            Intent intent = new Intent();
+//            Bundle bundle = new Bundle();
+//            bundle.putString("result", msg);
+//            bundle.putInt("status", status);
+//            intent.putExtras(bundle);
+//            setResult(QrSchoolActivity.RESULT_QR, intent);
+            new QrSchoolActivity.SchoolChangeHandler(mActivity).change(msg + "&version=2");
+//            finish();
         }
     }
 

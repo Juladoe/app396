@@ -15,13 +15,17 @@ public class ListData {
     public String type;
     private Context mContext;
 
-    public ListData(Drawable icon, String type, Context context){
+    public ListData() {
+
+    }
+
+    public ListData(Drawable icon, String type, Context context) {
         this.icon = icon;
         this.type = type;
         mContext = context;
         Resources resources = mContext.getResources();
         text = resources.getString(resources.getIdentifier(
-                type,"string", mContext.getPackageName()));
+                type, "string", mContext.getPackageName()));
     }
 
 }

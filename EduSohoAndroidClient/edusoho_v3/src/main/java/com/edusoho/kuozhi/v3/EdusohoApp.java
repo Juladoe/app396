@@ -49,7 +49,7 @@ import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -87,6 +87,7 @@ public class EdusohoApp extends Application {
     public School defaultSchool;
     public User loginUser;
     public String apiVersion;
+    public String schoolVersion;
     public String schoolHost = "";
     public CoreEngine mEngine;
 
@@ -113,6 +114,7 @@ public class EdusohoApp extends Application {
 
     private ImageLoaderConfiguration mImageLoaderConfiguration;
     public DisplayImageOptions mOptions;
+    public  DisplayImageOptions mAvatarOptions;
 
     //cache 缓存服务器
     private CacheServer mResouceCacheServer;
@@ -182,7 +184,7 @@ public class EdusohoApp extends Application {
                     errorListener.onErrorResponse(error);
                     return;
                 }
-                if(error instanceof TimeoutError){
+                if (error instanceof TimeoutError) {
                     errorListener.onErrorResponse(error);
                     return;
                 }
@@ -371,8 +373,10 @@ public class EdusohoApp extends Application {
                 .diskCache(new UnlimitedDiscCache(file)).imageDownloader(new BaseImageDownloader(this, Const.TIMEOUT, Const.TIMEOUT))
                 .build();
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).
-                showImageOnFail(R.drawable.defaultpic).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_course).
+                showImageOnFail(R.drawable.default_course).build();
+        mAvatarOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.icon_default_avatar).
+                showImageOnFail(R.drawable.icon_default_avatar).build();
     }
 
     public HashMap<String, String> getPlatformInfo() {
@@ -781,7 +785,7 @@ public class EdusohoApp extends Application {
      * @param activity
      * @return
      */
-    public CacheServer startPlayCacheServer(ActionBarBaseActivity activity) {
+    public CacheServer startPlayCacheServer(BaseActivity activity) {
         if (mPlayCacheServer == null) {
             mPlayCacheServer = new CacheServer(activity, Const.CACHE_PROT);
             mPlayCacheServer.start();

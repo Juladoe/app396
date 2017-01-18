@@ -1,21 +1,17 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.antfortune.freeline'
+apply plugin: 'im.fir.plugin.gradle'
 
 android {
     compileSdkVersion 22
     buildToolsVersion '22.0.1'
 
-    freeline {
-        hack true
-    }
-
     defaultConfig {
         applicationId "com.edusoho"
         minSdkVersion 16
-
         targetSdkVersion 21
-        versionName "3.8.0"
-        versionCode 42
+        versionName "3.9.1"
+        versionCode 44
 
         ndk {
             abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
@@ -32,6 +28,11 @@ android {
     freeline {
         hack true
         productFlavor 'edusoho'
+    }
+
+    fir{
+        apiToken 'fa4ff9122d709c485cb0e3c992a62980'
+        changeLog 'test'
     }
 
     //签名
@@ -74,6 +75,5 @@ repositories {
 dependencies {
     compile project(':edusoho_v3')
     compile project(':homework')
-    //compile project(':liveplayer')
-
+    compile project(':liveplayer')
 }
