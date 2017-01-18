@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -189,7 +188,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         } else {
             mIsMemder = true;
             mAddLayout.setVisibility(View.GONE);
-            mTvInclass.setVisibility(View.VISIBLE);
+            mBottomLayout.setVisibility(View.GONE);
             initViewPager();
         }
         if (app.loginUser != null && app.loginUser.vip != null &&
@@ -458,6 +457,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             }
 
             ((CourseCatalogFragment) fragment).startLessonActivity(
+                    mContinueLessonItem.type,
                     mContinueLessonItem.id,
                     mContinueLessonItem.courseId,
                     memberState);
@@ -466,7 +466,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
 
     private void playVideoLesson(LessonItem lessonItem) {
-        Uri uri = Uri.parse(lessonItem.mediaUri);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
