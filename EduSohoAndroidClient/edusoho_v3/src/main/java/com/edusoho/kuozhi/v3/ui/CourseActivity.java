@@ -179,12 +179,12 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (member == null) {
             mIsMemder = false;
             mAddLayout.setVisibility(View.VISIBLE);
-            //mTvInclass.setVisibility(View.GONE);
+            mBottomLayout.setVisibility(View.VISIBLE);
             initViewPager();
         } else {
             mIsMemder = true;
             mAddLayout.setVisibility(View.GONE);
-            //mTvInclass.setVisibility(View.VISIBLE);
+            mBottomLayout.setVisibility(View.GONE);
             initViewPager();
         }
         if (app.loginUser != null && app.loginUser.vip != null &&

@@ -167,12 +167,12 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             mAddLayout.setVisibility(View.VISIBLE);
             mIvGrade.setVisibility(View.GONE);
             mIvGrade2.setVisibility(View.GONE);
-            //mTvInclass.setVisibility(View.GONE);
+            mBottomLayout.setVisibility(View.VISIBLE);
             initViewPager();
         } else {
             mIsMemder = true;
             mAddLayout.setVisibility(View.GONE);
-            //mTvInclass.setVisibility(View.VISIBLE);
+            mBottomLayout.setVisibility(View.GONE);
             initViewPager();
         }
         if (app.loginUser != null && app.loginUser.vip != null &&

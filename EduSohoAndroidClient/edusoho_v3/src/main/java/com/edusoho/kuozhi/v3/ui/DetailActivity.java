@@ -421,9 +421,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected void courseHastrial(String state, LessonItem lessonItem) {
     }
 
-    /**
-     * todo 获得课程相关信息
-     */
     protected void courseChange(LessonItem lessonItem) {
     }
 
