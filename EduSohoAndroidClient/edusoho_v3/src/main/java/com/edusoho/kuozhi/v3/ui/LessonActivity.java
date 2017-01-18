@@ -166,7 +166,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                 mIsMember = data.getIntExtra(LessonActivity.MEMBER_STATE, CourseMember.NONE);
             }
 
-            if (mCourseId == 0 || mLessonId == 0) {
+            if (mLessonId == 0) {
                 CommonUtil.longToast(mContext, "课程数据错误！");
                 setBackMode(BACK, getString(R.string.lesson_default_title));
                 return;
@@ -364,6 +364,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
                     finish();
                     return;
                 }
+                mCourseId = mLessonItem.courseId;
                 invalidateOptionsMenu();
                 mLessonType = mLessonItem.type;
                 setBackMode(BACK, mLessonItem.title);
