@@ -31,6 +31,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:gravity="top|left"
+            android:lineSpacingExtra="3dp"
             android:textColor="@color/primary_font_color"
             android:textSize="@dimen/font_l" />
 
