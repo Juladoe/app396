@@ -134,6 +134,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
     protected void onDestroy() {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
+        destoryVideoResource();
         mWebView = null;
     }
 
@@ -158,7 +159,6 @@ public class WebViewActivity extends ActionBarBaseActivity {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                destoryVideoResource();
                 destoryWebView();
             }
         });

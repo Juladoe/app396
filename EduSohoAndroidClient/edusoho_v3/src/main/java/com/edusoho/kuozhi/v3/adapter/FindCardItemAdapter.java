@@ -20,8 +20,6 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.lesson.LessonModel;
-import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -240,11 +238,8 @@ public class FindCardItemAdapter extends BaseAdapter {
         if (mCourseLessonsCache.get(courseId) != null) {
             callback.success(mCourseLessonsCache.get(courseId));
         } else {
-            String[] conditions = new String[]{
-                    "status", "published",
-                    "courseId", String.valueOf(courseId)
-            };
-            mLessonModel.getLessonByCourseId(conditions, new ResponseCallbackListener<List<Lesson>>() {
+            String[] conditions = new String[]{"status", "published"};
+            mLessonModel.getLessonByCourseId(courseId, conditions, new ResponseCallbackListener<List<Lesson>>() {
                 @Override
                 public void onSuccess(List<Lesson> data) {
                     callback.success(data);
@@ -298,70 +293,32 @@ public class FindCardItemAdapter extends BaseAdapter {
     }
 
     private void setDiscoveryCardClickListener(View view, String type, int id) {
-//        final String url;
-//        switch (type) {
-//            case "normal":
-        if(type.equals("classroom")){
-            view.setTag(R.id.card_cover, String.valueOf(id));
-            view.setOnClickListener(mViewOnClickListener);
-        }else{
-            view.setTag(R.id.card_cover, String.valueOf(id));
-            view.setOnClickListener(mViewOnClickListener2);
+        final String url;
+        switch (type) {
+            case "normal":
+            case "live":
+                url = String.format(
+                        Const.MOBILE_APP_URL,
+                        EdusohoApp.app.schoolHost,
+                        String.format(Const.MOBILE_WEB_COURSE, id)
+                );
+                break;
+            case "classroom":
+            default:
+                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.CLASSROOM_COURSES, id));
         }
-
-//                return;
-//            case "live":
-//                url = String.format(
-//                        Const.MOBILE_APP_URL,
-//                        EdusohoApp.app.schoolHost,
-//                        String.format(Const.MOBILE_WEB_COURSE, id)
-//                );
-//                break;
-//            case "classroom":
-//                break;
-//        }
-//            default:
-//                url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.CLASSROOM_COURSES, id));
-//        }
-//        view.setTag(R.id.card_cover, url);
-//        view.setOnClickListener(mViewOnClickListener);
+        view.setTag(R.id.card_cover, url);
+        view.setOnClickListener(mViewOnClickListener);
     }
-
-//    View.OnClickListener mViewOnClickListener = new View.OnClickListener() {
-//        @Override
-//        public void onClick(View v) {
-//            final String url = v.getTag(R.id.card_cover).toString();
-//            EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
-//                @Override
-//                public void setIntentDate(Intent startIntent) {
-//                    startIntent.putExtra(Const.WEB_URL, url);
-//                }
-//            });
-//        }
-//    };
 
     View.OnClickListener mViewOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            final String id = v.getTag(R.id.card_cover).toString();
-            EdusohoApp.app.mEngine.runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
+            final String url = v.getTag(R.id.card_cover).toString();
+            EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, id);
-                }
-            });
-        }
-    };
-
-
-    View.OnClickListener mViewOnClickListener2 = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            final String id = v.getTag(R.id.card_cover).toString();
-            EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity", mContext, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(CourseActivity.COURSE_ID, id);
+                    startIntent.putExtra(Const.WEB_URL, url);
                 }
             });
         }

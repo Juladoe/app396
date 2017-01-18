@@ -1,15 +1,10 @@
 package com.edusoho.kuozhi.v3.plugin.appview;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
-import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import java.io.File;
 
@@ -17,8 +12,6 @@ import java.io.File;
  * Created by 菊 on 2016/4/11.
  */
 public class GenseeLivePlayerAction {
-
-    private final static int VERSION = 2;
 
     private Activity mActivity;
 
@@ -30,7 +23,7 @@ public class GenseeLivePlayerAction {
     public void invoke(Bundle bundle) {
         Intent intent = new Intent();
         intent.setClassName("com.gensee.player", "com.gensee.player.GenseePlayActivity");
-        if (checkLiveAppIsExist(mActivity.getBaseContext(), intent)) {
+        if (checkLiveAppIsExist(intent)) {
             installLiveApp();
             return;
         }
@@ -41,20 +34,11 @@ public class GenseeLivePlayerAction {
     private void installLiveApp() {
         File installDir = AppUtil.getAppInstallStorage();
         CoreEngine.create(mActivity).installApkFromAssetByPlugin(installDir.getAbsolutePath());
-        installApk(new File(installDir, "genseeLivePlayer.apk").getAbsolutePath());
+        installApk(new File(installDir, "genseeLivePlayer-1.0.apk").getAbsolutePath());
     }
 
-    private boolean checkLiveAppIsExist(Context context, Intent intent) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo("com.gensee.player", PackageManager.GET_ACTIVITIES);
-            if (packageInfo != null && packageInfo.versionCode < VERSION) {
-                return true;
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-        }
-        ResolveInfo resolveInfo = context.getPackageManager().resolveActivity(intent, 0);
-        return resolveInfo == null;
+    private boolean checkLiveAppIsExist(Intent intent) {
+        return mActivity.getBaseContext().getPackageManager().resolveActivity(intent, 0) == null;
     }
 
     public void installApk(String file) {

@@ -13,8 +13,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import m.framework.utils.Utils;
-
 /**
  * Created by howzhi on 15/10/8.
  */
@@ -54,13 +52,6 @@ public class ShardDialog extends Dialog {
             setContentView(R.layout.shard_content_layout);
         }
         mGridView = (GridView) findViewById(R.id.shard_gridview);
-        int width = Utils.getScreenWidth(mContext);
-        int height = Utils.getScreenHeight(mContext);
-        if(width > height){
-            mGridView.setNumColumns(6);
-        }else{
-            mGridView.setNumColumns(3);
-        }
         mCancelView = (TextView) findViewById(R.id.shard_cancelBtn);
         mCancelView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -26,9 +26,7 @@ import java.util.List;
 /**
  * Created by howzhi on 14-9-29.
  */
-public class
-
-SingleChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
+public class SingleChoiceHomeworkQuestionWidget extends BaseHomeworkQuestionWidget {
 
     protected RadioGroup radioGroup;
 

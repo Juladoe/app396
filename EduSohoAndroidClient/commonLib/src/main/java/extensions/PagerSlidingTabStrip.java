@@ -119,7 +119,6 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
         tabsContainer = new LinearLayout(context);
         tabsContainer.setOrientation(LinearLayout.HORIZONTAL);
-        tabsContainer.setGravity(Gravity.CENTER_HORIZONTAL);
         tabsContainer.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         addView(tabsContainer);
 
@@ -163,8 +162,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         dividerPaint.setAntiAlias(true);
         dividerPaint.setStrokeWidth(dividerWidth);
 
-        defaultTabLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT, 0.0f);
-        defaultTabLayoutParams.gravity = Gravity.CENTER_HORIZONTAL;
+        defaultTabLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT, 1.0f);
         expandedTabLayoutParams = new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
 
         if (locale == null) {
@@ -301,13 +299,8 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
             View v = tabsContainer.getChildAt(i);
 
-            v.measure(0, 0);
-            int width = v.getMeasuredWidth();
-            int tabsWidth = getResources().getDisplayMetrics().widthPixels;
-            defaultTabLayoutParams.leftMargin = (tabsWidth / 2 - width) / 4;
-            defaultTabLayoutParams.rightMargin = (tabsWidth / 2 - width) / 4;
             v.setLayoutParams(defaultTabLayoutParams);
-
+//            v.setBackgroundResource(tabBackgroundResId);
             if (shouldExpand) {
                 v.setPadding(0, 0, 0, 0);
             } else {
@@ -426,7 +419,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
         dividerPaint.setColor(dividerColor);
         for (int i = 0; i < tabCount - 1; i++) {
             View tab = tabsContainer.getChildAt(i);
-            //canvas.drawLine(tab.getRight(), dividerPadding, tab.getRight(), height - dividerPadding, dividerPaint);
+            canvas.drawLine(tab.getRight(), dividerPadding, tab.getRight(), height - dividerPadding, dividerPaint);
         }
     }
 

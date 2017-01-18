@@ -3,9 +3,11 @@ package com.edusoho.kuozhi.v3.listener;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import com.android.volley.VolleyError;
-import com.edusoho.kuozhi.v3.entity.lesson.PluginViewItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.view.dialog.ExerciseOptionDialog.GridViewItem;
 
 /**
  * Created by howzhi on 15/11/2.
@@ -14,7 +16,9 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 public abstract class BaseLessonPluginCallback implements LessonPluginCallback, NormalCallback<VolleyError>
 {
     protected Context mContext;
-    private PluginViewItem mItem;
+    private int mPosition;
+    protected BaseAdapter mAdapter;
+    private Object mLock = new Object();
 
     public BaseLessonPluginCallback(Context context)
     {
@@ -22,18 +26,23 @@ public abstract class BaseLessonPluginCallback implements LessonPluginCallback, 
     }
 
     @Override
-    public boolean click(View view) {
-        return mItem.status != PluginViewItem.UNENABLE;
+    public boolean click(AdapterView<?> parent, View view, int position) {
+        return false;
     }
 
     @Override
-    public void initState(PluginViewItem item) {
-    }
+    public void initPlugin(BaseAdapter adapter, int postion) {
+        synchronized (mLock) {
+            if (this.mAdapter != null) {
+                return;
+            }
+        }
+        this.mAdapter = adapter;
+        this.mPosition = postion;
 
-    @Override
-    public void initPlugin(PluginViewItem item) {
-        this.mItem = item;
-        item.status = PluginViewItem.LOAD;
+        GridViewItem item = (GridViewItem) mAdapter.getItem(postion);
+        item.status = GridViewItem.LOAD;
+        mAdapter.notifyDataSetInvalidated();
         loadPlugin(item.bundle);
     }
 
@@ -41,19 +50,14 @@ public abstract class BaseLessonPluginCallback implements LessonPluginCallback, 
 
     protected abstract void loadPlugin(Bundle bundle);
 
-    protected void setViewStatus(int state) {
-        mItem.setStatus(state);
-    }
-
-    protected void setViewLearnState(boolean isLearn) {
-        if (mItem.status == PluginViewItem.ENABLE || mItem.status == PluginViewItem.NEW) {
-            mItem.setStatus(isLearn ? PluginViewItem.ENABLE : PluginViewItem.NEW);
-            return;
-        }
+    protected void setViewStatus(boolean status) {
+        GridViewItem item = (GridViewItem) mAdapter.getItem(mPosition);
+        item.status = status ? GridViewItem.ENABLE : GridViewItem.UNENABLE;
+        mAdapter.notifyDataSetInvalidated();
     }
 
     @Override
     public void success(VolleyError obj) {
-        setViewStatus(PluginViewItem.UNENABLE);
+        setViewStatus(false);
     }
 }

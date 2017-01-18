@@ -43,9 +43,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:layout_marginLeft="32dp"
+            android:layout_marginLeft="34dp"
             android:background="@drawable/lesson_list_item_bg"
-            android:padding="16dp">
+            android:padding="14dp">
 
             <TextView
                 android:id="@+id/tv_lesson_name"
@@ -73,7 +73,7 @@
 
         </RelativeLayout>
 
-        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+        <com.edusoho.kuozhi.v3.view.EduSohoIconView
             android:id="@+id/iv_download_selected"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -81,9 +81,8 @@
             android:layout_marginLeft="22dp"
             android:background="@android:color/white"
             android:text="@string/font_download_unselect"
-            android:textColor="@color/primary_color"
-            android:textSize="@dimen/large_font_size" />
-
+            android:textColor="@color/green_alpha"
+            android:textSize="@dimen/xx_large_font_size" />
     </RelativeLayout>
 
 

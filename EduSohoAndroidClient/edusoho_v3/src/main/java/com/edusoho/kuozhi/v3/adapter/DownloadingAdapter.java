@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
@@ -19,7 +18,6 @@ import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
-import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -42,7 +40,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
     private DisplayImageOptions mOptions;
 
     public DownloadingAdapter(Context ctx, BaseActivity activity, SparseArray<M3U8DbModel> m3u8List,
-                              List<Course> groupItems, HashMap<Integer, List<LessonItem>> mLocalLessons, DownloadType type, int childResId) {
+                              List<Course> groupItems, HashMap<Integer, ArrayList<LessonItem>> mLocalLessons, DownloadType type, int childResId) {
         mContex = ctx;
         m3u8ModelList = m3u8List;
         mGroupItems = groupItems;
@@ -58,7 +56,7 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
                 showImageOnFail(R.drawable.defaultpic).build();
     }
 
-    public void updateLocalData(List<Course> groupItems, HashMap<Integer, List<LessonItem>> mLocalLessons) {
+    public void updateLocalData(List<Course> groupItems, HashMap<Integer, ArrayList<LessonItem>> mLocalLessons) {
         mGroupItems = groupItems;
         List<List<LessonItem>> lessonItems = new ArrayList<>();
         for (Course course : groupItems) {
@@ -159,15 +157,14 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
             childPanel.tvVideoLength.setText(AppUtil.convertCNTime(lessonItem.length));
         } else {
             M3U8DbModel model = m3u8ModelList.get(lessonItem.id);
-            //childPanel.tvProgress.setText((int) (model.downloadNum / (float) model.totalNum * 100) + "%");
+            childPanel.tvProgress.setText((int) (model.downloadNum / (float) model.totalNum * 100) + "%");
 
             int downStatus = getDownloadStatus(lessonItem.id);
             int downStatusIconRes = downStatus == M3U8Util.DOWNING ? R.string.font_downloading : R.string.font_stop_downloading;
             if (model.finish == M3U8Util.DOWNLOAD_ERROR) {
-                //childPanel.tvProgress.setText("下载失败");
+                childPanel.tvProgress.setText("下载失败");
             }
-            //childPanel.setDownloasState(downStatus);
-            //childPanel.ivDownloadSign.setText(mContex.getResources().getString(downStatusIconRes));
+            childPanel.ivDownloadSign.setText(mContex.getResources().getString(downStatusIconRes));
         }
         //选择框是否显示
         if (mSelectedShow) {
@@ -267,26 +264,28 @@ public class DownloadingAdapter extends BaseExpandableListAdapter {
     }
 
     public static class ChildPanel {
-        public EduSohoNewIconView ivDownloadSelected;
+        public EduSohoIconView ivDownloadSelected;
         public TextView tvLessonTitle;
         public View viewDownloadProgress;
         public TextView ivDownloadSign;
-        public ProgressBar tvProgress;
+        public TextView tvProgress;
         public TextView tvVideoLength;
 
         public ChildPanel(View view, DownloadType type) {
-            ivDownloadSelected = (EduSohoNewIconView) view.findViewById(R.id.iv_download_selected);
+            ivDownloadSelected = (EduSohoIconView) view.findViewById(R.id.iv_download_selected);
             tvLessonTitle = (TextView) view.findViewById(R.id.tv_lesson_content);
             viewDownloadProgress = view.findViewById(R.id.rl_progress);
-            //ivDownloadSign = (TextView) view.findViewById(R.id.iv_download_sign);
-            tvProgress = (ProgressBar) view.findViewById(R.id.tv_progress);
+            ivDownloadSign = (TextView) view.findViewById(R.id.iv_download_sign);
+            tvProgress = (TextView) view.findViewById(R.id.tv_progress);
             tvVideoLength = (TextView) view.findViewById(R.id.tv_video_length);
 
             if (DownloadType.DOWNLOADED == type) {
                 tvVideoLength.setVisibility(View.VISIBLE);
+                ivDownloadSign.setVisibility(View.GONE);
                 tvProgress.setVisibility(View.GONE);
             } else {
                 tvVideoLength.setVisibility(View.GONE);
+                ivDownloadSign.setVisibility(View.VISIBLE);
                 tvProgress.setVisibility(View.VISIBLE);
             }
         }

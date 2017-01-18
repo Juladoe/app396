@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -31,11 +30,8 @@ import com.edusoho.kuozhi.v3.ui.LoginActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
-import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.ToastUtil;
 import com.edusoho.kuozhi.v3.util.Validator;
-import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
@@ -101,52 +97,39 @@ public class FindPasswordByMailFragment extends BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String resetPassword = etResetPassword.getText().toString();
-                if (TextUtils.isEmpty(resetPassword)) {
-                    Toast.makeText(mContext, getString(R.string.reset_password_not_null), Toast.LENGTH_LONG).show();
-                    return;
-                }
-                if (resetPassword.length() < 5 || resetPassword.length() > 20) {
-                    Toast.makeText(mContext, getString(R.string.password_more_than_six_digit_number), Toast.LENGTH_LONG).show();
+                if (etResetPassword.length() == 0) {
                     return;
                 }
                 RequestUrl requestUrl = app.bindNewUrl(Const.EMAILS, false);
-                Map<String, String> params = requestUrl.getParams();
-                params.put("password", XXTEA.encryptToBase64String(resetPassword, app.domain));
-                params.put("email", mEmail);
-                final LoadDialog loadDialog = LoadDialog.create(getActivity());
-                loadDialog.show();
+                Map<String, String> map = requestUrl.getParams();
+                map.put("password", etResetPassword.getText().toString());
+                map.put("email", mEmail);
                 app.postUrl(requestUrl, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        loadDialog.dismiss();
                         ApiResponse<Error> error = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<Error>>() {
                         });
                         if (error.error != null && error.error.code != null && error.error.code.equals("500")) {
-                            Toast.makeText(mContext, error.error.message, Toast.LENGTH_LONG).show();
+                            ToastUtil.getInstance(mContext).makeText(error.error.message, Toast.LENGTH_LONG).show();
                             return;
                         }
-                        new AlertDialog.Builder(getActivity()).setMessage("请前往邮箱验证信息，验证成功即可登录").
-                                setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                        new AlertDialog.Builder(getActivity()).setMessage("请前往该邮箱验证信息，验证成功即可登录").
+                                setPositiveButton("去登录", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        app.mEngine.runNormalPlugin("LoginActivity", getActivity().getApplicationContext(), new PluginRunCallback() {
+                                        app.mEngine.runNormalPlugin("LoginActivity", mContext, new PluginRunCallback() {
                                             @Override
                                             public void setIntentDate(Intent startIntent) {
                                                 startIntent.putExtra(LoginActivity.FIND_PASSWORD_ACCOUNT, mEmail);
                                             }
-                                        }, Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        }, Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     }
                                 }).setCancelable(false).show();
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        loadDialog.dismiss();
-                        if (error.networkResponse != null) {
-                            String errorMsg = new String(error.networkResponse.data);
-                            Toast.makeText(mContext, errorMsg, Toast.LENGTH_SHORT).show();
-                        }
+
                     }
                 });
 

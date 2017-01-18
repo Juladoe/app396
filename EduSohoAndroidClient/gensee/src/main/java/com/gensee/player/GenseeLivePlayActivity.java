@@ -32,17 +32,15 @@ import android.widget.Toast;
 import com.gensee.common.ServiceType;
 import com.gensee.config.ConfigApp;
 import com.gensee.entity.InitParam;
-import com.gensee.entity.PingEntity;
 import com.gensee.entity.UserInfo;
 import com.gensee.fragement.ChatFragment;
 import com.gensee.fragement.DocFragment;
 import com.gensee.fragement.QaFragment;
 import com.gensee.fragement.ViedoFragment;
+import com.gensee.fragement.VoteFragment;
 import com.gensee.net.AbsRtAction;
 import com.gensee.taskret.OnTaskRet;
 import com.gensee.utils.GenseeLog;
-
-import java.util.List;
 
 public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayListener {
 
@@ -68,22 +66,6 @@ public class GenseeLivePlayActivity extends AppCompatActivity implements OnPlayL
     private String mNickname;
     private String mKey;
     private String mServiceType;
-
-    @Override
-    public void onIdcList(List<PingEntity> list) {
-    }
-
-    @Override
-    public void onVideoSize(int i, int i1, boolean b) {
-    }
-
-    @Override
-    public void onModuleFocus(int i) {
-    }
-
-    @Override
-    public void onScreenStatus(boolean b) {
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

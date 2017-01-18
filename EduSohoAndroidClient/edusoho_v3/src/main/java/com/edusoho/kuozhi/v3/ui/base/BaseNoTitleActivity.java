@@ -14,22 +14,23 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
  * Created by DEL on 2016/11/24.
  */
 
-public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.MessageCallback {
+public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.MessageCallback  {
 
     protected int mRunStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        setSupportActionBar(null);
         super.onCreate(savedInstanceState);
         app.registMsgSource(this);
     }
 
     protected void initView() {
         hideActionBar();
-        View view = findViewById(R.id.back);
-        if (view != null) {
-            view.setOnClickListener(new View.OnClickListener() {
+        View back = findViewById(R.id.back);
+        if (back != null) {
+            back.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     finish();
@@ -66,8 +67,8 @@ public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.M
     }
 
     @Override
-    public void finish() {
-        super.finish();
+    protected void onDestroy() {
+        super.onDestroy();
         app.unRegistMsgSource(this);
     }
 }

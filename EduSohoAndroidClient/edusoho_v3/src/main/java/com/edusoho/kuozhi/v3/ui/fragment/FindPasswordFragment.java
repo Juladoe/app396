@@ -124,11 +124,11 @@ public class FindPasswordFragment extends BaseFragment {
                     return;
                 }
                 if ("".equals(etPhoneOrMail.getText().toString().trim())) {
-                    Toast.makeText(mContext, getString(R.string.find_password_text_not_null), Toast.LENGTH_LONG).show();
+                    ToastUtil.getInstance(mContext).makeText(getString(R.string.find_password_text_not_null), Toast.LENGTH_LONG).show();
                     return;
                 }
                 if (rlImgCode.getVisibility() == View.VISIBLE && etImgCode.length() == 0) {
-                    Toast.makeText(mContext, getString(R.string.img_code_cannot_null), Toast.LENGTH_LONG).show();
+                    ToastUtil.getInstance(mContext).makeText(getString(R.string.img_code_cannot_null), Toast.LENGTH_LONG).show();
                     return;
                 }
                 if (getActivity() != null && getActivity() instanceof ForgetPasswordActivity) {
@@ -193,7 +193,7 @@ public class FindPasswordFragment extends BaseFragment {
                             });
                         }
                     } else {
-                        Toast.makeText(mContext, getString(R.string.phone_or_mail_format_error), Toast.LENGTH_LONG).show();
+                        ToastUtil.getInstance(mContext).makeText(getString(R.string.phone_or_mail_format_error), Toast.LENGTH_LONG).show();
                     }
                 }
             }

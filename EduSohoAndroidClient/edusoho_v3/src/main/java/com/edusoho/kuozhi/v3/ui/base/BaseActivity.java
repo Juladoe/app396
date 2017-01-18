@@ -44,6 +44,7 @@ public class BaseActivity extends ActionBarActivity {
     public EdusohoApp app;
     public ActionBar mActionBar;
     protected FragmentManager mFragmentManager;
+    protected EdusohoMainService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +61,7 @@ public class BaseActivity extends ActionBarActivity {
         app.setDisplay(this);
 
         gson = app.gson;
+        mService = app.getService();
         app.mActivity = mActivity;
         app.mContext = mContext;
     }
@@ -95,6 +97,10 @@ public class BaseActivity extends ActionBarActivity {
         }
 
         super.startActivityForResult(intent, requestCode, options);
+    }
+
+    public EdusohoMainService getService() {
+        return mService;
     }
 
     public void hideActionBar() {
@@ -218,6 +224,23 @@ public class BaseActivity extends ActionBarActivity {
         });
     }
 
+    public void ajaxGetWithCache(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
+        app.getUrlWithCache(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                responseListener.onResponse(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (errorListener != null) {
+                    errorListener.onErrorResponse(error);
+                } else {
+                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+                }
+            }
+        });
+    }
 
     public void runService(String serviceName) {
         app.mEngine.runService(serviceName, mActivity, null);

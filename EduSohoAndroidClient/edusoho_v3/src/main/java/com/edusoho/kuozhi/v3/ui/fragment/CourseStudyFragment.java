@@ -40,7 +40,6 @@ import com.edusoho.kuozhi.v3.model.bal.courseDynamics.DynamicsProvider;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadCreateActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -99,9 +98,14 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
     private View.OnClickListener summaryListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Bundle bundle = new Bundle();
-            bundle.putString(CourseActivity.COURSE_ID, String.valueOf(mCourseId));
-            CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
+            CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    School school = getAppSettingProvider().getCurrentSchool();
+                    String url = String.format(Const.MOBILE_APP_URL, school.url + "/", String.format(Const.MOBILE_WEB_COURSE, mCourseId));
+                    startIntent.putExtra(Const.WEB_URL, url);
+                }
+            });
         }
     };
 

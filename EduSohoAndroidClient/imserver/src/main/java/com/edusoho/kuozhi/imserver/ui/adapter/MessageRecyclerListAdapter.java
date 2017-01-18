@@ -659,7 +659,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         }
     }
 
-    protected class AudioViewHolder extends MessageViewHolder {
+    class AudioViewHolder extends MessageViewHolder {
 
         public ImageView mAudioView;
         public TextView mLengthView;
@@ -736,7 +736,7 @@ public class MessageRecyclerListAdapter extends RecyclerView.Adapter<MessageRecy
         }
     }
 
-    protected class ImageVewHolder extends MessageViewHolder {
+    class ImageVewHolder extends MessageViewHolder {
 
         public ChatImageView mImageView;
 

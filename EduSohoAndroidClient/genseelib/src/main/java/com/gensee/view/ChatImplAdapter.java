@@ -3,6 +3,7 @@ package com.gensee.view;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+
 import com.gensee.adapter.AbsChatAdapter;
 import com.gensee.rtmpresourcelib.R;
 

@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
-
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -29,7 +28,6 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
@@ -67,7 +65,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     }
 
     private void startAnim() {
-        final View nameView = findViewById(R.id.tv_start_name);
+        final View nameView =  findViewById(R.id.tv_start_name);
         final View titleView = findViewById(R.id.tv_start_title);
         View iconView = findViewById(R.id.tv_start_icon);
 
@@ -174,12 +172,11 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     protected void onDestroy() {
         app.unRegistMsgSource(this);
         super.onDestroy();
-        Log.d(TAG, "onDestroy");
     }
 
     protected void checkSchoolAndUserToken(SystemInfo systemInfo) {
         startLoading("登录用户");
-        ajaxGet(String.format("%s/%s?version=2&token=%s", systemInfo.mobileApiUrl, Const.CHECKTOKEN, app.token), new Response.Listener<String>() {
+        ajaxGet(String.format("%s/%s?version=2", systemInfo.mobileApiUrl, Const.CHECKTOKEN), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 UserResult userResult = parseJsonValue(response.toString(), new TypeToken<UserResult>() {
@@ -198,8 +195,6 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                 app.setCurrentSchool(site);
                 if (userResult.user != null) {
                     app.saveToken(userResult);
-                } else {
-                    app.removeToken();
                 }
                 startApp();
             }
@@ -312,20 +307,18 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             @Override
             public void onResponse(String response) {
                 hideLoading();
-                SystemInfo systemInfo = parseJsonValue(response.toString(), new TypeToken<SystemInfo>() {
+                SystemInfo info = parseJsonValue(response.toString(), new TypeToken<SystemInfo>() {
                 });
-                if (systemInfo == null || systemInfo.mobileApiUrl == null || "".equals(systemInfo.mobileApiUrl)) {
+                if (info == null || info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
                     showSchoolErrorDlg();
                     return;
                 }
 
-                app.schoolVersion = systemInfo.version;
-
                 if (TextUtils.isEmpty(app.token)) {
-                    checkSchoolVersion(systemInfo);
+                    checkSchoolVersion(info);
                     return;
                 }
-                checkSchoolAndUserToken(systemInfo);
+                checkSchoolAndUserToken(info);
             }
         }, new Response.ErrorListener() {
             @Override

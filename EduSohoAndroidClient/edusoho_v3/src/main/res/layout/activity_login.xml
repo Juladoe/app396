@@ -47,7 +47,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="1dp"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="15dp"
                     android:layout_toLeftOf="@+id/tv_three"
@@ -55,7 +55,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="1dp"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="15dp"
                     android:layout_toRightOf="@+id/tv_three"
@@ -174,7 +174,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="1dp"
                     android:layout_below="@+id/et_username"
                     android:layout_marginTop="10dp"
                     android:background="@color/disabled_hint_color" />
@@ -216,7 +216,7 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="1px"
+                    android:layout_height="1dp"
                     android:layout_below="@+id/et_password"
                     android:layout_marginTop="10dp"
                     android:background="@color/disabled_hint_color" />
@@ -244,7 +244,7 @@
 
                 <View
                     android:id="@+id/line_center"
-                    android:layout_width="1px"
+                    android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:layout_centerHorizontal="true"
                     android:background="@color/disabled_hint_color" />

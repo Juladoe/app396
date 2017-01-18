@@ -1,21 +1,77 @@
 <html>
 <head>
     <meta http-equiv='Content-type' content='text/html; charset=utf-8'>
-    <meta name='viewport' content='width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0'>
+    <meta name='viewport'
+          content='width=device-width,initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0'>
     <style>
         body{
-            width:90%;
-            font-size:90%;
-            color:#4d4d4d;
-            background:#ffffff;
-        }
-        img {
-            width:95%;
+        font-size:90%;
+        color:#4d4d4d;
+        background:#ffffff;
         }
     </style>
 </head>
 <body>
 %content%
+<script type='text/javascript'>
+			function getScreenWidth() {
+			    var width = 0;
+				switch (window.orientation) {
+				case 0:
+					var width = document.body.clientWidth;
+                    if (width == 0) {
+                        width = window.screen.width * 0.9;
+                    }
+					break;
+				case 90:
+				case - 90 :
+				    width = document.body.clientHeight;
+				    if (width == 0) {
+                        width = window.screen.height * 0.9;
+                    }
+					break
+				}
+
+				return width
+			}
+			function zoomImage(img, width) {
+				var oldH = img.height;
+				var oldW = img.width;
+				img.width = width;
+				img.height = width / oldW * oldH
+			}
+			function adaptationImage() {
+				var width = getScreenWidth();
+				var imgs = document.getElementsByTagName('img');
+				for (var i = 0; i < 
+					imgs.length; i++) {
+					zoomImage(imgs[i], width)
+				}
+			}
+			var imageArray = new Array();
+			var imgs = document.getElementsByTagName('img');
+			for (var i = 0; i < imgs.length; i++) {
+				var img = imgs[i];
+				img.addEventListener('load',
+				function() {
+					var width = getScreenWidth();
+					zoomImage(this, width)
+				});
+				img.alt = i;
+				imageArray.push(img.src);
+				img.addEventListener('click',
+				function() {
+					window.location = 'imageIndexNUrls://?' + this.alt + '.partation.' + imageArray.join('.partation.');
+					window.jsobj.showImages(this.alt,imageArray);
+				})
+			}
+			window.addEventListener('orientationchange',
+			function() {
+				adaptationImage()
+			},
+			false);
+
+</script>
 </body>
 
 </html>

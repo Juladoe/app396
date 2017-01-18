@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment.lesson;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -17,16 +15,15 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.photo.HackyViewPager;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -42,22 +39,16 @@ import photoview.PhotoView;
  */
 public class PptLessonFragment extends BaseFragment {
 
-    private static final String PPT_CONFIG = "ppt_config";
-    private static final String PPT_INDEX = "%d_%d_ppt_index";
-
     private HackyViewPager pptViewPager;
     private ArrayList<String> ppts;
     private Bitmap cacheBitmap;
     private LayoutInflater mLayoutInflater;
 
     private TextView mStartPageView;
-    private EduSohoNewIconView mScreenView;
+    private CheckBox mScreenView;
     private View mToolsView;
 
     private boolean isScreen;
-    private int mCurrentIndex;
-    private int mLessonId;
-    private int mCourseId;
 
     @Override
     public String getTitle() {
@@ -68,6 +59,7 @@ public class PptLessonFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLayoutInflater = LayoutInflater.from(mContext);
+        //cacheBitmap = app.query.getCachedImage(R.drawable.defaultpic);
         cacheBitmap = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.defaultpic);
         setContainerView(R.layout.ppt_lesson_layout);
     }
@@ -78,35 +70,17 @@ public class PptLessonFragment extends BaseFragment {
         Bundle bundle = getArguments();
         if (bundle != null) {
             ppts = bundle.getStringArrayList(LessonActivity.CONTENT);
-            mCourseId = bundle.getInt(Const.COURSE_ID);
-            mLessonId = bundle.getInt(Const.LESSON_ID);
         }
-        initPPTConfig();
-    }
-
-    private void initPPTConfig() {
-        SharedPreferences sp = getContext().getSharedPreferences(PPT_CONFIG, Context.MODE_PRIVATE);
-        mCurrentIndex = sp.getInt(String.format(PPT_INDEX, mCourseId, mLessonId), 0);
-    }
-
-    private void savePPTConfig() {
-        SharedPreferences sp = getContext().getSharedPreferences(PPT_CONFIG, Context.MODE_PRIVATE);
-        sp.edit().putInt(String.format(PPT_INDEX, mCourseId, mLessonId), mCurrentIndex).commit();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        savePPTConfig();
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mScreenView.setText(R.string.font_shrink_screen);
+            mActivity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
         } else {
-            mScreenView.setText(R.string.font_full_screen);
+            mActivity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
     }
 
@@ -115,7 +89,7 @@ public class PptLessonFragment extends BaseFragment {
         super.initView(view);
 
         mToolsView = view.findViewById(R.id.ppt_lesson_tools);
-        mScreenView = (EduSohoNewIconView) view.findViewById(R.id.ppt_page_screen);
+        mScreenView = (CheckBox) view.findViewById(R.id.ppt_page_screen);
         mStartPageView = (TextView) view.findViewById(R.id.ppt_page_start);
         pptViewPager = (HackyViewPager) view.findViewById(R.id.ppt_viewpager);
 
@@ -124,21 +98,18 @@ public class PptLessonFragment extends BaseFragment {
             return;
         }
         PptPagerAdapter adapter = new PptPagerAdapter(ppts);
-        mStartPageView.setText(String.format("%d/%d", mCurrentIndex + 1, ppts.size()));
+        mStartPageView.setText("1/" + ppts.size());
         pptViewPager.setAdapter(adapter);
         pptViewPager.setOnPageChangeListener(adapter);
 
-        pptViewPager.setCurrentItem(mCurrentIndex);
-        mScreenView.setOnClickListener(new View.OnClickListener() {
+        mScreenView.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 int orientation = mActivity.getRequestedOrientation();
                 if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
                     mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    mScreenView.setText(R.string.font_shrink_screen);
                 } else {
                     mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    mScreenView.setText(R.string.font_full_screen);
                 }
             }
         });
@@ -151,6 +122,7 @@ public class PptLessonFragment extends BaseFragment {
                 for (int i = 1; i <= ppts.size(); i++) {
                     array.add(String.valueOf(i));
                 }
+
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
                         mContext, R.layout.ppt_lesson_popwindow_list_item, array
                 );
@@ -203,10 +175,12 @@ public class PptLessonFragment extends BaseFragment {
             ImageLoader.getInstance().displayImage(mImages.get(position), photoView, EdusohoApp.app.mOptions, new ImageLoadingListener() {
                 @Override
                 public void onLoadingStarted(String s, View view) {
+
                 }
 
                 @Override
                 public void onLoadingFailed(String s, View view, FailReason failReason) {
+
                 }
 
                 @Override
@@ -221,6 +195,7 @@ public class PptLessonFragment extends BaseFragment {
 
                 @Override
                 public void onLoadingCancelled(String s, View view) {
+
                 }
             });
             container.addView(itemView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -239,16 +214,17 @@ public class PptLessonFragment extends BaseFragment {
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
         }
 
         @Override
         public void onPageSelected(int position) {
-            mCurrentIndex = position;
             mStartPageView.setText((position + 1) + "/" + ppts.size());
         }
 
         @Override
         public void onPageScrollStateChanged(int state) {
+
         }
     }
 }

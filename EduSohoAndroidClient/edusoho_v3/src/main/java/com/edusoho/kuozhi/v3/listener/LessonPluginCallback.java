@@ -1,17 +1,15 @@
 package com.edusoho.kuozhi.v3.listener;
 
 import android.view.View;
-
-import com.edusoho.kuozhi.v3.entity.lesson.PluginViewItem;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 
 /**
  * Created by howzhi on 15/11/2.
  */
 public interface LessonPluginCallback {
 
-    void initPlugin(PluginViewItem item);
+    void initPlugin(BaseAdapter adapter, int postion);
 
-    void initState(PluginViewItem item);
-
-    boolean click(View view);
+    boolean click(AdapterView<?> parent, View view, int position);
 }

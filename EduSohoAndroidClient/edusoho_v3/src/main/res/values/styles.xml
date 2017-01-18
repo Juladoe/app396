@@ -18,24 +18,6 @@
         <item name="android:windowExitAnimation">@anim/popwindow_hide</item>
     </style>
 
-    <style name="MyTab">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:textSize">@dimen/font_l</item>
-        <item name="android:textColor">@color/secondary_font_color</item>
-    </style>
-
-    <style name="MyTabLine">
-        <item name="android:layout_width">35dp</item>
-        <item name="android:layout_height">3dp</item>
-        <item name="android:layout_centerHorizontal">true</item>
-        <item name="android:layout_alignParentBottom">true</item>
-        <item name="android:background">@color/primary_color</item>
-        <item name="android:visibility">gone</item>
-    </style>
-
     <style name="DialogWindowAnimation">
         <item name="android:windowEnterAnimation">@anim/dialog_window_enter</item>
         <item name="android:windowExitAnimation">@anim/dialog_window_exit</item>
@@ -75,13 +57,6 @@
     <style name="startTheme" parent="@style/EdusohoAppTheme">
         <item name="android:textColor">@color/system_text</item>
         <item name="windowActionBar">true</item>
-    </style>
-
-    <style name="StarStyle">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">30dp</item>
-        <item name="android:text">@string/font_news</item>
     </style>
 
     <style name="loadDlgTheme" parent="android:Theme.Dialog">
@@ -218,23 +193,6 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
-    <style name="PopDialogTheme2" parent="android:Theme.Dialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowAnimationStyle">@style/AnimBottom</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
-    </style>
-
-    <style name="PopDialogTheme3" parent="android:Theme.Dialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
-    </style>
-
     <style name="AnimBottom" parent="@android:style/Animation">
         <item name="android:windowEnterAnimation">@anim/fragment_enter</item>
         <item name="android:windowExitAnimation">@anim/fragment_exit</item>
@@ -244,30 +202,9 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_fb</item>
         <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textSize">@dimen/base_large_size</item>
         <item name="actionBarSize">44dp</item>
         <item name="android:windowAnimationStyle">@style/SlideToWindowAnimTheme</item>
         <item name="android:windowContentOverlay">@null</item>
-    </style>
-
-    <style name="VideoPlayerActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:textColorPrimary">@color/white</item>
-        <item name="android:textSize">@dimen/base_large_size</item>
-        <item name="actionBarSize">44dp</item>
-        <item name="android:windowAnimationStyle">@style/SlideToWindowAnimTheme</item>
-        <item name="android:windowContentOverlay">@null</item>
-    </style>
-
-    <style name="DownLoadTheme" parent="@style/AppThemeNoActionBar">
-        <item name="android:actionMenuTextColor">@color/primary_color</item>
-        <item name="android:actionMenuTextAppearance">@style/DownLoadActionBarMenu</item>
-        <item name="actionMenuTextAppearance">@style/DownLoadActionBarMenu</item>
-        <item name="actionMenuTextColor">@color/primary_color</item>
-    </style>
-
-    <style name="DownLoadActionBarMenu" parent="@android:style/TextAppearance.Holo.Large">
-        <item name="android:textStyle">normal</item>
-        <item name="android:textSize">@dimen/base_large_size</item>
     </style>
 
     <style name="AppViewPaperTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -317,30 +254,5 @@
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:backgroundDimEnabled">true</item>
-    </style>
-
-    <style name="BottomLine">
-        <item name="android:background">@color/disabled_hint_color</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">0.5dp</item>
-        <item name="android:layout_marginRight">15dp</item>
-        <item name="android:layout_alignParentBottom">true</item>
-    </style>
-
-    <style name="DiscussDialog" parent="@android:style/Theme.Dialog">
-        <item name="android:windowFrame">@null</item>
-        <item name="android:windowIsFloating">true</item>
-        <item name="android:windowIsTranslucent">false</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@color/trans_color</item>
-        <item name="android:backgroundDimEnabled">false</item>
-    </style>
-
-    <style name="dialog_big_image" parent="DiscussDialog">
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">fill_parent</item>
-        <item name="android:windowBackground">@null</item>
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowIsFloating">false</item>
     </style>
 </resources>

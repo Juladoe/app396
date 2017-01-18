@@ -5,5 +5,5 @@
         android:id="@+id/news_course_profile"
         android:title="@string/news_course_share"
         app:showAsAction="always"
-        android:icon="@drawable/icon_menu_white_share" />
+        android:icon="@drawable/course_share" />
 </menu>

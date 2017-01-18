@@ -47,10 +47,6 @@ public class DocFragment extends Fragment {
 					}
 				});
 			}
-
-			@Override
-			public void onPageOpenFileFailure(int i) {
-			}
 		});
 		return mView;
 	}

@@ -10,8 +10,6 @@ import android.widget.Toast;
 import com.edusoho.kuozhi.homework.model.ExerciseProvider;
 import com.edusoho.kuozhi.homework.model.HomeWorkModel;
 import com.edusoho.kuozhi.homework.model.HomeworkProvider;
-import com.edusoho.kuozhi.homework.util.HomeWorkLearnConfig;
-import com.edusoho.kuozhi.v3.entity.lesson.PluginViewItem;
 import com.edusoho.kuozhi.v3.listener.BaseLessonPluginCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
@@ -57,8 +55,6 @@ public class ExerciseSummaryActivity extends HomeworkSummaryActivity {
     }
 
     public static class Callback extends BaseLessonPluginCallback {
-        private int mExerciseId;
-
         public Callback(Context context) {
             super(context);
         }
@@ -73,19 +69,12 @@ public class ExerciseSummaryActivity extends HomeworkSummaryActivity {
         }
 
         @Override
-        public boolean click(View view) {
-            if (super.click(view)) {
+        public boolean click(AdapterView<?> parent, View view, int position) {
+            if (!view.isEnabled()) {
+                ToastUtil.getInstance(mContext).makeText("课程暂无练习", Toast.LENGTH_SHORT).show();
                 return true;
             }
-            Toast.makeText(mContext, "课程暂无练习", Toast.LENGTH_SHORT).show();
             return false;
-        }
-
-        @Override
-        public void initState(PluginViewItem item) {
-            super.initState(item);
-            boolean learnState = HomeWorkLearnConfig.getHomeworkLocalLearnConfig(mContext, "exercise", mExerciseId);
-            setViewLearnState(learnState);
         }
 
         @Override
@@ -96,14 +85,7 @@ public class ExerciseSummaryActivity extends HomeworkSummaryActivity {
             provider.getHomeWork(requestUrl).success(new NormalCallback<HomeWorkModel>() {
                 @Override
                 public void success(HomeWorkModel homeWorkModel) {
-                    if (homeWorkModel == null || homeWorkModel.getId() == 0) {
-                        setViewStatus(PluginViewItem.UNENABLE);
-                        return;
-                    }
-
-                    mExerciseId = homeWorkModel.getId();
-                    boolean isLearn = HomeWorkLearnConfig.getHomeworkLocalLearnConfig(mContext, "exercise", mExerciseId);
-                    setViewStatus(isLearn ? PluginViewItem.ENABLE : PluginViewItem.NEW);
+                    setViewStatus(homeWorkModel != null && homeWorkModel.getId() != 0);
                 }
             }).fail(this);
         }

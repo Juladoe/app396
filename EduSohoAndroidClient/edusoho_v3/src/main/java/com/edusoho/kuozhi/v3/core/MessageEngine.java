@@ -9,8 +9,6 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -18,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MessageEngine {
 
-    private Map<String, MessageCallback> sourceMap;
+    private ConcurrentHashMap<String, MessageCallback> sourceMap;
     private ConcurrentHashMap<String, ArrayList<String>> pubMsgMap;
 
     private static Object synchronizedObj = new Object();
@@ -26,8 +24,8 @@ public class MessageEngine {
     private static MessageEngine messageEngine;
 
     private MessageEngine() {
-        pubMsgMap = new ConcurrentHashMap<>();
-        sourceMap = new ConcurrentHashMap<>();
+        pubMsgMap = new ConcurrentHashMap<String, ArrayList<String>>();
+        sourceMap = new ConcurrentHashMap<String, MessageCallback>();
     }
 
     public void destory() {
@@ -36,7 +34,7 @@ public class MessageEngine {
         sourceMap.clear();
     }
 
-    public Map<String, MessageCallback> getSourceMap() {
+    public ConcurrentHashMap<String, MessageCallback> getSourceMap() {
         return sourceMap;
     }
 

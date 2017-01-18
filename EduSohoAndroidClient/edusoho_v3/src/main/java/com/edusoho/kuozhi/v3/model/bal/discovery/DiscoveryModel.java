@@ -94,7 +94,7 @@ public class DiscoveryModel {
             public void onResponse(String response) {
                 ApiResponse<DiscoveryClassroom> apiResponse = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<DiscoveryClassroom>>() {
                 });
-                if (apiResponse.resources != null) {
+                if (apiResponse.resources != null && apiResponse.resources.size() > 0) {
                     callbackListener.onSuccess(apiResponse.resources);
                 } else if (apiResponse.error != null) {
                     callbackListener.onFailure(apiResponse.error.code, apiResponse.error.message);

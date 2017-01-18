@@ -19,16 +19,12 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.register.ErrorCode;
 import com.edusoho.kuozhi.v3.entity.register.FindPasswordSmsCode;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
-import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
-import com.edusoho.kuozhi.v3.util.SchoolUtil;
-import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
@@ -39,7 +35,7 @@ import java.util.TimerTask;
 /**
  * Created by DF on 2016/11/28.
  */
-public class CompletePhoneConfActivity extends ActionBarBaseActivity {
+public class CompletePhoneConfActivity extends ActionBarBaseActivity{
 
     private int mClockTime;
     private TextView tvShow;
@@ -59,7 +55,6 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
     private TextView tvTime;
     private String phone;
     private String verified_token;
-    private UserResult userResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +74,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
         tvConfirm = (TextView) findViewById(R.id.tv_confirm);
         ivBack = (ImageView) findViewById(R.id.iv_back);
         ivClearAuth = (ImageView) findViewById(R.id.iv_clear_auth);
-        tvTime = (TextView) findViewById(R.id.tv_show_time);
+        tvTime = (TextView)  findViewById(R.id.tv_show_time);
         ivClearPwd = (ImageView) findViewById(R.id.iv_clear_pwd);
         tvInfo.setText("完善信息");
         tvSend.setOnClickListener(mSmsSendClickListener);
@@ -90,13 +85,12 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
         ivClearPwd.setOnClickListener(mClearContent);
 
         num = getIntent().getStringExtra("phoneNum");
-        tvShow.setText(getString(R.string.phone_code_input_hint) + num);
+        tvShow.setText(getString(R.string.phone_code_input_hint)+ num);
 
         initTextChange();
         phone = getIntent().getStringExtra("phoneNum");
         verified_token = getIntent().getStringExtra("verified_token");
-        userResult = (UserResult) getIntent().getExtras().getSerializable("user");
-        InputUtils.showKeyBoard(etAuth, mContext);
+        InputUtils.showKeyBoard(etAuth,mContext);
         mSmsCodeHandler = new SmsCodeHandler(this);
         sendSms();
     }
@@ -107,7 +101,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
             public void success(Editable editable) {
                 if (etAuth.length() == 0) {
                     ivClearAuth.setVisibility(View.INVISIBLE);
-                } else {
+                }else {
                     ivClearAuth.setVisibility(View.VISIBLE);
                 }
                 if (etAuth.length() == 0 || etPwd.length() == 0) {
@@ -123,7 +117,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
             public void success(Editable editable) {
                 if (etPwd.length() == 0) {
                     ivClearPwd.setVisibility(View.INVISIBLE);
-                } else {
+                }else {
                     ivClearPwd.setVisibility(View.VISIBLE);
                 }
                 if (etAuth.length() == 0 || etPwd.length() == 0) {
@@ -143,13 +137,13 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
         }
     };
 
-    View.OnClickListener mClearContent = new View.OnClickListener() {
+    View.OnClickListener mClearContent = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
             int id = v.getId();
             if (id == R.id.iv_clear_auth) {
                 etAuth.setText("");
-            } else if (id == R.id.iv_clear_pwd) {
+            }else if (id == R.id.iv_clear_pwd){
                 etPwd.setText("");
             }
         }
@@ -160,13 +154,13 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
      */
     private boolean isShowPwd = true;
 
-    View.OnClickListener nShowPwdClickListener = new View.OnClickListener() {
+    View.OnClickListener nShowPwdClickListener = new View.OnClickListener(){
         @Override
         public void onClick(View v) {
             if (isShowPwd) {
                 etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 ivShowPwd.setImageResource(R.drawable.pwd_unshow);
-            } else {
+            }else{
                 etPwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 ivShowPwd.setImageResource(R.drawable.pwd_show);
             }
@@ -181,11 +175,11 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
     View.OnClickListener mConfirmRegClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl url = app.bindNewUrl(Const.CHANGE_PASSWORD, false);
+            RequestUrl url = app.bindNewUrl(Const.BIND_PHONE, false);
             url.heads.put("Auth-Token", app.token);
             Map<String, String> params = url.getParams();
             params.put("type", "sms");
-            params.put("mobile", phone);
+            params.put("mobile",phone);
             params.put("verified_token", verified_token);
             String strCode = etAuth.getText().toString().trim();
             if (TextUtils.isEmpty(strCode)) {
@@ -196,43 +190,36 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
             }
             String strPass = etPwd.getText().toString();
             if (TextUtils.isEmpty(strPass)) {
-                CommonUtil.shortCenterToast(mContext, getString(R.string.register_password_hint));
+                CommonUtil.shortCenterToast(mContext, getString(R.string.reg_password_hint));
                 return;
             }
-            if (strPass.length() < 5 || strPass.length() > 20) {
-                CommonUtil.shortCenterToast(mContext, getString(R.string.password_more_than_six_digit_number));
-                return;
-            }
-            params.put("password", XXTEA.encryptToBase64String(strPass, app.domain));
-            final LoadDialog loadDialog = LoadDialog.create(CompletePhoneConfActivity.this);
-            loadDialog.show();
+            params.put("password", strPass);
             app.postUrl(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    loadDialog.dismiss();
                     if (response.contains("error")) {
                         ErrorCode errorCode = mActivity.parseJsonValue(response, new TypeToken<ErrorCode>() {
                         });
                         if (errorCode != null) {
                             CommonUtil.shortCenterToast(CompletePhoneConfActivity.this, errorCode.error.message);
                         }
-                    } else {
-                        tvConfirm.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                //绑定成功后直接进到网校
-                                OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mActivity);
-                                openLoginUtil.completeInfo(CompletePhoneConfActivity.this, userResult);
-                                CommonUtil.shortCenterToast(CompletePhoneConfActivity.this, getString(R.string.complete_success));
-                                app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            }
-                        }, 500);
+                    }else {
+                            tvConfirm.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    //绑定成功后直接进到网校
+                                    OpenLoginUtil openLoginUtil = OpenLoginUtil.getUtil(mActivity);
+                                    openLoginUtil.completeInfo(CompletePhoneConfActivity.this);
+                                    CommonUtil.shortCenterToast(CompletePhoneConfActivity.this, getString(R.string.complete_success));
+                                    app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                }
+                            }, 500);
+
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    loadDialog.dismiss();
                     Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data).toString());
                     CommonUtil.shortCenterToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
@@ -243,7 +230,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
     /**
      * 处理验证码
      */
-    private void sendSms() {
+    private void sendSms(){
         tvSend.setEnabled(false);
         mClockTime = 120;
         mTimer = new Timer();
@@ -260,24 +247,23 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
     View.OnClickListener mSmsSendClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            RequestUrl requestUrl = app.bindNewUrl(Const.SEND_SMS, true);
+            RequestUrl requestUrl = app.bindNewUrl(Const.SEND_SMS, false);
+            requestUrl.heads.put("Auth-Token", app.token);
             Map<String, String> params = requestUrl.getParams();
             params.put("mobile", num);
             params.put("type", "sms_bind");
             app.postUrl(requestUrl, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    FindPasswordSmsCode result = parseJsonValue(response, new TypeToken<FindPasswordSmsCode>() {
-                    });
+                    FindPasswordSmsCode result = parseJsonValue(response, new TypeToken<FindPasswordSmsCode>(){});
                     if (response.contains("limited")) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("img_code", result.img_code);
-                        bundle.putString("verified_token", result.verified_token);
+                        bundle.putString("img_code",result.img_code);
+                        bundle.putString("verified_token",result.verified_token);
                         setResult(1, new Intent().putExtras(bundle));
                         CompletePhoneConfActivity.this.finish();
-                    } else {
+                    }else{
                         if (result != null) {
-                            verified_token = result.verified_token;
                             tvTime.setVisibility(View.VISIBLE);
                             tvSend.setEnabled(false);
                             mClockTime = 120;
@@ -310,7 +296,7 @@ public class CompletePhoneConfActivity extends ActionBarBaseActivity {
         @Override
         public void handleMessage(Message msg) {
             mActivity = mWeakReference.get();
-            mActivity.tvSend.setText(mActivity.mClockTime + "s");
+            mActivity.tvSend.setText(mActivity.mClockTime + "S");
             mActivity.mClockTime--;
             if (mActivity.mClockTime < 0) {
                 mActivity.mTimer.cancel();

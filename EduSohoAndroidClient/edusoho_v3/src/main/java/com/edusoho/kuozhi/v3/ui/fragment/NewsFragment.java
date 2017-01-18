@@ -238,21 +238,15 @@ public class NewsFragment extends BaseFragment {
             case IMConnectStatus.END:
             case IMConnectStatus.ERROR:
                 if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
-                    mLoadingHandler.sendEmptyMessage(DISMISS);
                     updateNetWorkStatusHeader("聊天功能已关闭, 请联系管理员");
                     return;
                 }
-                mLoadingHandler.sendEmptyMessage(SHOW);
-                //updateNetWorkStatusHeader("消息服务器连接失败，请重试");
-                updateNetWorkStatusHeader("");
+                updateNetWorkStatusHeader("消息服务器连接失败，请重试");
                 break;
             case IMConnectStatus.CONNECTING:
-                mLoadingHandler.sendEmptyMessage(SHOW);
-                //updateNetWorkStatusHeader("正在连接...");
-                updateNetWorkStatusHeader("");
+                updateNetWorkStatusHeader("正在连接...");
                 break;
             case IMConnectStatus.NO_READY:
-                mLoadingHandler.sendEmptyMessage(DISMISS);
                 if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
                     updateNetWorkStatusHeader("聊天功能已关闭, 请联系管理员");
                     return;
@@ -261,7 +255,6 @@ public class NewsFragment extends BaseFragment {
                 break;
             case IMConnectStatus.OPEN:
             default:
-                mLoadingHandler.sendEmptyMessage(DISMISS);
                 updateNetWorkStatusHeader("");
         }
     }

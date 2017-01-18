@@ -31,8 +31,6 @@ import com.edusoho.kuozhi.v3.plugin.appview.LonginusLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.SooonerLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.ThreadCreateAction;
 import com.edusoho.kuozhi.v3.plugin.appview.ThreadDiscussAction;
-import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
@@ -97,17 +95,9 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
     }
 
     @JsAnnotation
-    public void openNativeCourseDetailPage(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
-        Bundle bundle = new Bundle();
-        bundle.putString(CourseActivity.COURSE_ID, String.valueOf(args.getInt(0)));
-        CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
-    }
-
-    @JsAnnotation
-    public void openNativeClassroomDetailPage(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
-        Bundle bundle = new Bundle();
-        bundle.putString(ClassroomActivity.CLASSROOM_ID, String.valueOf(args.getInt(0)));
-        CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomActivity", mContext, bundle);
+    public JSONArray getThirdConfig(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
+        List<String> types = ThirdPartyLogin.getInstance(mContext).getLoginTypes();
+        return new JSONArray(types);
     }
 
     @JsAnnotation

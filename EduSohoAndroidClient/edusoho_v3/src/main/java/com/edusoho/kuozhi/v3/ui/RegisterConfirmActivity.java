@@ -24,9 +24,6 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.InputUtils;
-import com.edusoho.kuozhi.v3.util.SchoolUtil;
-import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 import com.umeng.analytics.MobclickAgent;
 
@@ -85,7 +82,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         tvTime = (TextView) findViewById(R.id.tv_show_time);
 
         num = getIntent().getStringExtra("num");
-        tvShow.setText(getString(R.string.phone_code_input_hint) + num);
+        tvShow.setText(getString(R.string.phone_code_input_hint)+ num);
 
         initTextChange();
 
@@ -116,7 +113,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             public void success(Editable editable) {
                 if (etAuth.length() == 0) {
                     ivClearAuth.setVisibility(View.INVISIBLE);
-                } else {
+                }else {
                     ivClearAuth.setVisibility(View.VISIBLE);
                 }
                 if (etAuth.length() == 0 || etPwd.length() == 0) {
@@ -132,7 +129,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             public void success(Editable editable) {
                 if (etPwd.length() == 0) {
                     ivClearPwd.setVisibility(View.INVISIBLE);
-                } else {
+                }else {
                     ivClearPwd.setVisibility(View.VISIBLE);
                 }
                 if (etAuth.length() == 0 || etPwd.length() == 0) {
@@ -158,7 +155,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         public void onClick(View v) {
             if (v.getId() == R.id.iv_clear_auth) {
                 etAuth.setText("");
-            } else {
+            }else {
                 etPwd.setText("");
             }
         }
@@ -176,7 +173,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             if (isShowPwd) {
                 etPwd.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                 ivShowPwd.setImageResource(R.drawable.pwd_unshow);
-            } else {
+            }else{
                 etPwd.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 ivShowPwd.setImageResource(R.drawable.pwd_show);
             }
@@ -196,7 +193,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             }
             RequestUrl url = app.bindUrl(Const.REGIST, false);
             Map<String, String> params = url.getParams();
-            params.put("registeredWay", "android");
+            params.put("registeredWay","android");
 
             params.put("phone", num);
 
@@ -209,30 +206,22 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
             }
             String strPass = etPwd.getText().toString().trim();
             if (TextUtils.isEmpty(strPass)) {
-                CommonUtil.longToast(mContext, getString(R.string.register_password_hint));
+                CommonUtil.longToast(mContext, getString(R.string.reg_password_hint));
                 return;
             }
-            if (strPass.length() < 5 || strPass.length() > 20) {
-                CommonUtil.shortCenterToast(mContext, getString(R.string.password_more_than_six_digit_number));
-                return;
-            }
-            if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
-                params.put("encrypt_password", XXTEA.encryptToBase64String(strPass, app.domain));
-            } else {
-                params.put("password", strPass);
-            }
+            params.put("password", strPass);
+
+
             Map<String, String> headers = url.getHeads();
             if (!TextUtils.isEmpty(mCookie)) {
                 headers.put("Cookie", mCookie);
             }
 
-            final LoadDialog loadDialog = LoadDialog.create(RegisterConfirmActivity.this);
-            loadDialog.show();
             mActivity.ajaxPost(url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        loadDialog.dismiss();
+                        Log.d("test", response);
                         UserResult userResult = mActivity.parseJsonValue(
                                 response, new TypeToken<UserResult>() {
                                 });
@@ -242,6 +231,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                                 @Override
                                 public void run() {
                                     app.mEngine.runNormalPlugin("DefaultPageActivity", mContext, null, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                                    app.sendMessage(Const.LOGIN_SUCCESS, null);
                                 }
                             }, 500);
                         } else {
@@ -250,14 +240,13 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                             }
                         }
                     } catch (Exception e) {
-                        loadDialog.dismiss();
                         e.printStackTrace();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    loadDialog.dismiss();
+                    Log.d(TAG, "onErrorResponse: " + new String(error.networkResponse.data).toString());
                     CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
                 }
             });
@@ -314,7 +303,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
         @Override
         public void handleMessage(Message msg) {
             mActivity = mWeakReference.get();
-            mActivity.tvSend.setText(mActivity.mClockTime + "s");
+            mActivity.tvSend.setText(mActivity.mClockTime + "S");
             mActivity.mClockTime--;
             if (mActivity.mClockTime < 0) {
                 mActivity.mTimer.cancel();

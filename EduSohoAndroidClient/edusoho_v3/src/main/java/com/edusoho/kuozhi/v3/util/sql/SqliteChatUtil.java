@@ -19,7 +19,7 @@ import java.util.List;
  * Created by JesseHuang on 15/7/1.
  */
 public class SqliteChatUtil extends SQLiteOpenHelper {
-    private static final int VERSION = 10;
+    private static final int VERSION = 7;
     private static String mCurDbName;
     private static SqliteChatUtil instance;
     private Context mContext;

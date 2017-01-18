@@ -20,7 +20,7 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("FragmentPageActivity", "start");
+        Log.d(null, "FragmentPageActivity start");
         setContentView(R.layout.fragment_page_layout);
         initView();
     }
@@ -51,7 +51,7 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("FragmentPageActivity", "onActivityResult");
+        Log.d(FRAGMENT, "onActivityResult");
         if (getSupportFragmentManager().getFragments().size() > 0) {
             getSupportFragmentManager().getFragments().get(0).onActivityResult(requestCode, resultCode, data);
         }

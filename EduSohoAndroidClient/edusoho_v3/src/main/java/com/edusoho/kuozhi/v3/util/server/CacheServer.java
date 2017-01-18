@@ -4,7 +4,6 @@ package com.edusoho.kuozhi.v3.util.server;
 import android.util.Log;
 import com.edusoho.kuozhi.v3.service.handler.FileHandler;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
@@ -26,18 +25,19 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class CacheServer extends Thread {
+public class
+CacheServer extends Thread {
 
     public static final String TAG = "CacheServer";
     private int port = Const.CACHE_PROT;
     private boolean isLoop;
     private boolean isPause;
-    private BaseActivity mActivity;
+    private ActionBarBaseActivity mActivity;
     private ServerSocket mServerSocket;
     private HttpRequestHandlerRegistry mHttpRequestHandlerRegistry;
     private ArrayList<Thread> mThreadList;
 
-    public CacheServer(BaseActivity activity) {
+    public CacheServer(ActionBarBaseActivity activity) {
         this.port = Const.CACHE_PROT;
         this.mActivity = activity;
         this.mThreadList = new ArrayList<>();
@@ -45,7 +45,7 @@ public class CacheServer extends Thread {
         mHttpRequestHandlerRegistry = new HttpRequestHandlerRegistry();
     }
 
-    public CacheServer(BaseActivity activity, int port) {
+    public CacheServer(ActionBarBaseActivity activity, int port) {
         this(activity);
         this.port = port;
     }

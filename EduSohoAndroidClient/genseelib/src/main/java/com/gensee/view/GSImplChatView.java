@@ -54,7 +54,7 @@ public class GSImplChatView extends GSChatView {
 
 	@Override
 	protected int getChatLvId() {
-		return R.id.gs_talkingcontext;
+		return R.id.talkingcontext;
 	}
 
 	@Override
@@ -176,7 +176,7 @@ public class GSImplChatView extends GSChatView {
 	@Override
 	protected AbsChatToPopView createChatToPopView(View view,
 			InterfaceSelarctorName interfaceSelarctorName,
-			List<UserInfo> userList) {
+			List<com.gensee.entity.UserInfo> userList) {
 		return new ChatToPopView(view, interfaceSelarctorName, userList);
 	}
 	

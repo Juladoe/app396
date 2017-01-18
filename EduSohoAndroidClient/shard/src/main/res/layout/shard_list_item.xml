@@ -3,22 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <ImageView
         android:id="@+id/shard_icon"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:scaleType="fitXY"
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/share_list_item_bg"
+        android:padding="12dp" />
 
     <TextView
         android:id="@+id/shard_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:gravity="center"
-        android:textColor="#71777D"
-        android:layout_marginBottom="20dp"
-        android:textSize="13sp" />
+        android:textColor="@color/system_light_text"
+        android:textSize="10sp" />
 </LinearLayout>

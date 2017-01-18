@@ -12,15 +12,4 @@ public class Teacher implements Serializable {
     public int following;
     public int follower;
     public String avatar;
-
-    public String getAvatar() {
-        if(avatar == null){
-            return "";
-        }
-        int schemIndex = avatar.lastIndexOf("http://");
-        if (schemIndex != -1) {
-            return avatar.substring(schemIndex);
-        }
-        return avatar;
-    }
 }

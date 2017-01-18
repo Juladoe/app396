@@ -10,7 +10,6 @@ import android.webkit.WebView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.TextLessonFragment;
-import com.edusoho.kuozhi.v3.view.webview.InnerWebView;
 
 /**
  * Created by howzhi on 15/2/2.
@@ -40,7 +39,7 @@ public class DocumentLessonFragment extends TextLessonFragment {
 
     @Override
     protected void initView(View view) {
-        mLessonWebview = (InnerWebView) view.findViewById(R.id.lesson_webview);
+        mLessonWebview = (WebView) view.findViewById(R.id.lesson_webview);
         initWebViewSetting(mLessonWebview);
         mLessonWebview.loadUrl(mContent);
     }

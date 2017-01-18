@@ -7,10 +7,6 @@ import java.io.Serializable;
  */
 public class CourseMember implements Serializable {
 
-    public static final int NONE = 0;
-    public static final int MEMBER = 1;
-    public static final int EXPIRE = 3;
-
     public int id;
     public int courseId;
     public int classroomId;
@@ -32,28 +28,11 @@ public class CourseMember implements Serializable {
     public String createdTime;
 
     public UserEntity user;
-    public Course course;
 
     public static class UserEntity {
         public int id;
         public String nickname;
         public String title;
-
         public String avatar;
-
-        public String getAvatar() {
-            int schemIndex = avatar.lastIndexOf("http://");
-            if (schemIndex != -1) {
-                return avatar.substring(schemIndex);
-            }
-            return avatar;
-        }
-    }
-
-    public static class Course{
-        public int id;
-        public String title;
-        public String picture;
-        public String convNo;
     }
 }

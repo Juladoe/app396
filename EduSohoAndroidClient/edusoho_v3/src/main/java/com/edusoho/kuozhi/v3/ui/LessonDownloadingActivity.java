@@ -35,7 +35,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
-import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 
@@ -72,7 +71,7 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lesson_downloading);
-        setBackMode(BACK, getResources().getString(R.string.lesson_cache));
+        setBackMode(BACK, getResources().getString(R.string.mine_items_download));
         mContext = this;
         initView();
     }
@@ -577,10 +576,8 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
                 //是否选中
                 if (item.isSelected) {
                     childPanel.ivDownloadSelected.setText(getResources().getString(R.string.font_download_select));
-                    childPanel.ivDownloadSelected.setTextColor(getResources().getColor(R.color.primary_color));
                 } else {
                     childPanel.ivDownloadSelected.setText(getResources().getString(R.string.font_download_unselect));
-                    childPanel.ivDownloadSelected.setTextColor(getResources().getColor(R.color.secondary2_font_color));
                 }
             } else {
                 childPanel.viewLessonUnitTitle.setVisibility(View.VISIBLE);
@@ -610,8 +607,9 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
     public static class ChildPanel {
         TextView tvUnitTitle;
         TextView tvLessonTitle;
+        //EduSohoIconView ivDownload;
         TextView tvDownloadFinish;
-        EduSohoNewIconView ivDownloadSelected;
+        EduSohoIconView ivDownloadSelected;
         View viewLessonInfo;
         View viewLessonUnitTitle;
 
@@ -619,7 +617,8 @@ public class LessonDownloadingActivity extends ActionBarBaseActivity {
             tvUnitTitle = (TextView) view.findViewById(R.id.tv_lesson_chapter);
             tvLessonTitle = (TextView) view.findViewById(R.id.tv_lesson_name);
             tvDownloadFinish = (TextView) view.findViewById(R.id.iv_download_finish);
-            ivDownloadSelected = (EduSohoNewIconView) view.findViewById(R.id.iv_download_selected);
+            //ivDownload = (EduSohoIconView) view.findViewById(R.id.iv_download);
+            ivDownloadSelected = (EduSohoIconView) view.findViewById(R.id.iv_download_selected);
             viewLessonInfo = view.findViewById(R.id.rl_lesson_info);
             viewLessonUnitTitle = view.findViewById(R.id.rl_unit_title);
         }
