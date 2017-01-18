@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -610,7 +609,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
 
     protected void showEditTopic(int position) {
-        if (position == 2) {
+        if (position == 2 && mIsMemder) {
             mTvEditTopic.setVisibility(View.VISIBLE);
         } else {
             mTvEditTopic.setVisibility(View.GONE);
