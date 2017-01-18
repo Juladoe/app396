@@ -64,9 +64,9 @@
                     android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="25dp"
-                    android:layout_marginRight="15dp"
                     android:layout_alignParentLeft="true"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="25dp"
                     android:layout_toLeftOf="@+id/review_star"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_l" />
@@ -121,16 +121,16 @@
 
             <RelativeLayout
                 android:id="@+id/vip_rlayout"
-                android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="63dp">
+                android:layout_height="63dp"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/iv_vip"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/icon_vip"
-                    android:layout_centerVertical="true" />
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/icon_vip" />
 
                 <TextView
                     android:id="@+id/tv_vip_desc"
@@ -209,8 +209,8 @@
                     android:layout_height="50dp"
                     android:layout_below="@+id/tv_teacher1"
                     android:layout_marginTop="15dp"
-                    android:src="@drawable/icon_default_avatar"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/icon_default_avatar" />
 
                 <TextView
                     android:id="@+id/tv_teacher_name"
@@ -260,8 +260,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/tv_student1"
-                    android:layout_marginTop="1dp"
                     android:layout_marginLeft="5dp"
+                    android:layout_marginTop="1dp"
                     android:layout_toRightOf="@+id/tv_student1"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_s" />
@@ -344,9 +344,9 @@
                     android:layout_alignParentBottom="true"
                     android:layout_below="@+id/lv_review"
                     android:layout_centerHorizontal="true"
+                    android:layout_marginRight="8dp"
                     android:layout_marginTop="20dp"
                     android:paddingBottom="20dp"
-                    android:layout_marginRight="8dp"
                     android:text="@string/txt_more_review"
                     android:textColor="@color/primary_color"
                     android:textSize="@dimen/font_l" />

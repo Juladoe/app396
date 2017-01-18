@@ -66,7 +66,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected View mCollect;
     protected View mBack2;
     protected View mBack;
-    //    protected View mTvInclass;
+    protected View mTvInclass;
     protected View mPlayLastLayout;
     protected TextView mTvLastTitle;
     protected TextView mTvCollect;
@@ -160,7 +160,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mMenu = findViewById(R.id.layout_menu);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mTvPlay2 = (TextView) findViewById(R.id.tv_play2);
-//        mTvInclass = findViewById(R.id.tv_inclass);
+        mTvInclass = findViewById(R.id.tv_inclass);
         mLoadingView = findViewById(R.id.ll_frame_load);
         mTvCatalog = (TextView) findViewById(R.id.textView);
         mPlayLastLayout = findViewById(R.id.layout_play_last);
@@ -226,7 +226,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mConsult.setOnClickListener(this);
         mBack2.setOnClickListener(this);
         mBack.setOnClickListener(this);
-//        mTvInclass.setOnClickListener(this);
+        mTvInclass.setOnClickListener(this);
         mMenu.setOnClickListener(this);
         mTvEditTopic.setOnClickListener(this);
         mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -299,13 +299,16 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     public void onClick(View v) {
         if (v.getId() == R.id.intro_rlayout) {
             mContentVp.setCurrentItem(0);
+            setBottomLayoutVisible(0, mIsMemder);
         } else if (v.getId() == R.id.hour_rlayout) {
             mContentVp.setCurrentItem(1);
+            setBottomLayoutVisible(1, mIsMemder);
         } else if (v.getId() == R.id.review_rlayout) {
             if (TextUtils.isEmpty(app.token)) {
                 CommonUtil.shortCenterToast(this, "请先登录");
             } else {
                 mContentVp.setCurrentItem(2);
+                setBottomLayoutVisible(2, mIsMemder);
                 ((CourseDiscussFragment) mFragments.get(2)).reFreshView(mIsMemder, mTitle);
             }
         } else if (v.getId() == R.id.iv_grade ||
@@ -334,11 +337,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             }
         } else if (v.getId() == R.id.layout_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
-        }
-//        else if (v.getId() == R.id.tv_inclass) {
-//            goClass();
-//        }
-        else if (v.getId() == R.id.tv_edit_topic) {
+        } else if (v.getId() == R.id.tv_inclass) {
+            goClass();
+        } else if (v.getId() == R.id.tv_edit_topic) {
             if (DetailActivity.this instanceof CourseActivity ? ((CourseActivity) DetailActivity.this).mCourseDetail.getMember() == null
                     : ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getMember() == null) {
                 CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_hint));
@@ -514,7 +515,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mMediaRlayout.setLayoutParams(params);
             mParent.setScrollStay(true);
             mBottomLayout.setVisibility(View.GONE);
-//            mTvInclass.setVisibility(View.GONE);
+            mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
             getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
@@ -596,6 +597,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             case TAB_PAGE:
                 if (mContentVp != null) {
                     mContentVp.setCurrentItem(1);
+                    setBottomLayoutVisible(1, mIsMemder);
                     tabLoadingGone();
                 }
                 break;
@@ -680,5 +682,25 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         animator1.setDuration(300);
         animator.start();
         animator1.start();
+    }
+
+    public void setBottomLayoutVisible(int curFragment, boolean isMember) {
+        if (curFragment == 0) {
+            if (isMember) {
+                mBottomLayout.setVisibility(View.VISIBLE);
+                mTvInclass.setVisibility(View.VISIBLE);
+            } else {
+                mBottomLayout.setVisibility(View.VISIBLE);
+                mTvInclass.setVisibility(View.GONE);
+            }
+        } else {
+            if (!isMember) {
+                mBottomLayout.setVisibility(View.VISIBLE);
+                mTvInclass.setVisibility(View.GONE);
+            } else {
+                mBottomLayout.setVisibility(View.GONE);
+                mTvInclass.setVisibility(View.GONE);
+            }
+        }
     }
 }
