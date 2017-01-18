@@ -216,7 +216,8 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
     private void initHeadInfo(final Bundle bundle) {
         final LinkedHashMap info = (LinkedHashMap<String, String>) bundle.getSerializable("info");
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(info.get("createdTime").toString().replace("T", " ").split("[+]")[0].substring(2, 16).replace("-", "/"));
-        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(Html.fromHtml(info.get("title").toString()));
+        ((TextView) VIEW_HEADER.findV
+        iewById(R.id.tdh_title)).setText(Html.fromHtml(info.get("title").toString()));
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(Html.fromHtml(info.get("content").toString()));
         ImageLoader.getInstance().displayImage(((LinkedHashMap<String, String>) info.get("user")).get("avatar"), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_nickname)).setText(((LinkedHashMap<String, String>) info.get("user")).get("nickname"));
