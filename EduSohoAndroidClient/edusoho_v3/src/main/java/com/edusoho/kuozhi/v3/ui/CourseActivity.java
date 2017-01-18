@@ -44,6 +44,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     public static final String COURSE_ID = "course_id";
     public static final String SOURCE = "source";
+    public static final String IS_CHILD_COURSE = "child_course";
     private String mCourseId;
     private boolean mIsFavorite = false;
     public CourseDetail mCourseDetail;
@@ -117,11 +118,11 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                                 && mFragments.get(1) instanceof CourseCatalogFragment) {
                             if (mCourseDetail.getMember() == null) {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
-                                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(false, mCourseDetail.getCourse().title);
+                                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(false);
                                 setLoadStatus(View.GONE);
                             } else {
                                 ((CourseCatalogFragment) mFragments.get(1)).reFreshView(true);
-                                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(true, mCourseDetail.getCourse().title);
+                                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(true);
                                 tabPage(300);
                             }
                         } else {
@@ -178,7 +179,11 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         Member member = mCourseDetail.getMember();
         if (member == null) {
             mIsMemder = false;
-            mAddLayout.setVisibility(View.VISIBLE);
+            if (getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)) {
+                mAddLayout.setVisibility(View.GONE);
+            } else {
+                mAddLayout.setVisibility(View.VISIBLE);
+            }
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
         } else {

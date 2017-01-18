@@ -4,13 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -59,13 +56,11 @@ public class CourseCatalogFragment extends BaseFragment {
     public boolean isJoin;
     public int mMemberStatus;
     public String mCourseId;
-    public CustomTitle mCustomTitle;
     public CourseCatalogueAdapter mAdapter;
     private RelativeLayout mRlSpace;
     private FixCourseListView mLvCatalog;
     private CourseCatalogue mCourseCatalogue;
     private TextView tvSpace;
-    private View view;
     private View mLoadView;
     private View mLessonEmpytView;
     private LoadDialog mProcessDialog;
@@ -76,16 +71,23 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_course_catalog, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContainerView(R.layout.fragment_course_catalog);
         mCourseId = getArguments().getString("id");
-        return view;
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        init();
+    protected void initView(View view) {
+        super.initView(view);
+        mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
+        mLvCatalog = (FixCourseListView) view.findViewById(R.id.lv_catalog);
+        mLoadView = view.findViewById(R.id.ll_frame_load);
+        tvSpace = (TextView) view.findViewById(R.id.tv_space);
+        mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
+        tvSpace.setOnClickListener(getCacheCourse());
+        ((TextView) view.findViewById(R.id.tv_space)).setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
+        view.findViewById(R.id.tv_course).setOnClickListener(getCacheCourse());
         initCatalogue();
     }
 
@@ -93,16 +95,6 @@ public class CourseCatalogFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         updateLessonStatuses();
-    }
-
-    protected void init() {
-        mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
-        mLvCatalog = (FixCourseListView) view.findViewById(R.id.lv_catalog);
-        mLoadView = view.findViewById(R.id.ll_frame_load);
-        tvSpace = (TextView) view.findViewById(R.id.tv_space);
-        mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
-        tvSpace.setOnClickListener(getCacheCourse());
-        initCache();
     }
 
     protected void setLoadViewStatus(int visibility) {
@@ -125,7 +117,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
                 });
                 if (mCourseCatalogue.getLessons().size() != 0) {
-                    if (mMemberStatus == ISMEMBER && !TextUtils.isEmpty(app.token)) {
+                    if (mMemberStatus == ISMEMBER && app.token != null) {
                         mRlSpace.setVisibility(View.VISIBLE);
                         initFirstLearnLesson();
                     }
@@ -190,10 +182,6 @@ public class CourseCatalogFragment extends BaseFragment {
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if ("flash".equals(mCourseCatalogue.getLessons().get(position).getType())) {
-                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
-                    return;
-                }
                 if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType())
                         || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
                     return;
@@ -202,8 +190,18 @@ public class CourseCatalogFragment extends BaseFragment {
                     CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
                     return;
                 }
+                //判断归属于班级的课程有没有加入相关班级
+                if (((CourseActivity) getActivity()).getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)
+                        && mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
+                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_class_course_hint));
+                    return;
+                }
                 if (mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
                     CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
+                    return;
+                }
+                if ("flash".equals(mCourseCatalogue.getLessons().get(position).getType())) {
+                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
                     return;
                 }
                 perpareStartLearnLesson(position);
@@ -429,16 +427,6 @@ public class CourseCatalogFragment extends BaseFragment {
         mMemberStatus = mIsJoin ? ISMEMBER : VISITOR;
         isJoin = mIsJoin;
         initCatalogue();
-    }
-
-    /**
-     * 获取手机可用空间,该界面要先判断是否显示rlSpace
-     */
-    private void initCache() {
-        TextView tvSpace = (TextView) view.findViewById(R.id.tv_space);
-        TextView tvCourse = (TextView) view.findViewById(R.id.tv_course);
-        tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
-        tvCourse.setOnClickListener(getCacheCourse());
     }
 
     public View.OnClickListener getCacheCourse() {

@@ -113,11 +113,11 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                                     && mFragments.get(1) instanceof ClassCatalogFragment) {
                                 if (mClassroomDetail.getMember() == null) {
                                     ((ClassCatalogFragment) mFragments.get(1)).reFreshView(false);
-                                    ((CourseDiscussFragment) mFragments.get(2)).reFreshView(false, mClassroomDetail.getClassRoom().title);
+                                    ((CourseDiscussFragment) mFragments.get(2)).reFreshView(false);
                                     setLoadStatus(View.GONE);
                                 } else {
                                     ((ClassCatalogFragment) mFragments.get(1)).reFreshView(true);
-                                    ((CourseDiscussFragment) mFragments.get(2)).reFreshView(true, mClassroomDetail.getClassRoom().title);
+                                    ((CourseDiscussFragment) mFragments.get(2)).reFreshView(true);
                                     tabPage(300);
                                 }
                             }else{

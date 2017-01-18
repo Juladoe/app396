@@ -1,10 +1,11 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.animation.ObjectAnimator;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,15 +13,14 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -103,9 +103,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected static final int LOADING_END = 1;
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
     private EduSohoNewIconView mTvEditTopic;
-    private Dialog dialog;
     private EduSohoNewIconView tvTopic;
     private EduSohoNewIconView tvQuestion;
+    private PopupWindow mPopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -306,7 +306,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 CommonUtil.shortCenterToast(this, "请先登录");
             } else {
                 mContentVp.setCurrentItem(2);
-                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(mIsMemder, mTitle);
+                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(mIsMemder);
             }
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
@@ -622,41 +622,35 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     private void showDialog() {
         if (!isAdd) {
             isAdd = true;
-            dialog = new Dialog(this, R.style.DiscussDialog);
-            View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_discuss_publish, null);
-            tvTopic = (EduSohoNewIconView) dialogView.findViewById(R.id.tv_topic);
+            View popupView = getLayoutInflater().inflate(R.layout.dialog_discuss_publish, null);
+            mPopupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT, true);
+            mPopupWindow.setTouchable(true);
+            mPopupWindow.setOutsideTouchable(true);
+            mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+            tvTopic = (EduSohoNewIconView) popupView.findViewById(R.id.tv_topic);
             tvTopic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     startActivity("discussion");
-                    dialog.dismiss();
+                    mPopupWindow.dismiss();
                 }
             });
-            tvQuestion = (EduSohoNewIconView) dialogView.findViewById(R.id.tv_question);
+            tvQuestion = (EduSohoNewIconView) popupView.findViewById(R.id.tv_question);
             tvQuestion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     startActivity("question");
-                    dialog.dismiss();
+                    mPopupWindow.dismiss();
                 }
             });
-            dialogView.findViewById(R.id.tv_close).setOnClickListener(new View.OnClickListener() {
+            popupView.findViewById(R.id.tv_close).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    mPopupWindow.dismiss();
                 }
             });
-            dialog.setContentView(dialogView);
-            dialog.setCanceledOnTouchOutside(true);
-            Window mWindow = dialog.getWindow();
-            mWindow .setGravity(Gravity.LEFT | Gravity.TOP);
-            WindowManager.LayoutParams lp = mWindow.getAttributes();
-            lp.x = (int) mTvEditTopic.getX();
-            lp.y = (int) (mTvEditTopic.getY() - AppUtil.dp2px(this, 150));
-            mWindow.setAttributes(lp);
         }
-        dialog.show();
+        mPopupWindow.showAsDropDown(mTvEditTopic, 0, -AppUtil.dp2px(this, 204));
         startAnimation();
     }
 
