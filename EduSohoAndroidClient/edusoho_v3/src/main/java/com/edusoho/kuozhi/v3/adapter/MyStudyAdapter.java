@@ -426,13 +426,11 @@ public class MyStudyAdapter extends BaseAdapter {
                     @Override
                     public void onSuccess(Study data) {
                         mLists.clear();
-                        Collections.reverse(data.getResources());
                         addAll(data.getResources());
                         mCanLoad = false;
                         if (data.getResources().size() == 0) {
                             mEmpty = true;
                         }
-
                         notifyDataSetChanged();
                     }
 
