@@ -393,4 +393,5 @@
     <!-- video -->
     <string name="video_no_meidaurl">多媒体资源不能播放!</string>
     <string name="video_replay_title">直播回看</string>
+    <string name="lesson_living">直播中</string>
 </resources>
