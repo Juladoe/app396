@@ -20,5 +20,6 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="11dp"
         android:text="暂无记录"
+        android:textSize="@dimen/_x_small_font_size"
         android:textColor="@color/secondary2_font_color" />
 </LinearLayout>

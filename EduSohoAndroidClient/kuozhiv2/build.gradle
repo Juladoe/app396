@@ -32,7 +32,7 @@ android {
 
     fir{
         apiToken 'fa4ff9122d709c485cb0e3c992a62980'
-        changeLog 'test'
+        changeLog 'build debug'
     }
 
     //签名

@@ -393,7 +393,17 @@ public class CourseCatalogFragment extends BaseFragment {
         sendMessageToCourse(lessonsBean.toLessonItem());
     }
 
-    public void startLessonActivity(int lessonId, int courseId, int memberState) {
+    public void startLessonActivity(String type, int lessonId, int courseId, int memberState) {
+        if ("live".equals(type)) {
+            final String url = String.format(SchoolUtil.getDefaultSchool(mContext).host + Const.WEB_LESSON, courseId, lessonId);
+            CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                @Override
+                public void setIntentDate(Intent startIntent) {
+                    startIntent.putExtra(Const.WEB_URL, url);
+                }
+            });
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putInt(Const.LESSON_ID, lessonId);
         bundle.putInt(Const.COURSE_ID, courseId);
