@@ -112,20 +112,22 @@ public class MyStudyAdapter extends BaseAdapter {
             } else {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.view_empty, null, false);
                 ((TextView) convertView.findViewById(R.id.tv_empty_text)).setText(mContext.getString(R.string.no_study_record));
-                return convertView;
+                //return convertView;
             }
         } else {
             if (getItemViewType(position) == 0) {
                 viewHolder = (ViewHolder) convertView.getTag();
-            } else {
-                return convertView;
             }
+//            else {
+//                return convertView;
+//            }
         }
         viewHolder.layoutClass.setVisibility(View.GONE);
         viewHolder.layoutLive.setVisibility(View.GONE);
         Object object = mLists.get(position);
         switch (type) {
             case 0:
+                //最近
                 if (object instanceof Study.Resource) {
                     Study.Resource study = (Study.Resource) object;
                     switch (study.getJoinedType()) {
@@ -138,7 +140,6 @@ public class MyStudyAdapter extends BaseAdapter {
                             viewHolder.tvMore.setVisibility(View.GONE);
                             break;
                         case "course":
-
                             if (study.getClassroomTitle() != null &&
                                     study.getClassroomTitle().length() > 0) {
                                 viewHolder.layoutClass.setVisibility(View.VISIBLE);
@@ -173,6 +174,7 @@ public class MyStudyAdapter extends BaseAdapter {
                 }
                 break;
             case 2:
+                //直播
                 if (object instanceof Course) {
                     Course course = (Course) object;
                     ImageLoader.getInstance().displayImage(course.getLargePicture(), viewHolder.ivPic,
@@ -181,6 +183,7 @@ public class MyStudyAdapter extends BaseAdapter {
                     setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
                     if (course.type.equals("live")) {
                         viewHolder.layoutLive.setVisibility(View.VISIBLE);
+                        viewHolder.tvMore.setVisibility(course.parentId == 0 ? View.VISIBLE : View.GONE);
                         if (course.liveState == 1) {
                             viewHolder.tvLive.setText(R.string.lesson_living);
                             viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
