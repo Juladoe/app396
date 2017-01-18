@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.model.provider;
 import android.content.Context;
 
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
@@ -98,6 +99,18 @@ public class CourseProvider extends ModelProvider {
 
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<LinkedHashMap>(){});
+
+        return requestOption.build();
+    }
+
+    public ProviderListener<CourseMember> getMember(int courseId) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        String token = ApiTokenUtil.getTokenString(mContext);
+
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/%s?courseId=%d", school.url, Const.COURSE_MEMBER, courseId));
+        requestUrl.heads.put("token", token);
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<CourseMember>(){});
 
         return requestOption.build();
     }

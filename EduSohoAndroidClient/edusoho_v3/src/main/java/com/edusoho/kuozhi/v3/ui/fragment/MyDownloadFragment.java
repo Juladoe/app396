@@ -21,12 +21,22 @@ import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.UtilFactory;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
+import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.service.M3U8DownService;
+import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
+import com.edusoho.kuozhi.v3.util.RequestUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 
 import java.io.File;
@@ -37,6 +47,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import cn.trinea.android.common.util.FileUtils;
+import cn.trinea.android.common.util.ToastUtils;
 
 
 /**
@@ -49,6 +62,7 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
     private TextView tvEmptyText;
     private ListView mListView;
     private CourseDownloadAdapter mAdapter;
+    private Map<Integer, List<LessonItem>> mLocalLessonMap;
 
     @Nullable
     @Override
@@ -79,7 +93,13 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
         if (getAppSettingProvider().getCurrentUser() == null) {
             return;
         }
-        mAdapter.setCourseList(getLocalCourseList(M3U8Util.ALL, null, null));
+        List<DownloadCourse> courseList = getLocalCourseList(M3U8Util.ALL, null, null);
+        loadDataList(courseList);
+        filterCourseByState(courseList);
+    }
+
+    private void loadDataList(List<DownloadCourse> courseList) {
+        mAdapter.setCourseList(courseList);
         setEmptyState(mAdapter.getCount() == 0);
     }
 
@@ -87,10 +107,37 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
         mEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
+    private void filterCourseByState(List<DownloadCourse> courseList) {
+        CourseProvider courseProvider = new CourseProvider(getContext());
+        for (final DownloadCourse course : courseList) {
+            courseProvider.getMember(course.id).success(new NormalCallback<CourseMember>() {
+                @Override
+                public void success(CourseMember courseMember) {
+                    if (mLocalLessonMap == null) {
+                        return;
+                    }
+                    if (courseMember == null) {
+                        clearLocalCache(getLessonIds(mLocalLessonMap.get(course.id)));
+                        List<DownloadCourse> courseList = getLocalCourseList(M3U8Util.ALL, null, null);
+                        loadDataList(courseList);
+                        return;
+                    }
+                    if (AppUtil.parseInt(courseMember.deadline) <= 0) {
+                        mAdapter.updateCourseExpirdState(courseMember.courseId, true);
+                    }
+                }
+            });
+        }
+    }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Bundle bundle = new Bundle();
-        Course course = (Course) parent.getItemAtPosition(position);
+        DownloadCourse course = (DownloadCourse) parent.getItemAtPosition(position);
+        if (course.isExpird()) {
+            ToastUtils.show(getContext(), R.string.download_course_expird_timeout);
+            return;
+        }
         bundle.putInt(Const.COURSE_ID, course.id);
         CoreEngine.create(getContext()).runNormalPluginWithBundle("DownloadManagerActivity", getContext(), bundle);
     }
@@ -147,26 +194,26 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
             School school = getAppSettingProvider().getCurrentSchool();
             SparseArray<M3U8DbModel> m3U8DbModels = M3U8Util.getM3U8ModelList(
                     getContext(), ids, user.id, school.getDomain(), isFinish);
-            Map<Integer, List<LessonItem>> localLessons = new HashMap<>();
+            mLocalLessonMap = new HashMap<>();
             for (LessonItem lessonItem : lessonItems) {
                 if (m3U8DbModels.indexOfKey(lessonItem.id) < 0) {
                     continue;
                 }
-                if (!localLessons.containsKey(lessonItem.courseId)) {
+                if (!mLocalLessonMap.containsKey(lessonItem.courseId)) {
                     if (courseIds == null || filterCourseId(lessonItem.courseId, courseIds)) {
                         localCourses.add(getLocalCourse(lessonItem.courseId));
-                        localLessons.put(lessonItem.courseId, new ArrayList<LessonItem>());
+                        mLocalLessonMap.put(lessonItem.courseId, new ArrayList<LessonItem>());
                     }
                 }
 
-                List<LessonItem> lessons = localLessons.get(lessonItem.courseId);
+                List<LessonItem> lessons = mLocalLessonMap.get(lessonItem.courseId);
                 if (lessons != null) {
                     lessons.add(lessonItem);
                 }
             }
 
             for (DownloadCourse course : localCourses) {
-                List<LessonItem> lessons = localLessons.get(course.id);
+                List<LessonItem> lessons = mLocalLessonMap.get(course.id);
                 int[] cachedLessonIds = getCachedLessonIds(lessons, m3U8DbModels);
                 course.setCachedLessonNum(cachedLessonIds.length);
                 course.setCachedSize(getDownloadLessonListSize(cachedLessonIds));
@@ -257,18 +304,6 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
         return ids;
     }
 
-    private void filterLessons(
-            int isFinish, ArrayList<LessonItem> lessonItems, SparseArray<M3U8DbModel> m3U8Models) {
-        Iterator<LessonItem> iterator = lessonItems.iterator();
-        while (iterator.hasNext()) {
-            LessonItem item = iterator.next();
-            M3U8DbModel m3U8DbModel = m3U8Models.get(item.id);
-            if (m3U8DbModel != null && m3U8DbModel.finish != isFinish) {
-                iterator.remove();
-            }
-        }
-    }
-
     private DownloadCourse getLocalCourse(int courseId) {
         SqliteUtil.QueryParser<DownloadCourse> queryParser;
         queryParser = new SqliteUtil.QueryParser<DownloadCourse>() {
@@ -292,6 +327,88 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
                 String.format("course-%d", courseId)
         );
         return course;
+    }
+
+    private String coverM3U8Ids(int[] ids) {
+        StringBuffer idsStr = new StringBuffer("(");
+        for (int id : ids) {
+            idsStr.append(id).append(",");
+        }
+        if (idsStr.length() > 1) {
+            idsStr.deleteCharAt(idsStr.length() - 1);
+        }
+        idsStr.append(")");
+
+        return idsStr.toString();
+    }
+
+    private String coverLessonIds(int[] ids) {
+        StringBuffer idsStr = new StringBuffer("(");
+        for (int id : ids) {
+            idsStr.append("'lesson-").append(id).append("',");
+        }
+        if (idsStr.length() > 1) {
+            idsStr.deleteCharAt(idsStr.length() - 1);
+        }
+        idsStr.append(")");
+
+        return idsStr.toString();
+    }
+
+    public void clearLocalCache(int[] ids) {
+        if (ids == null || ids.length == 0) {
+            return;
+        }
+        SqliteUtil sqliteUtil = SqliteUtil.getUtil(getContext());
+
+        String m3u8LessonIds = coverM3U8Ids(ids);
+        String cacheLessonIds = coverLessonIds(ids);
+        sqliteUtil.execSQL(String.format(
+                "delete from data_cache where type='%s' and key in %s",
+                Const.CACHE_LESSON_TYPE,
+                cacheLessonIds.toString()
+                )
+        );
+
+        School school = getAppSettingProvider().getCurrentSchool();
+        sqliteUtil.execSQL(String.format(
+                "delete from data_m3u8 where host='%s' and lessonId in %s",
+                school != null ? school.getDomain() : "",
+                m3u8LessonIds.toString())
+        );
+
+        sqliteUtil.execSQL(String.format(
+                "delete from data_m3u8_url where lessonId in %s",
+                m3u8LessonIds.toString())
+        );
+
+        M3U8DownService service = M3U8DownService.getService();
+        if (service != null) {
+            service.cancelAllDownloadTask();
+            for (int id : ids) {
+                service.cancelDownloadTask(id);
+            }
+        }
+
+        clearVideoCache(ids);
+    }
+
+    /**
+     * 删除本地视频
+     *
+     * @param ids
+     */
+    private void clearVideoCache(int[] ids) {
+        File workSpace = EdusohoApp.getWorkSpace();
+        if (workSpace == null) {
+            return;
+        }
+        School school = getAppSettingProvider().getCurrentSchool();
+        User user = getAppSettingProvider().getCurrentUser();
+        File videosDir = new File(workSpace, "videos/" + user.id + "/" + school.getDomain());
+        for (int id : ids) {
+            FileUtils.deleteFile(new File(videosDir, String.valueOf(id)).getAbsolutePath());
+        }
     }
 
     private boolean filterCourseId(int courseId, int[] courseIds) {

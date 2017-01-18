@@ -308,6 +308,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 CommonUtil.shortCenterToast(this, "请先登录");
             } else {
                 mContentVp.setCurrentItem(2);
+                setBottomLayoutVisible(2, mIsMemder);
                 ((CourseDiscussFragment) mFragments.get(2)).reFreshView(mIsMemder);
             }
         } else if (v.getId() == R.id.iv_grade ||

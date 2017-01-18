@@ -14,6 +14,16 @@ public class DownloadCourse extends Course {
 
     private long cachedSize;
 
+    private boolean expird;
+
+    public boolean isExpird() {
+        return expird;
+    }
+
+    public void setExpird(boolean expird) {
+        this.expird = expird;
+    }
+
     public int getCachedLessonNum() {
         return cachedLessonNum;
     }
