@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import com.edusoho.kuozhi.v3.model.bal.course.ClassroomMember;
 import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReview;
 import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReviewDetail;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.ui.AllReviewActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;

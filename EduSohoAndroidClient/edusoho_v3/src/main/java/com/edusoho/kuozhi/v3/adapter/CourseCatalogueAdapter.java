@@ -145,6 +145,10 @@ public class CourseCatalogueAdapter extends BaseAdapter {
                     lessonHolder.lessonUp.setVisibility(View.INVISIBLE);
                 }
             }
+            if (courseCatalogue.getLessons().size() == 1) {
+                lessonHolder.lessonUp.setVisibility(View.INVISIBLE);
+                lessonHolder.lessonDown.setVisibility(View.INVISIBLE);
+            }
         }
         lessonHolder.lessonTime.setText(lessonsBean.getLength());
         lessonHolder.lessonTitle.setText(String.format("%s、%s", lessonsBean.getNumber(), lessonsBean.getTitle()));
