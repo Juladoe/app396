@@ -36,6 +36,8 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
+import cn.trinea.android.common.util.ToastUtils;
+
 
 /**
  * Created by JesseHuang on 15/6/22.
@@ -131,6 +133,10 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mToolsLayout.getVisibility() == View.GONE) {
+                    if (mActivityContainer.isExpired()) {
+                        ToastUtils.show(getContext(), R.string.download_course_expird);
+                        return;
+                    }
                     final LessonItem lessonItem = mDownloadedAdapter.getItem(position);
                     app.mEngine.runNormalPlugin(
                             LessonActivity.TAG, mContext, new PluginRunCallback() {
