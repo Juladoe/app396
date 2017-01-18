@@ -278,11 +278,12 @@
         android:id="@+id/head_rlayout2"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="@color/disabled2_hint_color"
         android:paddingTop="20dp"
+        android:background="@drawable/action_bar_bg_mark"
         android:visibility="gone">
 
         <RelativeLayout
+            android:background="@color/disabled2_hint_color"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
