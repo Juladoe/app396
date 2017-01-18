@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -55,6 +56,18 @@ public class CourseDownloadAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    public void updateCourseExpirdState(int courseId, boolean isExpird) {
+        Iterator<DownloadCourse> iterable = mList.iterator();
+        while (iterable.hasNext()) {
+            DownloadCourse course = iterable.next();
+            if (course.id == courseId) {
+                course.setExpird(isExpird);
+                notifyDataSetInvalidated();
+                return;
+            }
+        }
+    }
+
     @Override
     public long getItemId(int position) {
         return position;
@@ -72,6 +85,7 @@ public class CourseDownloadAdapter extends BaseAdapter {
         public TextView tvSourse;
         public TextView ivVideoSum;
         public TextView ivVideoSizes;
+        public TextView tvExpirdView;
 
         public DownloadCourseItem(View view) {
             ivCover = (ImageView) view.findViewById(R.id.iv_avatar);
@@ -79,6 +93,7 @@ public class CourseDownloadAdapter extends BaseAdapter {
             ivVideoSum = (TextView) view.findViewById(R.id.tv_video_sum);
             ivVideoSizes = (TextView) view.findViewById(R.id.tv_video_size);
             tvSourse = (TextView) view.findViewById(R.id.tv_download_source);
+            tvExpirdView = (TextView) view.findViewById(R.id.tv_download_expird);
         }
 
         public void renderData(DownloadCourse course) {
@@ -90,6 +105,7 @@ public class CourseDownloadAdapter extends BaseAdapter {
                     course.getCachedLessonNum()
             ));
 
+            tvExpirdView.setVisibility(course.isExpird() ? View.VISIBLE : View.GONE);
             if ("classroom".equals(course.source)) {
                 tvSourse.setVisibility(View.VISIBLE);
                 tvSourse.setText(AppUtil.getColorTextAfter(

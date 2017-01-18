@@ -390,6 +390,7 @@
     <string name="download_size_label">&#xe672;</string>
     <string name="download_size_cached">已缓存%d课</string>
     <string name="download_size_course_source">来自班级 | </string>
+    <string name="download_course_expird_timeout">课程已过期,请续费后继续学习</string>
 
     <!-- video -->
     <string name="video_no_meidaurl">多媒体资源不能播放!</string>
