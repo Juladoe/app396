@@ -300,4 +300,8 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     @Override
     protected void courseChange(LessonItem lessonItem) {
     }
+
+    @Override
+    protected void showThreadCreateView(String type) {
+    }
 }

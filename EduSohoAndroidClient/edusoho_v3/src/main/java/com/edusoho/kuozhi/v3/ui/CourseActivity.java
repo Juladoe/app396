@@ -1,17 +1,26 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
@@ -20,10 +29,13 @@ import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
+import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
+import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -36,11 +48,12 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Zhang on 2016/12/8.
  */
-public class CourseActivity extends DetailActivity implements View.OnClickListener {
+public class CourseActivity extends DetailActivity implements View.OnClickListener, CourseStateCallback {
 
     public static final String COURSE_ID = "course_id";
     public static final String SOURCE = "source";
@@ -98,13 +111,38 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         fragments.add(discussFrament);
     }
 
+    @Override
+    public boolean isExpired() {
+        return mCourseDetail != null && validCourseIsExpird(mCourseDetail.getMember());
+    }
+
+    @Override
+    public void handlerCourseExpired() {
+        showCourseExpireDlg();
+    }
+
     protected void initEvent() {
         super.initEvent();
     }
 
+    private void showCourseExpireDlg() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("提醒")
+                .setMessage("课程已过期，是否重新加入?")
+                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        unLearnCourse();
+                    }
+                })
+                .setNegativeButton("取消", null)
+                .create()
+                .show();
+    }
+
     protected void initData() {
         if (TextUtils.isEmpty(mCourseId)) {
-            CommonUtil.shortToast(CourseActivity.this, "课程不存在");
+            CommonUtil.shortToast(getBaseContext(), "课程不存在");
             finish();
             return;
         }
@@ -142,6 +180,37 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                         }
                     }
                 });
+    }
+
+    private void unLearnCourse() {
+        new CourseProvider(getBaseContext()).unLearn(AppUtil.parseInt(mCourseId))
+        .success(new NormalCallback<String>() {
+            @Override
+            public void success(String response) {
+                if (response.equals("true")) {
+                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
+                    ((CourseDiscussFragment) mFragments.get(2)).reFreshView(false, mCourseDetail.getCourse().title);
+                    mIsMemder = false;
+                    mAddLayout.setVisibility(View.VISIBLE);
+                    mTvInclass.setVisibility(View.GONE);
+                    initViewPager();
+                } else {
+                    CommonUtil.shortToast(mContext, "退出失败");
+                }
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                CommonUtil.shortToast(mContext, "退出失败");
+            }
+        });
+    }
+
+    private boolean validCourseIsExpird(Member courseMember) {
+        if (courseMember == null) {
+            return false;
+        }
+        return courseMember.deadline <= 0;
     }
 
     private void saveCourseToCache(Course course) {
@@ -387,11 +456,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         }
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-    }
-
     protected void onFragmentsFocusChange(View rootView, boolean hasFocus) {
         List<Fragment> fragmentList = getSupportFragmentManager().getFragments();
         for (int i = 0; i < fragmentList.size(); i++) {
@@ -429,6 +493,10 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         super.courseStart();
         String type = mContinueLessonItem.type;
         if ("self".equals(mContinueLessonItem.mediaSource)) {
+            if (mCourseDetail != null && validCourseIsExpird(mCourseDetail.getMember())) {
+                showCourseExpireDlg();
+                return;
+            }
             switch (type) {
                 case "audio":
                     playAudioLesson(mContinueLessonItem);
@@ -516,5 +584,19 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             return null;
         }
         return super.getMenu();
+    }
+
+    @Override
+    protected void showThreadCreateView(String type) {
+        if (mCourseDetail != null && validCourseIsExpird(mCourseDetail.getMember())) {
+            showCourseExpireDlg();
+            return;
+        }
+        Bundle bundle = new Bundle();
+        bundle.putInt(ThreadCreateActivity.TARGET_ID, AppUtil.parseInt(mCourseId));
+        bundle.putString(ThreadCreateActivity.TARGET_TYPE, "");
+        bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
+        bundle.putString(ThreadCreateActivity.THREAD_TYPE, "course");
+        app.mEngine.runNormalPluginWithBundle("ThreadCreateActivity", this, bundle);
     }
 }

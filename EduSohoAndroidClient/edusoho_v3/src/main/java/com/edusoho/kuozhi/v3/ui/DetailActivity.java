@@ -347,7 +347,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     protected void grade(){
-
     }
 
     protected abstract void goClass();
@@ -609,7 +608,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         return false;
     }
 
-
     protected void showEditTopic(int position){
         if (position == 2) {
             mTvEditTopic.setVisibility(View.VISIBLE);
@@ -618,6 +616,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
+    protected abstract void showThreadCreateView(String type);
     private boolean isAdd;
     private void showDialog() {
         if (!isAdd) {
@@ -628,8 +627,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             tvTopic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-                    startActivity("discussion");
+                    showThreadCreateView("discussion");
                     dialog.dismiss();
                 }
             });
@@ -637,7 +635,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             tvQuestion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity("question");
+                    showThreadCreateView("question");
                     dialog.dismiss();
                 }
             });
@@ -658,19 +656,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         dialog.show();
         startAnimation();
-    }
-
-    private void startActivity(String type) {
-        Bundle bundle = new Bundle();
-        if (DetailActivity.this instanceof CourseActivity) {
-            bundle.putInt(ThreadCreateActivity.TARGET_ID, ((CourseActivity) DetailActivity.this).mCourseDetail.getCourse().id);
-        } else {
-            bundle.putInt(ThreadCreateActivity.TARGET_ID, ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getClassRoom().id);
-        }
-        bundle.putString(ThreadCreateActivity.TARGET_TYPE, DetailActivity.this instanceof CourseActivity ? "" : "classroom");
-        bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
-        bundle.putString(ThreadCreateActivity.THREAD_TYPE, DetailActivity.this instanceof CourseActivity ? "course" : "common");
-        app.mEngine.runNormalPluginWithBundle("ThreadCreateActivity", DetailActivity.this, bundle);
     }
 
     public void startAnimation() {

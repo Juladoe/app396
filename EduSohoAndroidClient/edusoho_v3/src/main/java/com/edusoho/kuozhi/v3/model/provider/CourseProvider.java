@@ -101,4 +101,21 @@ public class CourseProvider extends ModelProvider {
 
         return requestOption.build();
     }
+
+    public ProviderListener<String> unLearn(int courseId) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        String token = ApiTokenUtil.getTokenString(mContext);
+
+        RequestUrl requestUrl = null;
+        requestUrl = new RequestUrl(String.format("%s/%s", school.url, Const.UN_LEARN_COURSE));
+        requestUrl.heads.put("token", token);
+        requestUrl.setParams(new String[] {
+                "courseId", String.valueOf(courseId)
+        });
+
+        RequestOption requestOption = buildSimplePostRequest(
+                requestUrl, new TypeToken<String>(){});
+
+        return requestOption.build();
+    }
 }

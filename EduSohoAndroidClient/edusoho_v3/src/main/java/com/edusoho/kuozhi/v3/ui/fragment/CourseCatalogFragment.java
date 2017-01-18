@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,6 +25,7 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.CustomTitle;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
@@ -71,6 +73,7 @@ public class CourseCatalogFragment extends BaseFragment {
     private LoadDialog mProcessDialog;
     private List<CourseCatalogue.LessonsBean> lessonsBeanList;
     private CourseCatalogue.LessonsBean lessonsBean;
+    private CourseStateCallback mCourseStateCallback;
 
     public CourseCatalogFragment() {
     }
@@ -93,6 +96,12 @@ public class CourseCatalogFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         updateLessonStatuses();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCourseStateCallback = (CourseStateCallback) activity;
     }
 
     protected void init() {
@@ -190,6 +199,10 @@ public class CourseCatalogFragment extends BaseFragment {
         mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mCourseStateCallback.isExpired()) {
+                    mCourseStateCallback.handlerCourseExpired();
+                    return;
+                }
                 if ("flash".equals(mCourseCatalogue.getLessons().get(position).getType())) {
                     CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
                     return;
@@ -394,6 +407,10 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     public void startLessonActivity(String type, int lessonId, int courseId, int memberState) {
+        if (mCourseStateCallback.isExpired()) {
+            mCourseStateCallback.handlerCourseExpired();
+            return;
+        }
         if ("live".equals(type)) {
             final String url = String.format(SchoolUtil.getDefaultSchool(mContext).host + Const.WEB_LESSON, courseId, lessonId);
             CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
@@ -455,6 +472,10 @@ public class CourseCatalogFragment extends BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mCourseStateCallback.isExpired()) {
+                    mCourseStateCallback.handlerCourseExpired();
+                    return;
+                }
                 if (getRomAvailableSize().contains("M")) {
                     if (Float.parseFloat(getRomAvailableSize().replaceAll("[a-zA-Z]", "").trim()) < 100) {
                         CommonUtil.shortCenterToast(getActivity(), getString(R.string.cache_hint));
