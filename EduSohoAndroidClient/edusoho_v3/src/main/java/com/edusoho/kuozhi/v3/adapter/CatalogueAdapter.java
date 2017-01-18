@@ -59,7 +59,7 @@ public class CatalogueAdapter extends BaseAdapter {
         viewHolder.tvUserName.setText(resourcesBean.getUser().getNickname());
         viewHolder.tvContent.setText(String.format("         %s", resourcesBean.getTitle()));
         viewHolder.tvCommentNum.setText(resourcesBean.getPostNum());
-        viewHolder.tvTime.setText(resourcesBean.getLatestPostTime().replace("T", " ").split("[+]")[0].substring(2, 16).replace("-", "/"));
+        viewHolder.tvTime.setText(resourcesBean.getUpdatedTime().replace("T", " ").split("[+]")[0].substring(2, 16).replace("-", "/"));
         if ("question".equals(resourcesBean.getType())) {
             viewHolder.tvKind.setText("问题");
             viewHolder.tvKind.setTextColor(mContext.getResources().getColor(R.color.primary_color));
