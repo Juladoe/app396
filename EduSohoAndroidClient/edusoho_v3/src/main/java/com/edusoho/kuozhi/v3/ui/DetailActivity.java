@@ -30,6 +30,7 @@ import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -307,12 +308,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 CommonUtil.shortCenterToast(this, "请先登录");
             } else {
                 mContentVp.setCurrentItem(2);
-//<<<<<<< HEAD
-//                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(mIsMemder);
-//=======
-//                setBottomLayoutVisible(2, mIsMemder);
-//                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(mIsMemder, mTitle);
-//>>>>>>> develop
+                setBottomLayoutVisible(2, mIsMemder);
+                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(mIsMemder);
             }
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
