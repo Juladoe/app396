@@ -125,8 +125,6 @@ public class MyStudyAdapter extends BaseAdapter {
         viewHolder.layoutLive.setVisibility(View.GONE);
         try {
             Object object = mLists.get(position);
-
-
             switch (type) {
                 case 0:
                     //最近
