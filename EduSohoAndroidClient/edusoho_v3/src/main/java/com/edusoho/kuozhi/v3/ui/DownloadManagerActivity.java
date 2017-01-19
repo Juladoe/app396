@@ -131,7 +131,7 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     };
 
     public boolean isExpired() {
-        return mCourseMember != null && AppUtil.parseInt(mCourseMember.deadline) <= 0;
+        return mCourseMember != null && AppUtil.parseInt(mCourseMember.deadline) < 0;
     }
 
     private void validCourseMemberState() {
@@ -454,81 +454,6 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
             ids[index++] = lessonItem.id;
         }
         return ids;
-    }
-
-    public void clearLocalCache(ArrayList<Integer> ids) {
-        SqliteUtil sqliteUtil = SqliteUtil.getUtil(mContext);
-
-        String m3u8LessonIds = coverM3U8Ids(ids);
-        String cacheLessonIds = coverLessonIds(ids);
-        sqliteUtil.execSQL(String.format(
-                "delete from data_cache where type='%s' and key in %s",
-                Const.CACHE_LESSON_TYPE,
-                cacheLessonIds.toString()
-                )
-        );
-        sqliteUtil.execSQL(String.format(
-                "delete from data_m3u8 where host='%s' and lessonId in %s",
-                app.domain,
-                m3u8LessonIds.toString())
-        );
-
-        sqliteUtil.execSQL(String.format(
-                "delete from data_m3u8_url where lessonId in %s",
-                m3u8LessonIds.toString())
-        );
-
-        M3U8DownService service = M3U8DownService.getService();
-        if (service != null) {
-            service.cancelAllDownloadTask();
-            for (int id : ids) {
-                service.cancelDownloadTask(id);
-            }
-        }
-
-        clearVideoCache(ids);
-    }
-
-    /**
-     * 删除本地视频
-     *
-     * @param ids
-     */
-    private void clearVideoCache(ArrayList<Integer> ids) {
-        File workSpace = EdusohoApp.getWorkSpace();
-        if (workSpace == null) {
-            return;
-        }
-        File videosDir = new File(workSpace, "videos/" + app.loginUser.id + "/" + app.domain);
-        for (int id : ids) {
-            FileUtils.deleteFile(new File(videosDir, String.valueOf(id)).getAbsolutePath());
-        }
-    }
-
-    private String coverM3U8Ids(ArrayList<Integer> ids) {
-        StringBuffer idsStr = new StringBuffer("(");
-        for (int id : ids) {
-            idsStr.append(id).append(",");
-        }
-        if (idsStr.length() > 1) {
-            idsStr.deleteCharAt(idsStr.length() - 1);
-        }
-        idsStr.append(")");
-
-        return idsStr.toString();
-    }
-
-    private String coverLessonIds(ArrayList<Integer> ids) {
-        StringBuffer idsStr = new StringBuffer("(");
-        for (int id : ids) {
-            idsStr.append("'lesson-").append(id).append("',");
-        }
-        if (idsStr.length() > 1) {
-            idsStr.deleteCharAt(idsStr.length() - 1);
-        }
-        idsStr.append(")");
-
-        return idsStr.toString();
     }
 
     public class LocalCourseModel {

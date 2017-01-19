@@ -57,6 +57,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     public static final String COURSE_ID = "course_id";
     public static final String SOURCE = "source";
+    public static final String SOURCE_ID = "source_id";
     private String mCourseId;
     private boolean mIsFavorite = false;
     public CourseDetail mCourseDetail;
@@ -210,7 +211,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (courseMember == null) {
             return false;
         }
-        return courseMember.deadline <= 0;
+        return courseMember.deadline < 0;
     }
 
     private void saveCourseToCache(Course course) {
