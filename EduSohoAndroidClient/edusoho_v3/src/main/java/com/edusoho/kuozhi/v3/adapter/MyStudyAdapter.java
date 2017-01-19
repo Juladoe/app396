@@ -123,94 +123,100 @@ public class MyStudyAdapter extends BaseAdapter {
         }
         viewHolder.layoutClass.setVisibility(View.GONE);
         viewHolder.layoutLive.setVisibility(View.GONE);
-        Object object = mLists.get(position);
-        switch (type) {
-            case 0:
-                //最近
-                if (object instanceof Study.Resource) {
-                    Study.Resource study = (Study.Resource) object;
-                    switch (study.getJoinedType()) {
-                        case "classroom":
-                            if (study.getClassroomTitle() != null &&
-                                    study.getClassroomTitle().length() > 0) {
-                                viewHolder.layoutClass.setVisibility(View.VISIBLE);
-                                viewHolder.tvClassName.setText(study.getClassroomTitle());
+        try {
+            Object object = mLists.get(position);
+
+
+            switch (type) {
+                case 0:
+                    //最近
+                    if (object instanceof Study.Resource) {
+                        Study.Resource study = (Study.Resource) object;
+                        switch (study.getJoinedType()) {
+                            case "classroom":
+                                if (study.getClassroomTitle() != null &&
+                                        study.getClassroomTitle().length() > 0) {
+                                    viewHolder.layoutClass.setVisibility(View.VISIBLE);
+                                    viewHolder.tvClassName.setText(study.getClassroomTitle());
+                                }
+                                viewHolder.tvMore.setVisibility(View.GONE);
+                                break;
+                            case "course":
+                                if (study.getClassroomTitle() != null &&
+                                        study.getClassroomTitle().length() > 0) {
+                                    viewHolder.layoutClass.setVisibility(View.VISIBLE);
+                                    viewHolder.tvClassName.setText(study.getClassroomTitle());
+                                }
+                                viewHolder.tvMore.setVisibility(View.VISIBLE);
+                                break;
+                        }
+                        ImageLoader.getInstance().displayImage(study.getLargePicture()
+                                , viewHolder.ivPic, EdusohoApp.app.mOptions);
+                        viewHolder.tvTitle.setText(String.valueOf(study.getTitle()));
+                        if (study.getType().equals("live")) {
+                            viewHolder.layoutLive.setVisibility(View.VISIBLE);
+                            if (study.liveState == 1) {
+                                viewHolder.tvLive.setText(R.string.lesson_living);
+                                viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
+                            } else {
+                                viewHolder.tvLive.setText("直播");
+                                viewHolder.tvLiveIcon.setVisibility(View.GONE);
                             }
-                            viewHolder.tvMore.setVisibility(View.GONE);
-                            break;
-                        case "course":
-                            if (study.getClassroomTitle() != null &&
-                                    study.getClassroomTitle().length() > 0) {
-                                viewHolder.layoutClass.setVisibility(View.VISIBLE);
-                                viewHolder.tvClassName.setText(study.getClassroomTitle());
-                            }
-                            viewHolder.tvMore.setVisibility(View.VISIBLE);
-                            break;
+                        }
+                        setProgressStr(study.getLearnedNum(), study.getTotalLesson(), viewHolder.tvStudyState);
                     }
-                    ImageLoader.getInstance().displayImage(study.getLargePicture()
-                            , viewHolder.ivPic, EdusohoApp.app.mOptions);
-                    viewHolder.tvTitle.setText(String.valueOf(study.getTitle()));
-                    if (study.getType().equals("live")) {
-                        viewHolder.layoutLive.setVisibility(View.VISIBLE);
-                        if (study.liveState == 1) {
-                            viewHolder.tvLive.setText(R.string.lesson_living);
-                            viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
-                        } else {
-                            viewHolder.tvLive.setText("直播");
-                            viewHolder.tvLiveIcon.setVisibility(View.GONE);
+                    break;
+                case 1:
+                    if (object instanceof Course) {
+                        Course course = (Course) object;
+                        ImageLoader.getInstance().displayImage(course.getLargePicture(), viewHolder.ivPic,
+                                EdusohoApp.app.mOptions);
+                        viewHolder.tvTitle.setText(String.valueOf(course.title));
+                        setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
+                    }
+                    break;
+                case 2:
+                    //直播
+                    if (object instanceof Course) {
+                        Course course = (Course) object;
+                        ImageLoader.getInstance().displayImage(course.getLargePicture(), viewHolder.ivPic,
+                                EdusohoApp.app.mOptions);
+                        viewHolder.tvTitle.setText(String.valueOf(course.title));
+                        setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
+                        if (course.type.equals("live")) {
+                            viewHolder.layoutLive.setVisibility(View.VISIBLE);
+                            viewHolder.tvMore.setVisibility(course.parentId == 0 ? View.VISIBLE : View.GONE);
+                            if (course.liveState == 1) {
+                                viewHolder.tvLive.setText(R.string.lesson_living);
+                                viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
+                            } else {
+                                viewHolder.tvLive.setText("直播");
+                                viewHolder.tvLiveIcon.setVisibility(View.GONE);
+                            }
                         }
                     }
-                    setProgressStr(study.getLearnedNum(), study.getTotalLesson(), viewHolder.tvStudyState);
-                }
-                break;
-            case 1:
-                if (object instanceof Course) {
-                    Course course = (Course) object;
-                    ImageLoader.getInstance().displayImage(course.getLargePicture(), viewHolder.ivPic,
-                            EdusohoApp.app.mOptions);
-                    viewHolder.tvTitle.setText(String.valueOf(course.title));
-                    setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
-                }
-                break;
-            case 2:
-                //直播
-                if (object instanceof Course) {
-                    Course course = (Course) object;
-                    ImageLoader.getInstance().displayImage(course.getLargePicture(), viewHolder.ivPic,
-                            EdusohoApp.app.mOptions);
-                    viewHolder.tvTitle.setText(String.valueOf(course.title));
-                    setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
-                    if (course.type.equals("live")) {
-                        viewHolder.layoutLive.setVisibility(View.VISIBLE);
-                        viewHolder.tvMore.setVisibility(course.parentId == 0 ? View.VISIBLE : View.GONE);
-                        if (course.liveState == 1) {
-                            viewHolder.tvLive.setText(R.string.lesson_living);
-                            viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
-                        } else {
-                            viewHolder.tvLive.setText("直播");
-                            viewHolder.tvLiveIcon.setVisibility(View.GONE);
-                        }
+                    break;
+                case 3:
+                    if (object instanceof Classroom) {
+                        Classroom classroom = (Classroom) object;
+                        viewHolder.tvTitle.setText(String.valueOf(classroom.title));
+                        ImageLoader.getInstance().displayImage(classroom.getLargePicture(), viewHolder.ivPic,
+                                EdusohoApp.app.mOptions);
+                        viewHolder.tvStudyState.setText("");
                     }
-                }
-                break;
-            case 3:
-                if (object instanceof Classroom) {
-                    Classroom classroom = (Classroom) object;
-                    viewHolder.tvTitle.setText(String.valueOf(classroom.title));
-                    ImageLoader.getInstance().displayImage(classroom.getLargePicture(), viewHolder.ivPic,
-                            EdusohoApp.app.mOptions);
-                    viewHolder.tvStudyState.setText("");
-                }
-                break;
-        }
-        convertView.setTag(R.id.tv_title, position);
-        convertView.setOnClickListener(mViewOnClickListener);
-        viewHolder.tvMore.setTag(position);
-        viewHolder.tvMore.setOnClickListener(mOnClickListener);
-        if (position == getCount() - 1) {
-            viewHolder.vLine.setVisibility(View.GONE);
-        } else {
-            viewHolder.vLine.setVisibility(View.VISIBLE);
+                    break;
+            }
+            convertView.setTag(R.id.tv_title, position);
+            convertView.setOnClickListener(mViewOnClickListener);
+            viewHolder.tvMore.setTag(position);
+            viewHolder.tvMore.setOnClickListener(mOnClickListener);
+            if (position == getCount() - 1) {
+                viewHolder.vLine.setVisibility(View.GONE);
+            } else {
+                viewHolder.vLine.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception ex) {
+            return convertView;
         }
         return convertView;
     }
