@@ -268,7 +268,7 @@
     <string name="live_state_replay">回放</string>
     <string name="live_state_ing">直播中</string>
     <string name="discuss_join_hint">请先加入</string>
-    <string name="discuss_join_look_hint">加入课程后才能查看详情</string>
+    <string name="discuss_join_look_hint">请先加入学习</string>
     <string name="discuss_load_data_finish">已加载完</string>
     <string name="discuss_load_data_success">加载成功</string>
     <string name="discuss_no_data">还没有问答</string>

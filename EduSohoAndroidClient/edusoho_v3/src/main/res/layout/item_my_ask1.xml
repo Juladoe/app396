@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/disabled2_hint_color"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -39,6 +38,7 @@
             android:id="@+id/tv_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@color/white"
             android:background="@drawable/shape_order"
             android:textSize="@dimen/font_xxs"
             android:layout_alignLeft="@+id/tv_content"

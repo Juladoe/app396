@@ -236,6 +236,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             @Override
             public void onPageSelected(int position) {
                 checkTab(position);
+                setBottomLayoutVisible(position, mIsMemder);
                 showEditTopic(position);
             }
 
@@ -339,16 +340,12 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else if (v.getId() == R.id.tv_inclass) {
             goClass();
         } else if (v.getId() == R.id.tv_edit_topic) {
-            if (DetailActivity.this instanceof CourseActivity ? ((CourseActivity) DetailActivity.this).mCourseDetail.getMember() == null
-                    : ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getMember() == null) {
-                CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_hint));
-            } else {
                 showDialog();
-            }
         }
     }
 
-    protected void grade(){}
+    protected void grade() {
+    }
 
     protected abstract void goClass();
 
@@ -627,6 +624,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     protected abstract void showThreadCreateView(String type);
+
     private boolean isAdd;
 
     private void showDialog() {
