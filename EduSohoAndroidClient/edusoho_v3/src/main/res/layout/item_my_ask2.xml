@@ -36,7 +36,11 @@
             android:layout_below="@+id/tv_content_txt1"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="30dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingLeft="5dp"
             android:text="问题："
+            android:background="@color/disabled1_hint_color"
             android:textColor="@color/primary_font_color"
             android:textSize="@dimen/font_s" />
 
@@ -46,8 +50,12 @@
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/tv_content_txt2"
             android:layout_toRightOf="@+id/tv_content_txt2"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingRight="5dp"
             android:layout_marginRight="30dp"
             android:layout_marginBottom="30dp"
+            android:background="@color/disabled1_hint_color"
             android:textColor="@color/primary_font_color"
             android:textSize="@dimen/font_s" />
 

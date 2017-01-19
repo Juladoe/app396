@@ -2,11 +2,8 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -55,11 +52,10 @@ public class CourseDiscussFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_discuss, container, false);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContainerView(R.layout.fragment_discuss);
         mCouseId = getArguments().getString("id");
-        initWidget();
-        return mView;
     }
 
     @Override
@@ -68,17 +64,20 @@ public class CourseDiscussFragment extends BaseFragment {
         mCourseStateCallback = (CourseStateCallback) activity;
     }
 
-    private void initWidget() {
-        mUnJoinView = (LinearLayout) mView.findViewById(R.id.ll_course_catalog_empty);
-        mLvDiscuss = (RefreshListView) mView.findViewById(R.id.lv_discuss);
-        mLoadView = mView.findViewById(R.id.ll_frame_load);
-        mEmpty = mView.findViewById(R.id.ll_discuss_empty);
-        mTvEmpty = (TextView) mView.findViewById(R.id.tv_empty);
+
+    protected void initView(View view) {
+        super.initView(view);
+        mUnJoinView = (LinearLayout) view.findViewById(R.id.ll_course_catalog_empty);
+        mLvDiscuss = (RefreshListView) view.findViewById(R.id.lv_discuss);
+        mLoadView = view.findViewById(R.id.ll_frame_load);
+        mEmpty = view.findViewById(R.id.ll_discuss_empty);
+        mTvEmpty = (TextView) view.findViewById(R.id.tv_empty);
         if (TextUtils.isEmpty(app.token)) {
             mUnJoinView.setVisibility(View.VISIBLE);
         } else {
             initData();
         }
+
     }
 
     // TODO: 17/1/18 @杜樊
@@ -129,9 +128,8 @@ public class CourseDiscussFragment extends BaseFragment {
         mEmpty.setVisibility(visibility);
     }
 
-    public void reFreshView(boolean isJoin, String title) {
+    public void reFreshView(boolean isJoin) {
         this.isJoin = isJoin;
-        this.title = title;
     }
 
     @Override

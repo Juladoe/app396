@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.entity.lesson;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -14,6 +15,9 @@ import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.imserver.ui.adapter.MessageRecyclerListAdapter;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
+import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -209,9 +213,9 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         }
     }
 
-    private void initHeadInfo(Bundle bundle) {
-        LinkedHashMap info = (LinkedHashMap<String, String>) bundle.getSerializable("info");
-        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(info.get("createdTime").toString().split("T")[0]);
+    private void initHeadInfo(final Bundle bundle) {
+        final LinkedHashMap info = (LinkedHashMap<String, String>) bundle.getSerializable("info");
+        ((TextView) VIEW_HEADER.findViewById(R.id.tdh_time)).setText(info.get("createdTime").toString().replace("T", " ").split("[+]")[0].substring(2, 16).replace("-", "/"));
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_title)).setText(Html.fromHtml(info.get("title").toString()));
         ((TextView) VIEW_HEADER.findViewById(R.id.tdh_content)).setText(Html.fromHtml(info.get("content").toString()));
         ImageLoader.getInstance().displayImage(((LinkedHashMap<String, String>) info.get("user")).get("avatar"), (RoundedImageView) VIEW_HEADER.findViewById(R.id.tdh_avatar), EdusohoApp.app.mAvatarOptions);
@@ -227,6 +231,26 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
         } else {
             ((TextView) VIEW_HEADER.findViewById(R.id.tdh_from_course)).setText(String.format("来自班级《%s》", ((LinkedHashMap<String, String>) info.get("target")).get("title")));
         }
+        VIEW_HEADER.findViewById(R.id.tdh_from_course).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ("course".equals(bundle.getString("kind"))) {
+                    EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity", mContext, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(CourseActivity.COURSE_ID, info.get("courseId").toString());
+                        }
+                    });
+                } else {
+                    EdusohoApp.app.mEngine.runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, info.get("targetId").toString());
+                        }
+                    });
+                }
+            }
+        });
     }
 
     public void addHeaderView(View headerView, Bundle info) {

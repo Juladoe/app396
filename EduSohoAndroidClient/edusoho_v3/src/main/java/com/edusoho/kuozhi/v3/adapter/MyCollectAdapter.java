@@ -120,7 +120,7 @@ public class MyCollectAdapter extends BaseAdapter {
         if (course.type.equals("live")) {
             viewHolder.layoutLive.setVisibility(View.VISIBLE);
             if (course.liveState == 1) {
-                viewHolder.tvLive.setText("正在直播");
+                viewHolder.tvLive.setText(R.string.lesson_living);
                 viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
             } else {
                 viewHolder.tvLive.setText("直播");
@@ -203,6 +203,7 @@ public class MyCollectAdapter extends BaseAdapter {
                             shareTool.shardCourse();
                         }
                     });
+                    dialog.dismiss();
                 }
 
                 @Override

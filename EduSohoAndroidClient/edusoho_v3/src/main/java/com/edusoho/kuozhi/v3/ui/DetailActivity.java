@@ -1,10 +1,10 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.animation.ObjectAnimator;
-import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,15 +12,14 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -103,9 +102,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected static final int LOADING_END = 1;
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
     private EduSohoNewIconView mTvEditTopic;
-    private Dialog dialog;
     private EduSohoNewIconView tvTopic;
     private EduSohoNewIconView tvQuestion;
+    private PopupWindow mPopupWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +118,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setNavigationBarTintEnabled(true);
-            tintManager.setTintColor(Color.parseColor("#00000000"));
+            tintManager.setTintColor(getResources().getColor(R.color.transparent));
         }
     }
 
@@ -195,17 +194,17 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         mMenuPop = new MenuPop(this, mMenu);
         mMenuPop.setOnBindViewVisibleChangeListener(
                 new MenuPop.OnBindViewVisibleChangeListener() {
-            @Override
-            public void onVisibleChange(boolean show) {
-                if(show){
-                    mIvGrade.setVisibility(View.GONE);
-                    mIvGrade2.setVisibility(View.GONE);
-                }else{
-                    mIvGrade.setVisibility(View.VISIBLE);
-                    mIvGrade2.setVisibility(View.VISIBLE);
-                }
-            }
-        });
+                    @Override
+                    public void onVisibleChange(boolean show) {
+                        if (show) {
+                            mIvGrade.setVisibility(View.GONE);
+                            mIvGrade2.setVisibility(View.GONE);
+                        } else {
+                            mIvGrade.setVisibility(View.VISIBLE);
+                            mIvGrade2.setVisibility(View.VISIBLE);
+                        }
+                    }
+                });
         setLoadStatus(View.VISIBLE);
     }
 
@@ -299,14 +298,17 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     public void onClick(View v) {
         if (v.getId() == R.id.intro_rlayout) {
             mContentVp.setCurrentItem(0);
+            setBottomLayoutVisible(0, mIsMemder);
         } else if (v.getId() == R.id.hour_rlayout) {
             mContentVp.setCurrentItem(1);
+            setBottomLayoutVisible(1, mIsMemder);
         } else if (v.getId() == R.id.review_rlayout) {
             if (TextUtils.isEmpty(app.token)) {
                 CommonUtil.shortCenterToast(this, "请先登录");
             } else {
                 mContentVp.setCurrentItem(2);
-                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(mIsMemder, mTitle);
+                setBottomLayoutVisible(2, mIsMemder);
+                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(mIsMemder);
             }
         } else if (v.getId() == R.id.iv_grade ||
                 v.getId() == R.id.iv_grade2) {
@@ -327,9 +329,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else if (v.getId() == R.id.back2) {
             finish();
         } else if (v.getId() == R.id.back) {
-            if(mIsFullScreen){
+            if (mIsFullScreen) {
                 fullScreen();
-            }else {
+            } else {
                 finish();
             }
         } else if (v.getId() == R.id.layout_menu) {
@@ -346,8 +348,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    protected void grade(){
-    }
+    protected void grade(){}
 
     protected abstract void goClass();
 
@@ -418,9 +419,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     protected void courseHastrial(String state, LessonItem lessonItem) {
     }
 
-    /**
-     * todo 获得课程相关信息
-     */
     protected void courseChange(LessonItem lessonItem) {
     }
 
@@ -525,11 +523,9 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mParent.setScrollStay(false);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
-                mBottomLayout.setVisibility(View.VISIBLE);
+                mBottomLayout.setVisibility(View.GONE);
             } else {
-                if (this instanceof CourseActivity) {
-                    mTvInclass.setVisibility(View.VISIBLE);
-                }
+                mBottomLayout.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -598,6 +594,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             case TAB_PAGE:
                 if (mContentVp != null) {
                     mContentVp.setCurrentItem(1);
+                    setBottomLayoutVisible(1, mIsMemder);
                     tabLoadingGone();
                 }
                 break;
@@ -608,8 +605,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         return false;
     }
 
-    protected void showEditTopic(int position){
-        if (position == 2) {
+    protected void showEditTopic(int position) {
+        if (position == 2 && mIsMemder) {
             mTvEditTopic.setVisibility(View.VISIBLE);
         } else {
             mTvEditTopic.setVisibility(View.GONE);
@@ -618,43 +615,39 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
     protected abstract void showThreadCreateView(String type);
     private boolean isAdd;
+
     private void showDialog() {
         if (!isAdd) {
             isAdd = true;
-            dialog = new Dialog(this, R.style.DiscussDialog);
-            View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_discuss_publish, null);
-            tvTopic = (EduSohoNewIconView) dialogView.findViewById(R.id.tv_topic);
+            View popupView = getLayoutInflater().inflate(R.layout.dialog_discuss_publish, null);
+            mPopupWindow = new PopupWindow(popupView, RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT, true);
+            mPopupWindow.setTouchable(true);
+            mPopupWindow.setOutsideTouchable(true);
+            mPopupWindow.setBackgroundDrawable(new BitmapDrawable(getResources(), (Bitmap) null));
+            tvTopic = (EduSohoNewIconView) popupView.findViewById(R.id.tv_topic);
             tvTopic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showThreadCreateView("discussion");
-                    dialog.dismiss();
+                    mPopupWindow.dismiss();
                 }
             });
-            tvQuestion = (EduSohoNewIconView) dialogView.findViewById(R.id.tv_question);
+            tvQuestion = (EduSohoNewIconView) popupView.findViewById(R.id.tv_question);
             tvQuestion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     showThreadCreateView("question");
-                    dialog.dismiss();
+                    mPopupWindow.dismiss();
                 }
             });
-            dialogView.findViewById(R.id.tv_close).setOnClickListener(new View.OnClickListener() {
+            popupView.findViewById(R.id.tv_close).setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dialog.dismiss();
+                    mPopupWindow.dismiss();
                 }
             });
-            dialog.setContentView(dialogView);
-            dialog.setCanceledOnTouchOutside(true);
-            Window mWindow = dialog.getWindow();
-            mWindow .setGravity(Gravity.LEFT | Gravity.TOP);
-            WindowManager.LayoutParams lp = mWindow.getAttributes();
-            lp.x = (int) mTvEditTopic.getX();
-            lp.y = (int) (mTvEditTopic.getY() - AppUtil.dp2px(this, 150));
-            mWindow.setAttributes(lp);
         }
-        dialog.show();
+        mPopupWindow.showAsDropDown(mTvEditTopic, 0, -AppUtil.dp2px(this, 204));
         startAnimation();
     }
 
@@ -667,5 +660,25 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         animator1.setDuration(300);
         animator.start();
         animator1.start();
+    }
+
+    public void setBottomLayoutVisible(int curFragment, boolean isMember) {
+        if (curFragment == 0) {
+            if (isMember) {
+                mBottomLayout.setVisibility(View.VISIBLE);
+                mTvInclass.setVisibility(View.VISIBLE);
+            } else {
+                mBottomLayout.setVisibility(View.VISIBLE);
+                mTvInclass.setVisibility(View.GONE);
+            }
+        } else {
+            if (!isMember) {
+                mBottomLayout.setVisibility(View.VISIBLE);
+                mTvInclass.setVisibility(View.GONE);
+            } else {
+                mBottomLayout.setVisibility(View.GONE);
+                mTvInclass.setVisibility(View.GONE);
+            }
+        }
     }
 }

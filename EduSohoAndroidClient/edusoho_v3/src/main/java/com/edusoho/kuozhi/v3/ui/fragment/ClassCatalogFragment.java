@@ -86,7 +86,6 @@ public class ClassCatalogFragment extends BaseFragment {
     }
 
     private void saveCourseListToCache(List<Course> list) {
-
         StringBuilder sb = new StringBuilder();
         for (Course course : list) {
             sb.append(course.id).append(",");
@@ -131,6 +130,7 @@ public class ClassCatalogFragment extends BaseFragment {
                 Bundle bundle = new Bundle();
                 bundle.putString(CourseActivity.COURSE_ID, String.valueOf(mCourseList.get(position).id));
                 bundle.putString(CourseActivity.SOURCE, getClassRoomName(AppUtil.parseInt(mClassRoomId)));
+                bundle.putBoolean(CourseActivity.IS_CHILD_COURSE, true);
                 CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);
             }
         });

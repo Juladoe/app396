@@ -308,7 +308,6 @@ public class DownloadManagerActivity extends ActionBarBaseActivity {
     private Drawable.Callback drawableCallback = new Drawable.Callback() {
         @Override
         public void invalidateDrawable(Drawable who) {
-            //getActionBar().setBackgroundDrawable(who);
         }
 
         @Override

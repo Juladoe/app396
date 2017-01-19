@@ -239,7 +239,7 @@ public class SqliteUtil extends SQLiteOpenHelper {
         cv.put("key", key);
         cv.put("value", value);
 
-        Cache cache = query("select * from data_cache where key=?", new String[]{key});
+        Cache cache = query("select * from data_cache where key=? and type=?", new String[]{key, type});
         if (cache == null) {
             long result = insert("data_cache", cv);
             Log.d("saveLocalCache", "insert to cache:" + result);

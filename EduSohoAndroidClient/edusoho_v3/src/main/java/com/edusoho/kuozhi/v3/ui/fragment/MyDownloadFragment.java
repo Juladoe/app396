@@ -13,14 +13,19 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CourseDownloadAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.entity.course.DownloadCourse;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
+import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
+import cn.trinea.android.common.util.ToastUtils;
 
 
 /**
@@ -83,7 +88,11 @@ public class MyDownloadFragment extends Fragment implements AdapterView.OnItemCl
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Bundle bundle = new Bundle();
-        Course course = (Course) parent.getItemAtPosition(position);
+        DownloadCourse course = (DownloadCourse) parent.getItemAtPosition(position);
+        if (course.isExpird()) {
+            ToastUtils.show(getContext(), R.string.download_course_expird_timeout);
+            return;
+        }
         bundle.putInt(Const.COURSE_ID, course.id);
         CoreEngine.create(getContext()).runNormalPluginWithBundle("DownloadManagerActivity", getContext(), bundle);
     }
