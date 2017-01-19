@@ -112,15 +112,14 @@ public class MyStudyAdapter extends BaseAdapter {
             } else {
                 convertView = LayoutInflater.from(mContext).inflate(R.layout.view_empty, null, false);
                 ((TextView) convertView.findViewById(R.id.tv_empty_text)).setText(mContext.getString(R.string.no_study_record));
-                //return convertView;
+                return convertView;
             }
         } else {
             if (getItemViewType(position) == 0) {
                 viewHolder = (ViewHolder) convertView.getTag();
+            } else {
+                return convertView;
             }
-//            else {
-//                return convertView;
-//            }
         }
         viewHolder.layoutClass.setVisibility(View.GONE);
         viewHolder.layoutLive.setVisibility(View.GONE);
