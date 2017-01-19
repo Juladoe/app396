@@ -474,10 +474,10 @@ public class PLVideoViewActivity extends AppCompatActivity {
             }
             switch (errorCode) {
                 case PLMediaPlayer.ERROR_CODE_INVALID_URI:
-                    showToastTips("加载直播错误");
+                    sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
-                    showToastTips("加载直播错误");
+                    sendReconnectMessage();
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
                     sendReconnectMessage();
@@ -508,7 +508,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
                     showToastTips("加载直播错误");
                     break;
                 default:
-                    showToastTips("加载直播错误");
+                    sendReconnectMessage();
                     break;
             }
             return true;
@@ -608,9 +608,9 @@ public class PLVideoViewActivity extends AppCompatActivity {
     };
 
     private void sendReconnectMessage() {
-        if (mTimeoutLength != 0 && (System.currentTimeMillis() - mTimeoutLength) > 10000) {
+        if (mTimeoutLength != 0 && (System.currentTimeMillis() - mTimeoutLength) > 60000) {
             setPlayError();
-            mVideoView.pause();
+            mVideoView.stopPlayback();
             mLoadingView.setOnClickListener(mVideoErrorClickListener);
             return;
         }
