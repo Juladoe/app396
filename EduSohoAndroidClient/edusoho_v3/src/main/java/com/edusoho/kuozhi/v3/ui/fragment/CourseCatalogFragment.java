@@ -95,7 +95,7 @@ public class CourseCatalogFragment extends BaseFragment {
         tvSpace = (TextView) view.findViewById(R.id.tv_space);
         mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
         tvSpace.setOnClickListener(getCacheCourse());
-        ((TextView) view.findViewById(R.id.tv_space)).setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
+        tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
         view.findViewById(R.id.tv_course).setOnClickListener(getCacheCourse());
         initCatalogue();
     }
@@ -119,6 +119,7 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     private void initCatalogue() {
+        mRlSpace.setVisibility(mMemberStatus == ISMEMBER && app.token != null ? View.VISIBLE : View.GONE);
         setLoadViewStatus(View.VISIBLE);
         setLessonEmptyViewVisibility(View.GONE);
         RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + mCourseId + "&token=" + app.token, true);
@@ -133,7 +134,6 @@ public class CourseCatalogFragment extends BaseFragment {
                 });
                 if (mCourseCatalogue.getLessons().size() != 0) {
                     if (mMemberStatus == ISMEMBER && app.token != null) {
-                        mRlSpace.setVisibility(View.VISIBLE);
                         initFirstLearnLesson();
                     }
                     initFirstLearnLesson();
