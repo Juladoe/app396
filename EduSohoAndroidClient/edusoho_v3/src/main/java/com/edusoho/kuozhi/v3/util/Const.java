@@ -151,7 +151,7 @@ public class Const {
     public static final String COURSE_SHOW_BAR = "course_show_bar";//导航栏
     public static final String COURSE_HIDE_BAR = "course_hide_bar";//导航栏
     public static final String COURSE_PAUSE = "course_pause";//暂停课程后的UI处理
-    //public static final String COURSE_PPT = "course_ppt";//暂停课程后的UI处理
+    public static final String PAY_SUCCESS = "pay_success";//暂停课程后的UI处理
 
     public static final int OK = 200;
     public static final int ERROR_200 = 200;

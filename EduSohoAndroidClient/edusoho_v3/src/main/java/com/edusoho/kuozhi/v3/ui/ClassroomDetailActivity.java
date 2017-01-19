@@ -123,7 +123,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
         } else if (v.getId() == R.id.btn_del_and_quit) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
             builder.setTitle("退出班级")
-                    .setMessage("退出班级将删除该课程下所有离线缓存内容?")
+                    .setMessage(R.string.delete_classroom)
                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
