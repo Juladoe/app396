@@ -602,6 +602,7 @@ public class PLVideoViewActivity extends AppCompatActivity {
             if (!LIVE.equals(mLiveStatus) || mVideoView.isPlaying()) {
                 return;
             }
+            mVideoView.stopPlayback();
             mVideoView.setVideoPath(mVideoPath);
             mVideoView.start();
         }
