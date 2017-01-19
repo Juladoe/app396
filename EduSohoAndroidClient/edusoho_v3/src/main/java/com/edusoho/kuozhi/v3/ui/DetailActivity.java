@@ -340,12 +340,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else if (v.getId() == R.id.tv_inclass) {
             goClass();
         } else if (v.getId() == R.id.tv_edit_topic) {
-            if (DetailActivity.this instanceof CourseActivity ? ((CourseActivity) DetailActivity.this).mCourseDetail.getMember() == null
-                    : ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getMember() == null) {
-                CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_hint));
-            } else {
                 showDialog();
-            }
         }
     }
 
@@ -415,6 +410,12 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                         (LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT)
                 );
                 break;
+            case Const.PAY_SUCCESS:
+                if (mRunStatus == MSG_RESUME) {
+                    saveMessage(message);
+                    return;
+                }
+                initData();
         }
     }
 
@@ -544,7 +545,14 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.COURSE_SHOW_BAR),
                 new MessageType(Const.COURSE_PAUSE),
                 new MessageType(Const.SCREEN_LOCK),
-                new MessageType(Const.COURSE_HIDE_BAR)};
+                new MessageType(Const.COURSE_HIDE_BAR),
+                new MessageType(Const.PAY_SUCCESS, MessageType.UI_THREAD)
+        };
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override

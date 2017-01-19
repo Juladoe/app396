@@ -191,10 +191,14 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 if (response.equals("true")) {
                     ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
                     ((CourseDiscussFragment) mFragments.get(2)).reFreshView(false);
+                    mCourseDetail.setMember(null);
                     mIsMemder = false;
                     mAddLayout.setVisibility(View.VISIBLE);
                     mTvInclass.setVisibility(View.GONE);
                     initViewPager();
+                    mContentVp.setCurrentItem(0);
+                    ((CourseCatalogFragment) mFragments.get(1)).reFreshView(false);
+                    ((CourseDiscussFragment) mFragments.get(2)).reFreshView(false);
                 } else {
                     CommonUtil.shortToast(mContext, "退出失败");
                 }
@@ -231,7 +235,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             mTvCollect.setText(getResources().getString(R.string.new_font_collected));
             mTvCollect.setTextColor(getResources().getColor(R.color.primary_color));
             mTvCollectTxt.setTextColor(getResources().getColor(R.color.primary_color));
-
         } else {
             mTvCollect.setText(getResources().getString(R.string.new_font_collect));
             mTvCollect.setTextColor(getResources().getColor(R.color.secondary_font_color));
@@ -249,17 +252,19 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (member == null) {
             mIsMemder = false;
             if (getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)) {
-                mAddLayout.setVisibility(View.GONE);
+                mBottomLayout.setVisibility(View.GONE);
             } else {
                 mAddLayout.setVisibility(View.VISIBLE);
             }
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
+            mIvGrade.setVisibility(View.GONE);
         } else {
             mIsMemder = true;
             mAddLayout.setVisibility(View.GONE);
             mBottomLayout.setVisibility(View.GONE);
             initViewPager();
+            mIvGrade.setVisibility(View.VISIBLE);
         }
         if (app.loginUser != null && app.loginUser.vip != null &&
                 app.loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId

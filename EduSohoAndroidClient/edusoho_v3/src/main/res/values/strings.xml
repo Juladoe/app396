@@ -268,7 +268,7 @@
     <string name="live_state_replay">回放</string>
     <string name="live_state_ing">直播中</string>
     <string name="discuss_join_hint">请先加入</string>
-    <string name="discuss_join_look_hint">加入课程后才能查看详情</string>
+    <string name="discuss_join_look_hint">请先加入学习</string>
     <string name="discuss_load_data_finish">已加载完</string>
     <string name="discuss_load_data_success">加载成功</string>
     <string name="discuss_no_data">还没有问答</string>
@@ -392,6 +392,8 @@
     <string name="download_size_course_source">来自班级 | </string>
     <string name="download_course_expird">课程已过期,请重新加入后学习</string>
     <string name="download_course_expird_timeout">课程已过期,请续费后继续学习</string>
+    <string name="delete_classroom">退出班级将删除该班级下所有离线缓存内容?</string>
+    <string name="delete_course">退出课程将删除该课程下所有离线缓存内容?</string>
 
     <!-- video -->
     <string name="video_no_meidaurl">多媒体资源不能播放!</string>
