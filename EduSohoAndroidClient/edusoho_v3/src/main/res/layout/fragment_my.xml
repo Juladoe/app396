@@ -56,6 +56,12 @@
 
             </RelativeLayout>
 
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="15dp"
+                android:layout_below="@id/layout_my"
+                android:background="@color/disabled1_hint_color"/>
+
             <LinearLayout
                 android:id="@+id/layout_tab"
                 android:layout_width="match_parent"

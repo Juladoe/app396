@@ -340,12 +340,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else if (v.getId() == R.id.tv_inclass) {
             goClass();
         } else if (v.getId() == R.id.tv_edit_topic) {
-            if (DetailActivity.this instanceof CourseActivity ? ((CourseActivity) DetailActivity.this).mCourseDetail.getMember() == null
-                    : ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getMember() == null) {
-                CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_hint));
-            } else {
                 showDialog();
-            }
         }
     }
 
