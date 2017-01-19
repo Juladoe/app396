@@ -482,6 +482,7 @@ public class Const {
     public static final String COURSE_NOTICES = "Course/getCourseNotices";
 
     public static final String CACHE_COURSE_TYPE = "course";
+    public static final String CACHE_CLASSROOM_COURSE_IDS_TYPE = "classroom_course_ids";
     public static final String CACHE_USER_TYPE = "data";
     public static final String CACHE_LESSON_TYPE = "lesson";
 

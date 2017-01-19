@@ -25,6 +25,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.FixHeightListView;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
@@ -70,6 +71,7 @@ public class ClassCatalogFragment extends BaseFragment {
                 mCourseList = list;
                 setLoadStatus(View.GONE);
                 if (mCourseList != null && !mCourseList.isEmpty()) {
+                    saveCourseListToCache(mCourseList);
                     initView();
                 } else {
                     setLessonEmptyViewVisibility(View.VISIBLE);
@@ -81,6 +83,19 @@ public class ClassCatalogFragment extends BaseFragment {
                 setLoadStatus(View.GONE);
             }
         });
+    }
+
+    private void saveCourseListToCache(List<Course> list) {
+        StringBuilder sb = new StringBuilder();
+        for (Course course : list) {
+            sb.append(course.id).append(",");
+        }
+        SqliteUtil sqliteUtil = SqliteUtil.getUtil(getContext());
+        sqliteUtil.saveLocalCache(
+                Const.CACHE_CLASSROOM_COURSE_IDS_TYPE,
+                String.format("classroom-%s", mClassRoomId),
+                sb.toString()
+        );
     }
 
     private String getClassRoomName(int classRoomId) {

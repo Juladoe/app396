@@ -31,10 +31,13 @@ import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.base.IDownloadFragmenntListener;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+
+import cn.trinea.android.common.util.ToastUtils;
 
 
 /**
@@ -86,7 +89,6 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
         mDownloadedAdapter = new LessonDownloadingAdapter(mContext, finishModel.m3U8DbModels, finishModel.mLocalLessons.get(mCourseId),
                 DownloadingAdapter.DownloadType.DOWNLOADED, R.layout.item_downloaded_manager_lesson_child);
         mListView.setAdapter(mDownloadedAdapter);
-        filterCourseLocalCache(finishModel);
         mSelectAllBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,6 +133,10 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mToolsLayout.getVisibility() == View.GONE) {
+                    if (mActivityContainer.isExpired()) {
+                        ToastUtils.show(getContext(), R.string.download_course_expird);
+                        return;
+                    }
                     final LessonItem lessonItem = mDownloadedAdapter.getItem(position);
                     app.mEngine.runNormalPlugin(
                             LessonActivity.TAG, mContext, new PluginRunCallback() {
@@ -158,7 +164,7 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
     }
 
     private void delLocalLesson(ArrayList<Integer> ids) {
-        mActivityContainer.clearLocalCache(ids);
+        new CourseCacheHelper(getContext(), app.domain, app.loginUser.id).clearLocalCache(ids);
         DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
         mDownloadedAdapter.updateLocalData(model.mLocalLessons.get(mCourseId));
         setEmptyState(mDownloadedAdapter.getCount() == 0);
@@ -176,7 +182,6 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
                     }
                     if (courseDetailsResult != null && courseDetailsResult.member != null && courseDetailsResult.member.deadline < 0) {
                         course.courseDeadline = courseDetailsResult.member.deadline;
-                        //mDownloadedAdapter.setCourseExpired(course);
                     }
                 }
             }, new Response.ErrorListener() {
@@ -189,7 +194,7 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
     }
 
     private synchronized void deleteLocalCacheByCourseId(int courseId) {
-        mActivityContainer.clearLocalCache(mDownloadedAdapter.getSelectLessonId());
+        new CourseCacheHelper(getContext(), app.domain, app.loginUser.id).clearLocalCache(mDownloadedAdapter.getSelectLessonId());
         DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
         mDownloadedAdapter.updateLocalData(model.mLocalLessons.get(mCourseId));
     }

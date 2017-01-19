@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.ui.DownloadManagerActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.base.IDownloadFragmenntListener;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.view.dialog.ExitCoursePopupDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
@@ -144,7 +145,7 @@ public class DownloadingFragment extends BaseFragment implements IDownloadFragme
     }
 
     private void delLocalLesson(ArrayList<Integer> ids) {
-        mActivityContainer.clearLocalCache(mDownloadingAdapter.getSelectLessonId());
+        new CourseCacheHelper(getContext(), app.domain, app.loginUser.id).clearLocalCache(mDownloadingAdapter.getSelectLessonId());
         DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.UN_FINISH, null, null);
         mDownloadingAdapter.updateLocalData(model.mLocalLessons.get(mCourseId));
         setEmptyState(mDownloadingAdapter.getCount() == 0);

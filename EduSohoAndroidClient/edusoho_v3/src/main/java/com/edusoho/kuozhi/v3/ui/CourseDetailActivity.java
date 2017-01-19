@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.sql.CourseDiscussDataSource;
 import com.edusoho.kuozhi.v3.util.sql.NewDataSource;
@@ -165,6 +166,7 @@ public class CourseDetailActivity extends ChatItemBaseDetail {
                             startIntent.putExtra(Const.SWITCH_NEWS_TAB, true);
                         }
                     });
+                    new CourseCacheHelper(getBaseContext(), app.domain, app.loginUser.id).clearLocalCacheByCourseId(mFromId);
                 } else {
                     CommonUtil.shortToast(mContext, "退出失败");
                 }
