@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.MotionEvent;
@@ -81,7 +82,12 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     @Override
-    protected void initView(View view) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        init(view);
+    }
+
+    private void init(View view) {
         super.initView(view);
         mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
         mLvCatalog = (FixCourseListView) view.findViewById(R.id.lv_catalog);
