@@ -15,6 +15,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -73,11 +75,6 @@ public class MyFragment extends BaseFragment {
         setTab(0);
         initFragment();
         initEvent();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         initData();
     }
 
@@ -88,6 +85,7 @@ public class MyFragment extends BaseFragment {
             mTvAvatarType.setText(app.loginUser.userRole2String());
             mAdapter = new FragmentViewPagerAdapter(getChildFragmentManager(), mFragments);
             mVpContent.setAdapter(mAdapter);
+            setTab(0);
         }
     }
 
@@ -194,4 +192,16 @@ public class MyFragment extends BaseFragment {
         }
     }
 
+    @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{new MessageType(Const.LOGIN_SUCCESS)};
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        MessageType messageType = message.type;
+        if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
+            initData();
+        }
+    }
 }
