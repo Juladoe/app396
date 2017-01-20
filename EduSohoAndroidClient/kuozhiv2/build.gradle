@@ -14,7 +14,7 @@ android {
         versionCode 44
 
         ndk {
-            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+            abiFilters "armeabi", "armeabi-v7a", "mips"
         }
         multiDexEnabled true
     }
@@ -32,7 +32,7 @@ android {
 
     fir{
         apiToken 'fa4ff9122d709c485cb0e3c992a62980'
-        changeLog 'build debug'
+        changeLog '1.我的学习切换显示bug'
     }
 
     //签名

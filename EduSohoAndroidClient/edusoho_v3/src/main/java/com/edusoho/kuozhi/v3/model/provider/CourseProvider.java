@@ -103,12 +103,34 @@ public class CourseProvider extends ModelProvider {
         return requestOption.build();
     }
 
+    public ProviderListener<String> unLearn(int courseId) {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        String token = ApiTokenUtil.getTokenString(mContext);
+
+        RequestUrl requestUrl = null;
+        requestUrl = new RequestUrl(String.format("%s/%s", school.url, Const.UN_LEARN_COURSE));
+        requestUrl.heads.put("token", token);
+        requestUrl.setParams(new String[] {
+                "courseId", String.valueOf(courseId)
+        });
+
+        RequestOption requestOption = buildSimplePostRequest(
+                requestUrl, new TypeToken<String>(){});
+
+        return requestOption.build();
+    }
+
     public ProviderListener<CourseMember> getMember(int courseId) {
         School school = SchoolUtil.getDefaultSchool(mContext);
         String token = ApiTokenUtil.getTokenString(mContext);
 
-        RequestUrl requestUrl = new RequestUrl(String.format("%s/%s?courseId=%d", school.url, Const.COURSE_MEMBER, courseId));
+        RequestUrl requestUrl = null;
+        requestUrl = new RequestUrl(String.format("%s/%s", school.url, Const.COURSE_MEMBER));
         requestUrl.heads.put("token", token);
+        requestUrl.setGetParams(new String[] {
+                "courseId", String.valueOf(courseId)
+        });
+
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<CourseMember>(){});
 

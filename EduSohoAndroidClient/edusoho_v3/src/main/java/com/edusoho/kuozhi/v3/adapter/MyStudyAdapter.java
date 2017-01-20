@@ -2,10 +2,12 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.DataSetObserver;
 import android.graphics.Color;
 import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,18 +25,27 @@ import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse2;
 import com.edusoho.kuozhi.v3.entity.course.Study;
 import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
+import com.edusoho.kuozhi.v3.model.sys.Cache;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.MyTabFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
+import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
 import com.edusoho.kuozhi.v3.view.dialog.SureDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -123,92 +134,98 @@ public class MyStudyAdapter extends BaseAdapter {
         }
         viewHolder.layoutClass.setVisibility(View.GONE);
         viewHolder.layoutLive.setVisibility(View.GONE);
-        Object object = mLists.get(position);
-        switch (type) {
-            case 0:
-                if (object instanceof Study.Resource) {
-                    Study.Resource study = (Study.Resource) object;
-                    switch (study.getJoinedType()) {
-                        case "classroom":
-                            if (study.getClassroomTitle() != null &&
-                                    study.getClassroomTitle().length() > 0) {
-                                viewHolder.layoutClass.setVisibility(View.VISIBLE);
-                                viewHolder.tvClassName.setText(study.getClassroomTitle());
+        try {
+            Object object = mLists.get(position);
+            switch (type) {
+                case 0:
+                    //最近
+                    if (object instanceof Study.Resource) {
+                        Study.Resource study = (Study.Resource) object;
+                        switch (study.getJoinedType()) {
+                            case "classroom":
+                                if (study.getClassroomTitle() != null &&
+                                        study.getClassroomTitle().length() > 0) {
+                                    viewHolder.layoutClass.setVisibility(View.VISIBLE);
+                                    viewHolder.tvClassName.setText(study.getClassroomTitle());
+                                }
+                                viewHolder.tvMore.setVisibility(View.GONE);
+                                break;
+                            case "course":
+                                if (study.getClassroomTitle() != null &&
+                                        study.getClassroomTitle().length() > 0) {
+                                    viewHolder.layoutClass.setVisibility(View.VISIBLE);
+                                    viewHolder.tvClassName.setText(study.getClassroomTitle());
+                                }
+                                viewHolder.tvMore.setVisibility(View.VISIBLE);
+                                break;
+                        }
+                        ImageLoader.getInstance().displayImage(study.getLargePicture()
+                                , viewHolder.ivPic, EdusohoApp.app.mOptions);
+                        viewHolder.tvTitle.setText(String.valueOf(study.getTitle()));
+                        if (study.getType().equals("live")) {
+                            viewHolder.layoutLive.setVisibility(View.VISIBLE);
+                            if (study.liveState == 1) {
+                                viewHolder.tvLive.setText(R.string.lesson_living);
+                                viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
+                            } else {
+                                viewHolder.tvLive.setText("直播");
+                                viewHolder.tvLiveIcon.setVisibility(View.GONE);
                             }
-                            viewHolder.tvMore.setVisibility(View.GONE);
-                            break;
-                        case "course":
-
-                            if (study.getClassroomTitle() != null &&
-                                    study.getClassroomTitle().length() > 0) {
-                                viewHolder.layoutClass.setVisibility(View.VISIBLE);
-                                viewHolder.tvClassName.setText(study.getClassroomTitle());
-                            }
-                            viewHolder.tvMore.setVisibility(View.VISIBLE);
-                            break;
+                        }
+                        setProgressStr(study.getLearnedNum(), study.getTotalLesson(), viewHolder.tvStudyState);
                     }
-                    ImageLoader.getInstance().displayImage(study.getLargePicture()
-                            , viewHolder.ivPic, EdusohoApp.app.mOptions);
-                    viewHolder.tvTitle.setText(String.valueOf(study.getTitle()));
-                    if (study.getType().equals("live")) {
-                        viewHolder.layoutLive.setVisibility(View.VISIBLE);
-                        if (study.liveState == 1) {
-                            viewHolder.tvLive.setText(R.string.lesson_living);
-                            viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
-                        } else {
-                            viewHolder.tvLive.setText("直播");
-                            viewHolder.tvLiveIcon.setVisibility(View.GONE);
+                    break;
+                case 1:
+                    if (object instanceof Course) {
+                        Course course = (Course) object;
+                        ImageLoader.getInstance().displayImage(course.getLargePicture(), viewHolder.ivPic,
+                                EdusohoApp.app.mOptions);
+                        viewHolder.tvTitle.setText(String.valueOf(course.title));
+                        setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
+                    }
+                    break;
+                case 2:
+                    //直播
+                    if (object instanceof Course) {
+                        Course course = (Course) object;
+                        ImageLoader.getInstance().displayImage(course.getLargePicture(), viewHolder.ivPic,
+                                EdusohoApp.app.mOptions);
+                        viewHolder.tvTitle.setText(String.valueOf(course.title));
+                        setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
+                        if (course.type.equals("live")) {
+                            viewHolder.layoutLive.setVisibility(View.VISIBLE);
+                            viewHolder.tvMore.setVisibility(course.parentId == 0 ? View.VISIBLE : View.GONE);
+                            if (course.liveState == 1) {
+                                viewHolder.tvLive.setText(R.string.lesson_living);
+                                viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
+                            } else {
+                                viewHolder.tvLive.setText("直播");
+                                viewHolder.tvLiveIcon.setVisibility(View.GONE);
+                            }
                         }
                     }
-                    setProgressStr(study.getLearnedNum(), study.getTotalLesson(), viewHolder.tvStudyState);
-                }
-                break;
-            case 1:
-                if (object instanceof Course) {
-                    Course course = (Course) object;
-                    ImageLoader.getInstance().displayImage(course.getLargePicture(), viewHolder.ivPic,
-                            EdusohoApp.app.mOptions);
-                    viewHolder.tvTitle.setText(String.valueOf(course.title));
-                    setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
-                }
-                break;
-            case 2:
-                if (object instanceof Course) {
-                    Course course = (Course) object;
-                    ImageLoader.getInstance().displayImage(course.getLargePicture(), viewHolder.ivPic,
-                            EdusohoApp.app.mOptions);
-                    viewHolder.tvTitle.setText(String.valueOf(course.title));
-                    setProgressStr(course.learnedNum, course.totalLesson, viewHolder.tvStudyState);
-                    if (course.type.equals("live")) {
-                        viewHolder.layoutLive.setVisibility(View.VISIBLE);
-                        if (course.liveState == 1) {
-                            viewHolder.tvLive.setText(R.string.lesson_living);
-                            viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
-                        } else {
-                            viewHolder.tvLive.setText("直播");
-                            viewHolder.tvLiveIcon.setVisibility(View.GONE);
-                        }
+                    break;
+                case 3:
+                    if (object instanceof Classroom) {
+                        Classroom classroom = (Classroom) object;
+                        viewHolder.tvTitle.setText(String.valueOf(classroom.title));
+                        ImageLoader.getInstance().displayImage(classroom.getLargePicture(), viewHolder.ivPic,
+                                EdusohoApp.app.mOptions);
+                        viewHolder.tvStudyState.setText("");
                     }
-                }
-                break;
-            case 3:
-                if (object instanceof Classroom) {
-                    Classroom classroom = (Classroom) object;
-                    viewHolder.tvTitle.setText(String.valueOf(classroom.title));
-                    ImageLoader.getInstance().displayImage(classroom.getLargePicture(), viewHolder.ivPic,
-                            EdusohoApp.app.mOptions);
-                    viewHolder.tvStudyState.setText("");
-                }
-                break;
-        }
-        convertView.setTag(R.id.tv_title, position);
-        convertView.setOnClickListener(mViewOnClickListener);
-        viewHolder.tvMore.setTag(position);
-        viewHolder.tvMore.setOnClickListener(mOnClickListener);
-        if (position == getCount() - 1) {
-            viewHolder.vLine.setVisibility(View.GONE);
-        } else {
-            viewHolder.vLine.setVisibility(View.VISIBLE);
+                    break;
+            }
+            convertView.setTag(R.id.tv_title, position);
+            convertView.setOnClickListener(mViewOnClickListener);
+            viewHolder.tvMore.setTag(position);
+            viewHolder.tvMore.setOnClickListener(mOnClickListener);
+            if (position == getCount() - 1) {
+                viewHolder.vLine.setVisibility(View.GONE);
+            } else {
+                viewHolder.vLine.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception ex) {
+            return convertView;
         }
         return convertView;
     }
@@ -266,89 +283,89 @@ public class MyStudyAdapter extends BaseAdapter {
                 public void onMoveClick(View v, final Dialog dialog) {
                     if (object instanceof Classroom) {
                         final Classroom classroom = (Classroom) object;
-                        new SureDialog(mContext).init("是否退出班级?",
-                                new SureDialog.CallBack() {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                        builder.setTitle("确认退出班级")
+                                .setMessage(R.string.delete_classroom)
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onSureClick(View v, final Dialog dialog2) {
+                                    public void onClick(final DialogInterface dlg, int which) {
                                         CourseUtil.deleteClassroom(classroom.id, new CourseUtil.CallBack() {
                                             @Override
-                                            public void onSuccee(String response) {
+                                            public void onSuccess(String response) {
                                                 CommonUtil.shortToast(mContext, "退出成功");
                                                 mLists.remove(object);
                                                 notifyDataSetChanged();
-                                                dialog2.dismiss();
+                                                dlg.dismiss();
                                                 dialog.dismiss();
+                                                clearClassRoomCoursesCache(classroom.id);
                                             }
 
                                             @Override
                                             public void onError(String response) {
-                                                dialog2.dismiss();
+                                                dlg.dismiss();
                                             }
                                         });
                                     }
-
-                                    @Override
-                                    public void onCancelClick(View v, Dialog dialog2) {
-                                        dialog2.dismiss();
-                                    }
-                                }).show();
+                                })
+                                .setNegativeButton("取消", null)
+                                .create()
+                                .show();
                     } else if (object instanceof Course) {
                         final Course course = (Course) object;
-                        new SureDialog(mContext).init("是否退出课程?",
-                                new SureDialog.CallBack() {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                        builder.setTitle("确认退出课程")
+                                .setMessage(R.string.delete_course)
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onSureClick(View v, final Dialog dialog2) {
+                                    public void onClick(final DialogInterface dlg, int which) {
                                         CourseUtil.deleteCourse(course.id, new CourseUtil.CallBack() {
                                             @Override
-                                            public void onSuccee(String response) {
+                                            public void onSuccess(String response) {
                                                 CommonUtil.shortToast(mContext, "退出成功");
                                                 mLists.remove(object);
                                                 notifyDataSetChanged();
-                                                dialog2.dismiss();
                                                 dialog.dismiss();
+                                                clearCoursesCache(course.id);
                                             }
 
                                             @Override
                                             public void onError(String response) {
-                                                dialog2.dismiss();
+                                                dialog.dismiss();
                                             }
                                         });
                                     }
-
-                                    @Override
-                                    public void onCancelClick(View v, Dialog dialog2) {
-                                        dialog2.dismiss();
-                                    }
-                                }).show();
+                                })
+                                .setNegativeButton("取消", null)
+                                .create()
+                                .show();
                     } else {
                         final Study.Resource study = (Study.Resource) object;
-                        new SureDialog(mContext).init("是否退出课程?",
-                                new SureDialog.CallBack() {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                        builder.setTitle("确认退出课程")
+                                .setMessage(R.string.delete_course)
+                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onSureClick(View v, final Dialog dialog2) {
+                                    public void onClick(final DialogInterface dlg, int which) {
                                         CourseUtil.deleteCourse(Integer.parseInt(study.getId()), new CourseUtil.CallBack() {
                                             @Override
-                                            public void onSuccee(String response) {
+                                            public void onSuccess(String response) {
                                                 CommonUtil.shortToast(mContext, "退出成功");
                                                 mLists.remove(object);
                                                 notifyDataSetChanged();
-                                                dialog2.dismiss();
                                                 dialog.dismiss();
+                                                clearCoursesCache(Integer.parseInt(study.getId()));
                                             }
 
                                             @Override
                                             public void onError(String response) {
-                                                dialog2.dismiss();
+                                                dialog.dismiss();
                                             }
                                         });
                                     }
-
-                                    @Override
-                                    public void onCancelClick(View v, Dialog dialog2) {
-                                        dialog2.dismiss();
-                                    }
-                                }).show();
-
+                                })
+                                .setNegativeButton("取消", null)
+                                .create()
+                                .show();
                     }
                 }
 
@@ -401,6 +418,48 @@ public class MyStudyAdapter extends BaseAdapter {
             }).show();
         }
     };
+
+    private void clearCoursesCache(int... courseIds) {
+        School school = getAppSettingProvider().getCurrentSchool();
+        User user = getAppSettingProvider().getCurrentUser();
+        new CourseCacheHelper(mContext, school.getDomain(), user.id).clearLocalCacheByCourseId(courseIds);
+    }
+
+    private void clearClassRoomCoursesCache(int classRoomId) {
+        Cache cache = SqliteUtil.getUtil(mContext).query(
+                "select * from data_cache where key=? and type=?",
+                "classroom-" + classRoomId,
+                Const.CACHE_CLASSROOM_COURSE_IDS_TYPE
+        );
+        if (cache != null && cache.get() != null) {
+            int[] ids = splitIntArrayByString(cache.get());
+            if (ids.length <= 0) {
+                return;
+            }
+
+            clearCoursesCache(ids);
+        }
+    }
+
+    private int[] splitIntArrayByString(String idsString) {
+        List<Integer> ids = new ArrayList<>();
+        String[] splitArray = idsString.split(",");
+        for (String item : splitArray) {
+            int id = AppUtil.parseInt(item);
+            if (id > 0) {
+                ids.add(id);
+            }
+        }
+        int[] idArray = new int[ids.size()];
+        for (int i = 0; i < idArray.length; i++) {
+            idArray[i] = ids.get(i);
+        }
+        return idArray;
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
 
     private static class ViewHolder {
         ImageView ivPic;
@@ -476,13 +535,13 @@ public class MyStudyAdapter extends BaseAdapter {
                     @Override
                     public void onSuccess(LearningCourse data) {
                         mLists.clear();
-                        addAll(data.getData());
-                        if (data.getData().size() < 10) {
+                        addAll(data.data);
+                        if (data.data.size() < 10) {
                             mCanLoad = false;
                         } else {
                             mCanLoad = true;
                         }
-                        if (data.getData().size() == 0) {
+                        if (data.data.size() == 0) {
                             mEmpty = true;
                         }
                         notifyDataSetChanged();
@@ -559,11 +618,11 @@ public class MyStudyAdapter extends BaseAdapter {
                 CourseDetailModel.getLiveCourses(10, mPage * 10, new ResponseCallbackListener<LearningCourse>() {
                     @Override
                     public void onSuccess(LearningCourse data) {
-                        if (data.getData().size() > 0 && (mLists.size() == 0 || mLists.get(0).getClass()
-                                .equals(data.getData().get(0).getClass()))) {
-                            addAll(data.getData());
+                        if (data.data.size() > 0 && (mLists.size() == 0 || mLists.get(0).getClass()
+                                .equals(data.data.get(0).getClass()))) {
+                            addAll(data.data);
                         }
-                        if (data.getData().size() < 10) {
+                        if (data.data.size() < 10) {
                             mCanLoad = false;
                         } else {
                             mCanLoad = true;

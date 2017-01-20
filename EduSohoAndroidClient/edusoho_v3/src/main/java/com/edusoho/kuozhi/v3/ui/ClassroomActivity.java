@@ -9,6 +9,7 @@ import android.view.View;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
@@ -34,7 +35,7 @@ import java.util.List;
 /**
  * Created by Zhang on 2016/12/8.
  */
-public class ClassroomActivity extends DetailActivity implements View.OnClickListener {
+public class ClassroomActivity extends DetailActivity implements View.OnClickListener, CourseStateCallback {
     public static final String CLASSROOM_ID = "Classroom_id";
     private String mClassroomId;
     public ClassroomDetail mClassroomDetail;
@@ -91,6 +92,15 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             }
         });
         fragments.add(discussFrament);
+    }
+
+    @Override
+    public boolean isExpired() {
+        return false;
+    }
+
+    @Override
+    public void handlerCourseExpired() {
     }
 
     protected void initEvent() {
@@ -299,5 +309,9 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void courseChange(LessonItem lessonItem) {
+    }
+
+    @Override
+    protected void showThreadCreateView(String type) {
     }
 }

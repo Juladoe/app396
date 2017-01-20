@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,6 +13,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CatalogueAdapter;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
+import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -44,6 +46,7 @@ public class CourseDiscussFragment extends BaseFragment {
     private TextView mTvEmpty;
     private LinearLayout mUnJoinView;
     private int i = 0;
+    private CourseStateCallback mCourseStateCallback;
 
     public CourseDiscussFragment() {
     }
@@ -56,6 +59,12 @@ public class CourseDiscussFragment extends BaseFragment {
     }
 
     @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mCourseStateCallback = (CourseStateCallback) activity;
+    }
+
+
     protected void initView(View view) {
         super.initView(view);
         mUnJoinView = (LinearLayout) view.findViewById(R.id.ll_course_catalog_empty);
@@ -71,6 +80,7 @@ public class CourseDiscussFragment extends BaseFragment {
 
     }
 
+    // TODO: 17/1/18 @杜樊
     public void initData() {
         mLoadView.setVisibility(View.VISIBLE);
         RequestUrl requestUrl = app.bindNewUrl(String.format(getActivity() instanceof CourseActivity ? Const.LESSON_DISCUSS : Const.CLASS_DISCUSS, mCouseId, mCouseId,0), true);
@@ -105,6 +115,10 @@ public class CourseDiscussFragment extends BaseFragment {
         mLvDiscuss.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mCourseStateCallback.isExpired()) {
+                    mCourseStateCallback.handlerCourseExpired();
+                    return;
+                }
                 startThreadActivity(position);
             }
         });

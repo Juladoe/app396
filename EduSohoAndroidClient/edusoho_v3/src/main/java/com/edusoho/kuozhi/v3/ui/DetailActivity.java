@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -119,7 +118,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setNavigationBarTintEnabled(true);
-            tintManager.setTintColor(Color.parseColor("#00000000"));
+            tintManager.setTintColor(getResources().getColor(R.color.transparent));
         }
     }
 
@@ -237,6 +236,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             @Override
             public void onPageSelected(int position) {
                 checkTab(position);
+                setBottomLayoutVisible(position, mIsMemder);
                 showEditTopic(position);
             }
 
@@ -340,17 +340,11 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else if (v.getId() == R.id.tv_inclass) {
             goClass();
         } else if (v.getId() == R.id.tv_edit_topic) {
-            if (DetailActivity.this instanceof CourseActivity ? ((CourseActivity) DetailActivity.this).mCourseDetail.getMember() == null
-                    : ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getMember() == null) {
-                CommonUtil.shortCenterToast(mContext, getString(R.string.discuss_join_hint));
-            } else {
                 showDialog();
-            }
         }
     }
 
     protected void grade() {
-
     }
 
     protected abstract void goClass();
@@ -416,6 +410,12 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                         (LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT)
                 );
                 break;
+            case Const.PAY_SUCCESS:
+                if (mRunStatus == MSG_RESUME) {
+                    saveMessage(message);
+                    return;
+                }
+                initData();
         }
     }
 
@@ -545,7 +545,14 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 new MessageType(Const.COURSE_SHOW_BAR),
                 new MessageType(Const.COURSE_PAUSE),
                 new MessageType(Const.SCREEN_LOCK),
-                new MessageType(Const.COURSE_HIDE_BAR)};
+                new MessageType(Const.COURSE_HIDE_BAR),
+                new MessageType(Const.PAY_SUCCESS, MessageType.UI_THREAD)
+        };
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -608,7 +615,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         return false;
     }
 
-
     protected void showEditTopic(int position) {
         if (position == 2 && mIsMemder) {
             mTvEditTopic.setVisibility(View.VISIBLE);
@@ -616,6 +622,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mTvEditTopic.setVisibility(View.GONE);
         }
     }
+
+    protected abstract void showThreadCreateView(String type);
 
     private boolean isAdd;
 
@@ -631,7 +639,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             tvTopic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity("discussion");
+                    showThreadCreateView("discussion");
                     mPopupWindow.dismiss();
                 }
             });
@@ -639,7 +647,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             tvQuestion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    startActivity("question");
+                    showThreadCreateView("question");
                     mPopupWindow.dismiss();
                 }
             });
@@ -652,19 +660,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
         mPopupWindow.showAsDropDown(mTvEditTopic, 0, -AppUtil.dp2px(this, 204));
         startAnimation();
-    }
-
-    private void startActivity(String type) {
-        Bundle bundle = new Bundle();
-        if (DetailActivity.this instanceof CourseActivity) {
-            bundle.putInt(ThreadCreateActivity.TARGET_ID, ((CourseActivity) DetailActivity.this).mCourseDetail.getCourse().id);
-        } else {
-            bundle.putInt(ThreadCreateActivity.TARGET_ID, ((ClassroomActivity) DetailActivity.this).mClassroomDetail.getClassRoom().id);
-        }
-        bundle.putString(ThreadCreateActivity.TARGET_TYPE, DetailActivity.this instanceof CourseActivity ? "" : "classroom");
-        bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
-        bundle.putString(ThreadCreateActivity.THREAD_TYPE, DetailActivity.this instanceof CourseActivity ? "course" : "common");
-        app.mEngine.runNormalPluginWithBundle("ThreadCreateActivity", DetailActivity.this, bundle);
     }
 
     public void startAnimation() {

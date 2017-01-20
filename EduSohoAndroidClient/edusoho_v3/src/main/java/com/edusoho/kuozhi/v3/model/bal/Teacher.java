@@ -11,6 +11,7 @@ public class Teacher implements Serializable {
     public String title;
     public int following;
     public int follower;
+    public String smallAvatar;
     public String avatar;
 
     public String getAvatar() {
@@ -22,5 +23,16 @@ public class Teacher implements Serializable {
             return avatar.substring(schemIndex);
         }
         return avatar;
+    }
+
+    public String getSmallAvatar() {
+        if(smallAvatar == null){
+            return "";
+        }
+        int schemIndex = smallAvatar.lastIndexOf("http://");
+        if (schemIndex != -1) {
+            return smallAvatar.substring(schemIndex);
+        }
+        return smallAvatar;
     }
 }
