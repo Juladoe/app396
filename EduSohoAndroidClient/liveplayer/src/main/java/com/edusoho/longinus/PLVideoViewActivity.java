@@ -538,8 +538,6 @@ public class PLVideoViewActivity extends AppCompatActivity {
         public void onSeekComplete(PLMediaPlayer plMediaPlayer) {
             Log.d(TAG, "onSeekComplete !");
         }
-
-        ;
     };
 
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
