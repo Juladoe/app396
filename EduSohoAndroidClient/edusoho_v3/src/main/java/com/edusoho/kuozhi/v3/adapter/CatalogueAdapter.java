@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public class CatalogueAdapter extends BaseAdapter {
         viewHolder.tvUserName.setText(resourcesBean.getUser().getNickname());
         viewHolder.tvContent.setText(String.format("         %s", resourcesBean.getTitle()));
         viewHolder.tvCommentNum.setText(resourcesBean.getPostNum());
-        viewHolder.tvTime.setText(resourcesBean.getLatestPostTime().replace("T", " ").split("[+]")[0].substring(2, 16).replace("-", "/"));
+        viewHolder.tvTime.setText(CommonUtil.conver2Date(CommonUtil.convertMilliSec(resourcesBean.getLatestPostTime()) + 28800000).substring(2, 16));
         if ("question".equals(resourcesBean.getType())) {
             viewHolder.tvKind.setText("问题");
             viewHolder.tvKind.setTextColor(mContext.getResources().getColor(R.color.primary_color));
