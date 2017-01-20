@@ -111,12 +111,12 @@ public class LessonDownloadingAdapter extends BaseAdapter {
             childPanel.ivDownloadSelected.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                     boolean isSelected = childPanel.ivDownloadSelected.getText().equals(
                             mContex.getString(R.string.font_download_unselect));
                     String icon = getDownloadSelectedIcon(isSelected);
                     int iconColor = getDownloadSelectedColor(isSelected);
 
+                    lessonItem.isSelected = isSelected;
                     childPanel.ivDownloadSelected.setText(icon);
                     childPanel.ivDownloadSelected.setTextColor(iconColor);
                 }

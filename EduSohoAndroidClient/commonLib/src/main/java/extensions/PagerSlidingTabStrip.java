@@ -47,7 +47,7 @@ import java.util.Locale;
 public class PagerSlidingTabStrip extends HorizontalScrollView {
 
     public interface IconTabProvider {
-        public int getPageIconResId(int position);
+        int getPageIconResId(int position);
     }
 
     // @formatter:off
@@ -439,7 +439,6 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
             currentPositionOffset = positionOffset;
 
             scrollToChild(position, (int) (positionOffset * tabsContainer.getChildAt(position).getWidth()));
-
             invalidate();
 
             if (delegatePageListener != null) {
@@ -460,6 +459,7 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 
         @Override
         public void onPageSelected(int position) {
+            setTextViewAlpha(tabsContainer.getChildAt(position), position);
             if (delegatePageListener != null) {
                 delegatePageListener.onPageSelected(position);
             }
