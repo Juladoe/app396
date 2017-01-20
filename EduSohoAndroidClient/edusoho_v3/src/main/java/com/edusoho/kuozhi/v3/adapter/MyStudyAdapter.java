@@ -291,7 +291,7 @@ public class MyStudyAdapter extends BaseAdapter {
                                     public void onClick(final DialogInterface dlg, int which) {
                                         CourseUtil.deleteClassroom(classroom.id, new CourseUtil.CallBack() {
                                             @Override
-                                            public void onSuccee(String response) {
+                                            public void onSuccess(String response) {
                                                 CommonUtil.shortToast(mContext, "退出成功");
                                                 mLists.remove(object);
                                                 notifyDataSetChanged();
@@ -320,7 +320,7 @@ public class MyStudyAdapter extends BaseAdapter {
                                     public void onClick(final DialogInterface dlg, int which) {
                                         CourseUtil.deleteCourse(course.id, new CourseUtil.CallBack() {
                                             @Override
-                                            public void onSuccee(String response) {
+                                            public void onSuccess(String response) {
                                                 CommonUtil.shortToast(mContext, "退出成功");
                                                 mLists.remove(object);
                                                 notifyDataSetChanged();
@@ -348,7 +348,7 @@ public class MyStudyAdapter extends BaseAdapter {
                                     public void onClick(final DialogInterface dlg, int which) {
                                         CourseUtil.deleteCourse(Integer.parseInt(study.getId()), new CourseUtil.CallBack() {
                                             @Override
-                                            public void onSuccee(String response) {
+                                            public void onSuccess(String response) {
                                                 CommonUtil.shortToast(mContext, "退出成功");
                                                 mLists.remove(object);
                                                 notifyDataSetChanged();
@@ -535,13 +535,13 @@ public class MyStudyAdapter extends BaseAdapter {
                     @Override
                     public void onSuccess(LearningCourse data) {
                         mLists.clear();
-                        addAll(data.getData());
-                        if (data.getData().size() < 10) {
+                        addAll(data.data);
+                        if (data.data.size() < 10) {
                             mCanLoad = false;
                         } else {
                             mCanLoad = true;
                         }
-                        if (data.getData().size() == 0) {
+                        if (data.data.size() == 0) {
                             mEmpty = true;
                         }
                         notifyDataSetChanged();
@@ -618,11 +618,11 @@ public class MyStudyAdapter extends BaseAdapter {
                 CourseDetailModel.getLiveCourses(10, mPage * 10, new ResponseCallbackListener<LearningCourse>() {
                     @Override
                     public void onSuccess(LearningCourse data) {
-                        if (data.getData().size() > 0 && (mLists.size() == 0 || mLists.get(0).getClass()
-                                .equals(data.getData().get(0).getClass()))) {
-                            addAll(data.getData());
+                        if (data.data.size() > 0 && (mLists.size() == 0 || mLists.get(0).getClass()
+                                .equals(data.data.get(0).getClass()))) {
+                            addAll(data.data);
                         }
-                        if (data.getData().size() < 10) {
+                        if (data.data.size() < 10) {
                             mCanLoad = false;
                         } else {
                             mCanLoad = true;

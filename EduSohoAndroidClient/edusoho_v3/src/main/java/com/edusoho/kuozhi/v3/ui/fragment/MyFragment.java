@@ -75,6 +75,22 @@ public class MyFragment extends BaseFragment {
         initEvent();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
+    }
+
+    private void initData() {
+        if (app.loginUser != null) {
+            ImageLoader.getInstance().displayImage(app.loginUser.getMediumAvatar(), mIvAvatar, app.mAvatarOptions);
+            mTvName.setText(app.loginUser.nickname);
+            mTvAvatarType.setText(app.loginUser.userRole2String());
+            mAdapter = new FragmentViewPagerAdapter(getChildFragmentManager(), mFragments);
+            mVpContent.setAdapter(mAdapter);
+        }
+    }
+
     private void initFragment() {
         Fragment studyFragment = app.mEngine.runPluginWithFragment(
                 "MyTabFragment", getActivity(), new PluginFragmentCallback() {
@@ -108,7 +124,6 @@ public class MyFragment extends BaseFragment {
                     }
                 });
         mFragments.add(askFragment);
-        mAdapter.notifyDataSetChanged();
     }
 
     private void initEvent() {
@@ -135,7 +150,7 @@ public class MyFragment extends BaseFragment {
                 int position = (int) v.getTag();
                 setTab(position);
                 Fragment fragment = mFragments.get(position);
-                if(fragment instanceof MyTabFragment){
+                if (fragment instanceof MyTabFragment) {
                     ((MyTabFragment) fragment).refresh();
                 }
                 mVpContent.setCurrentItem(position);

@@ -106,7 +106,7 @@ public class ReviewActivity extends BaseNoTitleActivity {
                     CourseUtil.reviewCourse(mId, mNum, mEtReview.getText().toString()
                             , new CourseUtil.OnReviewCourseListener() {
                         @Override
-                        public void onReviewCourseSuccee(String response) {
+                        public void onReviewCourseSuccess(String response) {
                             CommonUtil.shortToast(ReviewActivity.this,"评价成功");
                             setResult(REVIEW_RESULT);
                             finish();

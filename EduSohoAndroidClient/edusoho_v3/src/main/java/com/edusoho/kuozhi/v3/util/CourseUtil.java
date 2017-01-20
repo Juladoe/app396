@@ -38,7 +38,7 @@ public class CourseUtil {
                     @Override
                     public void onResponse(String response) {
                         if (onReviewCourseListener != null) {
-                            onReviewCourseListener.onReviewCourseSuccee(response);
+                            onReviewCourseListener.onReviewCourseSuccess(response);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -51,7 +51,7 @@ public class CourseUtil {
                 });
     }
 
-    public static void collectCourse(String courseId, final OnCollectSucceeListener onCollectSucceeListener) {
+    public static void collectCourse(String courseId, final OnCollectSuccessListener onCollectSuccessListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
             return;
@@ -66,8 +66,8 @@ public class CourseUtil {
                                 return;
                             }
                         } else if (response.equals("true")) {
-                            if (onCollectSucceeListener != null) {
-                                onCollectSucceeListener.onCollectSuccee();
+                            if (onCollectSuccessListener != null) {
+                                onCollectSuccessListener.onCollectSuccess();
                             }
                         }
                     }
@@ -79,7 +79,7 @@ public class CourseUtil {
                 });
     }
 
-    public static void uncollectCourse(String courseId, final OnCollectSucceeListener onCollectSucceeListener) {
+    public static void uncollectCourse(String courseId, final OnCollectSuccessListener onCollectSuccessListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
             return;
@@ -94,8 +94,8 @@ public class CourseUtil {
                                 return;
                             }
                         } else if (response.equals("true")) {
-                            if (onCollectSucceeListener != null) {
-                                onCollectSucceeListener.onCollectSuccee();
+                            if (onCollectSuccessListener != null) {
+                                onCollectSuccessListener.onCollectSuccess();
                             }
                         }
                     }
@@ -197,7 +197,7 @@ public class CourseUtil {
                         }
                         if (status.equals("ok")) {
                             if (onAddCourseListener != null) {
-                                onAddCourseListener.onAddCourseSuccee(response);
+                                onAddCourseListener.onAddCourseSuccess(response);
                             }
                         } else {
                             if (onAddCourseListener != null) {
@@ -233,7 +233,7 @@ public class CourseUtil {
                     @Override
                     public void onResponse(String response) {
                         if (onAddCourseListener != null) {
-                            onAddCourseListener.onAddCourseSuccee(response);
+                            onAddCourseListener.onAddCourseSuccess(response);
                         }
                     }
                 }
@@ -259,14 +259,10 @@ public class CourseUtil {
                     @Override
                     public void onResponse(String response) {
                         if (callBack != null) {
-                            callBack.onSuccee(response);
+                            callBack.onSuccess(response);
                         }
                     }
-                }
-
-                , new Response.ErrorListener()
-
-                {
+                }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (callBack != null) {
@@ -274,7 +270,6 @@ public class CourseUtil {
                         }
                     }
                 }
-
         );
     }
 
@@ -285,14 +280,10 @@ public class CourseUtil {
                     @Override
                     public void onResponse(String response) {
                         if (callBack != null) {
-                            callBack.onSuccee(response);
+                            callBack.onSuccess(response);
                         }
                     }
-                }
-
-                , new Response.ErrorListener()
-
-                {
+                }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         if (callBack != null) {
@@ -300,35 +291,33 @@ public class CourseUtil {
                         }
                     }
                 }
-
         );
     }
 
     public interface CallBack {
-        void onSuccee(String response);
+        void onSuccess(String response);
 
         void onError(String response);
     }
 
 
-    public interface OnCollectSucceeListener {
-        void onCollectSuccee();
+    public interface OnCollectSuccessListener {
+        void onCollectSuccess();
     }
 
     public interface OnAddCourseListener {
-        void onAddCourseSuccee(String response);
+        void onAddCourseSuccess(String response);
 
         void onAddCourseError(String response);
     }
 
     public interface OnReviewCourseListener {
-        void onReviewCourseSuccee(String response);
+        void onReviewCourseSuccess(String response);
 
         void onReviewCourseError(String response);
     }
 
     public static void notLogin() {
-
         EdusohoApp.app.mEngine.runNormalPluginForResult("LoginActivity", EdusohoApp.app.mActivity
                 , DetailActivity.RESULT_LOGIN, new PluginRunCallback() {
                     @Override
@@ -337,5 +326,4 @@ public class CourseUtil {
                     }
                 });
     }
-
 }
