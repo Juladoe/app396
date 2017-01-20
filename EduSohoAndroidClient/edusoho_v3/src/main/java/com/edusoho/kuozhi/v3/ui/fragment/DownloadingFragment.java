@@ -138,7 +138,11 @@ public class DownloadingFragment extends BaseFragment implements IDownloadFragme
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                processdownloadItemClick(view, position);
+                if (mToolsLayout.getVisibility() == View.GONE) {
+                    processdownloadItemClick(view, position);
+                } else {
+                    mDownloadingAdapter.setItemDownloadStatus(position);
+                }
             }
         });
         setEmptyState(mDownloadingAdapter.getCount() == 0);
