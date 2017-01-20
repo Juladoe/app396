@@ -34,6 +34,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.longinus.PLMediaPlayerActivity;
 import com.edusoho.longinus.PLVideoViewActivity;
 import com.edusoho.longinus.R;
 import com.edusoho.longinus.adapter.LiveChatListAdapter;
@@ -55,7 +56,7 @@ import java.util.LinkedHashMap;
 /**
  * Created by suju on 16/10/12.
  */
-public class LessonLivePlayerActivity extends PLVideoViewActivity implements ILiveVideoView {
+public class LessonLivePlayerActivity extends PLMediaPlayerActivity implements ILiveVideoView {
 
     private Context mContext;
     private int mLessonId;

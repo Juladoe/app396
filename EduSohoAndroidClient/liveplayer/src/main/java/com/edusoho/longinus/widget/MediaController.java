@@ -115,7 +115,7 @@ public class MediaController extends FrameLayout implements IMediaController {
         super.onFinishInflate();
     }
 
-    private void initFloatingWindow() {
+    private void  initFloatingWindow() {
         mAnimStyle = android.R.style.Animation;
     }
 
