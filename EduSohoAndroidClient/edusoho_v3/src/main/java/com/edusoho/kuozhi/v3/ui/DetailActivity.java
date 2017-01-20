@@ -610,7 +610,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
 
     protected void showEditTopic(int position) {
-        if (position == 2) {
+        if (position == 2 && mIsMemder) {
             mTvEditTopic.setVisibility(View.VISIBLE);
         } else {
             mTvEditTopic.setVisibility(View.GONE);
@@ -679,22 +679,28 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     public void setBottomLayoutVisible(int curFragment, boolean isMember) {
-        if (curFragment == 0) {
-            if (isMember) {
-                mBottomLayout.setVisibility(View.VISIBLE);
-                mTvInclass.setVisibility(View.VISIBLE);
-            } else {
-                mBottomLayout.setVisibility(View.VISIBLE);
-                mTvInclass.setVisibility(View.GONE);
-            }
+        if (getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)) {
+            mBottomLayout.setVisibility(View.GONE);
+            mTvInclass.setVisibility(View.GONE);
         } else {
-            if (!isMember) {
-                mBottomLayout.setVisibility(View.VISIBLE);
-                mTvInclass.setVisibility(View.GONE);
+            if (curFragment == 0) {
+                if (isMember) {
+                    mBottomLayout.setVisibility(View.VISIBLE);
+                    mTvInclass.setVisibility(View.VISIBLE);
+                } else {
+                    mBottomLayout.setVisibility(View.VISIBLE);
+                    mTvInclass.setVisibility(View.GONE);
+                }
             } else {
-                mBottomLayout.setVisibility(View.GONE);
-                mTvInclass.setVisibility(View.GONE);
+                if (!isMember) {
+                    mBottomLayout.setVisibility(View.VISIBLE);
+                    mTvInclass.setVisibility(View.GONE);
+                } else {
+                    mBottomLayout.setVisibility(View.GONE);
+                    mTvInclass.setVisibility(View.GONE);
+                }
             }
         }
+
     }
 }

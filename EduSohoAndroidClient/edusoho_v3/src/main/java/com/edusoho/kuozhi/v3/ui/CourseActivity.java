@@ -179,9 +179,10 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (member == null) {
             mIsMemder = false;
             if (getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)) {
-                mAddLayout.setVisibility(View.GONE);
+                mBottomLayout.setVisibility(View.GONE);
             } else {
                 mAddLayout.setVisibility(View.VISIBLE);
+                mBottomLayout.setVisibility(View.VISIBLE);
             }
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
