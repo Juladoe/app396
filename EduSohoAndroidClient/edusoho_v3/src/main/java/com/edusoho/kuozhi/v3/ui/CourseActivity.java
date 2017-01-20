@@ -4,16 +4,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
@@ -29,12 +25,10 @@ import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.NewsFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -47,7 +41,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Zhang on 2016/12/8.
@@ -325,7 +318,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                     && mCourseDetail.getCourse().vipLevelId != 0) {
                 CourseUtil.addCourseVip(mCourseId, new CourseUtil.OnAddCourseListener() {
                     @Override
-                    public void onAddCourseSuccee(String response) {
+                    public void onAddCourseSuccess(String response) {
                         hideProcesDialog();
                         CommonUtil.shortToast(CourseActivity.this, getResources()
                                 .getString(R.string.success_add_course));
@@ -348,7 +341,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                             .setTotalPrice(String.valueOf(mCourseDetail.getCourse().price))
                     , new CourseUtil.OnAddCourseListener() {
                         @Override
-                        public void onAddCourseSuccee(String response) {
+                        public void onAddCourseSuccess(String response) {
                             hideProcesDialog();
                             CommonUtil.shortToast(CourseActivity.this, getResources()
                                     .getString(R.string.success_add_course));
@@ -366,9 +359,9 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     @Override
     protected void collect() {
         if (mIsFavorite) {
-            CourseUtil.uncollectCourse(mCourseId, new CourseUtil.OnCollectSucceeListener() {
+            CourseUtil.uncollectCourse(mCourseId, new CourseUtil.OnCollectSuccessListener() {
                 @Override
-                public void onCollectSuccee() {
+                public void onCollectSuccess() {
                     mIsFavorite = false;
                     mTvCollect.setText(getResources().getString(R.string.new_font_collect));
                     mTvCollect.setTextColor(getResources().getColor(R.color.secondary_font_color));
@@ -376,9 +369,9 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 }
             });
         } else {
-            CourseUtil.collectCourse(mCourseId, new CourseUtil.OnCollectSucceeListener() {
+            CourseUtil.collectCourse(mCourseId, new CourseUtil.OnCollectSuccessListener() {
                 @Override
-                public void onCollectSuccee() {
+                public void onCollectSuccess() {
                     mIsFavorite = true;
                     mTvCollect.setText(getResources().getString(R.string.new_font_collected));
                     mTvCollect.setTextColor(getResources().getColor(R.color.primary_color));

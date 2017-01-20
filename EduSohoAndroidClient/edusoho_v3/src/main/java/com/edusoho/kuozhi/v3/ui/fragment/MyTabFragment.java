@@ -13,8 +13,17 @@ import com.edusoho.kuozhi.v3.adapter.MyAskAdapter;
 import com.edusoho.kuozhi.v3.adapter.MyCacheAdapter;
 import com.edusoho.kuozhi.v3.adapter.MyCollectAdapter;
 import com.edusoho.kuozhi.v3.adapter.MyStudyAdapter;
+import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
+import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import cn.trinea.android.common.util.ToastUtils;
 
 /**
  * Created by remilia on 2017/1/5.
@@ -44,6 +53,8 @@ public class MyTabFragment extends BaseFragment {
 
     public static final String[] TYPE_STUDY_DESC = {"最近", "课程", "直播", "班级"};
     public static final String[] TYPE_ASK_DESC = {"发起", "回复"};
+
+    private List<Course> mFavoriteCourseList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,8 +114,7 @@ public class MyTabFragment extends BaseFragment {
             case TYPE_COLLECT:
                 mLvContent.setPadding(0, 0, 0, 0);
                 mLayoutFilter.setVisibility(View.GONE);
-                mMyCollectAdapter = new MyCollectAdapter(getActivity());
-                mLvContent.setAdapter(mMyCollectAdapter);
+                initFavoriteData();
                 break;
             case TYPE_ASK:
                 mLvContent.setPadding(0, AppUtil.dp2px(getActivity(), 50), 0, 0);
@@ -214,7 +224,7 @@ public class MyTabFragment extends BaseFragment {
                 break;
             case TYPE_COLLECT:
                 if (mMyCollectAdapter != null) {
-                    mMyCollectAdapter.initData();
+                    initFavoriteData();
                 }
                 break;
             case TYPE_STUDY:
@@ -223,5 +233,37 @@ public class MyTabFragment extends BaseFragment {
                 }
                 break;
         }
+    }
+
+    public void initFavoriteData() {
+        if (mFavoriteCourseList != null) {
+            mFavoriteCourseList.clear();
+        } else {
+            mFavoriteCourseList = new ArrayList<>();
+        }
+        CourseDetailModel.getLiveCollect(100, 0, new ResponseCallbackListener<LearningCourse>() {
+            @Override
+            public void onSuccess(LearningCourse liveCourseList) {
+                mFavoriteCourseList.addAll(liveCourseList.data);
+                CourseDetailModel.getNormalCollect(100, 0, new ResponseCallbackListener<LearningCourse>() {
+                    @Override
+                    public void onSuccess(LearningCourse courseList) {
+                        mFavoriteCourseList.addAll(courseList.data);
+                        mMyCollectAdapter = new MyCollectAdapter(getActivity(), mFavoriteCourseList);
+                        mLvContent.setAdapter(mMyCollectAdapter);
+                    }
+
+                    @Override
+                    public void onFailure(String code, String message) {
+                        ToastUtils.show(mContext, message);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String code, String message) {
+                ToastUtils.show(mContext, message);
+            }
+        });
     }
 }
