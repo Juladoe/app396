@@ -1,9 +1,0 @@
-image: li7tlemk/edusoho-android-ci:2.14.1
-
-build:
-  script:
-    - gradle assembleRelease
-    
-  artifacts:
-    paths:
-    - app/build/outputs/
