@@ -1,4 +1,4 @@
-image: snowdream/docker-android:1.0
+image: li7tlemk/edusoho-android-ci:2.14.1
 
 build:
   script:
