@@ -45,6 +45,7 @@ public class M3U8DownService extends Service {
     private SparseArray<Notification> notificationList;
     private SparseArray<M3U8Util> mM3U8UitlList = new SparseArray<M3U8Util>();
     private ScheduledThreadPoolExecutor mThreadPoolExecutor;
+    private ScheduledThreadPoolExecutor mUpdateThreadPoolExecutor;
 
     private static M3U8DownService mService;
 
@@ -58,6 +59,22 @@ public class M3U8DownService extends Service {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
+            mUpdateThreadPoolExecutor.execute(new OnChangeRunnable(selfChange, uri));
+        }
+    };
+
+    private class OnChangeRunnable implements Runnable {
+
+        private boolean selfChange;
+        private Uri uri;
+
+        public OnChangeRunnable(boolean selfChange, Uri uri) {
+            this.selfChange = selfChange;
+            this.uri = uri;
+        }
+
+        @Override
+        public void run() {
             long reference = AppUtil.parseLong(uri.getLastPathSegment());
             if (reference == 0) {
                 return;
@@ -72,7 +89,6 @@ public class M3U8DownService extends Service {
                 return;
             }
             int status = m3U8Util.queryDownloadUriStatus(reference);
-            Log.d(TAG, "onChange:" + status);
             switch (status) {
                 case DownloadManager.ERROR_CANNOT_RESUME:
                 case DownloadManager.ERROR_DEVICE_NOT_FOUND:
@@ -88,7 +104,7 @@ public class M3U8DownService extends Service {
                     m3U8Util.updateDownloadStatus(downloadModel, DownloadManager.STATUS_FAILED);
             }
         }
-    };
+    }
 
     protected DownloadStatusReceiver mDownLoadStatusReceiver = new DownloadStatusReceiver() {
 
@@ -142,6 +158,8 @@ public class M3U8DownService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mThreadPoolExecutor.shutdown();
+        mUpdateThreadPoolExecutor.shutdown();
         unregisterReceiver(mDownLoadCompleteReceiver);
         unregisterReceiver(mDownLoadStatusReceiver);
         getContentResolver().unregisterContentObserver(mDownloadContentObserver);
@@ -156,6 +174,8 @@ public class M3U8DownService extends Service {
         mContext = this;
 
         notificationList = new SparseArray<>();
+        mUpdateThreadPoolExecutor = new ScheduledThreadPoolExecutor(5);
+        mUpdateThreadPoolExecutor.setMaximumPoolSize(10);
         mThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
         mThreadPoolExecutor.setMaximumPoolSize(1);
         notificationManager = (NotificationManager)
@@ -440,8 +460,6 @@ public class M3U8DownService extends Service {
 
         @Override
         public void run() {
-            Log.d(TAG, "update thread:" + Thread.currentThread());
-
             M3U8Util m3U8Util = mM3U8UitlList.get(downloadModel.targetId);
             if (m3U8Util == null) {
                 return;
