@@ -2,7 +2,8 @@ image: li7tlemk/edusoho-android-ci:2.14.1
 
 build:
   script:
-    - ./EduSohoAndroidClient/gradlew assembleRelease --build-file ./EduSohoAndroidClient/kuozhiv2/build.gradle
+    - cd EduSohoAndroidClient/kuozhiv2
+    - gradle assembleRelease
   artifacts:
     paths:
     - ./EduSohoAndroidClient/outputs
