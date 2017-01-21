@@ -354,6 +354,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                             hideProcesDialog();
                         }
                     });
+            mIvGrade2.setVisibility(View.VISIBLE);
         }
     }
 
