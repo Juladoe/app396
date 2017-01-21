@@ -248,6 +248,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 mBottomLayout.setVisibility(View.GONE);
             } else {
                 mAddLayout.setVisibility(View.VISIBLE);
+                mBottomLayout.setVisibility(View.VISIBLE);
             }
             mTvInclass.setVisibility(View.GONE);
             initViewPager();

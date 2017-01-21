@@ -522,7 +522,14 @@ public class CommonUtil {
     }
 
     /**
-     * 将服务器放回的秒转化
+     * 将毫秒转换为年月日时分秒
+     */
+    public static String conver2Date(long millis) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        return sdf.format(millis);
+    }
+    /**
+     * 将服务器返回的秒转化
      * 当天则显示时分
      * 近期的则显示星期 + 时分
      * 远的则显示年月日时分
