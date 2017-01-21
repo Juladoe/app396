@@ -1,0 +1,8 @@
+image: snowdream/docker-android:1.0
+
+build:
+  script:
+    - ./EduSohoAndroidClient/gradlew assembleRelease --build-file ./EduSohoAndroidClient/kuozhiv2/build.gradle
+  artifacts:
+    paths:
+    - ./EduSohoAndroidClient/outputs
