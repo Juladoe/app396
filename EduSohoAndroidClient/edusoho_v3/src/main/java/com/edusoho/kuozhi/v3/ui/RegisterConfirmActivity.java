@@ -238,6 +238,7 @@ public class RegisterConfirmActivity extends ActionBarBaseActivity {
                                 });
                         if (userResult != null && userResult.user != null) {
                             app.saveToken(userResult);
+                            app.sendMessage(Const.LOGIN_SUCCESS, null);
                             tvConfirm.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
