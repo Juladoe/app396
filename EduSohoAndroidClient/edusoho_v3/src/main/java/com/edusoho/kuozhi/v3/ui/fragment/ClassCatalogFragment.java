@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,11 +20,9 @@ import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.FixHeightListView;
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
@@ -119,14 +116,6 @@ public class ClassCatalogFragment extends BaseFragment {
         mLvClass.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (TextUtils.isEmpty(app.token)) {
-                    CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
-                    return;
-                }
-                if (!isJoin && mCourseList.get(position).price > 0) {
-                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.class_catalog_join));
-                    return;
-                }
                 Bundle bundle = new Bundle();
                 bundle.putString(CourseActivity.COURSE_ID, String.valueOf(mCourseList.get(position).id));
                 bundle.putString(CourseActivity.SOURCE, getClassRoomName(AppUtil.parseInt(mClassRoomId)));

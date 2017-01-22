@@ -251,6 +251,11 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 if (!mParent.isCanScroll() && t != 0) {
                     mHeadRlayout.setVisibility(View.GONE);
                     mHeadRlayout2.setVisibility(View.VISIBLE);
+                    if (mIsMemder) {
+                        mIvGrade2.setVisibility(View.VISIBLE);
+                    } else {
+                        mIvGrade2.setVisibility(View.GONE);
+                    }
                 } else if (mParent.getScrollY() < mParent.getFirstViewHeight() - 2) {
                     mHeadRlayout.setVisibility(View.VISIBLE);
                     mHeadRlayout2.setVisibility(View.GONE);
