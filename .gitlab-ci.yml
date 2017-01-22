@@ -6,4 +6,4 @@ build:
     - gradle build
   artifacts:
     paths:
-    - ./EduSohoAndroidClient/outputs
+    - outputs/
