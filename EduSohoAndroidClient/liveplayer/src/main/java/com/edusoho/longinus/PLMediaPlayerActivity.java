@@ -321,6 +321,8 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
 
         // whether start play automatically after prepared, default value is 1
         options.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
+        options.setInteger(AVOptions.KEY_CACHE_BUFFER_DURATION, 3000);
+        options.setInteger(AVOptions.KEY_MAX_CACHE_BUFFER_DURATION, 6000);
 
         return options;
     }
