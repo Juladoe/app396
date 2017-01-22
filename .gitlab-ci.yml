@@ -1,4 +1,4 @@
-image: li7tlemk/edusoho-android-ci:3.0.0
+image: li7tlemk/edusoho-android-ci:3.0.1
 
 build:
   script:
