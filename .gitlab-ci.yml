@@ -18,6 +18,7 @@ Package apk:
   artifacts:
     paths:
     - EduSohoAndroidClient/kuozhiv2/outputs
+    expire_in: 1 week
   only:
     - develop
     - master
