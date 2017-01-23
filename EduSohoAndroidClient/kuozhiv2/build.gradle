@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.antfortune.freeline'
 apply plugin: 'im.fir.plugin.gradle'
 
 android {
@@ -23,11 +22,6 @@ android {
         edusoho {
             applicationId "com.edusoho.kuozhi"
         }
-    }
-    
-    freeline {
-        hack true
-        productFlavor 'edusoho'
     }
 
     fir{
@@ -64,6 +58,10 @@ android {
         abortOnError false
     }
 
+    task copyApk(type: Copy) {
+        from 'build/outputs/apk/kuozhiv2-edusoho-release.apk'
+        into '../outputs'
+    }
 }
 
 repositories {

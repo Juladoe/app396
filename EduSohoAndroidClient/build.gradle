@@ -10,7 +10,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.3'
-        classpath 'com.antfortune.freeline:gradle:0.8.4'
         classpath 'im.fir:gradle-fir-publisher:1.0.7'
     }
 }
