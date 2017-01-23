@@ -4,6 +4,7 @@ build:
   script:
     - cd EduSohoAndroidClient/kuozhiv2
     - gradle build
+    - gradle copyApk
   artifacts:
     paths:
     - EduSohoAndroidClient/kuozhiv2/outputs
