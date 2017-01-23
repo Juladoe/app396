@@ -60,7 +60,7 @@ android {
 
     task copyApk(type: Copy) {
         from 'build/outputs/apk/kuozhiv2-edusoho-release.apk'
-        into '../outputs'
+        into 'outputs'
     }
 }
 
