@@ -13,7 +13,7 @@ android {
         versionCode 44
 
         ndk {
-            abiFilters "armeabi-v7a", "x86"
+            abiFilters "armeabi-v7a"
         }
         multiDexEnabled true
     }
