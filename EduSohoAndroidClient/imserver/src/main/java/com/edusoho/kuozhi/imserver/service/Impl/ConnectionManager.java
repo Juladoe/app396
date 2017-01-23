@@ -127,13 +127,14 @@ public class ConnectionManager implements IConnectionManager {
         close();
         mCurrentHostIndex++;
         if (mCurrentHostIndex >= mHostList.size()) {
+            Log.d(TAG, "switchConnect is full try error");
             this.mStatus = IConnectManagerListener.ERROR;
             if (mIConnectStatusListener != null) {
                 mIConnectStatusListener.onStatusChange(IConnectManagerListener.ERROR, "error");
             }
             return;
         }
-        Log.d(TAG, "switchConnect" + mHostList.get(mCurrentHostIndex));
+        Log.d(TAG, "switchConnect:" + mHostList.get(mCurrentHostIndex));
         connectWebSocket();
     }
 
@@ -142,7 +143,7 @@ public class ConnectionManager implements IConnectionManager {
             @Override
             public void onCompleted(Exception ex, WebSocket webSocket) {
                 if (ex != null) {
-                    Log.d(TAG, "onCompleted error:" + ex.getMessage());
+                    Log.d(TAG, String.format("onCompleted error:%s, %d", ex.getMessage(), mCurrentHostIndex));
                     mStatus = IConnectManagerListener.CLOSE;
                     if (mIConnectStatusListener != null) {
                         mIConnectStatusListener.onStatusChange(IConnectManagerListener.CLOSE, ex.getMessage());

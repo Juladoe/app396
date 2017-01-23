@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.test.UiThreadTest;
 
 import com.edusoho.kuozhi.imserver.BuildConfig;
 import com.edusoho.kuozhi.imserver.IMClient;
@@ -12,10 +10,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowApplication;
+
 import java.util.Map;
 
 /**

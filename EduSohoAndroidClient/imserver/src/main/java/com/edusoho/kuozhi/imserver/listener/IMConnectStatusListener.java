@@ -12,4 +12,6 @@ public interface IMConnectStatusListener {
     void onConnect();
 
     void onOpen();
+
+    void onInvalid(String[] ig);
 }
