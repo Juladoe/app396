@@ -287,6 +287,10 @@ public class NewsFragment extends BaseFragment {
             public void onOpen() {
                 hideNetWorkStatusHeader();
             }
+
+            @Override
+            public void onInvalid(String[] ig) {
+            }
         };
     }
 
