@@ -1,0 +1,23 @@
+stages:
+#- Test
+- Package
+
+# Unit Test:
+#   stage: Test
+#   image: li7tlemk/edusoho-android-ci:3.0.4
+#   script:
+#     - echo "unit test."
+
+Package apk:
+  stage: Package
+  image: li7tlemk/edusoho-android-ci:3.0.4
+  script:
+    - cd EduSohoAndroidClient/kuozhiv2
+    - gradle build
+    - gradle copyApk
+  artifacts:
+    paths:
+    - EduSohoAndroidClient/kuozhiv2/outputs
+  only:
+    - develop
+    - master
