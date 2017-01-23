@@ -6,4 +6,4 @@ build:
     - gradle build
   artifacts:
     paths:
-    - kuozhiv2/key/
+    - EduSohoAndroidClient/kuozhiv2/key
