@@ -6,4 +6,4 @@ build:
     - gradle build
   artifacts:
     paths:
-    - kuozhiv2/build/outputs/apk
+    - kuozhiv2/key/
