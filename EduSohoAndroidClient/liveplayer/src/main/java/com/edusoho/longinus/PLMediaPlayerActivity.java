@@ -1,6 +1,7 @@
 package com.edusoho.longinus;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -12,12 +13,12 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.PowerManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -27,18 +28,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.longinus.util.CPUUtil;
+import com.edusoho.longinus.util.LibUpdateHelper;
 import com.edusoho.longinus.widget.MediaController;
 import com.pili.pldroid.player.AVOptions;
 import com.pili.pldroid.player.PLMediaPlayer;
+import com.pili.pldroid.player.SharedLibraryNameHelper;
 import com.pili.pldroid.player.widget.PLVideoView;
 import com.umeng.analytics.MobclickAgent;
+
 
 import java.io.IOException;
 
@@ -89,10 +91,34 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
     protected ProgressBar mChatLoadProgressBar;
     protected TextView mChatLoadTitleView;
     protected TextView mNoticeView;
+    private LibUpdateHelper mLibUpdateHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (!CPUUtil.hasCompatibleCPU(getApplicationContext())) {
+            mLibUpdateHelper = new LibUpdateHelper(this);
+            mLibUpdateHelper.update("x86", new LibUpdateHelper.LibUpdateListener() {
+                @Override
+                public void onInstalled() {
+                    showAlert("解码库更新完成，请重新打开直播播放", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            exit();
+                        }
+                    });
+                }
+
+                @Override
+                public void onFail() {
+                    Toast.makeText(getApplicationContext(), com.edusoho.videoplayer.R.string.video_not_support, Toast.LENGTH_SHORT).show();
+                    exit();
+                }
+            });
+            return;
+        }
+
+        initSharedLib();
         setContentView(R.layout.activity_pl_mediaplayer_view);
         mSurfaceView = (SurfaceView) findViewById(R.id.SurfaceView);
         mSurfaceView.getHolder().addCallback(mCallback);
@@ -104,6 +130,26 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
 
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+    }
+
+    private void initSharedLib() {
+        SharedLibraryNameHelper helper = SharedLibraryNameHelper.getInstance();
+        helper.renameSharedLibrary(getBaseContext().getDir("lib", Context.MODE_PRIVATE) + "/libpldroidplayer.so");
+    }
+
+    private void exit() {
+        if (isFinishing())
+            return;
+        finish();
+    }
+
+    private void showAlert(String message, DialogInterface.OnClickListener cancelClickListener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提醒")
+                .setMessage(message)
+                .setPositiveButton("确认", cancelClickListener)
+                .create()
+                .show();
     }
 
     private void bindListener() {
@@ -350,7 +396,6 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
         mLoadTitleView = (TextView) findViewById(R.id.tv_live_loadtitle);
         mLoadStatusView = (ImageView) findViewById(R.id.iv_live_statusicon);
         mLoadProgressBar = (ProgressBar) findViewById(R.id.iv_live_progressbar);
-        //mVideoView.setBufferingIndicator(mLoadingView);
 
         initTouchListener();
     }
@@ -401,6 +446,9 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (mLibUpdateHelper != null) {
+            mLibUpdateHelper.stop();
+        }
     }
 
     @Override
