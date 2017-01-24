@@ -17,7 +17,7 @@ import java.util.Queue;
  * Created by DEL on 2016/11/24.
  */
 
-public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.MessageCallback  {
+public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.MessageCallback {
 
     protected int mRunStatus;
     private Queue<WidgetMessage> mUIMessageQueue;
@@ -25,7 +25,6 @@ public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.M
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-//        setSupportActionBar(null);
         super.onCreate(savedInstanceState);
         mUIMessageQueue = new ArrayDeque<>();
         app.registMsgSource(this);
@@ -33,9 +32,9 @@ public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.M
 
     protected void initView() {
         hideActionBar();
-        View back = findViewById(R.id.back);
-        if (back != null) {
-            back.setOnClickListener(new View.OnClickListener() {
+        View view = findViewById(R.id.back);
+        if (view != null) {
+            view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     finish();
@@ -82,8 +81,8 @@ public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.M
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void finish() {
+        super.finish();
         app.unRegistMsgSource(this);
     }
 }

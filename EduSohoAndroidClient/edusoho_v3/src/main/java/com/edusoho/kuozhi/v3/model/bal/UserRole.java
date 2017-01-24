@@ -7,7 +7,17 @@ import com.edusoho.kuozhi.v3.util.json.GsonEnum;
  */
 
 public enum UserRole implements GsonEnum<UserRole> {
-    ROLE_USER, ROLE_SUPER_ADMIN, ROLE_TEACHER, ROLE_ADMIN, NO_SUPPORT;
+    ROLE_USER("学员"), ROLE_SUPER_ADMIN("超管"), ROLE_TEACHER("教师"), ROLE_ADMIN("管理员"), NO_SUPPORT("");
+
+    String roleName;
+
+    UserRole(String roleName) {
+        this.roleName = roleName;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
 
     @Override
     public UserRole deserialize(String jsonEnum) {

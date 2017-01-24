@@ -37,8 +37,10 @@ public class SchoolUtil {
 
 
     public static School getDefaultSchool(Context context) {
-
         School item = null;
+        if (context == null) {
+            return item;
+        }
         SharedPreferences sp = context.getSharedPreferences("defaultSchool", Context.MODE_PRIVATE);
         Map<String, String> map = (Map<String, String>) sp.getAll();
         if (!map.isEmpty()) {
@@ -142,6 +144,13 @@ public class SchoolUtil {
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(EnterSchool, mJsonArray.toString());
         editor.apply();
+    }
+
+    public static boolean checkEncryptVersion(String schoolVersion, String encryptVersion) {
+        if (AppUtil.compareVersion(schoolVersion, encryptVersion) != Const.LOW_VERSIO) {
+            return true;
+        }
+        return false;
     }
 
     public static boolean checkMobileVersion(final BaseActivity context, final School site, HashMap<String, String> versionRange) {

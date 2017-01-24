@@ -20,6 +20,7 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
         <activity
+            android:theme="@style/AppThemeNoActionBar"
             android:name=".ui.LiveNoticeListActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />

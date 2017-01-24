@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.v3.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -42,6 +44,7 @@ import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.webview.ESWebViewRequestManager;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.LinkedHashMap;
 import java.util.Queue;
@@ -51,7 +54,7 @@ import java.util.Queue;
  */
 public class DefaultPageActivity extends ActionBarBaseActivity implements MessageEngine.MessageCallback {
     public static final String TAG = "DefaultPageActivity";
-
+    public static final int LOGIN_CANCEL = 0x001;
     private String mCurrentTag;
     private int mSelectBtn;
     private LinearLayout mNavLayout;
@@ -61,6 +64,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private EduSohoTextBtn mDownTabMine;
     private Toolbar tbActionBar;
     private TextView tvTitle;
+    private TextView tvSitting;
     private View viewTitleLoading;
     private NavDownTabClickListener mNavDownTabClickListener;
     private Queue<Request<String>> mAjaxQueue;
@@ -106,20 +110,20 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                             getAppSettingProvider().saveConfig(appConfig);
                         }
 
-                        if(isEnableIMChat) {
+                        if (isEnableIMChat) {
                             reConnectServer();
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
-                    @Override
-                    public void success(VolleyError volleyError) {
-                        if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
-                            return;
-                        }
-                        AppConfig appConfig = getAppSettingProvider().getAppConfig();
-                        appConfig.isEnableIMChat = false;
-                        getAppSettingProvider().saveConfig(appConfig);
-                    }
+            @Override
+            public void success(VolleyError volleyError) {
+                if (volleyError instanceof TimeoutError || volleyError instanceof NoConnectionError) {
+                    return;
+                }
+                AppConfig appConfig = getAppSettingProvider().getAppConfig();
+                appConfig.isEnableIMChat = false;
+                getAppSettingProvider().saveConfig(appConfig);
+            }
         });
     }
 
@@ -157,6 +161,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mDownTabMine = (EduSohoTextBtn) findViewById(R.id.nav_tab_mine);
         tbActionBar = (Toolbar) findViewById(R.id.tb_action_bar);
         tvTitle = (TextView) findViewById(R.id.tv_title);
+        tvSitting = (TextView) findViewById(R.id.tv_sitting);
         viewTitleLoading = findViewById(R.id.ll_title_loading);
         setSupportActionBar(tbActionBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -180,6 +185,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         if (app.config.newVerifiedNotify) {
             mDownTabFriends.setBageIcon(true);
         }
+        tvSitting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "i_mySettings");
+                mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
+            }
+        });
     }
 
     @Override
@@ -219,19 +231,28 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             });
             return;
         }
-
-        if (id == R.id.nav_tab_find) {
-            tag = "FindFragment";
-            setTitle(getSchoolTitle());
-        } else if (id == R.id.nav_tab_news) {
+        mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));
+        tvTitle.setTextColor(Color.parseColor("#ffffff"));
+        tvSitting.setVisibility(View.GONE);
+        if (id == R.id.nav_tab_news) {
             tag = "NewsFragment";
             setTitle(getString(R.string.title_news));
+            setTitleLoading(true);
+        } else if (id == R.id.nav_tab_find) {
+            tag = "FindFragment";
+            setTitle(getSchoolTitle());
+            setTitleLoading(false);
         } else if (id == R.id.nav_tab_friends) {
             tag = "FriendFragment";
             setTitle(getString(R.string.title_friends));
+            setTitleLoading(false);
         } else {
-            tag = "MineFragment";
+            tag = "MyFragment";
             setTitle(getString(R.string.title_mine));
+            mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ccf9f9f9")));
+            tvTitle.setTextColor(getResources().getColor(R.color.primary_font_color));
+            tvSitting.setVisibility(View.VISIBLE);
+            setTitleLoading(false);
         }
         if (tag.equals(mCurrentTag)) {
             return;
@@ -486,5 +507,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 
     public AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == LOGIN_CANCEL) {
+            selectDownTab(R.id.nav_tab_find);
+        }
     }
 }

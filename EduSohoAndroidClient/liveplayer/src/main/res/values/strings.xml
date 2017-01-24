@@ -9,4 +9,5 @@
     <string name="live_load_error">加载失败,请点击重试</string>
 
     <string name="live_notice_empty">还未发布过公告</string>
+    <string name="live_notice_title">公告</string>
 </resources>

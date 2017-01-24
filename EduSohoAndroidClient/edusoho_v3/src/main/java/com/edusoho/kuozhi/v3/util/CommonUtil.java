@@ -68,6 +68,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import cn.trinea.android.common.util.DigestUtils;
+import cn.trinea.android.common.util.ResourceUtils;
 
 
 public class CommonUtil {
@@ -482,8 +483,6 @@ public class CommonUtil {
             Log.d("AppUtil.getPostDays", ex.toString());
         }
         return result;
-
-
     }
 
     /**
@@ -529,7 +528,6 @@ public class CommonUtil {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         return sdf.format(millis);
     }
-
     /**
      * 将服务器返回的秒转化
      * 当天则显示时分
@@ -537,7 +535,6 @@ public class CommonUtil {
      * 远的则显示年月日时分
      */
     public static final long ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
-
     public static String convertMills2Date(long millis) {
         String result = "";
         String showTime = "";
@@ -587,7 +584,6 @@ public class CommonUtil {
     }
 
     /**
-     * >>>>>>> develop
      * 计算多久之后开始直播时间 格式为13位毫秒单位
      */
     public static String getLiveTime(long startTime) {
@@ -1191,11 +1187,10 @@ public class CommonUtil {
     public static void shortToast(Context context, String title) {
         Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
     }
-
     //居中弹出toast
-    public static void shortCenterToast(Context context, String title) {
-        Toast toast = Toast.makeText(context, title, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.CENTER, 0, 0);
+    public static void shortCenterToast(Context context,String title){
+        Toast toast = Toast.makeText(context,title,Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER,0,0);
         toast.show();
     }
 
