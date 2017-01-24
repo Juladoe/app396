@@ -10,6 +10,9 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 /**
  * Created by DEL on 2016/11/24.
  */
@@ -17,12 +20,14 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.MessageCallback  {
 
     protected int mRunStatus;
+    private Queue<WidgetMessage> mUIMessageQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 //        setSupportActionBar(null);
         super.onCreate(savedInstanceState);
+        mUIMessageQueue = new ArrayDeque<>();
         app.registMsgSource(this);
     }
 
@@ -39,9 +44,19 @@ public class BaseNoTitleActivity extends BaseActivity implements MessageEngine.M
         }
     }
 
+    protected void saveMessage(WidgetMessage message) {
+        mUIMessageQueue.add(message);
+    }
+
+    protected void invokeUIMessage() {
+        WidgetMessage message;
+        while ((message = mUIMessageQueue.poll()) != null) {
+            invoke(message);
+        }
+    }
+
     @Override
     public void invoke(WidgetMessage message) {
-
     }
 
     @Override

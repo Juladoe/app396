@@ -40,7 +40,8 @@ public class IMBroadcastReceiver extends BroadcastReceiver {
                 } else if (action == STATUS_CHANGE) {
                     int status = intent.getIntExtra("status", IConnectManagerListener.OPEN);
                     boolean isConnected = intent.getBooleanExtra("isConnected", false);
-                    invokeConnectReceiver(status, isConnected);
+                    String[] ignoreNos = intent.getStringArrayExtra("ignoreNos");
+                    invokeConnectReceiver(status, isConnected, ignoreNos);
                 } else if (action == SIGNAL) {
                     MessageEntity message = intent.getParcelableExtra("message");
                     invokeReceiverSignal(message);
@@ -60,7 +61,7 @@ public class IMBroadcastReceiver extends BroadcastReceiver {
         IMClient.getClient().invokeOfflineMsgReceiver(messageEntityList);
     }
 
-    protected void invokeConnectReceiver(int status, boolean isConnected) {
-        IMClient.getClient().invokeConnectReceiver(status, isConnected);
+    protected void invokeConnectReceiver(int status, boolean isConnected, String[] ignoreNos) {
+        IMClient.getClient().invokeConnectReceiver(status, isConnected, ignoreNos);
     }
 }

@@ -50,7 +50,7 @@ public class LiveImClient {
     }
 
     public static LiveImClient getIMClient(Context context) {
-        if (liveImClient == null) {
+        if (context != null && liveImClient == null) {
             liveImClient = new LiveImClient(context);
         }
         return liveImClient;

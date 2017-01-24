@@ -75,8 +75,6 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
     public void sendNativeMessage(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
         String type = args.getString(0);
         JSONObject data = args.getJSONObject(1);
-        if ("token_lose".equals(type)) {
-        }
         MessageEngine.getInstance().sendMsg(type, JsonObject2Bundle(data));
     }
 

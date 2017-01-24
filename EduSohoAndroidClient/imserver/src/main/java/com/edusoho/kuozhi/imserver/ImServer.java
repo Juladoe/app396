@@ -28,17 +28,15 @@ import com.edusoho.kuozhi.imserver.service.Impl.HeartManagerImpl;
 import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.imserver.util.SystemUtil;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Created by su on 2016/3/17.
@@ -53,6 +51,8 @@ public class ImServer {
     private static final int CONNECT_ERROR = 0004;
 
     private static final int INVOKE_EXISTS = 0011;
+    private static final int RE_CONNECT_TIME = 5000;
+    private static final int MAX_RE_CONNECT_TIME = 5000 * 12;
 
     private static String[] PUSH_TYPE = {
             Destination.ARTICLE,
@@ -62,6 +62,7 @@ public class ImServer {
     };
 
     private int flag;
+    private int mReConnectTime;
     private int reConnectCount;
 
     private String[] pingCmd = {
@@ -83,6 +84,7 @@ public class ImServer {
     private int mClientId;
     private List<String> mHostList;
     private List<String> mIgnoreNosList;
+    private Queue<Runnable> mReConnectQueue;
 
     private IConnectionManager mIConnectionManager;
     private IHeartManager mIHeartManager;
@@ -92,7 +94,9 @@ public class ImServer {
     public ImServer(Context context) {
         this.mContext = context;
         this.flag = CONNECT_NONE;
+        this.mReConnectTime = RE_CONNECT_TIME;
         this.mMessageInvokedMap = new ConcurrentHashMap<>();
+        this.mReConnectQueue = new LinkedBlockingQueue<>(1);
         initHeartManager();
     }
 
@@ -120,6 +124,7 @@ public class ImServer {
     }
 
     private void initConnectManager(String clientName, List<String> host) {
+        flag = CONNECT_NONE;
         this.mIConnectionManager = new ConnectionManager(clientName);
         this.mIConnectionManager.setServerHostList(host);
 
@@ -146,6 +151,9 @@ public class ImServer {
                     case IConnectManagerListener.INVALID:
                         break;
                     case IConnectManagerListener.ERROR:
+                        if (flag == CONNECT_WAIT) {
+                            return;
+                        }
                         flag = CONNECT_ERROR;
                         pause();
                         reConnect();
@@ -161,20 +169,26 @@ public class ImServer {
             return;
         }
         if (reConnectCount > 1) {
+            Log.d(TAG, "connect is invalid");
             sendConnectStatusBroadcast(IConnectManagerListener.INVALID);
             return;
         }
         flag = CONNECT_WAIT;
-        new Handler(Looper.getMainLooper()).postAtTime(new Runnable() {
+        boolean isInsert = mReConnectQueue.offer(new Runnable() {
             @Override
             public void run() {
                 if (isCancel()) {
                     Log.d(TAG, "reConnect");
                     reConnectCount ++;
+                    if (mReConnectTime < MAX_RE_CONNECT_TIME) {
+                        mReConnectTime += RE_CONNECT_TIME;
+                    }
                     start();
                 }
             }
-        }, SystemClock.uptimeMillis() + 5000);
+        });
+        Log.d(TAG, "add reConnect task:" + isInsert);
+        new Handler(Looper.getMainLooper()).postAtTime(mReConnectQueue.poll(), SystemClock.uptimeMillis() + mReConnectTime);
     }
 
     public void requestOfflineMsg() {
@@ -189,6 +203,12 @@ public class ImServer {
         intent.putExtra(IMBroadcastReceiver.ACTION, IMBroadcastReceiver.STATUS_CHANGE);
         intent.putExtra("status", status);
         intent.putExtra("isConnected", isConnected());
+
+        if (status == IConnectManagerListener.INVALID) {
+            String[] igs = new String[mIgnoreNosList.size()];
+            mIgnoreNosList.toArray(igs);
+            intent.putExtra("ignoreNos", igs);
+        }
         mContext.sendBroadcast(intent);
     }
 

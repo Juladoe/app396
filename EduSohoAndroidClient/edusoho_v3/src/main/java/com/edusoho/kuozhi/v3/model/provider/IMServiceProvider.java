@@ -48,7 +48,7 @@ public class IMServiceProvider extends ModelProvider {
         IMClient.getClient().destory();
     }
 
-    public void reConnectServer(int clientId, String clientName) {
+    public synchronized void reConnectServer(int clientId, String clientName) {
         setClientInfo(clientId, clientName);
         if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
             IMClient.getClient().setIMConnectStatus(IMConnectStatus.NO_READY);
@@ -56,9 +56,7 @@ public class IMServiceProvider extends ModelProvider {
         }
         int status = IMClient.getClient().getIMConnectStatus();
         if (status == IMConnectStatus.NO_READY || status == IMConnectStatus.ERROR) {
-            IMClient.getClient().removeGlobalIMMessageReceiver();
-            IMClient.getClient().removeGlobalIMConnectStatusListener();
-            connectServer(clientId, clientName);
+            connectServer(clientId, clientName, null);
             return;
         }
 
@@ -67,9 +65,9 @@ public class IMServiceProvider extends ModelProvider {
         }
     }
 
-    private void connectServer(int clientId, String clientName) {
+    private void connectServer(int clientId, String clientName, String[] ignoreServers) {
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.CONNECTING);
-        new SystemProvider(mContext).getImServerHosts().success(new NormalCallback<LinkedHashMap>() {
+        new SystemProvider(mContext).getImServerHosts(ignoreServers).success(new NormalCallback<LinkedHashMap>() {
             @Override
             public void success(LinkedHashMap hostMap) {
                 Log.d("IMServiceProvider", "init im service" + hostMap.size());
@@ -135,10 +133,6 @@ public class IMServiceProvider extends ModelProvider {
         return new IMConnectStatusListener() {
             @Override
             public void onError() {
-                if (!AppUtil.isNetConnect(mContext)) {
-                    return;
-                }
-                reConnectServer(mClientId, mClientName);
             }
 
             @Override
@@ -152,6 +146,11 @@ public class IMServiceProvider extends ModelProvider {
             @Override
             public void onOpen() {
             }
+
+            @Override
+            public void onInvalid(String[] ig) {
+                reBindServer(mClientId, mClientName, ig);
+            }
         };
     }
 
@@ -160,7 +159,9 @@ public class IMServiceProvider extends ModelProvider {
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.ERROR);
     }
 
-    public synchronized void bindServer(int clientId, String clientName) {
+    public synchronized void reBindServer(int clientId, String clientName, String[] ignoreServers) {
+        Log.d("IMServiceProvider", "rebind server");
+        unBindServer();
         setClientInfo(clientId, clientName);
         if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
             IMClient.getClient().setIMConnectStatus(IMConnectStatus.ERROR);
@@ -171,8 +172,12 @@ public class IMServiceProvider extends ModelProvider {
         if (status == IMConnectStatus.OPEN || status == IMConnectStatus.CONNECTING) {
             return;
         }
-        connectServer(clientId, clientName);
+        connectServer(clientId, clientName, ignoreServers);
         Log.d("IMServiceProvider", "IMService start ready");
+    }
+
+    public void bindServer(int clientId, String clientName) {
+        reBindServer(clientId, clientName, null);
     }
 
     protected void updateMessageStatus(MessageBody messageBody) {

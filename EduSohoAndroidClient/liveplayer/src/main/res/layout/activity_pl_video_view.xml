@@ -26,8 +26,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:indeterminateDuration="1000"
-                android:indeterminateDrawable="@drawable/live_progress" />
+                android:background="@null"
+                style="@android:style/Widget.Material.Light.ProgressBar.Large" />
 
             <TextView
                 android:id="@+id/tv_chat_load_title"
@@ -72,8 +72,8 @@
                 android:id="@+id/iv_live_progressbar"
                 android:layout_width="39dp"
                 android:layout_height="39dp"
-                android:indeterminateDrawable="@drawable/live_progress"
-                android:indeterminateDuration="1000"
+                android:background="@null"
+                style="@android:style/Widget.Material.Light.ProgressBar.Large"
                 android:visibility="gone" />
 
             <ImageView

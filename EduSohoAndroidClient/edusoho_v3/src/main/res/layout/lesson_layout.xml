@@ -4,92 +4,36 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:visibility="gone"
-        android:id="@+id/lesson_tools_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/lesson_tool_height"
-        android:layout_alignParentBottom="true"
-        android:layout_gravity="center"
-        android:background="@drawable/course_details_btn_layout_bg"
-        android:orientation="horizontal">
-
-        <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
-            android:id="@+id/lesson_learn_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="8dp"
-            app:fontColor="@color/lesson_tools_sel"
-            app:iconSizeScale="2.4"
-            app:image="@string/learning_status"
-            app:size="@dimen/nav_layout_btn" />
-
-        <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
-            android:id="@+id/lesson_previous"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="8dp"
-            app:fontColor="@color/lesson_redirect_sel"
-            app:iconSizeScale="2.4"
-            app:image="@string/lesson_previous"
-            app:size="@dimen/nav_layout_btn" />
-
-        <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
-            android:id="@+id/lesson_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="8dp"
-            app:fontColor="@color/lesson_redirect_sel"
-            app:iconSizeScale="2.4"
-            app:image="@string/lesson_next"
-            app:size="@dimen/nav_layout_btn" />
-
-        <com.edusoho.kuozhi.v3.view.EduSohoTextBtn
-            android:id="@+id/lesson_thread_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:paddingBottom="6dp"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
-            android:paddingTop="10dp"
-            app:fontColor="@color/lesson_tools_sel"
-            app:iconSizeScale="2.4"
-            app:image="@string/lesson_thread"
-            app:size="@dimen/nav_layout_btn" />
-    </LinearLayout>
-
-    <android.support.v7.widget.Toolbar
-        android:id="@id/toolbar"
-        app:navigationIcon="@drawable/action_bar_back"
-        android:background="@color/primary_color"
-        android:navigationIcon="@drawable/action_bar_back"
-        android:layout_width="match_parent"
-        android:layout_height="44dp">
-
-        <TextView
-            android:gravity="center"
-            android:lines="1"
-            android:textSize="@dimen/base_large_size"
-            android:textColor="@color/white"
-            android:id="@+id/tv_toolbar_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-    </android.support.v7.widget.Toolbar>
-
     <FrameLayout
-        android:layout_below="@id/toolbar"
         android:id="@+id/lesson_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/lesson_tools_layout" />
+        android:gravity="center" />
+
+    <android.support.v7.widget.Toolbar
+        android:id="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_alignParentTop="true"
+        android:background="@color/textIcons"
+        android:navigationIcon="@drawable/ic_action_gray_bar_back"
+        app:navigationIcon="@drawable/ic_action_gray_bar_back">
+
+        <TextView
+            android:id="@+id/tv_toolbar_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:lines="1"
+            android:textColor="@color/textSecondary"
+            android:textSize="@dimen/base_large_size" />
+
+    </android.support.v7.widget.Toolbar>
+
+    <include
+        layout="@layout/load_dig_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>

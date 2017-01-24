@@ -227,6 +227,9 @@ public class New implements Serializable {
     }
 
     private String getTitleNameByType(MessageBody messageBody) {
+        if (TextUtils.isEmpty(type)) {
+            return "";
+        }
         switch (type) {
             case Destination.USER:
                 return messageBody.getSource().getNickname();
