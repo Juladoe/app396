@@ -127,7 +127,7 @@ public class CourseCatalogFragment extends BaseFragment {
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (getActivity() != null && getActivity().isFinishing()) {
+                if (getActivity() == null || getActivity().isFinishing()) {
                     return;
                 }
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
@@ -191,6 +191,9 @@ public class CourseCatalogFragment extends BaseFragment {
 
     public void initLessonCatalog(String chapter, String unit) {
         hideProcesDialog();
+        if (getActivity() == null || getActivity().isFinishing()) {
+            return;
+        }
         mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, isJoin, chapter, unit);
         mLvCatalog.setAdapter(mAdapter);
         reFreshColor();
