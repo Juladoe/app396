@@ -8,6 +8,7 @@ import android.os.StatFs;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
@@ -127,7 +128,8 @@ public class CourseCatalogFragment extends BaseFragment {
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (getActivity() == null || getActivity().isFinishing()) {
+                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                    Log.d("CourseCatalogFragment", "activity is finish");
                     return;
                 }
                 mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
@@ -156,6 +158,10 @@ public class CourseCatalogFragment extends BaseFragment {
         app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                    Log.d("CourseCatalogFragment", "activity is finish");
+                    return;
+                }
                 setLoadViewStatus(View.GONE);
                 CustomTitle cusotmTitle = new Gson().fromJson(response, CustomTitle.class);
                 if (cusotmTitle != null && "1".equals(cusotmTitle.getCustomChapterEnable())) {

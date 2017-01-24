@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -80,6 +81,10 @@ public class CourseDetailFragment extends BaseDetailFragment {
             @Override
             public void onSuccess(CourseDetail data) {
                 mCourseDetail = data;
+                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                    Log.d("CourseDetailFragment", "activity is finish");
+                    return;
+                }
                 refreshView();
                 setLoadViewStatus(View.GONE);
             }
@@ -94,6 +99,10 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 new ResponseCallbackListener<List<CourseMember>>() {
                     @Override
                     public void onSuccess(List<CourseMember> data) {
+                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                            Log.d("CourseDetailFragment", "activity is finish");
+                            return;
+                        }
                         initStudent(data);
                     }
 
