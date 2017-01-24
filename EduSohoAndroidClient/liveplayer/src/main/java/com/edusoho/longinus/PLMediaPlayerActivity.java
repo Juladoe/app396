@@ -96,7 +96,10 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!CPUUtil.hasCompatibleCPU(getApplicationContext())) {
+        if (CPUUtil.hasX86CPU()) {
+            initX86SharedLib();
+        }
+        if (CPUUtil.hasX86CPU() && !CPUUtil.hasX86Library(getApplicationContext())) {
             mLibUpdateHelper = new LibUpdateHelper(this);
             mLibUpdateHelper.update("x86", new LibUpdateHelper.LibUpdateListener() {
                 @Override
@@ -111,14 +114,13 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
 
                 @Override
                 public void onFail() {
-                    Toast.makeText(getApplicationContext(), com.edusoho.videoplayer.R.string.video_not_support, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), R.string.video_not_support, Toast.LENGTH_SHORT).show();
                     exit();
                 }
             });
             return;
         }
 
-        initSharedLib();
         setContentView(R.layout.activity_pl_mediaplayer_view);
         mSurfaceView = (SurfaceView) findViewById(R.id.SurfaceView);
         mSurfaceView.getHolder().addCallback(mCallback);
@@ -132,7 +134,7 @@ public class PLMediaPlayerActivity extends AppCompatActivity {
         audioManager.requestAudioFocus(null, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
     }
 
-    private void initSharedLib() {
+    private void initX86SharedLib() {
         SharedLibraryNameHelper helper = SharedLibraryNameHelper.getInstance();
         helper.renameSharedLibrary(getBaseContext().getDir("lib", Context.MODE_PRIVATE) + "/libpldroidplayer.so");
     }

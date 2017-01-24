@@ -15,7 +15,12 @@ public class CPUUtil {
 
     private static final String TAG = "CPUUtil";
 
-    public static boolean hasCompatibleCPU(Context context) {
+    public static boolean hasX86CPU() {
+        CpuType cpuType = getCpuType();
+        return cpuType.hasX86;
+    }
+
+    private static CpuType getCpuType() {
         CpuType cpuType = new CpuType();
         String[] abis;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -43,21 +48,16 @@ public class CPUUtil {
                 cpuType.is64bits = true;
             }
         }
-
-        if (cpuType.hasX86 && searchCustomLibrary(context) == null) {
-            return false;
-        }
-
-        return true;
+        return cpuType;
     }
 
-    public static File searchCustomLibrary(Context context) {
+    public static boolean hasX86Library(Context context) {
         File customLibraryDir = context.getDir("lib", Context.MODE_PRIVATE);
         File lib = new File(customLibraryDir, "libpldroidplayer.so");
         if (lib.exists() && lib.canRead()) {
-            return lib;
+            return true;
         }
-        return null;
+        return false;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
