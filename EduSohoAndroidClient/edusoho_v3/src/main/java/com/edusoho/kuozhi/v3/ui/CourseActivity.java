@@ -405,7 +405,10 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
-    protected void courseChange(LessonItem lessonItem) {
+    protected synchronized void courseChange(LessonItem lessonItem) {
+        if (mIsPlay && mContinueLessonItem != null && mContinueLessonItem.id == lessonItem.id) {
+            return;
+        }
         mContinueLessonItem = lessonItem;
         coursePause();
         courseStart();
