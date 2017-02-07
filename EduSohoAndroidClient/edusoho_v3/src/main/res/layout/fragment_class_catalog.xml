@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.edusoho.kuozhi.v3.view.FixHeightListView
+        <com.edusoho.kuozhi.v3.view.FixCourseListView
             android:id="@+id/lv_catalog"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
