@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.RecyclerView
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lv_catalog"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:divider="@null"
+    android:scrollbars="none" />
+<!--
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
@@ -47,12 +59,12 @@
                 android:textSize="@dimen/font_m" />
         </RelativeLayout>
 
-        <com.edusoho.kuozhi.v3.view.FixCourseListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/lv_catalog"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/rl_space"
-            android:choiceMode="singleChoice"
             android:divider="@null"
             android:scrollbars="none" />
 
@@ -87,4 +99,5 @@
         </LinearLayout>
     </RelativeLayout>
 
-</com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>
+</FrameLayout>
+-->

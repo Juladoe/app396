@@ -29,7 +29,7 @@ import java.util.List;
 
 public class CourseDetailModel implements Serializable {
 
-    public static void getCourseDetail(String courseId,
+    public static void getCourseDetail(int courseId,
                                        final ResponseCallbackListener<CourseDetail> callbackListener) {
         String url = String.format(Const.COURSE_GETCOURSE, courseId);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
@@ -85,7 +85,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getCourseReviews(String courseId, String limit, String start,
+    public static void getCourseReviews(int courseId, String limit, String start,
                                         final ResponseCallbackListener<CourseReviewDetail> callbackListener) {
         String url = String.format(Const.COURSE_GETREVIEWS, courseId, limit, start);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
@@ -141,7 +141,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getCourseMember(String courseId,
+    public static void getCourseMember(int courseId,
                                        final ResponseCallbackListener<List<CourseMember>> callbackListener) {
         String url = String.format(Const.COURSE_GETMEMBER, courseId);
         RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);

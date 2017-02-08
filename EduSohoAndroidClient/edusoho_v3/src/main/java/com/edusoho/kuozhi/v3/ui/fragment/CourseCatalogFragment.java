@@ -6,11 +6,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -22,27 +27,30 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
-import com.edusoho.kuozhi.v3.entity.CustomTitle;
+import com.edusoho.kuozhi.v3.entity.CourseSetting;
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -52,21 +60,21 @@ import java.util.Map;
 /**
  * Created by DF on 2016/12/13.
  */
-public class CourseCatalogFragment extends BaseFragment {
+public class CourseCatalogFragment extends Fragment {
 
     private static final int ISMEMBER = 1;
     private static final int VISITOR = 2;
 
     public boolean isJoin;
     public int mMemberStatus;
-    public String mCourseId;
+    public int mCourseId;
     public CourseCatalogueAdapter mAdapter;
-    private RelativeLayout mRlSpace;
-    private ListView mLvCatalog;
+    //private RelativeLayout mRlSpace;
+    private RecyclerView mLvCatalog;
     private CourseCatalogue mCourseCatalogue;
-    private TextView tvSpace;
-    private View mLoadView;
-    private View mLessonEmpytView;
+    //private TextView tvSpace;
+    //private View mLoadView;
+    //private View mLessonEmpytView;
     private LoadDialog mProcessDialog;
     private List<CourseCatalogue.LessonsBean> lessonsBeanList;
     private CourseCatalogue.LessonsBean lessonsBean;
@@ -78,26 +86,35 @@ public class CourseCatalogFragment extends BaseFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContainerView(R.layout.fragment_course_catalog);
-        mCourseId = getArguments().getString("id");
+        mCourseId = getArguments().getInt(Const.COURSE_ID);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View contentView = inflater.inflate(R.layout.fragment_course_catalog, null);
+        ViewGroup parent = (ViewGroup) contentView.getParent();
+        if (parent != null) {
+            parent.removeView(contentView);
+        }
+
+        return contentView;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        init(view);
+        initView(view);
     }
 
-    private void init(View view) {
-        super.initView(view);
-        mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
-        mLvCatalog = (ListView) view.findViewById(R.id.lv_catalog);
-        mLoadView = view.findViewById(R.id.ll_frame_load);
-        tvSpace = (TextView) view.findViewById(R.id.tv_space);
-        mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
-        tvSpace.setOnClickListener(getCacheCourse());
-        tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
-        view.findViewById(R.id.tv_course).setOnClickListener(getCacheCourse());
+    private void initView(View view) {
+        //mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
+        mLvCatalog = (RecyclerView) view.findViewById(R.id.lv_catalog);
+        //mLoadView = view.findViewById(R.id.ll_frame_load);
+        //tvSpace = (TextView) view.findViewById(R.id.tv_space);
+        //mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
+        //tvSpace.setOnClickListener(getCacheCourse());
+        //tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
+//        view.findViewById(R.id.tv_course).setOnClickListener(getCacheCourse());
         initCatalogue();
     }
 
@@ -114,30 +131,27 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     protected void setLoadViewStatus(int visibility) {
-        if (mLoadView != null) {
+        /*if (mLoadView != null) {
             mLoadView.setVisibility(visibility);
-        }
+        }*/
     }
 
     private void initCatalogue() {
-        mRlSpace.setVisibility(mMemberStatus == ISMEMBER && app.token != null ? View.VISIBLE : View.GONE);
+        User user = getAppSettingProvider().getCurrentUser();
+        //mRlSpace.setVisibility(mMemberStatus == ISMEMBER && user != null ? View.VISIBLE : View.GONE);
         setLoadViewStatus(View.VISIBLE);
         setLessonEmptyViewVisibility(View.GONE);
-        RequestUrl requestUrl = app.bindNewUrl(Const.LESSON_CATALOG + "?courseId=" + mCourseId + "&token=" + app.token, true);
-        requestUrl.heads.put("token", app.token);
-        app.getUrl(requestUrl, new Response.Listener<String>() {
+
+        new LessonProvider(getContext()).getCourseLessons(mCourseId)
+        .success(new NormalCallback<CourseCatalogue>() {
             @Override
-            public void onResponse(String response) {
+            public void success(CourseCatalogue courseCatalogue) {
                 if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
                     Log.d("CourseCatalogFragment", "activity is finish");
                     return;
                 }
-                mCourseCatalogue = ((CourseActivity) getActivity()).parseJsonValue(response, new TypeToken<CourseCatalogue>() {
-                });
+                mCourseCatalogue = courseCatalogue;
                 if (mCourseCatalogue.getLessons().size() != 0) {
-                    if (mMemberStatus == ISMEMBER && app.token != null) {
-                        initFirstLearnLesson();
-                    }
                     initFirstLearnLesson();
                     initCustomChapterSetting();
                 } else {
@@ -145,34 +159,33 @@ public class CourseCatalogFragment extends BaseFragment {
                     setLoadViewStatus(View.GONE);
                 }
             }
-        }, new Response.ErrorListener() {
+        }).fail(new NormalCallback<VolleyError>() {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void success(VolleyError obj) {
                 setLoadViewStatus(View.GONE);
             }
         });
     }
 
     private void initCustomChapterSetting() {
-        RequestUrl requestUrl = app.bindNewUrl("/api/setting/course", false);
-        app.getUrl(requestUrl, new Response.Listener<String>() {
+        new CourseProvider(getContext()).getSetting()
+        .success(new NormalCallback<CourseSetting>() {
             @Override
-            public void onResponse(String response) {
+            public void success(CourseSetting courseSetting) {
                 if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
                     Log.d("CourseCatalogFragment", "activity is finish");
                     return;
                 }
                 setLoadViewStatus(View.GONE);
-                CustomTitle cusotmTitle = new Gson().fromJson(response, CustomTitle.class);
-                if (cusotmTitle != null && "1".equals(cusotmTitle.getCustomChapterEnable())) {
-                    initLessonCatalog(cusotmTitle.getChapterName(), cusotmTitle.getPartName());
+                if (courseSetting != null && "1".equals(courseSetting.getCustomChapterEnable())) {
+                    initLessonCatalog(courseSetting.getChapterName(), courseSetting.getPartName());
                 }else {
                     initLessonCatalog(null, null);
                 }
             }
-        }, new Response.ErrorListener() {
+        }).fail(new NormalCallback<VolleyError>() {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void success(VolleyError obj) {
                 setLoadViewStatus(View.GONE);
                 initLessonCatalog(null, null);
             }
@@ -180,11 +193,11 @@ public class CourseCatalogFragment extends BaseFragment {
     }
 
     private void setLessonEmptyViewVisibility(int visibility) {
-        mLessonEmpytView.setVisibility(visibility);
+        //mLessonEmpytView.setVisibility(visibility);
     }
 
     private void updateLessonStatuses() {
-        new LessonProvider(getContext()).getCourseLessonLearnStatus(AppUtil.parseInt(mCourseId))
+        new LessonProvider(getContext()).getCourseLessonLearnStatus(mCourseId)
         .success(new NormalCallback<Map<String, String>>() {
             @Override
             public void success(Map<String, String> learnes) {
@@ -201,9 +214,10 @@ public class CourseCatalogFragment extends BaseFragment {
             return;
         }
         mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, isJoin, chapter, unit);
+        mLvCatalog.setLayoutManager(new LinearLayoutManager(getContext()));
         mLvCatalog.setAdapter(mAdapter);
         reFreshColor();
-        mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (mCourseStateCallback.isExpired()) {
@@ -219,7 +233,8 @@ public class CourseCatalogFragment extends BaseFragment {
                         || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
                     return;
                 }
-                if (TextUtils.isEmpty(app.token)) {
+                User user = getAppSettingProvider().getCurrentUser();
+                if (user == null) {
                     CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
                     return;
                 }
@@ -239,7 +254,7 @@ public class CourseCatalogFragment extends BaseFragment {
                 }
                 perpareStartLearnLesson(position);
             }
-        });
+        });*/
         mLvCatalog.setOnTouchListener(new View.OnTouchListener() {
             private int downX;
             @Override
@@ -412,8 +427,9 @@ public class CourseCatalogFragment extends BaseFragment {
         }
 
         if ("live".equals(lessonsBean.getType())) {
-            final String url = String.format(SchoolUtil.getDefaultSchool(mContext).host + Const.WEB_LESSON, mCourseId, lessonsBean.getId() );
-            CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+            School school = getAppSettingProvider().getCurrentSchool();
+            final String url = String.format(school.host + Const.WEB_LESSON, mCourseId, lessonsBean.getId() );
+            CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity", getContext(), new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     startIntent.putExtra(Const.WEB_URL, url);
@@ -430,8 +446,9 @@ public class CourseCatalogFragment extends BaseFragment {
             return;
         }
         if ("live".equals(type)) {
-            final String url = String.format(SchoolUtil.getDefaultSchool(mContext).host + Const.WEB_LESSON, courseId, lessonId);
-            CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+            School school = getAppSettingProvider().getCurrentSchool();
+            final String url = String.format(school.host + Const.WEB_LESSON, courseId, lessonId);
+            CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity", getContext(), new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
                     startIntent.putExtra(Const.WEB_URL, url);
@@ -462,7 +479,7 @@ public class CourseCatalogFragment extends BaseFragment {
     public void reFreshColor(){
         if (mLvCatalog != null && lessonsBean != null && isOk) {
             int index = ((ArrayList) mCourseCatalogue.getLessons()).indexOf(lessonsBean);
-            mLvCatalog.setItemChecked(index, true);
+            //mLvCatalog.setItemChecked(index, true);
         }
         isOk = true;
     }
@@ -490,7 +507,7 @@ public class CourseCatalogFragment extends BaseFragment {
                         return;
                     }
                 }
-                startActivity(new Intent(getContext(), LessonDownloadingActivity.class).putExtra(Const.COURSE_ID, Integer.parseInt(mCourseId)));
+                startActivity(new Intent(getContext(), LessonDownloadingActivity.class).putExtra(Const.COURSE_ID, mCourseId));
             }
         };
     }
@@ -503,18 +520,13 @@ public class CourseCatalogFragment extends BaseFragment {
         return Formatter.formatFileSize(getActivity(), blockSize * availableBlocks).replace("B", "");
     }
 
-    @Override
     public void invoke(WidgetMessage message) {
-        super.invoke(message);
         if (Const.LESSON_STATUS_REFRESH.equals(message.type.type)) {
             updateLessonStatuses();
         }
     }
 
-    @Override
-    public MessageType[] getMsgTypes() {
-        return new MessageType[] {
-                new MessageType(Const.LESSON_STATUS_REFRESH)
-        };
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 }

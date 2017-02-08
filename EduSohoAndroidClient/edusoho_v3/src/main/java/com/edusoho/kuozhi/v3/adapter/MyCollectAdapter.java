@@ -127,7 +127,7 @@ public class MyCollectAdapter extends BaseAdapter {
                     new SureDialog(mContext).init("是否确定取消收藏！", new SureDialog.CallBack() {
                         @Override
                         public void onSureClick(View v, final Dialog dialog2) {
-                            CourseUtil.uncollectCourse(String.valueOf(course.id)
+                            CourseUtil.uncollectCourse(course.id
                                     , new CourseUtil.OnCollectSuccessListener() {
                                         @Override
                                         public void onCollectSuccess() {

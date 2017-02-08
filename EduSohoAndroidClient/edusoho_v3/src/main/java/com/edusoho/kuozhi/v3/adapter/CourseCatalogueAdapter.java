@@ -24,7 +24,8 @@ import java.util.Map;
 /**
  * Created by DF on 2016/12/14.
  */
-public class CourseCatalogueAdapter extends BaseAdapter {
+public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogueAdapter.ViewHolder> {
+
     public int mSelect = -1;
     public CourseCatalogue courseCatalogue;
     public Context mContext;
@@ -43,7 +44,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     private RelativeLayout.LayoutParams params;
 
     public CourseCatalogueAdapter(Context context, CourseCatalogue courseCatalogue, boolean isJoin, String chapterTitle, String unitTitle) {
-        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE );
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.courseCatalogue = courseCatalogue;
         this.learnStatuses = courseCatalogue.getLearnStatuses();
         this.mContext = context;
@@ -53,60 +54,103 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
-        return courseCatalogue.getLessons().get(position);
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.render(courseCatalogue.getLessons().get(position), chapterTitle);
     }
 
     @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        lessonsBean = courseCatalogue.getLessons().get(position);
-        switch (getItemViewType(position)) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType) {
             case TYPE_CHAPTER:
-                convertView = mInflater.inflate(R.layout.item_chapter_catalog, null);
-                chapterHolder = new ChapterHolder(convertView);
-                if (!TextUtils.isEmpty(chapterTitle)) {
-                    chapterHolder.chapterTitle.setText(String.format("第%s%s:%s", lessonsBean.getNumber(), chapterTitle, lessonsBean.getTitle()));
-                }else {
-                    chapterHolder.chapterTitle.setText(String.format("%s", lessonsBean.getTitle()));
-                }
-                break;
+                return new ChatperViewHolder(mInflater.inflate(R.layout.item_chapter_catalog, null));
             case TYPE_SECTION:
-                convertView = mInflater.inflate(R.layout.item_section_catalog, null);
-                sectionHolder = new SectionHolder(convertView);
-                if (!TextUtils.isEmpty(unitTitle)) {
-                    sectionHolder.sectionTitle.setText(String.format("第%s%s:%s", lessonsBean.getNumber(), unitTitle, lessonsBean.getTitle()));
-                }else {
-                    sectionHolder.sectionTitle.setText(String.format("%s", lessonsBean.getTitle()));
-                }
-                break;
-            case TYPE_LESSON:
-                convertView = mInflater.inflate(R.layout.item_lesson_catalog, null);
-                lessonHolder = new LessonHolder(convertView);
-                //初始化控件数据
-                initView(position);
-                //判断课时类型
-                decideKind();
-                break;
+                return new UnitViewHolder(mInflater.inflate(R.layout.item_section_catalog, null));
         }
-        return convertView;
+        return new LessonViewHolder(mInflater.inflate(R.layout.item_lesson_catalog, null));
     }
 
+
     @Override
-    public int getCount() {
+    public int getItemCount() {
         if (courseCatalogue == null) {
             return 0;
         }
         return courseCatalogue.getLessons() == null ? 0 : courseCatalogue.getLessons().size();
     }
 
-    @Override
-    public int getViewTypeCount() {
-        return 3;
+    protected static abstract class ViewHolder extends RecyclerView.ViewHolder {
+
+        public ViewHolder(View view) {
+            super(view);
+        }
+
+        protected abstract void render(CourseCatalogue.LessonsBean lesson, String customTitle);
+    }
+
+    protected static class LessonViewHolder extends ViewHolder {
+
+        private ImageView lessonState;
+        private EduSohoNewIconView lessonKind;
+        private TextView lessonTitle;
+        private TextView lessonFree;
+        private TextView lessonTime;
+        private TextView liveState;
+        private View lessonUp;
+        private View lessonDown;
+
+        public LessonViewHolder(View view) {
+            super(view);
+            lessonState = (ImageView) itemView.findViewById(R.id.lesson_state);
+            lessonKind = (EduSohoNewIconView) itemView.findViewById(R.id.lesson_kind);
+            lessonTitle = (TextView) itemView.findViewById(R.id.lesson_title);
+            lessonFree = (TextView) itemView.findViewById(R.id.lesson_free);
+            lessonTime = (TextView) itemView.findViewById(R.id.lesson_time);
+            liveState = (TextView) itemView.findViewById(R.id.live_state);
+            lessonUp = itemView.findViewById(R.id.lesson_up);
+            lessonDown = itemView.findViewById(R.id.lesson_down);
+        }
+
+        @Override
+        protected void render(CourseCatalogue.LessonsBean lesson, String customTitle) {
+            lessonTitle.setText(lesson.getTitle());
+        }
+    }
+    protected static class ChatperViewHolder extends ViewHolder {
+
+        public TextView chapterTitle;
+
+        public ChatperViewHolder(View view) {
+            super(view);
+            chapterTitle = (TextView) itemView.findViewById(R.id.chapter_title);
+        }
+
+        @Override
+        protected void render(CourseCatalogue.LessonsBean lesson, String customTitle) {
+            if (!TextUtils.isEmpty(customTitle)) {
+                chapterTitle.setText(String.format("第%s%s:%s", lesson.getNumber(), customTitle, lesson.getTitle()));
+            }else {
+                chapterTitle.setText(String.format("%s", lesson.getTitle()));
+            }
+        }
+    }
+
+    protected static class UnitViewHolder extends ViewHolder {
+
+        public TextView sectionTitle;
+
+        public UnitViewHolder(View view) {
+            super(view);
+            sectionTitle = (TextView) itemView.findViewById(R.id.section_title);
+        }
+
+        @Override
+        protected void render(CourseCatalogue.LessonsBean lesson, String customTitle) {
+            if (!TextUtils.isEmpty(customTitle)) {
+                sectionTitle.setText(String.format("第%s%s:%s", lesson.getNumber(), customTitle, lesson.getTitle()));
+            }else {
+                sectionTitle.setText(String.format("%s", lesson.getTitle()));
+            }
+        }
     }
 
     @Override

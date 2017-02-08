@@ -51,7 +51,7 @@ public class CourseUtil {
                 });
     }
 
-    public static void collectCourse(String courseId, final OnCollectSuccessListener onCollectSuccessListener) {
+    public static void collectCourse(int courseId, final OnCollectSuccessListener onCollectSuccessListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
             return;
@@ -79,7 +79,7 @@ public class CourseUtil {
                 });
     }
 
-    public static void uncollectCourse(String courseId, final OnCollectSuccessListener onCollectSuccessListener) {
+    public static void uncollectCourse(int courseId, final OnCollectSuccessListener onCollectSuccessListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
             return;
@@ -222,7 +222,7 @@ public class CourseUtil {
         });
     }
 
-    public static void addCourseVip(String courseId, final OnAddCourseListener
+    public static void addCourseVip(int courseId, final OnAddCourseListener
             onAddCourseListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();

@@ -51,7 +51,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     public static final String SOURCE = "source";
     public static final String SOURCE_ID = "source_id";
     public static final String IS_CHILD_COURSE = "child_course";
-    private String mCourseId;
+    private int mCourseId;
     private boolean mIsFavorite = false;
     public CourseDetail mCourseDetail;
     private LessonItem mContinueLessonItem;
@@ -61,8 +61,8 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        mCourseId = intent.getStringExtra(COURSE_ID);
-        if (mCourseId == null || mCourseId.trim().length() == 0) {
+        mCourseId = intent.getIntExtra(COURSE_ID, 0);
+        if (mCourseId == 0) {
             finish();
             return;
         }
@@ -85,21 +85,21 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         Fragment detailfragment = app.mEngine.runPluginWithFragment("CourseDetailFragment", this, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString("id", mCourseId);
+                bundle.putInt("id", mCourseId);
             }
         });
         fragments.add(detailfragment);
         Fragment catafragment = app.mEngine.runPluginWithFragment("CourseCatalogFragment", this, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString("id", mCourseId);
+                bundle.putInt("id", mCourseId);
             }
         });
         fragments.add(catafragment);
         Fragment discussFrament = app.mEngine.runPluginWithFragment("CourseDiscussFragment", this, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString("id", mCourseId);
+                bundle.putInt("id", mCourseId);
             }
         });
         fragments.add(discussFrament);
@@ -135,7 +135,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     protected void initData() {
-        if (TextUtils.isEmpty(mCourseId)) {
+        if (mCourseId == 0) {
             CommonUtil.shortToast(getBaseContext(), "课程不存在");
             finish();
             return;
@@ -177,7 +177,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     private void unLearnCourse() {
-        new CourseProvider(getBaseContext()).unLearn(AppUtil.parseInt(mCourseId))
+        new CourseProvider(getBaseContext()).unLearn(mCourseId)
         .success(new NormalCallback<String>() {
             @Override
             public void success(String response) {
@@ -274,7 +274,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(NewsCourseActivity.COURSE_ID, Integer.parseInt(mCourseId));
+                startIntent.putExtra(NewsCourseActivity.COURSE_ID, mCourseId);
                 startIntent.putExtra(NewsCourseActivity.SHOW_TYPE, NewsCourseActivity.DISCUSS_TYPE);
                 startIntent.putExtra(NewsCourseActivity.FROM_NAME, mCourseDetail.getCourse().title);
             }
@@ -307,7 +307,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     @Override
     protected void add() {
-        if (mCourseId != null) {
+        if (mCourseId != 0) {
             if (!"1".equals(mCourseDetail.getCourse().buyable)) {
                 CommonUtil.shortToast(CourseActivity.this, getResources()
                         .getString(R.string.add_error_close));
@@ -540,7 +540,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(mCourseId));
+        bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
@@ -553,7 +553,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         LessonAudioPlayerFragment fragment = new LessonAudioPlayerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().largePicture);
-        bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(mCourseId));
+        bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
@@ -598,7 +598,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             return;
         }
         Bundle bundle = new Bundle();
-        bundle.putInt(ThreadCreateActivity.TARGET_ID, AppUtil.parseInt(mCourseId));
+        bundle.putInt(ThreadCreateActivity.TARGET_ID, mCourseId);
         bundle.putString(ThreadCreateActivity.TARGET_TYPE, "");
         bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
         bundle.putString(ThreadCreateActivity.THREAD_TYPE, "course");
