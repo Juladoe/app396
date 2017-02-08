@@ -247,7 +247,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             setTitle(getString(R.string.title_friends));
             setTitleLoading(false);
         } else {
-            tag = "MyFragment";
+            tag = "MineFragment1";
             setTitle(getString(R.string.title_mine));
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ccf9f9f9")));
             tvTitle.setTextColor(getResources().getColor(R.color.primary_font_color));

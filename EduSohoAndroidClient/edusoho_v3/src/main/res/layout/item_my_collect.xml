@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llayout_favorite_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -13,7 +14,6 @@
             android:id="@+id/iv_pic"
             android:layout_width="130dp"
             android:layout_height="73dp"
-            android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
             android:scaleType="centerCrop" />
 
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/iv_pic"
-            android:layout_marginRight="25dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="-5dp"
             android:text="@string/new_font_more_oper"
             android:textColor="@color/secondary2_font_color"
@@ -96,8 +96,6 @@
         android:id="@+id/v_line"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
         android:background="@color/disabled_hint_color" />
 
 </LinearLayout>

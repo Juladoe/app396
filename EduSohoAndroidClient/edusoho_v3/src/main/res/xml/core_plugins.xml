@@ -156,6 +156,26 @@
         version="1.0" />
 
     <plugin
+        name="MineFragment1"
+        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment1"
+        version="1.0" />
+
+    <plugin
+        name="MyStudyFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment"
+        version="1.0" />
+
+    <plugin
+        name="MyFavoriteFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyFavoriteFragment"
+        version="1.0" />
+
+    <plugin
+        name="CheeseListFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.CheeseListFragment"
+        version="1.0" />
+
+    <plugin
         name="MyFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.MyFragment"
         version="1.0" />
