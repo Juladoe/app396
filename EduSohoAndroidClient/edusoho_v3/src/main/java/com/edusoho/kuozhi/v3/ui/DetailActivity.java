@@ -100,7 +100,6 @@ public abstract class DetailActivity extends BaseActivity
     protected RelativeLayout mMediaRlayout;
     protected RelativeLayout mPlayButtonLayout;
     protected View mPlayLayout;
-    protected ImageView mIvMediaBackGround;
     protected TextView mTvPlay;
     protected TextView mTvLastTitle;
     protected TabLayout tabLayout;
@@ -140,8 +139,8 @@ public abstract class DetailActivity extends BaseActivity
         mMediaRlayout = (RelativeLayout) findViewById(R.id.media_rlayout);
         mPlayButtonLayout = (RelativeLayout) findViewById(R.id.layout_play_button);
         mPlayLayout = findViewById(R.id.play_layout);
-        mIvMediaBackGround = (ImageView) findViewById(R.id.iv_media_background);
-        mIvShare = findViewById(R.id.iv_share);
+        mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
+        mShareView = (TextView) findViewById(R.id.iv_share);
         mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
@@ -156,6 +155,7 @@ public abstract class DetailActivity extends BaseActivity
         mTvCollectTxt = (TextView) findViewById(R.id.tv_collect_txt);
         mTvInclass = findViewById(R.id.tv_inclass);
         mTvAdd = (TextView) findViewById(R.id.tv_add);
+        mMenu = findViewById(R.id.layout_menu);
         mMenuPop = new MenuPop(this, mMenu);
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         mViewPager.setOffscreenPageLimit(3);
@@ -172,12 +172,13 @@ public abstract class DetailActivity extends BaseActivity
                     }
                 });
         setLoadStatus(View.VISIBLE);
+        initEvent();
     }
 
     protected void initFragment(List<Fragment> fragments){};
 
     protected void initEvent() {
-        mIvShare.setOnClickListener(this);
+        mShareView.setOnClickListener(this);
         mIvGrade.setOnClickListener(this);
         mPlayLayout.setOnClickListener(this);
         mCollect.setOnClickListener(this);
@@ -185,7 +186,7 @@ public abstract class DetailActivity extends BaseActivity
         mConsult.setOnClickListener(this);
         mTvInclass.setOnClickListener(this);
         mMenu.setOnClickListener(this);
-        mTvEditTopic.setOnClickListener(this);
+//        mTvEditTopic.setOnClickListener(this);
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -399,14 +400,14 @@ public abstract class DetailActivity extends BaseActivity
     }
 
     protected void initViewPager() {
-        ViewGroup.LayoutParams params = mContentVp.getLayoutParams();
+        ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
         if (params != null) {
             int bottom = AppUtil.dp2px(this, 50 + 43 + mTitleBarHeight);
-            if (mBottomLayout.getVisibility() != View.GONE) {
-                bottom += AppUtil.dp2px(this, 50);
-            }
+//            if (mBottomLayout.getVisibility() != View.GONE) {
+//                bottom += AppUtil.dp2px(this, 50);
+//            }
             params.height = AppUtil.getHeightPx(this) - bottom;
-            mContentVp.setLayoutParams(params);
+            mViewPager.setLayoutParams(params);
         }
     }
 
@@ -542,7 +543,7 @@ public abstract class DetailActivity extends BaseActivity
             case TAB_PAGE:
                 if (mContentVp != null) {
                     mContentVp.setCurrentItem(1);
-                    setBottomLayoutVisible(1, mIsMemder);
+//                    setBottomLayoutVisible(1, mIsMemder);
                     tabLoadingGone();
                 }
                 break;

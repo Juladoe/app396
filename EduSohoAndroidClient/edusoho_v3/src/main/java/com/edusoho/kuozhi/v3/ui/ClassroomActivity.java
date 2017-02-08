@@ -52,7 +52,6 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         }
         mMediaViewHeight = AppUtil.px2dp(this, (float) AppUtil.getWidthPx(this) / 4f * 3f);
         initView();
-        initEvent();
         initData();
     }
 

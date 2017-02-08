@@ -148,16 +148,28 @@
 
                         <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                             android:id="@+id/iv_grade"
-                            android:layout_width="wrap_content"
+                            android:layout_width="44dp"
                             android:layout_height="match_parent"
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="43dp"
                             android:gravity="center"
-                            android:paddingRight="13dp"
                             android:text="@string/new_font_grade"
                             android:textColor="@color/disabled2_hint_color"
-                            android:textSize="16dp"
-                            android:visibility="visible" />
+                            android:textSize="16sp"
+                            android:visibility="gone" />
+
+                        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                            android:id="@+id/layout_menu"
+                            android:layout_width="42dp"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="43dp"
+                            android:layout_centerHorizontal="true"
+                            android:layout_centerVertical="true"
+                            android:text="@string/new_font_more_oper"
+                            android:textColor="@color/disabled2_hint_color"
+                            android:visibility="gone"
+                            android:textSize="16sp" />
 
                     </RelativeLayout>
 
@@ -184,7 +196,10 @@
             <android.support.v4.view.ViewPager
                 android:id="@+id/container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
         </RelativeLayout>
 
     </android.support.design.widget.CoordinatorLayout>

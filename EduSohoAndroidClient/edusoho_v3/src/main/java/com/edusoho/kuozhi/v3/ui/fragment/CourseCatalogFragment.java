@@ -9,19 +9,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
@@ -38,19 +32,14 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
-import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -142,29 +131,29 @@ public class CourseCatalogFragment extends Fragment {
         setLoadViewStatus(View.VISIBLE);
         setLessonEmptyViewVisibility(View.GONE);
 
-        new LessonProvider(getContext()).getCourseLessons(mCourseId)
-        .success(new NormalCallback<CourseCatalogue>() {
-            @Override
-            public void success(CourseCatalogue courseCatalogue) {
-                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                    Log.d("CourseCatalogFragment", "activity is finish");
-                    return;
-                }
-                mCourseCatalogue = courseCatalogue;
-                if (mCourseCatalogue.getLessons().size() != 0) {
-                    initFirstLearnLesson();
-                    initCustomChapterSetting();
-                } else {
-                    setLessonEmptyViewVisibility(View.VISIBLE);
-                    setLoadViewStatus(View.GONE);
-                }
-            }
-        }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError obj) {
-                setLoadViewStatus(View.GONE);
-            }
-        });
+//        new LessonProvider(getContext()).getCourseLessons(mCourseId)
+//        .success(new NormalCallback<CourseCatalogue>() {
+//            @Override
+//            public void success(CourseCatalogue courseCatalogue) {
+//                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+//                    Log.d("CourseCatalogFragment", "activity is finish");
+//                    return;
+//                }
+//                mCourseCatalogue = courseCatalogue;
+//                if (mCourseCatalogue.getLessons().size() != 0) {
+//                    initFirstLearnLesson();
+//                    initCustomChapterSetting();
+//                } else {
+//                    setLessonEmptyViewVisibility(View.VISIBLE);
+//                    setLoadViewStatus(View.GONE);
+//                }
+//            }
+//        }).fail(new NormalCallback<VolleyError>() {
+//            @Override
+//            public void success(VolleyError obj) {
+//                setLoadViewStatus(View.GONE);
+//            }
+//        });
     }
 
     private void initCustomChapterSetting() {

@@ -58,7 +58,6 @@ import java.util.List;
 public class CourseStudyDetailActivity extends DetailActivity
         implements AppBarLayout.OnOffsetChangedListener, CourseStateCallback {
 
-    public static final String COURSE_ID = "course_id";
     public static final String SOURCE = "source";
     public static final String SOURCE_ID = "source_id";
     public static final String IS_CHILD_COURSE = "child_course";
@@ -73,9 +72,8 @@ public class CourseStudyDetailActivity extends DetailActivity
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        mCourseId = intent.getIntExtra(CourseActivity.COURSE_ID, 0);
+        mCourseId = intent.getIntExtra(Const.COURSE_ID, 0);
         initView();
-        initEvent();
         initData();
     }
 
@@ -135,7 +133,7 @@ public class CourseStudyDetailActivity extends DetailActivity
 
     protected String[] getFragmentArray() {
         return new String [] {
-                "CourseDetailFragment", "CourseCatalogFragment", "CourseDetailFragment"
+                "CourseDetailFragment", "CourseCatalogFragment", "CourseDiscussFragment"
         };
     }
 
@@ -275,10 +273,10 @@ public class CourseStudyDetailActivity extends DetailActivity
         if (member == null) {
             mIsMemder = false;
             if (getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)) {
-                mBottomLayout.setVisibility(View.GONE);
+//                mBottomLayout.setVisibility(View.GONE);
             } else {
                 mAddLayout.setVisibility(View.VISIBLE);
-                mBottomLayout.setVisibility(View.VISIBLE);
+//                mBottomLayout.setVisibility(View.VISIBLE);
             }
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
@@ -286,7 +284,7 @@ public class CourseStudyDetailActivity extends DetailActivity
         } else {
             mIsMemder = true;
             mAddLayout.setVisibility(View.GONE);
-            mBottomLayout.setVisibility(View.GONE);
+//            mBottomLayout.setVisibility(View.GONE);
             initViewPager();
             mIvGrade.setVisibility(View.VISIBLE);
         }
