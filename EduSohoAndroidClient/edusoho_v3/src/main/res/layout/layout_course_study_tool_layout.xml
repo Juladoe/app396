@@ -22,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/new_font_consult"
                 android:textColor="@color/secondary_font_color"
-                android:textSize="14dp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/new_font_collect"
                 android:textColor="@color/secondary_font_color"
-                android:textSize="14dp" />
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tv_collect_txt"

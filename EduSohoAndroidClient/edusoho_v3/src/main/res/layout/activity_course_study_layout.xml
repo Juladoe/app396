@@ -12,7 +12,7 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="210dp"
+            android:layout_height="260dp"
             android:background="@color/transparent"
             android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay">
@@ -24,13 +24,104 @@
                 app:contentScrim="@color/textIcons"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                <ImageView
+
+                <RelativeLayout
+                    android:id="@+id/parent_rlayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/default_course"
-                    app:layout_collapseMode="parallax"
-                    app:layout_collapseParallaxMultiplier="0.7" />
+                    android:background="@color/disabled2_hint_color">
+
+                    <RelativeLayout
+                        android:id="@+id/media_rlayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="210dp"
+                        android:background="#333">
+
+                        <ImageView
+                            android:id="@+id/iv_media_background"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/default_course"
+                            app:layout_collapseMode="parallax"
+                            app:layout_collapseParallaxMultiplier="0.7" />
+
+                        <RelativeLayout
+                            android:id="@+id/layout_play_button"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="#80000000"
+                            android:visibility="visible">
+
+                            <LinearLayout
+                                android:id="@+id/layout_play_last"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerHorizontal="true"
+                                android:layout_marginTop="60dp"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:paddingLeft="15dp"
+                                android:paddingRight="15dp"
+                                android:visibility="visible">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="上次学到:"
+                                    android:textColor="@color/disabled2_hint_color"
+                                    android:textSize="@dimen/font_s" />
+
+                                <TextView
+                                    android:id="@+id/tv_last_title"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="15dp"
+                                    android:ellipsize="end"
+                                    android:maxLines="1"
+                                    android:maxWidth="210dp"
+                                    android:shadowColor="@color/textSecondary"
+                                    android:textColor="@color/disabled2_hint_color"
+                                    android:textSize="@dimen/font_l" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/play_layout"
+                                android:layout_width="143dp"
+                                android:layout_height="41dp"
+                                android:layout_below="@+id/layout_play_last"
+                                android:layout_centerHorizontal="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginTop="20dp"
+                                android:background="@drawable/shape_play_background"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/new_font_play"
+                                    android:textColor="@color/disabled2_hint_color"
+                                    android:textSize="15dp" />
+
+                                <TextView
+                                    android:id="@+id/tv_play"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="10dp"
+                                    android:text="开始播放"
+                                    android:textColor="@color/disabled2_hint_color"
+                                    android:textSize="@dimen/font_l" />
+
+                            </LinearLayout>
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <FrameLayout
+                        android:id="@+id/fl_header_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
+                </RelativeLayout>
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
@@ -47,13 +138,26 @@
                         android:orientation="horizontal">
 
                         <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-                            android:id="@+id/iv_course_study_share"
+                            android:id="@+id/iv_share"
                             android:layout_width="@dimen/action_bar_height"
                             android:layout_height="@dimen/action_bar_height"
                             android:layout_alignParentRight="true"
                             android:text="@string/new_font_share"
                             android:textColor="@color/textIcons"
-                            android:textSize="15dp" />
+                            android:textSize="15sp" />
+
+                        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                            android:id="@+id/iv_grade"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginRight="43dp"
+                            android:gravity="center"
+                            android:paddingRight="13dp"
+                            android:text="@string/new_font_grade"
+                            android:textColor="@color/disabled2_hint_color"
+                            android:textSize="16dp"
+                            android:visibility="visible" />
 
                     </RelativeLayout>
 
@@ -65,8 +169,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@color/disabled2_hint_color"
-                    app:tabSelectedTextColor="@color/primary_color"
-                    app:tabTextColor="@color/primary_color" />
+                    app:tabSelectedTextColor="@color/secondary_font_color"
+                    app:tabIndicatorColor="@color/primary_color"
+                    app:tabTextColor="@color/secondary_font_color" />
             </android.support.design.widget.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>
@@ -79,7 +184,7 @@
             <android.support.v4.view.ViewPager
                 android:id="@+id/container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"></android.support.v4.view.ViewPager>
+                android:layout_height="match_parent"/>
         </RelativeLayout>
 
     </android.support.design.widget.CoordinatorLayout>

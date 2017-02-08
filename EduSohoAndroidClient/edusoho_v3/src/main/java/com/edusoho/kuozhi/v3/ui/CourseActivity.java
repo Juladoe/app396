@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -31,7 +30,6 @@ import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -80,7 +78,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         mTvAdd.setText(R.string.txt_add_course);
     }
 
-    @Override
+
     protected void initFragment(List<Fragment> fragments) {
         Fragment detailfragment = app.mEngine.runPluginWithFragment("CourseDetailFragment", this, new PluginFragmentCallback() {
             @Override
@@ -354,7 +352,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                             hideProcesDialog();
                         }
                     });
-            mIvGrade2.setVisibility(View.VISIBLE);
+//            mIvGrade2.setVisibility(View.VISIBLE);
         }
     }
 
@@ -431,7 +429,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (mCourseDetail != null && mCourseDetail.getMember() != null) {
             if ("1".equals(mCourseDetail.getMember().isLearned)) {
                 mTvPlay.setText(R.string.txt_study_finish);
-                mTvPlay2.setText(R.string.txt_study_finish);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(false);
                 return;
@@ -442,17 +439,14 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 mPlayLayout.setEnabled(true);
                 if (mCourseDetail == null || mCourseDetail.getMember() == null) {
                     mTvPlay.setText(R.string.txt_study_try);
-                    mTvPlay2.setText(R.string.txt_study_try);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
                 } else {
                     mTvPlay.setText(R.string.txt_study_start);
-                    mTvPlay2.setText(R.string.txt_study_start);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 }
                 break;
             case Const.COURSE_CHANGE_STATE_STARTED:
                 mTvPlay.setText(R.string.txt_study_continue);
-                mTvPlay2.setText(R.string.txt_study_continue);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(true);
                 mPlayLastLayout.setVisibility(View.VISIBLE);
