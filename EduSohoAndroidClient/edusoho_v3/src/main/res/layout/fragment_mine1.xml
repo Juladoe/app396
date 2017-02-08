@@ -76,6 +76,36 @@
             app:tabSelectedTextColor="@color/secondary_font_color"
             app:tabTextColor="@color/secondary_font_color" />
 
+        <RelativeLayout
+            android:id="@+id/rlayout_filter_name"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:background="@color/disabled2_hint_color">
+
+            <TextView
+                android:id="@+id/tv_filter_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/tv_filter_arrow"
+                android:text="@string/filter_type_latest"
+                android:textColor="@color/primary_font_color"
+                android:textSize="@dimen/font_l" />
+
+            <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                android:id="@+id/tv_filter_arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="26dp"
+                android:text="@string/new_font_unfold"
+                android:textColor="@color/primary_font_color"
+                android:textSize="@dimen/font_s" />
+        </RelativeLayout>
+
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.view.ViewPager

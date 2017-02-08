@@ -28,8 +28,9 @@ public class MineFragment1 extends BaseFragment {
     private TextView tvUserType;
     private TabLayout tbTitles;
     private ViewPager vpContent;
+    private View rlayoutFilterName;
     private String[] mTabTitles = {"学习", "缓存", "收藏", "问答"};
-    private String[] mFragmentNames = {"CheeseListFragment", "MyStudyFragment", "MyFavoriteFragment", "MyStudyFragment"};
+    private String[] mFragmentNames = {"MyStudyFragment", "MyStudyFragment", "MyFavoriteFragment", "MyStudyFragment"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,9 @@ public class MineFragment1 extends BaseFragment {
         tbTitles = (TabLayout) view.findViewById(R.id.tl_titles);
         vpContent = (ViewPager) view.findViewById(R.id.vp_content);
         vpContent.setOffscreenPageLimit(3);
+        vpContent.addOnPageChangeListener(getTabLayoutPageChangeListener());
+
+        rlayoutFilterName = view.findViewById(R.id.rlayout_filter_name);
     }
 
     private void initUserInfo() {
@@ -64,6 +68,33 @@ public class MineFragment1 extends BaseFragment {
         MinePagerAdapter minePagerAdapter = new MinePagerAdapter(getFragmentManager(), mTabTitles, mFragmentNames);
         vpContent.setAdapter(minePagerAdapter);
         tbTitles.setupWithViewPager(vpContent);
+    }
+
+    private ViewPager.OnPageChangeListener getTabLayoutPageChangeListener() {
+        return new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (position == 0 || position == 3) {
+                    setFilterLayoutVisible(true);
+                } else {
+                    setFilterLayoutVisible(false);
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+    }
+
+    private void setFilterLayoutVisible(boolean visible) {
+        rlayoutFilterName.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private class MinePagerAdapter extends FragmentPagerAdapter {

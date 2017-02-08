@@ -171,11 +171,6 @@
         version="1.0" />
 
     <plugin
-        name="CheeseListFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.CheeseListFragment"
-        version="1.0" />
-
-    <plugin
         name="MyFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.MyFragment"
         version="1.0" />

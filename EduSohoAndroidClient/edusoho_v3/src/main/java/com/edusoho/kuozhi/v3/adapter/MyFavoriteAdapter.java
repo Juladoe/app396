@@ -91,22 +91,6 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteFragment.F
         return courseList.size();
     }
 
-    private View.OnClickListener mViewOnClickListener =
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int position = (int) v.getTag(R.id.tv_title);
-                    final Course course = courseList.get(position);
-                    EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity"
-                            , mContext, new PluginRunCallback() {
-                                @Override
-                                public void setIntentDate(Intent startIntent) {
-                                    startIntent.putExtra(CourseActivity.COURSE_ID, course.id + "");
-                                }
-                            });
-                }
-            };
-
     private View.OnClickListener mMoreClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
