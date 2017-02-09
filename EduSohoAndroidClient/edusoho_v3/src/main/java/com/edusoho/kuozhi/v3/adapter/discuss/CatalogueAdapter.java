@@ -73,7 +73,4 @@ public class CatalogueAdapter extends RecyclerView.Adapter {
         }
         return count;
     }
-
-
-
 }

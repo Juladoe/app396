@@ -57,7 +57,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getClassroomDetail(String classroomId,
+    public static void getClassroomDetail(int classroomId,
                                           final ResponseCallbackListener<ClassroomDetail> callbackListener) {
         String url = String.format(Const.COURSE_GETCLASSROOM, classroomId);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
@@ -113,7 +113,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getClassroomReviews(String classroomId, String limit, String start,
+    public static void getClassroomReviews(int classroomId, String limit, String start,
                                            final ResponseCallbackListener<ClassroomReviewDetail> callbackListener) {
         String url = String.format(Const.CLASSROOM_GETREVIEWS, classroomId, limit, start);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
@@ -170,7 +170,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getClassroomMember(String classroomId,
+    public static void getClassroomMember(int classroomId,
                                           final ResponseCallbackListener<List<ClassroomMember>> callbackListener) {
         String url = String.format(Const.CLASSROOM_GETMEMBER, classroomId);
         RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);

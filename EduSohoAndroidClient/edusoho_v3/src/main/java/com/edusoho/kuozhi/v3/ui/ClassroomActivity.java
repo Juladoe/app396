@@ -10,7 +10,6 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
@@ -37,7 +36,7 @@ import java.util.List;
  */
 public class ClassroomActivity extends DetailActivity implements View.OnClickListener, CourseStateCallback {
     public static final String CLASSROOM_ID = "Classroom_id";
-    private String mClassroomId;
+    private int mClassroomId;
     public ClassroomDetail mClassroomDetail;
 
     @Override
@@ -45,8 +44,8 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        mClassroomId = intent.getStringExtra(CLASSROOM_ID);
-        if (mClassroomId == null || mClassroomId.trim().length() == 0) {
+        mClassroomId = intent.getIntExtra(CLASSROOM_ID, 0);
+        if (mClassroomId == 0) {
             finish();
             return;
         }
@@ -69,28 +68,28 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
 
     protected void initFragment(List<Fragment> fragments) {
-        Fragment fragment = app.mEngine.runPluginWithFragment("ClassroomDetailFragment", this, new PluginFragmentCallback() {
-            @Override
-            public void setArguments(Bundle bundle) {
-                bundle.putString("id", mClassroomId);
-            }
-        });
-        fragments.add(fragment);
-        Fragment catafragment = app.mEngine.runPluginWithFragment("ClassCatalogFragment", this, new PluginFragmentCallback() {
-            @Override
-            public void setArguments(Bundle bundle) {
-                bundle.putString("id", mClassroomId);
-                bundle.putString("source", mClassroomDetail != null ? mClassroomDetail.getClassRoom().title : null);
-            }
-        });
-        fragments.add(catafragment);
-        Fragment discussFrament = app.mEngine.runPluginWithFragment("CourseDiscussFragment", this, new PluginFragmentCallback() {
-            @Override
-            public void setArguments(Bundle bundle) {
-                bundle.putString("id", mClassroomId);
-            }
-        });
-        fragments.add(discussFrament);
+//        Fragment fragment = app.mEngine.runPluginWithFragment("ClassroomDetailFragment", this, new PluginFragmentCallback() {
+//            @Override
+//            public void setArguments(Bundle bundle) {
+//                bundle.putString("id", mClassroomId);
+//            }
+//        });
+//        fragments.add(fragment);
+//        Fragment catafragment = app.mEngine.runPluginWithFragment("ClassCatalogFragment", this, new PluginFragmentCallback() {
+//            @Override
+//            public void setArguments(Bundle bundle) {
+//                bundle.putString("id", mClassroomId);
+//                bundle.putString("source", mClassroomDetail != null ? mClassroomDetail.getClassRoom().title : null);
+//            }
+//        });
+//        fragments.add(catafragment);
+//        Fragment discussFrament = app.mEngine.runPluginWithFragment("CourseDiscussFragment", this, new PluginFragmentCallback() {
+//            @Override
+//            public void setArguments(Bundle bundle) {
+//                bundle.putString("id", mClassroomId);
+//            }
+//        });
+//        fragments.add(discussFrament);
     }
 
     @Override
@@ -112,7 +111,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     }
 
     protected void initData() {
-        if (mClassroomId != null) {
+        if (mClassroomId != 0) {
             CourseDetailModel.getClassroomDetail(mClassroomId,
                     new ResponseCallbackListener<ClassroomDetail>() {
                         @Override
@@ -198,7 +197,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, Integer.parseInt(mClassroomId));
+                startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, mClassroomId);
                 startIntent.putExtra(ClassroomDiscussActivity.FROM_NAME, mClassroomDetail.getClassRoom().title);
             }
         });
@@ -230,7 +229,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void add() {
-        if (mClassroomId != null) {
+        if (mClassroomId != 0) {
             if (!"1".equals(mClassroomDetail.getClassRoom().buyable)) {
                 CommonUtil.shortToast(ClassroomActivity.this, getResources()
                         .getString(R.string.add_error_close));
@@ -313,7 +312,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
     @Override
     protected void showThreadCreateView(String type) {
         Bundle bundle = new Bundle();
-        bundle.putInt(ThreadCreateActivity.TARGET_ID, AppUtil.parseInt(mClassroomId));
+        bundle.putInt(ThreadCreateActivity.TARGET_ID, mClassroomId);
         bundle.putString(ThreadCreateActivity.TARGET_TYPE, "");
         bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
         bundle.putString(ThreadCreateActivity.THREAD_TYPE, "course");

@@ -255,7 +255,6 @@ public class RefreshRecycleView extends RecyclerView {
 
     public interface MyRecyclerViewListener {
         void onRefresh();
-
         void onLoadMore();
     }
 

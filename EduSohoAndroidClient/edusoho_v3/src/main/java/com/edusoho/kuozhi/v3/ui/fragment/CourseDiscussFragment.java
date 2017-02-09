@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -20,8 +19,9 @@ import com.edusoho.kuozhi.v3.adapter.discuss.CourseDiscussAdapter;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.provider.CourseDiscussProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
@@ -31,7 +31,6 @@ import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.RefreshRecycleView;
-import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -44,7 +43,6 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
 
     public View mLoadView;
     public String title;
-    public DiscussDetail discussDetail;
     public CourseDiscussAdapter catalogueAdapter;
     private int mCourseId ;
     private RefreshRecycleView mLvDiscuss;
@@ -97,34 +95,29 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
 
     }
 
-    // TODO: 17/1/18 @杜樊
     public void initData() {
         mLoadView.setVisibility(View.VISIBLE);
-        RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(String.format(getActivity() instanceof CourseStudyDetailActivity ? Const.LESSON_DISCUSS : Const.CLASS_DISCUSS, mCourseId, mCourseId,0), true);
-        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+        new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId)
+        .success(new NormalCallback<DiscussDetail>() {
             @Override
-            public void onResponse(String response) {
-                discussDetail = EdusohoApp.app.parseJsonValue(response, new TypeToken<DiscussDetail>() {});
+            public void success(DiscussDetail discussDetail) {
                 if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0) {
-                    if (discussDetail.getResources().size() < 20) {
-
-                    }
-                    initDiscuss();
+                    initDiscuss(discussDetail);
                 } else {
                     mLoadView.setVisibility(View.GONE);
                     mEmpty.setVisibility(View.VISIBLE);
                 }
             }
-        }, new Response.ErrorListener() {
+        }).fail(new NormalCallback<VolleyError>() {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void success(VolleyError obj) {
                 mLoadView.setVisibility(View.GONE);
                 setLessonEmptyViewVisibility(View.VISIBLE);
             }
         });
     }
 
-    private void initDiscuss() {
+    private void initDiscuss(final DiscussDetail discussDetail) {
         mLoadView.setVisibility(View.GONE);
         catalogueAdapter = new CourseDiscussAdapter(discussDetail.getResources(), getActivity());
         mLvDiscuss.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -137,39 +130,39 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
 
             @Override
             public void onLoadMore() {
-                RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(String.format(Const.LESSON_DISCUSS, mCourseId, mCourseId, start + ""), true);
-                EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        start += 20;
-                        DiscussDetail moreDiscuss = EdusohoApp.app.parseJsonValue(response, new TypeToken<DiscussDetail>() {});
-                        if (moreDiscuss.getResources() != null) {
-                            discussDetail.getResources().addAll(moreDiscuss.getResources());
-                            catalogueAdapter.notifyDataSetChanged();
-                        }
-                        mLoadView.setVisibility(View.GONE);
-                        mLvDiscuss.setLoadMoreComplete();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        mLoadView.setVisibility(View.GONE);
-                        setLessonEmptyViewVisibility(View.VISIBLE);
-                        mLvDiscuss.setLoadMoreComplete();
-                    }
-                });
+//                RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(String.format(Const.LESSON_DISCUSS, mCourseId, mCourseId, start + ""), true);
+//                EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        start += 20;
+//                        DiscussDetail moreDiscuss = EdusohoApp.app.parseJsonValue(response, new TypeToken<DiscussDetail>() {});
+//                        if (moreDiscuss.getResources() != null) {
+//                            discussDetail.getResources().addAll(moreDiscuss.getResources());
+//                            catalogueAdapter.notifyDataSetChanged();
+//                        }
+//                        mLoadView.setVisibility(View.GONE);bb
+//                        mLvDiscuss.setLoadMoreComplete();
+//                    }
+//                }, new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        mLoadView.setVisibility(View.GONE);
+//                        setLessonEmptyViewVisibility(View.VISIBLE);
+//                        mLvDiscuss.setLoadMoreComplete();
+//                    }
+//                });
             }
         });
-//        mLvDiscuss.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                if (mCourseStateCallback.isExpired()) {
-//                    mCourseStateCallback.handlerCourseExpired();
-//                    return;
-//                }
-//                startThreadActivity(position);
-//            }
-//        });
+        catalogueAdapter.setOnItemClickListener(new CourseDiscussAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, DiscussDetail.ResourcesBean resourcesBean) {
+                if (mCourseStateCallback.isExpired()) {
+                    mCourseStateCallback.handlerCourseExpired();
+                    return;
+                }
+                startThreadActivity(resourcesBean);
+            }
+        });
     }
 
     public void setLessonEmptyViewVisibility(int visibility) {
@@ -224,14 +217,14 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
         i = 0;
     }
 
-    public void startThreadActivity(int position){
+    public void startThreadActivity(DiscussDetail.ResourcesBean resourcesBean){
         if (isJoin) {
             Bundle bundle = new Bundle();
             bundle.putString(DiscussDetailActivity.THREAD_TARGET_TYPE, getActivity() instanceof CourseActivity ? "course" : "classroom");
-            bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, getActivity() instanceof CourseActivity ? Integer.parseInt(discussDetail.getResources().get(position).getCourseId())
-                                        : Integer.parseInt(discussDetail.getResources().get(position).getTargetId()));
-            bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(discussDetail.getResources().get(position).getId()));
-            bundle.putString(AbstractIMChatActivity.TARGET_TYPE, discussDetail.getResources().get(position).getType());
+            bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, getActivity() instanceof CourseActivity ? Integer.parseInt(resourcesBean.getCourseId())
+                                        : Integer.parseInt(resourcesBean.getTargetId()));
+            bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(resourcesBean.getId()));
+            bundle.putString(AbstractIMChatActivity.TARGET_TYPE, resourcesBean.getType());
             EdusohoApp.app.mEngine.runNormalPluginWithBundleForResult("DiscussDetailActivity", getActivity(), bundle, 0);
         } else {
             CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_join_look_hint));

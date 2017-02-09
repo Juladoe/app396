@@ -39,7 +39,7 @@ import java.util.List;
 
 public class ClassroomDetailFragment extends BaseDetailFragment {
 
-    private String mClassroomId;
+    private int mClassroomId;
     private ClassroomDetail mClassroomDetail;
     private List<ClassroomReview> mReviews = new ArrayList<>();
     private ReviewAdapter mAdapter;
@@ -47,7 +47,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     public ClassroomDetailFragment() {
     }
 
-    public void setClassroomId(String classroomId) {
+    public void setClassroomId(int classroomId) {
         this.mClassroomId = classroomId;
         initData();
     }
@@ -55,7 +55,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mClassroomId = getArguments().getString("id");
+        mClassroomId = getArguments().getInt("id");
     }
 
     @Override

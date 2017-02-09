@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Created by DF on 2016/12/14.
  */
-public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogueAdapter.ViewHolder> {
+public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogueAdapter.ViewHolder> implements View.OnClickListener {
 
     public int mSelect = -1;
     public static CourseCatalogue courseCatalogue;
@@ -39,6 +39,12 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
     private static Map<String, String> learnStatuses;
     private RelativeLayout.LayoutParams params;
 
+    private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
+
+    public interface OnRecyclerViewItemClickListener {
+        void onItemClick(View view, CourseCatalogue.LessonsBean lessonsBean);
+    }
+
     public CourseCatalogueAdapter(Context context, CourseCatalogue courseCatalogue, boolean isJoin, String chapterTitle, String unitTitle) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.courseCatalogue = courseCatalogue;
@@ -49,9 +55,14 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         this.unitTitle = unitTitle;
     }
 
+    public void setOnItemClickListener (OnRecyclerViewItemClickListener listener) {
+        this.onRecyclerViewItemClickListener = listener;
+    }
+
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.render(courseCatalogue.getLessons().get(position), chapterTitle, position);
+        holder.itemView.setTag(courseCatalogue.getLessons().get(position));
     }
 
     @Override
@@ -62,7 +73,18 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
             case TYPE_SECTION:
                 return new UnitViewHolder(mInflater.inflate(R.layout.item_section_catalog, null));
         }
-        return new LessonViewHolder(mInflater.inflate(R.layout.item_lesson_catalog, null));
+
+        View view = mInflater.inflate(R.layout.item_lesson_catalog, null);
+        view.setOnClickListener(this);
+        return new LessonViewHolder(view);
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        if (onRecyclerViewItemClickListener != null) {
+            onRecyclerViewItemClickListener.onItemClick(v, ((CourseCatalogue.LessonsBean) v.getTag()));
+        }
     }
 
 

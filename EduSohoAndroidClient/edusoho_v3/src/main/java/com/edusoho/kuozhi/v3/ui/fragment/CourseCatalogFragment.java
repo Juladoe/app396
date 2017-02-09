@@ -36,8 +36,10 @@ import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
+import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -207,44 +209,45 @@ public class CourseCatalogFragment extends Fragment {
         mLvCatalog.setLayoutManager(new LinearLayoutManager(getContext()));
         mLvCatalog.setAdapter(mAdapter);
         reFreshColor();
-//        mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                if (mCourseStateCallback.isExpired()) {
-//                    mCourseStateCallback.handlerCourseExpired();
-//                    return;
-//                }
-//                if ("flash".equals(mCourseCatalogue.getLessons().get(position).getType())) {
-//                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
-//                    return;
-//                }
-//
-//                if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType())
-//                        || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
-//                    return;
-//                }
-//                User user = getAppSettingProvider().getCurrentUser();
-//                if (user == null) {
-//                    CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
-//                    return;
-//                }
-//                //判断归属于班级的课程有没有加入相关班级
-//                if (((CourseActivity) getActivity()).getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)
-//                        && mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
-//                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_class_course_hint));
-//                    return;
-//                }
-//                if (mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
-//                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
-//                    return;
-//                }
-//                if ("flash".equals(mCourseCatalogue.getLessons().get(position).getType())) {
-//                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
-//                    return;
-//                }
-//                perpareStartLearnLesson(position);
-//            }
-//        });
+        mAdapter.setOnItemClickListener(new CourseCatalogueAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, CourseCatalogue.LessonsBean lessonsBean) {
+                if (mCourseStateCallback.isExpired()) {
+                    mCourseStateCallback.handlerCourseExpired();
+                    return;
+                }
+                if ("flash".equals(lessonsBean.getType())) {
+                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
+                    return;
+                }
+
+                if ("chapter".equals(lessonsBean.getType())
+                        || "unit".equals(lessonsBean.getType())) {
+                    return;
+                }
+                User user = getAppSettingProvider().getCurrentUser();
+                if (user == null) {
+                    CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
+                    return;
+                }
+                //判断归属于班级的课程有没有加入相关班级
+                if (((CourseStudyDetailActivity) getActivity()).getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)
+                        && mMemberStatus != ISMEMBER && "0".equals(lessonsBean.getFree())) {
+                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_class_course_hint));
+                    return;
+                }
+                if (mMemberStatus != ISMEMBER && "0".equals(lessonsBean.getFree())) {
+                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
+                    return;
+                }
+                if ("flash".equals(lessonsBean.getType())) {
+                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
+                    return;
+                }
+                perpareStartLearnLesson(lessonsBean);
+            }
+        });
+
         mLvCatalog.setOnTouchListener(new View.OnTouchListener() {
             private int downX;
             @Override
@@ -407,8 +410,8 @@ public class CourseCatalogFragment extends Fragment {
         });
     }
 
-    public void perpareStartLearnLesson(int position) {
-        CourseCatalogue.LessonsBean lessonsBean = mCourseCatalogue.getLessons().get(position);
+    public void perpareStartLearnLesson(CourseCatalogue.LessonsBean lessonsBean0) {
+        CourseCatalogue.LessonsBean lessonsBean = lessonsBean0;
         if ("self".equals(lessonsBean.getMediaSource())) {
             if ("audio".equals(lessonsBean.getType()) || "video".equals(lessonsBean.getType())) {
                 getFullLessonFromServer(lessonsBean);

@@ -28,7 +28,6 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.NewsCourseActivity;
@@ -54,6 +53,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class CourseStudyDetailActivity extends BaseStudyDetailActivity
         implements AppBarLayout.OnOffsetChangedListener, CourseStateCallback {
     public static final String SOURCE = "source";
+    public static final String IS_CHILD_COURSE = "child_course";
+    public static final String COURSE_ID = "course_id";
     public CourseDetail mCourseDetail;
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private int mCourseId;
@@ -63,6 +64,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
         initView();
     }
 
@@ -286,7 +288,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity
         Member member = mCourseDetail.getMember();
         if (member == null) {
             mIsMemder = false;
-            if (getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)) {
+            if (getIntent().getBooleanExtra(CourseStudyDetailActivity.IS_CHILD_COURSE, false)) {
                 mBottomLayout.setVisibility(View.GONE);
             } else {
                 mAddLayout.setVisibility(View.VISIBLE);

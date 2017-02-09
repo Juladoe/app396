@@ -19,7 +19,6 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
-import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReview;
 import com.edusoho.kuozhi.v3.model.bal.course.ClassroomReviewDetail;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
@@ -101,7 +100,7 @@ public class AllReviewActivity extends BaseNoTitleActivity {
                         }
                     });
         } else {
-            CourseDetailModel.getClassroomReviews(String.valueOf(mId), String.valueOf(10)
+            CourseDetailModel.getClassroomReviews(mId, String.valueOf(10)
                     , String.valueOf(0), new ResponseCallbackListener<ClassroomReviewDetail>() {
                         @Override
                         public void onSuccess(ClassroomReviewDetail data) {
@@ -144,7 +143,7 @@ public class AllReviewActivity extends BaseNoTitleActivity {
                         }
                     });
         } else {
-            CourseDetailModel.getClassroomReviews(String.valueOf(mId), String.valueOf(10)
+            CourseDetailModel.getClassroomReviews(mId, String.valueOf(10)
                     , String.valueOf(mPage*10), new ResponseCallbackListener<ClassroomReviewDetail>() {
                         @Override
                         public void onSuccess(ClassroomReviewDetail data) {

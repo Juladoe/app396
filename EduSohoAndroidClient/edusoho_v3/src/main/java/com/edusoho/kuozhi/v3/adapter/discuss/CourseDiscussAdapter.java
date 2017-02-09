@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
+import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -21,30 +21,48 @@ import java.util.List;
  * Created by DF on 2017/2/9.
  */
 
-public class CourseDiscussAdapter extends RecyclerView.Adapter<CourseDiscussAdapter.MyViewHolder> {
+public class CourseDiscussAdapter extends RecyclerView.Adapter<CourseDiscussAdapter.MyViewHolder> implements View.OnClickListener{
 
     public List<DiscussDetail.ResourcesBean> mList;
     private Context mContext;
+    private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
+
+    public interface OnRecyclerViewItemClickListener {
+        void onItemClick(View view, DiscussDetail.ResourcesBean resourcesBean);
+    }
 
     public CourseDiscussAdapter(List<DiscussDetail.ResourcesBean> mList, Context mContext) {
         this.mList = mList;
         this.mContext = mContext;
     }
 
+    public void setOnItemClickListener (OnRecyclerViewItemClickListener listener) {
+        this.onRecyclerViewItemClickListener = listener;
+    }
+
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_discuss_topic,parent,false);
+        rootView.setOnClickListener(this);
         return new MyViewHolder(rootView);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (onRecyclerViewItemClickListener != null) {
+            onRecyclerViewItemClickListener.onItemClick(v, ((DiscussDetail.ResourcesBean) v.getTag()));
+        }
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         DiscussDetail.ResourcesBean resourcesBean = mList.get(position);
+        holder.itemView.setTag(mList.get(position));
         ImageLoader.getInstance().displayImage(resourcesBean.getUser().getAvatar(), holder.ivUser, EdusohoApp.app.mAvatarOptions);
         holder.tvUserName.setText(resourcesBean.getUser().getNickname());
         holder.tvContent.setText(String.format("         %s", resourcesBean.getTitle()));
         holder.tvCommentNum.setText(resourcesBean.getPostNum());
-        holder.tvTime.setText(CommonUtil.conver2Date(CommonUtil.convertMilliSec(mContext instanceof CourseActivity ? resourcesBean.getLatestPostTime() : resourcesBean.getUpdatedTime()) + 28800000).substring(2, 16));
+        holder.tvTime.setText(CommonUtil.conver2Date(CommonUtil.convertMilliSec(mContext instanceof CourseStudyDetailActivity ? resourcesBean.getLatestPostTime() : resourcesBean.getUpdatedTime()) + 28800000).substring(2, 16));
         if ("question".equals(resourcesBean.getType())) {
             holder.tvKind.setText("问题");
             holder.tvKind.setTextColor(mContext.getResources().getColor(R.color.primary_color));
