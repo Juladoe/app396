@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
 import com.edusoho.kuozhi.v3.view.dialog.SureDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,9 +35,9 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteFragment.F
     private List<Course> courseList;
     private Context mContext;
 
-    public MyFavoriteAdapter(List<Course> courseList, Context context) {
-        this.courseList = courseList;
-        this.mContext = context;
+    public MyFavoriteAdapter(Context context) {
+        courseList = new ArrayList<>();
+        mContext = context;
     }
 
     public void addDatas(List<Course> list) {

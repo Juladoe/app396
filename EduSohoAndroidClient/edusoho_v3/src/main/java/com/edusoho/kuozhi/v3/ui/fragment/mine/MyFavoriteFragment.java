@@ -11,12 +11,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.MyFavoriteAdapter;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import cn.trinea.android.common.util.ToastUtils;
 
@@ -27,12 +23,12 @@ import cn.trinea.android.common.util.ToastUtils;
 public class MyFavoriteFragment extends BaseFragment {
 
     private RecyclerView rvFavorite;
-//    private View viewEmpty;
+    private View viewEmpty;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContainerView(R.layout.fragment_my_favorite);
+        setContainerView(R.layout.fragment_mine_tab);
     }
 
     @Override
@@ -44,14 +40,13 @@ public class MyFavoriteFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         rvFavorite = (RecyclerView) view.findViewById(R.id.rv_content);
-//        viewEmpty = view.findViewById(R.id.view_empty);
-//        viewEmpty.setVisibility(View.GONE);
+        viewEmpty = view.findViewById(R.id.view_empty);
+        viewEmpty.setVisibility(View.GONE);
         rvFavorite.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void initData() {
-        final List<Course> favoriteCourse = new ArrayList<>();
-        final MyFavoriteAdapter myFavoriteAdapter = new MyFavoriteAdapter(favoriteCourse, getActivity());
+        final MyFavoriteAdapter myFavoriteAdapter = new MyFavoriteAdapter(mContext);
         rvFavorite.setAdapter(myFavoriteAdapter);
         CourseDetailModel.getLiveCollect(100, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
@@ -61,6 +56,11 @@ public class MyFavoriteFragment extends BaseFragment {
                     @Override
                     public void onSuccess(LearningCourse courseList) {
                         myFavoriteAdapter.addDatas(courseList.data);
+                        if (myFavoriteAdapter.getItemCount() == 0) {
+                            setNoCourseDataVisible(true);
+                        } else {
+                            setNoCourseDataVisible(false);
+                        }
                     }
 
                     @Override
@@ -73,9 +73,19 @@ public class MyFavoriteFragment extends BaseFragment {
             @Override
             public void onFailure(String code, String message) {
                 ToastUtils.show(mContext, message);
-//                viewEmpty.setVisibility(View.VISIBLE);
+                setNoCourseDataVisible(true);
             }
         });
+    }
+
+    private void setNoCourseDataVisible(boolean visible) {
+        if (visible) {
+            viewEmpty.setVisibility(View.VISIBLE);
+            rvFavorite.setVisibility(View.GONE);
+        } else {
+            viewEmpty.setVisibility(View.GONE);
+            rvFavorite.setVisibility(View.VISIBLE);
+        }
     }
 
     public static class FavoriteViewHolder extends RecyclerView.ViewHolder {
