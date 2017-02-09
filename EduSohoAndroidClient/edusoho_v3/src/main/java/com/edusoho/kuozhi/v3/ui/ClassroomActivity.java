@@ -52,7 +52,6 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         }
         mMediaViewHeight = AppUtil.px2dp(this, (float) AppUtil.getWidthPx(this) / 4f * 3f);
         initView();
-        initEvent();
         initData();
     }
 
@@ -61,14 +60,14 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         super.initView();
         mCollect.setVisibility(View.GONE);
         mPlayButtonLayout.setVisibility(View.GONE);
-        mPlayLayout2.setVisibility(View.GONE);
+//        mPlayLayout2.setVisibility(View.GONE);
         mTvAdd.setText(R.string.txt_add_class);
         mTvCatalog.setText(R.string.class_catalog);
         mIvGrade.setVisibility(View.GONE);
-        mIvGrade2.setVisibility(View.GONE);
+//        mIvGrade2.setVisibility(View.GONE);
     }
 
-    @Override
+
     protected void initFragment(List<Fragment> fragments) {
         Fragment fragment = app.mEngine.runPluginWithFragment("ClassroomDetailFragment", this, new PluginFragmentCallback() {
             @Override
@@ -176,7 +175,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             mIsMemder = false;
             mAddLayout.setVisibility(View.VISIBLE);
             mIvGrade.setVisibility(View.GONE);
-            mIvGrade2.setVisibility(View.GONE);
+//            mIvGrade2.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
         } else {
