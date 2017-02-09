@@ -91,6 +91,7 @@
 
     <include
         android:id="@id/view_empty"
+
         layout="@layout/viewpager_empty" />
 
 </RelativeLayout>

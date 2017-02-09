@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.MyAskQuestionAdapter;
@@ -67,6 +68,7 @@ public class MyQuestionFragment extends BaseFragment {
         rlayoutFilterType.setOnClickListener(getShowTypeLayoutClickListener());
 
         llayoutFilterQuestionTypeList = view.findViewById(R.id.llayout_filter_question_type_list);
+        llayoutFilterQuestionTypeList.setVisibility(View.GONE);
         llayoutFilterQuestionTypeList.bringToFront();
 
         viewCoverScreen = view.findViewById(R.id.view_cover_screen);
@@ -93,7 +95,18 @@ public class MyQuestionFragment extends BaseFragment {
         mMyThreadProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
             @Override
             public void success(MyThreadEntity[] entities) {
-                askQuestionAdapter.addDatas(Arrays.asList(entities));
+                if (entities.length == 0) {
+                    setNoCourseDataVisible(true);
+                } else {
+                    setNoCourseDataVisible(false);
+                    askQuestionAdapter.addDatas(Arrays.asList(entities));
+                }
+
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError error) {
+                setNoCourseDataVisible(true);
             }
         });
     }
@@ -105,7 +118,18 @@ public class MyQuestionFragment extends BaseFragment {
         mMyThreadProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
             @Override
             public void success(MyThreadEntity[] entities) {
-                askQuestionAdapter.addDatas(Arrays.asList(entities));
+                MyThreadEntity[] a = new MyThreadEntity[]{};
+                if (a.length == 0) {
+                    setNoCourseDataVisible(true);
+                } else {
+                    setNoCourseDataVisible(false);
+                    askQuestionAdapter.addDatas(Arrays.asList(a));
+                }
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError error) {
+                setNoCourseDataVisible(true);
             }
         });
     }
@@ -118,6 +142,8 @@ public class MyQuestionFragment extends BaseFragment {
             viewEmpty.setVisibility(View.GONE);
             rvContent.setVisibility(View.VISIBLE);
         }
+        rlayoutFilterType.setVisibility(View.VISIBLE);
+        rlayoutFilterType.bringToFront();
     }
 
     private void switchFilterType(int type) {
