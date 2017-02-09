@@ -22,7 +22,7 @@ import cn.trinea.android.common.util.ToastUtils;
 
 public class MyFavoriteFragment extends BaseFragment {
 
-    private RecyclerView rvFavorite;
+    private RecyclerView rvContent;
     private View viewEmpty;
 
     @Override
@@ -39,15 +39,15 @@ public class MyFavoriteFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
-        rvFavorite = (RecyclerView) view.findViewById(R.id.rv_content);
+        rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
         viewEmpty = view.findViewById(R.id.view_empty);
         viewEmpty.setVisibility(View.GONE);
-        rvFavorite.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void initData() {
         final MyFavoriteAdapter myFavoriteAdapter = new MyFavoriteAdapter(mContext);
-        rvFavorite.setAdapter(myFavoriteAdapter);
+        rvContent.setAdapter(myFavoriteAdapter);
         CourseDetailModel.getLiveCollect(100, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(final LearningCourse liveCourseList) {
@@ -81,10 +81,10 @@ public class MyFavoriteFragment extends BaseFragment {
     private void setNoCourseDataVisible(boolean visible) {
         if (visible) {
             viewEmpty.setVisibility(View.VISIBLE);
-            rvFavorite.setVisibility(View.GONE);
+            rvContent.setVisibility(View.GONE);
         } else {
             viewEmpty.setVisibility(View.GONE);
-            rvFavorite.setVisibility(View.VISIBLE);
+            rvContent.setVisibility(View.VISIBLE);
         }
     }
 
