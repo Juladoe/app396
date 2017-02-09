@@ -9,9 +9,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,99 +26,80 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.adapter.test.FragmentViewPagerAdapter;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.util.WeakReferenceHandler;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
-import com.edusoho.kuozhi.v3.view.HeadStopScrollView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 
 /**
- * Created by Zhang on 2016/12/8.
+ * Created by DF on 2017/2/8.
  */
-public abstract class DetailActivity extends BaseNoTitleActivity
-        implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback{
+
+public abstract class
+BaseStudyDetailActivity extends AppCompatActivity implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback{
+
+    protected MenuPop mMenuPop;
+    protected int mRunStatus;
+    protected ViewPager mViewPager;
+    protected Toolbar mToolbar;
+    protected TextView mShareView;
+    protected AppBarLayout mAppBarLayout;
+    protected ViewGroup mParentLayout;
+    protected RelativeLayout mMediaLayout;
+    protected ImageView mIvBackGraound;
+    protected RelativeLayout mPlayButtonLayout;
+    protected TextView mTvLast;
+    protected ViewGroup mPlayLayout;
+    protected TextView mTvPlay;
+    protected ViewGroup mBottomLayout;
+    protected ViewGroup mConsult;
+    protected ViewGroup mCollect;
+    protected TextView mTvCollectTxt;
+    protected TextView mTvAdd;
+    protected TextView mTvInclass;
+    protected TabLayout mTabLayout;
+    protected SystemBarTintManager tintManager;
+    protected Queue<WidgetMessage> mUIMessageQueue;
+    protected View mMenu;
+    protected TextView mIvGrade;
+    protected View mLoadingView;
+    protected TextView mTvEditTopic;
+    protected LoadDialog mProcessDialog;
+    protected PopupWindow mPopupWindow;
+    protected TextView tvTopic;
+    protected TextView tvQuestion;
+    protected TextView mTvCollect;
+    protected ViewGroup mAddLayout;
 
     public static final int RESULT_REFRESH = 0x111;
     public static final int RESULT_LOGIN = 0x222;
-    protected HeadStopScrollView mParent;
-    protected RelativeLayout mHeadRlayout;
-    protected RelativeLayout mHeadRlayout2;
-    protected View mIvShare;
-    protected View mIvShare2;
-    protected View mIvGrade;
-    protected View mIvGrade2;
-    protected View mPlayLayout;
-    protected View mPlayLayout2;
-    protected View mBottomLayout;
-    protected View mAddLayout;
-    protected View mConsult;
-    protected View mCollect;
-    protected View mBack2;
-    protected View mBack;
-    protected View mTvInclass;
-    protected View mPlayLastLayout;
-    protected TextView mTvLastTitle;
-    protected TextView mTvCollect;
-    protected TextView mTvCollectTxt;
-    protected TextView mTvPlay;
-    protected TextView mTvPlay2;
-    protected TextView mTvAdd;
-    protected View mPlayButtonLayout;
-    protected RelativeLayout mMediaRlayout;
-    protected ImageView mIvMediaBackground;
-    protected ViewPager mContentVp;
-    protected RelativeLayout mIntroLayout;
-    protected View mIntro;
-    protected RelativeLayout mHourLayout;
-    protected View mHour;
-    protected RelativeLayout mReviewLayout;
-    protected View mReview;
-    protected View mMenu;
-    protected List<Fragment> mFragments = new ArrayList<>();
-    protected FragmentViewPagerAdapter mAdapter;
+    protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
     protected int mCheckNum = 0;
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
     protected String mTitle;
     private int mTitleBarHeight;
     public int mMediaViewHeight = 210;
-    private SystemBarTintManager tintManager;
-    protected View mLoadingView;
-    protected LoadDialog mProcessDialog;
-    protected MenuPop mMenuPop;
-    protected View mTabLayout;
-    protected TextView mTvCatalog;
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
-    protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
-    private EduSohoNewIconView mTvEditTopic;
-    private EduSohoNewIconView tvTopic;
-    private EduSohoNewIconView tvQuestion;
-    private PopupWindow mPopupWindow;
-    protected int mRunStatus;
-    private Queue<WidgetMessage> mUIMessageQueue;
+    private android.support.v7.app.ActionBar mActionbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_course);
+        setContentView(R.layout.activity_course_study_layout);
         mUIMessageQueue = new ArrayDeque<>();
-        app.registMsgSource(this);
+        EdusohoApp.app.registMsgSource(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window window = getWindow();
             window.setFlags(
@@ -129,18 +112,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    protected void saveMessage(WidgetMessage message) {
-        mUIMessageQueue.add(message);
-    }
-
-    protected void invokeUIMessage() {
-        WidgetMessage message;
-        while ((message = mUIMessageQueue.poll()) != null) {
-            invoke(message);
-        }
-    }
-
-
     public MenuPop getMenu() {
         if (isFinishing()) {
             return null;
@@ -149,68 +120,37 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         }
     }
 
-    @Override
     protected void initView() {
-        super.initView();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mTitleBarHeight = 25;
         }
-        mParent = (HeadStopScrollView) findViewById(R.id.scroll_parent);
-        mHeadRlayout = (RelativeLayout) findViewById(R.id.head_rlayout);
-        mHeadRlayout2 = (RelativeLayout) findViewById(R.id.head_rlayout2);
-        mMediaRlayout = (RelativeLayout) findViewById(R.id.media_rlayout);
-        mIvGrade = findViewById(R.id.iv_grade);
-        mIvGrade2 = findViewById(R.id.iv_grade2);
-        mIvShare = findViewById(R.id.iv_share);
-        mIvShare2 = findViewById(R.id.iv_share2);
-        mPlayLayout2 = findViewById(R.id.play_layout2);
-        mPlayLayout = findViewById(R.id.play_layout);
-        mPlayButtonLayout = findViewById(R.id.layout_play_button);
-        mContentVp = (ViewPager) findViewById(R.id.vp_content);
-        mIntroLayout = (RelativeLayout) findViewById(R.id.intro_rlayout);
-        mHourLayout = (RelativeLayout) findViewById(R.id.hour_rlayout);
-        mReviewLayout = (RelativeLayout) findViewById(R.id.review_rlayout);
-        mIntro = findViewById(R.id.intro);
-        mHour = findViewById(R.id.hour);
-        mReview = findViewById(R.id.review);
-        mBack2 = findViewById(R.id.back2);
-        mBack = findViewById(R.id.back);
-        mMenu = findViewById(R.id.layout_menu);
+        mTvEditTopic = (TextView) findViewById(R.id.tv_edit_topic);
+        mParentLayout = (ViewGroup) findViewById(R.id.parent_rlayout);
+        mMediaLayout = (RelativeLayout) findViewById(R.id.media_rlayout);
+        mIvBackGraound = (ImageView) findViewById(R.id.iv_media_background);
+        mPlayButtonLayout = (RelativeLayout) findViewById(R.id.layout_play_button);
+        mTvLast = (TextView) findViewById(R.id.tv_last_title);
+        mPlayLayout = (ViewGroup) findViewById(R.id.play_layout);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
-        mTvPlay2 = (TextView) findViewById(R.id.tv_play2);
-        mTvInclass = findViewById(R.id.tv_inclass);
-        mLoadingView = findViewById(R.id.ll_frame_load);
-        mTvCatalog = (TextView) findViewById(R.id.textView);
-        mPlayLastLayout = findViewById(R.id.layout_play_last);
-        mTvLastTitle = (TextView) findViewById(R.id.tv_last_title);
-        mIvMediaBackground = (ImageView) findViewById(R.id.iv_media_background);
-        mTabLayout = findViewById(R.id.tab_rlayout);
-        mTvEditTopic = (EduSohoNewIconView) findViewById(R.id.tv_edit_topic);
-
-        initFragment(mFragments);
-        mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
-        mContentVp.setOffscreenPageLimit(2);
-        mContentVp.setAdapter(mAdapter);
-        ViewGroup.LayoutParams params = mMediaRlayout.getLayoutParams();
-        if (params != null) {
-            params.height = AppUtil.dp2px(this, mMediaViewHeight);
-            mMediaRlayout.setLayoutParams(params);
-        }
-        mParent.setFirstViewHeight(AppUtil.dp2px(this,
-                mMediaViewHeight - 43 - mTitleBarHeight));
-        mBottomLayout = findViewById(R.id.bottom_layout);
-        mAddLayout = findViewById(R.id.bottom_add_layout);
-        mCollect = findViewById(R.id.collect_layout);
+        mBottomLayout = (ViewGroup) findViewById(R.id.bottom_layout);
+        mAddLayout = (ViewGroup) findViewById(R.id.bottom_add_layout);
+        mConsult = (ViewGroup) findViewById(R.id.consult_layout);
+        mCollect = (ViewGroup) findViewById(R.id.collect_layout);
         mTvCollect = (TextView) findViewById(R.id.tv_collect);
         mTvCollectTxt = (TextView) findViewById(R.id.tv_collect_txt);
-        mConsult = findViewById(R.id.consult_layout);
         mTvAdd = (TextView) findViewById(R.id.tv_add);
-        initViewPager();
-        ViewGroup.LayoutParams headParams =
-                mHeadRlayout2.getLayoutParams();
-        headParams.height = AppUtil.dp2px(this, 44 + mTitleBarHeight);
-        mHeadRlayout2.setLayoutParams(headParams);
-        mHeadRlayout2.setPadding(0, AppUtil.dp2px(this, mTitleBarHeight), 0, 0);
+        mTvInclass = (TextView) findViewById(R.id.tv_inclass);
+        mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+        mIvGrade = (TextView) findViewById(R.id.iv_grade);
+        mShareView = (TextView) findViewById(R.id.iv_share);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mMenu = findViewById(R.id.layout_menu);
+        mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager.setOffscreenPageLimit(3);
+        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mProcessDialog = new LoadDialog(this);
+        mLoadingView = findViewById(R.id.ll_frame_load);
+        setSupportActionBar(mToolbar);
         mMenuPop = new MenuPop(this, mMenu);
         mMenuPop.setOnBindViewVisibleChangeListener(
                 new MenuPop.OnBindViewVisibleChangeListener() {
@@ -218,48 +158,37 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                     public void onVisibleChange(boolean show) {
                         if (show) {
                             mIvGrade.setVisibility(View.GONE);
-                            mIvGrade2.setVisibility(View.GONE);
                         } else {
                             mIvGrade.setVisibility(View.VISIBLE);
-                            mIvGrade2.setVisibility(View.VISIBLE);
                         }
                     }
                 });
-        setLoadStatus(View.VISIBLE);
 
-
+//        setLoadStatus(View.VISIBLE);
+        initEvent();
     }
 
-    protected abstract void initFragment(List<Fragment> fragments);
-
-    protected void initEvent() {
-        mIntroLayout.setOnClickListener(this);
-        mHourLayout.setOnClickListener(this);
-        mReviewLayout.setOnClickListener(this);
-        mIvShare.setOnClickListener(this);
-        mIvShare2.setOnClickListener(this);
+    private void initEvent() {
+        mShareView.setOnClickListener(this);
         mIvGrade.setOnClickListener(this);
-        mIvGrade2.setOnClickListener(this);
-        mPlayLayout2.setOnClickListener(this);
         mPlayLayout.setOnClickListener(this);
         mCollect.setOnClickListener(this);
         mTvAdd.setOnClickListener(this);
         mConsult.setOnClickListener(this);
-        mBack2.setOnClickListener(this);
-        mBack.setOnClickListener(this);
         mTvInclass.setOnClickListener(this);
         mMenu.setOnClickListener(this);
         mTvEditTopic.setOnClickListener(this);
-        mContentVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
             }
 
             @Override
             public void onPageSelected(int position) {
-                checkTab(position);
-                setBottomLayoutVisible(position, mIsMemder);
-                showEditTopic(position);
+//                checkTab(position);
+//                setBottomLayoutVisible(position, mIsMemder);
+//                showEditTopic(position);
             }
 
             @Override
@@ -267,112 +196,32 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
             }
         });
-        mParent.setOnScrollChangeListener(new HeadStopScrollView.OnScrollChangeListener() {
-            @Override
-            public void onScrollChanged(int l, int t, int oldl, int oldt) {
-                if (!mParent.isCanScroll() && t != 0) {
-                    mHeadRlayout.setVisibility(View.GONE);
-                    mHeadRlayout2.setVisibility(View.VISIBLE);
-                    if (mIsMemder) {
-                        mIvGrade2.setVisibility(View.VISIBLE);
-                    } else {
-                        mIvGrade2.setVisibility(View.GONE);
-                    }
-                } else if (mParent.getScrollY() < mParent.getFirstViewHeight() - 2) {
-                    mHeadRlayout.setVisibility(View.VISIBLE);
-                    mHeadRlayout2.setVisibility(View.GONE);
-                }
-            }
-        });
-    }
-
-
-    protected void showProcessDialog() {
-        if (mProcessDialog == null) {
-            mProcessDialog = LoadDialog.create(this);
-        }
-        mProcessDialog.show();
-    }
-
-    protected void hideProcesDialog() {
-        if (mProcessDialog == null) {
-            return;
-        }
-        if (mProcessDialog.isShowing()) {
-            mProcessDialog.dismiss();
-        }
-    }
-
-    protected void setLoadStatus(int visibility) {
-        mLoadingView.setVisibility(visibility);
-    }
-
-    protected abstract void initData();
-
-    protected abstract void refreshView();
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mProcessDialog != null) {
-            if (mProcessDialog.isShowing()) {
-                mProcessDialog.dismiss();
-            }
-            mProcessDialog = null;
-        }
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.intro_rlayout) {
-            mContentVp.setCurrentItem(0);
-            setBottomLayoutVisible(0, mIsMemder);
-        } else if (v.getId() == R.id.hour_rlayout) {
-            mContentVp.setCurrentItem(1);
-            setBottomLayoutVisible(1, mIsMemder);
-        } else if (v.getId() == R.id.review_rlayout) {
-            if (TextUtils.isEmpty(app.token)) {
-                CommonUtil.shortCenterToast(this, "请先登录");
-            } else {
-                mContentVp.setCurrentItem(2);
-                setBottomLayoutVisible(2, mIsMemder);
-                ((CourseDiscussFragment) mFragments.get(2)).reFreshView(mIsMemder);
-            }
-        } else if (v.getId() == R.id.iv_grade ||
-                v.getId() == R.id.iv_grade2) {
-            grade();
-        } else if (v.getId() == R.id.iv_share ||
-                v.getId() == R.id.iv_share2) {
+        if (v.getId() == R.id.iv_share) {
             share();
+        } else if (v.getId() == R.id.iv_grade) {
+            grade();
+        } else if (v.getId() == R.id.layout_menu) {
+            mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
+        } else if (v.getId() == R.id.play_layout) {
+            courseStart();
         } else if (v.getId() == R.id.collect_layout) {
             collect();
         } else if (v.getId() == R.id.tv_add) {
             add();
-        } else if (v.getId() == R.id.play_layout2) {
-            courseStart();
-        } else if (v.getId() == R.id.play_layout) {
-            courseStart();
         } else if (v.getId() == R.id.consult_layout) {
             consult();
-        } else if (v.getId() == R.id.back2) {
-            finish();
-        } else if (v.getId() == R.id.back) {
-            if (mIsFullScreen) {
-                fullScreen();
-            } else {
-                finish();
-            }
-        } else if (v.getId() == R.id.layout_menu) {
-            mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
         } else if (v.getId() == R.id.tv_inclass) {
             goClass();
         } else if (v.getId() == R.id.tv_edit_topic) {
-                showDialog();
+            showEditPop();
         }
     }
 
-    protected void grade() {
-    }
+    protected void grade() {}
 
     protected abstract void goClass();
 
@@ -385,22 +234,30 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
     protected abstract void share();
 
-    private void checkTab(int num) {
-        mCheckNum = num;
-        mIntro.setVisibility(View.GONE);
-        mHour.setVisibility(View.GONE);
-        mReview.setVisibility(View.GONE);
-        switch (num) {
-            case 0:
-                mIntro.setVisibility(View.VISIBLE);
-                break;
-            case 1:
-                mHour.setVisibility(View.VISIBLE);
-                break;
-            case 2:
-                mReview.setVisibility(View.VISIBLE);
-                break;
-        }
+    protected abstract void refreshView();
+
+    protected abstract void initData();
+
+    protected void setLoadStatus(int visibility) {
+        mLoadingView.setVisibility(visibility);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mRunStatus = MSG_RESUME;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mRunStatus = MSG_PAUSE;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EdusohoApp.app.unRegistMsgSource(this);
     }
 
     @Override
@@ -420,10 +277,10 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                 initData();
                 break;
             case Const.COURSE_SHOW_BAR:
-                changeBar(true);
+//                changeBar(true);
                 break;
             case Const.COURSE_HIDE_BAR:
-                changeBar(false);
+//                changeBar(false);
                 break;
             case Const.SCREEN_LOCK:
                 screenLock();
@@ -476,19 +333,11 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         return super.onKeyDown(keyCode, event);
     }
 
-    protected void changeBar(boolean show) {
-        if (show) {
-            mHeadRlayout.setVisibility(View.VISIBLE);
-        } else {
-            mHeadRlayout.setVisibility(View.GONE);
-        }
-    }
-
     protected void courseStart() {
         if (!mIsFullScreen) {
-            mParent.smoothScrollTo(0, 0);
-            mParent.setCanScroll(false);
-            ViewGroup.LayoutParams params = mContentVp.getLayoutParams();
+//            mParent.smoothScrollTo(0, 0);
+//            mParent.setCanScroll(false);
+            ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
             if (params != null) {
                 int bottom = AppUtil.dp2px(this, 50 + mMediaViewHeight);
                 if (mBottomLayout.getVisibility() != View.GONE) {
@@ -498,49 +347,50 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                     bottom += AppUtil.dp2px(this, 25);
                 }
                 params.height = AppUtil.getHeightPx(this) - bottom;
-                mContentVp.setLayoutParams(params);
+                mViewPager.setLayoutParams(params);
             }
         }
         mPlayButtonLayout.setVisibility(View.GONE);
         mIsPlay = true;
-        mParent.setStay(true);
+//        mParent.setStay(true);
     }
 
     protected void initViewPager() {
-        ViewGroup.LayoutParams params = mContentVp.getLayoutParams();
+        ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
         if (params != null) {
             int bottom = AppUtil.dp2px(this, 50 + 43 + mTitleBarHeight);
             if (mBottomLayout.getVisibility() != View.GONE) {
                 bottom += AppUtil.dp2px(this, 50);
             }
             params.height = AppUtil.getHeightPx(this) - bottom;
-            mContentVp.setLayoutParams(params);
+            mViewPager.setLayoutParams(params);
         }
     }
 
     protected void coursePause() {
         if (!mIsFullScreen) {
-            mParent.setCanScroll(true);
+//            mParent.setCanScroll(true);
             initViewPager();
         }
         mIsPlay = false;
-        mParent.setStay(false);
+//        mParent.setStay(false);
         mPlayButtonLayout.setVisibility(View.VISIBLE);
-        changeBar(true);
+//        changeBar(true);
     }
 
     protected boolean mIsFullScreen = false;
 
     private void fullScreen() {
-        ViewGroup.LayoutParams params = mMediaRlayout.getLayoutParams();
+//        ViewGroup.LayoutParams params = mMediaRlayout.getLayoutParams();
+        ViewGroup.LayoutParams params = mMediaLayout.getLayoutParams();
         if (!mIsFullScreen) {
-            mParent.scrollTo(0, 0);
+//            mParent.scrollTo(0, 0);
             getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
             mIsFullScreen = true;
             params.height = AppUtil.getWidthPx(this);
             params.width = -1;
-            mMediaRlayout.setLayoutParams(params);
-            mParent.setScrollStay(true);
+            mMediaLayout.setLayoutParams(params);
+//            mParent.setScrollStay(true);
             mBottomLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -549,8 +399,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             mIsFullScreen = false;
             params.width = -1;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
-            mMediaRlayout.setLayoutParams(params);
-            mParent.setScrollStay(false);
+            mMediaLayout.setLayoutParams(params);
+//            mParent.setScrollStay(false);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
                 mBottomLayout.setVisibility(View.GONE);
@@ -578,11 +428,6 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_REFRESH) {
@@ -594,6 +439,21 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             setLoadStatus(View.GONE);
             hideProcesDialog();
             initData();
+        }
+    }
+
+    protected void showProcessDialog() {
+        if (mProcessDialog == null) {
+            mProcessDialog = LoadDialog.create(this);
+        }mProcessDialog.show();
+    }
+
+    protected void hideProcesDialog() {
+        if (mProcessDialog == null) {
+            return;
+        }
+        if (mProcessDialog.isShowing()) {
+            mProcessDialog.dismiss();
         }
     }
 
@@ -629,8 +489,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     public boolean handleMessage(Message msg) {
         switch (msg.what) {
             case TAB_PAGE:
-                if (mContentVp != null) {
-                    mContentVp.setCurrentItem(1);
+                if (mViewPager != null) {
+                    mViewPager.setCurrentItem(1);
                     setBottomLayoutVisible(1, mIsMemder);
                     tabLoadingGone();
                 }
@@ -654,7 +514,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
     private boolean isAdd;
 
-    private void showDialog() {
+    private void showEditPop() {
         if (!isAdd) {
             isAdd = true;
             View popupView = getLayoutInflater().inflate(R.layout.dialog_discuss_publish, null);
@@ -690,8 +550,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
     }
 
     public void startAnimation() {
-        ObjectAnimator animator = ObjectAnimator.ofFloat(tvQuestion, "translationY", 0, -AppUtil.dp2px(DetailActivity.this, 73));
-        ObjectAnimator animator1 = ObjectAnimator.ofFloat(tvTopic, "translationY", 0, -AppUtil.dp2px(DetailActivity.this, 146));
+        ObjectAnimator animator = ObjectAnimator.ofFloat(tvQuestion, "translationY", 0, -AppUtil.dp2px(BaseStudyDetailActivity.this, 73));
+        ObjectAnimator animator1 = ObjectAnimator.ofFloat(tvTopic, "translationY", 0, -AppUtil.dp2px(BaseStudyDetailActivity.this, 146));
         animator.setInterpolator(new LinearInterpolator());
         animator1.setInterpolator(new LinearInterpolator());
         animator.setDuration(150);
@@ -724,5 +584,21 @@ public abstract class DetailActivity extends BaseNoTitleActivity
             }
         }
 
+    }
+
+    @Override
+    public int getMode() {
+        return 0;
+    }
+
+    protected void saveMessage(WidgetMessage message) {
+        mUIMessageQueue.add(message);
+    }
+
+    protected void invokeUIMessage() {
+        WidgetMessage message;
+        while ((message = mUIMessageQueue.poll()) != null) {
+            invoke(message);
+        }
     }
 }

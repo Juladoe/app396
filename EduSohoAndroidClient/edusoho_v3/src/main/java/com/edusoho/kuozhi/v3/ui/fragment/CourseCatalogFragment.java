@@ -9,19 +9,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
@@ -38,19 +34,14 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
-import com.edusoho.kuozhi.v3.model.sys.MessageType;
-import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -69,12 +60,12 @@ public class CourseCatalogFragment extends Fragment {
     public int mMemberStatus;
     public int mCourseId;
     public CourseCatalogueAdapter mAdapter;
-    //private RelativeLayout mRlSpace;
+    private RelativeLayout mRlSpace;
     private RecyclerView mLvCatalog;
     private CourseCatalogue mCourseCatalogue;
-    //private TextView tvSpace;
-    //private View mLoadView;
-    //private View mLessonEmpytView;
+    private TextView tvSpace;
+    private View mLoadView;
+    private View mLessonEmpytView;
     private LoadDialog mProcessDialog;
     private List<CourseCatalogue.LessonsBean> lessonsBeanList;
     private CourseCatalogue.LessonsBean lessonsBean;
@@ -107,14 +98,14 @@ public class CourseCatalogFragment extends Fragment {
     }
 
     private void initView(View view) {
-        //mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
+        mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
         mLvCatalog = (RecyclerView) view.findViewById(R.id.lv_catalog);
-        //mLoadView = view.findViewById(R.id.ll_frame_load);
-        //tvSpace = (TextView) view.findViewById(R.id.tv_space);
-        //mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
-        //tvSpace.setOnClickListener(getCacheCourse());
-        //tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
-//        view.findViewById(R.id.tv_course).setOnClickListener(getCacheCourse());
+        mLoadView = view.findViewById(R.id.ll_frame_load);
+        tvSpace = (TextView) view.findViewById(R.id.tv_space);
+        mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
+        tvSpace.setOnClickListener(getCacheCourse());
+        tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
+        view.findViewById(R.id.tv_course).setOnClickListener(getCacheCourse());
         initCatalogue();
     }
 
@@ -131,14 +122,14 @@ public class CourseCatalogFragment extends Fragment {
     }
 
     protected void setLoadViewStatus(int visibility) {
-        /*if (mLoadView != null) {
+        if (mLoadView != null) {
             mLoadView.setVisibility(visibility);
-        }*/
+        }
     }
 
     private void initCatalogue() {
         User user = getAppSettingProvider().getCurrentUser();
-        //mRlSpace.setVisibility(mMemberStatus == ISMEMBER && user != null ? View.VISIBLE : View.GONE);
+        mRlSpace.setVisibility(mMemberStatus == ISMEMBER && user != null ? View.VISIBLE : View.GONE);
         setLoadViewStatus(View.VISIBLE);
         setLessonEmptyViewVisibility(View.GONE);
 
@@ -193,7 +184,7 @@ public class CourseCatalogFragment extends Fragment {
     }
 
     private void setLessonEmptyViewVisibility(int visibility) {
-        //mLessonEmpytView.setVisibility(visibility);
+        mLessonEmpytView.setVisibility(visibility);
     }
 
     private void updateLessonStatuses() {
@@ -217,44 +208,44 @@ public class CourseCatalogFragment extends Fragment {
         mLvCatalog.setLayoutManager(new LinearLayoutManager(getContext()));
         mLvCatalog.setAdapter(mAdapter);
         reFreshColor();
-        /*mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (mCourseStateCallback.isExpired()) {
-                    mCourseStateCallback.handlerCourseExpired();
-                    return;
-                }
-                if ("flash".equals(mCourseCatalogue.getLessons().get(position).getType())) {
-                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
-                    return;
-                }
-
-                if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType())
-                        || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
-                    return;
-                }
-                User user = getAppSettingProvider().getCurrentUser();
-                if (user == null) {
-                    CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
-                    return;
-                }
-                //判断归属于班级的课程有没有加入相关班级
-                if (((CourseActivity) getActivity()).getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)
-                        && mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
-                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_class_course_hint));
-                    return;
-                }
-                if (mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
-                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
-                    return;
-                }
-                if ("flash".equals(mCourseCatalogue.getLessons().get(position).getType())) {
-                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
-                    return;
-                }
-                perpareStartLearnLesson(position);
-            }
-        });*/
+//        mLvCatalog.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                if (mCourseStateCallback.isExpired()) {
+//                    mCourseStateCallback.handlerCourseExpired();
+//                    return;
+//                }
+//                if ("flash".equals(mCourseCatalogue.getLessons().get(position).getType())) {
+//                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
+//                    return;
+//                }
+//
+//                if ("chapter".equals(mCourseCatalogue.getLessons().get(position).getType())
+//                        || "unit".equals(mCourseCatalogue.getLessons().get(position).getType())) {
+//                    return;
+//                }
+//                User user = getAppSettingProvider().getCurrentUser();
+//                if (user == null) {
+//                    CoreEngine.create(getContext()).runNormalPlugin("LoginActivity", getContext(), null);
+//                    return;
+//                }
+//                //判断归属于班级的课程有没有加入相关班级
+//                if (((CourseActivity) getActivity()).getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)
+//                        && mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
+//                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_class_course_hint));
+//                    return;
+//                }
+//                if (mMemberStatus != ISMEMBER && "0".equals(mCourseCatalogue.getLessons().get(position).getFree())) {
+//                    CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
+//                    return;
+//                }
+//                if ("flash".equals(mCourseCatalogue.getLessons().get(position).getType())) {
+//                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
+//                    return;
+//                }
+//                perpareStartLearnLesson(position);
+//            }
+//        });
         mLvCatalog.setOnTouchListener(new View.OnTouchListener() {
             private int downX;
             @Override
