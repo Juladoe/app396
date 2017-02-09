@@ -87,7 +87,6 @@ public class CourseCatalogFragment extends Fragment {
         if (parent != null) {
             parent.removeView(contentView);
         }
-
         return contentView;
     }
 

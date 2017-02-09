@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
@@ -8,9 +9,9 @@ import android.widget.ListView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -44,19 +45,19 @@ public class RefreshListView extends ListView{
         addFooterView(mFooterView);
     }
 
-    public void initWithContext(final BaseActivity baseActivity, final CourseDiscussFragment discussFragment, final String mCouseId) {
+    public void initWithContext(final Activity baseActivity, final CourseDiscussFragment discussFragment, final int mCouseId) {
         mFooterView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (isRequest) {
                     discussFragment.mLoadView.setVisibility(VISIBLE);
-                    RequestUrl requestUrl = baseActivity.app.bindNewUrl(String.format(Const.LESSON_DISCUSS, mCouseId, mCouseId, start + ""), true);
-                    baseActivity.app.getUrl(requestUrl, new Response.Listener<String>() {
+                    RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(String.format(Const.LESSON_DISCUSS, mCouseId, mCouseId, start + ""), true);
+                    EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             start += 20;
                             hideLoadView(discussFragment);
-                            DiscussDetail moreDiscuss = baseActivity.parseJsonValue(response, new TypeToken<DiscussDetail>() {});
+                            DiscussDetail moreDiscuss = EdusohoApp.app.parseJsonValue(response, new TypeToken<DiscussDetail>() {});
                             if (moreDiscuss.getResources() != null) {
                                 discussFragment.discussDetail.getResources().addAll(moreDiscuss.getResources());
                                 discussFragment.catalogueAdapter.notifyDataSetChanged();
