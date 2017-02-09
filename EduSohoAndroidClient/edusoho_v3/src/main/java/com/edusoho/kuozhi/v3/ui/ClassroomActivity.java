@@ -313,5 +313,11 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void showThreadCreateView(String type) {
+        Bundle bundle = new Bundle();
+        bundle.putInt(ThreadCreateActivity.TARGET_ID, AppUtil.parseInt(mClassroomId));
+        bundle.putString(ThreadCreateActivity.TARGET_TYPE, "");
+        bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
+        bundle.putString(ThreadCreateActivity.THREAD_TYPE, "course");
+        app.mEngine.runNormalPluginWithBundle("ThreadCreateActivity", this, bundle);
     }
 }

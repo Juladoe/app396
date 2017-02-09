@@ -170,6 +170,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
 
         initFragment(mFragments);
         mAdapter = new FragmentViewPagerAdapter(getSupportFragmentManager(), mFragments);
+        mContentVp.setOffscreenPageLimit(2);
         mContentVp.setAdapter(mAdapter);
         ViewGroup.LayoutParams params = mMediaRlayout.getLayoutParams();
         if (params != null) {
@@ -206,6 +207,8 @@ public abstract class DetailActivity extends BaseNoTitleActivity
                     }
                 });
         setLoadStatus(View.VISIBLE);
+
+
     }
 
     protected abstract void initFragment(List<Fragment> fragments);
