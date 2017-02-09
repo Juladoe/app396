@@ -245,11 +245,10 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     /**
      * 处理目录中的章ChapterHolder
      */
-    public static class ChapterHolder extends RecyclerView.ViewHolder {
+    public static class ChapterHolder{
         public TextView chapterTitle;
 
         public ChapterHolder(View itemView) {
-            super(itemView);
             chapterTitle = (TextView) itemView.findViewById(R.id.chapter_title);
         }
     }
@@ -257,11 +256,10 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     /**
      * 处理目录中的节SectionHolder
      */
-    public static class SectionHolder extends RecyclerView.ViewHolder {
+    public static class SectionHolder{
         public TextView sectionTitle;
 
         public SectionHolder(View itemView) {
-            super(itemView);
             sectionTitle = (TextView) itemView.findViewById(R.id.section_title);
         }
     }
@@ -269,7 +267,7 @@ public class CourseCatalogueAdapter extends BaseAdapter {
     /**
      * 处理目录中的课时HourHolder
      */
-    public static class LessonHolder extends RecyclerView.ViewHolder {
+    public static class LessonHolder{
         public ImageView lessonState;
         public EduSohoNewIconView lessonKind;
         public TextView lessonTitle;
@@ -280,7 +278,6 @@ public class CourseCatalogueAdapter extends BaseAdapter {
         public View lessonDown;
 
         public LessonHolder(View itemView) {
-            super(itemView);
             lessonState = (ImageView) itemView.findViewById(R.id.lesson_state);
             lessonKind = (EduSohoNewIconView) itemView.findViewById(R.id.lesson_kind);
             lessonTitle = (TextView) itemView.findViewById(R.id.lesson_title);

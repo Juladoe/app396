@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -39,7 +40,6 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
-import com.edusoho.kuozhi.v3.view.FixCourseListView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -62,7 +62,7 @@ public class CourseCatalogFragment extends BaseFragment {
     public String mCourseId;
     public CourseCatalogueAdapter mAdapter;
     private RelativeLayout mRlSpace;
-    private FixCourseListView mLvCatalog;
+    private ListView mLvCatalog;
     private CourseCatalogue mCourseCatalogue;
     private TextView tvSpace;
     private View mLoadView;
@@ -91,7 +91,7 @@ public class CourseCatalogFragment extends BaseFragment {
     private void init(View view) {
         super.initView(view);
         mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
-        mLvCatalog = (FixCourseListView) view.findViewById(R.id.lv_catalog);
+        mLvCatalog = (ListView) view.findViewById(R.id.lv_catalog);
         mLoadView = view.findViewById(R.id.ll_frame_load);
         tvSpace = (TextView) view.findViewById(R.id.tv_space);
         mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
