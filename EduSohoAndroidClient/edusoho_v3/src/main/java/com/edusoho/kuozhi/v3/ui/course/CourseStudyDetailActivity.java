@@ -66,6 +66,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity
         super.onCreate(savedInstanceState);
         mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
         initView();
+        initData();
     }
 
     @Override
@@ -230,11 +231,11 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity
                     public void onSuccess(CourseDetail data) {
                         mCourseDetail = data;
                         if (mCourseDetail.getMember() == null) {
-                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
+//                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
                             ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
                             setLoadStatus(View.GONE);
                         } else {
-                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(true);
+//                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(true);
                             ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(true);
                             tabPage(300);
                         }
@@ -332,6 +333,39 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity
         EdusohoApp.app.stopPlayCacheServer();
     }
 
+    @Override
+    protected void courseHastrial(String state, LessonItem lessonItem) {
+        mContinueLessonItem = lessonItem;
+        mPlayLastLayout.setVisibility(View.GONE);
+        mPlayButtonLayout.setVisibility(View.VISIBLE);
+        if (mCourseDetail != null && mCourseDetail.getMember() != null) {
+            if ("1".equals(mCourseDetail.getMember().isLearned)) {
+                mTvPlay.setText(R.string.txt_study_finish);
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                mPlayLayout.setEnabled(false);
+                return;
+            }
+        }
+        switch (state) {
+            case Const.COURSE_CHANGE_STATE_NONE:
+                mPlayLayout.setEnabled(true);
+                if (mCourseDetail == null || mCourseDetail.getMember() == null) {
+                    mTvPlay.setText(R.string.txt_study_try);
+                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
+                } else {
+                    mTvPlay.setText(R.string.txt_study_start);
+                    mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                }
+                break;
+            case Const.COURSE_CHANGE_STATE_STARTED:
+                mTvPlay.setText(R.string.txt_study_continue);
+                mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
+                mPlayLayout.setEnabled(true);
+                mPlayLastLayout.setVisibility(View.VISIBLE);
+                mTvLast.setText(String.valueOf(lessonItem == null ? null : lessonItem.title));
+                break;
+        }
+    }
 
     private void removePlayFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();

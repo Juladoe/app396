@@ -16,9 +16,8 @@ public class CatalogueAdapter extends RecyclerView.Adapter {
     public ArrayList<View> footViews=new ArrayList<>();
     public RecyclerView.Adapter adapter;
 
-    public CatalogueAdapter(RecyclerView.Adapter adapter, ArrayList<View> headerViews, ArrayList footViews){
+    public CatalogueAdapter(RecyclerView.Adapter adapter, ArrayList footViews){
         this.adapter=adapter;
-        this.headerViews=headerViews;
         this.footViews=footViews;
     }
 

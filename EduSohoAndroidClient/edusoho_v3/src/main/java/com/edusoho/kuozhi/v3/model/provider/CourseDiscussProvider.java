@@ -18,8 +18,8 @@ public class CourseDiscussProvider extends ModelProvider {
         super(context);
     }
 
-    public ProviderListener<DiscussDetail> getCourseDiscuss(boolean isCourse, int mCourseId) {
-        RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(String.format(isCourse ? Const.LESSON_DISCUSS : Const.CLASS_DISCUSS, mCourseId, mCourseId,0), true);
+    public ProviderListener<DiscussDetail> getCourseDiscuss(boolean isCourse, int mCourseId, int start) {
+        RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(String.format(isCourse ? Const.LESSON_DISCUSS : Const.CLASS_DISCUSS, mCourseId, mCourseId, start), true);
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<DiscussDetail>(){});
         return requestOption.build();

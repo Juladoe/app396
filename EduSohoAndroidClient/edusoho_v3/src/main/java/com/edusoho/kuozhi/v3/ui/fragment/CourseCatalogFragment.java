@@ -85,17 +85,12 @@ public class CourseCatalogFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.fragment_course_catalog, null);
+        initView(contentView);
         ViewGroup parent = (ViewGroup) contentView.getParent();
         if (parent != null) {
             parent.removeView(contentView);
         }
         return contentView;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        initView(view);
     }
 
     private void initView(View view) {
@@ -483,7 +478,7 @@ public class CourseCatalogFragment extends Fragment {
     public void reFreshView(boolean mIsJoin) {
         mMemberStatus = mIsJoin ? ISMEMBER : VISITOR;
         isJoin = mIsJoin;
-        initCatalogue();
+//        initCatalogue();
     }
 
     public View.OnClickListener getCacheCourse() {

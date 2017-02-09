@@ -80,6 +80,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
     protected TextView tvQuestion;
     protected TextView mTvCollect;
     protected ViewGroup mAddLayout;
+    protected ViewGroup mPlayLastLayout;
 
     public static final int RESULT_REFRESH = 0x111;
     public static final int RESULT_LOGIN = 0x222;
@@ -92,7 +93,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
     public int mMediaViewHeight = 210;
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
-    private android.support.v7.app.ActionBar mActionbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,6 +129,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
         mMediaLayout = (RelativeLayout) findViewById(R.id.media_rlayout);
         mIvBackGraound = (ImageView) findViewById(R.id.iv_media_background);
         mPlayButtonLayout = (RelativeLayout) findViewById(R.id.layout_play_button);
+        mPlayLastLayout = (ViewGroup) findViewById(R.id.layout_play_last);
         mTvLast = (TextView) findViewById(R.id.tv_last_title);
         mPlayLayout = (ViewGroup) findViewById(R.id.play_layout);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
@@ -164,7 +165,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
                     }
                 });
 
-//        setLoadStatus(View.VISIBLE);
+        setLoadStatus(View.VISIBLE);
         initEvent();
     }
 
