@@ -282,10 +282,12 @@ public class CourseDetailModel implements Serializable {
                 LearningCourse apiResponse = ModelDecor.getInstance().
                         decor(response, new TypeToken<LearningCourse>() {
                         });
-                if (apiResponse.data != null) {
-                    callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse.error != null) {
-                    callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                if (apiResponse != null) {
+                    if (apiResponse.data != null) {
+                        callbackListener.onSuccess(apiResponse);
+                    } else if (apiResponse.error != null) {
+                        callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                    }
                 }
             }
         }, new Response.ErrorListener() {
@@ -306,10 +308,12 @@ public class CourseDetailModel implements Serializable {
                 LearningCourse apiResponse = ModelDecor.getInstance().
                         decor(response, new TypeToken<LearningCourse>() {
                         });
-                if (apiResponse.data != null) {
-                    callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse.error != null) {
-                    callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                if (apiResponse != null) {
+                    if (apiResponse.data != null) {
+                        callbackListener.onSuccess(apiResponse);
+                    } else if (apiResponse.error != null) {
+                        callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                    }
                 }
             }
         }, new Response.ErrorListener() {
