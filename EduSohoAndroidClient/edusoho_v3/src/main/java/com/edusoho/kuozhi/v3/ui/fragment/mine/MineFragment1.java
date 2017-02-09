@@ -28,9 +28,11 @@ public class MineFragment1 extends BaseFragment {
     private TextView tvUserType;
     private TabLayout tbTitles;
     private ViewPager vpContent;
-    private View rlayoutFilterName;
+    //    private View rlayoutFilterName;
+//    private View rlayoutFilterType;
+//    private View llayoutFilterQuestionTypeList;
     private String[] mTabTitles = {"学习", "缓存", "收藏", "问答"};
-    private String[] mFragmentNames = {"MyStudyFragment", "MyStudyFragment", "MyFavoriteFragment", "MyStudyFragment"};
+    private String[] mFragmentNames = {"MyStudyFragment", "MyStudyFragment", "MyFavoriteFragment", "MyQuestionFragment"};
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,7 +57,12 @@ public class MineFragment1 extends BaseFragment {
         vpContent.setOffscreenPageLimit(3);
         vpContent.addOnPageChangeListener(getTabLayoutPageChangeListener());
 
-        rlayoutFilterName = view.findViewById(R.id.rlayout_filter_name);
+//        rlayoutFilterName = view.findViewById(R.id.rlayout_filter_name);
+//
+//        rlayoutFilterType = view.findViewById(R.id.rlayout_filter_type);
+//        rlayoutFilterType.setOnClickListener(getFilterTypeClickListener());
+//
+//        llayoutFilterQuestionTypeList = view.findViewById(R.id.llayout_filter_question_type_list);
     }
 
     private void initUserInfo() {
@@ -74,16 +81,16 @@ public class MineFragment1 extends BaseFragment {
         return new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (position == 0 || position == 3) {
-                    setFilterLayoutVisible(true);
-                } else {
-                    setFilterLayoutVisible(false);
-                }
+
             }
 
             @Override
             public void onPageSelected(int position) {
-
+//                if (position == 0 || position == 2) {
+//                    setFilterLayoutVisible(true);
+//                } else {
+//                    setFilterLayoutVisible(false);
+//                }
             }
 
             @Override
@@ -93,9 +100,22 @@ public class MineFragment1 extends BaseFragment {
         };
     }
 
-    private void setFilterLayoutVisible(boolean visible) {
-        rlayoutFilterName.setVisibility(visible ? View.VISIBLE : View.GONE);
-    }
+//    private View.OnClickListener getFilterTypeClickListener() {
+//        return new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (llayoutFilterQuestionTypeList.getVisibility() == View.VISIBLE) {
+//                    llayoutFilterQuestionTypeList.setVisibility(View.GONE);
+//                } else {
+//                    llayoutFilterQuestionTypeList.setVisibility(View.VISIBLE);
+//                }
+//            }
+//        };
+//    }
+//
+//    private void setFilterLayoutVisible(boolean visible) {
+//        rlayoutFilterName.setVisibility(visible ? View.VISIBLE : View.GONE);
+//    }
 
     private class MinePagerAdapter extends FragmentPagerAdapter {
 

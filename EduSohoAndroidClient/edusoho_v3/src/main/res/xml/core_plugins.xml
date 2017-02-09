@@ -171,6 +171,11 @@
         version="1.0" />
 
     <plugin
+        name="MyQuestionFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyQuestionFragment"
+        version="1.0" />
+
+    <plugin
         name="MyFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.MyFragment"
         version="1.0" />
