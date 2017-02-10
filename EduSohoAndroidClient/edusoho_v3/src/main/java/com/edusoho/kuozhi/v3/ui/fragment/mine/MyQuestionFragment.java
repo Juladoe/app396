@@ -170,6 +170,7 @@ public class MyQuestionFragment extends BaseFragment {
                     switchFilterType(ANSWER);
                 }
                 llayoutFilterQuestionTypeList.setVisibility(View.GONE);
+                esivFilterArrow.setText(getString(R.string.new_font_unfold));
             }
         };
     }
