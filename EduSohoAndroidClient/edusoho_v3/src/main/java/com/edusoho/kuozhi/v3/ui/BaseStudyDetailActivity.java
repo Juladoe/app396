@@ -12,6 +12,7 @@ import android.os.Message;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -27,6 +28,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.adapter.SectionsPagerAdapter;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
@@ -53,7 +55,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
     protected ViewPager mViewPager;
     protected Toolbar mToolbar;
     protected TextView mShareView;
-    protected AppBarLayout mAppBarLayout;
+    public AppBarLayout mAppBarLayout;
     protected ViewGroup mParentLayout;
     protected RelativeLayout mMediaLayout;
     protected ImageView mIvBackGraound;
@@ -81,7 +83,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
     protected TextView mTvCollect;
     protected ViewGroup mAddLayout;
     protected ViewGroup mPlayLastLayout;
-
+    protected SectionsPagerAdapter mSectionsPagerAdapter;
     public static final int RESULT_REFRESH = 0x111;
     public static final int RESULT_LOGIN = 0x222;
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
@@ -93,6 +95,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
     public int mMediaViewHeight = 210;
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
+    public SwipeRefreshLayout mSwipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +154,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mProcessDialog = new LoadDialog(this);
         mLoadingView = findViewById(R.id.ll_frame_load);
+        mSwipe = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         setSupportActionBar(mToolbar);
         mMenuPop = new MenuPop(this, mMenu);
         mMenuPop.setOnBindViewVisibleChangeListener(
@@ -195,6 +199,16 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
             @Override
             public void onPageScrollStateChanged(int state) {
 
+            }
+        });
+        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            @Override
+            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+                if (i >= 0) {
+//                    mSwipe.setEnabled(true);
+                } else {
+//                    mSwipe.setEnabled(false);
+                }
             }
         });
     }

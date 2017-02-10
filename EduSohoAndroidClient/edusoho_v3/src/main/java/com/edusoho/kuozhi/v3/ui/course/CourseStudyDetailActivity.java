@@ -50,13 +50,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Created by suju on 17/2/7.
  */
 
-public class CourseStudyDetailActivity extends BaseStudyDetailActivity
-        implements AppBarLayout.OnOffsetChangedListener, CourseStateCallback {
+public class CourseStudyDetailActivity extends BaseStudyDetailActivity implements AppBarLayout.OnOffsetChangedListener, CourseStateCallback {
     public static final String SOURCE = "source";
     public static final String IS_CHILD_COURSE = "child_course";
     public static final String COURSE_ID = "course_id";
     public CourseDetail mCourseDetail;
-    private SectionsPagerAdapter mSectionsPagerAdapter;
     private int mCourseId;
     private boolean mIsFavorite = false;
     private LessonItem mContinueLessonItem;
@@ -84,6 +82,43 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity
         mTvAdd.setText(R.string.txt_add_course);
     }
 
+    @Override
+    protected void initData() {
+        if (mCourseId == 0) {
+            CommonUtil.shortToast(getBaseContext(), "课程不存在");
+            finish();
+            return;
+        }
+        CourseDetailModel.getCourseDetail(mCourseId,
+                new ResponseCallbackListener<CourseDetail>() {
+                    @Override
+                    public void onSuccess(CourseDetail data) {
+                        mCourseDetail = data;
+                        if (mCourseDetail.getMember() == null) {
+                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
+                            ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
+                            setLoadStatus(View.GONE);
+                        } else {
+                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(true);
+                            ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(true);
+                            tabPage(300);
+                        }
+                        mTitle = mCourseDetail.getCourse().title;
+                        refreshView();
+                        if (data != null && data.getCourse() != null) {
+                            saveCourseToCache(data.getCourse());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(String code, String message) {
+                        if ("课程不存在".equals(message)) {
+                            CommonUtil.shortToast(CourseStudyDetailActivity.this, "课程不存在");
+                            finish();
+                        }
+                    }
+                });
+    }
     @Override
     protected void goClass() {
         EdusohoApp.app.mEngine.runNormalPlugin("NewsCourseActivity", EdusohoApp.app.mContext, new PluginRunCallback() {
@@ -218,43 +253,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity
         });
     }
 
-    @Override
-    protected void initData() {
-        if (mCourseId == 0) {
-            CommonUtil.shortToast(getBaseContext(), "课程不存在");
-            finish();
-            return;
-        }
-        CourseDetailModel.getCourseDetail(mCourseId,
-                new ResponseCallbackListener<CourseDetail>() {
-                    @Override
-                    public void onSuccess(CourseDetail data) {
-                        mCourseDetail = data;
-                        if (mCourseDetail.getMember() == null) {
-//                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
-                            ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
-                            setLoadStatus(View.GONE);
-                        } else {
-//                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(true);
-                            ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(true);
-                            tabPage(300);
-                        }
-                        mTitle = mCourseDetail.getCourse().title;
-                        refreshView();
-                        if (data != null && data.getCourse() != null) {
-                            saveCourseToCache(data.getCourse());
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(String code, String message) {
-                        if ("课程不存在".equals(message)) {
-                            CommonUtil.shortToast(CourseStudyDetailActivity.this, "课程不存在");
-                            finish();
-                        }
-                    }
-                });
-    }
 
     private void saveCourseToCache(Course course) {
         course.setSourceName(getIntent().getStringExtra(SOURCE));
@@ -497,7 +495,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity
     }
 
     @Override
-    public void handlerCourseExpired() {
+    public void handlerCourseExpired() {}
 
-    }
 }
