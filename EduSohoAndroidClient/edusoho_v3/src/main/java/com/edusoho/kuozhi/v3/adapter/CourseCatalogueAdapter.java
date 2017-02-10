@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -26,18 +27,16 @@ import java.util.Map;
 public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogueAdapter.ViewHolder> implements View.OnClickListener {
 
     public int mSelect = -1;
-    public static CourseCatalogue courseCatalogue;
+    private static CourseCatalogue courseCatalogue;
     public static Context mContext;
-    public static boolean isJoin;
-    public String chapterTitle;
-    public String unitTitle;
-    public static final int TYPE_CHAPTER = 0;
-    public static final int TYPE_SECTION = 1;
-    public static final int TYPE_LESSON = 2;
+    private static boolean isJoin;
+    private String chapterTitle;
+    private String unitTitle;
+    private static final int TYPE_CHAPTER = 0;
+    private static final int TYPE_SECTION = 1;
+    private static final int TYPE_LESSON = 2;
     private final LayoutInflater mInflater;
-    private CourseCatalogue.LessonsBean lessonsBean;
     private static Map<String, String> learnStatuses;
-    private RelativeLayout.LayoutParams params;
 
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
 
@@ -47,10 +46,10 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
 
     public CourseCatalogueAdapter(Context context, CourseCatalogue courseCatalogue, boolean isJoin, String chapterTitle, String unitTitle) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.courseCatalogue = courseCatalogue;
-        this.learnStatuses = courseCatalogue.getLearnStatuses();
-        this.mContext = context;
-        this.isJoin = isJoin;
+        CourseCatalogueAdapter.courseCatalogue = courseCatalogue;
+        CourseCatalogueAdapter.learnStatuses = courseCatalogue.getLearnStatuses();
+        CourseCatalogueAdapter.mContext = context;
+        CourseCatalogueAdapter.isJoin = isJoin;
         this.chapterTitle = chapterTitle;
         this.unitTitle = unitTitle;
     }
@@ -61,7 +60,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.render(courseCatalogue.getLessons().get(position), chapterTitle, position);
+        holder.render(courseCatalogue.getLessons().get(position), chapterTitle, unitTitle, position);
         holder.itemView.setTag(courseCatalogue.getLessons().get(position));
     }
 
@@ -73,7 +72,6 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
             case TYPE_SECTION:
                 return new UnitViewHolder(mInflater.inflate(R.layout.item_section_catalog, null));
         }
-
         View view = mInflater.inflate(R.layout.item_lesson_catalog, null);
         view.setOnClickListener(this);
         return new LessonViewHolder(view);
@@ -102,10 +100,10 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
             super(view);
         }
 
-        protected abstract void render(CourseCatalogue.LessonsBean lesson, String customTitle, int position);
+        protected abstract void render(CourseCatalogue.LessonsBean lesson, String customChapter, String customUnit, int position);
     }
 
-    protected static class LessonViewHolder extends ViewHolder {
+    private static class LessonViewHolder extends ViewHolder {
 
         private ImageView lessonState;
         private EduSohoNewIconView lessonKind;
@@ -130,22 +128,25 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         }
 
         @Override
-        protected void render(CourseCatalogue.LessonsBean lesson, String customTitle,int position) {
+        protected void render(CourseCatalogue.LessonsBean lesson, String customChapter, String customUnit,int position) {
             lessonTitle.setText(lesson.getTitle());
             initView(position);
         }
 
         private void initView(int position) {
-
+            lessonsBean = courseCatalogue.getLessons().get(position);
             if (!isJoin) {
                 lessonState.setVisibility(View.GONE);
                 lessonUp.setVisibility(View.GONE);
                 lessonDown.setVisibility(View.GONE);
             } else {
                 //判断课时学习状态
-                decideStatu(position);
+                decideStatu();
+                decideKind();
+                lessonUp.setVisibility(View.VISIBLE);
+                lessonDown.setVisibility(View.VISIBLE);
                 if (position != 0) {
-                    if (getItemViewType() != TYPE_LESSON) {
+                    if (!"lesson".equals(courseCatalogue.getLessons().get(position - 1).getItemType())) {
                         lessonUp.setVisibility(View.INVISIBLE);
                     }
                     if (position == courseCatalogue.getLessons().size() - 1) {
@@ -153,7 +154,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
                     }
                 }
                 if (position < courseCatalogue.getLessons().size() - 1) {
-                    if (getItemViewType() != TYPE_LESSON) {
+                    if (!"lesson".equals(courseCatalogue.getLessons().get(position + 1).getItemType())) {
                         lessonDown.setVisibility(View.INVISIBLE);
                     }
                     if (position == 0) {
@@ -165,7 +166,6 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
                     lessonDown.setVisibility(View.INVISIBLE);
                 }
             }
-            lessonsBean = courseCatalogue.getLessons().get(position);
             lessonTime.setText(lessonsBean.getLength());
             lessonTitle.setText(String.format("%s、%s", lessonsBean.getNumber(), lessonsBean.getTitle()));
             if ("1".equals(lessonsBean.getFree()) && !isJoin) {
@@ -199,21 +199,21 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
                 if (time > Long.parseLong(end)) {
                     if ("ungenerated".equals(lessonsBean.getReplayStatus())) {
                         liveState.setText(R.string.live_state_finish);
-                        liveState.setBackground(mContext.getResources().getDrawable(R.drawable.live_state_finish));
+                        liveState.setBackground(ContextCompat.getDrawable(mContext, R.drawable.live_state_finish));
                     } else {
                         liveState.setText(R.string.live_state_replay);
                         liveState.setTextColor(mContext.getResources().getColor(R.color.secondary2_color));
-                        liveState.setBackground(mContext.getResources().getDrawable(R.drawable.live_state_replay));
+                        liveState.setBackground(ContextCompat.getDrawable(mContext, R.drawable.live_state_replay));
                     }
                 } else {
                     liveState.setText(R.string.live_state_ing);
                     liveState.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-                    liveState.setBackground(mContext.getResources().getDrawable(R.drawable.live_state_ing));
+                    liveState.setBackground(ContextCompat.getDrawable(mContext, R.drawable.live_state_ing));
                 }
             }
         }
 
-        private void decideStatu(int positon) {
+        private void decideStatu() {
             if (learnStatuses != null && learnStatuses.containsKey(lessonsBean.getId())) {
                 if ("learning".equals(learnStatuses.get(lessonsBean.getId()))) {
                     lessonState.setImageResource(R.drawable.lesson_status_learning);
@@ -254,7 +254,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
     }
     protected static class ChatperViewHolder extends ViewHolder {
 
-        public TextView chapterTitle;
+        private TextView chapterTitle;
 
         public ChatperViewHolder(View view) {
             super(view);
@@ -262,9 +262,9 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         }
 
         @Override
-        protected void render(CourseCatalogue.LessonsBean lesson, String customTitle, int position) {
-            if (!TextUtils.isEmpty(customTitle)) {
-                chapterTitle.setText(String.format("第%s%s:%s", lesson.getNumber(), customTitle, lesson.getTitle()));
+        protected void render(CourseCatalogue.LessonsBean lesson, String customChapter, String customUnite, int position) {
+            if (!TextUtils.isEmpty(customChapter)) {
+                chapterTitle.setText(String.format("第%s%s:%s", lesson.getNumber(), customChapter, lesson.getTitle()));
             }else {
                 chapterTitle.setText(String.format("%s", lesson.getTitle()));
             }
@@ -273,7 +273,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
 
     protected static class UnitViewHolder extends ViewHolder {
 
-        public TextView sectionTitle;
+        private TextView sectionTitle;
 
         public UnitViewHolder(View view) {
             super(view);
@@ -281,9 +281,9 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         }
 
         @Override
-        protected void render(CourseCatalogue.LessonsBean lesson, String customTitle, int positon) {
-            if (!TextUtils.isEmpty(customTitle)) {
-                sectionTitle.setText(String.format("第%s%s:%s", lesson.getNumber(), customTitle, lesson.getTitle()));
+        protected void render(CourseCatalogue.LessonsBean lesson, String customChapter, String customUnite, int positon) {
+            if (!TextUtils.isEmpty(customUnite)) {
+                sectionTitle.setText(String.format("第%s%s:%s", lesson.getNumber(), customUnite, lesson.getTitle()));
             }else {
                 sectionTitle.setText(String.format("%s", lesson.getTitle()));
             }
@@ -302,7 +302,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
     }
 
     public void setLearnStatuses(Map<String, String> learnStatuses) {
-        this.learnStatuses = learnStatuses;
+        CourseCatalogueAdapter.learnStatuses = learnStatuses;
         notifyDataSetChanged();
     }
 

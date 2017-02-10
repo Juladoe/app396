@@ -25,6 +25,7 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
@@ -37,6 +38,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -78,7 +80,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                 getIntent().getExtras()
         );
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mTabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.setViewPager(mViewPager);
         mTvAdd.setText(R.string.txt_add_course);
     }
 
@@ -253,7 +255,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         });
     }
 
-
     private void saveCourseToCache(Course course) {
         course.setSourceName(getIntent().getStringExtra(SOURCE));
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(getBaseContext());
@@ -332,6 +333,89 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     @Override
+    protected void courseChange(LessonItem lessonItem) {
+        mContinueLessonItem = lessonItem;
+        coursePause();
+        courseStart();
+    }
+
+    @Override
+    protected void coursePause() {
+        super.coursePause();
+        removePlayFragment();
+    }
+
+    @Override
+    protected void courseStart() {
+        if (mContinueLessonItem == null) {
+            return;
+        }
+        super.courseStart();
+        String type = mContinueLessonItem.type;
+        if ("self".equals(mContinueLessonItem.mediaSource)) {
+            if (mCourseDetail != null && validCourseIsExpird(mCourseDetail.getMember())) {
+                showCourseExpireDlg();
+                return;
+            }
+            switch (type) {
+                case "audio":
+                    playAudioLesson(mContinueLessonItem);
+                    return;
+                case "video":
+                    playVideoLesson(mContinueLessonItem);
+                    return;
+            }
+        }
+
+        Fragment fragment = mSectionsPagerAdapter.getItem(1);
+        if (fragment != null && fragment instanceof CourseCatalogFragment) {
+            if (mContinueLessonItem == null) {
+                return;
+            }
+            int memberState = CourseMember.NONE;
+            if (mCourseDetail != null && mCourseDetail.getMember() != null) {
+                memberState = CourseMember.MEMBER;
+                if (mCourseDetail.getMember().deadline <= 0) {
+                    memberState = CourseMember.EXPIRE;
+                }
+            }
+
+            ((CourseCatalogFragment) fragment).startLessonActivity(
+                    mContinueLessonItem.type,
+                    mContinueLessonItem.id,
+                    mContinueLessonItem.courseId,
+                    memberState);
+        }
+    }
+
+    private void playVideoLesson(LessonItem lessonItem) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.COURSE_ID, mCourseId);
+        bundle.putInt(Const.LESSON_ID, lessonItem.id);
+        fragment.setArguments(bundle);
+        transaction.replace(R.id.fl_header_container, fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
+    private void playAudioLesson(LessonItem lessonItem) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        LessonAudioPlayerFragment fragment = new LessonAudioPlayerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().largePicture);
+        bundle.putInt(Const.COURSE_ID, mCourseId);
+        bundle.putInt(Const.LESSON_ID, lessonItem.id);
+        fragment.setArguments(bundle);
+        transaction.replace(R.id.fl_header_container, fragment);
+        transaction.commitAllowingStateLoss();
+    }
+
+
+    @Override
     protected void courseHastrial(String state, LessonItem lessonItem) {
         mContinueLessonItem = lessonItem;
         mPlayLastLayout.setVisibility(View.GONE);
@@ -390,6 +474,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+        if (mViewPager.getCurrentItem() == 2) {
+            if (i == 0) {
+                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(true);
+            } else {
+                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(false);
+            }
+        }
         int maxHeight = getResources().getDimensionPixelOffset(R.dimen.action_bar_height);
         int toolbarHeight = AppUtil.dp2px(getBaseContext(), 260);
         if (toolbarHeight + i > maxHeight * 2) {

@@ -20,22 +20,12 @@ import java.util.ArrayList;
  */
 
 public class RefreshRecycleView extends RecyclerView {
-
     public final static int STATE_NORMAL = 0;
-    public final static int STATE_READY = 1;
-    public final static int STATE_REFRESHING = 2;
-
-    CatalogueAdapter myWrapAdapter;
-    View headerView, footerView;
-
+    public boolean isHave = true;
+    private CatalogueAdapter myWrapAdapter;
+    private View footerView;
     private int mState = STATE_NORMAL;
-    boolean isOnTouching;
-    TextView status;
-    boolean isRefresh;
-
-    public MyRecyclerViewListener getMyRecyclerViewListener() {
-        return myRecyclerViewListener;
-    }
+    private boolean isRefresh;
 
     public void setMyRecyclerViewListener(MyRecyclerViewListener myRecyclerViewListener) {
         this.myRecyclerViewListener = myRecyclerViewListener;
@@ -76,13 +66,12 @@ public class RefreshRecycleView extends RecyclerView {
                 }
                 //判断是否最后一item个显示出来
                 LayoutManager layoutManager = getLayoutManager();
-
                 //可见的item个数
                 int visibleChildCount = layoutManager.getChildCount();
                 if (visibleChildCount > 0 && newState == RecyclerView.SCROLL_STATE_IDLE && !isLoadMore) {
                     View lastVisibleView = recyclerView.getChildAt(recyclerView.getChildCount() - 1);
                     int lastVisiblePosition = recyclerView.getChildLayoutPosition(lastVisibleView);
-                    if (lastVisiblePosition >= layoutManager.getItemCount() - 1) {
+                    if (lastVisiblePosition >= layoutManager.getItemCount() - 1 && isHave) {
                         footerView.setVisibility(VISIBLE);
                         isLoadMore = true;
                         if (myRecyclerViewListener != null) {
@@ -95,6 +84,7 @@ public class RefreshRecycleView extends RecyclerView {
             }
         });
     }
+
 
     boolean isLoadMore;
 

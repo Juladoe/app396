@@ -8,6 +8,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by suju on 17/2/7.
  */
@@ -18,6 +21,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     private String[] mFragmentArray;
     private Context mContext;
     private Bundle mBundle;
+    private List<Fragment> fragmentList;
 
     public SectionsPagerAdapter(FragmentManager fm, Context context, String[] titleArray, String[] fragmentArray, Bundle bundle) {
         super(fm);
@@ -25,11 +29,19 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
         this.mContext = context;
         this.mTitleArray = titleArray;
         this.mFragmentArray = fragmentArray;
+        initData();
+    }
+
+    private void initData() {
+        fragmentList = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            fragmentList.add(CoreEngine.create(mContext).runPluginWithFragmentByBundle(mFragmentArray[i], mContext, mBundle));
+        }
     }
 
     @Override
     public Fragment getItem(int position) {
-        return CoreEngine.create(mContext).runPluginWithFragmentByBundle(mFragmentArray[position], mContext, mBundle);
+        return fragmentList.get(position);
     }
 
     @Override

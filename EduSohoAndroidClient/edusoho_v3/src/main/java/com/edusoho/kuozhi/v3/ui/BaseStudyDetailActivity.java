@@ -10,9 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -44,11 +42,14 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+import extensions.PagerSlidingTabStrip;
+
 /**
  * Created by DF on 2017/2/8.
  */
 
-public abstract class BaseStudyDetailActivity extends AppCompatActivity implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback{
+public abstract class BaseStudyDetailActivity extends AppCompatActivity
+        implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback {
 
     protected MenuPop mMenuPop;
     protected int mRunStatus;
@@ -69,7 +70,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
     protected TextView mTvCollectTxt;
     protected TextView mTvAdd;
     protected TextView mTvInclass;
-    protected TabLayout mTabLayout;
+    protected PagerSlidingTabStrip mTabLayout;
     protected SystemBarTintManager tintManager;
     protected Queue<WidgetMessage> mUIMessageQueue;
     protected View mMenu;
@@ -95,7 +96,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
     public int mMediaViewHeight = 210;
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
-    private SwipeRefreshLayout mSwipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,13 +149,13 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
         mShareView = (TextView) findViewById(R.id.iv_share);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mMenu = findViewById(R.id.layout_menu);
-        mSwipe = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setOffscreenPageLimit(3);
-        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         mProcessDialog = new LoadDialog(this);
         mLoadingView = findViewById(R.id.ll_frame_load);
         setSupportActionBar(mToolbar);
+        mTabLayout.setIndicatorColor(R.color.primary_color);
         mMenuPop = new MenuPop(this, mMenu);
         mMenuPop.setOnBindViewVisibleChangeListener(
                 new MenuPop.OnBindViewVisibleChangeListener() {
@@ -199,16 +199,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
             @Override
             public void onPageScrollStateChanged(int state) {
 
-            }
-        });
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-                if (i >= 0) {
-                    mSwipe.setEnabled(false);
-                } else {
-                    mSwipe.setEnabled(true);
-                }
             }
         });
     }
@@ -255,6 +245,11 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
 
     protected void setLoadStatus(int visibility) {
         mLoadingView.setVisibility(visibility);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     @Override
@@ -396,7 +391,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
     protected boolean mIsFullScreen = false;
 
     private void fullScreen() {
-//        ViewGroup.LayoutParams params = mMediaRlayout.getLayoutParams();
         ViewGroup.LayoutParams params = mMediaLayout.getLayoutParams();
         if (!mIsFullScreen) {
 //            mParent.scrollTo(0, 0);
