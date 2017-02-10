@@ -95,7 +95,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
     public int mMediaViewHeight = 210;
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
-    public SwipeRefreshLayout mSwipe;
+    private SwipeRefreshLayout mSwipe;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,12 +149,12 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
         mShareView = (TextView) findViewById(R.id.iv_share);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mMenu = findViewById(R.id.layout_menu);
+        mSwipe = (SwipeRefreshLayout) findViewById(R.id.swipe_layout);
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setOffscreenPageLimit(3);
         mTabLayout = (TabLayout) findViewById(R.id.tabs);
         mProcessDialog = new LoadDialog(this);
         mLoadingView = findViewById(R.id.ll_frame_load);
-        mSwipe = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
         setSupportActionBar(mToolbar);
         mMenuPop = new MenuPop(this, mMenu);
         mMenuPop.setOnBindViewVisibleChangeListener(
@@ -205,9 +205,9 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
                 if (i >= 0) {
-//                    mSwipe.setEnabled(true);
+                    mSwipe.setEnabled(false);
                 } else {
-//                    mSwipe.setEnabled(false);
+                    mSwipe.setEnabled(true);
                 }
             }
         });
