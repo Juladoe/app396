@@ -14,7 +14,7 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="260dp"
+            android:layout_height="268dp"
             android:background="@color/transparent"
             android:fitsSystemWindows="true"
             android:theme="@style/AppTheme.AppBarOverlay">
@@ -170,7 +170,36 @@
 
                 </android.support.v7.widget.Toolbar>
 
-                <android.support.design.widget.TabLayout
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="58dp"
+                    android:layout_gravity="bottom"
+                    android:background="@drawable/action_bar_bg">
+
+                    <extensions.PagerSlidingTabStrip
+                        android:id="@+id/tabs"
+                        android:layout_width="match_parent"
+                        android:layout_height="51dp"
+                        android:background="@color/disabled2_hint_color"
+                        android:fillViewport="false"
+                        app:dividerColor="@color/transparent"
+                        app:indicatorColor="@color/primary_color"
+                        app:indicatorHeight="3dp"
+                        app:pst_other_color="@color/secondary_font_color"
+                        app:pst_textColor="@color/primary_color"
+                        app:pst_textSize="@dimen/medium_font_size"
+                        app:tabPaddingLeftRight="2dip"
+                        app:underlineColor="@color/transparent"
+                        app:underlineHeight="0dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="7dp"
+                        android:layout_below="@id/tabs"
+                        android:background="@drawable/shape_line_shadow" />
+                </RelativeLayout>
+
+                <!--<android.support.design.widget.TabLayout
                     android:id="@+id/tabs"
                     android:layout_gravity="bottom"
                     android:layout_width="match_parent"
@@ -178,7 +207,7 @@
                     android:background="@color/disabled2_hint_color"
                     app:tabSelectedTextColor="@color/secondary_font_color"
                     app:tabIndicatorColor="@color/primary_color"
-                    app:tabTextColor="@color/secondary_font_color" />
+                    app:tabTextColor="@color/secondary_font_color" />-->
             </android.support.design.widget.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>

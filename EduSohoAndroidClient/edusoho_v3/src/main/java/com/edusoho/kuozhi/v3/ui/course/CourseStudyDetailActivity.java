@@ -78,7 +78,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                 getIntent().getExtras()
         );
         mViewPager.setAdapter(mSectionsPagerAdapter);
-        mTabLayout.setupWithViewPager(mViewPager);
+        mTabLayout.setViewPager(mViewPager);
         mTvAdd.setText(R.string.txt_add_course);
     }
 

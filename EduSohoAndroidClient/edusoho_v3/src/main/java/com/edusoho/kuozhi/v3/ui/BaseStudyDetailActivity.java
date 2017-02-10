@@ -44,6 +44,8 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+import extensions.PagerSlidingTabStrip;
+
 /**
  * Created by DF on 2017/2/8.
  */
@@ -69,7 +71,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
     protected TextView mTvCollectTxt;
     protected TextView mTvAdd;
     protected TextView mTvInclass;
-    protected TabLayout mTabLayout;
+    protected PagerSlidingTabStrip mTabLayout;
     protected SystemBarTintManager tintManager;
     protected Queue<WidgetMessage> mUIMessageQueue;
     protected View mMenu;
@@ -151,11 +153,13 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity implemen
         mMenu = findViewById(R.id.layout_menu);
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setOffscreenPageLimit(3);
-        mTabLayout = (TabLayout) findViewById(R.id.tabs);
+        mTabLayout = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         mProcessDialog = new LoadDialog(this);
         mLoadingView = findViewById(R.id.ll_frame_load);
         mSwipe = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh);
+
         setSupportActionBar(mToolbar);
+        mTabLayout.setIndicatorColor(R.color.primary_color);
         mMenuPop = new MenuPop(this, mMenu);
         mMenuPop.setOnBindViewVisibleChangeListener(
                 new MenuPop.OnBindViewVisibleChangeListener() {
