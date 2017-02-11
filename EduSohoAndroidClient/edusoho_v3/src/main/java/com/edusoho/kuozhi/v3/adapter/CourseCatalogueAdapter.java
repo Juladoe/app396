@@ -24,9 +24,9 @@ import java.util.Map;
 /**
  * Created by DF on 2016/12/14.
  */
-public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogueAdapter.ViewHolder> implements View.OnClickListener {
+public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogueAdapter.ViewHolder> {
 
-    public int mSelect = -1;
+    public int mSelect = 0;
     private static CourseCatalogue courseCatalogue;
     public Context mContext;
     private static boolean isJoin;
@@ -59,9 +59,26 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         holder.render(courseCatalogue.getLessons().get(position), chapterTitle, unitTitle, position);
         holder.itemView.setTag(courseCatalogue.getLessons().get(position));
+        if (holder.getItemViewType() == TYPE_LESSON) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mSelect != position) {
+                        courseCatalogue.getLessons().get(mSelect).isSelect = false;
+                        notifyItemChanged(mSelect);
+                        mSelect = position;
+                        courseCatalogue.getLessons().get(mSelect).isSelect = true;
+                        notifyItemChanged(mSelect);
+                        if (onRecyclerViewItemClickListener != null) {
+                            onRecyclerViewItemClickListener.onItemClick(v, ((CourseCatalogue.LessonsBean) v.getTag()));
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -73,18 +90,8 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
                 return new UnitViewHolder(mInflater.inflate(R.layout.item_section_catalog, null));
         }
         View view = mInflater.inflate(R.layout.item_lesson_catalog, null);
-        view.setOnClickListener(this);
         return new LessonViewHolder(view);
     }
-
-
-    @Override
-    public void onClick(View v) {
-        if (onRecyclerViewItemClickListener != null) {
-            onRecyclerViewItemClickListener.onItemClick(v, ((CourseCatalogue.LessonsBean) v.getTag()));
-        }
-    }
-
 
     @Override
     public int getItemCount() {
@@ -166,6 +173,15 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
                 }
             }
             decideKind();
+            if (courseCatalogue.getLessons().get(position).isSelect) {
+                lessonKind.setTextColor(mContext.getResources().getColor(R.color.primary));
+                lessonTitle.setTextColor(mContext.getResources().getColor(R.color.primary));
+                lessonTime.setTextColor(mContext.getResources().getColor(R.color.primary));
+            } else {
+                lessonKind.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
+                lessonTitle.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
+                lessonTime.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
+            }
             lessonTime.setText(lessonsBean.getLength());
             lessonTitle.setText(String.format("%s、%s", lessonsBean.getNumber(), lessonsBean.getTitle()));
             lessonFree.setVisibility(View.INVISIBLE);

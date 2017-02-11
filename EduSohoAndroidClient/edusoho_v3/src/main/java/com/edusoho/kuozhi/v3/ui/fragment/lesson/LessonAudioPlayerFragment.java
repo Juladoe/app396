@@ -108,7 +108,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 super.onLoadingComplete(imageUri, view, loadedImage);
-                Bitmap maskBg = ImageUtil.maskImage(getActivity(), loadedImage);
+                Bitmap maskBg = ImageUtil.maskImage(getContext(), loadedImage);
                 containerView.setBackground(new BitmapDrawable(maskBg));
             }
         });
