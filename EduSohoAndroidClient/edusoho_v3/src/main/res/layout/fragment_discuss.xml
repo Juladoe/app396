@@ -5,68 +5,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.edusoho.kuozhi.v3.view.RefreshRecycleView
-        android:id="@+id/lv_discuss"
-        android:divider="@color/disabled_hint_color"
-        android:scrollbars="none"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/ll_discuss_empty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="55dp"
-        android:layout_marginTop="60dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
+        <com.edusoho.kuozhi.v3.view.RefreshRecycleView
+            android:id="@+id/lv_discuss"
+            android:divider="@color/disabled_hint_color"
+            android:scrollbars="none"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
-        <ImageView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ll_discuss_empty"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/no_review" />
+            android:layout_marginBottom="55dp"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <TextView
-            android:layout_width="wrap_content"
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/no_review" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/discuss_no_data"
+                android:textColor="@color/secondary2_font_color"
+                android:textSize="@dimen/font_s" />
+        </LinearLayout>
+
+        <com.edusoho.kuozhi.v3.view.InnerLoadView
+            android:id="@+id/ll_frame_load"
+            android:background="@color/textIcons"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/discuss_no_data"
-            android:textColor="@color/secondary2_font_color"
-            android:textSize="@dimen/font_s" />
-    </LinearLayout>
+            android:visibility="gone"/>
 
-    <com.edusoho.kuozhi.v3.view.InnerLoadView
-        android:id="@+id/ll_frame_load"
-        android:background="@color/textIcons"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
-
-    <LinearLayout
-        android:id="@+id/ll_course_catalog_empty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="55dp"
-        android:layout_marginTop="60dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/ll_course_catalog_empty"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/no_review" />
+            android:layout_marginBottom="55dp"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="@string/discuss_unlogin"
-            android:textColor="@color/secondary2_font_color"
-            android:textSize="@dimen/font_s" />
-    </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/no_review" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/discuss_unlogin"
+                android:textColor="@color/secondary2_font_color"
+                android:textSize="@dimen/font_s" />
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </android.support.v4.widget.SwipeRefreshLayout>

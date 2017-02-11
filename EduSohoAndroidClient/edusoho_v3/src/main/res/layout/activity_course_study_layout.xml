@@ -115,7 +115,10 @@
                     <FrameLayout
                         android:id="@+id/fl_header_container"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent"
+                        android:layout_below="@+id/layout_play_button"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true" />
                 </RelativeLayout>
 
                 <android.support.v7.widget.Toolbar
@@ -148,7 +151,7 @@
                             android:layout_width="@dimen/action_bar_height"
                             android:layout_height="@dimen/action_bar_height"
                             android:layout_alignParentRight="true"
-                            android:layout_marginRight="43dp"
+                            android:layout_marginRight="36dp"
                             android:gravity="center"
                             android:text="@string/new_font_grade"
                             android:textColor="@color/disabled2_hint_color"
@@ -160,7 +163,7 @@
                             android:layout_width="@dimen/action_bar_height"
                             android:layout_height="@dimen/action_bar_height"
                             android:layout_alignParentRight="true"
-                            android:layout_marginRight="43dp"
+                            android:layout_marginRight="36dp"
                             android:gravity="center"
                             android:visibility="gone"
                             android:text="@string/new_font_more_oper"

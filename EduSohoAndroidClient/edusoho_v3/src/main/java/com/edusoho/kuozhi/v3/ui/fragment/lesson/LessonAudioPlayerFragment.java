@@ -21,7 +21,7 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
-import com.edusoho.kuozhi.v3.ui.DetailActivity;
+import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.ImageUtil;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
@@ -44,7 +44,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     protected float mAudioCoverAnimOffset;
     protected ObjectAnimator mAudioCoverAnim;
     private ImageView mCoverImageView;
-    private DetailActivity mMenuCallback;
+    private BaseStudyDetailActivity mMenuCallback;
     private LessonMenuHelper mLessonMenuHelper;
 
     @Override
@@ -58,7 +58,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        mMenuCallback = (DetailActivity) activity;
+        mMenuCallback = (BaseStudyDetailActivity) activity;
     }
 
     protected void setCoverViewState(boolean isShow) {
@@ -108,7 +108,7 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 super.onLoadingComplete(imageUri, view, loadedImage);
-                Bitmap maskBg = ImageUtil.maskImage(getContext(), loadedImage);
+                Bitmap maskBg = ImageUtil.maskImage(getActivity(), loadedImage);
                 containerView.setBackground(new BitmapDrawable(maskBg));
             }
         });

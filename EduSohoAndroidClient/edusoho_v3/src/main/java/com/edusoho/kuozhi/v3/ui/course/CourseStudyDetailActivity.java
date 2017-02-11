@@ -123,7 +123,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
     @Override
     protected void goClass() {
-        EdusohoApp.app.mEngine.runNormalPlugin("NewsCourseActivity", EdusohoApp.app.mContext, new PluginRunCallback() {
+        ((EdusohoApp) getApplication()).mEngine.runNormalPlugin("NewsCourseActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(NewsCourseActivity.COURSE_ID, mCourseId);
@@ -135,7 +135,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void consult() {
-        if (EdusohoApp.app.loginUser == null) {
+        if (((EdusohoApp) getApplication()).loginUser == null) {
             CourseUtil.notLogin();
             return;
         }
@@ -147,7 +147,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             CommonUtil.shortToast(this, "课程目前没有老师");
             return;
         }
-        EdusohoApp.app.mEngine.runNormalPlugin("ImChatActivity", EdusohoApp.app.mContext, new PluginRunCallback() {
+        ((EdusohoApp) getApplication()).mEngine.runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
@@ -166,8 +166,8 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                 return;
             }
             showProcessDialog();
-            if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip != null
-                    && EdusohoApp.app.loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
+            if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
+                    && ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
                     && mCourseDetail.getCourse().vipLevelId != 0) {
                 CourseUtil.addCourseVip(mCourseId, new CourseUtil.OnAddCourseListener() {
                     @Override
@@ -241,13 +241,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         }
         final ShareTool shareTool =
                 new ShareTool(this
-                        , EdusohoApp.app.host + "/course/" + mCourseDetail.getCourse().id
+                        , ((EdusohoApp) getApplication()).host + "/course/" + mCourseDetail.getCourse().id
                         , mCourseDetail.getCourse().title
                         , mCourseDetail.getCourse().about.length() > 20 ?
                         mCourseDetail.getCourse().about.substring(0, 20)
                         : mCourseDetail.getCourse().about
                         , mCourseDetail.getCourse().middlePicture);
-        new Handler((EdusohoApp.app.mContext.getMainLooper())).post(new Runnable() {
+        new Handler((((EdusohoApp) getApplication()).mContext.getMainLooper())).post(new Runnable() {
             @Override
             public void run() {
                 shareTool.shardCourse();
@@ -304,8 +304,8 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             initViewPager();
             mIvGrade.setVisibility(View.VISIBLE);
         }
-        if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip != null &&
-                EdusohoApp.app.loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
+        if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null &&
+                ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
                 && mCourseDetail.getCourse().vipLevelId != 0) {
             mTvAdd.setText(R.string.txt_vip_free);
         } else {
@@ -329,7 +329,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     public void finish() {
         super.finish();
         removePlayFragment();
-        EdusohoApp.app.stopPlayCacheServer();
+        ((EdusohoApp) getApplication()).stopPlayCacheServer();
     }
 
     @Override
@@ -517,7 +517,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     private void showCourseExpireDlg() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(EdusohoApp.app.mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(((EdusohoApp) getApplication()).mContext);
         builder.setTitle("提醒")
                 .setMessage("课程已过期，是否重新加入?")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
@@ -548,13 +548,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                             ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
                             ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
                         } else {
-                            CommonUtil.shortToast(EdusohoApp.app.mContext, "退出失败");
+                            CommonUtil.shortToast(((EdusohoApp) getApplication()).mContext, "退出失败");
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                CommonUtil.shortToast(EdusohoApp.app.mContext, "退出失败");
+                CommonUtil.shortToast(getBaseContext(), "退出失败");
             }
         });
     }
@@ -582,7 +582,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         bundle.putString(ThreadCreateActivity.TARGET_TYPE, "");
         bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
         bundle.putString(ThreadCreateActivity.THREAD_TYPE, "course");
-        EdusohoApp.app.mEngine.runNormalPluginWithBundle("ThreadCreateActivity", this, bundle);
+        ((EdusohoApp) getApplication()).mEngine.runNormalPluginWithBundle("ThreadCreateActivity", this, bundle);
     }
 
     @Override

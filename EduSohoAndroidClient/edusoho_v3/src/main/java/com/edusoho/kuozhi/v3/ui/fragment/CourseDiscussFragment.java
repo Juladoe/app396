@@ -63,7 +63,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mUIMessageQueue = new ArrayDeque<>();
-        EdusohoApp.app.registMsgSource(this);
+        ((EdusohoApp) getActivity().getApplication()).registMsgSource(this);
         mCourseId = getArguments().getInt(Const.COURSE_ID);
     }
 
@@ -88,7 +88,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
         mEmpty = view.findViewById(R.id.ll_discuss_empty);
         mSwipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mSwipe.setOnRefreshListener(this);
-        if (TextUtils.isEmpty(EdusohoApp.app.token)) {
+        if (TextUtils.isEmpty(((EdusohoApp) getActivity().getApplication()).token)) {
             mUnJoinView.setVisibility(View.VISIBLE);
         } else {
             initData();
@@ -105,8 +105,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
                 if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0) {
                     initDiscuss(discussDetail);
                 } else {
-                    mLoadView.setVisibility(View.GONE);
-                    mEmpty.setVisibility(View.VISIBLE);
+                    initDiscuss(null);
                 }
             }
         }).fail(new NormalCallback<VolleyError>() {
@@ -119,10 +118,16 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
     }
 
     private void initDiscuss(final DiscussDetail discussDetail) {
-        mLoadView.setVisibility(View.GONE);
-        catalogueAdapter = new CourseDiscussAdapter(discussDetail.getResources(), getActivity());
+        catalogueAdapter = new CourseDiscussAdapter(discussDetail == null ? null : discussDetail.getResources(), getActivity());
         mLvDiscuss.setLayoutManager(new LinearLayoutManager(getActivity()));
         mLvDiscuss.setAdapter(catalogueAdapter);
+        mLoadView.setVisibility(View.GONE);
+        if (discussDetail == null) {
+            mLvDiscuss.isHave = false;
+            mLoadView.setVisibility(View.GONE);
+            mEmpty.setVisibility(View.VISIBLE);
+            return;
+        }
         mLvDiscuss.setMyRecyclerViewListener(new RefreshRecycleView.MyRecyclerViewListener() {
             @Override
             public void onLoadMore() {
@@ -137,7 +142,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
                     public void success(DiscussDetail discussDetail1) {
                         start += 20;
                         if (discussDetail1.getResources().size() != 0) {
-                            discussDetail.getResources().addAll(discussDetail1.getResources());
+                            catalogueAdapter.mList = discussDetail.getResources();
                             catalogueAdapter.notifyDataSetChanged();
                         } else {
                             isHave = false;
@@ -204,7 +209,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
                                         : Integer.parseInt(resourcesBean.getTargetId()));
             bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(resourcesBean.getId()));
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, resourcesBean.getType());
-            EdusohoApp.app.mEngine.runNormalPluginWithBundleForResult("DiscussDetailActivity", getActivity(), bundle, 0);
+            ((EdusohoApp) getActivity().getApplication()).mEngine.runNormalPluginWithBundleForResult("DiscussDetailActivity", getActivity(), bundle, 0);
         } else {
             CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_join_look_hint));
         }
@@ -216,7 +221,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
                     @Override
                     public void success(DiscussDetail discussDetail) {
                         mSwipe.setRefreshing(false);
-                        if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0) {
+                        if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0 && catalogueAdapter != null) {
                             catalogueAdapter.mList.clear();
                             catalogueAdapter.mList = discussDetail.getResources();
                             catalogueAdapter.notifyDataSetChanged();
@@ -250,7 +255,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
     @Override
     public void onDestroy() {
         super.onDestroy();
-        EdusohoApp.app.unRegistMsgSource(this);
+        ((EdusohoApp) getActivity().getApplication()).unRegistMsgSource(this);
     }
 
     @Override

@@ -8,10 +8,10 @@ import android.os.StatFs;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -38,11 +38,9 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
-import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.RefreshRecycleView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.io.File;
@@ -63,7 +61,7 @@ public class CourseCatalogFragment extends Fragment {
     public int mCourseId;
     public CourseCatalogueAdapter mAdapter;
     private RelativeLayout mRlSpace;
-    private RefreshRecycleView mLvCatalog;
+    private RecyclerView mLvCatalog;
     private CourseCatalogue mCourseCatalogue;
     private TextView tvSpace;
     private View mLoadView;
@@ -94,14 +92,14 @@ public class CourseCatalogFragment extends Fragment {
     }
 
     private void initView(View view) {
-//        mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
-        mLvCatalog = (RefreshRecycleView) view.findViewById(R.id.lv_catalog);
-//        mLoadView = view.findViewById(R.id.ll_frame_load);
-//        tvSpace = (TextView) view.findViewById(R.id.tv_space);
-//        mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
-//        tvSpace.setOnClickListener(getCacheCourse());
-//        tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
-//        view.findViewById(R.id.tv_course).setOnClickListener(getCacheCourse());
+        mRlSpace = (RelativeLayout) view.findViewById(R.id.rl_space);
+        mLvCatalog = (RecyclerView) view.findViewById(R.id.lv_catalog);
+        mLoadView = view.findViewById(R.id.ll_frame_load);
+        tvSpace = (TextView) view.findViewById(R.id.tv_space);
+        mLessonEmpytView = view.findViewById(R.id.ll_course_catalog_empty);
+        tvSpace.setOnClickListener(getCacheCourse());
+        tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
+        view.findViewById(R.id.tv_course).setOnClickListener(getCacheCourse());
         initCatalogue();
     }
 
@@ -125,7 +123,7 @@ public class CourseCatalogFragment extends Fragment {
 
     private void initCatalogue() {
         User user = getAppSettingProvider().getCurrentUser();
-//        mRlSpace.setVisibility(mMemberStatus == ISMEMBER && user != null ? View.VISIBLE : View.GONE);
+        mRlSpace.setVisibility(mMemberStatus == ISMEMBER && user != null ? View.VISIBLE : View.GONE);
         setLoadViewStatus(View.VISIBLE);
         setLessonEmptyViewVisibility(View.GONE);
 
@@ -180,7 +178,7 @@ public class CourseCatalogFragment extends Fragment {
     }
 
     private void setLessonEmptyViewVisibility(int visibility) {
-//        mLessonEmpytView.setVisibility(visibility);
+        mLessonEmpytView.setVisibility(visibility);
     }
 
     private void updateLessonStatuses() {
@@ -226,7 +224,7 @@ public class CourseCatalogFragment extends Fragment {
                     return;
                 }
                 //判断归属于班级的课程有没有加入相关班级
-                if (((CourseStudyDetailActivity) getActivity()).getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)
+                if ( getActivity().getIntent().getBooleanExtra(CourseActivity.IS_CHILD_COURSE, false)
                         && mMemberStatus != ISMEMBER && "0".equals(lessonsBean.getFree())) {
                     CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_class_course_hint));
                     return;
@@ -240,28 +238,6 @@ public class CourseCatalogFragment extends Fragment {
                     return;
                 }
                 perpareStartLearnLesson(lessonsBean);
-            }
-        });
-
-        mLvCatalog.setOnTouchListener(new View.OnTouchListener() {
-            private int downX;
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()){
-                    case MotionEvent.ACTION_DOWN:
-                        downX = (int) event.getX();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        if (Math.abs(((int) event.getX()) - downX) > 5) {
-                            return true;
-                        }
-                        break;
-                    default:
-                        return false;
-                }
-                return false;
             }
         });
     }
@@ -395,7 +371,7 @@ public class CourseCatalogFragment extends Fragment {
                         MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
 
                         bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
-                        MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
+                        MessageEngine.getInstance().sendMsg(Const.COURSE_START, bundle);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -405,8 +381,7 @@ public class CourseCatalogFragment extends Fragment {
         });
     }
 
-    public void perpareStartLearnLesson(CourseCatalogue.LessonsBean lessonsBean0) {
-        CourseCatalogue.LessonsBean lessonsBean = lessonsBean0;
+    public void perpareStartLearnLesson(CourseCatalogue.LessonsBean lessonsBean) {
         if ("self".equals(lessonsBean.getMediaSource())) {
             if ("audio".equals(lessonsBean.getType()) || "video".equals(lessonsBean.getType())) {
                 getFullLessonFromServer(lessonsBean);

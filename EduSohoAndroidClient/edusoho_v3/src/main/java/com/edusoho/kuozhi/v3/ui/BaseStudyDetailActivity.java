@@ -102,7 +102,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_study_layout);
         mUIMessageQueue = new ArrayDeque<>();
-        EdusohoApp.app.registMsgSource(this);
+        ((EdusohoApp) getApplication()).registMsgSource(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Window window = getWindow();
             window.setFlags(
@@ -267,7 +267,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EdusohoApp.app.unRegistMsgSource(this);
+        ((EdusohoApp) getApplication()).unRegistMsgSource(this);
     }
 
     @Override
