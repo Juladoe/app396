@@ -28,7 +28,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
 
     public int mSelect = -1;
     private static CourseCatalogue courseCatalogue;
-    public static Context mContext;
+    public Context mContext;
     private static boolean isJoin;
     private String chapterTitle;
     private String unitTitle;
@@ -48,8 +48,8 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         CourseCatalogueAdapter.courseCatalogue = courseCatalogue;
         CourseCatalogueAdapter.learnStatuses = courseCatalogue.getLearnStatuses();
-        CourseCatalogueAdapter.mContext = context;
         CourseCatalogueAdapter.isJoin = isJoin;
+        this.mContext = context;
         this.chapterTitle = chapterTitle;
         this.unitTitle = unitTitle;
     }
@@ -103,7 +103,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         protected abstract void render(CourseCatalogue.LessonsBean lesson, String customChapter, String customUnit, int position);
     }
 
-    private static class LessonViewHolder extends ViewHolder {
+    private class LessonViewHolder extends ViewHolder {
 
         private ImageView lessonState;
         private EduSohoNewIconView lessonKind;
@@ -142,7 +142,6 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
             } else {
                 //判断课时学习状态
                 decideStatu();
-                decideKind();
                 lessonUp.setVisibility(View.VISIBLE);
                 lessonDown.setVisibility(View.VISIBLE);
                 if (position != 0) {
@@ -166,8 +165,10 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
                     lessonDown.setVisibility(View.INVISIBLE);
                 }
             }
+            decideKind();
             lessonTime.setText(lessonsBean.getLength());
             lessonTitle.setText(String.format("%s、%s", lessonsBean.getNumber(), lessonsBean.getTitle()));
+            lessonFree.setVisibility(View.INVISIBLE);
             if ("1".equals(lessonsBean.getFree()) && !isJoin) {
                 lessonFree.setVisibility(View.VISIBLE);
             }
@@ -252,7 +253,8 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
             }
         }
     }
-    protected static class ChatperViewHolder extends ViewHolder {
+
+    private static class ChatperViewHolder extends ViewHolder {
 
         private TextView chapterTitle;
 
@@ -271,7 +273,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         }
     }
 
-    protected static class UnitViewHolder extends ViewHolder {
+    private static class UnitViewHolder extends ViewHolder {
 
         private TextView sectionTitle;
 

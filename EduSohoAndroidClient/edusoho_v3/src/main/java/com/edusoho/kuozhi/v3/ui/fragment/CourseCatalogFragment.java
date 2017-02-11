@@ -100,7 +100,7 @@ public class CourseCatalogFragment extends Fragment {
         tvSpace.setOnClickListener(getCacheCourse());
         tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
         view.findViewById(R.id.tv_course).setOnClickListener(getCacheCourse());
-        initCatalogue();
+//        initCatalogue();
     }
 
     @Override
@@ -127,7 +127,7 @@ public class CourseCatalogFragment extends Fragment {
         setLoadViewStatus(View.VISIBLE);
         setLessonEmptyViewVisibility(View.GONE);
 
-        new LessonProvider(getContext()).getCourseLessons(mCourseId)
+        new LessonProvider(getActivity()).getCourseLessons(mCourseId)
         .success(new NormalCallback<CourseCatalogue>() {
             @Override
             public void success(CourseCatalogue courseCatalogue) {
@@ -453,7 +453,7 @@ public class CourseCatalogFragment extends Fragment {
     public void reFreshView(boolean mIsJoin) {
         mMemberStatus = mIsJoin ? ISMEMBER : VISITOR;
         isJoin = mIsJoin;
-//        initCatalogue();
+        initCatalogue();
     }
 
     public View.OnClickListener getCacheCourse() {

@@ -118,7 +118,7 @@ public class ClassCatalogFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
-                bundle.putString(CourseActivity.COURSE_ID, String.valueOf(mCourseList.get(position).id));
+                bundle.putString(Const.COURSE_ID, String.valueOf(mCourseList.get(position).id));
                 bundle.putString(CourseActivity.SOURCE, getClassRoomName(AppUtil.parseInt(mClassRoomId)));
                 bundle.putBoolean(CourseStudyDetailActivity.IS_CHILD_COURSE, true);
                 CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);

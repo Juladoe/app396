@@ -139,10 +139,10 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
                 new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, start)
                 .success(new NormalCallback<DiscussDetail>() {
                     @Override
-                    public void success(DiscussDetail discussDetail1) {
+                    public void success(DiscussDetail discussDetail) {
                         start += 20;
-                        if (discussDetail1.getResources().size() != 0) {
-                            catalogueAdapter.mList = discussDetail.getResources();
+                        if (discussDetail.getResources().size() != 0) {
+                            catalogueAdapter.mList.addAll(discussDetail.getResources());
                             catalogueAdapter.notifyDataSetChanged();
                         } else {
                             isHave = false;

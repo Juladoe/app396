@@ -17,8 +17,8 @@ import com.edusoho.kuozhi.imserver.ui.entity.PushUtil;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -238,7 +238,7 @@ public class QuestionAnswerAdapter extends MessageRecyclerListAdapter {
                     EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(CourseActivity.COURSE_ID, info.get("courseId").toString());
+                            startIntent.putExtra(Const.COURSE_ID, Integer.parseInt(info.get("courseId").toString()));
                         }
                     });
                 } else {
