@@ -15,8 +15,10 @@ import com.edusoho.kuozhi.v3.entity.course.CourseProgress;
 import com.edusoho.kuozhi.v3.entity.course.LearningClassroom;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
 import com.edusoho.kuozhi.v3.entity.course.Study;
+import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
@@ -147,7 +149,8 @@ public class MyStudyFragment extends BaseFragment {
                 for (Study.Resource study : data.getResources()) {
                     ids.add(Integer.parseInt(study.getId()));
                 }
-                getCourseProgresses(ids);
+                getCourseProgresses(ids, LATEST_COURSE);
+                getLiveLesson(LATEST_COURSE);
             }
 
             @Override
@@ -164,6 +167,12 @@ public class MyStudyFragment extends BaseFragment {
             @Override
             public void success(CourseResult courseResult) {
                 adapter.setNormalCourses(Arrays.asList(courseResult.resources));
+                List<Integer> ids = new ArrayList<>();
+                for (Course course : courseResult.resources) {
+                    ids.add(course.id);
+                }
+                getCourseProgresses(ids, NORMAL_COURSE);
+                getLiveLesson(NORMAL_COURSE);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
@@ -178,8 +187,14 @@ public class MyStudyFragment extends BaseFragment {
         rvContent.setAdapter(adapter);
         CourseDetailModel.getLiveCourses(100, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
-            public void onSuccess(LearningCourse data) {
-                adapter.setLiveCourses(data.data);
+            public void onSuccess(LearningCourse liveCourses) {
+                adapter.setLiveCourses(liveCourses.data);
+                List<Integer> ids = new ArrayList<>();
+                for (Course course : liveCourses.data) {
+                    ids.add(course.id);
+                }
+                getCourseProgresses(ids, LIVE_COURSE);
+                getLiveLesson(LIVE_COURSE);
             }
 
             @Override
@@ -203,22 +218,54 @@ public class MyStudyFragment extends BaseFragment {
         });
     }
 
-    private void getCourseProgresses(List<Integer> ids) {
+    private void getCourseProgresses(List<Integer> ids, final int type) {
         CourseDetailModel.getCourseProgress(ids, new ResponseCallbackListener<CourseProgress>() {
             @Override
             public void onSuccess(CourseProgress data) {
                 MyCourseStudyAdapter myCourseStudyAdapter = (MyCourseStudyAdapter) rvContent.getAdapter();
-                List<Study.Resource> latestCourses = myCourseStudyAdapter.getLatestCourses();
-                int size = data.resources.size();
-                for (int i = 0; i < size; i++) {
-                    CourseProgress.Progress progress = data.resources.get(i);
-                    for (int j = 0; j < latestCourses.size(); j++) {
-                        if (progress.courseId == Integer.parseInt(latestCourses.get(j).getId())) {
-                            latestCourses.get(j).setLearnedNum(progress.learnedNum);
-                            latestCourses.get(j).setTotalLesson(progress.totalLesson);
-                            break;
+                switch (type) {
+                    case LATEST_COURSE:
+                        List<Study.Resource> latestCourses = myCourseStudyAdapter.getLatestCourses();
+                        int latestCourseSize = data.resources.size();
+                        for (int i = 0; i < latestCourseSize; i++) {
+                            CourseProgress.Progress progress = data.resources.get(i);
+                            for (int j = 0; j < latestCourses.size(); j++) {
+                                if (progress.courseId == Integer.parseInt(latestCourses.get(j).getId())) {
+                                    latestCourses.get(j).setLearnedNum(progress.learnedNum);
+                                    latestCourses.get(j).setTotalLesson(progress.totalLesson);
+                                    break;
+                                }
+                            }
                         }
-                    }
+                        break;
+                    case NORMAL_COURSE:
+                        List<Course> normalCourses = myCourseStudyAdapter.getNormalCourses();
+                        int normalCourseSize = data.resources.size();
+                        for (int i = 0; i < normalCourseSize; i++) {
+                            CourseProgress.Progress progress = data.resources.get(i);
+                            for (int j = 0; j < normalCourses.size(); j++) {
+                                if (progress.courseId == normalCourses.get(j).id) {
+                                    normalCourses.get(j).learnedNum = progress.learnedNum;
+                                    normalCourses.get(j).totalLesson = progress.totalLesson;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    case LIVE_COURSE:
+                        List<Course> liveCourses = myCourseStudyAdapter.getLiveCourses();
+                        int liveCoursesSize = data.resources.size();
+                        for (int i = 0; i < liveCoursesSize; i++) {
+                            CourseProgress.Progress progress = data.resources.get(i);
+                            for (int j = 0; j < liveCourses.size(); j++) {
+                                if (progress.courseId == liveCourses.get(j).id) {
+                                    liveCourses.get(j).learnedNum = progress.learnedNum;
+                                    liveCourses.get(j).totalLesson = progress.totalLesson;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
                 }
                 rvContent.getAdapter().notifyDataSetChanged();
             }
@@ -228,6 +275,90 @@ public class MyStudyFragment extends BaseFragment {
 
             }
         });
+    }
+
+    private void getLiveLesson(int type) {
+        final MyCourseStudyAdapter myCourseStudyAdapter = (MyCourseStudyAdapter) rvContent.getAdapter();
+        switch (type) {
+            case LATEST_COURSE:
+                List<Study.Resource> latestCourses = myCourseStudyAdapter.getLatestCourses();
+                final int latestCourseSize = latestCourses.size();
+                for (int i = 0; i < latestCourseSize; i++) {
+                    final Study.Resource study = latestCourses.get(i);
+                    final int finalI = i;
+                    CourseDetailModel.getLiveLesson(Integer.parseInt(study.getId()), new NormalCallback<List<Lesson>>() {
+                        @Override
+                        public void success(List<Lesson> lessons) {
+                            if (lessons != null) {
+                                for (Lesson lesson : lessons) {
+                                    long currentTime = System.currentTimeMillis();
+                                    if (lesson.startTime * 1000 < currentTime && lesson.endTime * 1000 > currentTime) {
+                                        study.liveState = 1;
+                                        break;
+                                    }
+                                }
+                                if (finalI == latestCourseSize - 1) {
+                                    myCourseStudyAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+                    });
+                }
+                break;
+            case NORMAL_COURSE:
+                List<Course> normalCourses = myCourseStudyAdapter.getNormalCourses();
+                final int normalCoursesSize = normalCourses.size();
+                for (int i = 0; i < normalCoursesSize; i++) {
+                    final Course course = normalCourses.get(i);
+                    final int finalI = i;
+                    CourseDetailModel.getLiveLesson(course.id, new NormalCallback<List<Lesson>>() {
+                        @Override
+                        public void success(List<Lesson> lessons) {
+                            if (lessons != null) {
+                                for (Lesson lesson : lessons) {
+                                    long currentTime = System.currentTimeMillis();
+                                    if (lesson.startTime * 1000 < currentTime && lesson.endTime * 1000 > currentTime) {
+                                        course.liveState = 1;
+                                        myCourseStudyAdapter.notifyDataSetChanged();
+                                        break;
+                                    }
+                                }
+                                if (finalI == normalCoursesSize - 1) {
+                                    myCourseStudyAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+                    });
+                }
+                break;
+            case LIVE_COURSE:
+                List<Course> liveCourses = myCourseStudyAdapter.getLiveCourses();
+                final int liveCoursesSize = liveCourses.size();
+                for (int i = 0; i < liveCoursesSize; i++) {
+                    final Course course = liveCourses.get(i);
+                    final int finalI = i;
+                    CourseDetailModel.getLiveLesson(course.id, new NormalCallback<List<Lesson>>() {
+                        @Override
+                        public void success(List<Lesson> lessons) {
+                            if (lessons != null) {
+                                for (Lesson lesson : lessons) {
+                                    long currentTime = System.currentTimeMillis();
+                                    if (lesson.startTime * 1000 < currentTime && lesson.endTime * 1000 > currentTime) {
+                                        course.liveState = 1;
+                                        myCourseStudyAdapter.notifyDataSetChanged();
+                                        break;
+                                    }
+                                }
+                                if (finalI == liveCoursesSize - 1) {
+                                    myCourseStudyAdapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+                    });
+                }
+                break;
+        }
+
     }
 
     private View.OnClickListener getTypeClickListener() {

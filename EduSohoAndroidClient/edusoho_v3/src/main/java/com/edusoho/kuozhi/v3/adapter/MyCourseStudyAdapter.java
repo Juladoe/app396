@@ -52,10 +52,18 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
         notifyDataSetChanged();
     }
 
+    public List<Course> getNormalCourses() {
+        return mNormalCourses;
+    }
+
     public void setLiveCourses(List<Course> list) {
         mCourseType = COURSE_TYPE_LIVE;
         mLiveCourses = list;
         notifyDataSetChanged();
+    }
+
+    public List<Course> getLiveCourses() {
+        return mLiveCourses;
     }
 
     @Override
