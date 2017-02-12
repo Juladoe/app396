@@ -340,9 +340,11 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
     private void changeToolbarStyle(boolean isTop) {
         if (isTop) {
+            setToolbarLayoutBackground(getResources().getColor(R.color.textIcons));
             mShareView.setTextColor(getResources().getColor(R.color.textPrimary));
             mToolbar.setNavigationIcon(R.drawable.action_icon_back);
         } else {
+            setToolbarLayoutBackground(getResources().getColor(R.color.transparent));
             mShareView.setTextColor(getResources().getColor(R.color.textIcons));
             mToolbar.setNavigationIcon(R.drawable.action_bar_back);
         }
@@ -503,7 +505,8 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected void showProcessDialog() {
         if (mProcessDialog == null) {
             mProcessDialog = LoadDialog.create(this);
-        }mProcessDialog.show();
+        }
+        mProcessDialog.show();
     }
 
     protected void hideProcesDialog() {

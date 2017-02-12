@@ -96,7 +96,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                                 ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(true);
                                 tabPage(300);
                             }
-                                setLoadStatus(View.GONE);
+                            setLoadStatus(View.GONE);
                             refreshView();
                             if (data != null && data.getClassRoom() != null) {
                                 saveClassRoomToCache(data.getClassRoom());

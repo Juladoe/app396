@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -50,7 +49,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
     private View mEmpty;
     private boolean isJoin;
     private boolean isHave = true;
-    private LinearLayout mUnLoginView;
+    private View mUnLoginView;
     private int i = 0;
     private int start = 20;
     private CourseStateCallback mCourseStateCallback;
@@ -82,7 +81,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
     }
 
     protected void initView(View view) {
-        mUnLoginView = (LinearLayout) view.findViewById(R.id.ll_no_login);
+        mUnLoginView = view.findViewById(R.id.ll_no_login);
         mRvDiscuss = (RefreshRecycleView) view.findViewById(R.id.lv_discuss);
         mLoadView = view.findViewById(R.id.ll_frame_load);
         mEmpty = view.findViewById(R.id.ll_discuss_empty);
@@ -177,7 +176,6 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
 
     public void reFreshView(boolean isJoin) {
         this.isJoin = isJoin;
-        initData();
     }
 
     @Override

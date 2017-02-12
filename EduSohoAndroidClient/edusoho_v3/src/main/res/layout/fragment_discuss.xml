@@ -18,29 +18,19 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <LinearLayout
+        <TextView
             android:id="@+id/ll_discuss_empty"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="55dp"
             android:layout_marginTop="60dp"
+            android:drawablePadding="12dp"
+            android:drawableTop="@drawable/no_review"
+            android:text="@string/discuss_no_data"
             android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/no_review" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/discuss_no_data"
-                android:textColor="@color/secondary2_font_color"
-                android:textSize="@dimen/font_s" />
-        </LinearLayout>
+            android:visibility="gone"
+            android:textColor="@color/secondary2_font_color"
+            android:textSize="@dimen/font_s" />
 
         <com.edusoho.kuozhi.v3.view.InnerLoadView
             android:id="@+id/ll_frame_load"
@@ -49,29 +39,19 @@
             android:layout_height="wrap_content"
             android:visibility="gone"/>
 
-        <LinearLayout
+        <TextView
             android:id="@+id/ll_no_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="55dp"
             android:layout_marginTop="60dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/discuss_unlogin"
             android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/no_review" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="@string/discuss_unlogin"
-                android:textColor="@color/secondary2_font_color"
-                android:textSize="@dimen/font_s" />
-        </LinearLayout>
+            android:drawablePadding="12dp"
+            android:drawableTop="@drawable/no_review"
+            android:textColor="@color/secondary2_font_color"
+            android:textSize="@dimen/font_s"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
