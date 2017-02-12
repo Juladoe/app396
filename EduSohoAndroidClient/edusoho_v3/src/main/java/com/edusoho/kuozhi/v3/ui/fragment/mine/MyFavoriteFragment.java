@@ -40,9 +40,13 @@ public class MyFavoriteFragment extends BaseFragment {
     @Override
     protected void initView(View view) {
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
+        rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        View viewBreakline = view.findViewById(R.id.v_breakline);
+        viewBreakline.setVisibility(View.GONE);
+
         viewEmpty = view.findViewById(R.id.view_empty);
         viewEmpty.setVisibility(View.GONE);
-        rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     private void initData() {

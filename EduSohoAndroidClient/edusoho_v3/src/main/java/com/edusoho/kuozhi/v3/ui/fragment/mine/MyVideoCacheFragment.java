@@ -45,6 +45,9 @@ public class MyVideoCacheFragment extends BaseFragment {
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
         viewEmpty = view.findViewById(R.id.view_empty);
 
+        View viewBreakline = view.findViewById(R.id.v_breakline);
+        viewBreakline.setVisibility(View.GONE);
+
         viewEmpty.setVisibility(View.GONE);
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
