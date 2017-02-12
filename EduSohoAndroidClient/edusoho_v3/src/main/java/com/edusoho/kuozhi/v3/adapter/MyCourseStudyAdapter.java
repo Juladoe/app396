@@ -1,7 +1,11 @@
 package com.edusoho.kuozhi.v3.adapter;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +16,20 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.Study;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.Classroom;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
-import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
+import com.edusoho.kuozhi.v3.model.sys.School;
+import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
+import com.edusoho.kuozhi.v3.util.CourseUtil;
+import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
@@ -119,6 +132,8 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                 setProgressStr(latestCourse.getLearnedNum(), latestCourse.getTotalLesson(), viewHolder.tvStudyState);
                 viewHolder.rLayoutItem.setTag(latestCourse);
                 viewHolder.rLayoutItem.setOnClickListener(getLatestCourseViewClickListener());
+                viewHolder.tvMore.setTag(latestCourse);
+                viewHolder.tvMore.setOnClickListener(getMoreClickListener());
                 break;
             case COURSE_TYPE_NORMAL:
                 final Course normalCourse = mNormalCourses.get(position);
@@ -128,6 +143,8 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                 setProgressStr(normalCourse.learnedNum, normalCourse.totalLesson, viewHolder.tvStudyState);
                 viewHolder.rLayoutItem.setTag(normalCourse);
                 viewHolder.rLayoutItem.setOnClickListener(getCourseViewClickListener());
+                viewHolder.tvMore.setTag(normalCourse);
+                viewHolder.tvMore.setOnClickListener(getMoreClickListener());
                 break;
             case COURSE_TYPE_LIVE:
                 final Course liveCourse = mLiveCourses.get(position);
@@ -148,6 +165,8 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                         viewHolder.tvLiveIcon.setVisibility(View.GONE);
                     }
                 }
+                viewHolder.tvMore.setTag(liveCourse);
+                viewHolder.tvMore.setOnClickListener(getMoreClickListener());
                 break;
         }
     }
@@ -197,6 +216,128 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                         });
             }
         };
+    }
+
+    private View.OnClickListener getMoreClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Object data = v.getTag();
+                MoreDialog dialog = new MoreDialog(mContext);
+                dialog.init("退出课程", new MoreDialog.MoreCallBack() {
+                    @Override
+                    public void onMoveClick(View v, final Dialog dialog) {
+                        AlertDialog.Builder latestCoursebuilder = new AlertDialog.Builder(mContext);
+                        if (data instanceof Study.Resource) {
+                            final Study.Resource study = (Study.Resource) data;
+                            latestCoursebuilder.setTitle("确认退出课程")
+                                    .setMessage(R.string.delete_course)
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(final DialogInterface dlg, int which) {
+                                            CourseUtil.deleteCourse(Integer.parseInt(study.getId()), new CourseUtil.CallBack() {
+                                                @Override
+                                                public void onSuccess(String response) {
+                                                    CommonUtil.shortToast(mContext, "退出成功");
+                                                    mLatestCourses.remove(study);
+                                                    dialog.dismiss();
+                                                    clearCoursesCache(Integer.parseInt(study.getId()));
+                                                    notifyDataSetChanged();
+                                                }
+
+                                                @Override
+                                                public void onError(String response) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                        }
+                                    })
+                                    .setNegativeButton("取消", null)
+                                    .create()
+                                    .show();
+                        } else if (data instanceof Course) {
+                            final Course course = (Course) data;
+                            AlertDialog.Builder normalCourseBuilder = new AlertDialog.Builder(mContext);
+                            normalCourseBuilder.setTitle("确认退出课程")
+                                    .setMessage(R.string.delete_course)
+                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(final DialogInterface dlg, int which) {
+                                            CourseUtil.deleteCourse(course.id, new CourseUtil.CallBack() {
+                                                @Override
+                                                public void onSuccess(String response) {
+                                                    CommonUtil.shortToast(mContext, "退出成功");
+                                                    if (mNormalCourses.contains(course)) {
+                                                        mNormalCourses.remove(course);
+                                                        clearCoursesCache(course.id);
+                                                    } else if (mLiveCourses.contains(course)) {
+                                                        mLiveCourses.remove(course);
+                                                    }
+                                                    dialog.dismiss();
+                                                    notifyDataSetChanged();
+                                                }
+
+                                                @Override
+                                                public void onError(String response) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                        }
+                                    })
+                                    .setNegativeButton("取消", null)
+                                    .create()
+                                    .show();
+                        }
+                    }
+
+                    @Override
+                    public void onShareClick(View v, Dialog dialog) {
+                        final ShareTool shareTool;
+                        if (data instanceof Course) {
+                            Course course = (Course) data;
+                            shareTool = new ShareTool(mContext
+                                    , EdusohoApp.app.host + "/course/" + course.id
+                                    , course.title
+                                    , course.about.length() > 20 ?
+                                    course.about.substring(0, 20)
+                                    : course.about
+                                    , course.middlePicture);
+                        } else {
+                            Study.Resource study = (Study.Resource) data;
+                            shareTool = new ShareTool(mContext
+                                    , EdusohoApp.app.host + "/course/" + study.getId()
+                                    , study.getTitle()
+                                    , study.getAbout().length() > 20 ?
+                                    study.getAbout().substring(0, 20)
+                                    : study.getAbout()
+                                    , study.getMiddlePicture());
+                        }
+                        new Handler((mContext.getMainLooper())).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                shareTool.shardCourse();
+                            }
+                        });
+                        dialog.dismiss();
+                    }
+
+                    @Override
+                    public void onCancelClick(View v, Dialog dialog) {
+                        dialog.dismiss();
+                    }
+                }).show();
+            }
+        };
+    }
+
+    private void clearCoursesCache(int... courseIds) {
+        School school = getAppSettingProvider().getCurrentSchool();
+        User user = getAppSettingProvider().getCurrentUser();
+        new CourseCacheHelper(mContext, school.getDomain(), user.id).clearLocalCacheByCourseId(courseIds);
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 
     private void setProgressStr(int now, int total, TextView view) {

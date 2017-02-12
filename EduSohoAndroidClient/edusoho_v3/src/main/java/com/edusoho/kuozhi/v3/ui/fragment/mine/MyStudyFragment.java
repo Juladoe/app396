@@ -102,8 +102,8 @@ public class MyStudyFragment extends BaseFragment {
     }
 
     private void initData() {
-        mCourseAdapter = new MyCourseStudyAdapter(mContext);
-        mClassroomAdapter = new MyClassroomAdapter(mContext);
+        mCourseAdapter = new MyCourseStudyAdapter(getActivity());
+        mClassroomAdapter = new MyClassroomAdapter(getActivity());
         switchType(LATEST_COURSE);
     }
 
