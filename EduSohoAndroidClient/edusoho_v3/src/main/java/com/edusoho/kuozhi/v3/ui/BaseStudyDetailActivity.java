@@ -170,7 +170,25 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
         setLoadStatus(View.VISIBLE);
         initEvent();
+        mSectionsPagerAdapter = new SectionsPagerAdapter(
+                getSupportFragmentManager(),
+                getBaseContext(),
+                getTitleArray(),
+                getFragmentArray(),
+                getIntent().getExtras()
+        );
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        mTabLayout.setViewPager(mViewPager);
     }
+
+
+    protected String[] getTitleArray() {
+        return new String [] {
+                "课程", "目录", "问答"
+        };
+    }
+
+    protected abstract String[] getFragmentArray();
 
     private void initEvent() {
         mShareView.setOnClickListener(this);

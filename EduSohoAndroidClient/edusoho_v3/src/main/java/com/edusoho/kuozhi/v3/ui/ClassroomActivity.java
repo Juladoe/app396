@@ -3,10 +3,10 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
@@ -29,13 +29,10 @@ import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.util.List;
-
 /**
  * Created by Zhang on 2016/12/8.
  */
-public class ClassroomActivity extends DetailActivity implements View.OnClickListener, CourseStateCallback {
-    public static final String CLASSROOM_ID = "Classroom_id";
+public class ClassroomActivity extends BaseStudyDetailActivity implements View.OnClickListener, CourseStateCallback {
     private int mClassroomId;
     public ClassroomDetail mClassroomDetail;
 
@@ -44,7 +41,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        mClassroomId = intent.getIntExtra(CLASSROOM_ID, 0);
+        mClassroomId = intent.getIntExtra(Const.CLASSROOM_ID, 0);
         if (mClassroomId == 0) {
             finish();
             return;
@@ -56,40 +53,21 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void initView() {
+        getIntent().getExtras().putString("source", mClassroomDetail != null ? mClassroomDetail.getClassRoom().title : null);
         super.initView();
         mCollect.setVisibility(View.GONE);
         mPlayButtonLayout.setVisibility(View.GONE);
 //        mPlayLayout2.setVisibility(View.GONE);
         mTvAdd.setText(R.string.txt_add_class);
-        mTvCatalog.setText(R.string.class_catalog);
+//        mTvCatalog.setText(R.string.class_catalog);
         mIvGrade.setVisibility(View.GONE);
 //        mIvGrade2.setVisibility(View.GONE);
     }
 
-
-    protected void initFragment(List<Fragment> fragments) {
-//        Fragment fragment = app.mEngine.runPluginWithFragment("ClassroomDetailFragment", this, new PluginFragmentCallback() {
-//            @Override
-//            public void setArguments(Bundle bundle) {
-//                bundle.putString("id", mClassroomId);
-//            }
-//        });
-//        fragments.add(fragment);
-//        Fragment catafragment = app.mEngine.runPluginWithFragment("ClassCatalogFragment", this, new PluginFragmentCallback() {
-//            @Override
-//            public void setArguments(Bundle bundle) {
-//                bundle.putString("id", mClassroomId);
-//                bundle.putString("source", mClassroomDetail != null ? mClassroomDetail.getClassRoom().title : null);
-//            }
-//        });
-//        fragments.add(catafragment);
-//        Fragment discussFrament = app.mEngine.runPluginWithFragment("CourseDiscussFragment", this, new PluginFragmentCallback() {
-//            @Override
-//            public void setArguments(Bundle bundle) {
-//                bundle.putString("id", mClassroomId);
-//            }
-//        });
-//        fragments.add(discussFrament);
+    protected String[] getFragmentArray() {
+        return new String [] {
+                "ClassroomDetailFragment", "ClassCatalogFragment", "CourseDiscussFragment"
+        };
     }
 
     @Override
@@ -99,10 +77,6 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     public void handlerCourseExpired() {
-    }
-
-    protected void initEvent() {
-        super.initEvent();
     }
 
     private void saveClassRoomToCache(Classroom classroom) {
@@ -117,20 +91,15 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                         @Override
                         public void onSuccess(ClassroomDetail data) {
                             mClassroomDetail = data;
-                            if (mFragments.size() >= 2 && mFragments.get(1) != null
-                                    && mFragments.get(1) instanceof ClassCatalogFragment) {
-                                if (mClassroomDetail.getMember() == null) {
-                                    ((ClassCatalogFragment) mFragments.get(1)).reFreshView(false);
-                                    ((CourseDiscussFragment) mFragments.get(2)).reFreshView(false);
-                                    setLoadStatus(View.GONE);
-                                } else {
-                                    ((ClassCatalogFragment) mFragments.get(1)).reFreshView(true);
-                                    ((CourseDiscussFragment) mFragments.get(2)).reFreshView(true);
-                                    tabPage(300);
-                                }
+                            if (mClassroomDetail.getMember() == null) {
+                                ((ClassCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
+                                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
                             } else {
-                                setLoadStatus(View.GONE);
+                                ((ClassCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(true);
+                                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(true);
+                                tabPage(300);
                             }
+                                setLoadStatus(View.GONE);
                             refreshView();
                             if (data != null && data.getClassRoom() != null) {
                                 saveClassRoomToCache(data.getClassRoom());
@@ -150,7 +119,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void grade() {
-        app.mEngine.runNormalPlugin("ReviewActivity", mContext, new PluginRunCallback() {
+        ((EdusohoApp) getApplication()).mEngine.runNormalPlugin("ReviewActivity", this, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ReviewActivity.TYPE, ReviewActivity.TYPE_CLASSROOM);
@@ -168,7 +137,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                 .build();
         ImageLoader.getInstance().displayImage(
                 mClassroomDetail.getClassRoom().getLargePicture(),
-                mIvMediaBackground, imageOptions);
+                mIvBackGraound, imageOptions);
         Member member = mClassroomDetail.getMember();
         if (member == null) {
             mIsMemder = false;
@@ -183,8 +152,8 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             mTvInclass.setVisibility(View.VISIBLE);
             initViewPager();
         }
-        if (app.loginUser != null && app.loginUser.vip != null &&
-                app.loginUser.vip.levelId >= mClassroomDetail.getClassRoom().vipLevelId
+        if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null &&
+                ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mClassroomDetail.getClassRoom().vipLevelId
                 && mClassroomDetail.getClassRoom().vipLevelId != 0) {
             mTvAdd.setText(R.string.txt_vip_free);
         } else {
@@ -194,7 +163,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void goClass() {
-        app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mContext, new PluginRunCallback() {
+        ((EdusohoApp) getApplication()).mEngine.runNormalPlugin("ClassroomDiscussActivity", this, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, mClassroomId);
@@ -205,7 +174,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
 
     @Override
     protected void consult() {
-        if (app.loginUser == null) {
+        if (((EdusohoApp) getApplication()).loginUser == null) {
             CourseUtil.notLogin();
             return;
         }
@@ -217,7 +186,7 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
             CommonUtil.shortToast(this, "班级目前没有老师");
             return;
         }
-        app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
+        ((EdusohoApp) getApplication()).mEngine.runNormalPlugin("ImChatActivity", this, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
@@ -236,8 +205,8 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
                 return;
             }
             showProcessDialog();
-            if (app.loginUser != null && app.loginUser.vip != null
-                    && app.loginUser.vip.levelId >= mClassroomDetail.getClassRoom().vipLevelId
+            if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
+                    && ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mClassroomDetail.getClassRoom().vipLevelId
                     && mClassroomDetail.getClassRoom().vipLevelId != 0) {
                 ClassroomUtil.addClassroomVip(mClassroomId, new ClassroomUtil.OnAddClassroomListener() {
                     @Override
@@ -286,13 +255,13 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         }
         final ShareTool shareTool =
                 new ShareTool(this
-                        , app.host + "/classroom/" + mClassroomDetail.getClassRoom().id
+                        , ((EdusohoApp) getApplication()).host + "/classroom/" + mClassroomDetail.getClassRoom().id
                         , mClassroomDetail.getClassRoom().title
                         , mClassroomDetail.getClassRoom().about.toString().length() > 20 ?
                         mClassroomDetail.getClassRoom().about.toString().substring(0, 20)
                         : mClassroomDetail.getClassRoom().about.toString()
                         , mClassroomDetail.getClassRoom().largePicture);
-        new Handler((mActivity.getMainLooper())).post(new Runnable() {
+        new Handler((this.getMainLooper())).post(new Runnable() {
             @Override
             public void run() {
                 shareTool.shardCourse();
@@ -316,6 +285,6 @@ public class ClassroomActivity extends DetailActivity implements View.OnClickLis
         bundle.putString(ThreadCreateActivity.TARGET_TYPE, "");
         bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
         bundle.putString(ThreadCreateActivity.THREAD_TYPE, "course");
-        app.mEngine.runNormalPluginWithBundle("ThreadCreateActivity", this, bundle);
+        ((EdusohoApp) getApplication()).mEngine.runNormalPluginWithBundle("ThreadCreateActivity", this, bundle);
     }
 }

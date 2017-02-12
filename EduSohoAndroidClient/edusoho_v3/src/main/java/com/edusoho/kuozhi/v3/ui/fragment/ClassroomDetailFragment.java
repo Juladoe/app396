@@ -55,7 +55,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mClassroomId = getArguments().getInt("id");
+        mClassroomId = getArguments().getInt(Const.CLASSROOM_ID);
     }
 
     @Override
@@ -67,7 +67,6 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         mTvStudent1.setText(R.string.txt_classroom_student);
         mTvReview1.setText(R.string.txt_classroom_review);
         mTvPeople1.setText(R.string.txt_provision_services);
-        initEvent();
         initData();
     }
 

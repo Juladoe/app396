@@ -87,7 +87,6 @@ public abstract class BaseDetailFragment extends Fragment implements View.OnClic
         if (parent != null) {
             parent.removeView(contentView);
         }
-
         return contentView;
     }
 
@@ -95,6 +94,7 @@ public abstract class BaseDetailFragment extends Fragment implements View.OnClic
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(view);
+        initEvent();
     }
 
     protected void initView(View view) {
@@ -134,6 +134,7 @@ public abstract class BaseDetailFragment extends Fragment implements View.OnClic
         mTvStudentNone = view.findViewById(R.id.tv_student_none);
         mReviewNoneLayout = view.findViewById(R.id.layout_review_none);
         mLoadView = view.findViewById(R.id.ll_detail_load);
+
     }
 
     protected void refreshView() {

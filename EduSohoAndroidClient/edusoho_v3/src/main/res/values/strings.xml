@@ -400,4 +400,5 @@
     <string name="video_replay_title">直播回看</string>
     <string name="lesson_living">直播中</string>
     <string name="no_add_course">还没有添加课时</string>
+    <string name="no_add_class">还没有添加班级</string>
 </resources>

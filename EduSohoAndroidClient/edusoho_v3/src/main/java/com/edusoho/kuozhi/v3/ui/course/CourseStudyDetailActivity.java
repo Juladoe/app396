@@ -14,7 +14,6 @@ import android.view.View;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.adapter.SectionsPagerAdapter;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
@@ -69,13 +68,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     @Override
     protected void initView() {
         super.initView();
-        mSectionsPagerAdapter = new SectionsPagerAdapter(
-                getSupportFragmentManager(),
-                getBaseContext(),
-                getTitleArray(),
-                getFragmentArray(),
-                getIntent().getExtras()
-        );
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mTabLayout.setViewPager(mViewPager);
         mTvAdd.setText(R.string.txt_add_course);
@@ -497,12 +489,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             return;
         }
         changeToolbarStyle(true);
-    }
-
-    protected String[] getTitleArray() {
-        return new String [] {
-                "课程", "目录", "问答"
-        };
     }
 
     protected String[] getFragmentArray() {

@@ -2,13 +2,14 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -19,8 +20,6 @@ import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
@@ -31,15 +30,15 @@ import java.util.List;
  * Created by DF on 2016/12/15.
  */
 
-public class ClassCatalogFragment extends BaseFragment {
+public class ClassCatalogFragment extends Fragment {
 
     public boolean isJoin = false;
-    public String mClassRoomId = "0";
+    public int mClassRoomId = 0;
     private ListView mLvClass;
 
     private View mLoadView;
     private List<Course> mCourseList;
-    private LinearLayout mLessonEmpytView;
+    private TextView mLessonEmpytView;
 
     public ClassCatalogFragment() {
     }
@@ -50,7 +49,7 @@ public class ClassCatalogFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fragment_class_catalog, container, false);
         mLvClass = (ListView) view.findViewById(R.id.lv_catalog);
         mLoadView = view.findViewById(R.id.il_class_catalog_load);
-        mLessonEmpytView = (LinearLayout) view.findViewById(R.id.ll_course_catalog_empty);
+        mLessonEmpytView = (TextView) view.findViewById(R.id.ll_course_catalog_empty);
         return view;
     }
 
@@ -59,9 +58,9 @@ public class ClassCatalogFragment extends BaseFragment {
     }
 
     private void initData() {
-        mClassRoomId = getArguments().getString("id");
+        mClassRoomId = getArguments().getInt(Const.CLASSROOM_ID);
         setLoadStatus(View.VISIBLE);
-        new ClassRoomProvider(getContext()).getCourseList(AppUtil.parseInt(mClassRoomId))
+        new ClassRoomProvider(getContext()).getCourseList(mClassRoomId)
         .success(new NormalCallback<List<Course>>() {
             @Override
             public void success(List<Course> list) {
@@ -118,7 +117,7 @@ public class ClassCatalogFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Bundle bundle = new Bundle();
                 bundle.putString(Const.COURSE_ID, String.valueOf(mCourseList.get(position).id));
-                bundle.putString(CourseActivity.SOURCE, getClassRoomName(AppUtil.parseInt(mClassRoomId)));
+                bundle.putString(CourseActivity.SOURCE, getClassRoomName(mClassRoomId));
                 bundle.putBoolean(Const.IS_CHILD_COURSE, true);
                 CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);
             }

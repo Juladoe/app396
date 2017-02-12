@@ -20,8 +20,6 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.lesson.LessonModel;
-import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -314,7 +312,7 @@ public class FindCardItemAdapter extends BaseAdapter {
             EdusohoApp.app.mEngine.runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, id);
+                    startIntent.putExtra(Const.CLASSROOM_ID, id);
                 }
             });
         }
