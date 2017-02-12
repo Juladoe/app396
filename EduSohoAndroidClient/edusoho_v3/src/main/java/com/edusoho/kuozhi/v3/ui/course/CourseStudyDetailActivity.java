@@ -52,7 +52,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 
 public class CourseStudyDetailActivity extends BaseStudyDetailActivity implements AppBarLayout.OnOffsetChangedListener, CourseStateCallback {
-    public CourseDetail mCourseDetail;
+
+    private CourseDetail mCourseDetail;
     private int mCourseId;
     private boolean mIsFavorite = false;
     private LessonItem mContinueLessonItem;
@@ -465,9 +466,11 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     private void changeToolbarStyle(boolean isTop) {
         if (isTop) {
+            setToolbarLayoutBackground(getResources().getColor(R.color.textIcons));
             mShareView.setTextColor(getResources().getColor(R.color.textPrimary));
             mToolbar.setNavigationIcon(R.drawable.action_icon_back);
         } else {
+            setToolbarLayoutBackground(getResources().getColor(R.color.transparent));
             mShareView.setTextColor(getResources().getColor(R.color.textIcons));
             mToolbar.setNavigationIcon(R.drawable.action_bar_back);
         }
