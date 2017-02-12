@@ -194,7 +194,8 @@ public class MyQuestionFragment extends BaseFragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                llayoutFilterQuestionTypeList.setVisibility(View.GONE);
+                esivFilterArrow.setText(getString(R.string.new_font_unfold));
             }
         };
     }

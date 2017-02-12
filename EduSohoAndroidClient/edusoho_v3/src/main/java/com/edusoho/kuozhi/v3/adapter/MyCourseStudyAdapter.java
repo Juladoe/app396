@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
 import com.edusoho.kuozhi.v3.entity.course.Study;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment;
