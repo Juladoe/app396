@@ -19,12 +19,12 @@ allprojects {
     repositories {
         mavenLocal()
         jcenter()
-        maven { 
+        maven {
         	credentials {
 	            username 'admin'
 	            password 'kaifazhe'
         	}
-        	url "http://192.168.12.7:8081/repository/maven-snapshots/" 
+        	url "http://192.168.12.7:8081/repository/maven-snapshots/"
         }
     }
 }

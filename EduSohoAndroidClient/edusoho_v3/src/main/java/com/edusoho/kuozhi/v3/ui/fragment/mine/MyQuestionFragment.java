@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.adapter.MyAnswerQuestionAdapter;
 import com.edusoho.kuozhi.v3.adapter.MyAskQuestionAdapter;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
@@ -99,7 +100,7 @@ public class MyQuestionFragment extends BaseFragment {
                     setNoCourseDataVisible(true);
                 } else {
                     setNoCourseDataVisible(false);
-                    askQuestionAdapter.addDatas(Arrays.asList(entities));
+                    askQuestionAdapter.setData(Arrays.asList(entities));
                 }
 
             }
@@ -113,17 +114,16 @@ public class MyQuestionFragment extends BaseFragment {
 
     private void loadAnsweredQuestionData() {
         RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.MY_POSTED_THREADS + "?start=0&limit=10000", true);
-        final MyAskQuestionAdapter askQuestionAdapter = new MyAskQuestionAdapter(mContext);
-        rvContent.setAdapter(askQuestionAdapter);
+        final MyAnswerQuestionAdapter answerQuestionAdapter = new MyAnswerQuestionAdapter(mContext);
+        rvContent.setAdapter(answerQuestionAdapter);
         mMyThreadProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
             @Override
             public void success(MyThreadEntity[] entities) {
-                MyThreadEntity[] a = new MyThreadEntity[]{};
-                if (a.length == 0) {
+                if (entities.length == 0) {
                     setNoCourseDataVisible(true);
                 } else {
                     setNoCourseDataVisible(false);
-                    askQuestionAdapter.addDatas(Arrays.asList(a));
+                    answerQuestionAdapter.setData(Arrays.asList(entities));
                 }
             }
         }).fail(new NormalCallback<VolleyError>() {

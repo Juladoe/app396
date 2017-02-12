@@ -33,6 +33,11 @@ public class MyAnswerQuestionAdapter extends RecyclerView.Adapter<MyQuestionFrag
         mMyThreadEntities = new ArrayList<>();
     }
 
+    public void setData(List<MyThreadEntity> list) {
+        mMyThreadEntities = list;
+        notifyDataSetChanged();
+    }
+
     @Override
     public MyQuestionFragment.ViewHolderAnswer onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_answer_question, parent, false);

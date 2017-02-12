@@ -4,11 +4,25 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.adapter.MyClassroomAdapter;
+import com.edusoho.kuozhi.v3.adapter.MyCourseStudyAdapter;
+import com.edusoho.kuozhi.v3.entity.course.LearningClassroom;
+import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
+import com.edusoho.kuozhi.v3.entity.course.Study;
+import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
+import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
+
+import java.util.Arrays;
 
 /**
  * Created by JesseHuang on 2017/2/7.
@@ -120,19 +134,66 @@ public class MyStudyFragment extends BaseFragment {
     }
 
     private void loadLatestCourse() {
+        final MyCourseStudyAdapter adapter = new MyCourseStudyAdapter(mContext);
+        rvContent.setAdapter(adapter);
+        CourseDetailModel.getStudy(new ResponseCallbackListener<Study>() {
+            @Override
+            public void onSuccess(Study data) {
+                adapter.setLatestCourses(data.getResources());
+            }
 
+            @Override
+            public void onFailure(String code, String message) {
+
+            }
+        });
     }
 
     private void loadNormalCourse() {
+        final MyCourseStudyAdapter adapter = new MyCourseStudyAdapter(mContext);
+        rvContent.setAdapter(adapter);
+        CourseProvider courseProvider = new CourseProvider(mContext);
+        courseProvider.getLearnCourses().success(new NormalCallback<CourseResult>() {
+            @Override
+            public void success(CourseResult courseResult) {
+                adapter.setNormalCourses(Arrays.asList(courseResult.resources));
+            }
+        }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
 
+            }
+        });
     }
 
     private void loadLiveCourse() {
+        final MyCourseStudyAdapter adapter = new MyCourseStudyAdapter(mContext);
+        rvContent.setAdapter(adapter);
+        CourseDetailModel.getLiveCourses(100, 0, new ResponseCallbackListener<LearningCourse>() {
+            @Override
+            public void onSuccess(LearningCourse data) {
+                adapter.setLiveCourses(data.data);
+            }
 
+            @Override
+            public void onFailure(String code, String message) {
+            }
+        });
     }
 
     private void loadClassroom() {
+        final MyClassroomAdapter adapter = new MyClassroomAdapter(mContext);
+        rvContent.setAdapter(adapter);
+        CourseDetailModel.getAllUserClassroom(100, 0, new ResponseCallbackListener<LearningClassroom>() {
+            @Override
+            public void onSuccess(LearningClassroom data) {
+                adapter.setClassrooms(data.getData());
+            }
 
+            @Override
+            public void onFailure(String code, String message) {
+            }
+        });
     }
 
     private View.OnClickListener getTypeClickListener() {
@@ -175,5 +236,45 @@ public class MyStudyFragment extends BaseFragment {
 
             }
         };
+    }
+
+    public static class CourseStudyViewHolder extends RecyclerView.ViewHolder {
+        public ImageView ivPic;
+        public View layoutLive;
+        public TextView tvLiveIcon;
+        public TextView tvLive;
+        public TextView tvTitle;
+        public TextView tvStudyState;
+        public TextView tvMore;
+        public View layoutClass;
+        public TextView tvClassName;
+        public View vLine;
+
+        public CourseStudyViewHolder(View view) {
+            super(view);
+            ivPic = (ImageView) view.findViewById(R.id.iv_pic);
+            layoutLive = view.findViewById(R.id.layout_live);
+            tvLiveIcon = (TextView) view.findViewById(R.id.tv_live_icon);
+            tvLive = (TextView) view.findViewById(R.id.tv_live);
+            tvTitle = (TextView) view.findViewById(R.id.tv_title);
+            tvStudyState = (TextView) view.findViewById(R.id.tv_study_state);
+            tvMore = (TextView) view.findViewById(R.id.tv_more);
+            layoutClass = view.findViewById(R.id.layout_class);
+            tvClassName = (TextView) view.findViewById(R.id.tv_class_name);
+            vLine = view.findViewById(R.id.v_line);
+        }
+    }
+
+    public static class ClassroomViewHolder extends RecyclerView.ViewHolder {
+        public ImageView ivPic;
+        public TextView tvTitle;
+        public TextView tvMore;
+
+        public ClassroomViewHolder(View view) {
+            super(view);
+            ivPic = (ImageView) view.findViewById(R.id.iv_pic);
+            tvTitle = (TextView) view.findViewById(R.id.tv_title);
+            tvMore = (TextView) view.findViewById(R.id.tv_more);
+        }
     }
 }

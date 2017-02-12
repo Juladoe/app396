@@ -33,8 +33,8 @@ public class MyAskQuestionAdapter extends RecyclerView.Adapter<MyQuestionFragmen
         mMyThreadEntities = new ArrayList<>();
     }
 
-    public void addDatas(List<MyThreadEntity> list) {
-        mMyThreadEntities.addAll(list);
+    public void setData(List<MyThreadEntity> list) {
+        mMyThreadEntities = list;
         notifyDataSetChanged();
     }
 
