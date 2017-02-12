@@ -208,9 +208,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-//                checkTab(position);
-//                setBottomLayoutVisible(position, mIsMemder);
-//                showEditTopic(position);
             }
 
             @Override

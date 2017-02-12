@@ -483,7 +483,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             }
         }
         int maxHeight = getResources().getDimensionPixelOffset(R.dimen.action_bar_height);
-        int toolbarHeight = AppUtil.dp2px(getBaseContext(), 260);
+        int toolbarHeight = AppUtil.dp2px(getBaseContext(), 210);
         if (toolbarHeight + i > maxHeight * 2) {
             changeToolbarStyle(false);
             return;
