@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui.fragment.mine;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -53,7 +54,8 @@ public class MyQuestionFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        initData();
+
+        Log.d("MyQuestionFragment", "onStart: initData");
     }
 
     @Override
@@ -82,6 +84,8 @@ public class MyQuestionFragment extends BaseFragment {
         tvAnswer = (TextView) view.findViewById(R.id.tv_question_answer);
         tvAsk.setOnClickListener(getClickTypeClickListener());
         tvAnswer.setOnClickListener(getClickTypeClickListener());
+
+        initData();
     }
 
     private void initData() {

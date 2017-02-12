@@ -38,13 +38,6 @@ public class MineFragment1 extends BaseFragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        initUserInfo();
-        initViewPager();
-    }
-
-    @Override
     protected void initView(View view) {
         tvName = (TextView) view.findViewById(R.id.tv_name);
         ivAvatar = (CircleImageView) view.findViewById(R.id.iv_avatar);
@@ -52,6 +45,8 @@ public class MineFragment1 extends BaseFragment {
         tbTitles = (TabLayout) view.findViewById(R.id.tl_titles);
         vpContent = (ViewPager) view.findViewById(R.id.vp_content);
         vpContent.setOffscreenPageLimit(3);
+        initUserInfo();
+        initViewPager();
     }
 
     private void initUserInfo() {

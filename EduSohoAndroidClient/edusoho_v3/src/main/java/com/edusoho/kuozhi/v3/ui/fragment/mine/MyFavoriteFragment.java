@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui.fragment.mine;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,12 +33,6 @@ public class MyFavoriteFragment extends BaseFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        initData();
-    }
-
-    @Override
     protected void initView(View view) {
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -47,6 +42,7 @@ public class MyFavoriteFragment extends BaseFragment {
 
         viewEmpty = view.findViewById(R.id.view_empty);
         viewEmpty.setVisibility(View.GONE);
+        initData();
     }
 
     private void initData() {

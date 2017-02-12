@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui.fragment.mine;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,12 +36,6 @@ public class MyVideoCacheFragment extends BaseFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        initData();
-    }
-
-    @Override
     protected void initView(View view) {
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
         viewEmpty = view.findViewById(R.id.view_empty);
@@ -51,10 +46,14 @@ public class MyVideoCacheFragment extends BaseFragment {
         viewEmpty.setVisibility(View.GONE);
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
+        initData();
     }
 
     private void initData() {
         User user = getAppSettingProvider().getCurrentUser();
+        if (user == null) {
+            return;
+        }
         School school = getAppSettingProvider().getCurrentSchool();
         mCourseCacheHelper = new CourseCacheHelper(getContext(), school.getDomain(), user.id);
         MyVideoCacheAdapter adapter = new MyVideoCacheAdapter(mContext);
