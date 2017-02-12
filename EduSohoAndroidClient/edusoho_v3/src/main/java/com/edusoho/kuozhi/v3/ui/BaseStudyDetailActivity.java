@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
@@ -48,7 +49,7 @@ import extensions.PagerSlidingTabStrip;
  */
 
 public abstract class BaseStudyDetailActivity extends AppCompatActivity
-        implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback {
+        implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback, AppBarLayout.OnOffsetChangedListener{
 
     protected MenuPop mMenuPop;
     protected int mRunStatus;
@@ -87,7 +88,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     public static final int RESULT_REFRESH = 0x111;
     public static final int RESULT_LOGIN = 0x222;
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
-    protected int mCheckNum = 0;
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
     protected String mTitle;
@@ -184,7 +184,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
     protected String[] getTitleArray() {
         return new String [] {
-                "课程", "目录", "问答"
+                "简介", "目录", "问答"
         };
     }
 
@@ -209,8 +209,8 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             @Override
             public void onPageSelected(int position) {
 //                checkTab(position);
-//                setBottomLayoutVisible(position, mIsMemder);
-//                showEditTopic(position);
+                setBottomLayoutVisible(position, mIsMemder);
+                showEditTopic(position);
             }
 
             @Override
@@ -273,12 +273,14 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         mRunStatus = MSG_RESUME;
+        mAppBarLayout.addOnOffsetChangedListener(this);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mRunStatus = MSG_PAUSE;
+        mAppBarLayout.removeOnOffsetChangedListener(this);
     }
 
     @Override
@@ -330,6 +332,34 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         }
     }
 
+    private void changeToolbarStyle(boolean isTop) {
+        if (isTop) {
+            mShareView.setTextColor(getResources().getColor(R.color.textPrimary));
+            mToolbar.setNavigationIcon(R.drawable.action_icon_back);
+        } else {
+            mShareView.setTextColor(getResources().getColor(R.color.textIcons));
+            mToolbar.setNavigationIcon(R.drawable.action_bar_back);
+        }
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+        if (mViewPager.getCurrentItem() == 2) {
+            if (i == 0) {
+                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(true);
+            } else {
+                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(false);
+            }
+        }
+        int maxHeight = getResources().getDimensionPixelOffset(R.dimen.action_bar_height);
+        int toolbarHeight = AppUtil.dp2px(getBaseContext(), 260);
+        if (toolbarHeight + i > maxHeight * 2) {
+            changeToolbarStyle(false);
+            return;
+        }
+        changeToolbarStyle(true);
+    }
+
     protected void courseHastrial(String state, LessonItem lessonItem) {
     }
 
@@ -339,11 +369,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     private boolean isScreenLock = false;
 
     private void screenLock() {
-        if (isScreenLock) {
-            isScreenLock = false;
-        } else {
-            isScreenLock = true;
-        }
+        isScreenLock = !isScreenLock;
     }
 
     @Override

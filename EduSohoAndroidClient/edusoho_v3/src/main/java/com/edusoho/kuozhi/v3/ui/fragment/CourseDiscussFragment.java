@@ -46,11 +46,11 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
     private Queue<WidgetMessage> mUIMessageQueue;
     private int mRunStatus;
     private int mCourseId ;
-    private RefreshRecycleView mLvDiscuss;
+    private RefreshRecycleView mRvDiscuss;
     private View mEmpty;
     private boolean isJoin;
     private boolean isHave = true;
-    private LinearLayout mUnJoinView;
+    private LinearLayout mUnLoginView;
     private int i = 0;
     private int start = 20;
     private CourseStateCallback mCourseStateCallback;
@@ -64,7 +64,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
         super.onCreate(savedInstanceState);
         mUIMessageQueue = new ArrayDeque<>();
         ((EdusohoApp) getActivity().getApplication()).registMsgSource(this);
-        mCourseId = getArguments().getInt(Const.COURSE_ID);
+        mCourseId = getArguments().getInt(getActivity() instanceof CourseStudyDetailActivity ? Const.COURSE_ID : Const.CLASSROOM_ID);
     }
 
     @Override
@@ -82,14 +82,14 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
     }
 
     protected void initView(View view) {
-        mUnJoinView = (LinearLayout) view.findViewById(R.id.ll_course_catalog_empty);
-        mLvDiscuss = (RefreshRecycleView) view.findViewById(R.id.lv_discuss);
+        mUnLoginView = (LinearLayout) view.findViewById(R.id.ll_no_login);
+        mRvDiscuss = (RefreshRecycleView) view.findViewById(R.id.lv_discuss);
         mLoadView = view.findViewById(R.id.ll_frame_load);
         mEmpty = view.findViewById(R.id.ll_discuss_empty);
         mSwipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
         mSwipe.setOnRefreshListener(this);
         if (TextUtils.isEmpty(((EdusohoApp) getActivity().getApplication()).token)) {
-            mUnJoinView.setVisibility(View.VISIBLE);
+            mUnLoginView.setVisibility(View.VISIBLE);
         } else {
             initData();
         }
@@ -119,21 +119,21 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
 
     private void initDiscuss(final DiscussDetail discussDetail) {
         catalogueAdapter = new CourseDiscussAdapter(discussDetail == null ? null : discussDetail.getResources(), getActivity());
-        mLvDiscuss.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mLvDiscuss.setAdapter(catalogueAdapter);
+        mRvDiscuss.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRvDiscuss.setAdapter(catalogueAdapter);
         mLoadView.setVisibility(View.GONE);
         if (discussDetail == null) {
-            mLvDiscuss.isHave = false;
+            mRvDiscuss.isHave = false;
             mLoadView.setVisibility(View.GONE);
             mEmpty.setVisibility(View.VISIBLE);
             return;
         }
-        mLvDiscuss.setMyRecyclerViewListener(new RefreshRecycleView.MyRecyclerViewListener() {
+        mRvDiscuss.setMyRecyclerViewListener(new RefreshRecycleView.MyRecyclerViewListener() {
             @Override
             public void onLoadMore() {
                 if (!isHave) {
                     CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));
-                    mLvDiscuss.setLoadMoreComplete();
+                    mRvDiscuss.setLoadMoreComplete();
                     return;
                 }
                 new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, start)
@@ -146,15 +146,15 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
                             catalogueAdapter.notifyDataSetChanged();
                         } else {
                             isHave = false;
-                            mLvDiscuss.isHave = false;
+                            mRvDiscuss.isHave = false;
                             CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));
                         }
-                        mLvDiscuss.setLoadMoreComplete();
+                        mRvDiscuss.setLoadMoreComplete();
                     }
                 }).fail(new NormalCallback<VolleyError>() {
                     @Override
                     public void success(VolleyError obj) {
-                        mLvDiscuss.setLoadMoreComplete();
+                        mRvDiscuss.setLoadMoreComplete();
                     }
                 });
             }
@@ -177,6 +177,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
 
     public void reFreshView(boolean isJoin) {
         this.isJoin = isJoin;
+        initData();
     }
 
     @Override
@@ -211,7 +212,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, resourcesBean.getType());
             ((EdusohoApp) getActivity().getApplication()).mEngine.runNormalPluginWithBundleForResult("DiscussDetailActivity", getActivity(), bundle, 0);
         } else {
-            CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_join_look_hint));
+            CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_join_hint));
         }
     }
 

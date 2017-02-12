@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -38,7 +37,6 @@ import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -51,7 +49,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Created by suju on 17/2/7.
  */
 
-public class CourseStudyDetailActivity extends BaseStudyDetailActivity implements AppBarLayout.OnOffsetChangedListener, CourseStateCallback {
+public class CourseStudyDetailActivity extends BaseStudyDetailActivity implements CourseStateCallback {
     public CourseDetail mCourseDetail;
     private int mCourseId;
     private boolean mIsFavorite = false;
@@ -315,18 +313,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        mAppBarLayout.addOnOffsetChangedListener(this);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mAppBarLayout.removeOnOffsetChangedListener(this);
-    }
-
-    @Override
     public void finish() {
         super.finish();
         removePlayFragment();
@@ -461,34 +447,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         }
 
         transaction.remove(fragment).commitAllowingStateLoss();
-    }
-
-    private void changeToolbarStyle(boolean isTop) {
-        if (isTop) {
-            mShareView.setTextColor(getResources().getColor(R.color.textPrimary));
-            mToolbar.setNavigationIcon(R.drawable.action_icon_back);
-        } else {
-            mShareView.setTextColor(getResources().getColor(R.color.textIcons));
-            mToolbar.setNavigationIcon(R.drawable.action_bar_back);
-        }
-    }
-
-    @Override
-    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-        if (mViewPager.getCurrentItem() == 2) {
-            if (i == 0) {
-                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(true);
-            } else {
-                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(false);
-            }
-        }
-        int maxHeight = getResources().getDimensionPixelOffset(R.dimen.action_bar_height);
-        int toolbarHeight = AppUtil.dp2px(getBaseContext(), 260);
-        if (toolbarHeight + i > maxHeight * 2) {
-            changeToolbarStyle(false);
-            return;
-        }
-        changeToolbarStyle(true);
     }
 
     protected String[] getFragmentArray() {

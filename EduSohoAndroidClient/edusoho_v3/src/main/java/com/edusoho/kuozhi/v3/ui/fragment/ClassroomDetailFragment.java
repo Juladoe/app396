@@ -49,7 +49,6 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
 
     public void setClassroomId(int classroomId) {
         this.mClassroomId = classroomId;
-        initData();
     }
 
     @Override

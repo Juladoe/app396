@@ -57,11 +57,8 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
         super.initView();
         mCollect.setVisibility(View.GONE);
         mPlayButtonLayout.setVisibility(View.GONE);
-//        mPlayLayout2.setVisibility(View.GONE);
         mTvAdd.setText(R.string.txt_add_class);
-//        mTvCatalog.setText(R.string.class_catalog);
         mIvGrade.setVisibility(View.GONE);
-//        mIvGrade2.setVisibility(View.GONE);
     }
 
     protected String[] getFragmentArray() {
@@ -143,7 +140,6 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
             mIsMemder = false;
             mAddLayout.setVisibility(View.VISIBLE);
             mIvGrade.setVisibility(View.GONE);
-//            mIvGrade2.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
         } else {

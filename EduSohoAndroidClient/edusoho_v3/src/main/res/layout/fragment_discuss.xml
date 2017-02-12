@@ -50,7 +50,7 @@
             android:visibility="gone"/>
 
         <LinearLayout
-            android:id="@+id/ll_course_catalog_empty"
+            android:id="@+id/ll_no_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="55dp"
