@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -56,6 +57,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected ViewPager mViewPager;
     protected Toolbar mToolbar;
     protected TextView mShareView;
+    private CollapsingToolbarLayout mToolBarLayout;
     public AppBarLayout mAppBarLayout;
     protected ViewGroup mParentLayout;
     protected RelativeLayout mMediaLayout;
@@ -144,6 +146,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         mTvAdd = (TextView) findViewById(R.id.tv_add);
         mTvInclass = (TextView) findViewById(R.id.tv_inclass);
         mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+        mToolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         mIvGrade = (TextView) findViewById(R.id.iv_grade);
         mShareView = (TextView) findViewById(R.id.iv_share);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -181,6 +184,9 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         mTabLayout.setViewPager(mViewPager);
     }
 
+    protected void setToolbarLayoutBackground(int color) {
+        mToolBarLayout.setContentScrimColor(color);
+    }
 
     protected String[] getTitleArray() {
         return new String [] {

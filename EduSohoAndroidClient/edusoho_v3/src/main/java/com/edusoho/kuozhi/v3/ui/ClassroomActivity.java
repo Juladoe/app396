@@ -278,9 +278,9 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
     protected void showThreadCreateView(String type) {
         Bundle bundle = new Bundle();
         bundle.putInt(ThreadCreateActivity.TARGET_ID, mClassroomId);
-        bundle.putString(ThreadCreateActivity.TARGET_TYPE, "");
+        bundle.putString(ThreadCreateActivity.TARGET_TYPE, "classroom");
         bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
-        bundle.putString(ThreadCreateActivity.THREAD_TYPE, "course");
+        bundle.putString(ThreadCreateActivity.THREAD_TYPE, "common");
         ((EdusohoApp) getApplication()).mEngine.runNormalPluginWithBundle("ThreadCreateActivity", this, bundle);
     }
 }

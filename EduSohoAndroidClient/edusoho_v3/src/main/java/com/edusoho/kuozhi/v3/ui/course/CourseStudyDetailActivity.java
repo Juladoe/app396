@@ -48,7 +48,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * Created by suju on 17/2/7.
  */
-
 public class CourseStudyDetailActivity extends BaseStudyDetailActivity implements CourseStateCallback {
     public CourseDetail mCourseDetail;
     private int mCourseId;

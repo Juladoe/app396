@@ -179,8 +179,8 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
                 lessonTime.setTextColor(mContext.getResources().getColor(R.color.primary));
             } else {
                 lessonKind.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
-                lessonTitle.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
-                lessonTime.setTextColor(mContext.getResources().getColor(R.color.secondary2_font_color));
+                lessonTitle.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
+                lessonTime.setTextColor(mContext.getResources().getColor(R.color.secondary_font_color));
             }
             lessonTime.setText(lessonsBean.getLength());
             lessonTitle.setText(String.format("%s、%s", lessonsBean.getNumber(), lessonsBean.getTitle()));

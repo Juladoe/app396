@@ -8,15 +8,13 @@
         android:id="@+id/parent_rlayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
-        android:fitsSystemWindows="true">
+        android:background="@color/white">
 
         <android.support.design.widget.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="268dp"
+            android:layout_height="wrap_content"
             android:background="@color/transparent"
-            android:fitsSystemWindows="true"
             android:clipChildren="false"
             android:theme="@style/AppTheme.AppBarOverlay">
 
@@ -24,10 +22,11 @@
                 android:id="@+id/toolbar_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:contentScrim="@color/textIcons"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
                 <RelativeLayout
+                    app:layout_collapseMode="parallax"
+                    app:layout_collapseParallaxMultiplier="0.7"
                     android:id="@+id/media_rlayout"
                     android:layout_width="match_parent"
                     android:layout_height="210dp"
@@ -38,9 +37,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/default_course"
-                        app:layout_collapseMode="parallax"
-                        app:layout_collapseParallaxMultiplier="0.7" />
+                        android:src="@drawable/default_course" />
 
                     <RelativeLayout
                         android:id="@+id/layout_play_button"
@@ -116,22 +113,23 @@
                         android:id="@+id/fl_header_container"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_below="@+id/layout_play_button"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true" />
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/layout_play_button" />
                 </RelativeLayout>
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
+                    android:paddingTop="22dp"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/action_bar_height"
+                    android:layout_height="66dp"
                     android:background="@color/transparent"
+                    android:gravity="top"
                     android:minHeight="?attr/actionBarSize"
                     android:navigationIcon="@drawable/action_bar_back"
-                    android:gravity="top"
+                    app:layout_collapseMode="pin"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                    app:titleMarginTop="15dp"
-                    app:layout_collapseMode="pin">
+                    app:titleMarginTop="15dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -143,8 +141,8 @@
                             android:layout_width="@dimen/action_bar_height"
                             android:layout_height="@dimen/action_bar_height"
                             android:layout_alignParentRight="true"
-                            android:text="@string/new_font_share"
                             android:gravity="center"
+                            android:text="@string/new_font_share"
                             android:textColor="@color/textIcons"
                             android:textSize="15sp" />
 
@@ -167,53 +165,59 @@
                             android:layout_alignParentRight="true"
                             android:layout_marginRight="36dp"
                             android:gravity="center"
-                            android:visibility="gone"
                             android:text="@string/new_font_more_oper"
                             android:textColor="@color/disabled2_hint_color"
-                            android:textSize="16sp" />
+                            android:textSize="16sp"
+                            android:visibility="gone" />
 
                     </RelativeLayout>
                 </android.support.v7.widget.Toolbar>
-
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="58dp"
-                    android:layout_gravity="bottom"
-                    android:background="@drawable/action_bar_bg">
-
-                    <extensions.PagerSlidingTabStrip
-                        android:id="@+id/tabs"
-                        android:layout_width="match_parent"
-                        android:layout_height="51dp"
-                        android:background="@color/disabled2_hint_color"
-                        android:fillViewport="false"
-                        app:dividerColor="@color/transparent"
-                        app:indicatorColor="@color/primary_color"
-                        app:indicatorHeight="3dp"
-                        app:pst_other_color="@color/secondary_font_color"
-                        app:pst_textColor="@color/primary_color"
-                        app:pst_textSize="@dimen/medium_font_size"
-                        app:tabPaddingLeftRight="2dip"
-                        app:underlineColor="@color/transparent"
-                        app:underlineHeight="0dp" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="7dp"
-                        android:layout_below="@id/tabs"
-                        android:background="@drawable/shape_line_shadow" />
-                </RelativeLayout>
 
             </android.support.design.widget.CollapsingToolbarLayout>
 
         </android.support.design.widget.AppBarLayout>
 
-        <android.support.v4.view.ViewPager
-            android:id="@+id/container"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="58dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/action_bar_bg">
+
+                <extensions.PagerSlidingTabStrip
+                    android:id="@+id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="51dp"
+                    android:background="@color/disabled2_hint_color"
+                    android:fillViewport="false"
+                    app:dividerColor="@color/transparent"
+                    app:indicatorColor="@color/primary_color"
+                    app:indicatorHeight="3dp"
+                    app:pst_other_color="@color/secondary_font_color"
+                    app:pst_textColor="@color/primary_color"
+                    app:pst_textSize="@dimen/medium_font_size"
+                    app:tabPaddingLeftRight="2dip"
+                    app:underlineColor="@color/transparent"
+                    app:underlineHeight="0dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="7dp"
+                    android:layout_below="@id/tabs"
+                    android:background="@drawable/shape_line_shadow" />
+            </RelativeLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
     </android.support.design.widget.CoordinatorLayout>
 
     <include
@@ -232,9 +236,10 @@
         android:layout_marginRight="15dp"
         android:background="@drawable/shape_inclass_back"
         android:gravity="center"
-        android:text="&#xe697;"
+        android:text="@string/discuss_publish"
         android:textColor="@color/disabled2_hint_color"
         android:textSize="@dimen/font_s"
+        android:layout_gravity="bottom|right"
         android:visibility="gone" />
 
     <LinearLayout
