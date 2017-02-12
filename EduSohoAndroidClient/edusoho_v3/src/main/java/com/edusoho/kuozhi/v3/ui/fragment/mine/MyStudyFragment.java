@@ -53,6 +53,9 @@ public class MyStudyFragment extends BaseFragment {
     private TextView tvLiveCourse;
     private TextView tvClassroom;
 
+    private MyCourseStudyAdapter mCourseAdapter;
+    private MyClassroomAdapter mClassroomAdapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +102,8 @@ public class MyStudyFragment extends BaseFragment {
     }
 
     private void initData() {
+        mCourseAdapter = new MyCourseStudyAdapter(mContext);
+        mClassroomAdapter = new MyClassroomAdapter(mContext);
         switchType(LATEST_COURSE);
     }
 
@@ -139,12 +144,11 @@ public class MyStudyFragment extends BaseFragment {
     }
 
     private void loadLatestCourse() {
-        final MyCourseStudyAdapter adapter = new MyCourseStudyAdapter(mContext);
-        rvContent.setAdapter(adapter);
+        rvContent.setAdapter(mCourseAdapter);
         CourseDetailModel.getStudy(new ResponseCallbackListener<Study>() {
             @Override
             public void onSuccess(Study data) {
-                adapter.setLatestCourses(data.getResources());
+                mCourseAdapter.setLatestCourses(data.getResources());
                 List<Integer> ids = new ArrayList<>();
                 for (Study.Resource study : data.getResources()) {
                     ids.add(Integer.parseInt(study.getId()));
@@ -160,13 +164,12 @@ public class MyStudyFragment extends BaseFragment {
     }
 
     private void loadNormalCourse() {
-        final MyCourseStudyAdapter adapter = new MyCourseStudyAdapter(mContext);
-        rvContent.setAdapter(adapter);
+        rvContent.setAdapter(mCourseAdapter);
         CourseProvider courseProvider = new CourseProvider(mContext);
         courseProvider.getLearnCourses().success(new NormalCallback<CourseResult>() {
             @Override
             public void success(CourseResult courseResult) {
-                adapter.setNormalCourses(Arrays.asList(courseResult.resources));
+                mCourseAdapter.setNormalCourses(Arrays.asList(courseResult.resources));
                 List<Integer> ids = new ArrayList<>();
                 for (Course course : courseResult.resources) {
                     ids.add(course.id);
@@ -183,12 +186,11 @@ public class MyStudyFragment extends BaseFragment {
     }
 
     private void loadLiveCourse() {
-        final MyCourseStudyAdapter adapter = new MyCourseStudyAdapter(mContext);
-        rvContent.setAdapter(adapter);
+        rvContent.setAdapter(mCourseAdapter);
         CourseDetailModel.getLiveCourses(100, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(LearningCourse liveCourses) {
-                adapter.setLiveCourses(liveCourses.data);
+                mCourseAdapter.setLiveCourses(liveCourses.data);
                 List<Integer> ids = new ArrayList<>();
                 for (Course course : liveCourses.data) {
                     ids.add(course.id);
@@ -204,12 +206,11 @@ public class MyStudyFragment extends BaseFragment {
     }
 
     private void loadClassroom() {
-        final MyClassroomAdapter adapter = new MyClassroomAdapter(mContext);
-        rvContent.setAdapter(adapter);
+        rvContent.setAdapter(mClassroomAdapter);
         CourseDetailModel.getAllUserClassroom(100, 0, new ResponseCallbackListener<LearningClassroom>() {
             @Override
             public void onSuccess(LearningClassroom data) {
-                adapter.setClassrooms(data.getData());
+                mClassroomAdapter.setClassrooms(data.getData());
             }
 
             @Override
@@ -414,7 +415,7 @@ public class MyStudyFragment extends BaseFragment {
         public TextView tvMore;
         public View layoutClass;
         public TextView tvClassName;
-        public View vLine;
+        public View rLayoutItem;
 
         public CourseStudyViewHolder(View view) {
             super(view);
@@ -427,7 +428,7 @@ public class MyStudyFragment extends BaseFragment {
             tvMore = (TextView) view.findViewById(R.id.tv_more);
             layoutClass = view.findViewById(R.id.layout_class);
             tvClassName = (TextView) view.findViewById(R.id.tv_class_name);
-            vLine = view.findViewById(R.id.v_line);
+            rLayoutItem = view.findViewById(R.id.rlayout_item);
         }
     }
 
@@ -435,12 +436,14 @@ public class MyStudyFragment extends BaseFragment {
         public ImageView ivPic;
         public TextView tvTitle;
         public TextView tvMore;
+        public View rLayoutItem;
 
         public ClassroomViewHolder(View view) {
             super(view);
             ivPic = (ImageView) view.findViewById(R.id.iv_pic);
             tvTitle = (TextView) view.findViewById(R.id.tv_title);
             tvMore = (TextView) view.findViewById(R.id.tv_more);
+            rLayoutItem = view.findViewById(R.id.rlayout_item);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,8 +10,12 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.Study;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
+import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
+import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -111,8 +116,9 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                         viewHolder.tvLiveIcon.setVisibility(View.GONE);
                     }
                 }
-
                 setProgressStr(latestCourse.getLearnedNum(), latestCourse.getTotalLesson(), viewHolder.tvStudyState);
+                viewHolder.rLayoutItem.setTag(latestCourse);
+                viewHolder.rLayoutItem.setOnClickListener(getLatestCourseViewClickListener());
                 break;
             case COURSE_TYPE_NORMAL:
                 final Course normalCourse = mNormalCourses.get(position);
@@ -120,6 +126,8 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                         EdusohoApp.app.mOptions);
                 viewHolder.tvTitle.setText(String.valueOf(normalCourse.title));
                 setProgressStr(normalCourse.learnedNum, normalCourse.totalLesson, viewHolder.tvStudyState);
+                viewHolder.rLayoutItem.setTag(normalCourse);
+                viewHolder.rLayoutItem.setOnClickListener(getCourseViewClickListener());
                 break;
             case COURSE_TYPE_LIVE:
                 final Course liveCourse = mLiveCourses.get(position);
@@ -127,6 +135,8 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                         EdusohoApp.app.mOptions);
                 viewHolder.tvTitle.setText(String.valueOf(liveCourse.title));
                 setProgressStr(liveCourse.learnedNum, liveCourse.totalLesson, viewHolder.tvStudyState);
+                viewHolder.rLayoutItem.setTag(liveCourse);
+                viewHolder.rLayoutItem.setOnClickListener(getCourseViewClickListener());
                 if (liveCourse.type.equals("live")) {
                     viewHolder.layoutLive.setVisibility(View.VISIBLE);
                     viewHolder.tvMore.setVisibility(liveCourse.parentId == 0 ? View.VISIBLE : View.GONE);
@@ -153,6 +163,40 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                 return mLiveCourses != null ? mLiveCourses.size() : 0;
         }
         return 0;
+    }
+
+    private View.OnClickListener getLatestCourseViewClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Study.Resource study = (Study.Resource) v.getTag();
+                CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
+                        , mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(CourseActivity.COURSE_ID, String.valueOf(study.getId()));
+                                startIntent.putExtra(CourseActivity.SOURCE, study.getTitle());
+                            }
+                        });
+            }
+        };
+    }
+
+    private View.OnClickListener getCourseViewClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Course course = (Course) v.getTag();
+                CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
+                        , mContext, new PluginRunCallback() {
+                            @Override
+                            public void setIntentDate(Intent startIntent) {
+                                startIntent.putExtra(CourseActivity.COURSE_ID, course.id + "");
+                                startIntent.putExtra(CourseActivity.SOURCE, course.title);
+                            }
+                        });
+            }
+        };
     }
 
     private void setProgressStr(int now, int total, TextView view) {
