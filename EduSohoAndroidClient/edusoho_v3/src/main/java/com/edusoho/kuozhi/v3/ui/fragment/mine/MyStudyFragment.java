@@ -11,6 +11,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.MyClassroomAdapter;
 import com.edusoho.kuozhi.v3.adapter.MyCourseStudyAdapter;
+import com.edusoho.kuozhi.v3.entity.course.CourseProgress;
 import com.edusoho.kuozhi.v3.entity.course.LearningClassroom;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
 import com.edusoho.kuozhi.v3.entity.course.Study;
@@ -22,7 +23,9 @@ import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by JesseHuang on 2017/2/7.
@@ -140,6 +143,11 @@ public class MyStudyFragment extends BaseFragment {
             @Override
             public void onSuccess(Study data) {
                 adapter.setLatestCourses(data.getResources());
+                List<Integer> ids = new ArrayList<>();
+                for (Study.Resource study : data.getResources()) {
+                    ids.add(Integer.parseInt(study.getId()));
+                }
+                getCourseProgresses(ids);
             }
 
             @Override
@@ -159,7 +167,7 @@ public class MyStudyFragment extends BaseFragment {
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
-            public void success(VolleyError obj) {
+            public void success(VolleyError error) {
 
             }
         });
@@ -191,6 +199,33 @@ public class MyStudyFragment extends BaseFragment {
 
             @Override
             public void onFailure(String code, String message) {
+            }
+        });
+    }
+
+    private void getCourseProgresses(List<Integer> ids) {
+        CourseDetailModel.getCourseProgress(ids, new ResponseCallbackListener<CourseProgress>() {
+            @Override
+            public void onSuccess(CourseProgress data) {
+                MyCourseStudyAdapter myCourseStudyAdapter = (MyCourseStudyAdapter) rvContent.getAdapter();
+                List<Study.Resource> latestCourses = myCourseStudyAdapter.getLatestCourses();
+                int size = data.resources.size();
+                for (int i = 0; i < size; i++) {
+                    CourseProgress.Progress progress = data.resources.get(i);
+                    for (int j = 0; j < latestCourses.size(); j++) {
+                        if (progress.courseId == Integer.parseInt(latestCourses.get(j).getId())) {
+                            latestCourses.get(j).setLearnedNum(progress.learnedNum);
+                            latestCourses.get(j).setTotalLesson(progress.totalLesson);
+                            break;
+                        }
+                    }
+                }
+                rvContent.getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(String code, String message) {
+
             }
         });
     }

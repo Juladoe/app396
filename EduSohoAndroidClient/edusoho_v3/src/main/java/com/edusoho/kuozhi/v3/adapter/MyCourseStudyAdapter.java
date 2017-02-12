@@ -42,6 +42,10 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
         notifyDataSetChanged();
     }
 
+    public List<Study.Resource> getLatestCourses() {
+        return mLatestCourses;
+    }
+
     public void setNormalCourses(List<Course> list) {
         mCourseType = COURSE_TYPE_NORMAL;
         mNormalCourses = list;
@@ -64,6 +68,7 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
     public void onBindViewHolder(MyStudyFragment.CourseStudyViewHolder viewHolder, int position) {
         viewHolder.layoutClass.setVisibility(View.GONE);
         viewHolder.layoutLive.setVisibility(View.GONE);
+        viewHolder.tvStudyState.setText("");
         switch (mCourseType) {
             case COURSE_TYPE_LATEST:
                 final Study.Resource latestCourse = mLatestCourses.get(position);
@@ -98,6 +103,7 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                         viewHolder.tvLiveIcon.setVisibility(View.GONE);
                     }
                 }
+
                 setProgressStr(latestCourse.getLearnedNum(), latestCourse.getTotalLesson(), viewHolder.tvStudyState);
                 break;
             case COURSE_TYPE_NORMAL:
@@ -142,6 +148,10 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
     }
 
     private void setProgressStr(int now, int total, TextView view) {
+        if (total == 0) {
+            view.setText("");
+            return;
+        }
         String str;
         if (now == 0) {
             str = "未开始学习";
