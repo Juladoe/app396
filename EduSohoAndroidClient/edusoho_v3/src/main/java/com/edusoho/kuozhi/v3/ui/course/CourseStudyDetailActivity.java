@@ -53,9 +53,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 
 public class CourseStudyDetailActivity extends BaseStudyDetailActivity implements AppBarLayout.OnOffsetChangedListener, CourseStateCallback {
-    public static final String SOURCE = "source";
-    public static final String IS_CHILD_COURSE = "child_course";
-    public static final String COURSE_ID = "course_id";
     public CourseDetail mCourseDetail;
     private int mCourseId;
     private boolean mIsFavorite = false;
@@ -158,6 +155,18 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     @Override
+    protected void grade() {
+        ((EdusohoApp) getApplication()).mEngine.runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
+                , new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(ReviewActivity.TYPE, ReviewActivity.TYPE_COURSE);
+                        startIntent.putExtra(ReviewActivity.ID, mCourseId);
+                    }
+                });
+    }
+
+    @Override
     protected void add() {
         if (mCourseId != 0) {
             if (!"1".equals(mCourseDetail.getCourse().buyable)) {
@@ -256,7 +265,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     private void saveCourseToCache(Course course) {
-        course.setSourceName(getIntent().getStringExtra(SOURCE));
+        course.setSourceName(getIntent().getStringExtra(Const.SOURCE));
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(getBaseContext());
         sqliteUtil.saveLocalCache(
                 Const.CACHE_COURSE_TYPE,
@@ -288,7 +297,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         Member member = mCourseDetail.getMember();
         if (member == null) {
             mIsMemder = false;
-            if (getIntent().getBooleanExtra(CourseStudyDetailActivity.IS_CHILD_COURSE, false)) {
+            if (getIntent().getBooleanExtra(Const.IS_CHILD_COURSE, false)) {
                 mBottomLayout.setVisibility(View.GONE);
             } else {
                 mAddLayout.setVisibility(View.VISIBLE);

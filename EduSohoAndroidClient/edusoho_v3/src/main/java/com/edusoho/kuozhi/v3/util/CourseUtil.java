@@ -20,7 +20,7 @@ import java.util.Map;
  */
 
 public class CourseUtil {
-    public static void reviewCourse(String courseId, int rating, String content
+    public static void reviewCourse(int courseId, int rating, String content
             , final OnReviewCourseListener onReviewCourseListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();

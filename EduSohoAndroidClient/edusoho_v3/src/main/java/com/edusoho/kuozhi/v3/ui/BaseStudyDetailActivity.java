@@ -31,7 +31,6 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
@@ -570,7 +569,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     public void setBottomLayoutVisible(int curFragment, boolean isMember) {
-        if (getIntent().getBooleanExtra(CourseStudyDetailActivity.IS_CHILD_COURSE, false)) {
+        if (getIntent().getBooleanExtra(Const.IS_CHILD_COURSE, false)) {
             mBottomLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
         } else {

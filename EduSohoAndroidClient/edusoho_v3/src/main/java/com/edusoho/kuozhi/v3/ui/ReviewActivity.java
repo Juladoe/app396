@@ -35,7 +35,7 @@ public class ReviewActivity extends BaseNoTitleActivity {
     public static final int TYPE_CLASSROOM = 0;
     public static final int TYPE_COURSE = 1;
 
-    private String mId;
+    private int mId;
     private int mType;
 
     @Override
@@ -53,7 +53,7 @@ public class ReviewActivity extends BaseNoTitleActivity {
             tintManager.setTintColor(Color.parseColor("#00000000"));
         }
         Intent intent = getIntent();
-        mId = intent.getStringExtra(ID);
+        mId = intent.getIntExtra(ID, 0);
         mType = intent.getIntExtra(TYPE,TYPE_COURSE);
         initView();
         initEvent();
