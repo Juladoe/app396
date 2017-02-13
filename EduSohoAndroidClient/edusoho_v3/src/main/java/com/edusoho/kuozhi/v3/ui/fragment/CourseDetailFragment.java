@@ -129,7 +129,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 image.setTag(data.get(i).user.id);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
-                ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image);
+                ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image, EdusohoApp.app.mAvatarOptions);
             } else {
                 txt.setText("");
                 image.setImageAlpha(0);
