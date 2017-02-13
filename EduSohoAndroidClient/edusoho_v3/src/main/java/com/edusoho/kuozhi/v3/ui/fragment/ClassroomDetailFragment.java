@@ -39,7 +39,7 @@ import java.util.List;
 
 public class ClassroomDetailFragment extends BaseDetailFragment {
 
-    private String mClassroomId;
+    private int mClassroomId;
     private ClassroomDetail mClassroomDetail;
     private List<ClassroomReview> mReviews = new ArrayList<>();
     private ReviewAdapter mAdapter;
@@ -47,15 +47,14 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     public ClassroomDetailFragment() {
     }
 
-    public void setClassroomId(String classroomId) {
+    public void setClassroomId(int classroomId) {
         this.mClassroomId = classroomId;
-        initData();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mClassroomId = getArguments().getString("id");
+        mClassroomId = getArguments().getInt(Const.CLASSROOM_ID);
     }
 
     @Override
@@ -67,7 +66,6 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         mTvStudent1.setText(R.string.txt_classroom_student);
         mTvReview1.setText(R.string.txt_classroom_review);
         mTvPeople1.setText(R.string.txt_provision_services);
-        initEvent();
         initData();
     }
 
@@ -150,7 +148,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             mTvStudentNone.setVisibility(View.GONE);
         }
         for (int i = 0; i < 5; i++) {
-            View view = LayoutInflater.from(mContext)
+            View view = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_detail_avatar, null, false);
             LinearLayout.LayoutParams params =
                     new LinearLayout.LayoutParams(0, -1);
@@ -162,8 +160,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
                 image.setTag(data.get(i).userId);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
-                ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image,
-                        app.mAvatarOptions);
+                ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image);
             } else {
                 txt.setText("");
                 image.setImageAlpha(0);
@@ -248,7 +245,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             mTeacherLayout.setVisibility(View.VISIBLE);
             Teacher teacher = classRoom.teachers[0];
             mTeacherId = String.valueOf(teacher.id);
-            ImageLoader.getInstance().displayImage(teacher.getAvatar(), mIvTeacherIcon, app.mAvatarOptions);
+            ImageLoader.getInstance().displayImage(teacher.getAvatar(), mIvTeacherIcon);
             mTvTeacherName.setText(teacher.nickname);
             mTvTeacherDesc.setText(teacher.title);
         }
@@ -274,7 +271,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     @Override
     protected void moreReview() {
         EdusohoApp.app.mEngine.runNormalPlugin("AllReviewActivity"
-                , mContext, new PluginRunCallback() {
+                , getContext(), new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(AllReviewActivity.ID, Integer.valueOf(mClassroomId));
@@ -291,7 +288,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         }
         final String url = String.format(
                 Const.MOBILE_APP_URL,
-                app.schoolHost,
+                "",
                 "main#/viplist"
         );
         EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
@@ -323,7 +320,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = LayoutInflater.from(mContext)
+                convertView = LayoutInflater.from(getContext())
                         .inflate(R.layout.item_detail_review, null, false);
                 viewHolder = new ViewHolder();
                 viewHolder.mDesc = (TextView) convertView.findViewById(R.id.tv_review_desc);
@@ -340,8 +337,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             viewHolder.mName.setText(review.getUser().nickname);
             viewHolder.mTime.setText(CommonUtil.convertWeekTime(review.getCreatedTime()));
             viewHolder.mStar.setRating((int) Double.parseDouble(review.getRating()));
-            ImageLoader.getInstance().displayImage(review.getUser().getMediumAvatar(), viewHolder.mIcon,
-                    app.mAvatarOptions);
+            ImageLoader.getInstance().displayImage(review.getUser().getMediumAvatar(), viewHolder.mIcon);
             viewHolder.mIcon.setTag(review.getUser().id);
             viewHolder.mIcon.setOnClickListener(mOnClickListener);
             return convertView;

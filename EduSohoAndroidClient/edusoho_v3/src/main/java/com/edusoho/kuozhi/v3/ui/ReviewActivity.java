@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
@@ -35,7 +34,7 @@ public class ReviewActivity extends BaseNoTitleActivity {
     public static final int TYPE_CLASSROOM = 0;
     public static final int TYPE_COURSE = 1;
 
-    private String mId;
+    private int mId;
     private int mType;
 
     @Override
@@ -53,7 +52,7 @@ public class ReviewActivity extends BaseNoTitleActivity {
             tintManager.setTintColor(Color.parseColor("#00000000"));
         }
         Intent intent = getIntent();
-        mId = intent.getStringExtra(ID);
+        mId = intent.getIntExtra(ID, 0);
         mType = intent.getIntExtra(TYPE,TYPE_COURSE);
         initView();
         initEvent();

@@ -48,6 +48,7 @@ public class CourseCatalogue {
         private String startTime;
         private String endTime;
         private String replayStatus;
+        public boolean isSelect;
 
         public LessonItem toLessonItem() {
             LessonItem lessonItem = new LessonItem();

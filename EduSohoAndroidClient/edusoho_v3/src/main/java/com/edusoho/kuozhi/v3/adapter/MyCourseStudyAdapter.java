@@ -19,14 +19,13 @@ import com.edusoho.kuozhi.v3.entity.course.Study;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
@@ -193,8 +192,8 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                         , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(CourseActivity.COURSE_ID, String.valueOf(study.getId()));
-                                startIntent.putExtra(CourseActivity.SOURCE, study.getTitle());
+                                startIntent.putExtra(Const.COURSE_ID, study.getId());
+                                startIntent.putExtra(Const.SOURCE, study.getTitle());
                             }
                         });
             }
@@ -210,8 +209,8 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                         , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(CourseActivity.COURSE_ID, course.id + "");
-                                startIntent.putExtra(CourseActivity.SOURCE, course.title);
+                                startIntent.putExtra(Const.COURSE_ID, course.id);
+                                startIntent.putExtra(Const.SOURCE, course.title);
                             }
                         });
             }
@@ -235,13 +234,13 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(final DialogInterface dlg, int which) {
-                                            CourseUtil.deleteCourse(Integer.parseInt(study.getId()), new CourseUtil.CallBack() {
+                                            CourseUtil.deleteCourse(study.getId(), new CourseUtil.CallBack() {
                                                 @Override
                                                 public void onSuccess(String response) {
                                                     CommonUtil.shortToast(mContext, "退出成功");
                                                     mLatestCourses.remove(study);
                                                     dialog.dismiss();
-                                                    clearCoursesCache(Integer.parseInt(study.getId()));
+                                                    clearCoursesCache(study.getId());
                                                     notifyDataSetChanged();
                                                 }
 

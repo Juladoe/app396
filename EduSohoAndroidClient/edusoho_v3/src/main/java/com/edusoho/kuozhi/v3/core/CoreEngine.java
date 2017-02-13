@@ -154,11 +154,11 @@ public class CoreEngine {
     }
 
     public Fragment runPluginWithFragmentByBundle(
-            String pluginName, Activity activity, Bundle bundle) {
+            String pluginName, Context context, Bundle bundle) {
         Fragment fragment = null;
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
-            fragment = Fragment.instantiate(activity, pluginModel.packAge);
+            fragment = Fragment.instantiate(context, pluginModel.packAge);
             fragment.setArguments(bundle);
 
             return fragment;
@@ -167,11 +167,11 @@ public class CoreEngine {
     }
 
     public Fragment runPluginWithFragment(
-            String pluginName, Activity activity, PluginFragmentCallback callback) {
+            String pluginName, Context context, PluginFragmentCallback callback) {
         Fragment fragment;
         PluginModel pluginModel = mPluginModelHashMap.get(pluginName);
         if (pluginModel != null) {
-            fragment = Fragment.instantiate(activity, pluginModel.packAge);
+            fragment = Fragment.instantiate(context, pluginModel.packAge);
             if (callback != null) {
                 Bundle bundle = new Bundle();
                 fragment.setArguments(bundle);

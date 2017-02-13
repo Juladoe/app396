@@ -490,7 +490,7 @@
 
     <plugin
         name="CourseActivity"
-        package="com.edusoho.kuozhi.v3.ui.CourseActivity"
+        package="com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity"
         version="1.0" />
     <plugin
         name="ClassroomActivity"

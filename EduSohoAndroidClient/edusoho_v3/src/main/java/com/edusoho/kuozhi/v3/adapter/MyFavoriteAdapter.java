@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +14,9 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyFavoriteFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
 import com.edusoho.kuozhi.v3.view.dialog.SureDialog;
@@ -67,7 +66,7 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteFragment.F
                         , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(CourseActivity.COURSE_ID, course.id + "");
+                                startIntent.putExtra(Const.COURSE_ID, course.id + "");
                             }
                         });
             }
@@ -105,7 +104,7 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteFragment.F
                     new SureDialog(mContext).init("是否确定取消收藏！", new SureDialog.CallBack() {
                         @Override
                         public void onSureClick(View v, final Dialog dialog2) {
-                            CourseUtil.uncollectCourse(String.valueOf(course.id)
+                            CourseUtil.uncollectCourse(course.id
                                     , new CourseUtil.OnCollectSuccessListener() {
                                         @Override
                                         public void onCollectSuccess() {

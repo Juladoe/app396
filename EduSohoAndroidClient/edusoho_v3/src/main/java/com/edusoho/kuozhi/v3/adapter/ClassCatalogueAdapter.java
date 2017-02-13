@@ -1,89 +1,97 @@
 package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.List;
 
 /**
  * Created by DF on 2016/12/15.
  */
 
-public class ClassCatalogueAdapter extends BaseAdapter{
-    public Context mContext;
-    public boolean isJoin;
-    public List<Course> mCourseList;
+public class ClassCatalogueAdapter extends RecyclerView.Adapter<ClassCatalogueAdapter.ClassHolder>{
+    private Context mContext;
+    private boolean isJoin;
+    private List<Course> mCourseList;
+    private OnItemClickListener mOnItemClickListener;
 
 
     public ClassCatalogueAdapter(Context mContext, List<Course> mCourseList, boolean isJoin) {
-        this.mContext = mContext;
         this.mCourseList = mCourseList;
         this.isJoin = isJoin;
     }
 
     @Override
-    public int getCount() {
-        return mCourseList == null ? 0 : mCourseList.size();
+    public ClassCatalogueAdapter.ClassHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        mContext = parent.getContext();
+        return new ClassHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_class_catalog, parent, false));
     }
 
     @Override
-    public Object getItem(int position) {
-        return mCourseList.get(position);
+    public void onBindViewHolder(ClassCatalogueAdapter.ClassHolder holder, final int position) {
+        render(holder, mCourseList.get(position));
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mOnItemClickListener != null) {
+                    mOnItemClickListener.click(position);
+                }
+            }
+        });
     }
 
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        final ClassHolder classHolder;
-        if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_class_catalog, parent, false);
-            classHolder = new ClassHolder(convertView);
-            convertView.setTag(classHolder);
-        } else {
-            classHolder = (ClassHolder) convertView.getTag();
-        }
-
-        Course course = mCourseList.get(position);
-        ImageLoader.getInstance().displayImage(course.middlePicture, classHolder.mIvClass, EdusohoApp.app.mOptions);
-        classHolder.mTvTitle.setText(course.title);
+    private void render(ClassCatalogueAdapter.ClassHolder holder,Course course) {
+        ImageLoader.getInstance().displayImage(course.middlePicture, holder.mIvClass, EdusohoApp.app.mOptions);
+        holder.mTvTitle.setText(course.title);
         if (!isJoin) {
-            classHolder.mTvPeople.setText(
+            holder.mTvPeople.setText(
                     String.format(mContext.getResources().getString(R.string.class_catalog_people), course.studentNum));
         }
         if (!isJoin) {
             if (course.price <= 0) {
-                classHolder.mTvFree.setText(R.string.class_catalog_free);
-                classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+                holder.mTvFree.setText(R.string.class_catalog_free);
+                holder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.primary_color));
             } else {
-                classHolder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.secondary_color));
-                classHolder.mTvFree.setText(String.format("¥%.2f", course.price));
+                holder.mTvFree.setTextColor(mContext.getResources().getColor(R.color.secondary_color));
+                holder.mTvFree.setText(String.format("¥%.2f", course.price));
             }
         }
-        return convertView;
     }
 
-    public static class ClassHolder {
+    @Override
+    public int getItemCount() {
+        return mCourseList == null ? 0 : mCourseList.size();
+    }
+
+    public static class ClassHolder extends RecyclerView.ViewHolder{
         public ImageView mIvClass;
         public TextView mTvTitle;
         public TextView mTvFree;
         public TextView mTvPeople;
         public ClassHolder(View itemView) {
+            super(itemView);
             mIvClass = (ImageView) itemView.findViewById(R.id.iv_class);
             mTvTitle = (TextView) itemView.findViewById(R.id.tv_title);
             mTvFree = (TextView) itemView.findViewById(R.id.tv_free_price);
             mTvPeople = (TextView) itemView.findViewById(R.id.tv_people_num);
         }
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.mOnItemClickListener = onItemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void click(int position);
     }
 }

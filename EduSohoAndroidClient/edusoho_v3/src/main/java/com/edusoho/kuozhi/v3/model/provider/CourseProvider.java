@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
 
+import com.edusoho.kuozhi.v3.entity.CourseSetting;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
@@ -133,6 +134,19 @@ public class CourseProvider extends ModelProvider {
 
         RequestOption requestOption = buildSimpleGetRequest(
                 requestUrl, new TypeToken<CourseMember>(){});
+
+        return requestOption.build();
+    }
+
+    public ProviderListener<CourseSetting> getSetting() {
+        School school = SchoolUtil.getDefaultSchool(mContext);
+        String token = ApiTokenUtil.getTokenString(mContext);
+
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/api/setting/cours", school.url));
+        requestUrl.heads.put("Auth-Token", token);
+
+        RequestOption requestOption = buildSimpleGetRequest(
+                requestUrl, new TypeToken<CourseSetting>(){});
 
         return requestOption.build();
     }

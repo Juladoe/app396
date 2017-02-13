@@ -19,7 +19,7 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
-import com.edusoho.kuozhi.v3.ui.DetailActivity;
+import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
@@ -35,7 +35,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     private int mLessonId;
     private int mCourseId;
     private long mSaveSeekTime;
-    private DetailActivity mMenuCallback;
+    private BaseStudyDetailActivity mMenuCallback;
     private LessonMenuHelper mLessonMenuHelper;
     private SharedPreferences mSeekPositionSetting;
     private static final String SEEK_POSITION = "seek_position";
@@ -54,8 +54,8 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity instanceof DetailActivity) {
-            mMenuCallback = (DetailActivity) activity;
+        if (activity instanceof BaseStudyDetailActivity) {
+            mMenuCallback = (BaseStudyDetailActivity) activity;
         }
     }
 

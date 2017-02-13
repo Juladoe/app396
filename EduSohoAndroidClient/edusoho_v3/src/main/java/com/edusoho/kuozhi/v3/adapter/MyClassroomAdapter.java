@@ -22,7 +22,6 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -86,7 +85,7 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<MyStudyFragment.Cla
                 CoreEngine.create(mContext).runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, String.valueOf(classroomId));
+                        startIntent.putExtra(Const.CLASSROOM_ID, classroomId);
                     }
                 });
             }

@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.v3.ui.fragment.mine;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -148,7 +147,7 @@ public class MyStudyFragment extends BaseFragment {
                 mCourseAdapter.setLatestCourses(data.getResources());
                 List<Integer> ids = new ArrayList<>();
                 for (Study.Resource study : data.getResources()) {
-                    ids.add(Integer.parseInt(study.getId()));
+                    ids.add(study.getId());
                 }
                 getCourseProgresses(ids, LATEST_COURSE);
                 getLiveLesson(LATEST_COURSE);
@@ -228,7 +227,7 @@ public class MyStudyFragment extends BaseFragment {
                         for (int i = 0; i < latestCourseSize; i++) {
                             CourseProgress.Progress progress = data.resources.get(i);
                             for (int j = 0; j < latestCourses.size(); j++) {
-                                if (progress.courseId == Integer.parseInt(latestCourses.get(j).getId())) {
+                                if (progress.courseId == latestCourses.get(j).getId()) {
                                     latestCourses.get(j).setLearnedNum(progress.learnedNum);
                                     latestCourses.get(j).setTotalLesson(progress.totalLesson);
                                     break;
@@ -284,7 +283,7 @@ public class MyStudyFragment extends BaseFragment {
                 for (int i = 0; i < latestCourseSize; i++) {
                     final Study.Resource study = latestCourses.get(i);
                     final int finalI = i;
-                    CourseDetailModel.getLiveLesson(Integer.parseInt(study.getId()), new NormalCallback<List<Lesson>>() {
+                    CourseDetailModel.getLiveLesson(study.getId(), new NormalCallback<List<Lesson>>() {
                         @Override
                         public void success(List<Lesson> lessons) {
                             if (lessons != null) {

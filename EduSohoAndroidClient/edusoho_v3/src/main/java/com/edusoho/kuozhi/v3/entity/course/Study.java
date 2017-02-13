@@ -31,7 +31,7 @@ public class Study implements Serializable {
     public static class Resource {
         private int learnedNum;
         private int totalLesson;
-        private String id;
+        private int id;
         private String title;
         private String subtitle;
         private String status;
@@ -112,11 +112,11 @@ public class Study implements Serializable {
             this.totalLesson = totalLesson;
         }
 
-        public String getId() {
+        public int getId() {
             return id;
         }
 
-        public void setId(String id) {
+        public void setId(int id) {
             this.id = id;
         }
 

@@ -39,8 +39,6 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.ChatSelectFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.ViewPagerFragment;
@@ -206,11 +204,11 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 switch (type) {
                     case "course":
-                        bundle.putString(CourseActivity.COURSE_ID, matcher.group(4));
+                        bundle.putString(Const.COURSE_ID, matcher.group(4));
                         CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
                         return;
                     case "classroom":
-                        bundle.putString(ClassroomActivity.CLASSROOM_ID, matcher.group(4));
+                        bundle.putString(Const.CLASSROOM_ID, matcher.group(4));
                         CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomActivity", mContext, bundle);
                         return;
                 }

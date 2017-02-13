@@ -76,7 +76,7 @@ public abstract class AbstractCommand {
                 break;
             case Destination.COURSE:
                 notifyIntent.putExtra(NewsCourseActivity.FROM_NAME, mMessageBody.getDestination().getNickname());
-                notifyIntent.putExtra(NewsCourseActivity.COURSE_ID, mMessageBody.getDestination().getId());
+                notifyIntent.putExtra(Const.COURSE_ID, mMessageBody.getDestination().getId());
                 notifyIntent.putExtra(Const.INTENT_TARGET, NewsCourseActivity.class);
                 notifyIntent.putExtra(NewsCourseActivity.SHOW_TYPE, NewsCourseActivity.DISCUSS_TYPE);
                 break;

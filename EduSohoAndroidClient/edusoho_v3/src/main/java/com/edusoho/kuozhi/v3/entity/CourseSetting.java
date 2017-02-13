@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by DF on 2016/12/21.
  */
 
-public class CustomTitle {
+public class CourseSetting {
 
     @SerializedName("custom_chapter_enabled")
     private String customChapterEnable;

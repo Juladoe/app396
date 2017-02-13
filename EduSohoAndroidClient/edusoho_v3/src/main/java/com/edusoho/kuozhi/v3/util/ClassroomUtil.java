@@ -193,7 +193,7 @@ public class ClassroomUtil {
         });
     }
 
-    public static void addClassroomVip(String classroomId, final OnAddClassroomListener
+    public static void addClassroomVip(int classroomId, final OnAddClassroomListener
             onAddclassroomListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
