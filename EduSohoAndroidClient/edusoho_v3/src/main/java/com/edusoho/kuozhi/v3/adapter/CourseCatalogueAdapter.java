@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogueAdapter.ViewHolder> {
 
-    public int mSelect = -1;
+    public int mSelect = 0;
     private static CourseCatalogue courseCatalogue;
     public Context mContext;
     private static boolean isJoin;
