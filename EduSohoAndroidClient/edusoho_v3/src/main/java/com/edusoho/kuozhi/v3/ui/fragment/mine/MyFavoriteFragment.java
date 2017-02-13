@@ -46,7 +46,7 @@ public class MyFavoriteFragment extends BaseFragment {
     }
 
     private void initData() {
-        final MyFavoriteAdapter myFavoriteAdapter = new MyFavoriteAdapter(mContext);
+        final MyFavoriteAdapter myFavoriteAdapter = new MyFavoriteAdapter(getActivity());
         rvContent.setAdapter(myFavoriteAdapter);
         CourseDetailModel.getLiveCollect(100, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
