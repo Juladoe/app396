@@ -142,7 +142,7 @@ public class CourseProvider extends ModelProvider {
         School school = SchoolUtil.getDefaultSchool(mContext);
         String token = ApiTokenUtil.getTokenString(mContext);
 
-        RequestUrl requestUrl = new RequestUrl(String.format("%s/api/setting/cours", school.url));
+        RequestUrl requestUrl = new RequestUrl(String.format("%s/api/setting/course", school.host));
         requestUrl.heads.put("Auth-Token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(
