@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -22,7 +23,6 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
-import com.edusoho.kuozhi.v3.view.FixHeightListView;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public class ClassCatalogFragment extends BaseFragment {
 
     public boolean isJoin = false;
     public String mClassRoomId = "0";
-    private FixHeightListView mLvClass;
+    private ListView mLvClass;
 
     private View mLoadView;
     private List<Course> mCourseList;
@@ -48,7 +48,7 @@ public class ClassCatalogFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_class_catalog, container, false);
-        mLvClass = (FixHeightListView) view.findViewById(R.id.lv_catalog);
+        mLvClass = (ListView) view.findViewById(R.id.lv_catalog);
         mLoadView = view.findViewById(R.id.il_class_catalog_load);
         mLessonEmpytView = (LinearLayout) view.findViewById(R.id.ll_course_catalog_empty);
         return view;

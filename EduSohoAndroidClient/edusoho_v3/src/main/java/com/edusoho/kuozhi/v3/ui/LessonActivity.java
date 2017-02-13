@@ -357,6 +357,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if (isFinishing()) {
+                    return;
+                }
                 setLoadViewState(false);
                 mLessonItem = getLessonResultType(response);
                 if (mLessonItem == null) {
