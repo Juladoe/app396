@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Created by remilia on 2017/1/10.
+ * 需要删掉，没用的class member 太多
  */
 public class Study implements Serializable {
 

@@ -89,7 +89,7 @@ public class MyAskAdapter extends BaseAdapter {
 
     private View buildAskView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_ask1, null, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_ask_question, null, false);
             viewHolderAsk = new ViewHolderAsk();
             viewHolderAsk.tvType = (TextView) convertView.findViewById(R.id.tv_type);
             viewHolderAsk.tvContent = (TextView) convertView.findViewById(R.id.tv_content);
@@ -129,7 +129,7 @@ public class MyAskAdapter extends BaseAdapter {
 
     private View buildAnswerView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_ask2, null, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.item_my_answer_question, null, false);
             viewHolderAnswer = new ViewHolderAnswer();
             viewHolderAnswer.tvTime = (TextView) convertView.findViewById(R.id.tv_time);
             viewHolderAnswer.tvContentAnswer = (HtmlTextView) convertView.findViewById(R.id.tv_content_answer);
