@@ -224,6 +224,13 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
             }
         });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override
