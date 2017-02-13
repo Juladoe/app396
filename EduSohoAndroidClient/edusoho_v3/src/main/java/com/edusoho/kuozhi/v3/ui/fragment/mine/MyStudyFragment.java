@@ -149,7 +149,9 @@ public class MyStudyFragment extends BaseFragment {
                 for (Study.Resource study : data.getResources()) {
                     ids.add(study.getId());
                 }
-                getCourseProgresses(ids, LATEST_COURSE);
+                if (ids.size() != 0) {
+                    getCourseProgresses(ids, LATEST_COURSE);
+                }
                 getLiveLesson(LATEST_COURSE);
             }
 
@@ -170,7 +172,9 @@ public class MyStudyFragment extends BaseFragment {
                 for (Course course : courseResult.resources) {
                     ids.add(course.id);
                 }
-                getCourseProgresses(ids, NORMAL_COURSE);
+                if (ids.size() != 0) {
+                    getCourseProgresses(ids, NORMAL_COURSE);
+                }
                 getLiveLesson(NORMAL_COURSE);
             }
         }).fail(new NormalCallback<VolleyError>() {
@@ -191,7 +195,9 @@ public class MyStudyFragment extends BaseFragment {
                 for (Course course : liveCourses.data) {
                     ids.add(course.id);
                 }
-                getCourseProgresses(ids, LIVE_COURSE);
+                if (ids.size() != 0) {
+                    getCourseProgresses(ids, LIVE_COURSE);
+                }
                 getLiveLesson(LIVE_COURSE);
             }
 
