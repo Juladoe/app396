@@ -64,13 +64,6 @@ public class MyStudyFragment extends BaseFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        Log.d("MyStudyFragment", "onStart: initData");
-    }
-
-    @Override
     protected void initView(View view) {
         viewEmpty = view.findViewById(R.id.view_empty);
         viewEmpty.setVisibility(View.GONE);

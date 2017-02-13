@@ -69,6 +69,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private NavDownTabClickListener mNavDownTabClickListener;
     private Queue<Request<String>> mAjaxQueue;
     private boolean mLogoutFlag = false;
+    private View vToolbarBreakline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -163,6 +164,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         tvTitle = (TextView) findViewById(R.id.tv_title);
         tvSitting = (TextView) findViewById(R.id.tv_sitting);
         viewTitleLoading = findViewById(R.id.ll_title_loading);
+        vToolbarBreakline = findViewById(R.id.v_line);
         setSupportActionBar(tbActionBar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mNavDownTabClickListener = new NavDownTabClickListener();
@@ -234,6 +236,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));
         tvTitle.setTextColor(Color.parseColor("#ffffff"));
         tvSitting.setVisibility(View.GONE);
+        vToolbarBreakline.setVisibility(View.GONE);
         if (id == R.id.nav_tab_news) {
             tag = "NewsFragment";
             setTitle(getString(R.string.title_news));
@@ -252,6 +255,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ccf9f9f9")));
             tvTitle.setTextColor(getResources().getColor(R.color.primary_font_color));
             tvSitting.setVisibility(View.VISIBLE);
+            vToolbarBreakline.setVisibility(View.VISIBLE);
             setTitleLoading(false);
         }
         if (tag.equals(mCurrentTag)) {
