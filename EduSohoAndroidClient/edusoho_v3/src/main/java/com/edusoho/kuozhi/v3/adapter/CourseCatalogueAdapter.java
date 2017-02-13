@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogueAdapter.ViewHolder> {
 
-    public int mSelect = 0;
+    public int mSelect = -1;
     private static CourseCatalogue courseCatalogue;
     public Context mContext;
     private static boolean isJoin;
@@ -59,22 +59,26 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.render(courseCatalogue.getLessons().get(position), chapterTitle, unitTitle, position);
         holder.itemView.setTag(courseCatalogue.getLessons().get(position));
         if (holder.getItemViewType() == TYPE_LESSON) {
+            if (holder.itemView.hasOnClickListeners()) {
+                return;
+            }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mSelect != position) {
-                        courseCatalogue.getLessons().get(mSelect).isSelect = false;
-                        notifyItemChanged(mSelect);
-                        mSelect = position;
-                        courseCatalogue.getLessons().get(mSelect).isSelect = true;
-                        notifyItemChanged(mSelect);
-                        if (onRecyclerViewItemClickListener != null) {
-                            onRecyclerViewItemClickListener.onItemClick(v, ((CourseCatalogue.LessonsBean) v.getTag()));
-                        }
+                    if (mSelect == holder.getAdapterPosition()) {
+                        return;
+                    }
+                    courseCatalogue.getLessons().get(mSelect).isSelect = false;
+                    notifyItemChanged(mSelect);
+                    mSelect = holder.getAdapterPosition();
+                    courseCatalogue.getLessons().get(mSelect).isSelect = true;
+                    notifyItemChanged(mSelect);
+                    if (onRecyclerViewItemClickListener != null) {
+                        onRecyclerViewItemClickListener.onItemClick(v, courseCatalogue.getLessons().get(mSelect));
                     }
                 }
             });
