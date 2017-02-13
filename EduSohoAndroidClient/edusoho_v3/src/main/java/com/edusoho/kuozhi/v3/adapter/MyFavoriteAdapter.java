@@ -56,7 +56,7 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteFragment.F
         ImageLoader.getInstance().displayImage(course.getLargePicture()
                 , viewHolder.ivPic, EdusohoApp.app
                         .mOptions);
-        viewHolder.tvAddNum.setText(String.format("%s人参与", course.hitNum));
+        viewHolder.tvAddNum.setText(String.format("%s人参与", course.studentNum));
         viewHolder.tvTitle.setText(String.valueOf(course.title));
         viewHolder.recyclerViewItem.setTag(course.id);
         viewHolder.recyclerViewItem.setOnClickListener(new View.OnClickListener() {
