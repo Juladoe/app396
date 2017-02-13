@@ -112,7 +112,6 @@ public class ClassCatalogFragment extends Fragment {
     private void initView() {
         ClassCatalogueAdapter classAdapter = new ClassCatalogueAdapter(getActivity(), mCourseList, isJoin);
         mRvClass.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRvClass.addItemDecoration(new RecyclerView.ItemDecoration() {});
         mRvClass.setAdapter(classAdapter);
         classAdapter.setOnItemClickListener(new ClassCatalogueAdapter.OnItemClickListener() {
             @Override

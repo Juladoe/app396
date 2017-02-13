@@ -204,11 +204,11 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
                 Bundle bundle = new Bundle();
                 switch (type) {
                     case "course":
-                        bundle.putString(Const.COURSE_ID, matcher.group(4));
+                        bundle.putInt(Const.COURSE_ID, Integer.parseInt(matcher.group(4)));
                         CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
                         return;
                     case "classroom":
-                        bundle.putString(Const.CLASSROOM_ID, matcher.group(4));
+                        bundle.putInt(Const.CLASSROOM_ID, Integer.parseInt(matcher.group(4)));
                         CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomActivity", mContext, bundle);
                         return;
                 }

@@ -89,6 +89,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
         mSwipe.setOnRefreshListener(this);
         if (TextUtils.isEmpty(((EdusohoApp) getActivity().getApplication()).token)) {
             mUnLoginView.setVisibility(View.VISIBLE);
+            mSwipe.setEnabled(false);
         } else {
             initData();
         }
@@ -97,6 +98,8 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
 
     public void initData() {
         mLoadView.setVisibility(View.VISIBLE);
+        mSwipe.setEnabled(true);
+        mUnLoginView.setVisibility(View.GONE);
         new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, 0)
         .success(new NormalCallback<DiscussDetail>() {
             @Override
@@ -195,7 +198,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
     }
 
     public void setSwipeToRefreshEnabled(boolean enabled) {
-        if (mSwipe != null) {
+        if (mSwipe != null && mUnLoginView.getVisibility() == View.GONE) {
             mSwipe.setEnabled(enabled);
         }
     }
