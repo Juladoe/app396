@@ -187,7 +187,7 @@ public class MyStudyFragment extends BaseFragment {
 
     private void loadLiveCourse() {
         rvContent.setAdapter(mCourseAdapter);
-        CourseDetailModel.getLiveCourses(100, 0, new ResponseCallbackListener<LearningCourse>() {
+        CourseDetailModel.getLiveCourses(1000, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(LearningCourse liveCourses) {
                 mCourseAdapter.setLiveCourses(liveCourses.data);

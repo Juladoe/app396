@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -31,11 +32,12 @@ public class CourseProvider extends ModelProvider {
         String token = tokenMap.get("token").toString();
 
         RequestUrl requestUrl = null;
-        requestUrl = new RequestUrl(String.format("%s%srelation=learn", school.host,  Const.MY_COURSES));
+        requestUrl = new RequestUrl(String.format("%s%srelation=learn&limit=1000", school.host, Const.MY_COURSES));
         requestUrl.heads.put("X-Auth-Token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<CourseResult>(){});
+                requestUrl, new TypeToken<CourseResult>() {
+                });
 
         return requestOption.build();
     }
@@ -47,10 +49,10 @@ public class CourseProvider extends ModelProvider {
         String token = tokenMap.get("token").toString();
         RequestUrl requestUrl = new RequestUrl(school.host + Const.CREATE_THREAD);
         requestUrl.heads.put("X-Auth-Token", token);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 "threadType", threadType,
-                "type" , type,
-                "title" , title,
+                "type", type,
+                "title", title,
                 "content", content
         });
 
@@ -64,14 +66,16 @@ public class CourseProvider extends ModelProvider {
             requestUrl.getParams().put("targetType", targetType);
         }
         RequestOption requestOption = buildSimplePostRequest(
-                requestUrl, new TypeToken<LinkedHashMap>(){});
+                requestUrl, new TypeToken<LinkedHashMap>() {
+                });
 
         return requestOption.build();
     }
 
     public ProviderListener<CourseDetailsResult> getCourse(RequestUrl requestUrl) {
         RequestOption requestOption = buildSimplePostRequest(
-                requestUrl, new TypeToken<CourseDetailsResult>(){});
+                requestUrl, new TypeToken<CourseDetailsResult>() {
+                });
 
         requestOption.getRequest().setCacheUseMode(BaseVolleyRequest.ALWAYS_USE_CACHE);
         return requestOption.build();
@@ -99,7 +103,8 @@ public class CourseProvider extends ModelProvider {
         requestUrl.heads.put("X-Auth-Token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<LinkedHashMap>(){});
+                requestUrl, new TypeToken<LinkedHashMap>() {
+                });
 
         return requestOption.build();
     }
@@ -111,12 +116,13 @@ public class CourseProvider extends ModelProvider {
         RequestUrl requestUrl = null;
         requestUrl = new RequestUrl(String.format("%s/%s", school.url, Const.UN_LEARN_COURSE));
         requestUrl.heads.put("token", token);
-        requestUrl.setParams(new String[] {
+        requestUrl.setParams(new String[]{
                 "courseId", String.valueOf(courseId)
         });
 
         RequestOption requestOption = buildSimplePostRequest(
-                requestUrl, new TypeToken<String>(){});
+                requestUrl, new TypeToken<String>() {
+                });
 
         return requestOption.build();
     }
@@ -128,12 +134,13 @@ public class CourseProvider extends ModelProvider {
         RequestUrl requestUrl = null;
         requestUrl = new RequestUrl(String.format("%s/%s", school.url, Const.COURSE_MEMBER));
         requestUrl.heads.put("token", token);
-        requestUrl.setGetParams(new String[] {
+        requestUrl.setGetParams(new String[]{
                 "courseId", String.valueOf(courseId)
         });
 
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<CourseMember>(){});
+                requestUrl, new TypeToken<CourseMember>() {
+                });
 
         return requestOption.build();
     }
@@ -146,7 +153,8 @@ public class CourseProvider extends ModelProvider {
         requestUrl.heads.put("Auth-Token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<CourseSetting>(){});
+                requestUrl, new TypeToken<CourseSetting>() {
+                });
 
         return requestOption.build();
     }
