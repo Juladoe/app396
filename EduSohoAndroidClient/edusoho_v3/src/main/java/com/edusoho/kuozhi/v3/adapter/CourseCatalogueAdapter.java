@@ -26,7 +26,7 @@ import java.util.Map;
  */
 public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogueAdapter.ViewHolder> {
 
-    public int mSelect = 0;
+    public int mSelect = -1;
     private static CourseCatalogue courseCatalogue;
     public Context mContext;
     private static boolean isJoin;
@@ -71,6 +71,9 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
                 public void onClick(View v) {
                     if (mSelect == holder.getAdapterPosition()) {
                         return;
+                    }
+                    if (mSelect == -1) {
+                        mSelect = 0;
                     }
                     courseCatalogue.getLessons().get(mSelect).isSelect = false;
                     notifyItemChanged(mSelect);
