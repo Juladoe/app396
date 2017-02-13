@@ -34,7 +34,6 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -242,7 +241,7 @@ public class MyStudyAdapter extends BaseAdapter {
                         , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(CourseActivity.COURSE_ID, course.id + "");
+                                startIntent.putExtra(Const.COURSE_ID, course.id + "");
                             }
                         });
             } else {
@@ -251,8 +250,8 @@ public class MyStudyAdapter extends BaseAdapter {
                         , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(CourseActivity.COURSE_ID, String.valueOf(study.getId()));
-                                startIntent.putExtra(CourseActivity.SOURCE, study.getTitle());
+                                startIntent.putExtra(Const.COURSE_ID, String.valueOf(study.getId()));
+                                startIntent.putExtra(Const.SOURCE, study.getTitle());
                             }
                         });
             }
@@ -339,14 +338,14 @@ public class MyStudyAdapter extends BaseAdapter {
                                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(final DialogInterface dlg, int which) {
-                                        CourseUtil.deleteCourse(Integer.parseInt(study.getId()), new CourseUtil.CallBack() {
+                                        CourseUtil.deleteCourse(study.getId(), new CourseUtil.CallBack() {
                                             @Override
                                             public void onSuccess(String response) {
                                                 CommonUtil.shortToast(mContext, "退出成功");
                                                 mLists.remove(object);
                                                 notifyDataSetChanged();
                                                 dialog.dismiss();
-                                                clearCoursesCache(Integer.parseInt(study.getId()));
+                                                clearCoursesCache(study.getId());
                                             }
 
                                             @Override
@@ -690,8 +689,8 @@ public class MyStudyAdapter extends BaseAdapter {
                                 });
                     } else if (object instanceof Study.Resource) {
                         final Study.Resource study = (Study.Resource) object;
-                        ids.add(Integer.parseInt(study.getId()));
-                        CourseDetailModel.getLiveLesson(Integer.parseInt(study.getId()),
+                        ids.add(study.getId());
+                        CourseDetailModel.getLiveLesson(study.getId(),
                                 new NormalCallback<List<Lesson>>() {
                                     @Override
                                     public void success(List<Lesson> lessons) {
@@ -730,7 +729,7 @@ public class MyStudyAdapter extends BaseAdapter {
                                 } else if (mLists.get(j) instanceof Study.Resource) {
                                     Study.Resource study = (Study.Resource) mLists.get(j);
                                     CourseProgress.Progress progress = progresses.get(i);
-                                    if (Integer.parseInt(study.getId()) == progress.courseId) {
+                                    if (study.getId() == progress.courseId) {
                                         study.setLearnedNum(progress.learnedNum);
                                         study.setTotalLesson(progress.totalLesson);
                                         continue out;

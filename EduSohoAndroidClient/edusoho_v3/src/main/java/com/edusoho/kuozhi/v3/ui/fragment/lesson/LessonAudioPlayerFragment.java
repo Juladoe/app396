@@ -70,6 +70,9 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         .success(new NormalCallback<LessonItem>() {
             @Override
             public void success(LessonItem lessonItem) {
+                if (!isAdded() || isDetached()) {
+                    return;
+                }
                 changeToolBarState(false);
                 setCoverViewState(true);
                 if (lessonItem == null || TextUtils.isEmpty(lessonItem.mediaUri)) {

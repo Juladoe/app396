@@ -45,8 +45,6 @@ import java.util.List;
  */
 public class CourseActivity extends DetailActivity implements View.OnClickListener, CourseStateCallback {
 
-    public static final String COURSE_ID = "course_id";
-    public static final String SOURCE = "source";
     public static final String SOURCE_ID = "source_id";
     public static final String IS_CHILD_COURSE = "child_course";
     private int mCourseId;
@@ -59,7 +57,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        mCourseId = intent.getIntExtra(COURSE_ID, 0);
+        mCourseId = intent.getIntExtra(Const.COURSE_ID, 0);
         if (mCourseId == 0) {
             finish();
             return;
@@ -210,7 +208,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     private void saveCourseToCache(Course course) {
-        course.setSourceName(getIntent().getStringExtra(SOURCE));
+        course.setSourceName(getIntent().getStringExtra(Const.SOURCE));
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(getBaseContext());
         sqliteUtil.saveLocalCache(
                 Const.CACHE_COURSE_TYPE,
@@ -403,7 +401,10 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
-    protected void courseChange(LessonItem lessonItem) {
+    protected synchronized void courseChange(LessonItem lessonItem) {
+        if (mIsPlay && mContinueLessonItem != null && mContinueLessonItem.id == lessonItem.id) {
+            return;
+        }
         mContinueLessonItem = lessonItem;
         coursePause();
         courseStart();

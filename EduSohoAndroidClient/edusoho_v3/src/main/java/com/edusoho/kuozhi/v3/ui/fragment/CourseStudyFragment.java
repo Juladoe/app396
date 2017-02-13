@@ -20,10 +20,6 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.imserver.IMClient;
-import com.edusoho.kuozhi.imserver.entity.MessageEntity;
-import com.edusoho.kuozhi.imserver.entity.message.Destination;
-import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.StudyProcessRecyclerAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
@@ -39,8 +35,6 @@ import com.edusoho.kuozhi.v3.model.bal.courseDynamics.CourseDynamicsItem;
 import com.edusoho.kuozhi.v3.model.bal.courseDynamics.DynamicsProvider;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.model.sys.School;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.ThreadCreateActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -48,13 +42,9 @@ import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.umeng.analytics.MobclickAgent;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -100,7 +90,7 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
         @Override
         public void onClick(View view) {
             Bundle bundle = new Bundle();
-            bundle.putString(CourseActivity.COURSE_ID, String.valueOf(mCourseId));
+            bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
             CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
         }
     };
