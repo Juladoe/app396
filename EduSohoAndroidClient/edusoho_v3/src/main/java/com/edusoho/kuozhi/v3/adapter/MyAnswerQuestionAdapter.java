@@ -51,6 +51,7 @@ public class MyAnswerQuestionAdapter extends RecyclerView.Adapter<MyQuestionFrag
         viewHolder.tvTime.setText(CommonUtil.convertMills2Date(Long.parseLong(entity.getCreatedTime()) * 1000));
         viewHolder.tvContentAsk.setText(entity.getTitle());
         viewHolder.tvContentAnswer.setHtml(entity.getContent(), new HtmlHttpImageGetter(viewHolder.tvContentAnswer, null, true));
+        viewHolder.layout.setTag(entity);
         viewHolder.layout.setOnClickListener(getAnswerClickListener());
     }
 
