@@ -136,6 +136,30 @@
                         android:layout_height="match_parent"
                         android:gravity="center_vertical">
 
+                        <LinearLayout
+                            android:id="@+id/play_layout2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:orientation="horizontal">
+
+                            <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/new_font_play"
+                                android:textColor="@color/primary_font_color"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/tv_play2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:text="开始播放"
+                                android:textColor="@color/primary_font_color"
+                                android:textSize="@dimen/font_xl" />
+                        </LinearLayout>
+
                         <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                             android:id="@+id/iv_share"
                             android:layout_width="@dimen/action_bar_height"

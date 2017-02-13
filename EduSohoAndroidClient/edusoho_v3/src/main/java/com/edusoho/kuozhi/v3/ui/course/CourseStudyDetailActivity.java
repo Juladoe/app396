@@ -67,6 +67,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         super.initView();
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mTabLayout.setViewPager(mViewPager);
+        mPlayLayout2.setVisibility(View.GONE);
         mTvAdd.setText(R.string.txt_add_course);
     }
 
@@ -409,6 +410,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         if (mCourseDetail != null && mCourseDetail.getMember() != null) {
             if ("1".equals(mCourseDetail.getMember().isLearned)) {
                 mTvPlay.setText(R.string.txt_study_finish);
+                mTvPlay2.setText(R.string.txt_study_finish);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(false);
                 return;
@@ -419,14 +421,17 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                 mPlayLayout.setEnabled(true);
                 if (mCourseDetail == null || mCourseDetail.getMember() == null) {
                     mTvPlay.setText(R.string.txt_study_try);
+                    mTvPlay2.setText(R.string.txt_study_try);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
                 } else {
                     mTvPlay.setText(R.string.txt_study_start);
+                    mTvPlay2.setText(R.string.txt_study_start);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 }
                 break;
             case Const.COURSE_CHANGE_STATE_STARTED:
                 mTvPlay.setText(R.string.txt_study_continue);
+                mTvPlay2.setText(R.string.txt_study_continue);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(true);
                 mPlayLastLayout.setVisibility(View.VISIBLE);

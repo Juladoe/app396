@@ -32,6 +32,7 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -84,8 +85,10 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected TextView tvTopic;
     protected TextView tvQuestion;
     protected TextView mTvCollect;
+    protected View mPlayLayout2;
     protected ViewGroup mAddLayout;
     protected ViewGroup mPlayLastLayout;
+    protected TextView mTvPlay2;
     protected SectionsPagerAdapter mSectionsPagerAdapter;
     public static final int RESULT_REFRESH = 0x111;
     public static final int RESULT_LOGIN = 0x222;
@@ -136,7 +139,9 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         mPlayLastLayout = (ViewGroup) findViewById(R.id.layout_play_last);
         mTvLast = (TextView) findViewById(R.id.tv_last_title);
         mPlayLayout = (ViewGroup) findViewById(R.id.play_layout);
+        mPlayLayout2 = findViewById(R.id.play_layout2);
         mTvPlay = (TextView) findViewById(R.id.tv_play);
+        mTvPlay2 = (TextView) findViewById(R.id.tv_play2);
         mBottomLayout = (ViewGroup) findViewById(R.id.bottom_layout);
         mAddLayout = (ViewGroup) findViewById(R.id.bottom_add_layout);
         mConsult = (ViewGroup) findViewById(R.id.consult_layout);
@@ -200,6 +205,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         mShareView.setOnClickListener(this);
         mIvGrade.setOnClickListener(this);
         mPlayLayout.setOnClickListener(this);
+        mPlayLayout2.setOnClickListener(this);
         mCollect.setOnClickListener(this);
         mTvAdd.setOnClickListener(this);
         mConsult.setOnClickListener(this);
@@ -241,7 +247,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             grade();
         } else if (v.getId() == R.id.layout_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
-        } else if (v.getId() == R.id.play_layout) {
+        } else if (v.getId() == R.id.play_layout || v.getId() == R.id.play_layout2) {
             courseStart();
         } else if (v.getId() == R.id.collect_layout) {
             collect();
@@ -350,10 +356,16 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             setToolbarLayoutBackground(getResources().getColor(R.color.textIcons));
             mShareView.setTextColor(getResources().getColor(R.color.textPrimary));
             mToolbar.setNavigationIcon(R.drawable.action_icon_back);
+            if (BaseStudyDetailActivity.this instanceof CourseStudyDetailActivity) {
+                mPlayLayout2.setVisibility(View.VISIBLE);
+            }
         } else {
             setToolbarLayoutBackground(getResources().getColor(R.color.transparent));
             mShareView.setTextColor(getResources().getColor(R.color.textIcons));
             mToolbar.setNavigationIcon(R.drawable.action_bar_back);
+            if (BaseStudyDetailActivity.this instanceof CourseStudyDetailActivity) {
+                mPlayLayout2.setVisibility(View.GONE);
+            }
         }
     }
 

@@ -57,6 +57,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
         super.initView();
         mCollect.setVisibility(View.GONE);
         mPlayButtonLayout.setVisibility(View.GONE);
+        mPlayLayout2.setVisibility(View.GONE);
         mTvAdd.setText(R.string.txt_add_class);
         mIvGrade.setVisibility(View.GONE);
     }
