@@ -35,7 +35,8 @@ public class MyVideoCacheAdapter extends RecyclerView.Adapter<MyVideoCacheFragme
         mList = new ArrayList<>();
     }
 
-    public void addData(List<DownloadCourse> list) {
+    public void setData(List<DownloadCourse> list) {
+        mList.clear();
         mList.addAll(list);
         notifyDataSetChanged();
     }
