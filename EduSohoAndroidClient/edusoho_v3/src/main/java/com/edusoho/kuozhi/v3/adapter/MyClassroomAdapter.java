@@ -54,6 +54,11 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<MyStudyFragment.Cla
         notifyDataSetChanged();
     }
 
+    public void clear() {
+        mClassroomList.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public MyStudyFragment.ClassroomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_classroom, parent, false);

@@ -109,6 +109,13 @@
 
     </LinearLayout>
 
+    <com.edusoho.kuozhi.v3.view.InnerLoadView
+        android:id="@+id/ilv_loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rlayout_filter_type"
+        android:layout_marginTop="50dp"
+        android:background="@android:color/transparent" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_content"

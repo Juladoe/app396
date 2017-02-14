@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -28,6 +29,7 @@ import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -55,6 +57,7 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
     private TextView tvNormalCourse;
     private TextView tvLiveCourse;
     private TextView tvClassroom;
+    private View ilvLoadingView;
 
     private MyCourseStudyAdapter mCourseAdapter;
     private MyClassroomAdapter mClassroomAdapter;
@@ -69,6 +72,9 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
     protected void initView(View view) {
         viewEmpty = view.findViewById(R.id.view_empty);
         viewEmpty.setVisibility(View.GONE);
+
+        ilvLoadingView = view.findViewById(R.id.ilv_loading_view);
+        ilvLoadingView.setVisibility(View.VISIBLE);
 
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -117,21 +123,25 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
         tvClassroom.setTextColor(getResources().getColor(R.color.primary_font_color));
         switch (type) {
             case LATEST_COURSE:
+                clearViewData();
                 loadLatestCourse();
                 tvLatestCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_latest));
                 break;
             case NORMAL_COURSE:
+                clearViewData();
                 loadNormalCourse();
                 tvNormalCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_course));
                 break;
             case LIVE_COURSE:
+                clearViewData();
                 loadLiveCourse();
                 tvLiveCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_live));
                 break;
             case CLASSROOM:
+                clearViewData();
                 loadClassroom();
                 tvClassroom.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_classroom));
@@ -143,10 +153,12 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
     }
 
     private void loadLatestCourse() {
+        ilvLoadingView.setVisibility(View.VISIBLE);
         rvContent.setAdapter(mCourseAdapter);
         CourseDetailModel.getStudy(new ResponseCallbackListener<Study>() {
             @Override
             public void onSuccess(Study data) {
+                ilvLoadingView.setVisibility(View.GONE);
                 mCourseAdapter.setLatestCourses(data.getResources());
                 List<Integer> ids = new ArrayList<>();
                 for (Study.Resource study : data.getResources()) {
@@ -165,12 +177,15 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
     }
 
     private void loadNormalCourse() {
+        ilvLoadingView.setVisibility(View.VISIBLE);
         rvContent.setAdapter(mCourseAdapter);
         CourseProvider courseProvider = new CourseProvider(mContext);
         courseProvider.getLearnCourses().success(new NormalCallback<CourseResult>() {
             @Override
             public void success(CourseResult courseResult) {
-                mCourseAdapter.setNormalCourses(Arrays.asList(courseResult.resources));
+                ilvLoadingView.setVisibility(View.GONE);
+                List<Course> list = new LinkedList<>(Arrays.asList(courseResult.resources));
+                mCourseAdapter.setNormalCourses(list);
                 List<Integer> ids = new ArrayList<>();
                 for (Course course : courseResult.resources) {
                     ids.add(course.id);
@@ -189,10 +204,12 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
     }
 
     private void loadLiveCourse() {
+        ilvLoadingView.setVisibility(View.VISIBLE);
         rvContent.setAdapter(mCourseAdapter);
         CourseDetailModel.getLiveCourses(1000, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(LearningCourse liveCourses) {
+                ilvLoadingView.setVisibility(View.GONE);
                 mCourseAdapter.setLiveCourses(liveCourses.data);
                 List<Integer> ids = new ArrayList<>();
                 for (Course course : liveCourses.data) {
@@ -206,15 +223,18 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
             @Override
             public void onFailure(String code, String message) {
+                ilvLoadingView.setVisibility(View.GONE);
             }
         });
     }
 
     private void loadClassroom() {
+        ilvLoadingView.setVisibility(View.VISIBLE);
         rvContent.setAdapter(mClassroomAdapter);
         CourseDetailModel.getAllUserClassroom(100, 0, new ResponseCallbackListener<LearningClassroom>() {
             @Override
             public void onSuccess(LearningClassroom data) {
+                ilvLoadingView.setVisibility(View.GONE);
                 mClassroomAdapter.setClassrooms(data.getData());
             }
 
@@ -364,7 +384,11 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
                 }
                 break;
         }
+    }
 
+    private void clearViewData() {
+        mCourseAdapter.clear();
+        mClassroomAdapter.clear();
     }
 
     private View.OnClickListener getTypeClickListener() {

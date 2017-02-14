@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,9 +41,9 @@ import java.util.List;
 public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.CourseStudyViewHolder> {
     private Context mContext;
     private int mCourseType = 1;
-    private static final int COURSE_TYPE_LATEST = 1;
-    private static final int COURSE_TYPE_NORMAL = 2;
-    private static final int COURSE_TYPE_LIVE = 3;
+    public static final int COURSE_TYPE_LATEST = 1;
+    public static final int COURSE_TYPE_NORMAL = 2;
+    public static final int COURSE_TYPE_LIVE = 3;
 
     private List<Study.Resource> mLatestCourses;
     private List<Course> mNormalCourses;
@@ -51,11 +52,21 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
 
     public MyCourseStudyAdapter(Context context) {
         this.mContext = context;
+        mLatestCourses = new ArrayList<>();
+        mNormalCourses = new ArrayList<>();
+        mLiveCourses = new ArrayList<>();
     }
 
     public void setLatestCourses(List<Study.Resource> list) {
         mCourseType = COURSE_TYPE_LATEST;
         mLatestCourses = list;
+        notifyDataSetChanged();
+    }
+
+    public void clear() {
+        mLatestCourses.clear();
+        mNormalCourses.clear();
+        mLiveCourses.clear();
         notifyDataSetChanged();
     }
 
