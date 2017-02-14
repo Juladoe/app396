@@ -25,6 +25,7 @@ public class Classroom implements Serializable {
     public String[] service;
     public Teacher[] teachers;
     public String convNo;
+    public int headTeacherId;
 
     public String getLargePicture() {
         int schemIndex = largePicture.lastIndexOf("http://");
