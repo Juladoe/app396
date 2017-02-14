@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
-        <android.support.design.widget.AppBarLayout
+        <com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
                     app:layout_collapseParallaxMultiplier="0.7"
                     android:id="@+id/media_rlayout"
                     android:layout_width="match_parent"
-                    android:layout_height="210dp"
+                    android:layout_height="@dimen/course_toolbar_height"
                     android:background="#333">
 
                     <ImageView
@@ -209,14 +209,6 @@
 
             </android.support.design.widget.CollapsingToolbarLayout>
 
-        </android.support.design.widget.AppBarLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="58dp"
@@ -246,11 +238,13 @@
                     android:background="@drawable/shape_line_shadow" />
             </RelativeLayout>
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/container"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </LinearLayout>
+        </com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/container"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </android.support.design.widget.CoordinatorLayout>
 
