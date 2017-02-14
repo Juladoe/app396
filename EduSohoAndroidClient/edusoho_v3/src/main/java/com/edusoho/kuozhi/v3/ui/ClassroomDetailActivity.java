@@ -103,7 +103,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
             });
         } else if (v.getId() == R.id.rl_entry) {
             Bundle bundle = new Bundle();
-            bundle.putString(Const.CLASSROOM_ID, String.valueOf(mFromId));
+            bundle.putInt(Const.CLASSROOM_ID, mFromId);
             CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomActivity", mContext, bundle);
         } else if (v.getId() == R.id.rl_clear_record) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);

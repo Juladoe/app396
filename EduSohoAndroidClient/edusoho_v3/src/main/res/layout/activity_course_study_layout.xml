@@ -124,17 +124,27 @@
                     android:layout_width="match_parent"
                     android:layout_height="66dp"
                     android:background="@color/transparent"
-                    android:gravity="top"
                     android:minHeight="?attr/actionBarSize"
-                    android:navigationIcon="@drawable/action_bar_back"
                     app:layout_collapseMode="pin"
+                    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                     app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                     app:titleMarginTop="15dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_gravity="center_horizontal"
                         android:gravity="center_vertical">
+
+                        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+                            android:id="@+id/back"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/action_bar_height"
+                            android:gravity="center"
+                            android:paddingRight="15dp"
+                            android:text="@string/new_font_back"
+                            android:textColor="@color/disabled2_hint_color"
+                            android:textSize="17dp" />
 
                         <LinearLayout
                             android:id="@+id/play_layout2"

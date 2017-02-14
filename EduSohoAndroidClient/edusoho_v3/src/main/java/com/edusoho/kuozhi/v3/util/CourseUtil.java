@@ -56,7 +56,9 @@ public class CourseUtil {
             notLogin();
             return;
         }
-        EdusohoApp.app.getUrl(EdusohoApp.app.bindUrl(Const.FAVORITE + "?courseId=" + courseId, true)
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(Const.FAVORITE, true);
+        requestUrl.setParams(new String[] {"courseId", String.valueOf(courseId)});
+        EdusohoApp.app.postUrl(requestUrl
                 , new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -84,7 +86,9 @@ public class CourseUtil {
             notLogin();
             return;
         }
-        EdusohoApp.app.getUrl(EdusohoApp.app.bindUrl(Const.UNFAVORITE + "?courseId=" + courseId, true)
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(Const.UNFAVORITE, true);
+        requestUrl.setParams(new String[] {"courseId", String.valueOf(courseId)});
+        EdusohoApp.app.postUrl(requestUrl
                 , new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {

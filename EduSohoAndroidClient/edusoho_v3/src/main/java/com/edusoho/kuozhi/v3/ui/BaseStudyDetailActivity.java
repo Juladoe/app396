@@ -59,7 +59,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected Toolbar mToolbar;
     protected TextView mShareView;
     private CollapsingToolbarLayout mToolBarLayout;
-    public AppBarLayout mAppBarLayout;
+    protected AppBarLayout mAppBarLayout;
     protected ViewGroup mParentLayout;
     protected RelativeLayout mMediaLayout;
     protected ImageView mIvBackGraound;
@@ -89,6 +89,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected ViewGroup mAddLayout;
     protected ViewGroup mPlayLastLayout;
     protected TextView mTvPlay2;
+    private TextView mBackView;
     protected SectionsPagerAdapter mSectionsPagerAdapter;
     public static final int RESULT_REFRESH = 0x111;
     public static final int RESULT_LOGIN = 0x222;
@@ -131,6 +132,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mTitleBarHeight = 25;
         }
+        mBackView = (TextView) findViewById(R.id.back);
         mTvEditTopic = (TextView) findViewById(R.id.tv_edit_topic);
         mParentLayout = (ViewGroup) findViewById(R.id.parent_rlayout);
         mMediaLayout = (RelativeLayout) findViewById(R.id.media_rlayout);
@@ -159,7 +161,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setOffscreenPageLimit(3);
         mTabLayout = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        mProcessDialog = new LoadDialog(this);
         mLoadingView = findViewById(R.id.ll_frame_load);
         setSupportActionBar(mToolbar);
         mTabLayout.setIndicatorColor(R.color.primary_color);
@@ -202,6 +203,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected abstract String[] getFragmentArray();
 
     private void initEvent() {
+        mBackView.setOnClickListener(this);
         mShareView.setOnClickListener(this);
         mIvGrade.setOnClickListener(this);
         mPlayLayout.setOnClickListener(this);
@@ -230,13 +232,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
             }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
     }
 
     @Override
@@ -259,6 +254,8 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             goClass();
         } else if (v.getId() == R.id.tv_edit_topic) {
             showEditPop();
+        } else if (v.getId() == R.id.back){
+            finish();
         }
     }
 
@@ -355,14 +352,14 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         if (isTop) {
             setToolbarLayoutBackground(getResources().getColor(R.color.textIcons));
             mShareView.setTextColor(getResources().getColor(R.color.textPrimary));
-            mToolbar.setNavigationIcon(R.drawable.action_icon_back);
+            mBackView.setTextColor(getResources().getColor(R.color.textPrimary));
             if (BaseStudyDetailActivity.this instanceof CourseStudyDetailActivity) {
                 mPlayLayout2.setVisibility(View.VISIBLE);
             }
         } else {
             setToolbarLayoutBackground(getResources().getColor(R.color.transparent));
             mShareView.setTextColor(getResources().getColor(R.color.textIcons));
-            mToolbar.setNavigationIcon(R.drawable.action_bar_back);
+            mBackView.setTextColor(getResources().getColor(R.color.textIcons));
             if (BaseStudyDetailActivity.this instanceof CourseStudyDetailActivity) {
                 mPlayLayout2.setVisibility(View.GONE);
             }

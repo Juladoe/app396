@@ -90,7 +90,7 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
         @Override
         public void onClick(View view) {
             Bundle bundle = new Bundle();
-            bundle.putString(Const.COURSE_ID, String.valueOf(mCourseId));
+            bundle.putInt(Const.COURSE_ID, mCourseId);
             CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
         }
     };

@@ -72,6 +72,9 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
                     if (mSelect == holder.getAdapterPosition()) {
                         return;
                     }
+                    if (mSelect == -1) {
+                        mSelect = 0;
+                    }
                     courseCatalogue.getLessons().get(mSelect).isSelect = false;
                     notifyItemChanged(mSelect);
                     mSelect = holder.getAdapterPosition();

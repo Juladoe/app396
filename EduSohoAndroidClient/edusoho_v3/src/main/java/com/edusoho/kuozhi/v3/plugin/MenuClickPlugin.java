@@ -93,14 +93,14 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
     @JsAnnotation
     public void openNativeCourseDetailPage(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
         Bundle bundle = new Bundle();
-        bundle.putString(Const.COURSE_ID, String.valueOf(args.getInt(0)));
+        bundle.putInt(Const.COURSE_ID, args.getInt(0));
         CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
     }
 
     @JsAnnotation
     public void openNativeClassroomDetailPage(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
         Bundle bundle = new Bundle();
-        bundle.putString(Const.CLASSROOM_ID, String.valueOf(args.getInt(0)));
+        bundle.putInt(Const.CLASSROOM_ID, args.getInt(0));
         CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomActivity", mContext, bundle);
     }
 
