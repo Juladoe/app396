@@ -199,7 +199,11 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
     @Override
     public void refreshData() {
         initData();
-        Log.d("develop", "refreshData: " + this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void setSwipeEnabled(int i) {
+
     }
 
     public static class ViewHolderAsk extends RecyclerView.ViewHolder {

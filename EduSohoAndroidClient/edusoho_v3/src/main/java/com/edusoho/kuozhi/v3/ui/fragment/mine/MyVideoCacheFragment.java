@@ -91,6 +91,11 @@ public class MyVideoCacheFragment extends BaseFragment implements MineFragment1.
 
     }
 
+    @Override
+    public void setSwipeEnabled(int i) {
+
+    }
+
     public static class VideoCacheViewHolder extends RecyclerView.ViewHolder {
         public ImageView ivCover;
         public TextView tvCourseTitle;

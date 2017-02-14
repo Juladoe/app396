@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -28,8 +29,9 @@ import java.util.List;
  * Created by JesseHuang on 2017/2/6.
  */
 
-public class MineFragment1 extends BaseFragment {
+public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffsetChangedListener {
 
+    private AppBarLayout appBarLayout;
     private TextView tvName;
     private CircleImageView ivAvatar;
     private TextView tvUserType;
@@ -50,6 +52,7 @@ public class MineFragment1 extends BaseFragment {
 
     @Override
     protected void initView(View view) {
+        appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar);
         tvName = (TextView) view.findViewById(R.id.tv_name);
         ivAvatar = (CircleImageView) view.findViewById(R.id.iv_avatar);
         tvUserType = (TextView) view.findViewById(R.id.tv_avatar_type);
@@ -58,6 +61,14 @@ public class MineFragment1 extends BaseFragment {
         vpContent.setOffscreenPageLimit(3);
         initUserInfo();
         initViewPager();
+        appBarLayout.addOnOffsetChangedListener(this);
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+        for (RefreshFragment refreshFragment : mRefreshFragmentList) {
+            refreshFragment.setSwipeEnabled(i);
+        }
     }
 
     private void initUserInfo() {
@@ -163,5 +174,7 @@ public class MineFragment1 extends BaseFragment {
 
     public interface RefreshFragment {
         void refreshData();
+
+        void setSwipeEnabled(int i);
     }
 }
