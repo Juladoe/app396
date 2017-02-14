@@ -330,6 +330,9 @@ public class CourseDetailModel implements Serializable {
         for (Integer id : courseIds) {
             sb.append(id + ",");
         }
+        if (sb.length() == 0) {
+            return;
+        }
         String url = String.format(Const.COURSE_PROGRESS + "?courseIds=%s", sb.substring(0, sb.length() - 1));
         RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {

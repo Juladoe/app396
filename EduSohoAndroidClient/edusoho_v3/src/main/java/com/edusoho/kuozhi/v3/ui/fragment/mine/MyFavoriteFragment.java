@@ -46,13 +46,13 @@ public class MyFavoriteFragment extends BaseFragment {
     }
 
     private void initData() {
-        final MyFavoriteAdapter myFavoriteAdapter = new MyFavoriteAdapter(mContext);
+        final MyFavoriteAdapter myFavoriteAdapter = new MyFavoriteAdapter(getActivity());
         rvContent.setAdapter(myFavoriteAdapter);
-        CourseDetailModel.getLiveCollect(100, 0, new ResponseCallbackListener<LearningCourse>() {
+        CourseDetailModel.getNormalCollect(1000, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(final LearningCourse liveCourseList) {
                 myFavoriteAdapter.addDatas(liveCourseList.data);
-                CourseDetailModel.getNormalCollect(100, 0, new ResponseCallbackListener<LearningCourse>() {
+                CourseDetailModel.getLiveCollect(1000, 0, new ResponseCallbackListener<LearningCourse>() {
                     @Override
                     public void onSuccess(LearningCourse courseList) {
                         myFavoriteAdapter.addDatas(courseList.data);

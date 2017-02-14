@@ -56,7 +56,7 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteFragment.F
         ImageLoader.getInstance().displayImage(course.getLargePicture()
                 , viewHolder.ivPic, EdusohoApp.app
                         .mOptions);
-        viewHolder.tvAddNum.setText(String.format("%s人参与", course.hitNum));
+        viewHolder.tvAddNum.setText(String.format("%s人参与", course.studentNum));
         viewHolder.tvTitle.setText(String.valueOf(course.title));
         viewHolder.recyclerViewItem.setTag(course.id);
         viewHolder.recyclerViewItem.setOnClickListener(new View.OnClickListener() {
@@ -66,12 +66,12 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteFragment.F
                         , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(Const.COURSE_ID, course.id + "");
+                                startIntent.putExtra(Const.COURSE_ID, course.id);
                             }
                         });
             }
         });
-        viewHolder.tvMore.setTag(position);
+        viewHolder.tvMore.setTag(course);
         viewHolder.tvMore.setOnClickListener(mMoreClickListener);
         if (course.type.equals("live")) {
             viewHolder.layoutLive.setVisibility(View.VISIBLE);
@@ -95,8 +95,7 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteFragment.F
     private View.OnClickListener mMoreClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            int position = (int) v.getTag();
-            final Course course = courseList.get(position);
+            final Course course = (Course) v.getTag();
             MoreDialog dialog = new MoreDialog(mContext);
             dialog.init("取消收藏", new MoreDialog.MoreCallBack() {
                 @Override
