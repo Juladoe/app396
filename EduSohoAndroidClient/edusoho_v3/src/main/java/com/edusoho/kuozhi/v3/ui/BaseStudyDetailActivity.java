@@ -161,7 +161,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setOffscreenPageLimit(3);
         mTabLayout = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        mProcessDialog = new LoadDialog(this);
         mLoadingView = findViewById(R.id.ll_frame_load);
         setSupportActionBar(mToolbar);
         mTabLayout.setIndicatorColor(R.color.primary_color);
