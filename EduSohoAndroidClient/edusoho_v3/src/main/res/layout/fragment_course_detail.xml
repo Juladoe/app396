@@ -377,6 +377,11 @@
                         android:textSize="@dimen/font_s" />
                 </LinearLayout>
             </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="50dp"/>
+
         </LinearLayout>
 
         <include
