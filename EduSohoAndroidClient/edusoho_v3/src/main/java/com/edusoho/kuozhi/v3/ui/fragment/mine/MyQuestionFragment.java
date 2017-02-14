@@ -28,7 +28,7 @@ import java.util.Arrays;
  * Created by JesseHuang on 2017/2/8.
  */
 
-public class MyQuestionFragment extends BaseFragment {
+public class MyQuestionFragment extends BaseFragment implements MineFragment1.RefreshFragment {
 
     private static int ASK = 1;
     private static int ANSWER = 2;
@@ -77,7 +77,6 @@ public class MyQuestionFragment extends BaseFragment {
         tvAnswer = (TextView) view.findViewById(R.id.tv_question_answer);
         tvAsk.setOnClickListener(getClickTypeClickListener());
         tvAnswer.setOnClickListener(getClickTypeClickListener());
-
         initData();
     }
 
@@ -195,6 +194,12 @@ public class MyQuestionFragment extends BaseFragment {
                 esivFilterArrow.setText(getString(R.string.new_font_unfold));
             }
         };
+    }
+
+    @Override
+    public void refreshData() {
+        initData();
+        Log.d("develop", "refreshData: " + this.getClass().getSimpleName());
     }
 
     public static class ViewHolderAsk extends RecyclerView.ViewHolder {

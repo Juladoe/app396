@@ -21,7 +21,7 @@ import com.edusoho.kuozhi.v3.util.M3U8Util;
  * Created by JesseHuang on 2017/2/10.
  */
 
-public class MyVideoCacheFragment extends BaseFragment {
+public class MyVideoCacheFragment extends BaseFragment implements MineFragment1.RefreshFragment {
 
     private RecyclerView rvContent;
     private View viewEmpty;
@@ -84,6 +84,11 @@ public class MyVideoCacheFragment extends BaseFragment {
             viewEmpty.setVisibility(View.GONE);
             rvContent.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void refreshData() {
+
     }
 
     public static class VideoCacheViewHolder extends RecyclerView.ViewHolder {

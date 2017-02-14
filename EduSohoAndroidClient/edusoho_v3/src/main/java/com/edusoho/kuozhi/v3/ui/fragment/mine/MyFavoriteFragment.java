@@ -21,7 +21,7 @@ import cn.trinea.android.common.util.ToastUtils;
  * Created by JesseHuang on 2017/2/7.
  */
 
-public class MyFavoriteFragment extends BaseFragment {
+public class MyFavoriteFragment extends BaseFragment implements MineFragment1.RefreshFragment {
 
     private RecyclerView rvContent;
     private View viewEmpty;
@@ -86,6 +86,12 @@ public class MyFavoriteFragment extends BaseFragment {
             viewEmpty.setVisibility(View.GONE);
             rvContent.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void refreshData() {
+        initData();
+        Log.d("develop", "refreshData: " + this.getClass().getSimpleName());
     }
 
     public static class FavoriteViewHolder extends RecyclerView.ViewHolder {

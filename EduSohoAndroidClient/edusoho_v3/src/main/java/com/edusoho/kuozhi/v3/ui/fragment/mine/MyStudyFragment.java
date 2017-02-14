@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui.fragment.mine;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,12 +34,14 @@ import java.util.List;
  * Created by JesseHuang on 2017/2/7.
  */
 
-public class MyStudyFragment extends BaseFragment {
+public class MyStudyFragment extends BaseFragment implements MineFragment1.RefreshFragment {
 
     public static final int LATEST_COURSE = 1;
     public static final int NORMAL_COURSE = 2;
     public static final int LIVE_COURSE = 3;
     public static final int CLASSROOM = 4;
+
+    private int mCurrent_TYPE = LATEST_COURSE;
 
     private RecyclerView rvContent;
     private View viewEmpty;
@@ -93,14 +96,13 @@ public class MyStudyFragment extends BaseFragment {
         tvNormalCourse.setOnClickListener(getTypeClickListener());
         tvLiveCourse.setOnClickListener(getTypeClickListener());
         tvClassroom.setOnClickListener(getTypeClickListener());
-
         initData();
     }
 
     private void initData() {
         mCourseAdapter = new MyCourseStudyAdapter(getActivity());
         mClassroomAdapter = new MyClassroomAdapter(getActivity());
-        switchType(LATEST_COURSE);
+        switchType(mCurrent_TYPE);
     }
 
     /**
@@ -137,6 +139,7 @@ public class MyStudyFragment extends BaseFragment {
         }
         llayoutFilterQuestionTypeList.setVisibility(View.GONE);
         esivFilterArrow.setText(getString(R.string.new_font_unfold));
+        mCurrent_TYPE = type;
     }
 
     private void loadLatestCourse() {
@@ -405,6 +408,12 @@ public class MyStudyFragment extends BaseFragment {
                 esivFilterArrow.setText(getString(R.string.new_font_unfold));
             }
         };
+    }
+
+    @Override
+    public void refreshData() {
+        initData();
+        Log.d("develop", "refreshData: " + this.getClass().getSimpleName());
     }
 
     public static class CourseStudyViewHolder extends RecyclerView.ViewHolder {
