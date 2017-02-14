@@ -91,7 +91,11 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
     @Override
     public void refreshData() {
         initData();
-        Log.d("develop", "refreshData: " + this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void setSwipeEnabled(int i) {
+
     }
 
     public static class FavoriteViewHolder extends RecyclerView.ViewHolder {

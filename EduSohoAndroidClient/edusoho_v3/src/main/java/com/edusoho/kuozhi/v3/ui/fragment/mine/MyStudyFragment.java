@@ -1,13 +1,12 @@
 package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -45,6 +44,7 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
     private int mCurrent_TYPE = LATEST_COURSE;
 
+    private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
     private View viewEmpty;
     private View rlayoutFilterType;
@@ -57,7 +57,6 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
     private TextView tvNormalCourse;
     private TextView tvLiveCourse;
     private TextView tvClassroom;
-    private View ilvLoadingView;
 
     private MyCourseStudyAdapter mCourseAdapter;
     private MyClassroomAdapter mClassroomAdapter;
@@ -73,8 +72,8 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
         viewEmpty = view.findViewById(R.id.view_empty);
         viewEmpty.setVisibility(View.GONE);
 
-        ilvLoadingView = view.findViewById(R.id.ilv_loading_view);
-        ilvLoadingView.setVisibility(View.VISIBLE);
+        srlContent = (SwipeRefreshLayout) view.findViewById(R.id.srl_content);
+        srlContent.setColorSchemeResources(R.color.primary_color);
 
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -103,6 +102,13 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
         tvLiveCourse.setOnClickListener(getTypeClickListener());
         tvClassroom.setOnClickListener(getTypeClickListener());
         initData();
+
+        srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                switchType(mCurrent_TYPE);
+            }
+        });
     }
 
     private void initData() {
@@ -153,12 +159,12 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
     }
 
     private void loadLatestCourse() {
-        ilvLoadingView.setVisibility(View.VISIBLE);
+        showLoadingView();
         rvContent.setAdapter(mCourseAdapter);
         CourseDetailModel.getStudy(new ResponseCallbackListener<Study>() {
             @Override
             public void onSuccess(Study data) {
-                ilvLoadingView.setVisibility(View.GONE);
+                disabledLoadingView();
                 mCourseAdapter.setLatestCourses(data.getResources());
                 List<Integer> ids = new ArrayList<>();
                 for (Study.Resource study : data.getResources()) {
@@ -172,18 +178,19 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
             @Override
             public void onFailure(String code, String message) {
+                disabledLoadingView();
             }
         });
     }
 
     private void loadNormalCourse() {
-        ilvLoadingView.setVisibility(View.VISIBLE);
+        showLoadingView();
         rvContent.setAdapter(mCourseAdapter);
         CourseProvider courseProvider = new CourseProvider(mContext);
         courseProvider.getLearnCourses().success(new NormalCallback<CourseResult>() {
             @Override
             public void success(CourseResult courseResult) {
-                ilvLoadingView.setVisibility(View.GONE);
+                disabledLoadingView();
                 List<Course> list = new LinkedList<>(Arrays.asList(courseResult.resources));
                 mCourseAdapter.setNormalCourses(list);
                 List<Integer> ids = new ArrayList<>();
@@ -198,18 +205,18 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError error) {
-
+                disabledLoadingView();
             }
         });
     }
 
     private void loadLiveCourse() {
-        ilvLoadingView.setVisibility(View.VISIBLE);
+        showLoadingView();
         rvContent.setAdapter(mCourseAdapter);
         CourseDetailModel.getLiveCourses(1000, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(LearningCourse liveCourses) {
-                ilvLoadingView.setVisibility(View.GONE);
+                disabledLoadingView();
                 mCourseAdapter.setLiveCourses(liveCourses.data);
                 List<Integer> ids = new ArrayList<>();
                 for (Course course : liveCourses.data) {
@@ -223,23 +230,24 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
             @Override
             public void onFailure(String code, String message) {
-                ilvLoadingView.setVisibility(View.GONE);
+                disabledLoadingView();
             }
         });
     }
 
     private void loadClassroom() {
-        ilvLoadingView.setVisibility(View.VISIBLE);
+        showLoadingView();
         rvContent.setAdapter(mClassroomAdapter);
         CourseDetailModel.getAllUserClassroom(100, 0, new ResponseCallbackListener<LearningClassroom>() {
             @Override
             public void onSuccess(LearningClassroom data) {
-                ilvLoadingView.setVisibility(View.GONE);
+                disabledLoadingView();
                 mClassroomAdapter.setClassrooms(data.getData());
             }
 
             @Override
             public void onFailure(String code, String message) {
+                disabledLoadingView();
             }
         });
     }
@@ -298,7 +306,6 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
             @Override
             public void onFailure(String code, String message) {
-
             }
         });
     }
@@ -315,6 +322,7 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
                     CourseDetailModel.getLiveLesson(study.getId(), new NormalCallback<List<Lesson>>() {
                         @Override
                         public void success(List<Lesson> lessons) {
+                            disabledLoadingView();
                             if (lessons != null) {
                                 for (Lesson lesson : lessons) {
                                     long currentTime = System.currentTimeMillis();
@@ -340,6 +348,7 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
                     CourseDetailModel.getLiveLesson(course.id, new NormalCallback<List<Lesson>>() {
                         @Override
                         public void success(List<Lesson> lessons) {
+                            disabledLoadingView();
                             if (lessons != null) {
                                 for (Lesson lesson : lessons) {
                                     long currentTime = System.currentTimeMillis();
@@ -366,6 +375,7 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
                     CourseDetailModel.getLiveLesson(course.id, new NormalCallback<List<Lesson>>() {
                         @Override
                         public void success(List<Lesson> lessons) {
+                            disabledLoadingView();
                             if (lessons != null) {
                                 for (Lesson lesson : lessons) {
                                     long currentTime = System.currentTimeMillis();
@@ -437,7 +447,24 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
     @Override
     public void refreshData() {
         initData();
-        Log.d("develop", "refreshData: " + this.getClass().getSimpleName());
+    }
+
+    @Override
+    public void setSwipeEnabled(int i) {
+        srlContent.setEnabled(i == 0);
+    }
+
+    private void showLoadingView() {
+        srlContent.post(new Runnable() {
+            @Override
+            public void run() {
+                srlContent.setRefreshing(true);
+            }
+        });
+    }
+
+    private void disabledLoadingView() {
+        srlContent.setRefreshing(false);
     }
 
     public static class CourseStudyViewHolder extends RecyclerView.ViewHolder {
