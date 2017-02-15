@@ -63,7 +63,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
     }
 
     protected String[] getFragmentArray() {
-        return new String [] {
+        return new String[]{
                 "ClassroomDetailFragment", "ClassCatalogFragment", "CourseDiscussFragment"
         };
     }
@@ -255,9 +255,8 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                 new ShareTool(this
                         , ((EdusohoApp) getApplication()).host + "/classroom/" + mClassroomDetail.getClassRoom().id
                         , mClassroomDetail.getClassRoom().title
-                        , mClassroomDetail.getClassRoom().about.toString().length() > 20 ?
-                        mClassroomDetail.getClassRoom().about.toString().substring(0, 20)
-                        : mClassroomDetail.getClassRoom().about.toString()
+                        , mClassroomDetail.getClassRoom().about.length() > 20 ? mClassroomDetail.getClassRoom().about.substring(0, 20)
+                        : mClassroomDetail.getClassRoom().about
                         , mClassroomDetail.getClassRoom().largePicture);
         new Handler((this.getMainLooper())).post(new Runnable() {
             @Override

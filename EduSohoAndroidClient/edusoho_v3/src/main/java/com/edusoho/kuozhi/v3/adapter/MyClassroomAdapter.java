@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -137,12 +138,11 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<MyStudyFragment.Cla
 
                     @Override
                     public void onShareClick(View v, Dialog dialog) {
+                        String about = Html.fromHtml(classroom.about).toString();
                         final ShareTool shareTool = new ShareTool(mContext
                                 , EdusohoApp.app.host + "/classroom/" + classroom.id
                                 , classroom.title
-                                , classroom.about.toString().length() > 20 ?
-                                classroom.about.toString().substring(0, 20)
-                                : classroom.about.toString()
+                                , about.length() > 20 ? about.substring(0, 20) : about
                                 , classroom.largePicture);
                         new Handler((mContext.getMainLooper())).post(new Runnable() {
                             @Override

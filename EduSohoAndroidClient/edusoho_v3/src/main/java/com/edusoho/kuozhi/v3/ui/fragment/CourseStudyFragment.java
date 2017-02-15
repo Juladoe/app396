@@ -407,6 +407,9 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
     }
 
     private void addCourseSummary() {
+        if (getActivity() == null) {
+            return;
+        }
         EdusohoApp app = (EdusohoApp) getActivity().getApplication();
         RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
         Map<String, String> params = requestUrl.getParams();
