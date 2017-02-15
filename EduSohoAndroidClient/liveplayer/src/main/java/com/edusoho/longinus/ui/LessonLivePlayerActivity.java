@@ -102,7 +102,10 @@ public class LessonLivePlayerActivity extends PLMediaPlayerActivity implements I
 
     @Override
     protected void onDestroy() {
-        LiveImClient.getIMClient(mContext).destory();
+        LiveImClient liveImClient = LiveImClient.getIMClient(mContext);
+        if (liveImClient != null) {
+            liveImClient.destory();
+        }
         super.onDestroy();
     }
 

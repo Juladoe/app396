@@ -29,7 +29,7 @@ import java.util.List;
 
 public class CourseDetailModel implements Serializable {
 
-    public static void getCourseDetail(String courseId,
+    public static void getCourseDetail(int courseId,
                                        final ResponseCallbackListener<CourseDetail> callbackListener) {
         String url = String.format(Const.COURSE_GETCOURSE, courseId);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
@@ -57,7 +57,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getClassroomDetail(String classroomId,
+    public static void getClassroomDetail(int classroomId,
                                           final ResponseCallbackListener<ClassroomDetail> callbackListener) {
         String url = String.format(Const.COURSE_GETCLASSROOM, classroomId);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
@@ -85,7 +85,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getCourseReviews(String courseId, String limit, String start,
+    public static void getCourseReviews(int courseId, String limit, String start,
                                         final ResponseCallbackListener<CourseReviewDetail> callbackListener) {
         String url = String.format(Const.COURSE_GETREVIEWS, courseId, limit, start);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
@@ -113,7 +113,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getClassroomReviews(String classroomId, String limit, String start,
+    public static void getClassroomReviews(int classroomId, String limit, String start,
                                            final ResponseCallbackListener<ClassroomReviewDetail> callbackListener) {
         String url = String.format(Const.CLASSROOM_GETREVIEWS, classroomId, limit, start);
         RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
@@ -141,7 +141,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getCourseMember(String courseId,
+    public static void getCourseMember(int courseId,
                                        final ResponseCallbackListener<List<CourseMember>> callbackListener) {
         String url = String.format(Const.COURSE_GETMEMBER, courseId);
         RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
@@ -170,7 +170,7 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getClassroomMember(String classroomId,
+    public static void getClassroomMember(int classroomId,
                                           final ResponseCallbackListener<List<ClassroomMember>> callbackListener) {
         String url = String.format(Const.CLASSROOM_GETMEMBER, classroomId);
         RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);
@@ -282,10 +282,12 @@ public class CourseDetailModel implements Serializable {
                 LearningCourse apiResponse = ModelDecor.getInstance().
                         decor(response, new TypeToken<LearningCourse>() {
                         });
-                if (apiResponse.data != null) {
-                    callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse.error != null) {
-                    callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                if (apiResponse != null) {
+                    if (apiResponse.data != null) {
+                        callbackListener.onSuccess(apiResponse);
+                    } else if (apiResponse.error != null) {
+                        callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                    }
                 }
             }
         }, new Response.ErrorListener() {
@@ -306,10 +308,12 @@ public class CourseDetailModel implements Serializable {
                 LearningCourse apiResponse = ModelDecor.getInstance().
                         decor(response, new TypeToken<LearningCourse>() {
                         });
-                if (apiResponse.data != null) {
-                    callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse.error != null) {
-                    callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                if (apiResponse != null) {
+                    if (apiResponse.data != null) {
+                        callbackListener.onSuccess(apiResponse);
+                    } else if (apiResponse.error != null) {
+                        callbackListener.onFailure(apiResponse.error.name, apiResponse.error.message);
+                    }
                 }
             }
         }, new Response.ErrorListener() {
@@ -325,6 +329,9 @@ public class CourseDetailModel implements Serializable {
         StringBuilder sb = new StringBuilder();
         for (Integer id : courseIds) {
             sb.append(id + ",");
+        }
+        if (sb.length() == 0) {
+            return;
         }
         String url = String.format(Const.COURSE_PROGRESS + "?courseIds=%s", sb.substring(0, sb.length() - 1));
         RequestUrl requestUrl = EdusohoApp.app.bindNewApiUrl(url, true);

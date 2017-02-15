@@ -1,53 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:scrollbars="none">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/lv_catalog"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingLeft="@dimen/common_margin"
+        android:paddingRight="@dimen/common_margin" />
 
-        <com.edusoho.kuozhi.v3.view.FixHeightListView
-            android:id="@+id/lv_catalog"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/common_margin"
-            android:layout_marginRight="@dimen/common_margin"
-            android:divider="@color/disabled_hint_color"
-            android:dividerHeight="1dp"
-            android:scrollbars="none" />
+    <com.edusoho.kuozhi.v3.view.InnerLoadView
+        android:id="@+id/il_class_catalog_load"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-        <com.edusoho.kuozhi.v3.view.InnerLoadView
-            android:id="@+id/il_class_catalog_load"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+    <TextView
+        android:id="@+id/ll_course_catalog_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/no_add_class"
+        android:drawablePadding="12dp"
+        android:layout_marginBottom="55dp"
+        android:layout_marginTop="60dp"
+        android:visibility="gone"
+        android:drawableTop="@drawable/no_review"
+        android:textColor="@color/secondary2_font_color"
+        android:textSize="@dimen/font_s" />
 
-        <LinearLayout
-            android:id="@+id/ll_course_catalog_empty"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="55dp"
-            android:layout_marginTop="60dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/no_review" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:text="还没有添加班级"
-                android:textColor="@color/secondary2_font_color"
-                android:textSize="@dimen/font_s" />
-        </LinearLayout>
-
-    </RelativeLayout>
-
-</com.edusoho.kuozhi.v3.view.headStopScroll.StopScrollView>
+</RelativeLayout>

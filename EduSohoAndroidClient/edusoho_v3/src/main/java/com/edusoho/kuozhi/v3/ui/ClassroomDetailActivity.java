@@ -35,14 +35,12 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -105,7 +103,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
             });
         } else if (v.getId() == R.id.rl_entry) {
             Bundle bundle = new Bundle();
-            bundle.putString(ClassroomActivity.CLASSROOM_ID, String.valueOf(mFromId));
+            bundle.putInt(Const.CLASSROOM_ID, mFromId);
             CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomActivity", mContext, bundle);
         } else if (v.getId() == R.id.rl_clear_record) {
             AlertDialog.Builder builder = new AlertDialog.Builder(mContext);

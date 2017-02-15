@@ -147,7 +147,7 @@ public class LiveIMBroadcastReceiver extends IMBroadcastReceiver {
     }
 
     @Override
-    protected void invokeConnectReceiver(int status, boolean isConnected) {
+    protected void invokeConnectReceiver(int status, boolean isConnected, String[] ignoreNos) {
         Log.d("LiveIMBroadcastReceiver", "status:" + status);
         switch (status) {
             case IConnectManagerListener.INVALID:

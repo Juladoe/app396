@@ -40,16 +40,15 @@
         android:layout_marginRight="@dimen/common_margin"
         android:layout_marginTop="12dp"
         android:layout_toRightOf="@id/lesson_state"
-        android:textColor="@color/item_lesson_kind_sel"
+        android:textColor="@color/secondary2_font_color"
          />
 
     <TextView
         android:id="@+id/live_state"
-        android:text=""
         android:textSize="@dimen/font_xxs"
         android:padding="2dp"
         android:visibility="invisible"
-        android:textColor="@color/secondary2_font_color"
+        android:textColor="@color/secondary_font_color"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -58,9 +57,8 @@
 
     <TextView
         android:id="@+id/lesson_time"
-        android:text="05:55"
         android:textSize="@dimen/font_s"
-        android:textColor="@color/item_lesson_tv_sel"
+        android:textColor="@color/secondary_font_color"
         android:paddingLeft="@dimen/common_marginl"
         android:duplicateParentState="true"
         android:layout_marginTop="12dp"
@@ -73,18 +71,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="21edsadfasdfadfasdfsadfadfafadsf"
+        android:text=""
         android:textSize="@dimen/font_s"
         android:duplicateParentState="true"
         android:lineSpacingMultiplier="1.2"
-        android:textColor="@color/item_lesson_tv_sel"
+        android:textColor="@color/secondary_font_color"
         android:layout_marginRight="@dimen/common_margin2"
         android:maxEms="12"
         android:layout_toRightOf="@+id/lesson_kind" />
 
     <TextView
         android:id="@+id/lesson_free"
-        android:text="@string/class_catalog_free"
         android:textSize="@dimen/font_xxs"
         android:textColor="@color/primary_color"
         android:layout_marginTop="12dp"

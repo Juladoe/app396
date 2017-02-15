@@ -10,8 +10,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.3'
-        classpath 'com.antfortune.freeline:gradle:0.8.4'
         classpath 'im.fir:gradle-fir-publisher:1.0.7'
+        classpath 'com.antfortune.freeline:gradle:0.8.5'
     }
 }
 
@@ -19,6 +19,12 @@ allprojects {
     repositories {
         mavenLocal()
         jcenter()
-        maven { url "http://192.168.12.7:8081/repository/maven-snapshots/" }
+        maven {
+        	credentials {
+	            username 'admin'
+	            password 'kaifazhe'
+        	}
+        	url "http://192.168.12.7:8081/repository/maven-snapshots/"
+        }
     }
 }

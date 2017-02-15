@@ -36,6 +36,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Vector;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by 菊 on 2016/4/23.
@@ -126,6 +128,7 @@ public class IMClient {
     }
 
     public void destory() {
+        Log.e(TAG, "destory");
         if (mImBinder != null) {
             try {
                 mImBinder.closeIMServer();
@@ -143,9 +146,11 @@ public class IMClient {
             mMessageResourceHelper = null;
         }
         unRegistIMServiceStatusBroadcastReceiver();
-        mContext.stopService(getIMServiceIntent());
+        //mContext.stopService(getIMServiceIntent());
         mImBinder = null;
 
+        removeGlobalIMMessageReceiver();
+        removeGlobalIMConnectStatusListener();
         mIMConnectStatusListenerList.clear();
         mMessageReceiverList.clear();
         setClientInfo(0, null);
@@ -188,7 +193,7 @@ public class IMClient {
                 try {
                     Log.d(TAG, "mImBinder:" + mImBinder);
                     mImBinder.start(clientId, clientName, ignoreNosList, hostList);
-                } catch (RemoteException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -273,7 +278,7 @@ public class IMClient {
 
     public void setIMConnectStatus(int status) {
         this.mIMConnectStatus = status;
-        invokeConnectReceiver(status, false);
+        invokeConnectReceiver(status, false, null);
     }
 
     public int getIMConnectStatus() {
@@ -288,11 +293,11 @@ public class IMClient {
         }
     }
 
-    public void invokeConnectReceiver(int status, boolean isConnected) {
-        Log.d("IMClient", "invokeConnectReceiver:" + status);
-        int count = mIMConnectStatusListenerList.size();
-        for (int i = count - 1; i >= 0; i--) {
-            IMConnectStatusListener receiver = mIMConnectStatusListenerList.get(i);
+    public void invokeConnectReceiver(int status, boolean isConnected, String[] ignoreNos) {
+        Log.d("IMClient", String.format("status:%d, size:%d", status, mIMConnectStatusListenerList.size()));
+        Iterator<IMConnectStatusListener> iterator = mIMConnectStatusListenerList.iterator();
+        while (iterator.hasNext()) {
+            IMConnectStatusListener receiver = iterator.next();
             switch (status) {
                 case IConnectManagerListener.OPEN:
                     receiver.onOpen();
@@ -306,6 +311,9 @@ public class IMClient {
                     break;
                 case IConnectManagerListener.ERROR:
                     receiver.onError();
+                    break;
+                case IConnectManagerListener.INVALID:
+                    receiver.onInvalid(ignoreNos);
             }
         }
     }

@@ -82,12 +82,12 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError obj) {
-                isPosting = false;
-                invalidateOptionsMenu();
-            }
-        });
+                    @Override
+                    public void success(VolleyError obj) {
+                        isPosting = false;
+                        invalidateOptionsMenu();
+                    }
+                });
     }
 
     private void createSuccess() {

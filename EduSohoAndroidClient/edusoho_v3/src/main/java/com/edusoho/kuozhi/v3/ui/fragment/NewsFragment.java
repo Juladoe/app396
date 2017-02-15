@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -286,6 +285,10 @@ public class NewsFragment extends BaseFragment {
             @Override
             public void onOpen() {
                 hideNetWorkStatusHeader();
+            }
+
+            @Override
+            public void onInvalid(String[] ig) {
             }
         };
     }

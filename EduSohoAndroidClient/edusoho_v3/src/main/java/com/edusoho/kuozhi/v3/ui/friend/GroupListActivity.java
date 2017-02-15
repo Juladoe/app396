@@ -83,7 +83,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
                 final DiscussionGroup discussionGroup = (DiscussionGroup) parent.getItemAtPosition(position);
                 Bundle bundle = new Bundle();
                 if (Destination.COURSE.equals(discussionGroup.getType())) {
-                    bundle.putInt(NewsCourseActivity.COURSE_ID, Integer.valueOf(discussionGroup.id));
+                    bundle.putInt(NewsCourseActivity.COURSE_ID, discussionGroup.id);
                     bundle.putString(NewsCourseActivity.CONV_NO, discussionGroup.getConversationId());
                     bundle.putInt(NewsCourseActivity.SHOW_TYPE, NewsCourseActivity.DISCUSS_TYPE);
                     bundle.putString(NewsCourseActivity.TARGET_TYPE, discussionGroup.getType());
@@ -91,7 +91,7 @@ public class GroupListActivity extends ActionBarBaseActivity {
                     return;
                 }
 
-                bundle.putInt(ClassroomDiscussActivity.FROM_ID, Integer.valueOf(discussionGroup.id));
+                bundle.putInt(ClassroomDiscussActivity.FROM_ID, discussionGroup.id);
                 bundle.putString(ClassroomDiscussActivity.FROM_NAME, discussionGroup.title);
                 bundle.putString(ClassroomDiscussActivity.TARGET_TYPE, discussionGroup.getType());
                 CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomDiscussActivity", mContext, bundle);

@@ -13,7 +13,7 @@ import java.util.List;
 public class LearningCourse implements Serializable {
     public int start;
     public int limit;
-    public String total;
+    public int total;
     public List<Course> data;
     public Error error;
 }

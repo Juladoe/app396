@@ -288,7 +288,7 @@
     <string name="new_font_video">&#xe673;</string>
     <string name="new_font_audio">&#xe674;</string>
     <string name="new_font_more_oper">&#xe678;</string>
-    <string name="new_font_grade">&#xe676;</string>
+    <string name="new_font_grade">&#xe69f;</string>
     <string name="new_font_collected">&#xe679;</string>
 
     <string name="title_news">动态</string>
@@ -399,4 +399,14 @@
     <string name="video_no_meidaurl">多媒体资源不能播放!</string>
     <string name="video_replay_title">直播回看</string>
     <string name="lesson_living">直播中</string>
+    <string name="no_add_course">还没有添加课时</string>
+    <string name="no_add_class">还没有添加班级</string>
+
+    <string name="filter_type_latest">最近</string>
+    <string name="filter_type_course">课程</string>
+    <string name="filter_type_live">直播</string>
+    <string name="filter_type_classroom">班级</string>
+    <string name="question_post">发起</string>
+    <string name="question_answer">回复</string>
+
 </resources>
