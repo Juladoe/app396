@@ -243,6 +243,28 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
+    <include
+        android:id="@+id/bottom_layout"
+        layout="@layout/layout_course_study_tool_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom" />
+
+    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+        android:id="@+id/tv_edit_topic"
+        android:layout_width="54dp"
+        android:layout_height="54dp"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/shape_inclass_back"
+        android:gravity="center"
+        android:text="@string/discuss_publish"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_s"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/ll_frame_load"
         android:layout_width="match_parent"
@@ -265,27 +287,5 @@
             android:text="加载中.."
             android:textColor="@color/base_black_54" />
     </LinearLayout>
-
-    <include
-        android:id="@+id/bottom_layout"
-        layout="@layout/layout_course_study_tool_layout"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_gravity="bottom" />
-
-    <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-        android:id="@+id/tv_edit_topic"
-        android:layout_width="54dp"
-        android:layout_height="54dp"
-        android:layout_gravity="bottom|right"
-        android:layout_marginBottom="64dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginRight="15dp"
-        android:background="@drawable/shape_inclass_back"
-        android:gravity="center"
-        android:text="@string/discuss_publish"
-        android:textColor="@color/disabled2_hint_color"
-        android:textSize="@dimen/font_s"
-        android:visibility="gone" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,7 +32,6 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
-import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
@@ -107,8 +105,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
-        window.addFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         setContentView(R.layout.activity_course_study_layout);
         mUIMessageQueue = new ArrayDeque<>();
