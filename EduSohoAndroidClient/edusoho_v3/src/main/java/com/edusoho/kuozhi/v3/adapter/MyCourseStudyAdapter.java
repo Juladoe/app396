@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -305,21 +306,19 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<MyStudyFragment.C
                         final ShareTool shareTool;
                         if (data instanceof Course) {
                             Course course = (Course) data;
+                            String about = Html.fromHtml(course.about).toString();
                             shareTool = new ShareTool(mContext
                                     , EdusohoApp.app.host + "/course/" + course.id
                                     , course.title
-                                    , course.about.length() > 20 ?
-                                    course.about.substring(0, 20)
-                                    : course.about
+                                    , about.length() > 20 ? about.substring(0, 20) : about
                                     , course.middlePicture);
                         } else {
                             Study.Resource study = (Study.Resource) data;
+                            String about = Html.fromHtml(study.getAbout()).toString();
                             shareTool = new ShareTool(mContext
                                     , EdusohoApp.app.host + "/course/" + study.getId()
                                     , study.getTitle()
-                                    , study.getAbout().length() > 20 ?
-                                    study.getAbout().substring(0, 20)
-                                    : study.getAbout()
+                                    , about.length() > 20 ? about.substring(0, 20) : about
                                     , study.getMiddlePicture());
                         }
                         new Handler((mContext.getMainLooper())).post(new Runnable() {

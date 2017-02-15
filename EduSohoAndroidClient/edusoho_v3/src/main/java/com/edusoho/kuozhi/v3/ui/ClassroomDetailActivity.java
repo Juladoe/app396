@@ -244,7 +244,7 @@ public class ClassroomDetailActivity extends ChatItemBaseDetail {
                             }
                             String url = app.host + "/classroom/" + mFromId;
                             String title = classroom.title;
-                            String about = classroom.about == null ? "" : AppUtil.coverCourseAbout(classroom.about.toString());
+                            String about = classroom.about == null ? "" : AppUtil.coverCourseAbout(classroom.about);
                             String pic = classroom.middlePicture;
 
                             final ShareTool shareTool = new ShareTool(mActivity, url, title, about, pic);
