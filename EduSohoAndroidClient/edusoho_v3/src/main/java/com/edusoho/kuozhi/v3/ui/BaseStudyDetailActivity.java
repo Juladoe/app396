@@ -11,11 +11,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +34,7 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
@@ -100,7 +99,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
     protected String mTitle;
-    private int mTitleBarHeight;
     public int mMediaViewHeight = 210;
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
@@ -108,19 +106,13 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Window window = getWindow();
+        window.addFlags(
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+
         setContentView(R.layout.activity_course_study_layout);
         mUIMessageQueue = new ArrayDeque<>();
         ((EdusohoApp) getApplication()).registMsgSource(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            Window window = getWindow();
-            window.setFlags(
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-                    WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            tintManager = new SystemBarTintManager(this);
-            tintManager.setStatusBarTintEnabled(true);
-            tintManager.setNavigationBarTintEnabled(true);
-            tintManager.setTintColor(getResources().getColor(R.color.transparent));
-        }
     }
 
     public MenuPop getMenu() {
@@ -132,9 +124,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     protected void initView() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mTitleBarHeight = 25;
-        }
         mBackView = (TextView) findViewById(R.id.back);
         mTvEditTopic = (TextView) findViewById(R.id.tv_edit_topic);
         mParentLayout = (ViewGroup) findViewById(R.id.parent_rlayout);
@@ -220,19 +209,16 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
             public void onPageSelected(int position) {
-//                checkTab(position);
                 setBottomLayoutVisible(position, mIsMemder);
                 showEditTopic(position);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
-
             }
         });
     }
@@ -431,15 +417,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     protected void initViewPager() {
-        ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
-        if (params != null) {
-            int bottom = AppUtil.dp2px(this, 50 + 43 + mTitleBarHeight);
-            if (mBottomLayout.getVisibility() != View.GONE) {
-                bottom += AppUtil.dp2px(this, 50);
-            }
-            params.height = AppUtil.getHeightPx(this) - bottom;
-            mViewPager.setLayoutParams(params);
-        }
     }
 
     protected void coursePause() {

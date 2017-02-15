@@ -1,10 +1,9 @@
 package com.edusoho.kuozhi.v3.util.server;
 
 
+import android.content.Context;
 import android.util.Log;
 import com.edusoho.kuozhi.v3.service.handler.FileHandler;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
-import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.Const;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
@@ -32,21 +31,21 @@ public class CacheServer extends Thread {
     private int port = Const.CACHE_PROT;
     private boolean isLoop;
     private boolean isPause;
-    private BaseActivity mActivity;
+    private Context mContext;
     private ServerSocket mServerSocket;
     private HttpRequestHandlerRegistry mHttpRequestHandlerRegistry;
     private ArrayList<Thread> mThreadList;
 
-    public CacheServer(BaseActivity activity) {
+    public CacheServer(Context context) {
         this.port = Const.CACHE_PROT;
-        this.mActivity = activity;
+        this.mContext = context;
         this.mThreadList = new ArrayList<>();
         // 创建HTTP请求执行器注册表
         mHttpRequestHandlerRegistry = new HttpRequestHandlerRegistry();
     }
 
-    public CacheServer(BaseActivity activity, int port) {
-        this(activity);
+    public CacheServer(Context context, int port) {
+        this(context);
         this.port = port;
     }
 
@@ -99,7 +98,6 @@ public class CacheServer extends Thread {
             // 设置HTTP参数
             httpService.setParams(params);
 
-            mHttpRequestHandlerRegistry.register("*", new FileHandler(mActivity.app.host, mActivity));
             // 设置HTTP请求执行器
             httpService.setHandlerResolver(mHttpRequestHandlerRegistry);
             /* 循环接收各客户端 */
@@ -154,6 +152,24 @@ public class CacheServer extends Thread {
             mServerSocket.close();
         } catch (Exception e) {
             //nothing
+        }
+    }
+
+    public static class Builder {
+
+        private CacheServer mCacheServer;
+
+        public Builder(Context context) {
+            mCacheServer = new CacheServer(context);
+        }
+
+        public CacheServer builder() {
+            return mCacheServer;
+        }
+
+        public Builder addHandler(String filter, HttpRequestHandler handler) {
+            mCacheServer.addHandler(filter, handler);
+            return this;
         }
     }
 }

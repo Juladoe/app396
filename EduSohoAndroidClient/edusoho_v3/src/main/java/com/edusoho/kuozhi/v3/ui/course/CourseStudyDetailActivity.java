@@ -13,18 +13,23 @@ import android.view.View;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
@@ -40,6 +45,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
+import com.edusoho.kuozhi.v3.util.server.CacheServerFactory;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -60,6 +66,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
         initView();
         initData();
+        startCacheServer();
     }
 
     @Override
@@ -110,7 +117,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
     @Override
     protected void goClass() {
-        ((EdusohoApp) getApplication()).mEngine.runNormalPlugin("NewsCourseActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
+        CoreEngine.create(getBaseContext()).runNormalPlugin("NewsCourseActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(NewsCourseActivity.COURSE_ID, mCourseId);
@@ -134,7 +141,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             CommonUtil.shortToast(this, "课程目前没有老师");
             return;
         }
-        ((EdusohoApp) getApplication()).mEngine.runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
+        CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
@@ -146,7 +153,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void grade() {
-        ((EdusohoApp) getApplication()).mEngine.runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
+        CoreEngine.create(getBaseContext()).runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
                 , new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -264,6 +271,15 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         );
     }
 
+    private void startCacheServer() {
+        User user = getAppSettingProvider().getCurrentUser();
+        School school = getAppSettingProvider().getCurrentSchool();
+        if (user == null || school == null) {
+            return;
+        }
+        CacheServerFactory.getInstance().start(getBaseContext(), school.host, user.id);
+    }
+
     @Override
     protected void refreshView() {
         mIsFavorite = mCourseDetail.isUserFavorited();
@@ -316,7 +332,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     public void finish() {
         super.finish();
         removePlayFragment();
-        ((EdusohoApp) getApplication()).stopPlayCacheServer();
+        CacheServerFactory.getInstance().stop();
     }
 
     @Override
@@ -545,4 +561,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     @Override
     public void handlerCourseExpired() {}
 
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
 }

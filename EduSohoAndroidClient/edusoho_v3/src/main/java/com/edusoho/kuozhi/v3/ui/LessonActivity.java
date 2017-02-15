@@ -32,6 +32,7 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
@@ -39,6 +40,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LiveLessonFragment;
@@ -49,6 +51,8 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
+import com.edusoho.kuozhi.v3.util.server.CacheServer;
+import com.edusoho.kuozhi.v3.util.server.CacheServerFactory;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
@@ -103,7 +107,16 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         fragmentData = new Bundle();
         initView();
         initMenuPop();
-        app.startPlayCacheServer(this);
+        startCacheServer();
+    }
+
+    private void startCacheServer() {
+        User user = getAppSettingProvider().getCurrentUser();
+        School school = getAppSettingProvider().getCurrentSchool();
+        if (user == null || school == null) {
+            return;
+        }
+        CacheServerFactory.getInstance().start(getBaseContext(), school.host, user.id);
     }
 
     protected void share() {
@@ -585,7 +598,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        app.stopPlayCacheServer();
+        CacheServerFactory.getInstance().stop();
 
         Bundle bundle = new Bundle();
         bundle.putString("event", "lessonStatusRefresh");
