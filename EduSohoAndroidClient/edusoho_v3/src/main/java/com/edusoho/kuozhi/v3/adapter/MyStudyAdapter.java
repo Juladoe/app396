@@ -379,9 +379,7 @@ public class MyStudyAdapter extends BaseAdapter {
                             shareTool = new ShareTool(mContext
                                     , EdusohoApp.app.host + "/classroom/" + classroom.id
                                     , classroom.title
-                                    , classroom.about.toString().length() > 20 ?
-                                    classroom.about.toString().substring(0, 20)
-                                    : classroom.about.toString()
+                                    , classroom.about.length() > 20 ? classroom.about.substring(0, 20) : classroom.about
                                     , classroom.largePicture);
                         } else {
                             Study.Resource study = (Study.Resource) object;

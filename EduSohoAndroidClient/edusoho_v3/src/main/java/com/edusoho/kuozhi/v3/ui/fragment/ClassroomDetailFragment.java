@@ -173,7 +173,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Classroom classRoom = mClassroomDetail.getClassRoom();
         mTvTitle.setText(classRoom.title);
-        mTvTitleDesc.setHtml(classRoom.about.toString(), new HtmlHttpImageGetter(mTvTitleDesc,null,true));
+        mTvTitleDesc.setHtml(classRoom.about, new HtmlHttpImageGetter(mTvTitleDesc, null, true));
         mTvStudentNum.setText(String.format("(%s)", mClassroomDetail.getClassRoom().studentNum));
         if (mClassroomDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
@@ -254,6 +254,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
                     mTvTeacherName.setText(data.nickname);
                     mTvTeacherDesc.setText(data.title);
                 }
+
                 @Override
                 public void onFailure(String code, String message) {
                     mTeacherLayout.setVisibility(View.GONE);
@@ -286,7 +287,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(AllReviewActivity.ID, Integer.valueOf(mClassroomId));
-                        startIntent.putExtra(AllReviewActivity.TYPE,AllReviewActivity.TYPE_CLASSROOM);
+                        startIntent.putExtra(AllReviewActivity.TYPE, AllReviewActivity.TYPE_CLASSROOM);
                     }
                 });
     }
