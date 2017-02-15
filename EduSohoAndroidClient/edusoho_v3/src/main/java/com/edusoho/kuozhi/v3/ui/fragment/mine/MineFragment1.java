@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -21,6 +23,7 @@ import com.edusoho.kuozhi.v3.ui.fragment.MyTabFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircleImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,7 @@ import java.util.List;
 
 public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffsetChangedListener {
 
+    private View rlayoutUserInfo;
     private AppBarLayout appBarLayout;
     private TextView tvName;
     private CircleImageView ivAvatar;
@@ -52,6 +56,8 @@ public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffset
 
     @Override
     protected void initView(View view) {
+        rlayoutUserInfo = view.findViewById(R.id.rlayout_user_info);
+        rlayoutUserInfo.setOnClickListener(getUserViewClickListener());
         appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar);
         tvName = (TextView) view.findViewById(R.id.tv_name);
         ivAvatar = (CircleImageView) view.findViewById(R.id.iv_avatar);
@@ -176,5 +182,21 @@ public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffset
         void refreshData();
 
         void setSwipeEnabled(int i);
+    }
+
+    private View.OnClickListener getUserViewClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "i_userInfo");
+                mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_INFO);
+                        startIntent.putExtra(Const.WEB_URL, url);
+                    }
+                });
+            }
+        };
     }
 }
