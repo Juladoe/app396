@@ -222,7 +222,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-//                checkTab(position);
                 setBottomLayoutVisible(position, mIsMemder);
                 showEditTopic(position);
             }
@@ -321,12 +320,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             case Const.COURSE_REFRESH:
                 initData();
                 break;
-            case Const.COURSE_SHOW_BAR:
-//                changeBar(true);
-                break;
-            case Const.COURSE_HIDE_BAR:
-//                changeBar(false);
-                break;
             case Const.SCREEN_LOCK:
                 screenLock();
                 break;
@@ -412,8 +405,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
     protected void courseStart() {
         if (!mIsFullScreen) {
-//            mParent.smoothScrollTo(0, 0);
-//            mParent.setCanScroll(false);
             ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
             if (params != null) {
                 int bottom = AppUtil.dp2px(this, 50 + mMediaViewHeight);
@@ -429,7 +420,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         }
         mPlayButtonLayout.setVisibility(View.GONE);
         mIsPlay = true;
-//        mParent.setStay(true);
     }
 
     protected void initViewPager() {
@@ -446,13 +436,10 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
     protected void coursePause() {
         if (!mIsFullScreen) {
-//            mParent.setCanScroll(true);
             initViewPager();
         }
         mIsPlay = false;
-//        mParent.setStay(false);
         mPlayButtonLayout.setVisibility(View.VISIBLE);
-//        changeBar(true);
     }
 
     protected boolean mIsFullScreen = false;
@@ -460,13 +447,11 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     private void fullScreen() {
         ViewGroup.LayoutParams params = mMediaLayout.getLayoutParams();
         if (!mIsFullScreen) {
-//            mParent.scrollTo(0, 0);
             getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
             mIsFullScreen = true;
             params.height = AppUtil.getWidthPx(this);
             params.width = -1;
             mMediaLayout.setLayoutParams(params);
-//            mParent.setScrollStay(true);
             mBottomLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -476,7 +461,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             params.width = -1;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
             mMediaLayout.setLayoutParams(params);
-//            mParent.setScrollStay(false);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
                 mBottomLayout.setVisibility(View.GONE);
@@ -495,7 +479,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                 new MessageType(Const.COURSE_START),
                 new MessageType(Const.COURSE_CHANGE),
                 new MessageType(Const.COURSE_REFRESH),
-                new MessageType(Const.COURSE_SHOW_BAR),
                 new MessageType(Const.COURSE_PAUSE),
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR),

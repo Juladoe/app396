@@ -15,6 +15,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.discuss.CourseDiscussAdapter;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.course.DiscussDetail;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
@@ -211,7 +212,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
                                         : Integer.parseInt(resourcesBean.getTargetId()));
             bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(resourcesBean.getId()));
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, resourcesBean.getType());
-            ((EdusohoApp) getActivity().getApplication()).mEngine.runNormalPluginWithBundleForResult("DiscussDetailActivity", getActivity(), bundle, 0);
+            CoreEngine.create(getContext()).runNormalPluginWithBundle("DiscussDetailActivity", getActivity(), bundle);
         } else {
             CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_join_hint));
         }
