@@ -100,7 +100,6 @@ public class CourseCatalogFragment extends Fragment {
         tvSpace.setOnClickListener(getCacheCourse());
         tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
         view.findViewById(R.id.tv_course).setOnClickListener(getCacheCourse());
-//        initCatalogue();
     }
 
     @Override
