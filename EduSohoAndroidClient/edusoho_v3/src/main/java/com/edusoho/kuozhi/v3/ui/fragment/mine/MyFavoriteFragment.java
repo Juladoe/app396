@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,8 +22,9 @@ import cn.trinea.android.common.util.ToastUtils;
  * Created by JesseHuang on 2017/2/7.
  */
 
-public class MyFavoriteFragment extends BaseFragment {
+public class MyFavoriteFragment extends BaseFragment implements MineFragment1.RefreshFragment {
 
+    private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
     private View viewEmpty;
 
@@ -34,6 +36,9 @@ public class MyFavoriteFragment extends BaseFragment {
 
     @Override
     protected void initView(View view) {
+        srlContent = (SwipeRefreshLayout) view.findViewById(R.id.srl_content);
+        srlContent.setColorSchemeResources(R.color.primary_color);
+
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -43,14 +48,23 @@ public class MyFavoriteFragment extends BaseFragment {
         viewEmpty = view.findViewById(R.id.view_empty);
         viewEmpty.setVisibility(View.GONE);
         initData();
+
+        srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                initData();
+            }
+        });
     }
 
     private void initData() {
+        showLoadingView();
         final MyFavoriteAdapter myFavoriteAdapter = new MyFavoriteAdapter(getActivity());
         rvContent.setAdapter(myFavoriteAdapter);
         CourseDetailModel.getNormalCollect(1000, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(final LearningCourse liveCourseList) {
+                disabledLoadingView();
                 myFavoriteAdapter.addDatas(liveCourseList.data);
                 CourseDetailModel.getLiveCollect(1000, 0, new ResponseCallbackListener<LearningCourse>() {
                     @Override
@@ -86,6 +100,29 @@ public class MyFavoriteFragment extends BaseFragment {
             viewEmpty.setVisibility(View.GONE);
             rvContent.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void refreshData() {
+        initData();
+    }
+
+    @Override
+    public void setSwipeEnabled(int i) {
+        srlContent.setEnabled(i == 0);
+    }
+
+    private void showLoadingView() {
+        srlContent.post(new Runnable() {
+            @Override
+            public void run() {
+                srlContent.setRefreshing(true);
+            }
+        });
+    }
+
+    private void disabledLoadingView() {
+        srlContent.setRefreshing(false);
     }
 
     public static class FavoriteViewHolder extends RecyclerView.ViewHolder {

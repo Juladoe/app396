@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -27,19 +28,23 @@ import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * Created by JesseHuang on 2017/2/7.
  */
 
-public class MyStudyFragment extends BaseFragment {
+public class MyStudyFragment extends BaseFragment implements MineFragment1.RefreshFragment {
 
     public static final int LATEST_COURSE = 1;
     public static final int NORMAL_COURSE = 2;
     public static final int LIVE_COURSE = 3;
     public static final int CLASSROOM = 4;
 
+    private int mCurrent_TYPE = LATEST_COURSE;
+
+    private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
     private View viewEmpty;
     private View rlayoutFilterType;
@@ -67,6 +72,9 @@ public class MyStudyFragment extends BaseFragment {
         viewEmpty = view.findViewById(R.id.view_empty);
         viewEmpty.setVisibility(View.GONE);
 
+        srlContent = (SwipeRefreshLayout) view.findViewById(R.id.srl_content);
+        srlContent.setColorSchemeResources(R.color.primary_color);
+
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -93,14 +101,20 @@ public class MyStudyFragment extends BaseFragment {
         tvNormalCourse.setOnClickListener(getTypeClickListener());
         tvLiveCourse.setOnClickListener(getTypeClickListener());
         tvClassroom.setOnClickListener(getTypeClickListener());
-
         initData();
+
+        srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                switchType(mCurrent_TYPE);
+            }
+        });
     }
 
     private void initData() {
         mCourseAdapter = new MyCourseStudyAdapter(getActivity());
         mClassroomAdapter = new MyClassroomAdapter(getActivity());
-        switchType(LATEST_COURSE);
+        switchType(mCurrent_TYPE);
     }
 
     /**
@@ -115,21 +129,25 @@ public class MyStudyFragment extends BaseFragment {
         tvClassroom.setTextColor(getResources().getColor(R.color.primary_font_color));
         switch (type) {
             case LATEST_COURSE:
+                clearViewData();
                 loadLatestCourse();
                 tvLatestCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_latest));
                 break;
             case NORMAL_COURSE:
+                clearViewData();
                 loadNormalCourse();
                 tvNormalCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_course));
                 break;
             case LIVE_COURSE:
+                clearViewData();
                 loadLiveCourse();
                 tvLiveCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_live));
                 break;
             case CLASSROOM:
+                clearViewData();
                 loadClassroom();
                 tvClassroom.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_classroom));
@@ -137,13 +155,16 @@ public class MyStudyFragment extends BaseFragment {
         }
         llayoutFilterQuestionTypeList.setVisibility(View.GONE);
         esivFilterArrow.setText(getString(R.string.new_font_unfold));
+        mCurrent_TYPE = type;
     }
 
     private void loadLatestCourse() {
+        showLoadingView();
         rvContent.setAdapter(mCourseAdapter);
         CourseDetailModel.getStudy(new ResponseCallbackListener<Study>() {
             @Override
             public void onSuccess(Study data) {
+                disabledLoadingView();
                 mCourseAdapter.setLatestCourses(data.getResources());
                 List<Integer> ids = new ArrayList<>();
                 for (Study.Resource study : data.getResources()) {
@@ -157,17 +178,21 @@ public class MyStudyFragment extends BaseFragment {
 
             @Override
             public void onFailure(String code, String message) {
+                disabledLoadingView();
             }
         });
     }
 
     private void loadNormalCourse() {
+        showLoadingView();
         rvContent.setAdapter(mCourseAdapter);
         CourseProvider courseProvider = new CourseProvider(mContext);
         courseProvider.getLearnCourses().success(new NormalCallback<CourseResult>() {
             @Override
             public void success(CourseResult courseResult) {
-                mCourseAdapter.setNormalCourses(Arrays.asList(courseResult.resources));
+                disabledLoadingView();
+                List<Course> list = new LinkedList<>(Arrays.asList(courseResult.resources));
+                mCourseAdapter.setNormalCourses(list);
                 List<Integer> ids = new ArrayList<>();
                 for (Course course : courseResult.resources) {
                     ids.add(course.id);
@@ -180,16 +205,18 @@ public class MyStudyFragment extends BaseFragment {
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError error) {
-
+                disabledLoadingView();
             }
         });
     }
 
     private void loadLiveCourse() {
+        showLoadingView();
         rvContent.setAdapter(mCourseAdapter);
         CourseDetailModel.getLiveCourses(1000, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(LearningCourse liveCourses) {
+                disabledLoadingView();
                 mCourseAdapter.setLiveCourses(liveCourses.data);
                 List<Integer> ids = new ArrayList<>();
                 for (Course course : liveCourses.data) {
@@ -203,20 +230,24 @@ public class MyStudyFragment extends BaseFragment {
 
             @Override
             public void onFailure(String code, String message) {
+                disabledLoadingView();
             }
         });
     }
 
     private void loadClassroom() {
+        showLoadingView();
         rvContent.setAdapter(mClassroomAdapter);
         CourseDetailModel.getAllUserClassroom(100, 0, new ResponseCallbackListener<LearningClassroom>() {
             @Override
             public void onSuccess(LearningClassroom data) {
+                disabledLoadingView();
                 mClassroomAdapter.setClassrooms(data.getData());
             }
 
             @Override
             public void onFailure(String code, String message) {
+                disabledLoadingView();
             }
         });
     }
@@ -275,7 +306,6 @@ public class MyStudyFragment extends BaseFragment {
 
             @Override
             public void onFailure(String code, String message) {
-
             }
         });
     }
@@ -292,6 +322,7 @@ public class MyStudyFragment extends BaseFragment {
                     CourseDetailModel.getLiveLesson(study.getId(), new NormalCallback<List<Lesson>>() {
                         @Override
                         public void success(List<Lesson> lessons) {
+                            disabledLoadingView();
                             if (lessons != null) {
                                 for (Lesson lesson : lessons) {
                                     long currentTime = System.currentTimeMillis();
@@ -317,6 +348,7 @@ public class MyStudyFragment extends BaseFragment {
                     CourseDetailModel.getLiveLesson(course.id, new NormalCallback<List<Lesson>>() {
                         @Override
                         public void success(List<Lesson> lessons) {
+                            disabledLoadingView();
                             if (lessons != null) {
                                 for (Lesson lesson : lessons) {
                                     long currentTime = System.currentTimeMillis();
@@ -343,6 +375,7 @@ public class MyStudyFragment extends BaseFragment {
                     CourseDetailModel.getLiveLesson(course.id, new NormalCallback<List<Lesson>>() {
                         @Override
                         public void success(List<Lesson> lessons) {
+                            disabledLoadingView();
                             if (lessons != null) {
                                 for (Lesson lesson : lessons) {
                                     long currentTime = System.currentTimeMillis();
@@ -361,7 +394,11 @@ public class MyStudyFragment extends BaseFragment {
                 }
                 break;
         }
+    }
 
+    private void clearViewData() {
+        mCourseAdapter.clear();
+        mClassroomAdapter.clear();
     }
 
     private View.OnClickListener getTypeClickListener() {
@@ -405,6 +442,29 @@ public class MyStudyFragment extends BaseFragment {
                 esivFilterArrow.setText(getString(R.string.new_font_unfold));
             }
         };
+    }
+
+    @Override
+    public void refreshData() {
+        initData();
+    }
+
+    @Override
+    public void setSwipeEnabled(int i) {
+        srlContent.setEnabled(i == 0);
+    }
+
+    private void showLoadingView() {
+        srlContent.post(new Runnable() {
+            @Override
+            public void run() {
+                srlContent.setRefreshing(true);
+            }
+        });
+    }
+
+    private void disabledLoadingView() {
+        srlContent.setRefreshing(false);
     }
 
     public static class CourseStudyViewHolder extends RecyclerView.ViewHolder {

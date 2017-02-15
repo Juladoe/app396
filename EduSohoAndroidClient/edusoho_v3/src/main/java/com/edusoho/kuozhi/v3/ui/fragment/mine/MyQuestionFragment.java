@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -28,11 +29,12 @@ import java.util.Arrays;
  * Created by JesseHuang on 2017/2/8.
  */
 
-public class MyQuestionFragment extends BaseFragment {
+public class MyQuestionFragment extends BaseFragment implements MineFragment1.RefreshFragment {
 
     private static int ASK = 1;
     private static int ANSWER = 2;
 
+    private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
     private View viewEmpty;
     private View rlayoutFilterType;
@@ -56,6 +58,9 @@ public class MyQuestionFragment extends BaseFragment {
         viewEmpty = view.findViewById(R.id.view_empty);
         viewEmpty.setVisibility(View.GONE);
 
+        srlContent = (SwipeRefreshLayout) view.findViewById(R.id.srl_content);
+        srlContent.setColorSchemeResources(R.color.primary_color);
+
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -77,8 +82,13 @@ public class MyQuestionFragment extends BaseFragment {
         tvAnswer = (TextView) view.findViewById(R.id.tv_question_answer);
         tvAsk.setOnClickListener(getClickTypeClickListener());
         tvAnswer.setOnClickListener(getClickTypeClickListener());
-
         initData();
+        srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                switchFilterType(ASK);
+            }
+        });
     }
 
     private void initData() {
@@ -86,13 +96,29 @@ public class MyQuestionFragment extends BaseFragment {
         switchFilterType(ASK);
     }
 
+    private void switchFilterType(int type) {
+        if (type == ASK) {
+            tvFilterName.setText(getString(R.string.question_post));
+            loadAskedQuestionData();
+            tvAsk.setTextColor(getResources().getColor(R.color.primary_color));
+            tvAnswer.setTextColor(getResources().getColor(R.color.primary_font_color));
+        } else if (type == ANSWER) {
+            tvFilterName.setText(getString(R.string.question_answer));
+            loadAnsweredQuestionData();
+            tvAsk.setTextColor(getResources().getColor(R.color.primary_font_color));
+            tvAnswer.setTextColor(getResources().getColor(R.color.primary_color));
+        }
+    }
+
     private void loadAskedQuestionData() {
+        showLoadingView();
         RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.MY_CREATED_THREADS + "?start=0&limit=10000", true);
         final MyAskQuestionAdapter askQuestionAdapter = new MyAskQuestionAdapter(mContext);
         rvContent.setAdapter(askQuestionAdapter);
         mMyThreadProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
             @Override
             public void success(MyThreadEntity[] entities) {
+                disabledLoadingView();
                 if (entities.length == 0) {
                     setNoCourseDataVisible(true);
                 } else {
@@ -104,18 +130,21 @@ public class MyQuestionFragment extends BaseFragment {
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError error) {
+                disabledLoadingView();
                 setNoCourseDataVisible(true);
             }
         });
     }
 
     private void loadAnsweredQuestionData() {
+        showLoadingView();
         RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.MY_POSTED_THREADS + "?start=0&limit=10000", true);
         final MyAnswerQuestionAdapter answerQuestionAdapter = new MyAnswerQuestionAdapter(mContext);
         rvContent.setAdapter(answerQuestionAdapter);
         mMyThreadProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
             @Override
             public void success(MyThreadEntity[] entities) {
+                disabledLoadingView();
                 if (entities.length == 0) {
                     setNoCourseDataVisible(true);
                 } else {
@@ -126,6 +155,7 @@ public class MyQuestionFragment extends BaseFragment {
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError error) {
+                disabledLoadingView();
                 setNoCourseDataVisible(true);
             }
         });
@@ -141,20 +171,6 @@ public class MyQuestionFragment extends BaseFragment {
         }
         rlayoutFilterType.setVisibility(View.VISIBLE);
         rlayoutFilterType.bringToFront();
-    }
-
-    private void switchFilterType(int type) {
-        if (type == ASK) {
-            tvFilterName.setText(getString(R.string.question_post));
-            loadAskedQuestionData();
-            tvAsk.setTextColor(getResources().getColor(R.color.primary_color));
-            tvAnswer.setTextColor(getResources().getColor(R.color.primary_font_color));
-        } else if (type == ANSWER) {
-            tvFilterName.setText(getString(R.string.question_answer));
-            loadAnsweredQuestionData();
-            tvAsk.setTextColor(getResources().getColor(R.color.primary_font_color));
-            tvAnswer.setTextColor(getResources().getColor(R.color.primary_color));
-        }
     }
 
     private View.OnClickListener getClickTypeClickListener() {
@@ -195,6 +211,29 @@ public class MyQuestionFragment extends BaseFragment {
                 esivFilterArrow.setText(getString(R.string.new_font_unfold));
             }
         };
+    }
+
+    @Override
+    public void refreshData() {
+        initData();
+    }
+
+    @Override
+    public void setSwipeEnabled(int i) {
+        srlContent.setEnabled(i == 0);
+    }
+
+    private void showLoadingView() {
+        srlContent.post(new Runnable() {
+            @Override
+            public void run() {
+                srlContent.setRefreshing(true);
+            }
+        });
+    }
+
+    private void disabledLoadingView() {
+        srlContent.setRefreshing(false);
     }
 
     public static class ViewHolderAsk extends RecyclerView.ViewHolder {

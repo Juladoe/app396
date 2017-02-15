@@ -2,27 +2,36 @@ package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.MyTabFragment;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircleImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by JesseHuang on 2017/2/6.
  */
 
-public class MineFragment1 extends BaseFragment {
+public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffsetChangedListener {
 
+    private AppBarLayout appBarLayout;
     private TextView tvName;
     private CircleImageView ivAvatar;
     private TextView tvUserType;
@@ -30,6 +39,10 @@ public class MineFragment1 extends BaseFragment {
     private ViewPager vpContent;
     private String[] mTabTitles = {"学习", "缓存", "收藏", "问答"};
     private String[] mFragmentNames = {"MyStudyFragment", "MyVideoCacheFragment", "MyFavoriteFragment", "MyQuestionFragment"};
+
+    private MinePagerAdapter minePagerAdapter;
+
+    private List<RefreshFragment> mRefreshFragmentList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +52,7 @@ public class MineFragment1 extends BaseFragment {
 
     @Override
     protected void initView(View view) {
+        appBarLayout = (AppBarLayout) view.findViewById(R.id.app_bar);
         tvName = (TextView) view.findViewById(R.id.tv_name);
         ivAvatar = (CircleImageView) view.findViewById(R.id.iv_avatar);
         tvUserType = (TextView) view.findViewById(R.id.tv_avatar_type);
@@ -47,16 +61,26 @@ public class MineFragment1 extends BaseFragment {
         vpContent.setOffscreenPageLimit(3);
         initUserInfo();
         initViewPager();
+        appBarLayout.addOnOffsetChangedListener(this);
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
+        for (RefreshFragment refreshFragment : mRefreshFragmentList) {
+            refreshFragment.setSwipeEnabled(i);
+        }
     }
 
     private void initUserInfo() {
-        tvName.setText(app.loginUser.nickname);
-        tvUserType.setText(app.loginUser.userRole2String());
-        ImageLoader.getInstance().displayImage(app.loginUser.getMediumAvatar(), ivAvatar, app.mAvatarOptions);
+        if (app.loginUser != null) {
+            tvName.setText(app.loginUser.nickname);
+            tvUserType.setText(app.loginUser.userRole2String());
+            ImageLoader.getInstance().displayImage(app.loginUser.getMediumAvatar(), ivAvatar, app.mAvatarOptions);
+        }
     }
 
     private void initViewPager() {
-        MinePagerAdapter minePagerAdapter = new MinePagerAdapter(getFragmentManager(), mTabTitles, mFragmentNames);
+        minePagerAdapter = new MinePagerAdapter(getFragmentManager(), mTabTitles, mFragmentNames);
         vpContent.setAdapter(minePagerAdapter);
         tbTitles.setupWithViewPager(vpContent);
     }
@@ -112,6 +136,9 @@ public class MineFragment1 extends BaseFragment {
                             });
                     break;
             }
+            if (!mRefreshFragmentList.contains(fragment)) {
+                mRefreshFragmentList.add((RefreshFragment) fragment);
+            }
             return fragment;
         }
 
@@ -124,5 +151,30 @@ public class MineFragment1 extends BaseFragment {
         public CharSequence getPageTitle(int position) {
             return tabTitles[position];
         }
+    }
+
+    @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{new MessageType(Const.LOGIN_SUCCESS)};
+    }
+
+    @Override
+    public void invoke(WidgetMessage message) {
+        MessageType messageType = message.type;
+        if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
+            initUserInfo();
+            initViewPager();
+
+            for (RefreshFragment fragment : mRefreshFragmentList) {
+                fragment.refreshData();
+            }
+        }
+        Log.d("develop", "refreshData: " + this.getClass().getSimpleName());
+    }
+
+    public interface RefreshFragment {
+        void refreshData();
+
+        void setSwipeEnabled(int i);
     }
 }

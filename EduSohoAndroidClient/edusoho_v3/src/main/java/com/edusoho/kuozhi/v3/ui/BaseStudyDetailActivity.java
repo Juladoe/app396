@@ -39,6 +39,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.util.WeakReferenceHandler;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
+import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.util.ArrayDeque;
@@ -59,7 +60,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected Toolbar mToolbar;
     protected TextView mShareView;
     private CollapsingToolbarLayout mToolBarLayout;
-    protected AppBarLayout mAppBarLayout;
+    protected ScrollableAppBarLayout mAppBarLayout;
     protected ViewGroup mParentLayout;
     protected RelativeLayout mMediaLayout;
     protected ImageView mIvBackGraound;
@@ -152,7 +153,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         mTvCollectTxt = (TextView) findViewById(R.id.tv_collect_txt);
         mTvAdd = (TextView) findViewById(R.id.tv_add);
         mTvInclass = (TextView) findViewById(R.id.tv_inclass);
-        mAppBarLayout = (AppBarLayout) findViewById(R.id.app_bar);
+        mAppBarLayout = (ScrollableAppBarLayout) findViewById(R.id.app_bar);
         mToolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         mIvGrade = (TextView) findViewById(R.id.iv_grade);
         mShareView = (TextView) findViewById(R.id.iv_share);
@@ -405,21 +406,19 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
     protected void courseStart() {
         if (!mIsFullScreen) {
-            ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
-            if (params != null) {
-                int bottom = AppUtil.dp2px(this, 50 + mMediaViewHeight);
-                if (mBottomLayout.getVisibility() != View.GONE) {
-                    bottom += AppUtil.dp2px(this, 50);
-                }
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                    bottom += AppUtil.dp2px(this, 25);
-                }
-                params.height = AppUtil.getHeightPx(this) - bottom;
-                mViewPager.setLayoutParams(params);
-            }
+            mAppBarLayout.expandToolbar(true);
+            AppBarLayout.LayoutParams lp = (AppBarLayout.LayoutParams) mToolBarLayout.getLayoutParams();
+            lp.setScrollFlags(0);
+
+            int windowHeight = getResources().getDisplayMetrics().heightPixels;
+            mViewPager.getLayoutParams().height = windowHeight - mAppBarLayout.getHeight();
         }
         mPlayButtonLayout.setVisibility(View.GONE);
-        mIsPlay = true;
+        setPlayStatus(true);
+    }
+
+    private void setPlayStatus(boolean isPlay) {
+        mIsPlay = isPlay;
     }
 
     protected void initViewPager() {
@@ -436,8 +435,13 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
     protected void coursePause() {
         if (!mIsFullScreen) {
-            initViewPager();
+            mAppBarLayout.expandToolbar();
+            AppBarLayout.LayoutParams lp = (AppBarLayout.LayoutParams) mToolBarLayout.getLayoutParams();
+            lp.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout.LayoutParams.SCROLL_FLAG_EXIT_UNTIL_COLLAPSED);
+
+            mViewPager.getLayoutParams().height = ViewGroup.LayoutParams.MATCH_PARENT;
         }
+        setPlayStatus(false);
         mIsPlay = false;
         mPlayButtonLayout.setVisibility(View.VISIBLE);
     }
