@@ -115,6 +115,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                     }
                 });
     }
+
     @Override
     protected void goClass() {
         CoreEngine.create(getBaseContext()).runNormalPlugin("NewsCourseActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
@@ -153,11 +154,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void grade() {
-<<<<<<< HEAD
-        CoreEngine.create(this).runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
-=======
         CoreEngine.create(getBaseContext()).runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
->>>>>>> bugfix/20003-cache-video-playerror
                 , new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -473,7 +470,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     protected String[] getFragmentArray() {
-        return new String [] {
+        return new String[]{
                 "CourseDetailFragment", "CourseCatalogFragment", "CourseDiscussFragment"
         };
     }
@@ -562,7 +559,8 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     @Override
-    public void handlerCourseExpired() {}
+    public void handlerCourseExpired() {
+    }
 
     protected AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
