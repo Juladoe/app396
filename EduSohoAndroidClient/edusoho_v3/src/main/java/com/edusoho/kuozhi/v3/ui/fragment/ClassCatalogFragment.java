@@ -64,6 +64,11 @@ public class ClassCatalogFragment extends Fragment {
         .success(new NormalCallback<List<Course>>() {
             @Override
             public void success(List<Course> list) {
+                for (Course course : list) {
+                    if (!"published".equals(course.status)) {
+                        list.remove(course);
+                    }
+                }
                 mCourseList = list;
                 setLoadStatus(View.GONE);
                 if (mCourseList != null && !mCourseList.isEmpty()) {
