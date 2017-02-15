@@ -53,7 +53,7 @@ public class QrSearchActivity extends CaptureActivity {
     }
 
     private void initURLMatchType(String result) {
-        mURLMatchTypes = new ArrayList<URLMatchType>();
+        mURLMatchTypes = new ArrayList<>();
         mURLMatchTypes.add(new LoginURLMatchType(result));
         mURLMatchTypes.add(new SchoolURLMatchType(result));
     }
