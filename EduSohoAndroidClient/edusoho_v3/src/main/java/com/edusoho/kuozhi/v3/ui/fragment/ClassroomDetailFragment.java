@@ -242,7 +242,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     }
 
     public void getTeacherView(int headTeacherId) {
-        if ("0".equals(headTeacherId)) {
+        if (0 == headTeacherId) {
             mTeacherLayout.setVisibility(View.GONE);
         } else {
             CourseDetailModel.getTeacherData(headTeacherId, new ResponseCallbackListener<Teacher>() {
