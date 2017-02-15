@@ -59,12 +59,11 @@ public class QrSearchActivity extends CaptureActivity {
     }
 
     protected boolean parseResult(final String result) {
-        Log.d(TAG, result);
         if (!(result.startsWith("http://") || result.startsWith("https://"))) {
             showDataInWebView(result);
             return true;
         }
-        URL resultUrl = null;
+        URL resultUrl;
         try {
             resultUrl = new URL(result);
         } catch (Exception e) {
@@ -95,7 +94,7 @@ public class QrSearchActivity extends CaptureActivity {
         }
 
         new RedirectUrl().execute(result);
-        return true;
+        return false;
     }
 
     class RedirectUrl extends AsyncTask<String, Void, String> {
@@ -129,6 +128,7 @@ public class QrSearchActivity extends CaptureActivity {
         protected void onPostExecute(String redirectUrl) {
             String[] urls = redirectUrl.split("/");
             final String courseId = urls[urls.length - 1];
+            finish();
             CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
                     , mContext, new PluginRunCallback() {
                         @Override
