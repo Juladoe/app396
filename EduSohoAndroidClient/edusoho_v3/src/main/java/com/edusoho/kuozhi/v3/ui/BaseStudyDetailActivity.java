@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.animation.ObjectAnimator;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -97,6 +96,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
+    protected boolean mIsJump = false;
     protected String mTitle;
     private int mTitleBarHeight;
     public int mMediaViewHeight = 210;
@@ -288,6 +288,10 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        if (mIsJump) {
+            mIsJump = false;
+            hideProcesDialog();
+        }
         mRunStatus = MSG_RESUME;
         mAppBarLayout.addOnOffsetChangedListener(this);
     }
@@ -339,7 +343,18 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                     return;
                 }
                 initData();
+                break;
+            case Const.LOGIN_SUCCESS:
+            case Const.WEB_BACK_REFRESH:
+                reFreshFromWeb0rLogin();
+                break;
         }
+    }
+
+    private void reFreshFromWeb0rLogin(){
+        setLoadStatus(View.GONE);
+        hideProcesDialog();
+        initData();
     }
 
     private void changeToolbarStyle(boolean isTop) {
@@ -485,25 +500,12 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                 new MessageType(Const.COURSE_REFRESH),
                 new MessageType(Const.COURSE_PAUSE),
                 new MessageType(Const.SCREEN_LOCK),
-                new MessageType(Const.COURSE_HIDE_BAR),
+                new MessageType(Const.LOGIN_SUCCESS),
+                new MessageType(Const.WEB_BACK_REFRESH),
                 new MessageType(Const.PAY_SUCCESS, MessageType.UI_THREAD)
         };
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_REFRESH) {
-            setLoadStatus(View.GONE);
-            hideProcesDialog();
-            initData();
-        }
-        if (requestCode == RESULT_LOGIN) {
-            setLoadStatus(View.GONE);
-            hideProcesDialog();
-            initData();
-        }
-    }
 
     protected void showProcessDialog() {
         if (mProcessDialog == null) {

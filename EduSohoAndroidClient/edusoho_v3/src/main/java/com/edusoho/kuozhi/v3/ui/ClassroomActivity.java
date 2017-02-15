@@ -241,6 +241,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                             hideProcesDialog();
                         }
                     });
+            mIsJump = true;
         }
     }
 

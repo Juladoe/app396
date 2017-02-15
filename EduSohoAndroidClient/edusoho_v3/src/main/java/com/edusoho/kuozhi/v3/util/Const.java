@@ -132,7 +132,7 @@ public class Const {
     public static final String SCROLL_STATE_SAVE = "scroll_state_save";
 
     //课程及班级界面消息类型
-    public static final String RESULT_REFRESH = "webview_back_update";
+    public static final String WEB_BACK_REFRESH = "webview_back_update";
 
     public static final String FULL_SCREEN = "course_full_screen";
     public static final String SCREEN_LOCK = "screen_lock";
