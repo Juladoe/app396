@@ -24,7 +24,6 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.ui.AllReviewActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -239,15 +238,27 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             }
             mTvPeopleDesc.setText(sb.substring(0, sb.length() - 1));
         }
-        if (classRoom.teachers.length == 0) {
+        getTeacherView(classRoom.headTeacherId);
+    }
+
+    public void getTeacherView(int headTeacherId) {
+        if ("0".equals(headTeacherId)) {
             mTeacherLayout.setVisibility(View.GONE);
         } else {
-            mTeacherLayout.setVisibility(View.VISIBLE);
-            Teacher teacher = classRoom.teachers[0];
-            mTeacherId = String.valueOf(teacher.id);
-            ImageLoader.getInstance().displayImage(teacher.getAvatar(), mIvTeacherIcon);
-            mTvTeacherName.setText(teacher.nickname);
-            mTvTeacherDesc.setText(teacher.title);
+            CourseDetailModel.getTeacherData(headTeacherId, new ResponseCallbackListener<Teacher>() {
+                @Override
+                public void onSuccess(Teacher data) {
+                    mTeacherLayout.setVisibility(View.VISIBLE);
+                    mTeacherId = String.valueOf(data.id);
+                    ImageLoader.getInstance().displayImage(data.smallAvatar.split("\\?")[0], mIvTeacherIcon, ((EdusohoApp) getActivity().getApplication()).mAvatarOptions);
+                    mTvTeacherName.setText(data.nickname);
+                    mTvTeacherDesc.setText(data.title);
+                }
+                @Override
+                public void onFailure(String code, String message) {
+                    mTeacherLayout.setVisibility(View.GONE);
+                }
+            });
         }
     }
 
@@ -280,25 +291,25 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
                 });
     }
 
-    @Override
-    protected void vipInfo() {
-        if (EdusohoApp.app.loginUser == null) {
-            CourseUtil.notLogin();
-            return;
-        }
-        final String url = String.format(
-                Const.MOBILE_APP_URL,
-                "",
-                "main#/viplist"
-        );
-        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
-                , EdusohoApp.app.mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.WEB_URL, url);
-                    }
-                });
-    }
+//    @Override
+//    protected void vipInfo() {
+//        if (EdusohoApp.app.loginUser == null) {
+//            CourseUtil.notLogin();
+//            return;
+//        }
+//        final String url = String.format(
+//                Const.MOBILE_APP_URL,
+//                EdusohoApp.app.schoolHost,
+//                "main#/viplist"
+//        );
+//        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
+//                , EdusohoApp.app.mActivity, new PluginRunCallback() {
+//                    @Override
+//                    public void setIntentDate(Intent startIntent) {
+//                        startIntent.putExtra(Const.WEB_URL, url);
+//                    }
+//                });
+//    }
 
     class ReviewAdapter extends BaseAdapter {
 

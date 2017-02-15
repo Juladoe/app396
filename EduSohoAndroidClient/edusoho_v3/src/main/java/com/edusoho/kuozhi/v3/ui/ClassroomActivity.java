@@ -39,7 +39,6 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         Intent intent = getIntent();
         mClassroomId = intent.getIntExtra(Const.CLASSROOM_ID, 0);
         if (mClassroomId == 0) {

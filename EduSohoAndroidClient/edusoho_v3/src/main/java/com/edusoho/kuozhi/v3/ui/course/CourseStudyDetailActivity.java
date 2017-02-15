@@ -13,6 +13,7 @@ import android.view.View;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
@@ -60,6 +61,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
         initView();
         initData();
+//        ((EdusohoApp) getApplication()).startPlayCacheServer(((BaseActivity) getBaseContext()));
     }
 
     @Override
@@ -146,7 +148,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void grade() {
-        ((EdusohoApp) getApplication()).mEngine.runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
+        CoreEngine.create(this).runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
                 , new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -379,7 +381,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
-
         Bundle bundle = new Bundle();
         bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);

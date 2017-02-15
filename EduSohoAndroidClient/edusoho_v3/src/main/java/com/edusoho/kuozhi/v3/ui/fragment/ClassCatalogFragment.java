@@ -60,7 +60,7 @@ public class ClassCatalogFragment extends Fragment {
     private void initData() {
         mClassRoomId = getArguments().getInt(Const.CLASSROOM_ID);
         setLoadStatus(View.VISIBLE);
-        new ClassRoomProvider(getContext()).getCourseList(mClassRoomId)
+        new ClassRoomProvider(getActivity()).getCourseList(mClassRoomId)
         .success(new NormalCallback<List<Course>>() {
             @Override
             public void success(List<Course> list) {
@@ -127,7 +127,9 @@ public class ClassCatalogFragment extends Fragment {
 
     public void reFreshView(boolean mJoin){
         isJoin = mJoin;
-        initData();
+        if (getActivity() != null) {
+            initData();
+        }
     }
 
     private void setLessonEmptyViewVisibility(int visibility) {

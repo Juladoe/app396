@@ -131,6 +131,9 @@ public class Const {
     public static final String DIALOG_DISMISS = "dialog_dismiss";
     public static final String SCROLL_STATE_SAVE = "scroll_state_save";
 
+    //课程及班级界面消息类型
+    public static final String RESULT_REFRESH = "webview_back_update";
+
     public static final String FULL_SCREEN = "course_full_screen";
     public static final String SCREEN_LOCK = "screen_lock";
     public static final String COURSE_HASTRIAL = "course_hastrial";//是否有试学
@@ -312,6 +315,7 @@ public class Const {
     public static final String GET_TAGS = "Category/getTags";
     public static final String USERTERMS = "School/getUserterms";
     public static final String USERINFO = "User/getUserInfo";
+    public static final String USERINFO_NEW = "/mapi_v2/User/getUserInfo?userId=%s";
     public static final String REVIEWS = "Course/getReviews";
     public static final String COURSE_GETCOURSE = "Course/getCourse?courseId=%s";
     public static final String COURSE_GETREVIEWS = "Course/getReviews?courseId=%s&limit=%s&start=%s";

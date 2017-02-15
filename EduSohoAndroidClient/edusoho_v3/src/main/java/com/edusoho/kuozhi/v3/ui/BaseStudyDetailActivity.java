@@ -11,11 +11,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -225,7 +223,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-//                checkTab(position);
                 setBottomLayoutVisible(position, mIsMemder);
                 showEditTopic(position);
             }
@@ -323,12 +320,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                 break;
             case Const.COURSE_REFRESH:
                 initData();
-                break;
-            case Const.COURSE_SHOW_BAR:
-//                changeBar(true);
-                break;
-            case Const.COURSE_HIDE_BAR:
-//                changeBar(false);
                 break;
             case Const.SCREEN_LOCK:
                 screenLock();
@@ -492,7 +483,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                 new MessageType(Const.COURSE_START),
                 new MessageType(Const.COURSE_CHANGE),
                 new MessageType(Const.COURSE_REFRESH),
-                new MessageType(Const.COURSE_SHOW_BAR),
                 new MessageType(Const.COURSE_PAUSE),
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR),

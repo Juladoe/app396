@@ -92,11 +92,11 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case TYPE_CHAPTER:
-                return new ChatperViewHolder(mInflater.inflate(R.layout.item_chapter_catalog, null));
+                return new ChatperViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chapter_catalog, parent, false));
             case TYPE_SECTION:
-                return new UnitViewHolder(mInflater.inflate(R.layout.item_section_catalog, null));
+                return new UnitViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_section_catalog, parent, false));
         }
-        View view = mInflater.inflate(R.layout.item_lesson_catalog, null);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_lesson_catalog, parent, false);
         return new LessonViewHolder(view);
     }
 
