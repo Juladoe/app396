@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
+import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
@@ -29,7 +30,7 @@ import java.util.List;
  * Created by DF on 2016/12/15.
  */
 
-public class ClassCatalogFragment extends Fragment {
+public class ClassCatalogFragment extends Fragment implements ICourseStateListener {
 
     public boolean isJoin = false;
     public int mClassRoomId = 0;
@@ -126,6 +127,7 @@ public class ClassCatalogFragment extends Fragment {
         });
     }
 
+    @Override
     public void reFreshView(boolean mJoin) {
         isJoin = mJoin;
         if (getActivity() != null) {

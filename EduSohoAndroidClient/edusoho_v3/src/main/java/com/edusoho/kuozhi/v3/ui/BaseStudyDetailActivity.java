@@ -4,13 +4,13 @@ import android.animation.ObjectAnimator;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -32,6 +32,7 @@ import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
+import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -43,6 +44,7 @@ import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 
 import extensions.PagerSlidingTabStrip;
@@ -75,7 +77,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected TextView mTvAdd;
     protected TextView mTvInclass;
     protected PagerSlidingTabStrip mTabLayout;
-    protected SystemBarTintManager tintManager;
     protected Queue<WidgetMessage> mUIMessageQueue;
     protected View mMenu;
     protected TextView mIvGrade;
@@ -197,6 +198,15 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) mViewPager.getLayoutParams();
         lp.bottomMargin = isShow ? AppUtil.dp2px(getBaseContext(), 50) : 0;
         mViewPager.setLayoutParams(lp);
+    }
+
+    protected void refreshFragmentViews(boolean isJoin) {
+        List<Fragment> list = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : list) {
+            if (fragment instanceof ICourseStateListener) {
+                ((ICourseStateListener)fragment).reFreshView(isJoin);
+            }
+        }
     }
 
     private void initEvent() {

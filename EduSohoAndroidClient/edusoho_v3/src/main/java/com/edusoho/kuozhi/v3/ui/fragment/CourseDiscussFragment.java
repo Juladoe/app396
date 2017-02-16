@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
 import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
+import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 
@@ -38,7 +39,8 @@ import java.util.Queue;
  * Created by DF on 2017/1/4.
  */
 
-public class CourseDiscussFragment extends Fragment implements MessageEngine.MessageCallback, SwipeRefreshLayout.OnRefreshListener{
+public class CourseDiscussFragment extends Fragment implements
+        MessageEngine.MessageCallback, SwipeRefreshLayout.OnRefreshListener, ICourseStateListener {
 
     private View mLoadView;
     private CourseDiscussAdapter catalogueAdapter;
@@ -119,8 +121,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
                         catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
                         return;
                     }
-                    //没有加载更多了
-                    //mRefreshAdapter.changeMoreStatus(mRefreshAdapter.NO_LOAD_MORE);
+
                     new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, start)
                             .success(new NormalCallback<DiscussDetail>() {
                                 @Override
@@ -212,6 +213,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
         mEmpty.setVisibility(visibility);
     }
 
+    @Override
     public void reFreshView(boolean isJoin) {
         this.isJoin = isJoin;
         if (!TextUtils.isEmpty(((EdusohoApp) getActivity().getApplication()).token)) {

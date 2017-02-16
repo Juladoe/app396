@@ -38,6 +38,7 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
+import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -51,7 +52,7 @@ import java.util.Map;
 /**
  * Created by DF on 2016/12/13.
  */
-public class CourseCatalogFragment extends Fragment {
+public class CourseCatalogFragment extends Fragment implements ICourseStateListener {
 
     private static final int ISMEMBER = 1;
     private static final int VISITOR = 2;
@@ -446,6 +447,7 @@ public class CourseCatalogFragment extends Fragment {
     /**
      * 外部刷新数据
      */
+    @Override
     public void reFreshView(boolean mIsJoin) {
         mMemberStatus = mIsJoin ? ISMEMBER : VISITOR;
         isJoin = mIsJoin;
