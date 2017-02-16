@@ -232,7 +232,7 @@ public abstract class BaseDetailFragment extends Fragment implements View.OnClic
         }
         final String url = String.format(
                 Const.MOBILE_APP_URL,
-                "",
+                EdusohoApp.app.schoolHost,
                 "main#/viplist"
         );
         CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"

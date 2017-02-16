@@ -115,6 +115,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                     }
                 });
     }
+
     @Override
     protected void goClass() {
         CoreEngine.create(getBaseContext()).runNormalPlugin("NewsCourseActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
@@ -395,7 +396,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
         LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
-
         Bundle bundle = new Bundle();
         bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
@@ -470,7 +470,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     protected String[] getFragmentArray() {
-        return new String [] {
+        return new String[]{
                 "CourseDetailFragment", "CourseCatalogFragment", "CourseDiscussFragment"
         };
     }
@@ -559,7 +559,8 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     @Override
-    public void handlerCourseExpired() {}
+    public void handlerCourseExpired() {
+    }
 
     protected AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);

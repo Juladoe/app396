@@ -331,7 +331,7 @@
         <activity
             android:theme="@style/AppThemeNoActionBar"
             android:name=".v3.ui.course.CourseStudyDetailActivity"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
 
     </application>

@@ -310,12 +310,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             case Const.COURSE_REFRESH:
                 initData();
                 break;
-            case Const.COURSE_SHOW_BAR:
-//                changeBar(true);
-                break;
-            case Const.COURSE_HIDE_BAR:
-//                changeBar(false);
-                break;
             case Const.SCREEN_LOCK:
                 screenLock();
                 break;
@@ -469,7 +463,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                 new MessageType(Const.COURSE_START),
                 new MessageType(Const.COURSE_CHANGE),
                 new MessageType(Const.COURSE_REFRESH),
-                new MessageType(Const.COURSE_SHOW_BAR),
                 new MessageType(Const.COURSE_PAUSE),
                 new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.COURSE_HIDE_BAR),
