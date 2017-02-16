@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,7 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -32,6 +32,7 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
@@ -104,12 +105,10 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
         setContentView(R.layout.activity_course_study_layout);
         mUIMessageQueue = new ArrayDeque<>();
         ((EdusohoApp) getApplication()).registMsgSource(this);
+        ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
     }
 
     public MenuPop getMenu() {
@@ -165,6 +164,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                         }
                     }
                 });
+
 
         setLoadStatus(View.VISIBLE);
         initEvent();
@@ -290,8 +290,8 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void finish() {
+        super.finish();
         ((EdusohoApp) getApplication()).unRegistMsgSource(this);
     }
 
@@ -443,7 +443,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     private void fullScreen() {
         ViewGroup.LayoutParams params = mMediaLayout.getLayoutParams();
         if (!mIsFullScreen) {
-            getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             mIsFullScreen = true;
             params.height = AppUtil.getWidthPx(this);
             params.width = -1;
@@ -452,7 +452,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             mIsFullScreen = false;
             params.width = -1;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
