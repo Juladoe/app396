@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
@@ -251,13 +252,14 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
         if (mClassroomDetail == null) {
             return;
         }
+        Classroom classroom = mClassroomDetail.getClassRoom();
+        String about = Html.fromHtml(classroom.about).toString();
         final ShareTool shareTool =
                 new ShareTool(this
-                        , ((EdusohoApp) getApplication()).host + "/classroom/" + mClassroomDetail.getClassRoom().id
-                        , mClassroomDetail.getClassRoom().title
-                        , mClassroomDetail.getClassRoom().about.length() > 20 ? mClassroomDetail.getClassRoom().about.substring(0, 20)
-                        : mClassroomDetail.getClassRoom().about
-                        , mClassroomDetail.getClassRoom().largePicture);
+                        , ((EdusohoApp) getApplication()).host + "/classroom/" + classroom.id
+                        , classroom.title
+                        , about.length() > 20 ? about.substring(0, 20) : about
+                        , classroom.largePicture);
         new Handler((this.getMainLooper())).post(new Runnable() {
             @Override
             public void run() {

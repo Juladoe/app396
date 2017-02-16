@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -247,14 +248,14 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         if (mCourseDetail == null) {
             return;
         }
+        Course course = mCourseDetail.getCourse();
+        String about = Html.fromHtml(course.about).toString();
         final ShareTool shareTool =
                 new ShareTool(this
-                        , ((EdusohoApp) getApplication()).host + "/course/" + mCourseDetail.getCourse().id
-                        , mCourseDetail.getCourse().title
-                        , mCourseDetail.getCourse().about.length() > 20 ?
-                        mCourseDetail.getCourse().about.substring(0, 20)
-                        : mCourseDetail.getCourse().about
-                        , mCourseDetail.getCourse().middlePicture);
+                        , ((EdusohoApp) getApplication()).host + "/course/" + course.id
+                        , course.title
+                        , about.length() > 20 ? about.substring(0, 20) : about
+                        , course.middlePicture);
         new Handler((((EdusohoApp) getApplication()).mContext.getMainLooper())).post(new Runnable() {
             @Override
             public void run() {

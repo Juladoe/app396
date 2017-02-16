@@ -50,7 +50,7 @@ import extensions.PagerSlidingTabStrip;
  */
 
 public abstract class BaseStudyDetailActivity extends AppCompatActivity
-        implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback, AppBarLayout.OnOffsetChangedListener{
+        implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback, AppBarLayout.OnOffsetChangedListener {
 
     protected MenuPop mMenuPop;
     protected int mRunStatus;
@@ -184,7 +184,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     protected String[] getTitleArray() {
-        return new String [] {
+        return new String[]{
                 "简介", "目录", "问答"
         };
     }
@@ -240,7 +240,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             goClass();
         } else if (v.getId() == R.id.tv_edit_topic) {
             showEditPop();
-        } else if (v.getId() == R.id.back){
+        } else if (v.getId() == R.id.back) {
             if (mIsFullScreen) {
                 fullScreen();
             } else {
@@ -249,7 +249,8 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         }
     }
 
-    protected void grade() {}
+    protected void grade() {
+    }
 
     protected abstract void goClass();
 
@@ -341,7 +342,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         }
     }
 
-    private void reFreshFromWeb0rLogin(){
+    private void reFreshFromWeb0rLogin() {
         setLoadStatus(View.GONE);
         hideProcesDialog();
         initData();

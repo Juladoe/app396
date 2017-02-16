@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -59,6 +60,7 @@ public class QrSearchActivity extends CaptureActivity {
     }
 
     protected boolean parseResult(final String result) {
+        Log.d(TAG, "parseResult: " + result);
         if (!(result.startsWith("http://") || result.startsWith("https://"))) {
             showDataInWebView(result);
             return true;
@@ -99,6 +101,10 @@ public class QrSearchActivity extends CaptureActivity {
 
     class RedirectUrl extends AsyncTask<String, Void, String> {
 
+        private static final int CLASSROOM = 2;
+        private static final int COURSE = 1;
+        private int type = COURSE;
+
         @Override
         protected String doInBackground(String... params) {
             String url = params[0];
@@ -106,16 +112,18 @@ public class QrSearchActivity extends CaptureActivity {
             try {
                 HttpURLConnection urlConnection = getConnection(url);
                 urlConnection.connect();
-                Log.d(TAG, "redirectUrl: " + urlConnection.getResponseCode());
                 if (urlConnection.getResponseCode() == 302) {
                     url302 = urlConnection.getHeaderField("Location");
+                    Log.d(TAG, "url302: " + url302);
                     if (TextUtils.isEmpty(url302)) {
-                        url302 = urlConnection.getHeaderField("location"); //临时重定向和永久重定向location的大小写有区分
-                        if (!(url302.startsWith("http://") || url302.startsWith("https://"))) { //某些时候会省略host，只返回后面的path，所以需要补全url
-                            URL originalUrl = new URL(url);
-                            url302 = originalUrl.getProtocol() + "://" + originalUrl.getHost() + ":" + originalUrl.getPort() + url302;
+                        url302 = urlConnection.getHeaderField("location");
+                    }
+                    if (url302 != null) {
+                        if (url302.contains("course")) {
+                            type = COURSE;
+                        } else if (url302.contains("classroom")) {
+                            type = CLASSROOM;
                         }
-                        Log.d(TAG, "redirectUrl: " + url302);
                     }
                 }
             } catch (Exception ex) {
@@ -126,16 +134,35 @@ public class QrSearchActivity extends CaptureActivity {
 
         @Override
         protected void onPostExecute(String redirectUrl) {
+            if (redirectUrl == null) {
+                Toast.makeText(mContext, "二维码已失效", Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }
             String[] urls = redirectUrl.split("/");
-            final String courseId = urls[urls.length - 1];
-            finish();
-            CoreEngine.create(mContext).runNormalPlugin("CourseActivity"
-                    , mContext, new PluginRunCallback() {
+            final String targetId = urls[urls.length - 1];
+            switch (type) {
+                case COURSE:
+                    CoreEngine.create(mContext).runNormalPlugin("CourseActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(Const.COURSE_ID, Integer.parseInt(courseId));
+                            startIntent.putExtra(Const.COURSE_ID, Integer.parseInt(targetId));
                         }
                     });
+                    break;
+                case CLASSROOM:
+                    CoreEngine.create(mContext).runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
+                        @Override
+                        public void setIntentDate(Intent startIntent) {
+                            startIntent.putExtra(Const.CLASSROOM_ID, Integer.parseInt(targetId));
+                        }
+                    });
+                    break;
+                default:
+                    Toast.makeText(mContext, "暂不支持该类型的二维码", Toast.LENGTH_LONG).show();
+                    break;
+            }
+            finish();
         }
 
         private HttpURLConnection getConnection(String strUrl) throws IOException {
