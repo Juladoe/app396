@@ -146,7 +146,6 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
                 tvFilterName.setText(getString(R.string.filter_type_live));
                 break;
             case CLASSROOM:
-                clearViewData();
                 loadClassroom();
                 tvClassroom.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_classroom));
@@ -235,8 +234,7 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
     private void loadClassroom() {
         showLoadingView();
-        rvContent.setAdapter(mClassroomAdapter);
-        CourseDetailModel.getAllUserClassroom(100, 0, new ResponseCallbackListener<LearningClassroom>() {
+        CourseDetailModel.getAllUserClassroom(1000, 0, new ResponseCallbackListener<LearningClassroom>() {
             @Override
             public void onSuccess(LearningClassroom data) {
                 disabledLoadingView();
@@ -393,11 +391,6 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
                 }
                 break;
         }
-    }
-
-    private void clearViewData() {
-        mCourseAdapter.clear();
-        mClassroomAdapter.clear();
     }
 
     private View.OnClickListener getTypeClickListener() {
