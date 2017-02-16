@@ -100,6 +100,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                             ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(true);
                             tabPage(300);
                         }
+                        setBottomLayoutState(mCourseDetail.getMember() == null);
                         mTitle = mCourseDetail.getCourse().title;
                         refreshView();
                         if (data != null && data.getCourse() != null) {

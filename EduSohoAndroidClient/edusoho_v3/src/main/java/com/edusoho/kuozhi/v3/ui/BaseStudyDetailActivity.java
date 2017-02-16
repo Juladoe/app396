@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -190,6 +191,13 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     protected abstract String[] getFragmentArray();
+
+    protected void setBottomLayoutState(boolean isShow) {
+        mBottomLayout.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) mViewPager.getLayoutParams();
+        lp.bottomMargin = isShow ? AppUtil.dp2px(getBaseContext(), 50) : 0;
+        mViewPager.setLayoutParams(lp);
+    }
 
     private void initEvent() {
         mBackView.setOnClickListener(this);
