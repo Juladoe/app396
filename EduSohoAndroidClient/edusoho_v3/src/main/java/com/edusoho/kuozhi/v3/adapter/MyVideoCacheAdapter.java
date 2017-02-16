@@ -27,12 +27,17 @@ import cn.trinea.android.common.util.ToastUtils;
 
 public class MyVideoCacheAdapter extends RecyclerView.Adapter<MyVideoCacheFragment.VideoCacheViewHolder> {
 
+    private static final int EMPTY = 0;
+    private static final int NOT_EMPTY = 1;
+    private int mCurrentDataStatus;
+
     private Context mContext;
     private List<DownloadCourse> mList;
 
     public MyVideoCacheAdapter(Context context) {
         this.mContext = context;
         mList = new ArrayList<>();
+        mCurrentDataStatus = EMPTY;
     }
 
     public void setData(List<DownloadCourse> list) {
@@ -43,35 +48,42 @@ public class MyVideoCacheAdapter extends RecyclerView.Adapter<MyVideoCacheFragme
 
     @Override
     public MyVideoCacheFragment.VideoCacheViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_download_manager_course_group, parent, false);
-        return new MyVideoCacheFragment.VideoCacheViewHolder(view);
+        if (mCurrentDataStatus == NOT_EMPTY) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_download_manager_course_group, parent, false);
+            return new MyVideoCacheFragment.VideoCacheViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
+            return new MyVideoCacheFragment.VideoCacheViewHolder(view);
+        }
     }
 
     @Override
     public void onBindViewHolder(MyVideoCacheFragment.VideoCacheViewHolder viewHolder, int position) {
-        final DownloadCourse course = mList.get(position);
-        ImageLoader.getInstance().displayImage(course.getPicture(), viewHolder.ivCover);
-        viewHolder.tvCourseTitle.setText(course.title);
-        viewHolder.ivVideoSizes.setText(getCacheSize(viewHolder.ivVideoSizes.getContext(), course.getCachedSize()));
-        viewHolder.ivVideoSum.setText(String.format(
-                viewHolder.ivVideoSum.getResources().getString(R.string.download_size_cached),
-                course.getCachedLessonNum()
-        ));
-
-        viewHolder.tvExpiredView.setVisibility(course.isExpird() ? View.VISIBLE : View.GONE);
-        if ("classroom".equals(course.source)) {
-            viewHolder.tvSource.setVisibility(View.VISIBLE);
-            viewHolder.tvSource.setText(AppUtil.getColorTextAfter(
-                    viewHolder.tvSource.getResources().getString(R.string.download_size_course_source),
-                    course.getSourceName(),
-                    Color.rgb(113, 119, 125)
+        if (mCurrentDataStatus == NOT_EMPTY) {
+            final DownloadCourse course = mList.get(position);
+            ImageLoader.getInstance().displayImage(course.getPicture(), viewHolder.ivCover);
+            viewHolder.tvCourseTitle.setText(course.title);
+            viewHolder.ivVideoSizes.setText(getCacheSize(viewHolder.ivVideoSizes.getContext(), course.getCachedSize()));
+            viewHolder.ivVideoSum.setText(String.format(
+                    viewHolder.ivVideoSum.getResources().getString(R.string.download_size_cached),
+                    course.getCachedLessonNum()
             ));
-        } else {
-            viewHolder.tvSource.setVisibility(View.GONE);
-            viewHolder.tvSource.setText("");
+
+            viewHolder.tvExpiredView.setVisibility(course.isExpird() ? View.VISIBLE : View.GONE);
+            if ("classroom".equals(course.source)) {
+                viewHolder.tvSource.setVisibility(View.VISIBLE);
+                viewHolder.tvSource.setText(AppUtil.getColorTextAfter(
+                        viewHolder.tvSource.getResources().getString(R.string.download_size_course_source),
+                        course.getSourceName(),
+                        Color.rgb(113, 119, 125)
+                ));
+            } else {
+                viewHolder.tvSource.setVisibility(View.GONE);
+                viewHolder.tvSource.setText("");
+            }
+            viewHolder.rlayoutContent.setTag(position);
+            viewHolder.rlayoutContent.setOnClickListener(getItemClickListener());
         }
-        viewHolder.rlayoutContent.setTag(position);
-        viewHolder.rlayoutContent.setOnClickListener(getItemClickListener());
     }
 
     private View.OnClickListener getItemClickListener() {
@@ -102,9 +114,11 @@ public class MyVideoCacheAdapter extends RecyclerView.Adapter<MyVideoCacheFragme
 
     @Override
     public int getItemCount() {
-        if (mList != null) {
+        if (mList != null && mList.size() != 0) {
+            mCurrentDataStatus = NOT_EMPTY;
             return mList.size();
         }
-        return 0;
+        mCurrentDataStatus = EMPTY;
+        return 1;
     }
 }
