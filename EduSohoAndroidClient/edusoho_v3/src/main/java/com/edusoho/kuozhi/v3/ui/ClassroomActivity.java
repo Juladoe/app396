@@ -176,14 +176,26 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
             CourseUtil.notLogin();
             return;
         }
-        Teacher[] teachers = mClassroomDetail.getClassRoom().teachers;
-        final Teacher teacher;
-        if (teachers.length > 0) {
-            teacher = teachers[0];
-        } else {
+
+        int headTeacherId = mClassroomDetail.getClassRoom().headTeacherId;
+        if (0 == headTeacherId) {
             CommonUtil.shortToast(this, "班级目前没有老师");
-            return;
+        } else {
+            CourseDetailModel.getTeacherData(headTeacherId, new ResponseCallbackListener<Teacher>() {
+                @Override
+                public void onSuccess(Teacher data) {
+                    startImChat(data);
+                }
+
+                @Override
+                public void onFailure(String code, String message) {
+                    CommonUtil.shortToast(ClassroomActivity.this, "班级目前没有老师");
+                }
+            });
         }
+    }
+
+    private void startImChat(final Teacher teacher) {
         CoreEngine.create(this).runNormalPlugin("ImChatActivity", this, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
