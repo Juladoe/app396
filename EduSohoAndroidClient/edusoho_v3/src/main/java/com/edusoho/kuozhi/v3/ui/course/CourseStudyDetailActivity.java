@@ -109,8 +109,8 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
                     @Override
                     public void onFailure(String code, String message) {
-                        if ("课程不存在".equals(message)) {
-                            CommonUtil.shortToast(CourseStudyDetailActivity.this, "课程不存在");
+                        if (message.contains("课程不存在") || message.contains("课程未发布")) {
+                            CommonUtil.shortToast(CourseStudyDetailActivity.this, message);
                             finish();
                         }
                     }
