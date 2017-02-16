@@ -26,7 +26,6 @@ public class MyVideoCacheFragment extends BaseFragment implements MineFragment1.
 
     private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
-    private View viewEmpty;
     private CourseCacheHelper mCourseCacheHelper;
     private MyVideoCacheAdapter mAdapter;
 
@@ -42,13 +41,10 @@ public class MyVideoCacheFragment extends BaseFragment implements MineFragment1.
         srlContent.setColorSchemeResources(R.color.primary_color);
 
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
-        viewEmpty = view.findViewById(R.id.view_empty);
-        viewEmpty.setVisibility(View.GONE);
 
         View viewBreakline = view.findViewById(R.id.v_breakline);
         viewBreakline.setVisibility(View.GONE);
 
-        viewEmpty.setVisibility(View.GONE);
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
         initData();

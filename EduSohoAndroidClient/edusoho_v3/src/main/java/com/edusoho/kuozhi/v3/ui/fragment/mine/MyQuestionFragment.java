@@ -36,7 +36,6 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
 
     private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
-    private View viewEmpty;
     private View rlayoutFilterType;
     private View llayoutFilterQuestionTypeList;
     private View viewCoverScreen;
@@ -57,9 +56,6 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
 
     @Override
     protected void initView(View view) {
-        viewEmpty = view.findViewById(R.id.view_empty);
-        viewEmpty.setVisibility(View.GONE);
-
         srlContent = (SwipeRefreshLayout) view.findViewById(R.id.srl_content);
         srlContent.setColorSchemeResources(R.color.primary_color);
 
