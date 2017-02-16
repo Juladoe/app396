@@ -9,13 +9,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -31,7 +32,9 @@ import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
+import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
@@ -41,6 +44,7 @@ import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 
 import extensions.PagerSlidingTabStrip;
@@ -73,7 +77,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected TextView mTvAdd;
     protected TextView mTvInclass;
     protected PagerSlidingTabStrip mTabLayout;
-    protected SystemBarTintManager tintManager;
     protected Queue<WidgetMessage> mUIMessageQueue;
     protected View mMenu;
     protected TextView mIvGrade;
@@ -104,12 +107,10 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
         setContentView(R.layout.activity_course_study_layout);
         mUIMessageQueue = new ArrayDeque<>();
         ((EdusohoApp) getApplication()).registMsgSource(this);
+        ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
     }
 
     public MenuPop getMenu() {
@@ -166,6 +167,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                     }
                 });
 
+
         setLoadStatus(View.VISIBLE);
         initEvent();
         mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -190,6 +192,22 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     protected abstract String[] getFragmentArray();
+
+    protected void setBottomLayoutState(boolean isShow) {
+        mBottomLayout.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) mViewPager.getLayoutParams();
+        lp.bottomMargin = isShow ? AppUtil.dp2px(getBaseContext(), 50) : 0;
+        mViewPager.setLayoutParams(lp);
+    }
+
+    protected void refreshFragmentViews(boolean isJoin) {
+        List<Fragment> list = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : list) {
+            if (fragment instanceof ICourseStateListener) {
+                ((ICourseStateListener)fragment).reFreshView(isJoin);
+            }
+        }
+    }
 
     private void initEvent() {
         mBackView.setOnClickListener(this);
@@ -295,8 +313,8 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void finish() {
+        super.finish();
         ((EdusohoApp) getApplication()).unRegistMsgSource(this);
     }
 
@@ -448,7 +466,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     private void fullScreen() {
         ViewGroup.LayoutParams params = mMediaLayout.getLayoutParams();
         if (!mIsFullScreen) {
-            getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             mIsFullScreen = true;
             params.height = AppUtil.getWidthPx(this);
             params.width = -1;
@@ -457,9 +475,9 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             mIsFullScreen = false;
-            params.width = -1;
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
             mMediaLayout.setLayoutParams(params);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);

@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -19,6 +20,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -29,7 +31,7 @@ import org.sufficientlysecure.htmltextview.HtmlTextView;
  * Created by Zhang on 2016/12/8.
  */
 
-public abstract class BaseDetailFragment extends Fragment implements View.OnClickListener {
+public abstract class BaseDetailFragment extends Fragment implements View.OnClickListener, ICourseStateListener {
 
     public BaseDetailFragment() {
     }
@@ -134,7 +136,6 @@ public abstract class BaseDetailFragment extends Fragment implements View.OnClic
         mTvStudentNone = view.findViewById(R.id.tv_student_none);
         mReviewNoneLayout = view.findViewById(R.id.layout_review_none);
         mLoadView = view.findViewById(R.id.ll_detail_load);
-
     }
 
     protected void refreshView() {
@@ -244,4 +245,11 @@ public abstract class BaseDetailFragment extends Fragment implements View.OnClic
                 });
     }
 
+    @Override
+    public void reFreshView(boolean mJoin) {
+        View container = getView().findViewById(R.id.ll_detail_container);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) container.getLayoutParams();
+        lp.bottomMargin = mJoin ? AppUtil.dp2px(getContext(), 50) : 0;
+        container.setLayoutParams(lp);
+    }
 }
