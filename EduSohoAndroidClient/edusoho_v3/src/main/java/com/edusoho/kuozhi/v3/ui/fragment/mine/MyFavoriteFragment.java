@@ -29,7 +29,6 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
 
     private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
-    private View viewEmpty;
     private MyFavoriteAdapter myFavoriteAdapter;
 
     @Override
@@ -48,9 +47,6 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
 
         View viewBreakline = view.findViewById(R.id.v_breakline);
         viewBreakline.setVisibility(View.GONE);
-
-        viewEmpty = view.findViewById(R.id.view_empty);
-        viewEmpty.setVisibility(View.GONE);
 
         initData();
         loadData();
@@ -92,19 +88,8 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
             @Override
             public void onFailure(String code, String message) {
                 ToastUtils.show(mContext, message);
-                setNoCourseDataVisible(true);
             }
         });
-    }
-
-    private void setNoCourseDataVisible(boolean visible) {
-        if (visible) {
-            viewEmpty.setVisibility(View.VISIBLE);
-            rvContent.setVisibility(View.GONE);
-        } else {
-            viewEmpty.setVisibility(View.GONE);
-            rvContent.setVisibility(View.VISIBLE);
-        }
     }
 
     @Override

@@ -57,7 +57,6 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<MyStudyFragment.Cla
 
     public void clear() {
         mClassroomList.clear();
-        notifyDataSetChanged();
     }
 
     @Override

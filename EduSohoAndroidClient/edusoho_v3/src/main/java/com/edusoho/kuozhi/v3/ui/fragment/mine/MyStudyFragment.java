@@ -46,7 +46,6 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
     private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
-    private View viewEmpty;
     private View rlayoutFilterType;
     private View llayoutFilterQuestionTypeList;
     private View viewCoverScreen;
@@ -60,6 +59,7 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
     private MyCourseStudyAdapter mCourseAdapter;
     private MyClassroomAdapter mClassroomAdapter;
+    private CourseProvider mCourseProvider;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,9 +69,6 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
     @Override
     protected void initView(View view) {
-        viewEmpty = view.findViewById(R.id.view_empty);
-        viewEmpty.setVisibility(View.GONE);
-
         srlContent = (SwipeRefreshLayout) view.findViewById(R.id.srl_content);
         srlContent.setColorSchemeResources(R.color.primary_color);
 
@@ -102,18 +99,23 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
         tvLiveCourse.setOnClickListener(getTypeClickListener());
         tvClassroom.setOnClickListener(getTypeClickListener());
         initData();
-
+        loadData();
         srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                switchType(mCurrent_TYPE);
+                loadData();
             }
         });
     }
 
     private void initData() {
+        mCourseProvider = new CourseProvider(mContext);
         mCourseAdapter = new MyCourseStudyAdapter(getActivity());
         mClassroomAdapter = new MyClassroomAdapter(getActivity());
+        rvContent.setAdapter(mCourseAdapter);
+    }
+
+    private void loadData() {
         switchType(mCurrent_TYPE);
     }
 
@@ -129,19 +131,16 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
         tvClassroom.setTextColor(getResources().getColor(R.color.primary_font_color));
         switch (type) {
             case LATEST_COURSE:
-                clearViewData();
                 loadLatestCourse();
                 tvLatestCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_latest));
                 break;
             case NORMAL_COURSE:
-                clearViewData();
                 loadNormalCourse();
                 tvNormalCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_course));
                 break;
             case LIVE_COURSE:
-                clearViewData();
                 loadLiveCourse();
                 tvLiveCourse.setTextColor(getResources().getColor(R.color.primary_color));
                 tvFilterName.setText(getString(R.string.filter_type_live));
@@ -160,12 +159,12 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
     private void loadLatestCourse() {
         showLoadingView();
-        rvContent.setAdapter(mCourseAdapter);
         CourseDetailModel.getStudy(new ResponseCallbackListener<Study>() {
             @Override
             public void onSuccess(Study data) {
                 disabledLoadingView();
                 mCourseAdapter.setLatestCourses(data.getResources());
+                rvContent.setAdapter(mCourseAdapter);
                 List<Integer> ids = new ArrayList<>();
                 for (Study.Resource study : data.getResources()) {
                     ids.add(study.getId());
@@ -185,14 +184,13 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
     private void loadNormalCourse() {
         showLoadingView();
-        rvContent.setAdapter(mCourseAdapter);
-        CourseProvider courseProvider = new CourseProvider(mContext);
-        courseProvider.getLearnCourses().success(new NormalCallback<CourseResult>() {
+        mCourseProvider.getLearnCourses().success(new NormalCallback<CourseResult>() {
             @Override
             public void success(CourseResult courseResult) {
                 disabledLoadingView();
                 List<Course> list = new LinkedList<>(Arrays.asList(courseResult.resources));
                 mCourseAdapter.setNormalCourses(list);
+                rvContent.setAdapter(mCourseAdapter);
                 List<Integer> ids = new ArrayList<>();
                 for (Course course : courseResult.resources) {
                     ids.add(course.id);
@@ -212,12 +210,12 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
     private void loadLiveCourse() {
         showLoadingView();
-        rvContent.setAdapter(mCourseAdapter);
         CourseDetailModel.getLiveCourses(1000, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(LearningCourse liveCourses) {
                 disabledLoadingView();
                 mCourseAdapter.setLiveCourses(liveCourses.data);
+                rvContent.setAdapter(mCourseAdapter);
                 List<Integer> ids = new ArrayList<>();
                 for (Course course : liveCourses.data) {
                     ids.add(course.id);
@@ -243,6 +241,7 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
             public void onSuccess(LearningClassroom data) {
                 disabledLoadingView();
                 mClassroomAdapter.setClassrooms(data.getData());
+                rvContent.setAdapter(mClassroomAdapter);
             }
 
             @Override
