@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment1;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyQuestionFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 
@@ -23,7 +24,11 @@ import java.util.List;
  * Created by JesseHuang on 2017/2/9.
  */
 
-public class MyAskQuestionAdapter extends RecyclerView.Adapter<MyQuestionFragment.ViewHolderAsk> {
+public class MyAskQuestionAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int EMPTY = 0;
+    private static final int NOT_EMPTY = 1;
+    private int mCurrentDataStatus;
 
     private Context mContext;
     private List<MyThreadEntity> mMyThreadEntities;
@@ -39,40 +44,55 @@ public class MyAskQuestionAdapter extends RecyclerView.Adapter<MyQuestionFragmen
     }
 
     @Override
-
-    public MyQuestionFragment.ViewHolderAsk onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_ask_question, parent, false);
-        return new MyQuestionFragment.ViewHolderAsk(view);
+    public int getItemViewType(int position) {
+        return mCurrentDataStatus;
     }
 
     @Override
-    public void onBindViewHolder(MyQuestionFragment.ViewHolderAsk viewHolder, int position) {
-        final MyThreadEntity entity = mMyThreadEntities.get(position);
-        if ("question".equals(entity.getType())) {
-            viewHolder.tvType.setText("问题");
-            viewHolder.tvType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-            viewHolder.tvType.setBackgroundResource(R.drawable.shape_ask_type_blue);
+
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mCurrentDataStatus == NOT_EMPTY) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_ask_question, parent, false);
+            return new MyQuestionFragment.ViewHolderAsk(view);
         } else {
-            viewHolder.tvType.setText("话题");
-            viewHolder.tvType.setTextColor(mContext.getResources().getColor(R.color.secondary2_color));
-            viewHolder.tvType.setBackgroundResource(R.drawable.shape_ask_type_red);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
+            return new MineFragment1.EmptyViewHolder(view);
         }
-        viewHolder.tvContent.setText(Html.fromHtml("<html><body>&nbsp;&nbsp;&nbsp;" +
-                "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                + entity.getTitle() + "</body></html>"));
-        viewHolder.tvOrder.setText(entity.getCourse().title);
-        viewHolder.tvTime.setText(CommonUtil.convertMills2Date(Long.parseLong(entity.getCreatedTime()) * 1000));
-        viewHolder.tvReviewNum.setText(entity.getPostNum());
-        viewHolder.layout.setTag(mMyThreadEntities.get(position));
-        viewHolder.layout.setOnClickListener(getQuestionClickListener());
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        if (mCurrentDataStatus == NOT_EMPTY) {
+            final MyThreadEntity entity = mMyThreadEntities.get(position);
+            MyQuestionFragment.ViewHolderAsk viewHolderAsk = (MyQuestionFragment.ViewHolderAsk) viewHolder;
+            if ("question".equals(entity.getType())) {
+                viewHolderAsk.tvType.setText("问题");
+                viewHolderAsk.tvType.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+                viewHolderAsk.tvType.setBackgroundResource(R.drawable.shape_ask_type_blue);
+            } else {
+                viewHolderAsk.tvType.setText("话题");
+                viewHolderAsk.tvType.setTextColor(mContext.getResources().getColor(R.color.secondary2_color));
+                viewHolderAsk.tvType.setBackgroundResource(R.drawable.shape_ask_type_red);
+            }
+            viewHolderAsk.tvContent.setText(Html.fromHtml("<html><body>&nbsp;&nbsp;&nbsp;" +
+                    "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                    + entity.getTitle() + "</body></html>"));
+            viewHolderAsk.tvOrder.setText(entity.getCourse().title);
+            viewHolderAsk.tvTime.setText(CommonUtil.convertMills2Date(Long.parseLong(entity.getCreatedTime()) * 1000));
+            viewHolderAsk.tvReviewNum.setText(entity.getPostNum());
+            viewHolderAsk.layout.setTag(mMyThreadEntities.get(position));
+            viewHolderAsk.layout.setOnClickListener(getQuestionClickListener());
+        }
     }
 
     @Override
     public int getItemCount() {
-        if (mMyThreadEntities != null) {
+        if (mMyThreadEntities != null && mMyThreadEntities.size() != 0) {
+            mCurrentDataStatus = NOT_EMPTY;
             return mMyThreadEntities.size();
         }
-        return 0;
+        mCurrentDataStatus = EMPTY;
+        return 1;
     }
 
     private View.OnClickListener getQuestionClickListener() {

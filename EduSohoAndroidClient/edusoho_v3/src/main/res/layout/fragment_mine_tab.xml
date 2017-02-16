@@ -91,7 +91,7 @@
         android:id="@+id/srl_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rlayout_filter_type">
+        android:layout_below="@+id/v_breakline">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_content"

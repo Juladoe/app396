@@ -46,6 +46,8 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
     private TextView tvAnswer;
 
     private MyThreadProvider mMyThreadProvider;
+    private MyAskQuestionAdapter mMyAskQuestionAdapter;
+    private MyAnswerQuestionAdapter mMyAnswerQuestionAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,7 +88,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
         srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                switchFilterType(ASK);
+                switchFilterType(getCurrentType());
             }
         });
     }
@@ -94,6 +96,9 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
     private void initData() {
         mMyThreadProvider = new MyThreadProvider(mContext);
         switchFilterType(ASK);
+        mMyAskQuestionAdapter = new MyAskQuestionAdapter(mContext);
+        mMyAnswerQuestionAdapter = new MyAnswerQuestionAdapter(mContext);
+        rvContent.setAdapter(mMyAskQuestionAdapter);
     }
 
     private void switchFilterType(int type) {
@@ -113,25 +118,17 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
     private void loadAskedQuestionData() {
         showLoadingView();
         RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.MY_CREATED_THREADS + "?start=0&limit=10000", true);
-        final MyAskQuestionAdapter askQuestionAdapter = new MyAskQuestionAdapter(mContext);
-        rvContent.setAdapter(askQuestionAdapter);
         mMyThreadProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
             @Override
             public void success(MyThreadEntity[] entities) {
                 disabledLoadingView();
-                if (entities.length == 0) {
-                    setNoCourseDataVisible(true);
-                } else {
-                    setNoCourseDataVisible(false);
-                    askQuestionAdapter.setData(Arrays.asList(entities));
-                }
-
+                mMyAskQuestionAdapter.setData(Arrays.asList(entities));
+                rvContent.setAdapter(mMyAskQuestionAdapter);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError error) {
                 disabledLoadingView();
-                setNoCourseDataVisible(true);
             }
         });
     }
@@ -139,38 +136,27 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
     private void loadAnsweredQuestionData() {
         showLoadingView();
         RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.MY_POSTED_THREADS + "?start=0&limit=10000", true);
-        final MyAnswerQuestionAdapter answerQuestionAdapter = new MyAnswerQuestionAdapter(mContext);
-        rvContent.setAdapter(answerQuestionAdapter);
         mMyThreadProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
             @Override
             public void success(MyThreadEntity[] entities) {
                 disabledLoadingView();
-                if (entities.length == 0) {
-                    setNoCourseDataVisible(true);
-                } else {
-                    setNoCourseDataVisible(false);
-                    answerQuestionAdapter.setData(Arrays.asList(entities));
-                }
+                mMyAnswerQuestionAdapter.setData(Arrays.asList(entities));
+                rvContent.setAdapter(mMyAnswerQuestionAdapter);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError error) {
                 disabledLoadingView();
-                setNoCourseDataVisible(true);
             }
         });
     }
 
-    private void setNoCourseDataVisible(boolean visible) {
-        if (visible) {
-            viewEmpty.setVisibility(View.VISIBLE);
-            rvContent.setVisibility(View.GONE);
+    private int getCurrentType() {
+        if (tvFilterName.getText().toString().equals(getString(R.string.question_post))) {
+            return ASK;
         } else {
-            viewEmpty.setVisibility(View.GONE);
-            rvContent.setVisibility(View.VISIBLE);
+            return ANSWER;
         }
-        rlayoutFilterType.setVisibility(View.VISIBLE);
-        rlayoutFilterType.bringToFront();
     }
 
     private View.OnClickListener getClickTypeClickListener() {
@@ -216,6 +202,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
     @Override
     public void refreshData() {
         initData();
+        switchFilterType(ASK);
     }
 
     @Override

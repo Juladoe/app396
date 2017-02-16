@@ -45,19 +45,10 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         mContext = context;
     }
 
-    public void addData(List<Course> list) {
-        courseList.addAll(list);
-        notifyDataSetChanged();
-    }
-
     public void setData(List<Course> list) {
         courseList.clear();
         courseList.addAll(list);
         notifyDataSetChanged();
-    }
-
-    public void clear() {
-        courseList.clear();
     }
 
     @Override

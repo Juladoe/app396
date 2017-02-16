@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.DownloadCourse;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment1;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MyFavoriteFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyVideoCacheFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -25,7 +27,7 @@ import cn.trinea.android.common.util.ToastUtils;
  * Created by JesseHuang on 2017/2/10.
  */
 
-public class MyVideoCacheAdapter extends RecyclerView.Adapter<MyVideoCacheFragment.VideoCacheViewHolder> {
+public class MyVideoCacheAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int EMPTY = 0;
     private static final int NOT_EMPTY = 1;
@@ -47,42 +49,48 @@ public class MyVideoCacheAdapter extends RecyclerView.Adapter<MyVideoCacheFragme
     }
 
     @Override
-    public MyVideoCacheFragment.VideoCacheViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public int getItemViewType(int position) {
+        return mCurrentDataStatus;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mCurrentDataStatus == NOT_EMPTY) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_download_manager_course_group, parent, false);
             return new MyVideoCacheFragment.VideoCacheViewHolder(view);
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
-            return new MyVideoCacheFragment.VideoCacheViewHolder(view);
+            return new MineFragment1.EmptyViewHolder(view);
         }
     }
 
     @Override
-    public void onBindViewHolder(MyVideoCacheFragment.VideoCacheViewHolder viewHolder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (mCurrentDataStatus == NOT_EMPTY) {
             final DownloadCourse course = mList.get(position);
-            ImageLoader.getInstance().displayImage(course.getPicture(), viewHolder.ivCover);
-            viewHolder.tvCourseTitle.setText(course.title);
-            viewHolder.ivVideoSizes.setText(getCacheSize(viewHolder.ivVideoSizes.getContext(), course.getCachedSize()));
-            viewHolder.ivVideoSum.setText(String.format(
-                    viewHolder.ivVideoSum.getResources().getString(R.string.download_size_cached),
+            MyVideoCacheFragment.VideoCacheViewHolder videoCacheViewHolder = (MyVideoCacheFragment.VideoCacheViewHolder) viewHolder;
+            ImageLoader.getInstance().displayImage(course.getPicture(), videoCacheViewHolder.ivCover);
+            videoCacheViewHolder.tvCourseTitle.setText(course.title);
+            videoCacheViewHolder.ivVideoSizes.setText(getCacheSize(videoCacheViewHolder.ivVideoSizes.getContext(), course.getCachedSize()));
+            videoCacheViewHolder.ivVideoSum.setText(String.format(
+                    videoCacheViewHolder.ivVideoSum.getResources().getString(R.string.download_size_cached),
                     course.getCachedLessonNum()
             ));
 
-            viewHolder.tvExpiredView.setVisibility(course.isExpird() ? View.VISIBLE : View.GONE);
+            videoCacheViewHolder.tvExpiredView.setVisibility(course.isExpird() ? View.VISIBLE : View.GONE);
             if ("classroom".equals(course.source)) {
-                viewHolder.tvSource.setVisibility(View.VISIBLE);
-                viewHolder.tvSource.setText(AppUtil.getColorTextAfter(
-                        viewHolder.tvSource.getResources().getString(R.string.download_size_course_source),
+                videoCacheViewHolder.tvSource.setVisibility(View.VISIBLE);
+                videoCacheViewHolder.tvSource.setText(AppUtil.getColorTextAfter(
+                        videoCacheViewHolder.tvSource.getResources().getString(R.string.download_size_course_source),
                         course.getSourceName(),
                         Color.rgb(113, 119, 125)
                 ));
             } else {
-                viewHolder.tvSource.setVisibility(View.GONE);
-                viewHolder.tvSource.setText("");
+                videoCacheViewHolder.tvSource.setVisibility(View.GONE);
+                videoCacheViewHolder.tvSource.setText("");
             }
-            viewHolder.rlayoutContent.setTag(position);
-            viewHolder.rlayoutContent.setOnClickListener(getItemClickListener());
+            videoCacheViewHolder.rlayoutContent.setTag(position);
+            videoCacheViewHolder.rlayoutContent.setOnClickListener(getItemClickListener());
         }
     }
 
