@@ -31,9 +31,11 @@ import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 public abstract class BaseDetailFragment extends Fragment implements View.OnClickListener {
 
+
     public BaseDetailFragment() {
     }
 
+    protected TextView mTvTeacher;
     protected TextView mTvPriceOld;
     protected TextView mTvPrice1;
     protected TextView mTvPriceNow;
@@ -129,6 +131,7 @@ public abstract class BaseDetailFragment extends Fragment implements View.OnClic
         mTvReview1 = (TextView) view.findViewById(R.id.tv_review1);
         mTvStudent1 = (TextView) view.findViewById(R.id.tv_student1);
         mTvPeople1 = (TextView) view.findViewById(R.id.tv_people1);
+        mTvTeacher = (TextView) view.findViewById(R.id.tv_teacher1);
         mPeopleLayout = view.findViewById(R.id.people_rlayout);
         mTeacherLayout = view.findViewById(R.id.teacher_rlayout);
         mTvStudentNone = view.findViewById(R.id.tv_student_none);
