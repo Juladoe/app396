@@ -14,7 +14,9 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment1;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyFavoriteFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MyVideoCacheFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -29,7 +31,11 @@ import java.util.List;
  * Created by JesseHuang on 2017/2/7.
  */
 
-public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteFragment.FavoriteViewHolder> {
+public class MyFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int EMPTY = 0;
+    private static final int NOT_EMPTY = 1;
+    private int mCurrentDataStatus;
 
     private List<Course> courseList;
     private Context mContext;
@@ -39,57 +45,76 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<MyFavoriteFragment.F
         mContext = context;
     }
 
-    public void addDatas(List<Course> list) {
+    public void setData(List<Course> list) {
+        courseList.clear();
         courseList.addAll(list);
         notifyDataSetChanged();
     }
 
     @Override
-    public MyFavoriteFragment.FavoriteViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_collect, parent, false);
-        return new MyFavoriteFragment.FavoriteViewHolder(view);
+    public int getItemViewType(int position) {
+        return mCurrentDataStatus;
     }
 
     @Override
-    public void onBindViewHolder(MyFavoriteFragment.FavoriteViewHolder viewHolder, int position) {
-        final Course course = courseList.get(position);
-        ImageLoader.getInstance().displayImage(course.getLargePicture()
-                , viewHolder.ivPic, EdusohoApp.app
-                        .mOptions);
-        viewHolder.tvAddNum.setText(String.format("%s人参与", course.studentNum));
-        viewHolder.tvTitle.setText(String.valueOf(course.title));
-        viewHolder.recyclerViewItem.setTag(course.id);
-        viewHolder.recyclerViewItem.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity"
-                        , mContext, new PluginRunCallback() {
-                            @Override
-                            public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(Const.COURSE_ID, course.id);
-                            }
-                        });
-            }
-        });
-        viewHolder.tvMore.setTag(course);
-        viewHolder.tvMore.setOnClickListener(mMoreClickListener);
-        if (course.type.equals("live")) {
-            viewHolder.layoutLive.setVisibility(View.VISIBLE);
-            if (course.liveState == 1) {
-                viewHolder.tvLive.setText(R.string.lesson_living);
-                viewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
-            } else {
-                viewHolder.tvLive.setText("直播");
-                viewHolder.tvLiveIcon.setVisibility(View.GONE);
-            }
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (viewType == NOT_EMPTY) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_collect, parent, false);
+            return new MyFavoriteFragment.FavoriteViewHolder(view);
         } else {
-            viewHolder.layoutLive.setVisibility(View.GONE);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
+            return new MineFragment1.EmptyViewHolder(view);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        if (mCurrentDataStatus == NOT_EMPTY) {
+            final Course course = courseList.get(position);
+            MyFavoriteFragment.FavoriteViewHolder favoriteViewHolder = (MyFavoriteFragment.FavoriteViewHolder) viewHolder;
+            ImageLoader.getInstance().displayImage(course.getLargePicture()
+                    , favoriteViewHolder.ivPic, EdusohoApp.app
+                            .mOptions);
+            favoriteViewHolder.tvAddNum.setText(String.format("%s人参与", course.studentNum));
+            favoriteViewHolder.tvTitle.setText(String.valueOf(course.title));
+            favoriteViewHolder.recyclerViewItem.setTag(course.id);
+            favoriteViewHolder.recyclerViewItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity"
+                            , mContext, new PluginRunCallback() {
+                                @Override
+                                public void setIntentDate(Intent startIntent) {
+                                    startIntent.putExtra(Const.COURSE_ID, course.id);
+                                }
+                            });
+                }
+            });
+            favoriteViewHolder.tvMore.setTag(course);
+            favoriteViewHolder.tvMore.setOnClickListener(mMoreClickListener);
+            if (course.type.equals("live")) {
+                favoriteViewHolder.layoutLive.setVisibility(View.VISIBLE);
+                if (course.liveState == 1) {
+                    favoriteViewHolder.tvLive.setText(R.string.lesson_living);
+                    favoriteViewHolder.tvLiveIcon.setVisibility(View.VISIBLE);
+                } else {
+                    favoriteViewHolder.tvLive.setText("直播");
+                    favoriteViewHolder.tvLiveIcon.setVisibility(View.GONE);
+                }
+            } else {
+                favoriteViewHolder.layoutLive.setVisibility(View.GONE);
+            }
         }
     }
 
     @Override
     public int getItemCount() {
-        return courseList.size();
+        if (courseList != null && courseList.size() != 0) {
+            mCurrentDataStatus = NOT_EMPTY;
+            return courseList.size();
+        }
+        mCurrentDataStatus = EMPTY;
+        return 1;
     }
 
     private View.OnClickListener mMoreClickListener = new View.OnClickListener() {

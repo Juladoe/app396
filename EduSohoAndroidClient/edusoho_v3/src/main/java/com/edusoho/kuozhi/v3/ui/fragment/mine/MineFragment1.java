@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -198,5 +199,11 @@ public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffset
                 });
             }
         };
+    }
+
+    public static class EmptyViewHolder extends RecyclerView.ViewHolder {
+        public EmptyViewHolder(View view) {
+            super(view);
+        }
     }
 }
