@@ -316,6 +316,7 @@ public class Const {
     public static final String USERTERMS = "School/getUserterms";
     public static final String USERINFO = "User/getUserInfo";
     public static final String USERINFO_NEW = "/mapi_v2/User/getUserInfo?userId=%s";
+    public static final String TEACHER_INFO = "/mapi_v2/ClassRoom/getTeachers?classRoomId=%s";
     public static final String REVIEWS = "Course/getReviews";
     public static final String COURSE_GETCOURSE = "Course/getCourse?courseId=%s";
     public static final String COURSE_GETREVIEWS = "Course/getReviews?courseId=%s&limit=%s&start=%s";
