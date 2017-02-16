@@ -361,20 +361,20 @@ public class CourseCatalogFragment extends Fragment {
                 .success(new NormalCallback<LessonItem>() {
                     @Override
                     public void success(LessonItem lessonItem) {
-                        if ("waiting".equals(lessonItem.mediaConvertStatus)) {
-                            CommonUtil.shortCenterToast(getActivity(), getString(R.string.lesson_loading));
-                            return;
-                        }
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
-                        MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
+                    if ("waiting".equals(lessonItem.mediaConvertStatus)) {
+                        CommonUtil.shortCenterToast(getActivity(), getString(R.string.lesson_loading));
+                        return;
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
+                    MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError obj) {
-                CommonUtil.shortCenterToast(getActivity(), getString(R.string.lesson_loading_fail));
-            }
-        });
+                    @Override
+                    public void success(VolleyError obj) {
+                        CommonUtil.shortCenterToast(getActivity(), getString(R.string.course_loading_fail));
+                    }
+                });
     }
 
     public void perpareStartLearnLesson(CourseCatalogue.LessonsBean lessonsBean) {

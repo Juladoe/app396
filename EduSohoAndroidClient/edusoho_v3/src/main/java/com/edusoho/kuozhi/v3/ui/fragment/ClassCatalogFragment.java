@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -64,9 +65,11 @@ public class ClassCatalogFragment extends Fragment {
         .success(new NormalCallback<List<Course>>() {
             @Override
             public void success(List<Course> list) {
-                for (Course course : list) {
-                    if (!"published".equals(course.status)) {
-                        list.remove(course);
+                Iterator<Course> iterator = list.iterator();
+                while (iterator.hasNext()){
+                    Course course = iterator.next();
+                    if ("published".equals(course.status)) {
+                        iterator.remove();
                     }
                 }
                 mCourseList = list;
