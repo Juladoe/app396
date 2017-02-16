@@ -213,6 +213,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                             hideProcesDialog();
                         }
                     });
+            mIsJump = true;
         }
     }
 

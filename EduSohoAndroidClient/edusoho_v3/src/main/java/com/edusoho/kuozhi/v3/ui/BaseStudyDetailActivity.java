@@ -1,11 +1,9 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.animation.ObjectAnimator;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,7 +32,6 @@ import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
-import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
@@ -98,6 +95,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
+    protected boolean mIsJump = false;
     protected String mTitle;
     public int mMediaViewHeight = 210;
     protected static final int TAB_PAGE = 0;
@@ -107,8 +105,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Window window = getWindow();
-        window.addFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
 
         setContentView(R.layout.activity_course_study_layout);
         mUIMessageQueue = new ArrayDeque<>();
@@ -277,6 +274,10 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        if (mIsJump) {
+            mIsJump = false;
+            hideProcesDialog();
+        }
         mRunStatus = MSG_RESUME;
         mAppBarLayout.addOnOffsetChangedListener(this);
     }
@@ -328,7 +329,18 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                     return;
                 }
                 initData();
+                break;
+            case Const.LOGIN_SUCCESS:
+            case Const.WEB_BACK_REFRESH:
+                reFreshFromWeb0rLogin();
+                break;
         }
+    }
+
+    private void reFreshFromWeb0rLogin(){
+        setLoadStatus(View.GONE);
+        hideProcesDialog();
+        initData();
     }
 
     private void changeToolbarStyle(boolean isTop) {
@@ -465,25 +477,12 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                 new MessageType(Const.COURSE_REFRESH),
                 new MessageType(Const.COURSE_PAUSE),
                 new MessageType(Const.SCREEN_LOCK),
-                new MessageType(Const.COURSE_HIDE_BAR),
+                new MessageType(Const.LOGIN_SUCCESS),
+                new MessageType(Const.WEB_BACK_REFRESH),
                 new MessageType(Const.PAY_SUCCESS, MessageType.UI_THREAD)
         };
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_REFRESH) {
-            setLoadStatus(View.GONE);
-            hideProcesDialog();
-            initData();
-        }
-        if (requestCode == RESULT_LOGIN) {
-            setLoadStatus(View.GONE);
-            hideProcesDialog();
-            initData();
-        }
-    }
 
     protected void showProcessDialog() {
         if (mProcessDialog == null) {

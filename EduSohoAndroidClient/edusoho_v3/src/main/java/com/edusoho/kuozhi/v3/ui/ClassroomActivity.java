@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
@@ -159,7 +160,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
 
     @Override
     protected void goClass() {
-        ((EdusohoApp) getApplication()).mEngine.runNormalPlugin("ClassroomDiscussActivity", this, new PluginRunCallback() {
+        CoreEngine.create(this).runNormalPlugin("ClassroomDiscussActivity", this, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, mClassroomId);
@@ -182,7 +183,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
             CommonUtil.shortToast(this, "班级目前没有老师");
             return;
         }
-        ((EdusohoApp) getApplication()).mEngine.runNormalPlugin("ImChatActivity", this, new PluginRunCallback() {
+        CoreEngine.create(this).runNormalPlugin("ImChatActivity", this, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
@@ -241,6 +242,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                             hideProcesDialog();
                         }
                     });
+            mIsJump = true;
         }
     }
 

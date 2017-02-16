@@ -292,26 +292,6 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
                 });
     }
 
-//    @Override
-//    protected void vipInfo() {
-//        if (EdusohoApp.app.loginUser == null) {
-//            CourseUtil.notLogin();
-//            return;
-//        }
-//        final String url = String.format(
-//                Const.MOBILE_APP_URL,
-//                EdusohoApp.app.schoolHost,
-//                "main#/viplist"
-//        );
-//        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
-//                , EdusohoApp.app.mActivity, new PluginRunCallback() {
-//                    @Override
-//                    public void setIntentDate(Intent startIntent) {
-//                        startIntent.putExtra(Const.WEB_URL, url);
-//                    }
-//                });
-//    }
-
     class ReviewAdapter extends BaseAdapter {
 
         @Override
