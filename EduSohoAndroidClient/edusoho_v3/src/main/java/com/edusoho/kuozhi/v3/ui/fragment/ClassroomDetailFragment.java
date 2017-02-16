@@ -62,6 +62,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         mAdapter = new ReviewAdapter();
         mVipLayout.setVisibility(View.GONE);
         mLvReview.setAdapter(mAdapter);
+        mTvTeacher.setText(R.string.classroom_teacher_txt);
         mTvStudent1.setText(R.string.txt_classroom_student);
         mTvReview1.setText(R.string.txt_classroom_review);
         mTvPeople1.setText(R.string.txt_provision_services);
