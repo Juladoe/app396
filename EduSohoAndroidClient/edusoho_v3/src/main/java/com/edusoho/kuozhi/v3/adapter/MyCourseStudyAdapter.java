@@ -66,7 +66,6 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void setLatestCourses(List<Study.Resource> list) {
         mCourseType = COURSE_TYPE_LATEST;
         mLatestCourses = list;
-        //notifyDataSetChanged();
     }
 
     public List<Study.Resource> getLatestCourses() {
@@ -76,7 +75,6 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void setNormalCourses(List<Course> list) {
         mCourseType = COURSE_TYPE_NORMAL;
         mNormalCourses = list;
-        //notifyDataSetChanged();
     }
 
     public List<Course> getNormalCourses() {
@@ -86,7 +84,6 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void setLiveCourses(List<Course> list) {
         mCourseType = COURSE_TYPE_LIVE;
         mLiveCourses = list;
-        //notifyDataSetChanged();
     }
 
     public void clear() {

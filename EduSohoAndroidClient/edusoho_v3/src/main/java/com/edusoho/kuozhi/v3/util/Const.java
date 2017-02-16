@@ -120,6 +120,7 @@ public class Const {
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
     public static final String LOGIN_SUCCESS = "login_success";
+    public static final String REFRESH_MY_FRAGMENT = "refresh_my_fragment";
     public static final String USER_UPDATE = "user_update";
     public static final String CLEAR_APP_CACHE = "clear_app_cache";
     public static final String THIRD_PARTY_LOGIN_SUCCESS = "third_party_login_success";
@@ -388,7 +389,6 @@ public class Const {
     public static final String REPLAY_QUESTION = "/api/chaos_threads_posts";
     /**
      * 获取考试课程详情
-     *
      */
     public static final String TESTPAPER_INFO = "Lesson/getTestpaperInfo";
 
