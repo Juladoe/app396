@@ -37,16 +37,12 @@ public class CourseDetailModel implements Serializable {
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                if (response.equals("课程不存在")) {
-                    callbackListener.onFailure("Error", response);
-                    return;
-                }
                 CourseDetail apiResponse = ModelDecor.getInstance().
                         decor(response, new TypeToken<CourseDetail>() {
                         });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse != null) {
+                } else {
                     callbackListener.onFailure("Error", response);
                 }
             }
@@ -74,7 +70,7 @@ public class CourseDetailModel implements Serializable {
                         });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse != null) {
+                } else {
                     callbackListener.onFailure("Error", response);
                 }
             }
@@ -99,7 +95,7 @@ public class CourseDetailModel implements Serializable {
                             });
                     if (apiResponse != null) {
                         callbackListener.onSuccess(apiResponse);
-                    } else if (apiResponse != null) {
+                    } else  {
                         callbackListener.onFailure("Error", response);
                     }
                 } catch (Exception e) {
@@ -127,7 +123,7 @@ public class CourseDetailModel implements Serializable {
                             });
                     if (apiResponse != null) {
                         callbackListener.onSuccess(apiResponse);
-                    } else if (apiResponse != null) {
+                    } else  {
                         callbackListener.onFailure("Error", response);
                     }
                 } catch (Exception e) {
@@ -156,7 +152,7 @@ public class CourseDetailModel implements Serializable {
                                     });
                     if (apiResponse != null) {
                         callbackListener.onSuccess(apiResponse.resources);
-                    } else if (apiResponse != null) {
+                    } else  {
                         callbackListener.onFailure("Error", response);
                     }
                 } catch (Exception e) {
@@ -185,7 +181,7 @@ public class CourseDetailModel implements Serializable {
                                     });
                     if (apiResponse != null) {
                         callbackListener.onSuccess(apiResponse.resources);
-                    } else if (apiResponse != null) {
+                    } else  {
                         callbackListener.onFailure("Error", response);
                     }
                 } catch (Exception e) {
@@ -213,7 +209,7 @@ public class CourseDetailModel implements Serializable {
                         });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse != null) {
+                } else  {
                     callbackListener.onFailure("Error", response);
                 }
             }
@@ -237,7 +233,7 @@ public class CourseDetailModel implements Serializable {
                         });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse != null) {
+                } else  {
                     callbackListener.onFailure("Error", response);
                 }
             }
@@ -261,7 +257,7 @@ public class CourseDetailModel implements Serializable {
                         });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse != null) {
+                } else  {
                     callbackListener.onFailure("Error", response);
                 }
             }
@@ -344,7 +340,7 @@ public class CourseDetailModel implements Serializable {
                         });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse != null) {
+                } else {
                     callbackListener.onFailure("Error", response);
                 }
             }
@@ -367,7 +363,7 @@ public class CourseDetailModel implements Serializable {
                         });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse != null) {
+                } else {
                     callbackListener.onFailure("Error", response);
                 }
             }
@@ -404,10 +400,11 @@ public class CourseDetailModel implements Serializable {
             @Override
             public void onResponse(String response) {
                 Teacher apiResponse = ModelDecor.getInstance().
-                        decor(response, new TypeToken<Teacher>() {});
+                        decor(response, new TypeToken<Teacher>() {
+                        });
                 if (apiResponse != null) {
                     callbackListener.onSuccess(apiResponse);
-                } else if (apiResponse != null) {
+                } else  {
                     callbackListener.onFailure("Error", response);
                 }
             }
