@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.imserver.command;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.edusoho.kuozhi.imserver.ImServer;
@@ -30,7 +31,18 @@ public class ErrorCommand extends BaseCommand {
     @Override
     public void invoke(JSONObject params) {
         Log.d("ErrorCommand", "invoke");
-        mImServer.setServerInValid();
+        int code = params.optInt("code");
+        switch (code) {
+            case 1406:
+            case 1407:
+                mImServer.setServerInValid();
+                break;
+            default:
+                String msg = params.optString("msg");
+                if (!TextUtils.isEmpty(msg)) {
+                    mImServer.showError(code, msg);
+                }
+        }
     }
 
 }

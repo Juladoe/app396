@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.edusoho.kuozhi.imserver.broadcast.IMBroadcastReceiver;
 import com.edusoho.kuozhi.imserver.command.CommandFactory;
@@ -604,4 +606,17 @@ public class ImServer {
             e.printStackTrace();
         }
     }
+
+    public void showError(int code, String message) {
+        mErrorHandler.obtainMessage(0, message).sendToTarget();
+    }
+
+    private Handler mErrorHandler = new Handler(Looper.getMainLooper()) {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            Toast.makeText(mContext, msg.obj.toString(), Toast.LENGTH_SHORT).show();
+        }
+    };
 }
