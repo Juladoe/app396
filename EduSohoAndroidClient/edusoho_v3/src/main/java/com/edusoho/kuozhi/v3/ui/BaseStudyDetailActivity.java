@@ -388,7 +388,11 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
         if (mViewPager.getCurrentItem() == 2) {
             if (i == 0) {
-                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(true);
+                if (((AppBarLayout.LayoutParams) mToolBarLayout.getLayoutParams()).getScrollFlags() == 0) {
+                    ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(false);
+                } else {
+                    ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(true);
+                }
             } else {
                 ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(false);
             }

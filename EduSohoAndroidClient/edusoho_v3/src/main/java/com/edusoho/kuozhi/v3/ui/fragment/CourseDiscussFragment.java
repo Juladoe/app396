@@ -46,7 +46,7 @@ public class CourseDiscussFragment extends Fragment implements
     private CourseDiscussAdapter catalogueAdapter;
     private Queue<WidgetMessage> mUIMessageQueue;
     private int mRunStatus;
-    private int mCourseId ;
+    private int mCourseId;
     private RecyclerView mRvDiscuss;
     private View mEmpty;
     private boolean isJoin;
@@ -106,13 +106,14 @@ public class CourseDiscussFragment extends Fragment implements
 
     private void setRecyclerViewListener() {
         mRvDiscuss.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            int lastVisibleItem ;
+            int lastVisibleItem;
+
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if( newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == catalogueAdapter.getItemCount()){
-                    //设置正在加载更多
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem == catalogueAdapter.getItemCount() - 1) {
                     catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.LOADING_MORE);
+                    //设置正在加载更多
                     if (!isHave) {
                         if (isFirst) {
                             isFirst = false;
@@ -121,27 +122,27 @@ public class CourseDiscussFragment extends Fragment implements
                         catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
                         return;
                     }
-
                     new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, start)
                             .success(new NormalCallback<DiscussDetail>() {
                                 @Override
                                 public void success(DiscussDetail discussDetail) {
-                                    start += 20;
-                                    if (discussDetail.getResources().size() != 0) {
-                                        if (discussDetail.getResources().size() < 20) {
-                                            isHave = false;
-                                        }
-                                        catalogueAdapter.AddFooterItem(discussDetail.getResources());
-                                    } else {
-                                        isHave = false;
-                                        CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));
+                                    if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                                        return;
                                     }
-                                    catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.PULLUP_LOAD_MORE);
+                                    start += 20;
+                                    if (discussDetail.getResources().size() < 20) {
+                                        isHave = false;
+                                    } else {
+                                        isHave = true;
+                                    }
+                                    catalogueAdapter.setStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+                                    catalogueAdapter.AddFooterItem(discussDetail.getResources());
+                                    CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));
                                 }
                             }).fail(new NormalCallback<VolleyError>() {
                         @Override
                         public void success(VolleyError obj) {
-                            catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.PULLUP_LOAD_MORE);
+                            catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
                         }
                     });
                 }
@@ -153,7 +154,7 @@ public class CourseDiscussFragment extends Fragment implements
 
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
                 //最后一个可见的ITEM
-                lastVisibleItem=layoutManager.findLastVisibleItemPosition();
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
             }
         });
 
@@ -174,16 +175,19 @@ public class CourseDiscussFragment extends Fragment implements
         mSwipe.setEnabled(true);
         mUnLoginView.setVisibility(View.GONE);
         new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, 0)
-        .success(new NormalCallback<DiscussDetail>() {
-            @Override
-            public void success(DiscussDetail discussDetail) {
-                if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0) {
-                    initDiscuss(discussDetail);
-                } else {
-                    initDiscuss(null);
-                }
-            }
-        }).fail(new NormalCallback<VolleyError>() {
+                .success(new NormalCallback<DiscussDetail>() {
+                    @Override
+                    public void success(DiscussDetail discussDetail) {
+                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                            return;
+                        }
+                        if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0) {
+                            initDiscuss(discussDetail);
+                        } else {
+                            initDiscuss(null);
+                        }
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
                 mLoadView.setVisibility(View.GONE);
@@ -200,12 +204,11 @@ public class CourseDiscussFragment extends Fragment implements
             catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
             return;
         }
-        catalogueAdapter.setDataAndNotifyData(discussDetail.getResources());
         if (discussDetail.getResources().size() < 20) {
             isHave = false;
-            catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
-            return;
         }
+        catalogueAdapter.setStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+        catalogueAdapter.setDataAndNotifyData(discussDetail.getResources());
 
     }
 
@@ -243,12 +246,12 @@ public class CourseDiscussFragment extends Fragment implements
         }
     }
 
-    private void startThreadActivity(DiscussDetail.ResourcesBean resourcesBean){
+    private void startThreadActivity(DiscussDetail.ResourcesBean resourcesBean) {
         if (isJoin) {
             Bundle bundle = new Bundle();
             bundle.putString(DiscussDetailActivity.THREAD_TARGET_TYPE, getActivity() instanceof CourseStudyDetailActivity ? "course" : "classroom");
             bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, getActivity() instanceof CourseStudyDetailActivity ? Integer.parseInt(resourcesBean.getCourseId())
-                                        : Integer.parseInt(resourcesBean.getTargetId()));
+                    : Integer.parseInt(resourcesBean.getTargetId()));
             bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(resourcesBean.getId()));
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, resourcesBean.getType());
             CoreEngine.create(getContext()).runNormalPluginWithBundle("DiscussDetailActivity", getActivity(), bundle);
@@ -262,18 +265,19 @@ public class CourseDiscussFragment extends Fragment implements
                 .success(new NormalCallback<DiscussDetail>() {
                     @Override
                     public void success(DiscussDetail discussDetail) {
+                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                            return;
+                        }
                         mSwipe.setRefreshing(false);
                         if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0 && catalogueAdapter != null) {
-                            catalogueAdapter.getmList().clear();
-                            catalogueAdapter.AddFooterItem(discussDetail.getResources());
+                            catalogueAdapter.reFreshData(discussDetail.getResources());
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
-                    @Override
-                    public void success(VolleyError obj) {
-                        mSwipe.setRefreshing(false);
-                        setLessonEmptyViewVisibility(View.VISIBLE);
-                    }
+            @Override
+            public void success(VolleyError obj) {
+                mSwipe.setRefreshing(false);
+            }
         });
     }
 
