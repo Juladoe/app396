@@ -108,9 +108,9 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if( newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == catalogueAdapter.getItemCount()){
-                    //设置正在加载更多
+                if( newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem == catalogueAdapter.getItemCount() - 1){
                     catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.LOADING_MORE);
+                    //设置正在加载更多
                     if (!isHave) {
                         if (isFirst) {
                             isFirst = false;
@@ -119,30 +119,29 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
                         catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
                         return;
                     }
-                    //没有加载更多了
-                    //mRefreshAdapter.changeMoreStatus(mRefreshAdapter.NO_LOAD_MORE);
                     new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, start)
-                            .success(new NormalCallback<DiscussDetail>() {
-                                @Override
-                                public void success(DiscussDetail discussDetail) {
-                                    start += 20;
-                                    if (discussDetail.getResources().size() != 0) {
-                                        if (discussDetail.getResources().size() < 20) {
-                                            isHave = false;
-                                        }
-                                        catalogueAdapter.AddFooterItem(discussDetail.getResources());
-                                    } else {
-                                        isHave = false;
-                                        CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));
-                                    }
-                                    catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.PULLUP_LOAD_MORE);
+                        .success(new NormalCallback<DiscussDetail>() {
+                            @Override
+                            public void success(DiscussDetail discussDetail) {
+                                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                                    return;
                                 }
-                            }).fail(new NormalCallback<VolleyError>() {
-                        @Override
-                        public void success(VolleyError obj) {
-                            catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.PULLUP_LOAD_MORE);
-                        }
-                    });
+                                start += 20;
+                                if (discussDetail.getResources().size() < 20) {
+                                    isHave = false;
+                                } else {
+                                    isHave = true;
+                                }
+                                catalogueAdapter.setStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+                                catalogueAdapter.AddFooterItem(discussDetail.getResources());
+                                CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));
+                            }
+                        }).fail(new NormalCallback<VolleyError>() {
+                            @Override
+                            public void success(VolleyError obj) {
+                                catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+                            }
+                        });
                 }
             }
 
@@ -176,6 +175,9 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
         .success(new NormalCallback<DiscussDetail>() {
             @Override
             public void success(DiscussDetail discussDetail) {
+                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                    return;
+                }
                 if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0) {
                     initDiscuss(discussDetail);
                 } else {
@@ -199,12 +201,11 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
             catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
             return;
         }
-        catalogueAdapter.setDataAndNotifyData(discussDetail.getResources());
         if (discussDetail.getResources().size() < 20) {
             isHave = false;
-            catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
-            return;
         }
+        catalogueAdapter.setStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+        catalogueAdapter.setDataAndNotifyData(discussDetail.getResources());
 
     }
 
@@ -260,17 +261,18 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
                 .success(new NormalCallback<DiscussDetail>() {
                     @Override
                     public void success(DiscussDetail discussDetail) {
+                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                            return;
+                        }
                         mSwipe.setRefreshing(false);
                         if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0 && catalogueAdapter != null) {
-                            catalogueAdapter.getmList().clear();
-                            catalogueAdapter.AddFooterItem(discussDetail.getResources());
+                            catalogueAdapter.reFreshData(discussDetail.getResources());
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
                     @Override
                     public void success(VolleyError obj) {
                         mSwipe.setRefreshing(false);
-                        setLessonEmptyViewVisibility(View.VISIBLE);
                     }
         });
     }
