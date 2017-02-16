@@ -241,7 +241,11 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         } else if (v.getId() == R.id.tv_edit_topic) {
             showEditPop();
         } else if (v.getId() == R.id.back){
-            finish();
+            if (mIsFullScreen) {
+                fullScreen();
+            } else {
+                finish();
+            }
         }
     }
 
