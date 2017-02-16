@@ -459,7 +459,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             mIsFullScreen = false;
-            params.width = -1;
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
             mMediaLayout.setLayoutParams(params);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
