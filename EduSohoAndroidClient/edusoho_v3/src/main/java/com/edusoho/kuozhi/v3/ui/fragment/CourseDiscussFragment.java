@@ -137,7 +137,6 @@ public class CourseDiscussFragment extends Fragment implements
                                     }
                                     catalogueAdapter.setStatus(CourseDiscussAdapter.NO_LOAD_MORE);
                                     catalogueAdapter.AddFooterItem(discussDetail.getResources());
-                                    CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));
                                 }
                             }).fail(new NormalCallback<VolleyError>() {
                         @Override
