@@ -115,6 +115,9 @@ public class FriendFragment extends BaseFragment {
                     CommonUtil.longToast(mContext, "聊天功能已关闭");
                     return;
                 }
+                if (position == 0) {
+                    return;
+                }
                 final Friend friend = (Friend) parent.getAdapter().getItem(position);
                 app.mEngine.runNormalPlugin("ImChatActivity", mActivity, new PluginRunCallback() {
                     @Override
