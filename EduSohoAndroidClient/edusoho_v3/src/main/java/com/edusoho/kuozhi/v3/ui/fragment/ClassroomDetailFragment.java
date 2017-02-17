@@ -62,6 +62,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         mAdapter = new ReviewAdapter();
         mVipLayout.setVisibility(View.GONE);
         mLvReview.setAdapter(mAdapter);
+        mTvTeacher.setText(R.string.classroom_teacher_txt);
         mTvStudent1.setText(R.string.txt_classroom_student);
         mTvReview1.setText(R.string.txt_classroom_review);
         mTvPeople1.setText(R.string.txt_provision_services);
@@ -238,29 +239,29 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             }
             mTvPeopleDesc.setText(sb.substring(0, sb.length() - 1));
         }
-        getTeacherView(classRoom.headTeacherId);
+        getTeacherView(mClassroomId);
     }
 
     public void getTeacherView(int headTeacherId) {
-        if (0 == headTeacherId) {
-            mTeacherLayout.setVisibility(View.GONE);
-        } else {
-            CourseDetailModel.getTeacherData(headTeacherId, new ResponseCallbackListener<Teacher>() {
-                @Override
-                public void onSuccess(Teacher data) {
-                    mTeacherLayout.setVisibility(View.VISIBLE);
-                    mTeacherId = String.valueOf(data.id);
-                    ImageLoader.getInstance().displayImage(data.smallAvatar.split("\\?")[0], mIvTeacherIcon, ((EdusohoApp) getActivity().getApplication()).mAvatarOptions);
-                    mTvTeacherName.setText(data.nickname);
-                    mTvTeacherDesc.setText(data.title);
-                }
-
-                @Override
-                public void onFailure(String code, String message) {
+        CourseDetailModel.getTeacher(headTeacherId, new ResponseCallbackListener<Teacher[]>() {
+            @Override
+            public void onSuccess(Teacher[] data) {
+                if (data.length == 0) {
                     mTeacherLayout.setVisibility(View.GONE);
+                } else {
+                    mTeacherLayout.setVisibility(View.VISIBLE);
+                    mTeacherId = String.valueOf(data[0].id);
+                    ImageLoader.getInstance().displayImage(data[0].smallAvatar.split("\\?")[0], mIvTeacherIcon, ((EdusohoApp) getActivity().getApplication()).mAvatarOptions);
+                    mTvTeacherName.setText(data[0].nickname);
+                    mTvTeacherDesc.setText(data[0].title);
                 }
-            });
-        }
+            }
+
+            @Override
+            public void onFailure(String code, String message) {
+                mTeacherLayout.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override

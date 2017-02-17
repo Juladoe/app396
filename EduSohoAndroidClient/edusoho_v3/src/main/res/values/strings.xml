@@ -409,5 +409,6 @@
     <string name="filter_type_classroom">班级</string>
     <string name="question_post">发起</string>
     <string name="question_answer">回复</string>
+    <string name="classroom_teacher_txt">班主任</string>
 
 </resources>
