@@ -196,6 +196,7 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
     private void initDiscuss(final DiscussDetail discussDetail) {
         mLoadView.setVisibility(View.GONE);
         if (discussDetail == null) {
+            isHave = false;
             mLoadView.setVisibility(View.GONE);
             mEmpty.setVisibility(View.VISIBLE);
             catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
