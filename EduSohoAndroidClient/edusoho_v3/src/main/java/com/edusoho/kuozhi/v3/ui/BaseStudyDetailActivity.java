@@ -375,18 +375,13 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             setToolbarLayoutBackground(getResources().getColor(R.color.textIcons));
             mShareView.setTextColor(getResources().getColor(R.color.textPrimary));
             mBackView.setTextColor(getResources().getColor(R.color.textPrimary));
-            if (BaseStudyDetailActivity.this instanceof CourseStudyDetailActivity) {
-                mIvGrade.setVisibility(View.GONE);
-                mPlayLayout2.setVisibility(View.VISIBLE);
-            }
         } else {
             setToolbarLayoutBackground(getResources().getColor(R.color.transparent));
             mShareView.setTextColor(getResources().getColor(R.color.textIcons));
             mBackView.setTextColor(getResources().getColor(R.color.textIcons));
-            if (BaseStudyDetailActivity.this instanceof CourseStudyDetailActivity) {
-                mIvGrade.setVisibility(View.VISIBLE);
-                mPlayLayout2.setVisibility(View.GONE);
-            }
+        }
+        if (this instanceof BaseStudyDetailActivity.WidgtState) {
+            ((BaseStudyDetailActivity.WidgtState) this).setTopViewVisibility(isTop);
         }
     }
 
@@ -677,5 +672,9 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         while ((message = mUIMessageQueue.poll()) != null) {
             invoke(message);
         }
+    }
+
+    public interface WidgtState{
+        public void setTopViewVisibility(boolean isTop);
     }
 }
