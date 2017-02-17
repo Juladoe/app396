@@ -223,6 +223,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
                 if (time > Long.parseLong(end)) {
                     if ("ungenerated".equals(lessonsBean.getReplayStatus())) {
                         liveState.setText(R.string.live_state_finish);
+                        liveState.setTextColor(ContextCompat.getColor(mContext, R.color.secondary2_font_color));
                         liveState.setBackground(ContextCompat.getDrawable(mContext, R.drawable.live_state_finish));
                     } else {
                         liveState.setText(R.string.live_state_replay);
@@ -238,10 +239,11 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         }
 
         private void decideStatu() {
+            lessonState.setImageResource(R.drawable.lesson_status);
             if (learnStatuses != null && learnStatuses.containsKey(lessonsBean.getId())) {
                 if ("learning".equals(learnStatuses.get(lessonsBean.getId()))) {
                     lessonState.setImageResource(R.drawable.lesson_status_learning);
-                } else {
+                } else if ("finished".equals(learnStatuses.get(lessonsBean.getId()))) {
                     lessonState.setImageResource(R.drawable.lesson_status_finish);
                 }
             }

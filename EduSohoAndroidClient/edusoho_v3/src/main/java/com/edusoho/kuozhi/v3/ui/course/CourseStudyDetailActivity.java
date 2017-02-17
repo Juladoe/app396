@@ -92,14 +92,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                     public void onSuccess(CourseDetail data) {
                         mCourseDetail = data;
                         if (mCourseDetail.getMember() == null) {
-                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
-                            ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
+                            refreshFragmentViews(false);
                             setLoadStatus(View.GONE);
                         } else {
-                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(true);
-                            ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(true);
+                            refreshFragmentViews(true);
                             tabPage(300);
                         }
+                        setBottomLayoutState(mCourseDetail.getMember() == null);
                         mTitle = mCourseDetail.getCourse().title;
                         refreshView();
                         if (data != null && data.getCourse() != null) {

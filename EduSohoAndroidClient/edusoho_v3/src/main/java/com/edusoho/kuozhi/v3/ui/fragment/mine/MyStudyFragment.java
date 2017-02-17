@@ -438,7 +438,7 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
     @Override
     public void refreshData() {
-        initData();
+        loadData();
     }
 
     @Override

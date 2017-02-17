@@ -259,6 +259,7 @@ public class LoginActivity extends BaseNoTitleActivity {
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
                     new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
                     MessageEngine.getInstance().sendMsg(Const.LOGIN_SUCCESS, null);
+                    MessageEngine.getInstance().sendMsg(Const.REFRESH_MY_FRAGMENT, null);
                     mTvLogin.postDelayed(new Runnable() {
                         @Override
                         public void run() {

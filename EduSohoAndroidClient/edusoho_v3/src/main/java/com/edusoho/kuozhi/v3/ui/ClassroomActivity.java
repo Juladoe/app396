@@ -19,8 +19,6 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -30,6 +28,7 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 
 /**
  * Created by Zhang on 2016/12/8.
@@ -91,13 +90,12 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                         public void onSuccess(ClassroomDetail data) {
                             mClassroomDetail = data;
                             if (mClassroomDetail.getMember() == null) {
-                                ((ClassCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
-                                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
+                                refreshFragmentViews(false);
                             } else {
-                                ((ClassCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(true);
-                                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(true);
+                                refreshFragmentViews(true);
                                 tabPage(300);
                             }
+                            setBottomLayoutState(mClassroomDetail.getMember() == null);
                             setLoadStatus(View.GONE);
                             refreshView();
                             if (data != null && data.getClassRoom() != null) {

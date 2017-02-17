@@ -146,7 +146,6 @@ public class IMClient {
             mMessageResourceHelper = null;
         }
         unRegistIMServiceStatusBroadcastReceiver();
-        //mContext.stopService(getIMServiceIntent());
         mImBinder = null;
 
         removeGlobalIMMessageReceiver();
@@ -175,7 +174,7 @@ public class IMClient {
                     return processName;
                 }
             } catch (Exception e) {
-                // Log.d("Process", "Error>> :"+ e.toString());
+                e.printStackTrace();
             }
         }
         return processName;

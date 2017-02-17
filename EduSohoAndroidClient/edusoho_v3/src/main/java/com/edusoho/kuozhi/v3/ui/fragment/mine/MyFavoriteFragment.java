@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -94,7 +95,7 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
 
     @Override
     public void refreshData() {
-        initData();
+        loadData();
     }
 
     @Override
@@ -103,6 +104,7 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
     }
 
     private void showLoadingView() {
+        Log.d(this.getClass().getSimpleName(), "showLoadingView: ");
         srlContent.post(new Runnable() {
             @Override
             public void run() {
@@ -112,6 +114,7 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
     }
 
     private void disabledLoadingView() {
+        Log.d(this.getClass().getSimpleName(), "disabledLoadingView: ");
         srlContent.setRefreshing(false);
     }
 
