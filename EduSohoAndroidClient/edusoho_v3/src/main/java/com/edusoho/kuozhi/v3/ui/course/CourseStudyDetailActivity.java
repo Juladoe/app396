@@ -60,6 +60,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     private int mCourseId;
     private boolean mIsFavorite = false;
     private LessonItem mContinueLessonItem;
+    private boolean mIsClassroomCourse = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,6 +105,8 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                         if (data != null && data.getCourse() != null) {
                             saveCourseToCache(data.getCourse());
                         }
+                        mIsClassroomCourse = data.getCourse().parentId != 0;
+                        setBottomVisible(mIsClassroomCourse);
                     }
 
                     @Override
@@ -304,12 +307,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         Member member = mCourseDetail.getMember();
         if (member == null) {
             mIsMemder = false;
-            if (getIntent().getBooleanExtra(Const.IS_CHILD_COURSE, false)) {
-                mBottomLayout.setVisibility(View.GONE);
-            } else {
-                mAddLayout.setVisibility(View.VISIBLE);
-                mBottomLayout.setVisibility(View.VISIBLE);
-            }
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
             mIvGrade.setVisibility(View.GONE);
@@ -326,6 +323,15 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             mTvAdd.setText(R.string.txt_vip_free);
         } else {
             mTvAdd.setText(R.string.txt_add_course);
+        }
+    }
+
+    private void setBottomVisible(boolean isClassroomCourse) {
+        if (isClassroomCourse) {
+            mBottomLayout.setVisibility(View.GONE);
+        } else {
+            mAddLayout.setVisibility(View.VISIBLE);
+            mBottomLayout.setVisibility(View.VISIBLE);
         }
     }
 
