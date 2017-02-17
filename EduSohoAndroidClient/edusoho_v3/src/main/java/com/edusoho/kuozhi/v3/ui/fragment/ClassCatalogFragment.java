@@ -23,7 +23,6 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -121,7 +120,6 @@ public class ClassCatalogFragment extends Fragment implements ICourseStateListen
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.COURSE_ID, mCourseList.get(position).id);
                 bundle.putString(Const.SOURCE, getClassRoomName(mClassRoomId));
-                bundle.putBoolean(Const.IS_CHILD_COURSE, true);
                 CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);
             }
         });

@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.text.Html;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -60,7 +59,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     private int mCourseId;
     private boolean mIsFavorite = false;
     private LessonItem mContinueLessonItem;
-    private boolean mIsClassroomCourse = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,6 +90,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                     @Override
                     public void onSuccess(CourseDetail data) {
                         mCourseDetail = data;
+                        mIsClassroomCourse = data.getCourse().parentId != 0;
                         if (mCourseDetail.getMember() == null) {
                             refreshFragmentViews(false);
                             setLoadStatus(View.GONE);
@@ -105,8 +104,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                         if (data != null && data.getCourse() != null) {
                             saveCourseToCache(data.getCourse());
                         }
-                        mIsClassroomCourse = data.getCourse().parentId != 0;
-                        setBottomVisible(mIsClassroomCourse);
+//                        setBottomVisible(mIsClassroomCourse);
                     }
 
                     @Override
@@ -307,6 +305,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         Member member = mCourseDetail.getMember();
         if (member == null) {
             mIsMemder = false;
+            setBottomVisible(mIsClassroomCourse);
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
             mIvGrade.setVisibility(View.GONE);
