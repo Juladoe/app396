@@ -19,17 +19,18 @@
         android:navigationIcon="@drawable/ic_action_gray_bar_back"
         app:navigationIcon="@drawable/ic_action_gray_bar_back">
 
-        <TextView
-            android:id="@+id/tv_toolbar_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:lines="1"
-            android:textColor="@color/textSecondary"
-            android:textSize="@dimen/base_large_size" />
-
     </android.support.v7.widget.Toolbar>
+
+    <TextView
+        android:id="@+id/tv_toolbar_title"
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:lines="1"
+        android:maxLength="10"
+        android:textColor="@color/textSecondary"
+        android:textSize="@dimen/base_large_size" />
 
     <include
         layout="@layout/load_dig_layout"
