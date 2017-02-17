@@ -291,11 +291,13 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
     @Override
     public void onErrorResponse(VolleyError error) {
         mLoading.dismiss();
-        if (error.networkResponse.statusCode == 302 || error.networkResponse.statusCode == 301) {
-            String redirectUrl = error.networkResponse.headers.get("location");
-            searchSchool(redirectUrl);
-        } else {
-            CommonUtil.longToast(mContext, mContext.getResources().getString(R.string.request_fail_text));
+        if (error.networkResponse != null) {
+            if (error.networkResponse.statusCode == 302 || error.networkResponse.statusCode == 301) {
+                String redirectUrl = error.networkResponse.headers.get("location");
+                searchSchool(redirectUrl);
+            } else {
+                CommonUtil.longToast(mContext, mContext.getResources().getString(R.string.request_fail_text));
+            }
         }
     }
 
