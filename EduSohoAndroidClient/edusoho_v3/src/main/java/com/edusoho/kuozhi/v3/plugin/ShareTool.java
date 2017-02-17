@@ -57,7 +57,7 @@ public class ShareTool {
         mContext = ctx;
         mUrl = url;
         mTitle = title;
-        mAbout = about;
+        mAbout = fromHtml(about);
         mPic = pic;
     }
 
@@ -65,13 +65,13 @@ public class ShareTool {
         mContext = ctx;
         mUrl = url;
         mTitle = title;
-        mAbout = about;
+        mAbout = fromHtml(about);
         mPic = pic;
         mDialogType = type;
     }
 
-    public void setDismissEvent(ShardDialog.DismissEvent dismissEvent) {
-        mDismissEvent = dismissEvent;
+    private String fromHtml(String htmlCode) {
+        return Html.fromHtml(htmlCode).toString();
     }
 
     public void shardCourse() {

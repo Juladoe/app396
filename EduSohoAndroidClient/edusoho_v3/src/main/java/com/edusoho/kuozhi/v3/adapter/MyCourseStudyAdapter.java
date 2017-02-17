@@ -333,11 +333,10 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
                         final ShareTool shareTool;
                         if (data instanceof Course) {
                             Course course = (Course) data;
-                            String about = Html.fromHtml(course.about).toString();
                             shareTool = new ShareTool(mContext
                                     , EdusohoApp.app.host + "/course/" + course.id
                                     , course.title
-                                    , about.length() > 20 ? about.substring(0, 20) : about
+                                    , course.about.length() > 20 ? course.about.substring(0, 20) : course.about
                                     , course.middlePicture);
                         } else {
                             Study.Resource study = (Study.Resource) data;

@@ -157,11 +157,10 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
                     @Override
                     public void onShareClick(View v, Dialog dialog) {
-                        String about = Html.fromHtml(classroom.about).toString();
                         final ShareTool shareTool = new ShareTool(mContext
                                 , EdusohoApp.app.host + "/classroom/" + classroom.id
                                 , classroom.title
-                                , about.length() > 20 ? about.substring(0, 20) : about
+                                , classroom.about.length() > 20 ? classroom.about.substring(0, 20) : classroom.about
                                 , classroom.largePicture);
                         new Handler((mContext.getMainLooper())).post(new Runnable() {
                             @Override

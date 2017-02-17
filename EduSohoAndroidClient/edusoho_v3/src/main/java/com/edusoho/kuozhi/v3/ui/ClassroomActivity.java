@@ -251,12 +251,11 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
             return;
         }
         Classroom classroom = mClassroomDetail.getClassRoom();
-        String about = Html.fromHtml(classroom.about).toString();
         final ShareTool shareTool =
                 new ShareTool(this
                         , ((EdusohoApp) getApplication()).host + "/classroom/" + classroom.id
                         , classroom.title
-                        , about.length() > 20 ? about.substring(0, 20) : about
+                        , classroom.about.length() > 20 ? classroom.about.substring(0, 20) : classroom.about
                         , classroom.largePicture);
         new Handler((this.getMainLooper())).post(new Runnable() {
             @Override

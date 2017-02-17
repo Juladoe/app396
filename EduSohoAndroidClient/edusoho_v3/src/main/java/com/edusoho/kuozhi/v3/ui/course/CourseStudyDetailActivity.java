@@ -248,12 +248,11 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             return;
         }
         Course course = mCourseDetail.getCourse();
-        String about = Html.fromHtml(course.about).toString();
         final ShareTool shareTool =
                 new ShareTool(this
                         , ((EdusohoApp) getApplication()).host + "/course/" + course.id
                         , course.title
-                        , about.length() > 20 ? about.substring(0, 20) : about
+                        , course.about.length() > 20 ? course.about.substring(0, 20) : course.about
                         , course.middlePicture);
         new Handler((((EdusohoApp) getApplication()).mContext.getMainLooper())).post(new Runnable() {
             @Override
