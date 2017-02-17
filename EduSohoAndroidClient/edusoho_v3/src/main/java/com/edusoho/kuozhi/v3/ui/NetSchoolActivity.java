@@ -244,12 +244,12 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         mSearchEdt.setAdapter(adapter);
     }
 
-    private void searchSchool(String searchStr) {
-        String url;
-        if (!searchStr.contains("http")) {
-            url = "http://" + searchStr + Const.VERIFYVERSION;
-        } else {
-            url = searchStr;
+    private void searchSchool(String url) {
+        if (!url.contains("http")) {
+            url = "http://" + url;
+        }
+        if (!url.contains(Const.VERIFYVERSION)) {
+            url = url + Const.VERIFYVERSION;
         }
         mLoading = LoadDialog.create(mContext);
         mLoading.show();
