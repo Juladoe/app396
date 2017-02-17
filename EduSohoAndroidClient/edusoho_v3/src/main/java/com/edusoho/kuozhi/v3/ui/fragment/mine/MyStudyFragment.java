@@ -88,6 +88,8 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
 
         tvFilterName = (TextView) view.findViewById(R.id.tv_filter_name);
 
+        //view.findViewById(R.id.v_breakline).bringToFront();
+
         esivFilterArrow = (EduSohoNewIconView) view.findViewById(R.id.tv_filter_arrow);
 
         tvLatestCourse = (TextView) view.findViewById(R.id.tv_latest_course);
