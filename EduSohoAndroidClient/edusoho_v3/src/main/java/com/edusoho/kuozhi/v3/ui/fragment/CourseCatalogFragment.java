@@ -401,7 +401,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
     }
 
     public void startLessonActivity(String type, int lessonId, int courseId, int memberState) {
-        if (mCourseStateCallback.isExpired()) {
+        if (mCourseStateCallback != null && mCourseStateCallback.isExpired()) {
             mCourseStateCallback.handlerCourseExpired();
             return;
         }
