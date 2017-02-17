@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -91,14 +92,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                     public void onSuccess(CourseDetail data) {
                         mCourseDetail = data;
                         if (mCourseDetail.getMember() == null) {
-                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
-                            ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
+                            refreshFragmentViews(false);
                             setLoadStatus(View.GONE);
                         } else {
-                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(true);
-                            ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(true);
+                            refreshFragmentViews(true);
                             tabPage(300);
                         }
+                        setBottomLayoutState(mCourseDetail.getMember() == null);
                         mTitle = mCourseDetail.getCourse().title;
                         refreshView();
                         if (data != null && data.getCourse() != null) {
@@ -108,8 +108,8 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
                     @Override
                     public void onFailure(String code, String message) {
-                        if ("课程不存在".equals(message)) {
-                            CommonUtil.shortToast(CourseStudyDetailActivity.this, "课程不存在");
+                        if (message.contains("课程不存在") || message.contains("课程未发布")) {
+                            CommonUtil.shortToast(CourseStudyDetailActivity.this, message);
                             finish();
                         }
                     }
@@ -247,14 +247,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         if (mCourseDetail == null) {
             return;
         }
+        Course course = mCourseDetail.getCourse();
         final ShareTool shareTool =
                 new ShareTool(this
-                        , ((EdusohoApp) getApplication()).host + "/course/" + mCourseDetail.getCourse().id
-                        , mCourseDetail.getCourse().title
-                        , mCourseDetail.getCourse().about.length() > 20 ?
-                        mCourseDetail.getCourse().about.substring(0, 20)
-                        : mCourseDetail.getCourse().about
-                        , mCourseDetail.getCourse().middlePicture);
+                        , ((EdusohoApp) getApplication()).host + "/course/" + course.id
+                        , course.title
+                        , course.about.length() > 20 ? course.about.substring(0, 20) : course.about
+                        , course.middlePicture);
         new Handler((((EdusohoApp) getApplication()).mContext.getMainLooper())).post(new Runnable() {
             @Override
             public void run() {

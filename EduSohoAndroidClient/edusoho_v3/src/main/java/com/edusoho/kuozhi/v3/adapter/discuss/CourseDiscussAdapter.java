@@ -41,10 +41,6 @@ public class CourseDiscussAdapter extends RecyclerView.Adapter implements View.O
     //上拉加载更多状态-默认为0
     private int mLoadMoreStatus = 0;
 
-    public void setmList(List<DiscussDetail.ResourcesBean> mList) {
-        this.mList = mList;
-    }
-
     public List<DiscussDetail.ResourcesBean> getmList() {
         return mList;
     }
@@ -69,9 +65,19 @@ public class CourseDiscussAdapter extends RecyclerView.Adapter implements View.O
         notifyDataSetChanged();
     }
 
+    public void reFreshData(List<DiscussDetail.ResourcesBean> list) {
+        mList.clear();
+        mList = list;
+        notifyDataSetChanged();
+    }
+
     public void changeMoreStatus(int status){
         mLoadMoreStatus=status;
         notifyDataSetChanged();
+    }
+
+    public void setStatus(int status) {
+        mLoadMoreStatus = status;
     }
 
     public interface OnRecyclerViewItemClickListener {

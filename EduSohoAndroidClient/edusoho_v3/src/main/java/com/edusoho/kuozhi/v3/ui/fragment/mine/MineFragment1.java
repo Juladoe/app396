@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -161,13 +162,13 @@ public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffset
 
     @Override
     public MessageType[] getMsgTypes() {
-        return new MessageType[]{new MessageType(Const.LOGIN_SUCCESS)};
+        return new MessageType[]{new MessageType(Const.REFRESH_MY_FRAGMENT)};
     }
 
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
-        if (messageType.type.equals(Const.LOGIN_SUCCESS)) {
+        if (messageType.type.equals(Const.REFRESH_MY_FRAGMENT)) {
             initUserInfo();
             initViewPager();
 
@@ -198,5 +199,11 @@ public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffset
                 });
             }
         };
+    }
+
+    public static class EmptyViewHolder extends RecyclerView.ViewHolder {
+        public EmptyViewHolder(View view) {
+            super(view);
+        }
     }
 }

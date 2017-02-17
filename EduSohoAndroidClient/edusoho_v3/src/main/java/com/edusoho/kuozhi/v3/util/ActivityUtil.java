@@ -54,4 +54,18 @@ public class ActivityUtil {
         statusView.setBackgroundColor(color);
         return statusView;
     }
+
+    public static void setStatusBarFitsByColor(Activity activity, int color) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+        activity.getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        SystemBarTintManager tintManager = new SystemBarTintManager(activity);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setNavigationBarTintEnabled(true);
+        tintManager.setTintColor(activity.getResources().getColor(color));
+        tintManager.setStatusBarTintResource(color);
+    }
 }

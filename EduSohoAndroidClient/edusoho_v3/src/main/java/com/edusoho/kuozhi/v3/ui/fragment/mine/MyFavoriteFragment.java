@@ -13,8 +13,12 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.adapter.MyFavoriteAdapter;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import cn.trinea.android.common.util.ToastUtils;
 
@@ -26,7 +30,7 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
 
     private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
-    private View viewEmpty;
+    private MyFavoriteAdapter myFavoriteAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,36 +49,34 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
         View viewBreakline = view.findViewById(R.id.v_breakline);
         viewBreakline.setVisibility(View.GONE);
 
-        viewEmpty = view.findViewById(R.id.view_empty);
-        viewEmpty.setVisibility(View.GONE);
         initData();
-
+        loadData();
         srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                initData();
+                loadData();
             }
         });
     }
 
     private void initData() {
         showLoadingView();
-        final MyFavoriteAdapter myFavoriteAdapter = new MyFavoriteAdapter(getActivity());
+        myFavoriteAdapter = new MyFavoriteAdapter(getActivity());
         rvContent.setAdapter(myFavoriteAdapter);
+    }
+
+    private void loadData() {
+        final List<Course> loadCourseList = new ArrayList<>();
         CourseDetailModel.getNormalCollect(1000, 0, new ResponseCallbackListener<LearningCourse>() {
             @Override
             public void onSuccess(final LearningCourse liveCourseList) {
                 disabledLoadingView();
-                myFavoriteAdapter.addDatas(liveCourseList.data);
+                loadCourseList.addAll(liveCourseList.data);
                 CourseDetailModel.getLiveCollect(1000, 0, new ResponseCallbackListener<LearningCourse>() {
                     @Override
                     public void onSuccess(LearningCourse courseList) {
-                        myFavoriteAdapter.addDatas(courseList.data);
-                        if (myFavoriteAdapter.getItemCount() == 0) {
-                            setNoCourseDataVisible(true);
-                        } else {
-                            setNoCourseDataVisible(false);
-                        }
+                        loadCourseList.addAll(courseList.data);
+                        myFavoriteAdapter.setData(loadCourseList);
                     }
 
                     @Override
@@ -87,24 +89,13 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
             @Override
             public void onFailure(String code, String message) {
                 ToastUtils.show(mContext, message);
-                setNoCourseDataVisible(true);
             }
         });
     }
 
-    private void setNoCourseDataVisible(boolean visible) {
-        if (visible) {
-            viewEmpty.setVisibility(View.VISIBLE);
-            rvContent.setVisibility(View.GONE);
-        } else {
-            viewEmpty.setVisibility(View.GONE);
-            rvContent.setVisibility(View.VISIBLE);
-        }
-    }
-
     @Override
     public void refreshData() {
-        initData();
+        loadData();
     }
 
     @Override
@@ -113,6 +104,7 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
     }
 
     private void showLoadingView() {
+        Log.d(this.getClass().getSimpleName(), "showLoadingView: ");
         srlContent.post(new Runnable() {
             @Override
             public void run() {
@@ -122,6 +114,7 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
     }
 
     private void disabledLoadingView() {
+        Log.d(this.getClass().getSimpleName(), "disabledLoadingView: ");
         srlContent.setRefreshing(false);
     }
 
