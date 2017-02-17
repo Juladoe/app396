@@ -285,10 +285,13 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     @Override
     public void onErrorResponse(VolleyError error) {
         mLoading.dismiss();
-        if (error.networkResponse == null) {
-            CommonUtil.longToast(mContext, mContext.getResources().getString(R.string.request_failed));
-        } else {
-            CommonUtil.longToast(mContext, mContext.getResources().getString(R.string.request_fail_text));
+        if (error.networkResponse != null) {
+            if (error.networkResponse.statusCode == 302 || error.networkResponse.statusCode == 301) {
+                String redirectUrl = error.networkResponse.headers.get("location");
+                searchSchool(redirectUrl);
+            } else {
+                CommonUtil.longToast(mContext, mContext.getResources().getString(R.string.request_fail_text));
+            }
         }
     }
 
@@ -516,7 +519,12 @@ public class QrSchoolActivity extends BaseNoTitleActivity implements Response.Er
     }
 
     private void searchSchool(String searchStr) {
-        String url = "http://" + searchStr + Const.VERIFYVERSION;
+        String url;
+        if (!searchStr.contains("http")) {
+            url = "http://" + searchStr + Const.VERIFYVERSION;
+        } else {
+            url = searchStr;
+        }
         mLoading = LoadDialog.create(mContext);
         mLoading.show();
 

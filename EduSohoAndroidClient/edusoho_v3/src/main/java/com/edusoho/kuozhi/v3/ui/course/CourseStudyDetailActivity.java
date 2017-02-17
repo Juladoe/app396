@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.text.Html;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -90,6 +89,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                     @Override
                     public void onSuccess(CourseDetail data) {
                         mCourseDetail = data;
+                        mIsClassroomCourse = data.getCourse().parentId != 0;
                         if (mCourseDetail.getMember() == null) {
                             refreshFragmentViews(false);
                             setLoadStatus(View.GONE);
@@ -103,6 +103,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                         if (data != null && data.getCourse() != null) {
                             saveCourseToCache(data.getCourse());
                         }
+//                        setBottomVisible(mIsClassroomCourse);
                     }
 
                     @Override
@@ -303,12 +304,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         Member member = mCourseDetail.getMember();
         if (member == null) {
             mIsMemder = false;
-            if (getIntent().getBooleanExtra(Const.IS_CHILD_COURSE, false)) {
-                mBottomLayout.setVisibility(View.GONE);
-            } else {
-                mAddLayout.setVisibility(View.VISIBLE);
-                mBottomLayout.setVisibility(View.VISIBLE);
-            }
+            setBottomVisible(mIsClassroomCourse);
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
             mIvGrade.setVisibility(View.GONE);
@@ -325,6 +321,15 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             mTvAdd.setText(R.string.txt_vip_free);
         } else {
             mTvAdd.setText(R.string.txt_add_course);
+        }
+    }
+
+    private void setBottomVisible(boolean isClassroomCourse) {
+        if (isClassroomCourse) {
+            mBottomLayout.setVisibility(View.GONE);
+        } else {
+            mAddLayout.setVisibility(View.VISIBLE);
+            mBottomLayout.setVisibility(View.VISIBLE);
         }
     }
 
