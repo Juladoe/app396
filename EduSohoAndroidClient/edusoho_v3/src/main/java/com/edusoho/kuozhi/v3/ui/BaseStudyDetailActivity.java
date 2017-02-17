@@ -202,6 +202,9 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
 
     protected void refreshFragmentViews(boolean isJoin) {
         List<Fragment> list = getSupportFragmentManager().getFragments();
+        if (list == null || list.isEmpty()) {
+            return;
+        }
         for (Fragment fragment : list) {
             if (fragment instanceof ICourseStateListener) {
                 ((ICourseStateListener)fragment).reFreshView(isJoin);

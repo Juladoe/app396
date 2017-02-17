@@ -67,7 +67,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
         initView();
         initData();
-        startCacheServer();
     }
 
     @Override
@@ -327,6 +326,12 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         } else {
             mTvAdd.setText(R.string.txt_add_course);
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startCacheServer();
     }
 
     @Override

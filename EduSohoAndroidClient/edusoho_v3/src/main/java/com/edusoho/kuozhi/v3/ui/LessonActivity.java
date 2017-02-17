@@ -600,7 +600,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        CacheServerFactory.getInstance().stop();
 
         Bundle bundle = new Bundle();
         bundle.putString("event", "lessonStatusRefresh");
@@ -614,6 +613,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (fragment != null) {
             mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
         }
+
+        CacheServerFactory.getInstance().stop();
     }
 
     @Override
