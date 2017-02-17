@@ -54,7 +54,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 /**
  * Created by suju on 17/2/7.
  */
-public class CourseStudyDetailActivity extends BaseStudyDetailActivity implements CourseStateCallback,BaseStudyDetailActivity.WidgtState {
+public class CourseStudyDetailActivity extends BaseStudyDetailActivity implements CourseStateCallback, BaseStudyDetailActivity.WidgtState {
     public CourseDetail mCourseDetail;
     private int mCourseId;
     private boolean mIsFavorite = false;
@@ -582,7 +582,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             mIvGrade.setVisibility(View.GONE);
             mPlayLayout2.setVisibility(View.VISIBLE);
         } else {
-            mIvGrade.setVisibility(View.VISIBLE);
+            mIvGrade.setVisibility(mIsPlay ? View.GONE : View.VISIBLE);
             mPlayLayout2.setVisibility(View.GONE);
         }
     }
