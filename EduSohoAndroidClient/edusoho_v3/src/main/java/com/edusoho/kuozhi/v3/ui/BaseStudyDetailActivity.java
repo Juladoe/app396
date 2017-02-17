@@ -103,6 +103,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     public int mMediaViewHeight = 210;
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
+    protected boolean mIsClassroomCourse = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -372,6 +373,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             mShareView.setTextColor(getResources().getColor(R.color.textPrimary));
             mBackView.setTextColor(getResources().getColor(R.color.textPrimary));
             if (BaseStudyDetailActivity.this instanceof CourseStudyDetailActivity) {
+                mIvGrade.setVisibility(View.GONE);
                 mPlayLayout2.setVisibility(View.VISIBLE);
             }
         } else {
@@ -379,6 +381,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             mShareView.setTextColor(getResources().getColor(R.color.textIcons));
             mBackView.setTextColor(getResources().getColor(R.color.textIcons));
             if (BaseStudyDetailActivity.this instanceof CourseStudyDetailActivity) {
+                mIvGrade.setVisibility(View.VISIBLE);
                 mPlayLayout2.setVisibility(View.GONE);
             }
         }
@@ -405,6 +408,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         }
         changeToolbarStyle(true);
     }
+
 
     protected void courseHastrial(String state, LessonItem lessonItem) {
     }
@@ -631,7 +635,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     public void setBottomLayoutVisible(int curFragment, boolean isMember) {
-        if (getIntent().getBooleanExtra(Const.IS_CHILD_COURSE, false)) {
+        if (mIsClassroomCourse) {
             mBottomLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
         } else {
