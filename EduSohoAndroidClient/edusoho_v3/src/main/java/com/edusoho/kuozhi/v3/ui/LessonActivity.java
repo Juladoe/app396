@@ -622,12 +622,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         super.onResume();
         mLessonMenuHelper.updatePluginItemState();
         invalidateOptionsMenu();
-        app.resumePlayCacheServer();
+        CacheServerFactory.getInstance().resume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        app.pausePlayCacheServer();
+        CacheServerFactory.getInstance().pause();
     }
 }

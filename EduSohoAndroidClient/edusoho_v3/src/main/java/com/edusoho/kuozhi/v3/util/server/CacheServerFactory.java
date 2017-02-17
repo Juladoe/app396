@@ -15,13 +15,14 @@ public class CacheServerFactory {
         return ourInstance;
     }
 
+    private volatile int mRefCount = 0;
     private CacheServer mCacheServer;
 
     private CacheServerFactory() {
     }
 
     public void start(Context context, String host, int loginUserId) {
-        stop();
+        mRefCount ++;
         mCacheServer = createServer(context, host, loginUserId);
         mCacheServer.start();
     }
@@ -33,8 +34,24 @@ public class CacheServerFactory {
     }
 
     public void stop() {
+        mRefCount --;
+        if (mRefCount <= 0) {
+            if (mCacheServer != null) {
+                mCacheServer.close();
+            }
+            mRefCount = 0;
+        }
+    }
+
+    public void resume() {
         if (mCacheServer != null) {
-            mCacheServer.close();
+            mCacheServer.keepOn();
+        }
+    }
+
+    public void pause() {
+        if (mCacheServer != null) {
+            mCacheServer.pause();
         }
     }
 }
