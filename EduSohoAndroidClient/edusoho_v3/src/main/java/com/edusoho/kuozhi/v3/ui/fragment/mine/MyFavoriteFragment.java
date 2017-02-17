@@ -104,7 +104,6 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
     }
 
     private void showLoadingView() {
-        Log.d(this.getClass().getSimpleName(), "showLoadingView: ");
         srlContent.post(new Runnable() {
             @Override
             public void run() {
@@ -114,7 +113,6 @@ public class MyFavoriteFragment extends BaseFragment implements MineFragment1.Re
     }
 
     private void disabledLoadingView() {
-        Log.d(this.getClass().getSimpleName(), "disabledLoadingView: ");
         srlContent.setRefreshing(false);
     }
 

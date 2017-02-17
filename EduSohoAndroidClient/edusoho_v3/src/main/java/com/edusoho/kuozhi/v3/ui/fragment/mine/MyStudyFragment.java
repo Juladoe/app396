@@ -406,7 +406,6 @@ public class MyStudyFragment extends BaseFragment implements MineFragment1.Refre
                 } else {
                     switchType(CLASSROOM);
                 }
-
             }
         };
     }

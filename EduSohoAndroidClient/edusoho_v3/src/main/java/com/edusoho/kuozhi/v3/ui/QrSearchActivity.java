@@ -103,6 +103,7 @@ public class QrSearchActivity extends CaptureActivity {
 
         private static final int CLASSROOM = 2;
         private static final int COURSE = 1;
+        private static final int LESSON = 3;
         private int type = COURSE;
 
         @Override
@@ -121,8 +122,12 @@ public class QrSearchActivity extends CaptureActivity {
                     if (url302 != null) {
                         if (url302.contains("course")) {
                             type = COURSE;
-                        } else if (url302.contains("classroom")) {
+                        }
+                        if (url302.contains("classroom")) {
                             type = CLASSROOM;
+                        }
+                        if (url302.contains("lesson")) {
+                            type = LESSON;
                         }
                     }
                 }
@@ -134,6 +139,7 @@ public class QrSearchActivity extends CaptureActivity {
 
         @Override
         protected void onPostExecute(String redirectUrl) {
+            Log.d(TAG, "onPostExecute: " + redirectUrl);
             if (redirectUrl == null) {
                 Toast.makeText(mContext, "二维码已失效", Toast.LENGTH_LONG).show();
                 finish();
@@ -157,6 +163,9 @@ public class QrSearchActivity extends CaptureActivity {
                             startIntent.putExtra(Const.CLASSROOM_ID, Integer.parseInt(targetId));
                         }
                     });
+                    break;
+                case LESSON:
+                    Toast.makeText(mContext, "抱歉，当前版本不能识别此二维码", Toast.LENGTH_LONG).show();
                     break;
                 default:
                     Toast.makeText(mContext, "暂不支持该类型的二维码", Toast.LENGTH_LONG).show();
