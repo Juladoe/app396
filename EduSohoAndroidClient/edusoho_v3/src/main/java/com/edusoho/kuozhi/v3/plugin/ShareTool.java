@@ -57,7 +57,7 @@ public class ShareTool {
         mContext = ctx;
         mUrl = url;
         mTitle = title;
-        mAbout = about;
+        mAbout = fromHtml(about);
         mPic = pic;
     }
 
@@ -65,13 +65,13 @@ public class ShareTool {
         mContext = ctx;
         mUrl = url;
         mTitle = title;
-        mAbout = about;
+        mAbout = fromHtml(about);
         mPic = pic;
         mDialogType = type;
     }
 
-    public void setDismissEvent(ShardDialog.DismissEvent dismissEvent) {
-        mDismissEvent = dismissEvent;
+    private String fromHtml(String htmlCode) {
+        return Html.fromHtml(htmlCode).toString();
     }
 
     public void shardCourse() {
@@ -127,7 +127,7 @@ public class ShareTool {
     private String coverShareContent(String content, String url) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        String formatString  = Html.fromHtml(content).toString();
+        String formatString = Html.fromHtml(content).toString();
         int contentSize = 140 - url.length() - 3;
         if (formatString.length() > contentSize) {
             formatString = formatString.substring(0, contentSize);
@@ -192,7 +192,7 @@ public class ShareTool {
         startIntent.putExtra(Const.ACTIONBAR_TITLE, "选择");
         startIntent.putExtra(ChatSelectFragment.BODY, redirectBody);
         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ChatSelectFragment");
-        startIntent.setComponent(new ComponentName(mContext.getPackageName(), "FragmentPageActivity"));
+        startIntent.setComponent(new ComponentName(mContext, FragmentPageActivity.class));
         mContext.startActivity(startIntent);
     }
 

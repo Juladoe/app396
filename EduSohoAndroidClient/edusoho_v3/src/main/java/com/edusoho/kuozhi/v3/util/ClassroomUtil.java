@@ -7,7 +7,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.DetailActivity;
+import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -157,7 +157,7 @@ public class ClassroomUtil {
                             );
                             EdusohoApp.app.mEngine.runNormalPluginForResult("WebViewActivity"
                                     , EdusohoApp.app.mActivity
-                                    , DetailActivity.RESULT_REFRESH
+                                    , BaseStudyDetailActivity.RESULT_REFRESH
                                     ,new PluginRunCallback() {
                                         @Override
                                         public void setIntentDate(Intent startIntent) {
@@ -193,7 +193,7 @@ public class ClassroomUtil {
         });
     }
 
-    public static void addClassroomVip(String classroomId, final OnAddClassroomListener
+    public static void addClassroomVip(int classroomId, final OnAddClassroomListener
             onAddclassroomListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
@@ -236,7 +236,7 @@ public class ClassroomUtil {
     private static void notLogin() {
 
         EdusohoApp.app.mEngine.runNormalPluginForResult("LoginActivity", EdusohoApp.app.mActivity
-                , DetailActivity.RESULT_LOGIN, new PluginRunCallback() {
+                , BaseStudyDetailActivity.RESULT_LOGIN, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
 

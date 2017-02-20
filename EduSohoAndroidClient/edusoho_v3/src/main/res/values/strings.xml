@@ -264,6 +264,7 @@
     <string name="unjoin_class_course_hint">加入班级后才能学习</string>
     <string name="lesson_loading">课时内容转码中，再给我一点时间吧>_&#060; </string>
     <string name="lesson_loading_fail">课程获取失败</string>
+    <string name="course_loading_fail">课时获取失败</string>
     <string name="live_state_finish">已结束</string>
     <string name="live_state_replay">回放</string>
     <string name="live_state_ing">直播中</string>
@@ -399,4 +400,15 @@
     <string name="video_no_meidaurl">多媒体资源不能播放!</string>
     <string name="video_replay_title">直播回看</string>
     <string name="lesson_living">直播中</string>
+    <string name="no_add_course">还没有添加课时</string>
+    <string name="no_add_class">还没有添加班级</string>
+
+    <string name="filter_type_latest">最近</string>
+    <string name="filter_type_course">课程</string>
+    <string name="filter_type_live">直播</string>
+    <string name="filter_type_classroom">班级</string>
+    <string name="question_post">发起</string>
+    <string name="question_answer">回复</string>
+    <string name="classroom_teacher_txt">班主任</string>
+
 </resources>

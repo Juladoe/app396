@@ -7,7 +7,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.DetailActivity;
+import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +20,7 @@ import java.util.Map;
  */
 
 public class CourseUtil {
-    public static void reviewCourse(String courseId, int rating, String content
+    public static void reviewCourse(int courseId, int rating, String content
             , final OnReviewCourseListener onReviewCourseListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
@@ -51,12 +51,14 @@ public class CourseUtil {
                 });
     }
 
-    public static void collectCourse(String courseId, final OnCollectSuccessListener onCollectSuccessListener) {
+    public static void collectCourse(int courseId, final OnCollectSuccessListener onCollectSuccessListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
             return;
         }
-        EdusohoApp.app.getUrl(EdusohoApp.app.bindUrl(Const.FAVORITE + "?courseId=" + courseId, true)
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(Const.FAVORITE, true);
+        requestUrl.setParams(new String[] {"courseId", String.valueOf(courseId)});
+        EdusohoApp.app.postUrl(requestUrl
                 , new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -79,12 +81,14 @@ public class CourseUtil {
                 });
     }
 
-    public static void uncollectCourse(String courseId, final OnCollectSuccessListener onCollectSuccessListener) {
+    public static void uncollectCourse(int courseId, final OnCollectSuccessListener onCollectSuccessListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
             return;
         }
-        EdusohoApp.app.getUrl(EdusohoApp.app.bindUrl(Const.UNFAVORITE + "?courseId=" + courseId, true)
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(Const.UNFAVORITE, true);
+        requestUrl.setParams(new String[] {"courseId", String.valueOf(courseId)});
+        EdusohoApp.app.postUrl(requestUrl
                 , new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -186,7 +190,7 @@ public class CourseUtil {
                                             , "course")
                             );
                             EdusohoApp.app.mEngine.runNormalPluginForResult("WebViewActivity"
-                                    , EdusohoApp.app.mActivity, DetailActivity.RESULT_REFRESH
+                                    , EdusohoApp.app.mActivity, BaseStudyDetailActivity.RESULT_REFRESH
                                     , new PluginRunCallback() {
                                         @Override
                                         public void setIntentDate(Intent startIntent) {
@@ -222,7 +226,7 @@ public class CourseUtil {
         });
     }
 
-    public static void addCourseVip(String courseId, final OnAddCourseListener
+    public static void addCourseVip(int courseId, final OnAddCourseListener
             onAddCourseListener) {
         if (EdusohoApp.app.loginUser == null) {
             notLogin();
@@ -319,7 +323,7 @@ public class CourseUtil {
 
     public static void notLogin() {
         EdusohoApp.app.mEngine.runNormalPluginForResult("LoginActivity", EdusohoApp.app.mActivity
-                , DetailActivity.RESULT_LOGIN, new PluginRunCallback() {
+                , BaseStudyDetailActivity.RESULT_LOGIN, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
 

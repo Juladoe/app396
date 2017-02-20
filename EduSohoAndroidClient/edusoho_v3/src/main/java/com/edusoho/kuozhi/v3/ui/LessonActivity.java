@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -32,6 +33,7 @@ import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailsResult;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseLessonType;
@@ -39,6 +41,7 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LiveLessonFragment;
@@ -49,9 +52,11 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
+import com.edusoho.kuozhi.v3.util.server.CacheServerFactory;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -59,6 +64,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 
@@ -103,7 +109,16 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         fragmentData = new Bundle();
         initView();
         initMenuPop();
-        app.startPlayCacheServer(this);
+        startCacheServer();
+    }
+
+    private void startCacheServer() {
+        User user = getAppSettingProvider().getCurrentUser();
+        School school = getAppSettingProvider().getCurrentSchool();
+        if (user == null || school == null) {
+            return;
+        }
+        CacheServerFactory.getInstance().start(getBaseContext(), school.host, user.id);
     }
 
     protected void share() {
@@ -357,6 +372,9 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         ajaxGet(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                if (isFinishing()) {
+                    return;
+                }
                 setLoadViewState(false);
                 mLessonItem = getLessonResultType(response);
                 if (mLessonItem == null) {
@@ -582,7 +600,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        app.stopPlayCacheServer();
 
         Bundle bundle = new Bundle();
         bundle.putString("event", "lessonStatusRefresh");
@@ -596,6 +613,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (fragment != null) {
             mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
         }
+
+        CacheServerFactory.getInstance().stop();
     }
 
     @Override
@@ -603,12 +622,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         super.onResume();
         mLessonMenuHelper.updatePluginItemState();
         invalidateOptionsMenu();
-        app.resumePlayCacheServer();
+        CacheServerFactory.getInstance().resume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        app.pausePlayCacheServer();
+        CacheServerFactory.getInstance().pause();
     }
 }

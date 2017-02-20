@@ -10,9 +10,9 @@ public class Classroom implements Serializable {
     public int id;
     public String title;
     public String status;
-    public Object about;
+    public String about = "";
     public int categoryId;
-    public Object description;
+    public String description;
     public double price;
     public String middlePicture;
     public String largePicture;
@@ -25,6 +25,7 @@ public class Classroom implements Serializable {
     public String[] service;
     public Teacher[] teachers;
     public String convNo;
+    public int headTeacherId;
 
     public String getLargePicture() {
         int schemIndex = largePicture.lastIndexOf("http://");

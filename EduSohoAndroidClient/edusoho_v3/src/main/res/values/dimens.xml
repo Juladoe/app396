@@ -11,6 +11,7 @@
     <dimen name="font_xxs">10sp</dimen>
 
     <dimen name="button_height">45dp</dimen>
+    <dimen name="action_bar_height">44dp</dimen>
 
     <!-- end -->
 
@@ -212,4 +213,8 @@
     <dimen name="class_margin_right">20dp</dimen>
     <!--字体大小-->
     <!--<dimen name="font_size_l"-->
+
+    <!-- course toolbar height -->
+    <dimen name="course_toolbar_height">210dp</dimen>
+
 </resources>

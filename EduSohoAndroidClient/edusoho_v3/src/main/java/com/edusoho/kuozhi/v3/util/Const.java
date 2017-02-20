@@ -120,6 +120,7 @@ public class Const {
     //public message type
     public static final String TESTPAPER_REFRESH_DATA = "testpaper_refresh_data";
     public static final String LOGIN_SUCCESS = "login_success";
+    public static final String REFRESH_MY_FRAGMENT = "refresh_my_fragment";
     public static final String USER_UPDATE = "user_update";
     public static final String CLEAR_APP_CACHE = "clear_app_cache";
     public static final String THIRD_PARTY_LOGIN_SUCCESS = "third_party_login_success";
@@ -131,12 +132,18 @@ public class Const {
     public static final String DIALOG_DISMISS = "dialog_dismiss";
     public static final String SCROLL_STATE_SAVE = "scroll_state_save";
 
+    //课程及班级界面消息类型
+    public static final String WEB_BACK_REFRESH = "webview_back_update";
+
     public static final String FULL_SCREEN = "course_full_screen";
     public static final String SCREEN_LOCK = "screen_lock";
     public static final String COURSE_HASTRIAL = "course_hastrial";//是否有试学
     public static final String COURSE_HASTRIAL_RESULT = "course_hastrial_result";
     public static final String COURSE_REFRESH = "course_refresh";//刷新课程Activity
     public static final String LESSON_STATUS_REFRESH = "lesson_status_refresh";//刷新课时状态
+    public static final String SOURCE = "source";
+    public static final String CLASSROOM_ID = "Classroom_id";//班级id
+
 
     public static final String COURSE_START = "course_start";//开始课程
     public static final String COURSE_CHANGE = "course_change";//课程切换
@@ -308,6 +315,8 @@ public class Const {
     public static final String GET_TAGS = "Category/getTags";
     public static final String USERTERMS = "School/getUserterms";
     public static final String USERINFO = "User/getUserInfo";
+    public static final String USERINFO_NEW = "/mapi_v2/User/getUserInfo?userId=%s";
+    public static final String TEACHER_INFO = "/mapi_v2/ClassRoom/getTeachers?classRoomId=%s";
     public static final String REVIEWS = "Course/getReviews";
     public static final String COURSE_GETCOURSE = "Course/getCourse?courseId=%s";
     public static final String COURSE_GETREVIEWS = "Course/getReviews?courseId=%s&limit=%s&start=%s";
@@ -380,7 +389,6 @@ public class Const {
     public static final String REPLAY_QUESTION = "/api/chaos_threads_posts";
     /**
      * 获取考试课程详情
-     *
      */
     public static final String TESTPAPER_INFO = "Lesson/getTestpaperInfo";
 

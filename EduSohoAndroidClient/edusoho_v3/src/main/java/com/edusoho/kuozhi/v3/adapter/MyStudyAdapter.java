@@ -4,11 +4,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.DataSetObserver;
-import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,9 +34,6 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.ClassroomActivity;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.MyTabFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -47,11 +41,9 @@ import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
-import com.edusoho.kuozhi.v3.view.dialog.SureDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -240,7 +232,7 @@ public class MyStudyAdapter extends BaseAdapter {
                 CoreEngine.create(mContext).runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(ClassroomActivity.CLASSROOM_ID, String.valueOf(classroom.id));
+                        startIntent.putExtra(Const.CLASSROOM_ID, String.valueOf(classroom.id));
                     }
                 });
             } else if (object instanceof Course) {
@@ -249,7 +241,7 @@ public class MyStudyAdapter extends BaseAdapter {
                         , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(CourseActivity.COURSE_ID, course.id + "");
+                                startIntent.putExtra(Const.COURSE_ID, course.id + "");
                             }
                         });
             } else {
@@ -258,8 +250,8 @@ public class MyStudyAdapter extends BaseAdapter {
                         , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(CourseActivity.COURSE_ID, String.valueOf(study.getId()));
-                                startIntent.putExtra(CourseActivity.SOURCE, study.getTitle());
+                                startIntent.putExtra(Const.COURSE_ID, String.valueOf(study.getId()));
+                                startIntent.putExtra(Const.SOURCE, study.getTitle());
                             }
                         });
             }
@@ -346,14 +338,14 @@ public class MyStudyAdapter extends BaseAdapter {
                                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(final DialogInterface dlg, int which) {
-                                        CourseUtil.deleteCourse(Integer.parseInt(study.getId()), new CourseUtil.CallBack() {
+                                        CourseUtil.deleteCourse(study.getId(), new CourseUtil.CallBack() {
                                             @Override
                                             public void onSuccess(String response) {
                                                 CommonUtil.shortToast(mContext, "退出成功");
                                                 mLists.remove(object);
                                                 notifyDataSetChanged();
                                                 dialog.dismiss();
-                                                clearCoursesCache(Integer.parseInt(study.getId()));
+                                                clearCoursesCache(study.getId());
                                             }
 
                                             @Override
@@ -387,9 +379,7 @@ public class MyStudyAdapter extends BaseAdapter {
                             shareTool = new ShareTool(mContext
                                     , EdusohoApp.app.host + "/classroom/" + classroom.id
                                     , classroom.title
-                                    , classroom.about.toString().length() > 20 ?
-                                    classroom.about.toString().substring(0, 20)
-                                    : classroom.about.toString()
+                                    , classroom.about.length() > 20 ? classroom.about.substring(0, 20) : classroom.about
                                     , classroom.largePicture);
                         } else {
                             Study.Resource study = (Study.Resource) object;
@@ -697,8 +687,8 @@ public class MyStudyAdapter extends BaseAdapter {
                                 });
                     } else if (object instanceof Study.Resource) {
                         final Study.Resource study = (Study.Resource) object;
-                        ids.add(Integer.parseInt(study.getId()));
-                        CourseDetailModel.getLiveLesson(Integer.parseInt(study.getId()),
+                        ids.add(study.getId());
+                        CourseDetailModel.getLiveLesson(study.getId(),
                                 new NormalCallback<List<Lesson>>() {
                                     @Override
                                     public void success(List<Lesson> lessons) {
@@ -737,7 +727,7 @@ public class MyStudyAdapter extends BaseAdapter {
                                 } else if (mLists.get(j) instanceof Study.Resource) {
                                     Study.Resource study = (Study.Resource) mLists.get(j);
                                     CourseProgress.Progress progress = progresses.get(i);
-                                    if (Integer.parseInt(study.getId()) == progress.courseId) {
+                                    if (study.getId() == progress.courseId) {
                                         study.setLearnedNum(progress.learnedNum);
                                         study.setTotalLesson(progress.totalLesson);
                                         continue out;

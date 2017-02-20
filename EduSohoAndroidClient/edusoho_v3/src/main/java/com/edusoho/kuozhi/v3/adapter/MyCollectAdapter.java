@@ -2,7 +2,7 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +13,10 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
 import com.edusoho.kuozhi.v3.view.dialog.SureDialog;
@@ -105,13 +104,9 @@ public class MyCollectAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     int position = (int) v.getTag(R.id.tv_title);
                     final Course course = mCourseList.get(position);
-                    EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity"
-                            , mContext, new PluginRunCallback() {
-                                @Override
-                                public void setIntentDate(Intent startIntent) {
-                                    startIntent.putExtra(CourseActivity.COURSE_ID, course.id + "");
-                                }
-                            });
+                    Bundle bundle = new Bundle();
+                    bundle.putInt(Const.COURSE_ID, course.id);
+                    EdusohoApp.app.mEngine.runNormalPluginWithBundle("CourseActivity", mContext, bundle);
                 }
             };
 
@@ -127,7 +122,7 @@ public class MyCollectAdapter extends BaseAdapter {
                     new SureDialog(mContext).init("是否确定取消收藏！", new SureDialog.CallBack() {
                         @Override
                         public void onSureClick(View v, final Dialog dialog2) {
-                            CourseUtil.uncollectCourse(String.valueOf(course.id)
+                            CourseUtil.uncollectCourse(course.id
                                     , new CourseUtil.OnCollectSuccessListener() {
                                         @Override
                                         public void onCollectSuccess() {

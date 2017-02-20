@@ -24,7 +24,6 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.ui.AllReviewActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -39,7 +38,7 @@ import java.util.List;
 
 public class ClassroomDetailFragment extends BaseDetailFragment {
 
-    private String mClassroomId;
+    private int mClassroomId;
     private ClassroomDetail mClassroomDetail;
     private List<ClassroomReview> mReviews = new ArrayList<>();
     private ReviewAdapter mAdapter;
@@ -47,15 +46,14 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     public ClassroomDetailFragment() {
     }
 
-    public void setClassroomId(String classroomId) {
+    public void setClassroomId(int classroomId) {
         this.mClassroomId = classroomId;
-        initData();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mClassroomId = getArguments().getString("id");
+        mClassroomId = getArguments().getInt(Const.CLASSROOM_ID);
     }
 
     @Override
@@ -64,10 +62,10 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         mAdapter = new ReviewAdapter();
         mVipLayout.setVisibility(View.GONE);
         mLvReview.setAdapter(mAdapter);
+        mTvTeacher.setText(R.string.classroom_teacher_txt);
         mTvStudent1.setText(R.string.txt_classroom_student);
         mTvReview1.setText(R.string.txt_classroom_review);
         mTvPeople1.setText(R.string.txt_provision_services);
-        initEvent();
         initData();
     }
 
@@ -150,7 +148,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             mTvStudentNone.setVisibility(View.GONE);
         }
         for (int i = 0; i < 5; i++) {
-            View view = LayoutInflater.from(mContext)
+            View view = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_detail_avatar, null, false);
             LinearLayout.LayoutParams params =
                     new LinearLayout.LayoutParams(0, -1);
@@ -162,8 +160,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
                 image.setTag(data.get(i).userId);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
-                ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image,
-                        app.mAvatarOptions);
+                ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image, EdusohoApp.app.mAvatarOptions);
             } else {
                 txt.setText("");
                 image.setImageAlpha(0);
@@ -177,7 +174,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Classroom classRoom = mClassroomDetail.getClassRoom();
         mTvTitle.setText(classRoom.title);
-        mTvTitleDesc.setHtml(classRoom.about.toString(), new HtmlHttpImageGetter(mTvTitleDesc,null,true));
+        mTvTitleDesc.setHtml(classRoom.about, new HtmlHttpImageGetter(mTvTitleDesc, null, true));
         mTvStudentNum.setText(String.format("(%s)", mClassroomDetail.getClassRoom().studentNum));
         if (mClassroomDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
@@ -242,16 +239,29 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             }
             mTvPeopleDesc.setText(sb.substring(0, sb.length() - 1));
         }
-        if (classRoom.teachers.length == 0) {
-            mTeacherLayout.setVisibility(View.GONE);
-        } else {
-            mTeacherLayout.setVisibility(View.VISIBLE);
-            Teacher teacher = classRoom.teachers[0];
-            mTeacherId = String.valueOf(teacher.id);
-            ImageLoader.getInstance().displayImage(teacher.getAvatar(), mIvTeacherIcon, app.mAvatarOptions);
-            mTvTeacherName.setText(teacher.nickname);
-            mTvTeacherDesc.setText(teacher.title);
-        }
+        getTeacherView(mClassroomId);
+    }
+
+    public void getTeacherView(int headTeacherId) {
+        CourseDetailModel.getTeacher(headTeacherId, new ResponseCallbackListener<Teacher[]>() {
+            @Override
+            public void onSuccess(Teacher[] data) {
+                if (data.length == 0) {
+                    mTeacherLayout.setVisibility(View.GONE);
+                } else {
+                    mTeacherLayout.setVisibility(View.VISIBLE);
+                    mTeacherId = String.valueOf(data[0].id);
+                    ImageLoader.getInstance().displayImage(data[0].smallAvatar.split("\\?")[0], mIvTeacherIcon, ((EdusohoApp) getActivity().getApplication()).mAvatarOptions);
+                    mTvTeacherName.setText(data[0].nickname);
+                    mTvTeacherDesc.setText(data[0].title);
+                }
+            }
+
+            @Override
+            public void onFailure(String code, String message) {
+                mTeacherLayout.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -274,31 +284,11 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
     @Override
     protected void moreReview() {
         EdusohoApp.app.mEngine.runNormalPlugin("AllReviewActivity"
-                , mContext, new PluginRunCallback() {
+                , getContext(), new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(AllReviewActivity.ID, Integer.valueOf(mClassroomId));
-                        startIntent.putExtra(AllReviewActivity.TYPE,AllReviewActivity.TYPE_CLASSROOM);
-                    }
-                });
-    }
-
-    @Override
-    protected void vipInfo() {
-        if (EdusohoApp.app.loginUser == null) {
-            CourseUtil.notLogin();
-            return;
-        }
-        final String url = String.format(
-                Const.MOBILE_APP_URL,
-                app.schoolHost,
-                "main#/viplist"
-        );
-        EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
-                , EdusohoApp.app.mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.WEB_URL, url);
+                        startIntent.putExtra(AllReviewActivity.TYPE, AllReviewActivity.TYPE_CLASSROOM);
                     }
                 });
     }
@@ -323,7 +313,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = LayoutInflater.from(mContext)
+                convertView = LayoutInflater.from(getContext())
                         .inflate(R.layout.item_detail_review, null, false);
                 viewHolder = new ViewHolder();
                 viewHolder.mDesc = (TextView) convertView.findViewById(R.id.tv_review_desc);
@@ -340,8 +330,7 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
             viewHolder.mName.setText(review.getUser().nickname);
             viewHolder.mTime.setText(CommonUtil.convertWeekTime(review.getCreatedTime()));
             viewHolder.mStar.setRating((int) Double.parseDouble(review.getRating()));
-            ImageLoader.getInstance().displayImage(review.getUser().getMediumAvatar(), viewHolder.mIcon,
-                    app.mAvatarOptions);
+            ImageLoader.getInstance().displayImage(review.getUser().getMediumAvatar(), viewHolder.mIcon);
             viewHolder.mIcon.setTag(review.getUser().id);
             viewHolder.mIcon.setOnClickListener(mOnClickListener);
             return convertView;

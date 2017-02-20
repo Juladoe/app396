@@ -1,51 +1,43 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.text.Editable;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.util.AppUtil;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.display.FadeInBitmapDisplayer;
-
 import org.sufficientlysecure.htmltextview.HtmlTextView;
-
-import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by Zhang on 2016/12/8.
  */
 
-public abstract class BaseDetailFragment extends BaseFragment implements View.OnClickListener {
+public abstract class BaseDetailFragment extends Fragment implements View.OnClickListener, ICourseStateListener {
+
 
     public BaseDetailFragment() {
     }
 
+    protected TextView mTvTeacher;
     protected TextView mTvPriceOld;
     protected TextView mTvPrice1;
     protected TextView mTvPriceNow;
@@ -80,6 +72,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
     protected TextView mTvStudent1;
     protected TextView mTvReview1;
 
+    protected int mViewId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,9 +80,28 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         setContainerView(R.layout.fragment_course_detail);
     }
 
+    protected void setContainerView(int viewId) {
+        mViewId = viewId;
+    }
+
     @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View contentView = inflater.inflate(mViewId, null);
+        ViewGroup parent = (ViewGroup) contentView.getParent();
+        if (parent != null) {
+            parent.removeView(contentView);
+        }
+        return contentView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        initView(view);
+        initEvent();
+    }
+
     protected void initView(View view) {
-        super.initView(view);
         mTvPriceOld = (TextView) view.findViewById(R.id.tv_price_old);
         mTvPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         mTvPriceNow = (TextView) view.findViewById(R.id.tv_price_now);
@@ -121,6 +133,7 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         mTvReview1 = (TextView) view.findViewById(R.id.tv_review1);
         mTvStudent1 = (TextView) view.findViewById(R.id.tv_student1);
         mTvPeople1 = (TextView) view.findViewById(R.id.tv_people1);
+        mTvTeacher = (TextView) view.findViewById(R.id.tv_teacher1);
         mPeopleLayout = view.findViewById(R.id.people_rlayout);
         mTeacherLayout = view.findViewById(R.id.teacher_rlayout);
         mTvStudentNone = view.findViewById(R.id.tv_student_none);
@@ -142,15 +155,15 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
                     mTvTitleFull.setText(getString(R.string.new_font_unfold));
                     mTvTitleDesc.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     if (params != null) {
-                        params.setMargins(0, AppUtil.dp2px(mContext, 38),
-                                AppUtil.dp2px(mContext, 15), 0);
+                        params.setMargins(0, AppUtil.dp2px(getContext(), 38),
+                                AppUtil.dp2px(getContext(), 15), 0);
                         mVTitleLine.setLayoutParams(params);
                     }
                 } else {
                     mTvTitleFull.setVisibility(View.GONE);
                     if (params != null) {
-                        params.setMargins(0, AppUtil.dp2px(mContext, 25),
-                                AppUtil.dp2px(mContext, 15), 0);
+                        params.setMargins(0, AppUtil.dp2px(getContext(), 25),
+                                AppUtil.dp2px(getContext(), 15), 0);
                         mVTitleLine.setLayoutParams(params);
                     }
                 }
@@ -197,8 +210,8 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
                         String.format("main#/userinfo/%s",
                                 mTeacherId)
                 );
-                CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
-                        , mContext, new PluginRunCallback() {
+                CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
+                        , getContext(), new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
                                 startIntent.putExtra(Const.WEB_URL, url);
@@ -223,11 +236,11 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
         }
         final String url = String.format(
                 Const.MOBILE_APP_URL,
-                app.schoolHost,
+                EdusohoApp.app.schoolHost,
                 "main#/viplist"
         );
-        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
-                , mContext, new PluginRunCallback() {
+        CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
+                , getContext(), new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.WEB_URL, url);
@@ -235,4 +248,11 @@ public abstract class BaseDetailFragment extends BaseFragment implements View.On
                 });
     }
 
+    @Override
+    public void reFreshView(boolean mJoin) {
+        View container = getView().findViewById(R.id.ll_detail_container);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) container.getLayoutParams();
+        lp.bottomMargin = mJoin ? AppUtil.dp2px(getContext(), 50) : 0;
+        container.setLayoutParams(lp);
+    }
 }

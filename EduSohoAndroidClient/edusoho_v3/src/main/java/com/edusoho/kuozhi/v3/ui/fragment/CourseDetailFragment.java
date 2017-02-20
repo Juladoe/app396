@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,11 +24,8 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReview;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
 import com.edusoho.kuozhi.v3.ui.AllReviewActivity;
-import com.edusoho.kuozhi.v3.ui.CourseActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -44,7 +40,7 @@ import java.util.List;
 
 public class CourseDetailFragment extends BaseDetailFragment {
 
-    private String mCourseId;
+    private int mCourseId;
     private CourseDetail mCourseDetail;
     private List<CourseReview> mReviews = new ArrayList<>();
     private ReviewAdapter mAdapter;
@@ -52,15 +48,10 @@ public class CourseDetailFragment extends BaseDetailFragment {
     public CourseDetailFragment() {
     }
 
-    public void setCourseId(String courseId) {
-        this.mCourseId = courseId;
-        initData();
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCourseId = getArguments().getString("id");
+        mCourseId = getArguments().getInt(Const.COURSE_ID);
     }
 
     @Override
@@ -71,7 +62,6 @@ public class CourseDetailFragment extends BaseDetailFragment {
         mTvStudent1.setText(R.string.txt_course_student);
         mTvReview1.setText(R.string.txt_course_review);
         mTvPeople1.setText(R.string.txt_suit_people);
-        initEvent();
         initData();
     }
 
@@ -127,7 +117,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             mTvStudentNone.setVisibility(View.GONE);
         }
         for (int i = 0; i < 5; i++) {
-            View view = LayoutInflater.from(mContext)
+            View view = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_detail_avatar, null, false);
             LinearLayout.LayoutParams params =
                     new LinearLayout.LayoutParams(0, -1);
@@ -139,8 +129,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 image.setTag(data.get(i).user.id);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
-                ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image,
-                        app.mAvatarOptions);
+                ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image, EdusohoApp.app.mAvatarOptions);
             } else {
                 txt.setText("");
                 image.setImageAlpha(0);
@@ -214,7 +203,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             mTeacherLayout.setVisibility(View.VISIBLE);
             Teacher teacher = course.teachers[0];
             mTeacherId = String.valueOf(teacher.id);
-            ImageLoader.getInstance().displayImage(teacher.getAvatar(), mIvTeacherIcon, app.mAvatarOptions);
+            ImageLoader.getInstance().displayImage(teacher.getAvatar(), mIvTeacherIcon);
             mTvTeacherName.setText(teacher.nickname);
             mTvTeacherDesc.setText(teacher.title);
         }
@@ -229,12 +218,12 @@ public class CourseDetailFragment extends BaseDetailFragment {
     protected void moreStudent() {
         final String url = String.format(
                 Const.MOBILE_APP_URL,
-                app.schoolHost,
+                EdusohoApp.app.schoolHost,
                 String.format("main#/studentlist/%s/%s",
-                        "course", mCourseId)
+                        "courses", mCourseId)
         );
-        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
-                , mContext, new PluginRunCallback() {
+        CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
+                , getContext(), new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(Const.WEB_URL, url);
@@ -245,7 +234,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
     @Override
     protected void moreReview() {
         EdusohoApp.app.mEngine.runNormalPlugin("AllReviewActivity"
-                , mContext, new PluginRunCallback() {
+                , getContext(), new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
                         startIntent.putExtra(AllReviewActivity.ID, Integer.valueOf(mCourseId));
@@ -274,7 +263,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             if (convertView == null) {
-                convertView = LayoutInflater.from(mContext)
+                convertView = LayoutInflater.from(getContext())
                         .inflate(R.layout.item_detail_review, null, false);
                 viewHolder = new ViewHolder();
                 viewHolder.mDesc = (TextView) convertView.findViewById(R.id.tv_review_desc);
@@ -291,8 +280,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
             viewHolder.mName.setText(review.getUser().nickname);
             viewHolder.mTime.setText(CommonUtil.convertWeekTime(review.getCreatedTime()));
             viewHolder.mStar.setRating((int) Double.parseDouble(review.getRating()));
-            ImageLoader.getInstance().displayImage(review.getUser().getMediumAvatar(), viewHolder.mIcon,
-                    app.mAvatarOptions);
+            ImageLoader.getInstance().displayImage(review.getUser().getMediumAvatar(), viewHolder.mIcon);
             viewHolder.mIcon.setTag(review.getUser().id);
             viewHolder.mIcon.setOnClickListener(mOnClickListener);
             return convertView;
@@ -324,7 +312,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
                 String.format("main#/userinfo/%s",
                         id)
         );
-        CoreEngine.create(mContext).runNormalPlugin("WebViewActivity"
+        CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
                 , getActivity(), new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {

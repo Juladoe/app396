@@ -244,9 +244,13 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         mSearchEdt.setAdapter(adapter);
     }
 
-    private void searchSchool(String searchStr) {
-
-        String url = "http://" + searchStr + Const.VERIFYVERSION;
+    private void searchSchool(String url) {
+        if (!url.contains("http")) {
+            url = "http://" + url;
+        }
+        if (!url.contains(Const.VERIFYVERSION)) {
+            url = url + Const.VERIFYVERSION;
+        }
         mLoading = LoadDialog.create(mContext);
         mLoading.show();
 
@@ -376,10 +380,13 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
     @Override
     public void onErrorResponse(VolleyError error) {
         mLoading.dismiss();
-        if (error.networkResponse == null) {
-            CommonUtil.longToast(mActivity, getResources().getString(R.string.request_failed));
-        } else {
-            CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+        if (error.networkResponse != null) {
+            if (error.networkResponse.statusCode == 302 || error.networkResponse.statusCode == 301) {
+                String redirectUrl = error.networkResponse.headers.get("location");
+                searchSchool(redirectUrl);
+            } else {
+                CommonUtil.longToast(mContext, mContext.getResources().getString(R.string.request_fail_text));
+            }
         }
     }
 

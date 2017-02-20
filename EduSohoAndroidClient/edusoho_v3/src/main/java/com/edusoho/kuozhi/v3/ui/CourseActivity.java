@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
-import android.text.TextUtils;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -31,7 +30,6 @@ import com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.lesson.LessonAudioPlayerFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -47,11 +45,9 @@ import java.util.List;
  */
 public class CourseActivity extends DetailActivity implements View.OnClickListener, CourseStateCallback {
 
-    public static final String COURSE_ID = "course_id";
-    public static final String SOURCE = "source";
     public static final String SOURCE_ID = "source_id";
     public static final String IS_CHILD_COURSE = "child_course";
-    private String mCourseId;
+    private int mCourseId;
     private boolean mIsFavorite = false;
     public CourseDetail mCourseDetail;
     private LessonItem mContinueLessonItem;
@@ -61,8 +57,8 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        mCourseId = intent.getStringExtra(COURSE_ID);
-        if (mCourseId == null || mCourseId.trim().length() == 0) {
+        mCourseId = intent.getIntExtra(Const.COURSE_ID, 0);
+        if (mCourseId == 0) {
             finish();
             return;
         }
@@ -80,26 +76,26 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         mTvAdd.setText(R.string.txt_add_course);
     }
 
-    @Override
+
     protected void initFragment(List<Fragment> fragments) {
         Fragment detailfragment = app.mEngine.runPluginWithFragment("CourseDetailFragment", this, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString("id", mCourseId);
+                bundle.putInt("id", mCourseId);
             }
         });
         fragments.add(detailfragment);
         Fragment catafragment = app.mEngine.runPluginWithFragment("CourseCatalogFragment", this, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString("id", mCourseId);
+                bundle.putInt("id", mCourseId);
             }
         });
         fragments.add(catafragment);
         Fragment discussFrament = app.mEngine.runPluginWithFragment("CourseDiscussFragment", this, new PluginFragmentCallback() {
             @Override
             public void setArguments(Bundle bundle) {
-                bundle.putString("id", mCourseId);
+                bundle.putInt("id", mCourseId);
             }
         });
         fragments.add(discussFrament);
@@ -135,7 +131,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     protected void initData() {
-        if (TextUtils.isEmpty(mCourseId)) {
+        if (mCourseId == 0) {
             CommonUtil.shortToast(getBaseContext(), "课程不存在");
             finish();
             return;
@@ -177,7 +173,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     private void unLearnCourse() {
-        new CourseProvider(getBaseContext()).unLearn(AppUtil.parseInt(mCourseId))
+        new CourseProvider(getBaseContext()).unLearn(mCourseId)
         .success(new NormalCallback<String>() {
             @Override
             public void success(String response) {
@@ -212,7 +208,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     private void saveCourseToCache(Course course) {
-        course.setSourceName(getIntent().getStringExtra(SOURCE));
+        course.setSourceName(getIntent().getStringExtra(Const.SOURCE));
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(getBaseContext());
         sqliteUtil.saveLocalCache(
                 Const.CACHE_COURSE_TYPE,
@@ -274,7 +270,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         app.mEngine.runNormalPlugin("NewsCourseActivity", mContext, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(NewsCourseActivity.COURSE_ID, Integer.parseInt(mCourseId));
+                startIntent.putExtra(NewsCourseActivity.COURSE_ID, mCourseId);
                 startIntent.putExtra(NewsCourseActivity.SHOW_TYPE, NewsCourseActivity.DISCUSS_TYPE);
                 startIntent.putExtra(NewsCourseActivity.FROM_NAME, mCourseDetail.getCourse().title);
             }
@@ -307,7 +303,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
 
     @Override
     protected void add() {
-        if (mCourseId != null) {
+        if (mCourseId != 0) {
             if (!"1".equals(mCourseDetail.getCourse().buyable)) {
                 CommonUtil.shortToast(CourseActivity.this, getResources()
                         .getString(R.string.add_error_close));
@@ -354,7 +350,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                             hideProcesDialog();
                         }
                     });
-            mIvGrade2.setVisibility(View.VISIBLE);
+//            mIvGrade2.setVisibility(View.VISIBLE);
         }
     }
 
@@ -405,7 +401,10 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
     }
 
     @Override
-    protected void courseChange(LessonItem lessonItem) {
+    protected synchronized void courseChange(LessonItem lessonItem) {
+        if (mIsPlay && mContinueLessonItem != null && mContinueLessonItem.id == lessonItem.id) {
+            return;
+        }
         mContinueLessonItem = lessonItem;
         coursePause();
         courseStart();
@@ -431,7 +430,6 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         if (mCourseDetail != null && mCourseDetail.getMember() != null) {
             if ("1".equals(mCourseDetail.getMember().isLearned)) {
                 mTvPlay.setText(R.string.txt_study_finish);
-                mTvPlay2.setText(R.string.txt_study_finish);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(false);
                 return;
@@ -442,17 +440,14 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
                 mPlayLayout.setEnabled(true);
                 if (mCourseDetail == null || mCourseDetail.getMember() == null) {
                     mTvPlay.setText(R.string.txt_study_try);
-                    mTvPlay2.setText(R.string.txt_study_try);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background2);
                 } else {
                     mTvPlay.setText(R.string.txt_study_start);
-                    mTvPlay2.setText(R.string.txt_study_start);
                     mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 }
                 break;
             case Const.COURSE_CHANGE_STATE_STARTED:
                 mTvPlay.setText(R.string.txt_study_continue);
-                mTvPlay2.setText(R.string.txt_study_continue);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
                 mPlayLayout.setEnabled(true);
                 mPlayLastLayout.setVisibility(View.VISIBLE);
@@ -540,7 +535,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(mCourseId));
+        bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
@@ -553,7 +548,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
         LessonAudioPlayerFragment fragment = new LessonAudioPlayerFragment();
         Bundle bundle = new Bundle();
         bundle.putString(LessonAudioPlayerFragment.COVER, mCourseDetail.getCourse().largePicture);
-        bundle.putInt(Const.COURSE_ID, AppUtil.parseInt(mCourseId));
+        bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
@@ -598,7 +593,7 @@ public class CourseActivity extends DetailActivity implements View.OnClickListen
             return;
         }
         Bundle bundle = new Bundle();
-        bundle.putInt(ThreadCreateActivity.TARGET_ID, AppUtil.parseInt(mCourseId));
+        bundle.putInt(ThreadCreateActivity.TARGET_ID, mCourseId);
         bundle.putString(ThreadCreateActivity.TARGET_TYPE, "");
         bundle.putString(ThreadCreateActivity.TYPE, "question".equals(type) ? "question" : "discussion");
         bundle.putString(ThreadCreateActivity.THREAD_TYPE, "course");
