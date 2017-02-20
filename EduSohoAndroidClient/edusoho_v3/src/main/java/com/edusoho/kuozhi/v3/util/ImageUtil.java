@@ -45,7 +45,7 @@ public class ImageUtil {
 
     public static Bitmap maskImage(Context context, Bitmap bitmap) {
         Bitmap scaleBitmap = scaleBitmap(bitmap, 0.3f);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             return maskImageForSmallSDK17(scaleBitmap);
         }
         RenderScript rs = RenderScript.create(context);
