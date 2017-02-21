@@ -136,6 +136,9 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                     return;
                 }
                 mCourseCatalogue = courseCatalogue;
+                mAdapter = new CourseCatalogueAdapter(getActivity());
+                mLvCatalog.setLayoutManager(new LinearLayoutManager(getContext()));
+                mLvCatalog.setAdapter(mAdapter);
                 if (mCourseCatalogue.getLessons().size() != 0) {
                     initFirstLearnLesson();
                     initCustomChapterSetting();
@@ -198,9 +201,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
         if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
-        mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, isJoin, chapter, unit);
-        mLvCatalog.setLayoutManager(new LinearLayoutManager(getContext()));
-        mLvCatalog.setAdapter(mAdapter);
+        mAdapter.setData(mCourseCatalogue, isJoin, chapter, unit);
         reFreshColor();
         mAdapter.setOnItemClickListener(new CourseCatalogueAdapter.OnRecyclerViewItemClickListener() {
             @Override

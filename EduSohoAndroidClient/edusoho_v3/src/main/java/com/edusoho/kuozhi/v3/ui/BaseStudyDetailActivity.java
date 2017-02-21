@@ -429,6 +429,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             }
             if (mIsFullScreen) {
                 fullScreen();
+                return true;
             }
         }
         return super.onKeyDown(keyCode, event);
@@ -488,9 +489,9 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             mMediaLayout.setLayoutParams(params);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
-                mBottomLayout.setVisibility(View.GONE);
-            } else {
                 mBottomLayout.setVisibility(View.VISIBLE);
+            } else {
+                mBottomLayout.setVisibility(View.GONE);
             }
         }
     }
