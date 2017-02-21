@@ -43,6 +43,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -458,6 +459,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(getActivity(), "courseDetailsPage_cachingLessons");
                 if (mCourseStateCallback.isExpired()) {
                     mCourseStateCallback.handlerCourseExpired();
                     return;

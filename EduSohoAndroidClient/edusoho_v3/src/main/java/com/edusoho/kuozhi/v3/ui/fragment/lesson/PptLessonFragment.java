@@ -14,7 +14,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -31,6 +30,7 @@ import com.edusoho.kuozhi.v3.view.photo.HackyViewPager;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 
@@ -58,6 +58,7 @@ public class PptLessonFragment extends BaseFragment {
     private int mCurrentIndex;
     private int mLessonId;
     private int mCourseId;
+    private int lastIndex;
 
     @Override
     public String getTitle() {
@@ -134,6 +135,7 @@ public class PptLessonFragment extends BaseFragment {
             public void onClick(View v) {
                 int orientation = mActivity.getRequestedOrientation();
                 if (orientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                    MobclickAgent.onEvent(mContext, "pptLearning_fullScreenPpt");
                     mActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                     mScreenView.setText(R.string.font_shrink_screen);
                 } else {
@@ -185,6 +187,7 @@ public class PptLessonFragment extends BaseFragment {
     public class PptPagerAdapter extends PagerAdapter implements ViewPager.OnPageChangeListener {
 
         private ArrayList<String> mImages;
+
 
         public PptPagerAdapter(ArrayList<String> images) {
             mImages = images;
@@ -245,6 +248,12 @@ public class PptLessonFragment extends BaseFragment {
         public void onPageSelected(int position) {
             mCurrentIndex = position;
             mStartPageView.setText((position + 1) + "/" + ppts.size());
+            if (position < lastIndex) {
+                MobclickAgent.onEvent(mContext, "pptLearning_previousPagePpt");
+            } else {
+                MobclickAgent.onEvent(mContext, "pptLearning_nextPagePpt");
+            }
+            lastIndex = position;
         }
 
         @Override

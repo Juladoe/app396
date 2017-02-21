@@ -50,6 +50,7 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by suju on 17/2/7.
@@ -103,7 +104,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                         if (data != null && data.getCourse() != null) {
                             saveCourseToCache(data.getCourse());
                         }
-//                        setBottomVisible(mIsClassroomCourse);
                     }
 
                     @Override
@@ -130,6 +130,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void consult() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_consultation");
         if (((EdusohoApp) getApplication()).loginUser == null) {
             CourseUtil.notLogin();
             return;
@@ -154,6 +155,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void grade() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_evaluation");
         CoreEngine.create(getBaseContext()).runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
                 , new PluginRunCallback() {
                     @Override
@@ -166,6 +168,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void add() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_joinTheCourse");
         if (mCourseId != 0) {
             if (!"1".equals(mCourseDetail.getCourse().buyable)) {
                 CommonUtil.shortToast(CourseStudyDetailActivity.this, getResources()
@@ -219,6 +222,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void collect() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_collection");
         if (mIsFavorite) {
             CourseUtil.uncollectCourse(mCourseId, new CourseUtil.OnCollectSuccessListener() {
                 @Override
@@ -244,6 +248,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void share() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_share");
         if (mCourseDetail == null) {
             return;
         }

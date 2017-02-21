@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -90,6 +89,34 @@ public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffset
         minePagerAdapter = new MinePagerAdapter(getFragmentManager(), mTabTitles, mFragmentNames);
         vpContent.setAdapter(minePagerAdapter);
         tbTitles.setupWithViewPager(vpContent);
+        vpContent.addOnPageChangeListener(getOnPageChangeListener());
+    }
+
+    private ViewPager.OnPageChangeListener getOnPageChangeListener() {
+        return new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (0 == position) {
+                    MobclickAgent.onEvent(mActivity, "i_study");
+                } else if (1 == position) {
+                    MobclickAgent.onEvent(mActivity, "i_cache");
+                } else if (2 == position) {
+                    MobclickAgent.onEvent(mActivity, "i_collection");
+                } else if (3 == position) {
+                    MobclickAgent.onEvent(mActivity, "i_Q&A");
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
     }
 
     private class MinePagerAdapter extends FragmentPagerAdapter {
@@ -189,7 +216,8 @@ public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffset
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MobclickAgent.onEvent(mContext, "i_userInfo");
+                MobclickAgent.onEvent(mContext, "\n" +
+                        "i_userInformationPortal");
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {

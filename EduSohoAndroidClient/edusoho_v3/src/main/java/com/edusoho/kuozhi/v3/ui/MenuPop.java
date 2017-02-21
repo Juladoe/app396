@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -222,6 +223,8 @@ public class MenuPop {
     }
 
     public void showAsDropDown(View view, int x, int y) {
+        MobclickAgent.onEvent(mContext, "\n" +
+                "hoursOfStudy_topThreePoints");
         mAdapter.notifyDataSetChanged();
         mPopup.showAsDropDown(view, x, y);
         if (mIMenuShowListener != null) {

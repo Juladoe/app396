@@ -18,6 +18,8 @@ import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.ui.MenuPop;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.umeng.analytics.MobclickAgent;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,15 +125,19 @@ public class LessonMenuHelper {
     protected void handlerMenuClick(View v, int position) {
         switch (position) {
             case 0:
+                MobclickAgent.onEvent(mContext, "timeToLearn_topThreePoints_takeNotes");
                 startNodeActivity();
                 break;
             case 1:
+                MobclickAgent.onEvent(mContext, "hoursOfStudy_topOfTheThree_operation");
                 startExerciseOrHomeWorkActivity(v, 0);
                 break;
             case 2:
+                MobclickAgent.onEvent(mContext, "timeToLearn_topThreePoints_practice");
                 startExerciseOrHomeWorkActivity(v, 1);
                 break;
             case 3:
+                MobclickAgent.onEvent(mContext, "timeToLearn_topThreePoints_finished");
                 changeLessonLearnState(v);
         }
     }
