@@ -190,7 +190,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         tvSitting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MobclickAgent.onEvent(mContext, "i_mySettings");
+                MobclickAgent.onEvent(mContext, "i_settings");
                 mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
             }
         });
@@ -250,6 +250,8 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             setTitle(getString(R.string.title_friends));
             setTitleLoading(false);
         } else {
+            MobclickAgent.onEvent(this, "\n" +
+                    "i_userInformationPortal");
             tag = "MineFragment1";
             setTitle(getString(R.string.title_mine));
             mActionBar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ccf9f9f9")));

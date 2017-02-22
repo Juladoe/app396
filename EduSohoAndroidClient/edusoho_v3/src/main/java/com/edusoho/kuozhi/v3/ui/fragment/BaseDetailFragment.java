@@ -25,6 +25,8 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
+import com.umeng.analytics.MobclickAgent;
+
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 /**
@@ -230,6 +232,7 @@ public abstract class BaseDetailFragment extends Fragment implements View.OnClic
     protected abstract void moreReview();
 
     protected void vipInfo() {
+        MobclickAgent.onEvent(getActivity(), "courseDetailsPage_memberAdvertisements");
         if (EdusohoApp.app.loginUser == null) {
             CourseUtil.notLogin();
             return;

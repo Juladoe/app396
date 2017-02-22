@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,6 +19,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
+import com.umeng.analytics.MobclickAgent;
 
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
@@ -162,6 +162,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
                 if (v.getId() == R.id.tv_question_post) {
                     switchFilterType(ASK);
                 } else if (v.getId() == R.id.tv_question_answer) {
+                    MobclickAgent.onEvent(mContext, "i_myQuestionAndAnswer_iReplied");
                     switchFilterType(ANSWER);
                 }
                 llayoutFilterQuestionTypeList.setVisibility(View.GONE);

@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 
@@ -216,6 +217,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
     @Override
     protected void moreStudent() {
+        MobclickAgent.onEvent(getActivity(), "courseDetailsPage_introduction_moreCoursesParticipants");
         final String url = String.format(
                 Const.MOBILE_APP_URL,
                 EdusohoApp.app.schoolHost,
