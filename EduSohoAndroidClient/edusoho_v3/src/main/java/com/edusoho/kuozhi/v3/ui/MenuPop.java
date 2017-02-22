@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,7 +186,7 @@ public class MenuPop {
 
     public void setVisibility(boolean show) {
         if (mBindView != null) {
-            if(mOnBindViewVisibleChangeListener != null){
+            if (mOnBindViewVisibleChangeListener != null) {
                 mOnBindViewVisibleChangeListener.onVisibleChange(show);
             }
             if (show) {
@@ -202,7 +203,7 @@ public class MenuPop {
         this.mOnBindViewVisibleChangeListener = onBindViewVisibleChangeListener;
     }
 
-    public interface OnBindViewVisibleChangeListener{
+    public interface OnBindViewVisibleChangeListener {
         void onVisibleChange(boolean show);
     }
 
@@ -222,6 +223,7 @@ public class MenuPop {
     }
 
     public void showAsDropDown(View view, int x, int y) {
+        MobclickAgent.onEvent(mContext, "hoursOfStudy_topThreePoints");
         mAdapter.notifyDataSetChanged();
         mPopup.showAsDropDown(view, x, y);
         if (mIMenuShowListener != null) {

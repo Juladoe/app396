@@ -43,6 +43,7 @@ import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -136,6 +137,9 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                     return;
                 }
                 mCourseCatalogue = courseCatalogue;
+                mAdapter = new CourseCatalogueAdapter(getActivity());
+                mLvCatalog.setLayoutManager(new LinearLayoutManager(getContext()));
+                mLvCatalog.setAdapter(mAdapter);
                 if (mCourseCatalogue.getLessons().size() != 0) {
                     initFirstLearnLesson();
                     initCustomChapterSetting();
@@ -198,9 +202,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
         if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
-        mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, isJoin, chapter, unit);
-        mLvCatalog.setLayoutManager(new LinearLayoutManager(getContext()));
-        mLvCatalog.setAdapter(mAdapter);
+        mAdapter.setData(mCourseCatalogue, isJoin, chapter, unit);
         reFreshColor();
         mAdapter.setOnItemClickListener(new CourseCatalogueAdapter.OnRecyclerViewItemClickListener() {
             @Override
@@ -458,6 +460,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(getActivity(), "courseDetailsPage_cachingLessons");
                 if (mCourseStateCallback.isExpired()) {
                     mCourseStateCallback.handlerCourseExpired();
                     return;

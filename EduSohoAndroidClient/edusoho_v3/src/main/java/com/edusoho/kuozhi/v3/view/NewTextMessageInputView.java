@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.imserver.ui.listener.MessageSendListener;
 import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.InputUtils;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by DF on 2017/1/11.
@@ -32,6 +33,7 @@ public class NewTextMessageInputView extends FrameLayout implements IMessageInpu
     private TextView mTvCancel;
     private TextView mTvIssue;
     private EditText mEtContent;
+    private Context mContext;
 
     public NewTextMessageInputView(Context context) {
         this(context, null);
@@ -39,6 +41,7 @@ public class NewTextMessageInputView extends FrameLayout implements IMessageInpu
 
     public NewTextMessageInputView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         createView();
     }
 
@@ -62,10 +65,12 @@ public class NewTextMessageInputView extends FrameLayout implements IMessageInpu
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 if (mEtContent.length() > 0) {
@@ -105,6 +110,7 @@ public class NewTextMessageInputView extends FrameLayout implements IMessageInpu
                         CommonUtil.shortCenterToast(getContext(), "内容不可为空");
                         return;
                     }
+                    MobclickAgent.onEvent(mContext, "Q&A_topic_reply");
                     mMessageSendlistener.onSendMessage(mEtContent.getText().toString());
                     mEtContent.setText("");
                     mRlReplayEdit.setVisibility(GONE);
@@ -115,7 +121,7 @@ public class NewTextMessageInputView extends FrameLayout implements IMessageInpu
         };
     }
 
-    public void hideKeyBoard(){
+    public void hideKeyBoard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getContext().getApplicationContext()
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(mEtContent.getWindowToken(),
