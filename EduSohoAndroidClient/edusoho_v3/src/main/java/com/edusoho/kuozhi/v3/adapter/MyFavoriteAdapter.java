@@ -14,9 +14,8 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment1;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyFavoriteFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MyVideoCacheFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -63,7 +62,7 @@ public class MyFavoriteAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             return new MyFavoriteFragment.FavoriteViewHolder(view);
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
-            return new MineFragment1.EmptyViewHolder(view);
+            return new MineFragment.EmptyViewHolder(view);
         }
     }
 

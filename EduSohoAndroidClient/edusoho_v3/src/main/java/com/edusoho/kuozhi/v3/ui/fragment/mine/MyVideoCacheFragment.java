@@ -22,7 +22,7 @@ import com.edusoho.kuozhi.v3.util.M3U8Util;
  * Created by JesseHuang on 2017/2/10.
  */
 
-public class MyVideoCacheFragment extends BaseFragment implements MineFragment1.RefreshFragment {
+public class MyVideoCacheFragment extends BaseFragment implements MineFragment.RefreshFragment {
 
     private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;

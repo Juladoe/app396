@@ -2,7 +2,6 @@ package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -15,12 +14,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.MyTabFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircleImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -33,7 +30,7 @@ import java.util.List;
  * Created by JesseHuang on 2017/2/6.
  */
 
-public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffsetChangedListener {
+public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetChangedListener {
 
     private View rlayoutUserInfo;
     private AppBarLayout appBarLayout;
@@ -52,7 +49,7 @@ public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffset
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContainerView(R.layout.fragment_mine1);
+        setContainerView(R.layout.fragment_mine);
     }
 
     @Override
@@ -108,39 +105,19 @@ public class MineFragment1 extends BaseFragment implements AppBarLayout.OnOffset
             switch (position) {
                 case 0:
                     fragment = app.mEngine.runPluginWithFragment(
-                            fragmentTags[position], mActivity, new PluginFragmentCallback() {
-                                @Override
-                                public void setArguments(Bundle bundle) {
-                                    bundle.putInt(MyTabFragment.TYPE, MyTabFragment.TYPE_STUDY);
-                                }
-                            });
+                            fragmentTags[position], mActivity, null);
                     break;
                 case 1:
                     fragment = app.mEngine.runPluginWithFragment(
-                            fragmentTags[position], mActivity, new PluginFragmentCallback() {
-                                @Override
-                                public void setArguments(Bundle bundle) {
-                                    bundle.putInt(MyTabFragment.TYPE, MyTabFragment.TYPE_CACHE);
-                                }
-                            });
+                            fragmentTags[position], mActivity, null);
                     break;
                 case 2:
                     fragment = app.mEngine.runPluginWithFragment(
-                            fragmentTags[position], mActivity, new PluginFragmentCallback() {
-                                @Override
-                                public void setArguments(Bundle bundle) {
-                                    bundle.putInt(MyTabFragment.TYPE, MyTabFragment.TYPE_COLLECT);
-                                }
-                            });
+                            fragmentTags[position], mActivity, null);
                     break;
                 case 3:
                     fragment = app.mEngine.runPluginWithFragment(
-                            fragmentTags[position], getActivity(), new PluginFragmentCallback() {
-                                @Override
-                                public void setArguments(Bundle bundle) {
-                                    bundle.putInt(MyTabFragment.TYPE, MyTabFragment.TYPE_ASK);
-                                }
-                            });
+                            fragmentTags[position], getActivity(), null);
                     break;
             }
             if (!mRefreshFragmentList.contains(fragment)) {

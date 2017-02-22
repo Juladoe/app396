@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -29,7 +28,7 @@ import java.util.Arrays;
  * Created by JesseHuang on 2017/2/8.
  */
 
-public class MyQuestionFragment extends BaseFragment implements MineFragment1.RefreshFragment {
+public class MyQuestionFragment extends BaseFragment implements MineFragment.RefreshFragment {
 
     private static int ASK = 1;
     private static int ANSWER = 2;
