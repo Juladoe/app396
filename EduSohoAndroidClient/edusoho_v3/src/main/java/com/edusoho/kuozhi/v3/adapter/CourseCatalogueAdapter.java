@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.TypedValue;
@@ -35,6 +36,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
     private static final int TYPE_CHAPTER = 0;
     private static final int TYPE_SECTION = 1;
     private static final int TYPE_LESSON = 2;
+    private static final int TYPE_FOOTER = 3;
     private final LayoutInflater mInflater;
     private static Map<String, String> learnStatuses;
 
@@ -44,14 +46,20 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         void onItemClick(View view, CourseCatalogue.LessonsBean lessonsBean);
     }
 
-    public CourseCatalogueAdapter(Context context, CourseCatalogue courseCatalogue, boolean isJoin, String chapterTitle, String unitTitle) {
+    public CourseCatalogueAdapter(Context context) {
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.mContext = context;
+        CourseCatalogueAdapter.courseCatalogue = null;
+
+    }
+
+    public void setData(CourseCatalogue courseCatalogue, boolean isJoin, String chapterTitle, String unitTitle) {
+        this.chapterTitle = chapterTitle;
+        this.unitTitle = unitTitle;
         CourseCatalogueAdapter.courseCatalogue = courseCatalogue;
         CourseCatalogueAdapter.learnStatuses = courseCatalogue.getLearnStatuses();
         CourseCatalogueAdapter.isJoin = isJoin;
-        this.mContext = context;
-        this.chapterTitle = chapterTitle;
-        this.unitTitle = unitTitle;
+        notifyDataSetChanged();
     }
 
     public void setOnItemClickListener (OnRecyclerViewItemClickListener listener) {
@@ -60,6 +68,9 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
+        if (getItemCount() == 1 || (position == getItemCount() - 1)) {
+            return;
+        }
         holder.render(courseCatalogue.getLessons().get(position), chapterTitle, unitTitle, position);
         holder.itemView.setTag(courseCatalogue.getLessons().get(position));
         if (holder.getItemViewType() == TYPE_LESSON) {
@@ -91,6 +102,10 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
+            case TYPE_FOOTER:
+                View view = new View(mContext);
+                view.setLayoutParams(new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mContext, 80)));
+                return new FooterViewHolder(view);
             case TYPE_CHAPTER:
                 return new ChatperViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chapter_catalog, parent, false));
             case TYPE_SECTION:
@@ -103,9 +118,9 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
     @Override
     public int getItemCount() {
         if (courseCatalogue == null) {
-            return 0;
+            return 1;
         }
-        return courseCatalogue.getLessons() == null ? 0 : courseCatalogue.getLessons().size();
+        return courseCatalogue.getLessons() == null ? 1 : courseCatalogue.getLessons().size() + 1;
     }
 
     protected static abstract class ViewHolder extends RecyclerView.ViewHolder {
@@ -115,6 +130,18 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         }
 
         protected abstract void render(CourseCatalogue.LessonsBean lesson, String customChapter, String customUnit, int position);
+    }
+
+    private class FooterViewHolder extends ViewHolder {
+
+        public FooterViewHolder(View view) {
+            super(view);
+        }
+
+        @Override
+        protected void render(CourseCatalogue.LessonsBean lesson, String customChapter, String customUnit, int position) {
+
+        }
     }
 
     private class LessonViewHolder extends ViewHolder {
@@ -319,6 +346,9 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
 
     @Override
     public int getItemViewType(int position) {
+        if (getItemCount() == 1 || (position == getItemCount() - 1)) {
+            return TYPE_FOOTER;
+        }
         if ("chapter".equals(courseCatalogue.getLessons().get(position).getType())) {
             return TYPE_CHAPTER;
         } else if ("unit".equals(courseCatalogue.getLessons().get(position).getType())) {
