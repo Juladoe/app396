@@ -10,8 +10,8 @@ android {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
-        versionName "3.9.2"
-        versionCode 45
+        versionName "3.9.3"
+        versionCode 46
 
         ndk {
             abiFilters "armeabi-v7a"
@@ -32,7 +32,7 @@ android {
 
     fir{
         apiToken 'fa4ff9122d709c485cb0e3c992a62980'
-        changeLog '1.修复新注册用户无法加载用户信息bug'
+        changeLog '1.视频加密\n2.欢拓直播SDK集成\n3.课程目录底部空白bug修复\n4.https兼容'
     }
 
     //签名
