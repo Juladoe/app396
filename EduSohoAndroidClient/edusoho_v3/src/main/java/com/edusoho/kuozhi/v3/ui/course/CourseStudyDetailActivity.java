@@ -366,37 +366,36 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void courseChange(final LessonItem lessonItem) {
+        mIsCan = true;
         mContinueLessonItem = lessonItem;
         if (mTimer != null) {
             mTimer.cancel();
         }
-        sendPauseTime();
+        sendPauseTime(lessonItem);
+        coursePause();
         if (lessonItem != null && "video".equals(lessonItem.type) && lessonItem.remainTime != null) {
             mIsChange = false;
             mPlayTime = 0;
             mLastLesson = lessonItem;
-            coursePause();
             if (Integer.parseInt(lessonItem.remainTime) <= 0) {
                 CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
             } else {
-                CommonUtil.shortCenterToast(getApplicationContext(), String.format("剩余观看时间:%s", CommonUtil.secondToMill(Integer.parseInt(lessonItem.remainTime))));
                 startTiming(Integer.parseInt(lessonItem.remainTime));
                 startReturnData(lessonItem.id);
                 courseStart();
             }
         } else {
-            coursePause();
             if (lessonItem != null) {
                 courseStart();
             }
         }
     }
 
-    private void sendPauseTime() {
+    private void sendPauseTime(LessonItem lessonItem) {
         mIsContinue = false;
         mIsChange = true;
         mTotalTime = 0;
-        if (mLastLesson == null || !"video".equals(mLastLesson.type)) {
+        if (mLastLesson == null || !"video".equals(mLastLesson.type) || lessonItem.id != mLastLesson.id) {
             return;
         }
         CourseDetailModel.sendTime(mLastLesson.id, mPlayTime, null);
@@ -418,7 +417,9 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
+                                        mIsCan = false;
                                         coursePause();
+                                        CourseDetailModel.sendTime(mLastLesson.id, mPlayTime, null);
                                         CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
                                     }
                                 });
@@ -449,7 +450,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                 });
             }
         };
-        mTimer.schedule(timerTask, 0, 120000);
+        mTimer.schedule(timerTask, 120000, 120000);
     }
 
     @Override
@@ -530,7 +531,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         mPlayLastLayout.setVisibility(View.GONE);
         mPlayButtonLayout.setVisibility(View.VISIBLE);
         if (mCourseDetail != null && mCourseDetail.getMember() != null) {
-            if ("1".equals(mCourseDetail.getMember().isLearned)) {
+            if ("2".equals(state)) {
                 mTvPlay.setText(R.string.txt_study_finish);
                 mTvPlay2.setText(R.string.txt_study_finish);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
