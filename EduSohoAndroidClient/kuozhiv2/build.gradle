@@ -32,7 +32,7 @@ android {
 
     fir{
         apiToken 'fa4ff9122d709c485cb0e3c992a62980'
-        changeLog '1.视频加密\n2.欢拓直播SDK集成\n3.课程目录底部空白bug修复\n4.https兼容'
+        changeLog '1.输入网校带http修复\n2.直播限制时间'
     }
 
     //签名
