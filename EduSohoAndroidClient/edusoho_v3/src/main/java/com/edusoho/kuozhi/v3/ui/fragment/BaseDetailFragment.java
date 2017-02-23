@@ -27,7 +27,6 @@ import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.umeng.analytics.MobclickAgent;
 
-import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 /**
  * Created by Zhang on 2016/12/8.
@@ -49,7 +48,7 @@ public abstract class BaseDetailFragment extends Fragment implements View.OnClic
     protected View mVTitleLine;
     protected ReviewStarView mReviewStar;
     protected TextView mTvTitleStudentNum;
-    protected HtmlTextView mTvTitleDesc;
+    protected TextView mTvTitleDesc;
     protected View mVipLayout;
     protected ImageView mIvVip;
     protected TextView mTvVipDesc;
@@ -117,7 +116,7 @@ public abstract class BaseDetailFragment extends Fragment implements View.OnClic
         mTvTitle = (TextView) view.findViewById(R.id.tv_title);
         mReviewStar = (ReviewStarView) view.findViewById(R.id.review_star);
         mTvTitleStudentNum = (TextView) view.findViewById(R.id.tv_title_student_num);
-        mTvTitleDesc = (HtmlTextView) view.findViewById(R.id.tv_title_desc);
+        mTvTitleDesc = (TextView) view.findViewById(R.id.tv_title_desc);
         mVipLayout = view.findViewById(R.id.vip_rlayout);
         mIvVip = (ImageView) view.findViewById(R.id.iv_vip);
         mTvVipDesc = (TextView) view.findViewById(R.id.tv_vip_desc);

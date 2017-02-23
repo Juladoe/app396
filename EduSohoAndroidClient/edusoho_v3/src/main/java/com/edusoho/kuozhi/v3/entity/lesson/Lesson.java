@@ -44,4 +44,5 @@ public class Lesson {
     public String testMode;
     public String testStartTime;
     public String body;
+    public int remainTime;
 }
