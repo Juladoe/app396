@@ -22,7 +22,9 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Zhang on 2016/12/13.
@@ -411,6 +413,46 @@ public class CourseDetailModel implements Serializable {
             @Override
             public void onErrorResponse(VolleyError error) {
                 callbackListener.onFailure("Error", error.getMessage());
+            }
+        });
+    }
+
+    public static void getLessonInfo(int id, final ResponseCallbackListener<Lesson> callbackListener) {
+        String url = String.format(Const.LESSON, id);
+        RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(url, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Lesson lesson = ModelDecor.getInstance().
+                        decor(response, new TypeToken<Lesson>() {});
+                if (lesson != null) {
+                    callbackListener.onSuccess(lesson);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbackListener.onFailure("Error", error.getMessage());
+            }
+        });
+    }
+
+    public static void sendTime(int id, int watchTime, final ResponseCallbackListener<String> callbackListener) {
+        RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.SEND_PLAY_TIME, true);
+        Map<String, String> params = new HashMap<>();
+        params.put("lessonId", String.valueOf(id));
+        params.put("watchTime", String.valueOf(watchTime));
+        requestUrl.setParams(params);
+        EdusohoApp.app.postUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                if (callbackListener != null) {
+                    callbackListener.onSuccess(response);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
             }
         });
     }

@@ -329,18 +329,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             case Const.FULL_SCREEN:
                 fullScreen();
                 break;
-            case Const.COURSE_START:
-                courseStart();
-                break;
-            case Const.COURSE_PAUSE:
-                coursePause();
-                break;
-            case Const.COURSE_REFRESH:
-                initData();
-                break;
-            case Const.SCREEN_LOCK:
-                screenLock();
-                break;
             case Const.COURSE_CHANGE:
                 courseChange((LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
@@ -349,13 +337,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                         bundle.getString(Const.COURSE_CHANGE_STATE),
                         (LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT)
                 );
-                break;
-            case Const.PAY_SUCCESS:
-                if (mRunStatus == MSG_RESUME) {
-                    saveMessage(message);
-                    return;
-                }
-                initData();
                 break;
             case Const.LOGIN_SUCCESS:
             case Const.WEB_BACK_REFRESH:
@@ -498,17 +479,11 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     @Override
     public MessageType[] getMsgTypes() {
         return new MessageType[]{
-                new MessageType(Const.SCROLL_STATE_SAVE),
                 new MessageType(Const.COURSE_HASTRIAL),
                 new MessageType(Const.FULL_SCREEN),
-                new MessageType(Const.COURSE_START),
                 new MessageType(Const.COURSE_CHANGE),
-                new MessageType(Const.COURSE_REFRESH),
-                new MessageType(Const.COURSE_PAUSE),
-                new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.LOGIN_SUCCESS),
-                new MessageType(Const.WEB_BACK_REFRESH),
-                new MessageType(Const.PAY_SUCCESS, MessageType.UI_THREAD)
+                new MessageType(Const.WEB_BACK_REFRESH)
         };
     }
 

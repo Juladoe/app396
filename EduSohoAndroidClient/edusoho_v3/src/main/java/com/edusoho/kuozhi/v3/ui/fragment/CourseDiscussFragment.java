@@ -89,6 +89,7 @@ public class CourseDiscussFragment extends Fragment implements
         mLoadView = view.findViewById(R.id.ll_frame_load);
         mEmpty = view.findViewById(R.id.ll_discuss_empty);
         mSwipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        mSwipe.setColorSchemeResources(R.color.primary_color);
         mSwipe.setOnRefreshListener(this);
         catalogueAdapter = new CourseDiscussAdapter(getActivity());
         mRvDiscuss.setLayoutManager(new LinearLayoutManager(getActivity()));

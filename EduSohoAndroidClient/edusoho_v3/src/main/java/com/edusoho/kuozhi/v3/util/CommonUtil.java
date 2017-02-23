@@ -433,6 +433,16 @@ public class CommonUtil {
     }
 
     /**
+     * 将秒转换为分 + 秒
+     *
+     * @param second
+     * @return
+     */
+    public static String secondToMill(int second) {
+        return second % 60 == 0 ? second / 60 + "m" : second / 60 + "m" + second % 60 + "s";
+    }
+
+    /**
      * 将服务器端的时间格式转化为milli Second
      *
      * @param time

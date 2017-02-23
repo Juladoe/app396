@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
+import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
@@ -51,6 +52,9 @@ import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by suju on 17/2/7.
  */
@@ -59,6 +63,12 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     private int mCourseId;
     private boolean mIsFavorite = false;
     private LessonItem mContinueLessonItem;
+    private int mPlayTime = 0;
+    private int mTotalTime = 0;
+    private boolean mIsContinue = true;
+    private boolean mIsChange = false;
+    private Timer mTimer;
+    private LessonItem mLastLesson;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,7 +113,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                         if (data != null && data.getCourse() != null) {
                             saveCourseToCache(data.getCourse());
                         }
-//                        setBottomVisible(mIsClassroomCourse);
                     }
 
                     @Override
@@ -343,14 +352,109 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     public void finish() {
         super.finish();
         removePlayFragment();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+        mIsContinue = false;
         CacheServerFactory.getInstance().stop();
     }
 
     @Override
-    protected void courseChange(LessonItem lessonItem) {
+    protected void courseChange(final LessonItem lessonItem) {
         mContinueLessonItem = lessonItem;
-        coursePause();
-        courseStart();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+        mLoadingView.setVisibility(View.VISIBLE);
+        sendPauseTime();
+        if (lessonItem != null && "video".equals(lessonItem.type)) {
+            mIsChange = false;
+            mPlayTime = 0;
+            CourseDetailModel.getLessonInfo(lessonItem.id, new ResponseCallbackListener<Lesson>() {
+                @Override
+                public void onSuccess(Lesson data) {
+                    mLastLesson = lessonItem;
+                    coursePause();
+                    mLoadingView.setVisibility(View.GONE);
+                    if (data.remainTime <= 0) {
+                        CommonUtil.shortCenterToast(getApplicationContext(), "观看时间已用完，请续费");
+                    } else {
+                        CommonUtil.shortCenterToast(getApplicationContext(), String.format("剩余观看时间:%s", CommonUtil.secondToMill(data.remainTime)));
+                        startTiming(data.remainTime);
+                        startReturnData(lessonItem.id);
+                        courseStart();
+                    }
+                }
+                @Override
+                public void onFailure(String code, String message) {
+                    mLoadingView.setVisibility(View.GONE);
+                }
+            });
+        } else {
+            mLoadingView.setVisibility(View.GONE);
+            coursePause();
+            if (lessonItem != null) {
+                courseStart();
+            }
+        }
+    }
+
+    private void sendPauseTime() {
+        mIsContinue = false;
+        mIsChange = true;
+        mTotalTime = 0;
+        if (mLastLesson == null || !"video".equals(mLastLesson.type)) {
+            return;
+        }
+        CourseDetailModel.sendTime(mLastLesson.id, mPlayTime, null);
+    }
+
+    private void startTiming(final int remainTime) {
+        mIsContinue = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (mIsContinue){
+                    try {
+                        Thread.sleep(1000);
+                        if (mIsPlay) {
+                            mPlayTime ++ ;
+                            mTotalTime ++;
+                            if (mTotalTime >= remainTime && !mIsChange) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        coursePause();
+                                    }
+                                });
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private void startReturnData(final int id) {
+        mTimer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                CourseDetailModel.sendTime(id, mPlayTime, new ResponseCallbackListener<String>() {
+                    @Override
+                    public void onSuccess(String data) {
+                        mPlayTime = 0;
+                    }
+                    @Override
+                    public void onFailure(String code, String message) {
+
+                    }
+                });
+            }
+        };
+        mTimer.schedule(timerTask, 0, 120000);
     }
 
     @Override
@@ -361,9 +465,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void courseStart() {
-        if (mContinueLessonItem == null) {
-            return;
-        }
         super.courseStart();
         String type = mContinueLessonItem.type;
         if ("self".equals(mContinueLessonItem.mediaSource)) {

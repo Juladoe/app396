@@ -603,6 +603,7 @@ public class Const {
     public static final String MY_POSTED_THREADS = "/api/chaos_threads_posts/getThreadPosts";
 
     public static final String LESSON = "/api/lessons/%d";
+    public static final String SEND_PLAY_TIME = "/api/lesson/watch_time";
     public static final String WEB_LESSON = "/mapi_v2/mobile/main#/lesson/%s/%s";
 
     public static final String UPLOAD_SAVED_DATA_USAGE = "http://121.40.188.27:8001/video_player?size=%d&url=%s&source=mobile&type=cacheStats";
