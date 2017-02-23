@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -149,9 +150,7 @@ public class NetSchoolDialog extends Dialog implements Response.ErrorListener {
                 dismiss();
             }
         });
-        mPattern = Pattern.compile("([a-z0-9]([a-z0-9\\-]*[\\.。])+" +
-                "([a-z]{2}|aero|arpa|biz|com|coop|edu|gov|info|int|jobs|mil|museum|name|nato|net|org|pro|travel)" +
-                "|([0-9]{1,3}\\.){1,3}[0-9]{1,3})(:[0-9]{1,5})?$"
+        mPattern = Pattern.compile("((http|ftp|https):\\/\\/)?[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-\\.,@?^=%&amp;:/~\\+#]*[\\w\\-\\@?^=%&amp;/~\\+#])?"
         );
         mSearchEdt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
