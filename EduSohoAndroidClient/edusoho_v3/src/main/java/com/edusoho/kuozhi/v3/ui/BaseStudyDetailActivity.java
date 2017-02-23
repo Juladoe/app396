@@ -251,7 +251,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         } else if (v.getId() == R.id.layout_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
         } else if (v.getId() == R.id.play_layout || v.getId() == R.id.play_layout2) {
-//            courseStart();
             courseChange(lessonItem);
         } else if (v.getId() == R.id.collect_layout) {
             collect();

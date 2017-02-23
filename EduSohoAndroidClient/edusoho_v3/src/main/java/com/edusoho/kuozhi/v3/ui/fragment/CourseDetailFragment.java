@@ -26,10 +26,9 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
 import com.edusoho.kuozhi.v3.ui.AllReviewActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +142,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Course course = mCourseDetail.getCourse();
         mTvTitle.setText(course.title);
-        mTvTitleDesc.setHtml(course.about, new HtmlHttpImageGetter(mTvTitleDesc, null, true));
+        mTvTitleDesc.setHtml(course.about, new EduHtmlHttpImageGetter(mTvTitleDesc, null, true));
         mTvStudentNum.setText(String.format("(%s)", mCourseDetail.getCourse().studentNum));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);

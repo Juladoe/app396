@@ -147,7 +147,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         if (teachers.length > 0) {
             teacher = teachers[0];
         } else {
-            CommonUtil.shortToast(this, "课程目前没有老师");
+            CommonUtil.shortToast(this, getResources().getString(R.string.lesson_no_teacher));
             return;
         }
         CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
