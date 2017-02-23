@@ -419,6 +419,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                                     public void run() {
                                         mIsCan = false;
                                         coursePause();
+                                        mTimer.cancel();
                                         CourseDetailModel.sendTime(mLastLesson.id, mPlayTime, null);
                                         CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
                                     }
