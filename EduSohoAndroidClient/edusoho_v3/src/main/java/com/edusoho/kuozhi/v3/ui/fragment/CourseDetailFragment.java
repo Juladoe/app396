@@ -144,8 +144,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Course course = mCourseDetail.getCourse();
         mTvTitle.setText(course.title);
-        mTvTitleDesc.setText(Html.fromHtml(course.about, new EduHtmlHttpImageGetter(mTvTitleDesc, null, true), null));
         mTvStudentNum.setText(String.format("(%s)", mCourseDetail.getCourse().studentNum));
+        mTvTitleDesc.setText(Html.fromHtml(course.about, new EduHtmlHttpImageGetter(mTvTitleDesc, null, true), null));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             if (mCourseDetail.getCourse().vipLevelId == 0) {

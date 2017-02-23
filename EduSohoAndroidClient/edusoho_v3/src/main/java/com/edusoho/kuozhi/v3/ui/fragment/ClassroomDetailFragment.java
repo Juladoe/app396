@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -173,7 +174,8 @@ public class ClassroomDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Classroom classRoom = mClassroomDetail.getClassRoom();
         mTvTitle.setText(classRoom.title);
-        mTvTitleDesc.setHtml(classRoom.about, new EduHtmlHttpImageGetter(mTvTitleDesc, null, true));
+        mTvStudentNum.setText(String.format("(%s)", mClassroomDetail.getClassRoom().studentNum));
+        mTvTitleDesc.setText(Html.fromHtml(classRoom.about, new EduHtmlHttpImageGetter(mTvTitleDesc, null, true), null));
         mTvStudentNum.setText(String.format("(%s)", mClassroomDetail.getClassRoom().studentNum));
         if (mClassroomDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
