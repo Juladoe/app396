@@ -15,7 +15,6 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
-import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
@@ -90,7 +89,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     @Override
     protected void initData() {
         if (mCourseId == 0) {
-            CommonUtil.shortToast(getBaseContext(), "课程不存在");
+            CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_unexit));
             finish();
             return;
         }
@@ -365,33 +364,21 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         if (mTimer != null) {
             mTimer.cancel();
         }
-        mLoadingView.setVisibility(View.VISIBLE);
         sendPauseTime();
-        if (lessonItem != null && "video".equals(lessonItem.type)) {
+        if (lessonItem != null && "video".equals(lessonItem.type) && lessonItem.remainTime != null) {
             mIsChange = false;
             mPlayTime = 0;
-            CourseDetailModel.getLessonInfo(lessonItem.id, new ResponseCallbackListener<Lesson>() {
-                @Override
-                public void onSuccess(Lesson data) {
-                    mLastLesson = lessonItem;
-                    coursePause();
-                    mLoadingView.setVisibility(View.GONE);
-                    if (data.remainTime <= 0) {
-                        CommonUtil.shortCenterToast(getApplicationContext(), "观看时间已用完，请续费");
-                    } else {
-                        CommonUtil.shortCenterToast(getApplicationContext(), String.format("剩余观看时间:%s", CommonUtil.secondToMill(data.remainTime)));
-                        startTiming(data.remainTime);
-                        startReturnData(lessonItem.id);
-                        courseStart();
-                    }
-                }
-                @Override
-                public void onFailure(String code, String message) {
-                    mLoadingView.setVisibility(View.GONE);
-                }
-            });
+            mLastLesson = lessonItem;
+            coursePause();
+            if (Integer.parseInt(lessonItem.remainTime) <= 0) {
+                CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
+            } else {
+                CommonUtil.shortCenterToast(getApplicationContext(), String.format("剩余观看时间:%s", CommonUtil.secondToMill(Integer.parseInt(lessonItem.remainTime))));
+                startTiming(Integer.parseInt(lessonItem.remainTime));
+                startReturnData(lessonItem.id);
+                courseStart();
+            }
         } else {
-            mLoadingView.setVisibility(View.GONE);
             coursePause();
             if (lessonItem != null) {
                 courseStart();
@@ -421,10 +408,12 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                             mPlayTime ++ ;
                             mTotalTime ++;
                             if (mTotalTime >= remainTime && !mIsChange) {
+                                mIsContinue = false;
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         coursePause();
+                                        CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
                                     }
                                 });
                             }
@@ -602,15 +591,15 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     private void showCourseExpireDlg() {
         AlertDialog.Builder builder = new AlertDialog.Builder(((EdusohoApp) getApplication()).mContext);
-        builder.setTitle("提醒")
-                .setMessage("课程已过期，是否重新加入?")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.lesson_join_hint)
+                .setMessage(R.string.lesson_has_past_hint)
+                .setPositiveButton(R.string.lesson_join_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         unLearnCourse();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(R.string.lesson_join_cancel, null)
                 .create()
                 .show();
     }
@@ -632,13 +621,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                             ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
                             ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
                         } else {
-                            CommonUtil.shortToast(((EdusohoApp) getApplication()).mContext, "退出失败");
+                            CommonUtil.shortToast(((EdusohoApp) getApplication()).mContext, getResources().getString(R.string.lesson_quit_fail));
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                CommonUtil.shortToast(getBaseContext(), "退出失败");
+                CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_quit_fail));
             }
         });
     }

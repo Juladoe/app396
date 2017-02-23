@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.CourseDiscussProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
@@ -40,7 +41,7 @@ import java.util.Queue;
  */
 
 public class CourseDiscussFragment extends Fragment implements
-        MessageEngine.MessageCallback, SwipeRefreshLayout.OnRefreshListener, ICourseStateListener {
+        MessageEngine.MessageCallback, SwipeRefreshLayout.OnRefreshListener, ICourseStateListener, BaseStudyDetailActivity.WidgtState {
 
     private View mLoadView;
     private CourseDiscussAdapter catalogueAdapter;
@@ -241,12 +242,6 @@ public class CourseDiscussFragment extends Fragment implements
         }
     }
 
-    public void setSwipeToRefreshEnabled(boolean enabled) {
-        if (mSwipe != null && mUnLoginView.getVisibility() == View.GONE) {
-            mSwipe.setEnabled(enabled);
-        }
-    }
-
     private void startThreadActivity(DiscussDetail.ResourcesBean resourcesBean) {
         if (isJoin) {
             Bundle bundle = new Bundle();
@@ -308,5 +303,12 @@ public class CourseDiscussFragment extends Fragment implements
     public void onStop() {
         super.onStop();
         i = 0;
+    }
+
+    @Override
+    public void setTopViewVisibility(boolean enabled) {
+        if (mSwipe != null && mUnLoginView.getVisibility() == View.GONE) {
+            mSwipe.setEnabled(enabled);
+        }
     }
 }

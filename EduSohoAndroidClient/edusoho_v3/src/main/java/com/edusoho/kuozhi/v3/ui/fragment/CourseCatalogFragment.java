@@ -490,4 +490,5 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
     protected AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
+
 }
