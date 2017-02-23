@@ -35,7 +35,7 @@ import java.util.List;
  * Created by JesseHuang on 2017/2/7.
  */
 
-public class MyStudyFragment extends BaseFragment implements MineFragment1.RefreshFragment {
+public class MyStudyFragment extends BaseFragment implements MineFragment.RefreshFragment {
 
     public static final int LATEST_COURSE = 1;
     public static final int NORMAL_COURSE = 2;

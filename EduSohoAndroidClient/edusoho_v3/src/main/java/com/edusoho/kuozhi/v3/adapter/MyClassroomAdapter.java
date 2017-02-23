@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +22,7 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment1;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -74,7 +73,7 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             return new MyStudyFragment.ClassroomViewHolder(view);
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
-            return new MineFragment1.EmptyViewHolder(view);
+            return new MineFragment.EmptyViewHolder(view);
         }
     }
 

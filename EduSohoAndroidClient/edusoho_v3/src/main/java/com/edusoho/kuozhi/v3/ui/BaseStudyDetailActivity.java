@@ -41,6 +41,7 @@ import com.edusoho.kuozhi.v3.util.WeakReferenceHandler;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -234,12 +235,21 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 setBottomLayoutVisible(position, mIsMemder);
                 showEditTopic(position);
+                statTimes(position);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
             }
         });
+    }
+
+    protected void statTimes(int position){
+        if (position == 1) {
+            MobclickAgent.onEvent(this, "courseDetailsPage_contents");
+        } else if(position == 2) {
+            MobclickAgent.onEvent(this, "courseDetailsPage_Q&A");
+        }
     }
 
     @Override
@@ -408,12 +418,18 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             }
             if (mIsFullScreen) {
                 fullScreen();
+                return true;
             }
         }
         return super.onKeyDown(keyCode, event);
     }
 
     protected void courseStart() {
+        if ("开始试学".equals(mTvPlay.getText().toString())) {
+            MobclickAgent.onEvent(this, "courseDetailsPage_tryItOut");
+        } else if ("继续学习".equals(mTvPlay.getText().toString())) {
+            MobclickAgent.onEvent(this, "courseDetailsPage_continueLearning");
+        }
         if (!mIsFullScreen) {
             mAppBarLayout.expandToolbar(true);
             AppBarLayout.LayoutParams lp = (AppBarLayout.LayoutParams) mToolBarLayout.getLayoutParams();
@@ -451,6 +467,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     private void fullScreen() {
         ViewGroup.LayoutParams params = mMediaLayout.getLayoutParams();
         if (!mIsFullScreen) {
+            MobclickAgent.onEvent(this, "videoClassroom_fullScreen");
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             mIsFullScreen = true;
             params.height = AppUtil.getWidthPx(this);
@@ -467,9 +484,9 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             mMediaLayout.setLayoutParams(params);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
-                mBottomLayout.setVisibility(View.GONE);
-            } else {
                 mBottomLayout.setVisibility(View.VISIBLE);
+            } else {
+                mBottomLayout.setVisibility(View.GONE);
             }
         }
     }
@@ -560,6 +577,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     private boolean isAdd;
 
     private void showEditPop() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_Q&A_launchButton");
         if (!isAdd) {
             isAdd = true;
             View popupView = getLayoutInflater().inflate(R.layout.dialog_discuss_publish, null);
@@ -571,6 +589,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             tvTopic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MobclickAgent.onEvent(BaseStudyDetailActivity.this, "courseDetailsPage_Q&A_topic");
                     showThreadCreateView("discussion");
                     mPopupWindow.dismiss();
                 }
@@ -579,6 +598,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             tvQuestion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MobclickAgent.onEvent(BaseStudyDetailActivity.this, "courseDetailsPage_questionsAnswers");
                     showThreadCreateView("question");
                     mPopupWindow.dismiss();
                 }

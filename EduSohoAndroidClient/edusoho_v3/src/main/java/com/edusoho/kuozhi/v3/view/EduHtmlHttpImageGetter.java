@@ -6,13 +6,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -91,7 +88,6 @@ public class EduHtmlHttpImageGetter implements Html.ImageGetter {
         @Override
         protected void onPostExecute(Drawable result) {
             if (result == null) {
-                Log.w(HtmlTextView.TAG, "Drawable result is null! (source: " + source + ")");
                 return;
             }
             final EduHtmlHttpImageGetter.UrlDrawable urlDrawable = drawableReference.get();

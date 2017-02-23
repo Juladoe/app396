@@ -152,12 +152,7 @@
 
     <plugin
         name="MineFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.MineFragment"
-        version="1.0" />
-
-    <plugin
-        name="MineFragment1"
-        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment1"
+        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment"
         version="1.0" />
 
     <plugin
@@ -177,16 +172,6 @@
     <plugin
         name="MyVideoCacheFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyVideoCacheFragment"
-        version="1.0" />
-
-    <plugin
-        name="MyFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.MyFragment"
-        version="1.0" />
-
-    <plugin
-        name="MyTabFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.MyTabFragment"
         version="1.0" />
 
     <plugin

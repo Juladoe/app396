@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.adapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,11 +13,11 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.thread.MyThreadEntity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment1;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyQuestionFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
 
-import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,7 @@ public class MyAnswerQuestionAdapter extends RecyclerView.Adapter<RecyclerView.V
             return new MyQuestionFragment.ViewHolderAnswer(view);
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
-            return new MineFragment1.EmptyViewHolder(view);
+            return new MineFragment.EmptyViewHolder(view);
         }
     }
 
@@ -73,7 +74,7 @@ public class MyAnswerQuestionAdapter extends RecyclerView.Adapter<RecyclerView.V
             viewHolderAnswer.tvOrder.setText(entity.getCourse().title);
             viewHolderAnswer.tvTime.setText(CommonUtil.convertMills2Date(Long.parseLong(entity.getCreatedTime()) * 1000));
             viewHolderAnswer.tvContentAsk.setText(entity.getTitle());
-            viewHolderAnswer.tvContentAnswer.setHtml(entity.getContent(), new HtmlHttpImageGetter(viewHolderAnswer.tvContentAnswer, null, true));
+            viewHolderAnswer.tvContentAnswer.setText(Html.fromHtml(entity.getContent(), new EduHtmlHttpImageGetter(viewHolderAnswer.tvContentAnswer, null, true), null));
             viewHolderAnswer.layout.setTag(entity);
             viewHolderAnswer.layout.setOnClickListener(getAnswerClickListener());
         }

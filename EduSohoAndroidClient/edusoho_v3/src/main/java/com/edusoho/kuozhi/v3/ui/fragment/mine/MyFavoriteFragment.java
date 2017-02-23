@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,7 +25,7 @@ import cn.trinea.android.common.util.ToastUtils;
  * Created by JesseHuang on 2017/2/7.
  */
 
-public class MyFavoriteFragment extends BaseFragment implements MineFragment1.RefreshFragment {
+public class MyFavoriteFragment extends BaseFragment implements MineFragment.RefreshFragment {
 
     private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;

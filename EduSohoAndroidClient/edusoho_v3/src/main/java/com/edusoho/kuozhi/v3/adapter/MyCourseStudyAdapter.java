@@ -24,7 +24,7 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment1;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -32,6 +32,7 @@ import com.edusoho.kuozhi.v3.util.CourseCacheHelper;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.view.dialog.MoreDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +109,7 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
             return new MyStudyFragment.CourseStudyViewHolder(view);
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
-            return new MineFragment1.EmptyViewHolder(view);
+            return new MineFragment.EmptyViewHolder(view);
         }
     }
 
@@ -260,6 +261,7 @@ public class MyCourseStudyAdapter extends RecyclerView.Adapter<RecyclerView.View
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "i_learn_threePoints");
                 final Object data = v.getTag();
                 MoreDialog dialog = new MoreDialog(mContext);
                 dialog.init("退出课程", new MoreDialog.MoreCallBack() {

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,8 +19,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
-
-import org.sufficientlysecure.htmltextview.HtmlTextView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.Arrays;
 
@@ -29,7 +27,7 @@ import java.util.Arrays;
  * Created by JesseHuang on 2017/2/8.
  */
 
-public class MyQuestionFragment extends BaseFragment implements MineFragment1.RefreshFragment {
+public class MyQuestionFragment extends BaseFragment implements MineFragment.RefreshFragment {
 
     private static int ASK = 1;
     private static int ANSWER = 2;
@@ -162,6 +160,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
                 if (v.getId() == R.id.tv_question_post) {
                     switchFilterType(ASK);
                 } else if (v.getId() == R.id.tv_question_answer) {
+                    MobclickAgent.onEvent(mContext, "i_myQuestionAndAnswer_iReplied");
                     switchFilterType(ANSWER);
                 }
                 llayoutFilterQuestionTypeList.setVisibility(View.GONE);
@@ -242,7 +241,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
 
     public static class ViewHolderAnswer extends RecyclerView.ViewHolder {
         public TextView tvTime;
-        public HtmlTextView tvContentAnswer;
+        public TextView tvContentAnswer;
         public TextView tvContentAsk;
         public TextView tvOrder;
         public View vLine;
@@ -251,7 +250,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
         public ViewHolderAnswer(View view) {
             super(view);
             tvTime = (TextView) view.findViewById(R.id.tv_time);
-            tvContentAnswer = (HtmlTextView) view.findViewById(R.id.tv_content_answer);
+            tvContentAnswer = (TextView) view.findViewById(R.id.tv_content_answer);
             tvContentAsk = (TextView) view.findViewById(R.id.tv_content_ask);
             tvOrder = (TextView) view.findViewById(R.id.tv_order);
             layout = view.findViewById(R.id.rlayout_answer_question_item_layout);

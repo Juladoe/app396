@@ -116,7 +116,7 @@ public class CourseDiscussFragment extends Fragment implements
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem == catalogueAdapter.getItemCount() - 1) {
                     catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.LOADING_MORE);
                     //设置正在加载更多
-                    if (!isHave) {
+                    if (!isHave && !mEmpty.isShown()) {
                         if (isFirst) {
                             isFirst = false;
                             CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));

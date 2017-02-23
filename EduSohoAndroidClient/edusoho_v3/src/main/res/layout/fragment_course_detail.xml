@@ -90,7 +90,7 @@
                     android:textColor="@color/secondary_font_color"
                     android:textSize="@dimen/font_s_" />
 
-                <org.sufficientlysecure.htmltextview.HtmlTextView
+                <TextView
                     android:id="@+id/tv_title_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
