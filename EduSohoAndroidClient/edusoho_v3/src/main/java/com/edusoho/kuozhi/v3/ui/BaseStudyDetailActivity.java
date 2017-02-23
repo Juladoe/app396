@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.SectionsPagerAdapter;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
@@ -103,6 +104,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
     protected boolean mIsClassroomCourse = false;
+    private LessonItem lessonItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -259,7 +261,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         } else if (v.getId() == R.id.layout_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
         } else if (v.getId() == R.id.play_layout || v.getId() == R.id.play_layout2) {
-            courseStart();
+            courseChange(lessonItem);
         } else if (v.getId() == R.id.collect_layout) {
             collect();
         } else if (v.getId() == R.id.tv_add) {
@@ -337,33 +339,12 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             case Const.FULL_SCREEN:
                 fullScreen();
                 break;
-            case Const.COURSE_START:
-                courseStart();
-                break;
-            case Const.COURSE_PAUSE:
-                coursePause();
-                break;
-            case Const.COURSE_REFRESH:
-                initData();
-                break;
-            case Const.SCREEN_LOCK:
-                screenLock();
-                break;
             case Const.COURSE_CHANGE:
                 courseChange((LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.COURSE_HASTRIAL:
-                courseHastrial(
-                        bundle.getString(Const.COURSE_CHANGE_STATE),
-                        (LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT)
-                );
-                break;
-            case Const.PAY_SUCCESS:
-                if (mRunStatus == MSG_RESUME) {
-                    saveMessage(message);
-                    return;
-                }
-                initData();
+                lessonItem = (LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT);
+                courseHastrial(bundle.getString(Const.COURSE_CHANGE_STATE), lessonItem);
                 break;
             case Const.LOGIN_SUCCESS:
             case Const.WEB_BACK_REFRESH:
@@ -398,12 +379,12 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         if (mViewPager.getCurrentItem() == 2) {
             if (i == 0) {
                 if (((AppBarLayout.LayoutParams) mToolBarLayout.getLayoutParams()).getScrollFlags() == 0) {
-                    ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(false);
+                    ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(false);
                 } else {
-                    ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(true);
+                    ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(true);
                 }
             } else {
-                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(false);
+                ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(false);
             }
         }
         int maxHeight = getResources().getDimensionPixelOffset(R.dimen.action_bar_height);
@@ -513,17 +494,11 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     @Override
     public MessageType[] getMsgTypes() {
         return new MessageType[]{
-                new MessageType(Const.SCROLL_STATE_SAVE),
                 new MessageType(Const.COURSE_HASTRIAL),
                 new MessageType(Const.FULL_SCREEN),
-                new MessageType(Const.COURSE_START),
                 new MessageType(Const.COURSE_CHANGE),
-                new MessageType(Const.COURSE_REFRESH),
-                new MessageType(Const.COURSE_PAUSE),
-                new MessageType(Const.SCREEN_LOCK),
                 new MessageType(Const.LOGIN_SUCCESS),
-                new MessageType(Const.WEB_BACK_REFRESH),
-                new MessageType(Const.PAY_SUCCESS, MessageType.UI_THREAD)
+                new MessageType(Const.WEB_BACK_REFRESH)
         };
     }
 
@@ -693,6 +668,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     public interface WidgtState{
-        public void setTopViewVisibility(boolean isTop);
+        void setTopViewVisibility(boolean isTop);
     }
 }

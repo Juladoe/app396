@@ -52,6 +52,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 /**
  * Created by suju on 17/2/7.
  */
@@ -60,6 +63,12 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     private int mCourseId;
     private boolean mIsFavorite = false;
     private LessonItem mContinueLessonItem;
+    private int mPlayTime = 0;
+    private int mTotalTime = 0;
+    private boolean mIsContinue = true;
+    private boolean mIsChange = false;
+    private Timer mTimer;
+    private LessonItem mLastLesson;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,7 +90,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     @Override
     protected void initData() {
         if (mCourseId == 0) {
-            CommonUtil.shortToast(getBaseContext(), "课程不存在");
+            CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_unexit));
             finish();
             return;
         }
@@ -140,7 +149,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         if (teachers.length > 0) {
             teacher = teachers[0];
         } else {
-            CommonUtil.shortToast(this, "课程目前没有老师");
+            CommonUtil.shortToast(this, getResources().getString(R.string.lesson_no_teacher));
             return;
         }
         CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
@@ -348,14 +357,99 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     public void finish() {
         super.finish();
         removePlayFragment();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+        mIsContinue = false;
         CacheServerFactory.getInstance().stop();
     }
 
     @Override
-    protected void courseChange(LessonItem lessonItem) {
+    protected void courseChange(final LessonItem lessonItem) {
         mContinueLessonItem = lessonItem;
-        coursePause();
-        courseStart();
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
+        sendPauseTime();
+        if (lessonItem != null && "video".equals(lessonItem.type) && lessonItem.remainTime != null) {
+            mIsChange = false;
+            mPlayTime = 0;
+            mLastLesson = lessonItem;
+            coursePause();
+            if (Integer.parseInt(lessonItem.remainTime) <= 0) {
+                CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
+            } else {
+                CommonUtil.shortCenterToast(getApplicationContext(), String.format("剩余观看时间:%s", CommonUtil.secondToMill(Integer.parseInt(lessonItem.remainTime))));
+                startTiming(Integer.parseInt(lessonItem.remainTime));
+                startReturnData(lessonItem.id);
+                courseStart();
+            }
+        } else {
+            coursePause();
+            if (lessonItem != null) {
+                courseStart();
+            }
+        }
+    }
+
+    private void sendPauseTime() {
+        mIsContinue = false;
+        mIsChange = true;
+        mTotalTime = 0;
+        if (mLastLesson == null || !"video".equals(mLastLesson.type)) {
+            return;
+        }
+        CourseDetailModel.sendTime(mLastLesson.id, mPlayTime, null);
+    }
+
+    private void startTiming(final int remainTime) {
+        mIsContinue = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (mIsContinue){
+                    try {
+                        Thread.sleep(1000);
+                        if (mIsPlay) {
+                            mPlayTime ++ ;
+                            mTotalTime ++;
+                            if (mTotalTime >= remainTime && !mIsChange) {
+                                mIsContinue = false;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        coursePause();
+                                        CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
+                                    }
+                                });
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private void startReturnData(final int id) {
+        mTimer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                CourseDetailModel.sendTime(id, mPlayTime, new ResponseCallbackListener<String>() {
+                    @Override
+                    public void onSuccess(String data) {
+                        mPlayTime = 0;
+                    }
+                    @Override
+                    public void onFailure(String code, String message) {
+
+                    }
+                });
+            }
+        };
+        mTimer.schedule(timerTask, 0, 120000);
     }
 
     @Override
@@ -366,9 +460,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void courseStart() {
-        if (mContinueLessonItem == null) {
-            return;
-        }
         super.courseStart();
         String type = mContinueLessonItem.type;
         if ("self".equals(mContinueLessonItem.mediaSource)) {
@@ -506,15 +597,15 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     private void showCourseExpireDlg() {
         AlertDialog.Builder builder = new AlertDialog.Builder(((EdusohoApp) getApplication()).mContext);
-        builder.setTitle("提醒")
-                .setMessage("课程已过期，是否重新加入?")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setTitle(R.string.lesson_join_hint)
+                .setMessage(R.string.lesson_has_past_hint)
+                .setPositiveButton(R.string.lesson_join_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         unLearnCourse();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(R.string.lesson_join_cancel, null)
                 .create()
                 .show();
     }
@@ -536,13 +627,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                             ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
                             ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
                         } else {
-                            CommonUtil.shortToast(((EdusohoApp) getApplication()).mContext, "退出失败");
+                            CommonUtil.shortToast(((EdusohoApp) getApplication()).mContext, getResources().getString(R.string.lesson_quit_fail));
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                CommonUtil.shortToast(getBaseContext(), "退出失败");
+                CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_quit_fail));
             }
         });
     }

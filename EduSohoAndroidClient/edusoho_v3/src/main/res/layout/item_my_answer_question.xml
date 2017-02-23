@@ -19,7 +19,7 @@
             android:textColor="@color/primary_font_color"
             android:textSize="@dimen/font_s" />
 
-        <org.sufficientlysecure.htmltextview.HtmlTextView
+        <TextView
             android:id="@+id/tv_content_answer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

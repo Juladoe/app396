@@ -3,11 +3,9 @@ package com.edusoho.kuozhi.v3.model.provider;
 import android.content.Context;
 
 import com.edusoho.kuozhi.v3.entity.lesson.CourseCatalogue;
-import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonStatus;
 import com.edusoho.kuozhi.v3.model.bal.LearnStatus;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
@@ -16,7 +14,6 @@ import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**

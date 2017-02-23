@@ -379,6 +379,14 @@
 
     <!-- lesson -->
     <string name="lesson_not_exist">课时信息不存在</string>
+    <string name="lesson_unexit">课程不存在</string>
+    <string name="lesson_join_confirm">确定</string>
+    <string name="lesson_join_cancel">取消</string>
+    <string name="lesson_join_hint">提醒</string>
+    <string name="lesson_quit_fail">退出失败</string>
+    <string name="lesson_has_past_hint">课程已过期，是否重新加入?</string>
+    <string name="lesson_had_reached_hint">该课时学习时长已达上限</string>
+    <string name="lesson_no_teacher">课程目前没有老师</string>
 
     <!-- download -->
     <string name="no_lesson_cache">暂无缓存</string>

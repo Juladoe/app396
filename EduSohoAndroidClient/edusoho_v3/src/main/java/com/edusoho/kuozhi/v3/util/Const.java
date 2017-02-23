@@ -602,6 +602,7 @@ public class Const {
     public static final String MY_CREATED_THREADS = "/api/chaos_threads/getThreads";
     public static final String MY_POSTED_THREADS = "/api/chaos_threads_posts/getThreadPosts";
 
+    public static final String SEND_PLAY_TIME = "/api/lesson/watch_time";
     public static final String LESSON = "/api/lessons/%d?hls_encryption=1";
     public static final String WEB_LESSON = "/mapi_v2/mobile/main#/lesson/%s/%s";
 
