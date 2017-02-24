@@ -52,9 +52,6 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * Created by suju on 17/2/7.
  */
@@ -63,12 +60,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     private int mCourseId;
     private boolean mIsFavorite = false;
     private LessonItem mContinueLessonItem;
-    private int mPlayTime = 0;
-    private int mTotalTime = 0;
-    private boolean mIsContinue = true;
-    private boolean mIsChange = false;
-    private Timer mTimer;
-    private LessonItem mLastLesson;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -357,101 +348,14 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     public void finish() {
         super.finish();
         removePlayFragment();
-        if (mTimer != null) {
-            mTimer.cancel();
-        }
-        mIsContinue = false;
         CacheServerFactory.getInstance().stop();
     }
 
     @Override
     protected void courseChange(final LessonItem lessonItem) {
-        mIsCan = true;
         mContinueLessonItem = lessonItem;
-        if (mTimer != null) {
-            mTimer.cancel();
-        }
-        sendPauseTime(lessonItem);
         coursePause();
-        if (lessonItem != null && "video".equals(lessonItem.type) && lessonItem.remainTime != null) {
-            mIsChange = false;
-            mPlayTime = 0;
-            mLastLesson = lessonItem;
-            if (Integer.parseInt(lessonItem.remainTime) <= 0) {
-                CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
-            } else {
-                startTiming(Integer.parseInt(lessonItem.remainTime));
-                startReturnData(lessonItem.id);
-                courseStart();
-            }
-        } else {
-            if (lessonItem != null) {
-                courseStart();
-            }
-        }
-    }
-
-    private void sendPauseTime(LessonItem lessonItem) {
-        mIsContinue = false;
-        mIsChange = true;
-        mTotalTime = 0;
-        if (mLastLesson == null || !"video".equals(mLastLesson.type) || lessonItem.id != mLastLesson.id) {
-            return;
-        }
-        CourseDetailModel.sendTime(mLastLesson.id, mPlayTime, null);
-    }
-
-    private void startTiming(final int remainTime) {
-        mIsContinue = true;
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (mIsContinue){
-                    try {
-                        Thread.sleep(1000);
-                        if (mIsPlay) {
-                            mPlayTime ++ ;
-                            mTotalTime ++;
-                            if (mTotalTime >= remainTime && !mIsChange) {
-                                mIsContinue = false;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        mIsCan = false;
-                                        coursePause();
-                                        mTimer.cancel();
-                                        CourseDetailModel.sendTime(mLastLesson.id, mPlayTime, null);
-                                        CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
-                                    }
-                                });
-                            }
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
-    }
-
-    private void startReturnData(final int id) {
-        mTimer = new Timer();
-        TimerTask timerTask = new TimerTask() {
-            @Override
-            public void run() {
-                CourseDetailModel.sendTime(id, mPlayTime, new ResponseCallbackListener<String>() {
-                    @Override
-                    public void onSuccess(String data) {
-                        mPlayTime = 0;
-                    }
-                    @Override
-                    public void onFailure(String code, String message) {
-
-                    }
-                });
-            }
-        };
-        mTimer.schedule(timerTask, 120000, 120000);
+        courseStart();
     }
 
     @Override
@@ -462,6 +366,11 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void courseStart() {
+        if (mContinueLessonItem != null && "video".equals(mContinueLessonItem.type) && mContinueLessonItem.remainTime != null
+                && Integer.parseInt(mContinueLessonItem.remainTime) <= 0) {
+            CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
+            return;
+        }
         super.courseStart();
         String type = mContinueLessonItem.type;
         if ("self".equals(mContinueLessonItem.mediaSource)) {
@@ -507,6 +416,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         Bundle bundle = new Bundle();
         bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
+        bundle.putString(Const.REMAINT_TIME, lessonItem.remainTime);
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
         transaction.commitAllowingStateLoss();
@@ -646,10 +556,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     private boolean validCourseIsExpird(Member courseMember) {
-        if (courseMember == null) {
-            return false;
-        }
-        return courseMember.deadline < 0;
+        return courseMember != null && courseMember.deadline < 0;
     }
 
     @Override

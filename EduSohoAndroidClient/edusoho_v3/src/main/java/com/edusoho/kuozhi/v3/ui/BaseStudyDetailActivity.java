@@ -104,8 +104,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
     protected boolean mIsClassroomCourse = false;
-    protected boolean mIsCan = true;
-    private LessonItem lessonItem;
 
 
     @Override
@@ -263,9 +261,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         } else if (v.getId() == R.id.layout_menu) {
             mMenuPop.showAsDropDown(mMenu, -AppUtil.dp2px(this, 6), AppUtil.dp2px(this, 10));
         } else if (v.getId() == R.id.play_layout || v.getId() == R.id.play_layout2) {
-            if (mIsCan && lessonItem != null) {
-                courseChange(lessonItem);
-            }
+            courseStart();
         } else if (v.getId() == R.id.collect_layout) {
             collect();
         } else if (v.getId() == R.id.tv_add) {
@@ -347,8 +343,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                 courseChange((LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.COURSE_HASTRIAL:
-                lessonItem = (LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT);
-                courseHastrial(bundle.getString(Const.COURSE_CHANGE_STATE), lessonItem);
+                courseHastrial(bundle.getString(Const.COURSE_CHANGE_STATE), (LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.LOGIN_SUCCESS:
             case Const.WEB_BACK_REFRESH:
