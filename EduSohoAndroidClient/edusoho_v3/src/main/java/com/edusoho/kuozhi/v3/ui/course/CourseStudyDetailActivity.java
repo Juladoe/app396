@@ -508,7 +508,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     private void showCourseExpireDlg() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(((EdusohoApp) getApplication()).mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.lesson_join_hint)
                 .setMessage(R.string.lesson_has_past_hint)
                 .setPositiveButton(R.string.lesson_join_confirm, new DialogInterface.OnClickListener() {
@@ -575,6 +575,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     public void handlerCourseExpired() {
+        showCourseExpireDlg();
     }
 
     protected AppSettingProvider getAppSettingProvider() {
