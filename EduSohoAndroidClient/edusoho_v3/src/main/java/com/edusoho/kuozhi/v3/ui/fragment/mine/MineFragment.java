@@ -167,13 +167,13 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
 
     @Override
     public MessageType[] getMsgTypes() {
-        return new MessageType[]{new MessageType(Const.REFRESH_MY_FRAGMENT)};
+        return new MessageType[]{new MessageType(Const.LOGIN_SUCCESS), new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS)};
     }
 
     @Override
     public void invoke(WidgetMessage message) {
         MessageType messageType = message.type;
-        if (messageType.type.equals(Const.REFRESH_MY_FRAGMENT)) {
+        if (messageType.type.equals(Const.LOGIN_SUCCESS) || messageType.type.equals(Const.THIRD_PARTY_LOGIN_SUCCESS)) {
             initUserInfo();
             initViewPager();
 
