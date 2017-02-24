@@ -133,7 +133,6 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
             @Override
             public void success(CourseCatalogue courseCatalogue) {
                 if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                    Log.d("CourseCatalogFragment", "activity is finish");
                     return;
                 }
                 mCourseCatalogue = courseCatalogue;
@@ -162,7 +161,6 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
             @Override
             public void success(CourseSetting courseSetting) {
                 if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                    Log.d("CourseCatalogFragment", "activity is finish");
                     return;
                 }
                 setLoadViewStatus(View.GONE);

@@ -73,7 +73,6 @@ public class CourseDetailFragment extends BaseDetailFragment {
             public void onSuccess(CourseDetail data) {
                 mCourseDetail = data;
                 if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                    Log.d("CourseDetailFragment", "activity is finish");
                     return;
                 }
                 refreshView();
@@ -91,7 +90,6 @@ public class CourseDetailFragment extends BaseDetailFragment {
                     @Override
                     public void onSuccess(List<CourseMember> data) {
                         if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                            Log.d("CourseDetailFragment", "activity is finish");
                             return;
                         }
                         initStudent(data);

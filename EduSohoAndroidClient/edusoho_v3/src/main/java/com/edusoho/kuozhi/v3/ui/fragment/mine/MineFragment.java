@@ -181,7 +181,6 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
                 fragment.refreshData();
             }
         }
-        Log.d("develop", "refreshData: " + this.getClass().getSimpleName());
     }
 
     public interface RefreshFragment {

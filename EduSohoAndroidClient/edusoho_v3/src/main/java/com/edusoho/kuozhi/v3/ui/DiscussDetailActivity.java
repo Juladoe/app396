@@ -163,7 +163,6 @@ public class DiscussDetailActivity extends AbstractIMChatActivity implements IMe
 
     @Override
     protected void attachMessageListFragment() {
-        Log.d(TAG, "attachMessageListFragment");
 
     }
 
