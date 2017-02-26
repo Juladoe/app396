@@ -619,4 +619,6 @@ public class Const {
     public static final String BADGE_UPDATE = "badge_update";
 
     public static String LIVE_HOST = "http://124.160.104.76:10007";
+
+    public static String REMAINT_TIME = "remain_time";
 }
