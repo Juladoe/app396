@@ -267,6 +267,9 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
             }
             reFreshColor();
+            if (lessonsBean == null) {
+                return;
+            }
             new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
                     .success(new NormalCallback<LessonItem>() {
                         @Override
