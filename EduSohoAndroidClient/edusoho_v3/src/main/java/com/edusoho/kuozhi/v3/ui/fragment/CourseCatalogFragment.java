@@ -369,10 +369,10 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                         return;
                     }
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
-                    MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
                     bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
                     MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
+                    bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
+                    MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
                     @Override

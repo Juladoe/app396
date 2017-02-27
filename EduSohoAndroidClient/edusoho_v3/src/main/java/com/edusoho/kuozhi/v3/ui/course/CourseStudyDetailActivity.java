@@ -366,6 +366,9 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void courseStart() {
+        if (mContinueLessonItem == null) {
+            return;
+        }
         super.courseStart();
         String type = mContinueLessonItem.type;
         if ("self".equals(mContinueLessonItem.mediaSource)) {
@@ -405,8 +408,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     private void playVideoLesson(LessonItem lessonItem) {
-        if (mContinueLessonItem != null && mContinueLessonItem.remainTime != null
-                && Integer.parseInt(mContinueLessonItem.remainTime) <= 0) {
+        if (mContinueLessonItem.remainTime != null && Integer.parseInt(mContinueLessonItem.remainTime) <= 0) {
             CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
             return;
         }

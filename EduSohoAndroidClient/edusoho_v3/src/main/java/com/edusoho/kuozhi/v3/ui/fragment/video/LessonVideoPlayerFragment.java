@@ -247,6 +247,9 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                                             mTimer.cancel();
                                             pause();
                                             CourseDetailModel.sendTime(mLessonId, mPlayTime, null);
+                                            if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                                                return;
+                                            }
                                             CommonUtil.shortCenterToast(mMenuCallback, getResources().getString(R.string.lesson_had_reached_hint));
                                         }
                                     });
