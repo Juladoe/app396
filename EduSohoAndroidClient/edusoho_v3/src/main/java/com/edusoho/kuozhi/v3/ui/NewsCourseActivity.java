@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -80,21 +81,15 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
     private static final String mRadioButtonTitle[] = {"学习", "教学"};
 
     private int mCourseId;
-    private String mFragmentType;
-    private String mUserTypeInCourse;
     private Course mCourse;
     private Handler mHandler;
-    private ActionBar mActionBar;
-    private EduSohoCompoundButton switchButton;
-    private RadioButton rbStudyRadioButton;
-    private RadioButton rbDiscussRadioButton;
+    private TextView tvGotoDetail;
 
     protected FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActionBar = getSupportActionBar();
         mFragmentManager = getSupportFragmentManager();
         MessageEngine.getInstance().registMessageSource(this);
         initData();
@@ -112,7 +107,9 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
 
     @Override
     protected View createView() {
-        return LayoutInflater.from(mContext).inflate(R.layout.activity_news_course, null);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.activity_news_course, null);
+        tvGotoDetail = (TextView) view.findViewById(R.id.tv_goto_detail);
+        return view;
     }
 
     @Override
@@ -147,7 +144,6 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             ToastUtils.show(mContext, "课程信息不存在!");
             return;
         }
-        mFragmentType = getFragmentType(intent.getIntExtra(SHOW_TYPE, LEARN_TYPE));
 
         final LoadDialog loadDialog = LoadDialog.create(this);
         loadDialog.show();
@@ -166,6 +162,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                         isCourseMember(userId);
                     }
                 });
+        tvGotoDetail.setOnClickListener(getGotoDetailClickListener());
     }
 
     private void isCourseMember(int userId) {
@@ -205,6 +202,17 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
             bundle.putString(MessageListFragment.TARGET_TYPE, Destination.COURSE);
         }
     };
+
+    private View.OnClickListener getGotoDetailClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putInt(Const.COURSE_ID, mCourseId);
+                CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
+            }
+        };
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
