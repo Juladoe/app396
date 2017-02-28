@@ -38,6 +38,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View tvMsgNotify;
     private View tvAbout;
     private View viewClearCache;
+    private View viewFeedback;
     private TextView tvCache;
     private TextView mediaCodecView;
     private Button btnLogout;
@@ -69,6 +70,8 @@ public class SettingActivity extends ActionBarBaseActivity {
         tvCache = (TextView) findViewById(R.id.tv_cache);
         viewClearCache = findViewById(R.id.rl_clear_cache);
         viewClearCache.setOnClickListener(cleanCacheListener);
+        viewFeedback = findViewById(R.id.rl_feedback);
+        viewFeedback.setOnClickListener(feedbackClickListener);
 
         btnLogout = (Button) findViewById(R.id.setting_logout_btn);
         btnLogout.setOnClickListener(logoutClickLister);
@@ -153,7 +156,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener scanClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            MobclickAgent.onEvent(mContext,"i_mySetting_sweep");
+            MobclickAgent.onEvent(mContext, "i_mySetting_sweep");
             mActivity.app.mEngine.runNormalPlugin("QrSchoolActivity", mActivity, null);
         }
     };
@@ -171,6 +174,13 @@ public class SettingActivity extends ActionBarBaseActivity {
         public void onClick(View v) {
             MobclickAgent.onEvent(mContext, "i_mySetting_about");
             mActivity.app.mEngine.runNormalPlugin("AboutActivity", mActivity, null);
+        }
+    };
+
+    private View.OnClickListener feedbackClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            app.mEngine.runNormalPlugin("SuggestionActivity", mActivity, null);
         }
     };
 
