@@ -73,6 +73,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
 
     public static final int DISCUSS_TYPE = 0;
     public static final int LEARN_TYPE = 1;
+    private static final String FRAGMENT_NAME = "DiscussFragment";
 
     private static final String mFragmentTags[] = {"DiscussFragment", "CourseStudyFragment", "TeachFragment"};
     private static final String mEntranceType[] = {"Discuss", "StudyOrTeacher"};
@@ -80,7 +81,6 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
 
     private int mCourseId;
     private String mFragmentType;
-    private String mCurrentFragmentTag;
     private String mUserTypeInCourse;
     private Course mCourse;
     private Handler mHandler;
@@ -88,7 +88,6 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
     private EduSohoCompoundButton switchButton;
     private RadioButton rbStudyRadioButton;
     private RadioButton rbDiscussRadioButton;
-    private CircleImageView civBadgeView;
 
     protected FragmentManager mFragmentManager;
 
@@ -164,120 +163,38 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                         }
                         mCourse = courseDetailsResult.course;
                         int userId = getAppSettingProvider().getCurrentUser().id;
-                        checkUserRole(userId);
+                        isCourseMember(userId);
                     }
                 });
     }
 
-    private void checkUserRole(int userId) {
+    private void isCourseMember(int userId) {
         getRoleInCourse(mCourseId, userId, new NormalCallback<String>() {
             @Override
             public void success(String role) {
-                mUserTypeInCourse = role;
-                Log.d(TAG, "check role:" + role);
-                if (PushUtil.ChatUserType.STUDENT.equals(mUserTypeInCourse)) {
-                    initSwitchButton(mRadioButtonTitle[0], mOnCheckedChangeListener);
-                    setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
-                } else if (PushUtil.ChatUserType.TEACHER.equals(mUserTypeInCourse)) {
-                    initSwitchButton(mRadioButtonTitle[1], mOnCheckedChangeListener);
-                    setRadioButtonChecked(mFragmentType.equals(mEntranceType[0]) ? R.id.rb_discuss : R.id.rb_study);
-                } else {
+                if (TextUtils.isEmpty(role)) {
                     CommonUtil.longToast(mContext, "您不是该课程的学生");
                     finish();
+                } else {
+                    showDiscussFragment();
                 }
             }
         });
     }
 
-    private void setRadioButtonChecked(int id) {
-        if (rbStudyRadioButton.getId() == id) {
-            rbStudyRadioButton.setChecked(true);
-        } else {
-            rbDiscussRadioButton.setChecked(true);
+    private void showDiscussFragment() {
+        if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
+            CommonUtil.longToast(mContext, "聊天功能已关闭");
+            return;
         }
-    }
-
-    protected void initSwitchButton(String roleTitle, RadioGroup.OnCheckedChangeListener clickListener) {
-        View switchButtonLayout = getLayoutInflater().inflate(R.layout.actionbar_course_switch_button, null);
-        switchButton = (EduSohoCompoundButton) switchButtonLayout.findViewById(R.id.ecb_switch);
-        rbStudyRadioButton = (RadioButton) switchButtonLayout.findViewById(R.id.rb_study);
-        rbDiscussRadioButton = (RadioButton) switchButtonLayout.findViewById(R.id.rb_discuss);
-        civBadgeView = (CircleImageView) switchButtonLayout.findViewById(R.id.civ_badge_view);
-        rbStudyRadioButton.setText(roleTitle);
-        ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
-                ActionBar.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.CENTER;
-        mActionBar.setCustomView(switchButtonLayout, layoutParams);
-        switchButton.setOnCheckedChangeListener(clickListener);
-    }
-
-    private void showFragment(String tag) {
         Fragment fragment;
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        Fragment currentFragment = mFragmentManager.findFragmentByTag(mCurrentFragmentTag);
-        if (currentFragment != null) {
-            fragmentTransaction.hide(currentFragment);
-        }
-        fragment = mFragmentManager.findFragmentByTag(tag);
-        if (fragment != null) {
-            if (fragment instanceof MessageListFragment) {
-                mMessageListFragment = (MessageListFragment) fragment;
-                initChatRoomController(mMessageListFragment);
-            }
-            fragmentTransaction.show(fragment);
-        } else {
-            if (tag.equals(mFragmentTags[0])) {
-                fragment = CoreEngine.create(mContext).runPluginWithFragment(tag, this, mStudyPluginFragmentCallback);
-                mMessageListFragment = (MessageListFragment) fragment;
-                initChatRoomController((MessageListFragment) fragment);
-            } else if (tag.equals(mFragmentTags[1])) {
-                fragment = CoreEngine.create(mContext).runPluginWithFragment(tag, this, mStudyPluginFragmentCallback);
-            } else if (tag.equals(mFragmentTags[2])) {
-                fragment = CoreEngine.create(mContext).runPluginWithFragment(tag, this, mTeachPluginFragmentCallback);
-            }
-            fragmentTransaction.add(R.id.fragment_container, fragment, tag);
-        }
-        fragmentTransaction.commitAllowingStateLoss();
-        mCurrentFragmentTag = tag;
-        if (mCurrentFragmentTag.equals(mFragmentTags[0])) {
-            setSwitchBadgeViewVisible(View.INVISIBLE);
-        }
+        fragment = CoreEngine.create(mContext).runPluginWithFragment(FRAGMENT_NAME, this, mStudyPluginFragmentCallback);
+        mMessageListFragment = (MessageListFragment) fragment;
+        initChatRoomController((MessageListFragment) fragment);
+        fragmentTransaction.add(R.id.fragment_container, fragment, FRAGMENT_NAME);
+        fragmentTransaction.commit();
     }
-
-    private void setSwitchBadgeViewVisible(int visible) {
-        if (civBadgeView != null) {
-            civBadgeView.setVisibility(visible);
-        }
-    }
-
-    private RadioGroup.OnCheckedChangeListener mOnCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(RadioGroup group, int checkedId) {
-            if (checkedId == R.id.rb_study) {
-                if (PushUtil.ChatUserType.STUDENT.equals(mUserTypeInCourse)) {
-                    showFragment(mFragmentTags[1]);
-                } else {
-                    showFragment(mFragmentTags[2]);
-                }
-            } else if (checkedId == R.id.rb_discuss) {
-                MobclickAgent.onEvent(mContext, "dynamic_discussion");
-                if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
-                    CommonUtil.longToast(mContext, "聊天功能已关闭");
-                    return;
-                }
-                showFragment(mFragmentTags[0]);
-            }
-        }
-    };
-
-    private PluginFragmentCallback mTeachPluginFragmentCallback = new PluginFragmentCallback() {
-        @Override
-        public void setArguments(Bundle bundle) {
-            School school = getAppSettingProvider().getCurrentSchool();
-            String url = String.format(Const.MOBILE_APP_URL, school.url + "/", String.format(Const.TEACHER_MANAGERMENT, mCourseId));
-            bundle.putString(Const.WEB_URL, url);
-        }
-    };
 
     private PluginFragmentCallback mStudyPluginFragmentCallback = new PluginFragmentCallback() {
         @Override
