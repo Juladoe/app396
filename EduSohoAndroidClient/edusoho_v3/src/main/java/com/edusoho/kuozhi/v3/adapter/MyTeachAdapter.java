@@ -69,7 +69,7 @@ public class MyTeachAdapter extends RecyclerView.Adapter {
             courseTeachViewHolder.tvMore.setVisibility(View.GONE);
             courseTeachViewHolder.tvStudyState.setText("");
             mTeachLesson = mCourseList.get(position);
-            ImageLoader.getInstance().displayImage(mTeachLesson.getLargePicture()
+            ImageLoader.getInstance().displayImage(mTeachLesson.getSmallPicture()
                     , courseTeachViewHolder.ivPic, EdusohoApp.app.mOptions);
             courseTeachViewHolder.tvTitle.setText(String.valueOf(mTeachLesson.getTitle()));
             if (mTeachLesson.getType().equals("live")) {

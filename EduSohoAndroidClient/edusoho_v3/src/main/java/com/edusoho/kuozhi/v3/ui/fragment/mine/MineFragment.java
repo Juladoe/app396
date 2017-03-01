@@ -6,7 +6,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -61,7 +61,7 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
         tvUserType = (TextView) view.findViewById(R.id.tv_avatar_type);
         tbTitles = (TabLayout) view.findViewById(R.id.tl_titles);
         vpContent = (ViewPager) view.findViewById(R.id.vp_content);
-        vpContent.setOffscreenPageLimit(3);
+        vpContent.setOffscreenPageLimit(4);
         initUserInfo();
         initViewPager();
         appBarLayout.addOnOffsetChangedListener(this);
@@ -123,7 +123,7 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
         };
     }
 
-    private class MinePagerAdapter extends FragmentPagerAdapter {
+    private class MinePagerAdapter extends FragmentStatePagerAdapter {
         private String[] tabTitles;
         private String[] fragmentTags;
 

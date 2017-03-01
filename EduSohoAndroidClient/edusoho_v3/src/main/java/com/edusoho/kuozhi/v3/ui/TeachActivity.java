@@ -30,7 +30,6 @@ import cn.trinea.android.common.util.ToastUtils;
 
 public class TeachActivity extends ActionBarBaseActivity {
 
-
     private int mCourseId;
     private TextView mSummaryCourseTitle;
     private ImageView mSummaryCourseImage;
@@ -38,6 +37,7 @@ public class TeachActivity extends ActionBarBaseActivity {
     private TextView mSummaryCourseTeacher;
     private TextView mSummaryTeacherTag;
     private RelativeLayout mSummaryFrame;
+    private View mLoadView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,7 @@ public class TeachActivity extends ActionBarBaseActivity {
     }
 
     private void initView() {
+        mLoadView = findViewById(R.id.ll_frame_load);
         mSummaryFrame = (RelativeLayout) findViewById(R.id.process_lesson_summary_frame);
         mSummaryCourseTitle = (TextView) findViewById(R.id.study_process_lesson_summary_title);
         mSummaryCourseImage = (ImageView) findViewById(R.id.study_process_lesson_summary_image);
@@ -72,6 +73,7 @@ public class TeachActivity extends ActionBarBaseActivity {
     }
 
     private void loadData() {
+        mLoadView.setVisibility(View.VISIBLE);
         CourseDetailModel.getCourseDetail(mCourseId, new ResponseCallbackListener<CourseDetail>() {
             @Override
             public void onSuccess(CourseDetail data) {
@@ -81,7 +83,8 @@ public class TeachActivity extends ActionBarBaseActivity {
 
             @Override
             public void onFailure(String code, String message) {
-
+                mLoadView.setVisibility(View.GONE);
+                ToastUtils.show(mContext.getApplicationContext(), message);
             }
         });
     }
@@ -116,6 +119,7 @@ public class TeachActivity extends ActionBarBaseActivity {
         Fragment fragment = CoreEngine.create(mContext).runPluginWithFragment("TeachFragment", mContext, mTeachPluginFragmentCallback);
         fragmentTransaction.replace(R.id.fl_fragment, fragment);
         fragmentTransaction.commit();
+        mLoadView.setVisibility(View.GONE);
     }
 
     private PluginFragmentCallback mTeachPluginFragmentCallback = new PluginFragmentCallback() {

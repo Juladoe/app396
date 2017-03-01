@@ -127,6 +127,9 @@ public class MyStudyFragment extends BaseFragment implements MineFragment.Refres
      * @param type
      */
     private void switchType(int type) {
+        if (getActivity() == null || getActivity().isFinishing()) {
+            return;
+        }
         tvLatestCourse.setTextColor(getResources().getColor(R.color.primary_font_color));
         tvNormalCourse.setTextColor(getResources().getColor(R.color.primary_font_color));
         tvLiveCourse.setTextColor(getResources().getColor(R.color.primary_font_color));
