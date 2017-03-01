@@ -11,6 +11,7 @@ import com.edusoho.kuozhi.v3.entity.course.LearningCourse;
 import com.edusoho.kuozhi.v3.entity.course.LearningCourse2;
 import com.edusoho.kuozhi.v3.entity.course.Study;
 import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
+import com.edusoho.kuozhi.v3.entity.lesson.TeachLesson;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
@@ -433,6 +434,29 @@ public class CourseDetailModel implements Serializable {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+            }
+        });
+    }
+
+    public static void getTeach(int id, final ResponseCallbackListener<List<TeachLesson>> callbackListener){
+        String url = String.format(Const.TEACHER_TEACH, id);
+        RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
+        EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                List<TeachLesson> apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<List<TeachLesson>>() {
+                        });
+                if (apiResponse != null && apiResponse.size() != 0) {
+                    callbackListener.onSuccess(apiResponse);
+                }else {
+                    callbackListener.onFailure("Error", response);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                callbackListener.onFailure("Error", error.getMessage());
             }
         });
     }
