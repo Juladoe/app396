@@ -25,12 +25,15 @@ import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.MediaUtil;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
+import com.edusoho.videoplayer.util.VLCOptions;
 import com.google.gson.reflect.TypeToken;
 
 import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.util.AndroidUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -77,11 +80,12 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         if (activity instanceof BaseStudyDetailActivity) {
             mMenuCallback = (BaseStudyDetailActivity) activity;
         }
-    }
-
-    @Override
-    protected void requestMediaUri() {
-        loadPlayUrl();
+        int mediaCoder = MediaUtil.getMediaSupportType(getContext());
+        if (mediaCoder == VLCOptions.NONE_RATE && AndroidUtil.isKitKatOrLater()) {
+            mediaCoder = VLCOptions.SUPPORT_RATE;
+            MediaUtil.saveMediaSupportType(getContext(), mediaCoder);
+        }
+        getArguments().putInt(PLAY_MEDIA_CODER, mediaCoder);
     }
 
     private void loadPlayUrl() {
@@ -126,7 +130,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         if (hasFocus) {
             play();
         } else {
-            pause();
+            //pause();
         }
     }
 
@@ -207,9 +211,8 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         editor.commit();
     }
 
-    @Override
     public void onMediaPlayerEvent(MediaPlayer.Event event) {
-        super.onMediaPlayerEvent(event);
+        //super.onMediaPlayerEvent(event);
         if (event.type == MediaPlayer.Event.Playing) {
             mIsPlay = true;
         } else if (event.type == MediaPlayer.Event.Stopped){
@@ -217,13 +220,12 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         }
     }
 
-    @Override
     public void play() {
         if (mRemainTime != null && mTotalTime >= Integer.parseInt(mRemainTime) && mMenuCallback != null) {
             CommonUtil.shortCenterToast(mMenuCallback, getResources().getString(R.string.lesson_had_reached_hint));
             return;
         }
-        super.play();
+        //super.play();
     }
 
     private void startTiming() {
@@ -245,7 +247,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                                         @Override
                                         public void run() {
                                             mTimer.cancel();
-                                            pause();
+                                            //pause();
                                             CourseDetailModel.sendTime(mLessonId, mPlayTime, null);
                                             if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
                                                 return;

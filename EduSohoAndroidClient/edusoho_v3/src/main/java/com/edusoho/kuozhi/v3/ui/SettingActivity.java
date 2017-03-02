@@ -24,9 +24,13 @@ import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.MediaUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
+import com.edusoho.videoplayer.util.VLCOptions;
 import com.umeng.analytics.MobclickAgent;
+
+import org.videolan.libvlc.util.AndroidUtil;
 
 import java.io.File;
 
@@ -34,6 +38,7 @@ import java.io.File;
  * Created by JesseHuang on 15/5/6.
  */
 public class SettingActivity extends ActionBarBaseActivity {
+
     private View viewScan;
     private View tvMsgNotify;
     private View tvAbout;
@@ -81,31 +86,19 @@ public class SettingActivity extends ActionBarBaseActivity {
         cbMediaCoderType.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                saveMediaCoderType(isChecked ? 0 : 1);
-                setMediaCoderText(isChecked ? 0 : 1);
+                MediaUtil.saveMediaSupportType(getBaseContext(), isChecked ? VLCOptions.SUPPORT_RATE: VLCOptions.DISABLED_RATE);
             }
         });
-        initMediaCoder();
+        initMediaSupportType();
     }
 
-    private void initMediaCoder() {
-        int type = getMediaCoderType();
-        setMediaCoderText(type);
-        cbMediaCoderType.setChecked(type == 0);
-    }
-
-    private void setMediaCoderText(int type) {
-        mediaCodecView.setText(String.format(getResources().getString(R.string.setting_mediacodec_type), type == 0 ? "软解" : "硬解"));
-    }
-
-    protected void saveMediaCoderType(int type) {
-        SharedPreferences sp = getSharedPreferences("mediaCoder", Context.MODE_PRIVATE);
-        sp.edit().putInt("type", type).commit();
-    }
-
-    protected int getMediaCoderType() {
-        SharedPreferences sp = getSharedPreferences("mediaCoder", Context.MODE_PRIVATE);
-        return sp.getInt("type", 0);
+    private void initMediaSupportType() {
+        int type = MediaUtil.getMediaSupportType(getBaseContext());
+        if (type == VLCOptions.NONE_RATE && AndroidUtil.isKitKatOrLater()) {
+            type = VLCOptions.SUPPORT_RATE;
+            MediaUtil.saveMediaSupportType(getBaseContext(), type);
+        }
+        cbMediaCoderType.setChecked(type == VLCOptions.SUPPORT_RATE);
     }
 
     private void initData() {
@@ -153,7 +146,7 @@ public class SettingActivity extends ActionBarBaseActivity {
     private View.OnClickListener scanClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            MobclickAgent.onEvent(mContext,"i_mySetting_sweep");
+            MobclickAgent.onEvent(mContext, "i_mySetting_sweep");
             mActivity.app.mEngine.runNormalPlugin("QrSchoolActivity", mActivity, null);
         }
     };
