@@ -96,6 +96,9 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment.Ref
     }
 
     private void switchFilterType(int type) {
+        if (getActivity() == null || getActivity().isFinishing()) {
+            return;
+        }
         if (type == ASK) {
             tvFilterName.setText(getString(R.string.question_post));
             loadAskedQuestionData();

@@ -621,4 +621,9 @@ public class Const {
     public static String LIVE_HOST = "http://124.160.104.76:10007";
 
     public static String REMAINT_TIME = "remain_time";
+
+    /**
+     * 获取老师教学
+     */
+    public static final String TEACHER_TEACH = "Course/getTeacherCourses?userId=%s";
 }
