@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.CourseCatalogueAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -32,6 +33,7 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
@@ -45,14 +47,16 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 /**
  * Created by DF on 2016/12/13.
  */
-public class CourseCatalogFragment extends Fragment implements ICourseStateListener {
+public class CourseCatalogFragment extends Fragment implements ICourseStateListener,MessageEngine.MessageCallback {
 
     private static final int ISMEMBER = 1;
     private static final int VISITOR = 2;
@@ -71,6 +75,8 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
     private List<CourseCatalogue.LessonsBean> lessonsBeanList;
     private CourseCatalogue.LessonsBean lessonsBean;
     private CourseStateCallback mCourseStateCallback;
+    private Queue<WidgetMessage> mUIMessageQueue;
+    private int mRunStatus;
 
     public CourseCatalogFragment() {
     }
@@ -79,6 +85,8 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCourseId = getArguments().getInt(Const.COURSE_ID);
+        mUIMessageQueue = new ArrayDeque<>();
+        EdusohoApp.app.registMsgSource(this);
     }
 
     @Override
@@ -101,12 +109,6 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
         tvSpace.setOnClickListener(getCacheCourse());
         tvSpace.setText(getString(R.string.course_catalog_space) + getRomAvailableSize());
         view.findViewById(R.id.tv_course).setOnClickListener(getCacheCourse());
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        updateLessonStatuses();
     }
 
     @Override
@@ -204,17 +206,13 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
         mAdapter.setOnItemClickListener(new CourseCatalogueAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, CourseCatalogue.LessonsBean lessonsBean) {
+                mAdapter.setmIsChange(false);
                 if (mCourseStateCallback.isExpired()) {
                     mCourseStateCallback.handlerCourseExpired();
                     return;
                 }
                 if ("flash".equals(lessonsBean.getType())) {
                     CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
-                    return;
-                }
-
-                if ("chapter".equals(lessonsBean.getType())
-                        || "unit".equals(lessonsBean.getType())) {
                     return;
                 }
                 User user = getAppSettingProvider().getCurrentUser();
@@ -232,10 +230,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                     CommonUtil.shortCenterToast(getActivity(), getString(R.string.unjoin_course_hint));
                     return;
                 }
-                if ("flash".equals(lessonsBean.getType())) {
-                    CommonUtil.shortCenterToast(getActivity(), "暂不支持该类型课时");
-                    return;
-                }
+                mAdapter.setmIsChange(true);
                 perpareStartLearnLesson(lessonsBean);
             }
         });
@@ -492,8 +487,42 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
         }
     }
 
+    @Override
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{
+                new MessageType(Const.LESSON_STATUS_REFRESH)
+        };
+    }
+
+    @Override
+    public int getMode() {
+        return 0;
+    }
+
     protected AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mRunStatus = MSG_RESUME;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mRunStatus = MSG_PAUSE;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (CourseCatalogueAdapter.sCourseCatalogue != null) {
+            CourseCatalogueAdapter.sCourseCatalogue = null;
+            CourseCatalogueAdapter.sLearnStatuses.clear();
+            CourseCatalogueAdapter.sLearnStatuses = null;
+        }
+        EdusohoApp.app.unRegistMsgSource(this);
+    }
 }
