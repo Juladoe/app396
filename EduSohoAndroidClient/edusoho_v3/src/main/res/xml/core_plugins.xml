@@ -256,6 +256,16 @@
         version="1.0" />
 
     <plugin
+        name="MyTeachFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyTeachFragment"
+        version="1.0" />
+
+    <plugin
+        name="TeachActivity"
+        package="com.edusoho.kuozhi.v3.ui.TeachActivity"
+        version="1.0" />
+
+    <plugin
         name="EdusohoMainService"
         package="com.edusoho.kuozhi.v3.service.EdusohoMainService"
         version="1.0" />

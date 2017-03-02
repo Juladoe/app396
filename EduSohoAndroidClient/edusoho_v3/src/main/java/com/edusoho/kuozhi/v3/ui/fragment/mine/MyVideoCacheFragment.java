@@ -46,7 +46,6 @@ public class MyVideoCacheFragment extends BaseFragment implements MineFragment.R
         viewBreakline.setVisibility(View.GONE);
 
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
         initData();
         loadData();
         srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {

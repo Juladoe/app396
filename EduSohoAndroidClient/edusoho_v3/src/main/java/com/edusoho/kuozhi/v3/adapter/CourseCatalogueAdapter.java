@@ -101,7 +101,7 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
         switch (viewType) {
             case TYPE_FOOTER:
                 View view = new View(mContext);
-                view.setLayoutParams(new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mContext, 80)));
+                view.setLayoutParams(new LinearLayoutCompat.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, AppUtil.dp2px(mContext, 30)));
                 return new FooterViewHolder(view);
             case TYPE_CHAPTER:
                 return new ChatperViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chapter_catalog, parent, false));
