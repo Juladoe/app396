@@ -28,6 +28,8 @@ import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.error.Error;
@@ -57,6 +59,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import cn.trinea.android.common.util.ToastUtils;
@@ -424,5 +427,31 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
     @Override
     public int getMode() {
         return REGIST_CLASS;
+    }
+
+    @Override
+    public void openQuestionActivity(final String fromType) {
+        CoreEngine.create(getApplicationContext()).runNormalPluginForResult("ThreadCreateActivity", this, MessageListFragment.SEND_THREAD, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mCourseId);
+                startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, "");
+                startIntent.putExtra(ThreadCreateActivity.TYPE, "question");
+                startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, fromType);
+            }
+        });
+    }
+
+    @Override
+    public void openDiscussActivity(final String fromType) {
+        CoreEngine.create(getApplicationContext()).runNormalPluginForResult("ThreadCreateActivity", this, MessageListFragment.SEND_THREAD, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mCourseId);
+                startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, "");
+                startIntent.putExtra(ThreadCreateActivity.TYPE, "discussion");
+                startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, fromType);
+            }
+        });
     }
 }

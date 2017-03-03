@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="82dp"
+        android:layout_marginTop="21dp"
         android:alpha="0.4"
         android:background="@drawable/btn_goto_bg"
         android:paddingBottom="10dp"
