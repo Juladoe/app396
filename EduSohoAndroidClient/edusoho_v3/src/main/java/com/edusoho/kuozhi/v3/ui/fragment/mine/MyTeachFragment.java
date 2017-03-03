@@ -15,8 +15,6 @@ import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 
-import java.util.List;
-
 /**
  * Created by DF on 2017/2/28.
  */
@@ -62,11 +60,11 @@ public class MyTeachFragment extends BaseFragment implements MineFragment.Refres
     }
 
     private void loadData(){
-        CourseDetailModel.getTeach(app.loginUser.id, new ResponseCallbackListener<List<TeachLesson>>() {
+        CourseDetailModel.getTeach(new ResponseCallbackListener<TeachLesson>() {
             @Override
-            public void onSuccess(List<TeachLesson> data) {
+            public void onSuccess(TeachLesson data) {
                 disabledLoadingView();
-                mMyTeachAdapter.setData(data);
+                mMyTeachAdapter.setData(data.getResources());
             }
 
             @Override

@@ -438,16 +438,15 @@ public class CourseDetailModel implements Serializable {
         });
     }
 
-    public static void getTeach(int id, final ResponseCallbackListener<List<TeachLesson>> callbackListener){
-        String url = String.format(Const.TEACHER_TEACH, id);
-        RequestUrl requestUrl = EdusohoApp.app.bindUrl(url, true);
+    public static void getTeach(final ResponseCallbackListener<TeachLesson> callbackListener){
+        RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.TEACHER_TEACH, true);
         EdusohoApp.app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                List<TeachLesson> apiResponse = ModelDecor.getInstance().
-                        decor(response, new TypeToken<List<TeachLesson>>() {
+                TeachLesson apiResponse = ModelDecor.getInstance().
+                        decor(response, new TypeToken<TeachLesson>() {
                         });
-                if (apiResponse != null && apiResponse.size() != 0) {
+                if (apiResponse != null && apiResponse.getResources().size() != 0) {
                     callbackListener.onSuccess(apiResponse);
                 }else {
                     callbackListener.onFailure("Error", response);
