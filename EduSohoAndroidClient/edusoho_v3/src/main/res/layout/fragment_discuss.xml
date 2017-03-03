@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.edusoho.kuozhi.v3.view.RefreshRecycleView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/lv_discuss"
             android:divider="@color/disabled_hint_color"
             android:scrollbars="none"

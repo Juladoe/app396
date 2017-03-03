@@ -3,10 +3,12 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.ClassroomDetail;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.handler.CourseStateCallback;
@@ -17,8 +19,6 @@ import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment;
-import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ClassroomUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
 
 /**
  * Created by Zhang on 2016/12/8.
@@ -89,13 +90,12 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                         public void onSuccess(ClassroomDetail data) {
                             mClassroomDetail = data;
                             if (mClassroomDetail.getMember() == null) {
-                                ((ClassCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
-                                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
+                                refreshFragmentViews(false);
                             } else {
-                                ((ClassCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(true);
-                                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(true);
+                                refreshFragmentViews(true);
                                 tabPage(300);
                             }
+                            setBottomLayoutState(mClassroomDetail.getMember() == null);
                             setLoadStatus(View.GONE);
                             refreshView();
                             if (data != null && data.getClassRoom() != null) {
@@ -159,7 +159,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
 
     @Override
     protected void goClass() {
-        ((EdusohoApp) getApplication()).mEngine.runNormalPlugin("ClassroomDiscussActivity", this, new PluginRunCallback() {
+        CoreEngine.create(this).runNormalPlugin("ClassroomDiscussActivity", this, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ClassroomDiscussActivity.FROM_ID, mClassroomId);
@@ -174,15 +174,25 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
             CourseUtil.notLogin();
             return;
         }
-        Teacher[] teachers = mClassroomDetail.getClassRoom().teachers;
-        final Teacher teacher;
-        if (teachers.length > 0) {
-            teacher = teachers[0];
-        } else {
-            CommonUtil.shortToast(this, "班级目前没有老师");
-            return;
-        }
-        ((EdusohoApp) getApplication()).mEngine.runNormalPlugin("ImChatActivity", this, new PluginRunCallback() {
+        CourseDetailModel.getTeacher(mClassroomId, new ResponseCallbackListener<Teacher[]>() {
+            @Override
+            public void onSuccess(Teacher[] data) {
+                if (data.length == 0) {
+                    CommonUtil.shortToast(ClassroomActivity.this, "班级目前没有老师");
+                } else {
+                    startImChat(data[0]);
+                }
+            }
+
+            @Override
+            public void onFailure(String code, String message) {
+                CommonUtil.shortToast(ClassroomActivity.this, "获取信息失败");
+            }
+        });
+    }
+
+    private void startImChat(final Teacher teacher) {
+        CoreEngine.create(this).runNormalPlugin("ImChatActivity", this, new PluginRunCallback() {
             @Override
             public void setIntentDate(Intent startIntent) {
                 startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
@@ -241,6 +251,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                             hideProcesDialog();
                         }
                     });
+            mIsJump = true;
         }
     }
 
@@ -249,13 +260,13 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
         if (mClassroomDetail == null) {
             return;
         }
+        Classroom classroom = mClassroomDetail.getClassRoom();
         final ShareTool shareTool =
                 new ShareTool(this
-                        , ((EdusohoApp) getApplication()).host + "/classroom/" + mClassroomDetail.getClassRoom().id
-                        , mClassroomDetail.getClassRoom().title
-                        , mClassroomDetail.getClassRoom().about.length() > 20 ? mClassroomDetail.getClassRoom().about.substring(0, 20)
-                        : mClassroomDetail.getClassRoom().about
-                        , mClassroomDetail.getClassRoom().largePicture);
+                        , ((EdusohoApp) getApplication()).host + "/classroom/" + classroom.id
+                        , classroom.title
+                        , classroom.about.length() > 20 ? classroom.about.substring(0, 20) : classroom.about
+                        , classroom.largePicture);
         new Handler((this.getMainLooper())).post(new Runnable() {
             @Override
             public void run() {

@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,10 +37,12 @@ import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.CourseActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.LessonDownloadingActivity;
+import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,7 +52,7 @@ import java.util.Map;
 /**
  * Created by DF on 2016/12/13.
  */
-public class CourseCatalogFragment extends Fragment {
+public class CourseCatalogFragment extends Fragment implements ICourseStateListener {
 
     private static final int ISMEMBER = 1;
     private static final int VISITOR = 2;
@@ -131,10 +132,12 @@ public class CourseCatalogFragment extends Fragment {
             @Override
             public void success(CourseCatalogue courseCatalogue) {
                 if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                    Log.d("CourseCatalogFragment", "activity is finish");
                     return;
                 }
                 mCourseCatalogue = courseCatalogue;
+                mAdapter = new CourseCatalogueAdapter(getActivity());
+                mLvCatalog.setLayoutManager(new LinearLayoutManager(getContext()));
+                mLvCatalog.setAdapter(mAdapter);
                 if (mCourseCatalogue.getLessons().size() != 0) {
                     initFirstLearnLesson();
                     initCustomChapterSetting();
@@ -157,7 +160,6 @@ public class CourseCatalogFragment extends Fragment {
             @Override
             public void success(CourseSetting courseSetting) {
                 if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                    Log.d("CourseCatalogFragment", "activity is finish");
                     return;
                 }
                 setLoadViewStatus(View.GONE);
@@ -197,9 +199,7 @@ public class CourseCatalogFragment extends Fragment {
         if (getActivity() == null || getActivity().isFinishing()) {
             return;
         }
-        mAdapter = new CourseCatalogueAdapter(getActivity(), mCourseCatalogue, isJoin, chapter, unit);
-        mLvCatalog.setLayoutManager(new LinearLayoutManager(getContext()));
-        mLvCatalog.setAdapter(mAdapter);
+        mAdapter.setData(mCourseCatalogue, isJoin, chapter, unit);
         reFreshColor();
         mAdapter.setOnItemClickListener(new CourseCatalogueAdapter.OnRecyclerViewItemClickListener() {
             @Override
@@ -267,6 +267,9 @@ public class CourseCatalogFragment extends Fragment {
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
             }
             reFreshColor();
+            if (lessonsBean == null) {
+                return;
+            }
             new LessonProvider(getContext()).getLesson(AppUtil.parseInt(lessonsBean.getId()))
                     .success(new NormalCallback<LessonItem>() {
                         @Override
@@ -361,20 +364,22 @@ public class CourseCatalogFragment extends Fragment {
                 .success(new NormalCallback<LessonItem>() {
                     @Override
                     public void success(LessonItem lessonItem) {
-                        if ("waiting".equals(lessonItem.mediaConvertStatus)) {
-                            CommonUtil.shortCenterToast(getActivity(), getString(R.string.lesson_loading));
-                            return;
-                        }
-                        Bundle bundle = new Bundle();
-                        bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
-                        MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
+                    if ("waiting".equals(lessonItem.mediaConvertStatus)) {
+                        CommonUtil.shortCenterToast(getActivity(), getString(R.string.lesson_loading));
+                        return;
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
+                    MessageEngine.getInstance().sendMsg(Const.COURSE_HASTRIAL, bundle);
+                    bundle.putSerializable(Const.COURSE_CHANGE_OBJECT, lessonItem);
+                    MessageEngine.getInstance().sendMsg(Const.COURSE_CHANGE, bundle);
                     }
                 }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError obj) {
-                CommonUtil.shortCenterToast(getActivity(), getString(R.string.lesson_loading_fail));
-            }
-        });
+                    @Override
+                    public void success(VolleyError obj) {
+                        CommonUtil.shortCenterToast(getActivity(), getString(R.string.course_loading_fail));
+                    }
+                });
     }
 
     public void perpareStartLearnLesson(CourseCatalogue.LessonsBean lessonsBean) {
@@ -400,7 +405,7 @@ public class CourseCatalogFragment extends Fragment {
     }
 
     public void startLessonActivity(String type, int lessonId, int courseId, int memberState) {
-        if (mCourseStateCallback.isExpired()) {
+        if (mCourseStateCallback != null && mCourseStateCallback.isExpired()) {
             mCourseStateCallback.handlerCourseExpired();
             return;
         }
@@ -446,6 +451,7 @@ public class CourseCatalogFragment extends Fragment {
     /**
      * 外部刷新数据
      */
+    @Override
     public void reFreshView(boolean mIsJoin) {
         mMemberStatus = mIsJoin ? ISMEMBER : VISITOR;
         isJoin = mIsJoin;
@@ -456,6 +462,7 @@ public class CourseCatalogFragment extends Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MobclickAgent.onEvent(getActivity(), "courseDetailsPage_cachingLessons");
                 if (mCourseStateCallback.isExpired()) {
                     mCourseStateCallback.handlerCourseExpired();
                     return;
@@ -488,4 +495,5 @@ public class CourseCatalogFragment extends Fragment {
     protected AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
+
 }

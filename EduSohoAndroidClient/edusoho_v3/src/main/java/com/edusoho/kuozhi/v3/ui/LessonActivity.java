@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -51,11 +52,11 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
-import com.edusoho.kuozhi.v3.util.server.CacheServer;
 import com.edusoho.kuozhi.v3.util.server.CacheServerFactory;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -63,6 +64,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
+
 import cn.trinea.android.common.util.DigestUtils;
 import cn.trinea.android.common.util.FileUtils;
 
@@ -598,7 +600,6 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        CacheServerFactory.getInstance().stop();
 
         Bundle bundle = new Bundle();
         bundle.putString("event", "lessonStatusRefresh");
@@ -612,6 +613,8 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         if (fragment != null) {
             mFragmentManager.beginTransaction().remove(fragment).commitAllowingStateLoss();
         }
+
+        CacheServerFactory.getInstance().stop();
     }
 
     @Override
@@ -619,12 +622,12 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         super.onResume();
         mLessonMenuHelper.updatePluginItemState();
         invalidateOptionsMenu();
-        app.resumePlayCacheServer();
+        CacheServerFactory.getInstance().resume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        app.pausePlayCacheServer();
+        CacheServerFactory.getInstance().pause();
     }
 }

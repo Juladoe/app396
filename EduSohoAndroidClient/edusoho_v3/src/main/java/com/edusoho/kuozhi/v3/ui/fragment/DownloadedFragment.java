@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -220,7 +219,7 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
                 item.setTitle("编辑");
                 mDownloadedAdapter.setSelectShow(false);
             } else {
-                MobclickAgent.onEvent(mContext, "i_cache_edit");
+                MobclickAgent.onEvent(mContext, "i_myCache_edit");
                 showBtnLayout();
                 item.setTitle("取消");
                 mDownloadedAdapter.setSelectShow(true);

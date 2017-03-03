@@ -15,16 +15,25 @@ import android.view.ViewParent;
 import android.view.WindowManager;
 
 import com.android.volley.VolleyError;
+import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
 import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
 import com.google.gson.reflect.TypeToken;
+
+import org.videolan.libvlc.MediaPlayer;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by suju on 16/12/16.
@@ -34,21 +43,32 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
 
     private int mLessonId;
     private int mCourseId;
+    private int mPlayTime;
+    private int mTotalTime;
     private long mSaveSeekTime;
+    private boolean mIsContinue;
+    private boolean mIsPlay;
+    private Timer mTimer;
     private BaseStudyDetailActivity mMenuCallback;
     private LessonMenuHelper mLessonMenuHelper;
     private SharedPreferences mSeekPositionSetting;
     private static final String SEEK_POSITION = "seek_position";
+    private String mRemainTime;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mLessonId = getArguments().getInt(Const.LESSON_ID);
         mCourseId = getArguments().getInt(Const.COURSE_ID);
+        mRemainTime = getArguments().getString(Const.REMAINT_TIME);
         mSeekPositionSetting = getContext().getSharedPreferences(SEEK_POSITION, Context.MODE_PRIVATE);
         mSaveSeekTime = mSeekPositionSetting.getLong(String.format("%d-%d", mCourseId, mLessonId), 0);
 
         setSeekPosition(mSaveSeekTime);
+        if (mRemainTime != null) {
+            startReturnData();
+            startTiming();
+        }
     }
 
     @Override
@@ -77,6 +97,8 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                     public void success(LessonItem lessonItem) {
                         changeHeaderViewStatus(false);
                         if (lessonItem == null || TextUtils.isEmpty(lessonItem.mediaUri)) {
+                            CommonUtil.shortToast(getContext(), "媒体资源不存在");
+                            ((ViewGroup)getView()).removeAllViews();
                             return;
                         }
                         Uri mediaUri = Uri.parse(lessonItem.mediaUri);
@@ -160,6 +182,13 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         if (mMenuCallback != null && mMenuCallback.getMenu() != null) {
             mMenuCallback.getMenu().setVisibility(false);
         }
+        if (mTimer != null) {
+            if (mIsContinue) {
+                CourseDetailModel.sendTime(mLessonId, mPlayTime, null);
+            }
+            mTimer.cancel();
+            mIsContinue = false;
+        }
     }
 
     @Override
@@ -173,9 +202,83 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     @Override
     protected void savePosition(long seekTime) {
         super.savePosition(seekTime);
-
         SharedPreferences.Editor editor = mSeekPositionSetting.edit();
         editor.putLong(String.format("%d-%d", mCourseId, mLessonId), seekTime);
         editor.commit();
+    }
+
+    @Override
+    public void onMediaPlayerEvent(MediaPlayer.Event event) {
+        super.onMediaPlayerEvent(event);
+        if (event.type == MediaPlayer.Event.Playing) {
+            mIsPlay = true;
+        } else if (event.type == MediaPlayer.Event.Stopped){
+            mIsPlay = false;
+        }
+    }
+
+    @Override
+    public void play() {
+        if (mRemainTime != null && mTotalTime >= Integer.parseInt(mRemainTime) && mMenuCallback != null) {
+            CommonUtil.shortCenterToast(mMenuCallback, getResources().getString(R.string.lesson_had_reached_hint));
+            return;
+        }
+        super.play();
+    }
+
+    private void startTiming() {
+        mIsContinue = true;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (mIsContinue) {
+                    try {
+                        Thread.sleep(1000);
+                        if (mIsPlay) {
+                            mPlayTime++;
+                            mTotalTime++;
+                            if (mTotalTime >= Integer.parseInt(mRemainTime)) {
+                                mIsContinue = false;
+                                mTimer.cancel();
+                                if (mMenuCallback != null) {
+                                    mMenuCallback.runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mTimer.cancel();
+                                            pause();
+                                            CourseDetailModel.sendTime(mLessonId, mPlayTime, null);
+                                            if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                                                return;
+                                            }
+                                            CommonUtil.shortCenterToast(mMenuCallback, getResources().getString(R.string.lesson_had_reached_hint));
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
+
+    private void startReturnData() {
+        mTimer = new Timer();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                CourseDetailModel.sendTime(mLessonId, mPlayTime, new ResponseCallbackListener<String>() {
+                    @Override
+                    public void onSuccess(String data) {
+                        mPlayTime = 0;
+                    }
+                    @Override
+                    public void onFailure(String code, String message) {}
+                });
+            }
+        };
+        mTimer.schedule(timerTask, 120000, 120000);
     }
 }

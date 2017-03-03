@@ -26,6 +26,9 @@ public class LessonModel {
             public void onResponse(String response) {
                 ApiResponse<Lesson> apiResponse = ModelDecor.getInstance().decor(response, new TypeToken<ApiResponse<Lesson>>() {
                 });
+                if (apiResponse == null) {
+                    return;
+                }
                 if (apiResponse.resources != null) {
                     callbackListener.onSuccess(apiResponse.resources);
                 } else if (apiResponse.error != null) {

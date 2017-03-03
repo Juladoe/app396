@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
-import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.sys.Cache;
 import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
+import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -40,9 +40,11 @@ import java.util.List;
  * Created by JesseHuang on 2017/2/10.
  */
 
-public class MyClassroomAdapter extends RecyclerView.Adapter<MyStudyFragment.ClassroomViewHolder> {
+public class MyClassroomAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final int EMPTY = 0;
+    private static final int NOT_EMPTY = 1;
+    private int mCurrentDataStatus;
     private Context mContext;
-
     private List<Classroom> mClassroomList;
 
     public MyClassroomAdapter(Context context) {
@@ -57,30 +59,46 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<MyStudyFragment.Cla
 
     public void clear() {
         mClassroomList.clear();
-        notifyDataSetChanged();
     }
 
     @Override
-    public MyStudyFragment.ClassroomViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_classroom, parent, false);
-        return new MyStudyFragment.ClassroomViewHolder(view);
+    public int getItemViewType(int position) {
+        return mCurrentDataStatus;
     }
 
     @Override
-    public void onBindViewHolder(MyStudyFragment.ClassroomViewHolder viewHolder, int position) {
-        final Classroom classroom = mClassroomList.get(position);
-        viewHolder.tvTitle.setText(String.valueOf(classroom.title));
-        ImageLoader.getInstance().displayImage(classroom.getLargePicture(), viewHolder.ivPic,
-                EdusohoApp.app.mOptions);
-        viewHolder.rLayoutItem.setTag(classroom.id);
-        viewHolder.rLayoutItem.setOnClickListener(getClassroomViewClickListener());
-        viewHolder.tvMore.setTag(classroom);
-        viewHolder.tvMore.setOnClickListener(getMoreClickListener());
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if (mCurrentDataStatus == NOT_EMPTY) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_my_classroom, parent, false);
+            return new MyStudyFragment.ClassroomViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.view_empty, parent, false);
+            return new MineFragment.EmptyViewHolder(view);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        if (mCurrentDataStatus == NOT_EMPTY) {
+            MyStudyFragment.ClassroomViewHolder classroomViewHolder = (MyStudyFragment.ClassroomViewHolder) viewHolder;
+            final Classroom classroom = mClassroomList.get(position);
+            classroomViewHolder.tvTitle.setText(String.valueOf(classroom.title));
+            ImageLoader.getInstance().displayImage(classroom.getLargePicture(), classroomViewHolder.ivPic, EdusohoApp.app.mOptions);
+            classroomViewHolder.rLayoutItem.setTag(classroom.id);
+            classroomViewHolder.rLayoutItem.setOnClickListener(getClassroomViewClickListener());
+            classroomViewHolder.tvMore.setTag(classroom);
+            classroomViewHolder.tvMore.setOnClickListener(getMoreClickListener());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return mClassroomList != null ? mClassroomList.size() : 0;
+        if (mClassroomList != null && mClassroomList.size() != 0) {
+            mCurrentDataStatus = NOT_EMPTY;
+            return mClassroomList.size();
+        }
+        mCurrentDataStatus = EMPTY;
+        return 1;
     }
 
     private View.OnClickListener getClassroomViewClickListener() {
@@ -138,11 +156,10 @@ public class MyClassroomAdapter extends RecyclerView.Adapter<MyStudyFragment.Cla
 
                     @Override
                     public void onShareClick(View v, Dialog dialog) {
-                        String about = Html.fromHtml(classroom.about).toString();
                         final ShareTool shareTool = new ShareTool(mContext
                                 , EdusohoApp.app.host + "/classroom/" + classroom.id
                                 , classroom.title
-                                , about.length() > 20 ? about.substring(0, 20) : about
+                                , classroom.about.length() > 20 ? classroom.about.substring(0, 20) : classroom.about
                                 , classroom.largePicture);
                         new Handler((mContext.getMainLooper())).post(new Runnable() {
                             @Override

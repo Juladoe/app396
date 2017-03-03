@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
+import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
@@ -28,7 +29,7 @@ import java.util.List;
  * Created by DF on 2016/12/15.
  */
 
-public class ClassCatalogFragment extends Fragment {
+public class ClassCatalogFragment extends Fragment implements ICourseStateListener {
 
     public boolean isJoin = false;
     public int mClassRoomId = 0;
@@ -61,19 +62,19 @@ public class ClassCatalogFragment extends Fragment {
         mClassRoomId = getArguments().getInt(Const.CLASSROOM_ID);
         setLoadStatus(View.VISIBLE);
         new ClassRoomProvider(getActivity()).getCourseList(mClassRoomId)
-        .success(new NormalCallback<List<Course>>() {
-            @Override
-            public void success(List<Course> list) {
-                mCourseList = list;
-                setLoadStatus(View.GONE);
-                if (mCourseList != null && !mCourseList.isEmpty()) {
-                    saveCourseListToCache(mCourseList);
-                    initView();
-                } else {
-                    setLessonEmptyViewVisibility(View.VISIBLE);
-                }
-            }
-        }).fail(new NormalCallback<VolleyError>() {
+                .success(new NormalCallback<List<Course>>() {
+                    @Override
+                    public void success(List<Course> list) {
+                        mCourseList = list;
+                        setLoadStatus(View.GONE);
+                        if (mCourseList != null && !mCourseList.isEmpty()) {
+                            saveCourseListToCache(mCourseList);
+                            initView();
+                        } else {
+                            setLessonEmptyViewVisibility(View.VISIBLE);
+                        }
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
                 setLoadStatus(View.GONE);
@@ -119,13 +120,13 @@ public class ClassCatalogFragment extends Fragment {
                 Bundle bundle = new Bundle();
                 bundle.putInt(Const.COURSE_ID, mCourseList.get(position).id);
                 bundle.putString(Const.SOURCE, getClassRoomName(mClassRoomId));
-                bundle.putBoolean(Const.IS_CHILD_COURSE, true);
                 CoreEngine.create(getContext()).runNormalPluginWithBundle("CourseActivity", getContext(), bundle);
             }
         });
     }
 
-    public void reFreshView(boolean mJoin){
+    @Override
+    public void reFreshView(boolean mJoin) {
         isJoin = mJoin;
         if (getActivity() != null) {
             initData();

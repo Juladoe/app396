@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,8 +19,7 @@ import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
-
-import org.sufficientlysecure.htmltextview.HtmlTextView;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.Arrays;
 
@@ -29,14 +27,13 @@ import java.util.Arrays;
  * Created by JesseHuang on 2017/2/8.
  */
 
-public class MyQuestionFragment extends BaseFragment implements MineFragment1.RefreshFragment {
+public class MyQuestionFragment extends BaseFragment implements MineFragment.RefreshFragment {
 
     private static int ASK = 1;
     private static int ANSWER = 2;
 
     private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
-    private View viewEmpty;
     private View rlayoutFilterType;
     private View llayoutFilterQuestionTypeList;
     private View viewCoverScreen;
@@ -46,6 +43,8 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
     private TextView tvAnswer;
 
     private MyThreadProvider mMyThreadProvider;
+    private MyAskQuestionAdapter mMyAskQuestionAdapter;
+    private MyAnswerQuestionAdapter mMyAnswerQuestionAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,9 +54,6 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
 
     @Override
     protected void initView(View view) {
-        viewEmpty = view.findViewById(R.id.view_empty);
-        viewEmpty.setVisibility(View.GONE);
-
         srlContent = (SwipeRefreshLayout) view.findViewById(R.id.srl_content);
         srlContent.setColorSchemeResources(R.color.primary_color);
 
@@ -86,7 +82,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
         srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                switchFilterType(ASK);
+                switchFilterType(getCurrentType());
             }
         });
     }
@@ -94,6 +90,9 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
     private void initData() {
         mMyThreadProvider = new MyThreadProvider(mContext);
         switchFilterType(ASK);
+        mMyAskQuestionAdapter = new MyAskQuestionAdapter(mContext);
+        mMyAnswerQuestionAdapter = new MyAnswerQuestionAdapter(mContext);
+        rvContent.setAdapter(mMyAskQuestionAdapter);
     }
 
     private void switchFilterType(int type) {
@@ -113,25 +112,17 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
     private void loadAskedQuestionData() {
         showLoadingView();
         RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.MY_CREATED_THREADS + "?start=0&limit=10000", true);
-        final MyAskQuestionAdapter askQuestionAdapter = new MyAskQuestionAdapter(mContext);
-        rvContent.setAdapter(askQuestionAdapter);
         mMyThreadProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
             @Override
             public void success(MyThreadEntity[] entities) {
                 disabledLoadingView();
-                if (entities.length == 0) {
-                    setNoCourseDataVisible(true);
-                } else {
-                    setNoCourseDataVisible(false);
-                    askQuestionAdapter.setData(Arrays.asList(entities));
-                }
-
+                mMyAskQuestionAdapter.setData(Arrays.asList(entities));
+                rvContent.setAdapter(mMyAskQuestionAdapter);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError error) {
                 disabledLoadingView();
-                setNoCourseDataVisible(true);
             }
         });
     }
@@ -139,38 +130,27 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
     private void loadAnsweredQuestionData() {
         showLoadingView();
         RequestUrl requestUrl = EdusohoApp.app.bindNewUrl(Const.MY_POSTED_THREADS + "?start=0&limit=10000", true);
-        final MyAnswerQuestionAdapter answerQuestionAdapter = new MyAnswerQuestionAdapter(mContext);
-        rvContent.setAdapter(answerQuestionAdapter);
         mMyThreadProvider.getMyCreatedThread(requestUrl).success(new NormalCallback<MyThreadEntity[]>() {
             @Override
             public void success(MyThreadEntity[] entities) {
                 disabledLoadingView();
-                if (entities.length == 0) {
-                    setNoCourseDataVisible(true);
-                } else {
-                    setNoCourseDataVisible(false);
-                    answerQuestionAdapter.setData(Arrays.asList(entities));
-                }
+                mMyAnswerQuestionAdapter.setData(Arrays.asList(entities));
+                rvContent.setAdapter(mMyAnswerQuestionAdapter);
             }
         }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError error) {
                 disabledLoadingView();
-                setNoCourseDataVisible(true);
             }
         });
     }
 
-    private void setNoCourseDataVisible(boolean visible) {
-        if (visible) {
-            viewEmpty.setVisibility(View.VISIBLE);
-            rvContent.setVisibility(View.GONE);
+    private int getCurrentType() {
+        if (tvFilterName.getText().toString().equals(getString(R.string.question_post))) {
+            return ASK;
         } else {
-            viewEmpty.setVisibility(View.GONE);
-            rvContent.setVisibility(View.VISIBLE);
+            return ANSWER;
         }
-        rlayoutFilterType.setVisibility(View.VISIBLE);
-        rlayoutFilterType.bringToFront();
     }
 
     private View.OnClickListener getClickTypeClickListener() {
@@ -180,6 +160,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
                 if (v.getId() == R.id.tv_question_post) {
                     switchFilterType(ASK);
                 } else if (v.getId() == R.id.tv_question_answer) {
+                    MobclickAgent.onEvent(mContext, "i_myQuestionAndAnswer_iReplied");
                     switchFilterType(ANSWER);
                 }
                 llayoutFilterQuestionTypeList.setVisibility(View.GONE);
@@ -216,6 +197,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
     @Override
     public void refreshData() {
         initData();
+        switchFilterType(ASK);
     }
 
     @Override
@@ -259,7 +241,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
 
     public static class ViewHolderAnswer extends RecyclerView.ViewHolder {
         public TextView tvTime;
-        public HtmlTextView tvContentAnswer;
+        public TextView tvContentAnswer;
         public TextView tvContentAsk;
         public TextView tvOrder;
         public View vLine;
@@ -268,7 +250,7 @@ public class MyQuestionFragment extends BaseFragment implements MineFragment1.Re
         public ViewHolderAnswer(View view) {
             super(view);
             tvTime = (TextView) view.findViewById(R.id.tv_time);
-            tvContentAnswer = (HtmlTextView) view.findViewById(R.id.tv_content_answer);
+            tvContentAnswer = (TextView) view.findViewById(R.id.tv_content_answer);
             tvContentAsk = (TextView) view.findViewById(R.id.tv_content_ask);
             tvOrder = (TextView) view.findViewById(R.id.tv_order);
             layout = view.findViewById(R.id.rlayout_answer_question_item_layout);

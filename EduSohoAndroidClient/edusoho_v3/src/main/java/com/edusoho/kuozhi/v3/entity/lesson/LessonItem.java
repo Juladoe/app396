@@ -36,6 +36,7 @@ public class LessonItem<T> implements Serializable {
     public int learnedNum;
     public int viewedNum;
     public int userId;
+    public String remainTime;
     public String createdTime;
     public String itemType;
     public String startTime;

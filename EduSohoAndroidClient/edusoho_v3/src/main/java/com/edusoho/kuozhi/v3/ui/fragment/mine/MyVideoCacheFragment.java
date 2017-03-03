@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -21,13 +22,12 @@ import com.edusoho.kuozhi.v3.util.M3U8Util;
  * Created by JesseHuang on 2017/2/10.
  */
 
-public class MyVideoCacheFragment extends BaseFragment implements MineFragment1.RefreshFragment {
+public class MyVideoCacheFragment extends BaseFragment implements MineFragment.RefreshFragment {
 
+    private SwipeRefreshLayout srlContent;
     private RecyclerView rvContent;
-    private View viewEmpty;
     private CourseCacheHelper mCourseCacheHelper;
     private MyVideoCacheAdapter mAdapter;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,22 +37,24 @@ public class MyVideoCacheFragment extends BaseFragment implements MineFragment1.
 
     @Override
     protected void initView(View view) {
+        srlContent = (SwipeRefreshLayout) view.findViewById(R.id.srl_content);
+        srlContent.setColorSchemeResources(R.color.primary_color);
+
         rvContent = (RecyclerView) view.findViewById(R.id.rv_content);
-        viewEmpty = view.findViewById(R.id.view_empty);
 
         View viewBreakline = view.findViewById(R.id.v_breakline);
         viewBreakline.setVisibility(View.GONE);
 
-        viewEmpty.setVisibility(View.GONE);
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvContent.setLayoutManager(new LinearLayoutManager(getActivity()));
         initData();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         loadData();
+        srlContent.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadData();
+            }
+        });
     }
 
     private void initData() {
@@ -69,31 +71,21 @@ public class MyVideoCacheFragment extends BaseFragment implements MineFragment1.
         mCourseCacheHelper = new CourseCacheHelper(getContext(), school.getDomain(), user.id);
 
         mAdapter.setData(mCourseCacheHelper.getLocalCourseList(M3U8Util.ALL, null, null));
-        if (mAdapter.getItemCount() == 0) {
-            setNoCourseDataVisible(true);
-        } else {
-            setNoCourseDataVisible(false);
-        }
+        disabledLoadingView();
     }
 
-    private void setNoCourseDataVisible(boolean visible) {
-        if (visible) {
-            viewEmpty.setVisibility(View.VISIBLE);
-            rvContent.setVisibility(View.GONE);
-        } else {
-            viewEmpty.setVisibility(View.GONE);
-            rvContent.setVisibility(View.VISIBLE);
-        }
+    private void disabledLoadingView() {
+        srlContent.setRefreshing(false);
     }
 
     @Override
     public void refreshData() {
-
+        loadData();
     }
 
     @Override
     public void setSwipeEnabled(int i) {
-
+        srlContent.setEnabled(i == 0);
     }
 
     public static class VideoCacheViewHolder extends RecyclerView.ViewHolder {

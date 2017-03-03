@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,13 +24,14 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.provider.CourseDiscussProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.ui.DiscussDetailActivity;
 import com.edusoho.kuozhi.v3.ui.WebViewActivity;
 import com.edusoho.kuozhi.v3.ui.chat.AbstractIMChatActivity;
 import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
+import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.view.RefreshRecycleView;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -38,17 +40,18 @@ import java.util.Queue;
  * Created by DF on 2017/1/4.
  */
 
-public class CourseDiscussFragment extends Fragment implements MessageEngine.MessageCallback, SwipeRefreshLayout.OnRefreshListener{
+public class CourseDiscussFragment extends Fragment implements
+        MessageEngine.MessageCallback, SwipeRefreshLayout.OnRefreshListener, ICourseStateListener, BaseStudyDetailActivity.WidgtState {
 
-    public View mLoadView;
-    public String title;
-    public CourseDiscussAdapter catalogueAdapter;
+    private View mLoadView;
+    private CourseDiscussAdapter catalogueAdapter;
     private Queue<WidgetMessage> mUIMessageQueue;
     private int mRunStatus;
-    private int mCourseId ;
-    private RefreshRecycleView mRvDiscuss;
+    private int mCourseId;
+    private RecyclerView mRvDiscuss;
     private View mEmpty;
     private boolean isJoin;
+    private boolean isFirst = true;
     private boolean isHave = true;
     private View mUnLoginView;
     private int i = 0;
@@ -83,13 +86,19 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
 
     protected void initView(View view) {
         mUnLoginView = view.findViewById(R.id.ll_no_login);
-        mRvDiscuss = (RefreshRecycleView) view.findViewById(R.id.lv_discuss);
+        mRvDiscuss = (RecyclerView) view.findViewById(R.id.lv_discuss);
         mLoadView = view.findViewById(R.id.ll_frame_load);
         mEmpty = view.findViewById(R.id.ll_discuss_empty);
         mSwipe = (SwipeRefreshLayout) view.findViewById(R.id.swipe_refresh);
+        mSwipe.setColorSchemeResources(R.color.primary_color);
         mSwipe.setOnRefreshListener(this);
+        catalogueAdapter = new CourseDiscussAdapter(getActivity());
+        mRvDiscuss.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRvDiscuss.setAdapter(catalogueAdapter);
+        setRecyclerViewListener();
         if (TextUtils.isEmpty(((EdusohoApp) getActivity().getApplication()).token)) {
             mUnLoginView.setVisibility(View.VISIBLE);
+            catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
             mSwipe.setEnabled(false);
         } else {
             initData();
@@ -97,71 +106,59 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
 
     }
 
-    public void initData() {
-        mLoadView.setVisibility(View.VISIBLE);
-        mSwipe.setEnabled(true);
-        mUnLoginView.setVisibility(View.GONE);
-        new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, 0)
-        .success(new NormalCallback<DiscussDetail>() {
-            @Override
-            public void success(DiscussDetail discussDetail) {
-                if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0) {
-                    initDiscuss(discussDetail);
-                } else {
-                    initDiscuss(null);
-                }
-            }
-        }).fail(new NormalCallback<VolleyError>() {
-            @Override
-            public void success(VolleyError obj) {
-                mLoadView.setVisibility(View.GONE);
-                setLessonEmptyViewVisibility(View.VISIBLE);
-            }
-        });
-    }
+    private void setRecyclerViewListener() {
+        mRvDiscuss.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            int lastVisibleItem;
 
-    private void initDiscuss(final DiscussDetail discussDetail) {
-        catalogueAdapter = new CourseDiscussAdapter(discussDetail == null ? null : discussDetail.getResources(), getActivity());
-        mRvDiscuss.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRvDiscuss.setAdapter(catalogueAdapter);
-        mLoadView.setVisibility(View.GONE);
-        if (discussDetail == null) {
-            mRvDiscuss.isHave = false;
-            mLoadView.setVisibility(View.GONE);
-            mEmpty.setVisibility(View.VISIBLE);
-            return;
-        }
-        mRvDiscuss.setMyRecyclerViewListener(new RefreshRecycleView.MyRecyclerViewListener() {
             @Override
-            public void onLoadMore() {
-                if (!isHave) {
-                    CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));
-                    mRvDiscuss.setLoadMoreComplete();
-                    return;
-                }
-                new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, start)
-                .success(new NormalCallback<DiscussDetail>() {
-                    @Override
-                    public void success(DiscussDetail discussDetail) {
-                        start += 20;
-                        if (discussDetail.getResources().size() != 0) {
-                            catalogueAdapter.mList.addAll(discussDetail.getResources());
-                            catalogueAdapter.notifyDataSetChanged();
-                        } else {
-                            isHave = false;
-                            mRvDiscuss.isHave = false;
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem == catalogueAdapter.getItemCount() - 1) {
+                    catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.LOADING_MORE);
+                    //设置正在加载更多
+                    if (!isHave && !mEmpty.isShown()) {
+                        if (isFirst) {
+                            isFirst = false;
                             CommonUtil.shortCenterToast(getContext(), getString(R.string.discuss_load_data_finish));
                         }
-                        mRvDiscuss.setLoadMoreComplete();
+                        catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+                        return;
                     }
-                }).fail(new NormalCallback<VolleyError>() {
-                    @Override
-                    public void success(VolleyError obj) {
-                        mRvDiscuss.setLoadMoreComplete();
-                    }
-                });
+                    new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, start)
+                            .success(new NormalCallback<DiscussDetail>() {
+                                @Override
+                                public void success(DiscussDetail discussDetail) {
+                                    if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                                        return;
+                                    }
+                                    start += 20;
+                                    if (discussDetail.getResources().size() < 20) {
+                                        isHave = false;
+                                    } else {
+                                        isHave = true;
+                                    }
+                                    catalogueAdapter.setStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+                                    catalogueAdapter.AddFooterItem(discussDetail.getResources());
+                                }
+                            }).fail(new NormalCallback<VolleyError>() {
+                        @Override
+                        public void success(VolleyError obj) {
+                            catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                //最后一个可见的ITEM
+                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
             }
         });
+
         catalogueAdapter.setOnItemClickListener(new CourseDiscussAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, DiscussDetail.ResourcesBean resourcesBean) {
@@ -174,12 +171,59 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
         });
     }
 
-    public void setLessonEmptyViewVisibility(int visibility) {
+    private void initData() {
+        mLoadView.setVisibility(View.VISIBLE);
+        mSwipe.setEnabled(true);
+        mUnLoginView.setVisibility(View.GONE);
+        new CourseDiscussProvider(getContext()).getCourseDiscuss(getActivity() instanceof CourseStudyDetailActivity, mCourseId, 0)
+                .success(new NormalCallback<DiscussDetail>() {
+                    @Override
+                    public void success(DiscussDetail discussDetail) {
+                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                            return;
+                        }
+                        if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0) {
+                            initDiscuss(discussDetail);
+                        } else {
+                            initDiscuss(null);
+                        }
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                mLoadView.setVisibility(View.GONE);
+                setLessonEmptyViewVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void initDiscuss(final DiscussDetail discussDetail) {
+        mLoadView.setVisibility(View.GONE);
+        if (discussDetail == null) {
+            isHave = false;
+            mLoadView.setVisibility(View.GONE);
+            mEmpty.setVisibility(View.VISIBLE);
+            catalogueAdapter.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+            return;
+        }
+        if (discussDetail.getResources().size() < 20) {
+            isHave = false;
+        }
+        catalogueAdapter.setStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+        catalogueAdapter.setDataAndNotifyData(discussDetail.getResources());
+
+    }
+
+    private void setLessonEmptyViewVisibility(int visibility) {
         mEmpty.setVisibility(visibility);
     }
 
+    @Override
     public void reFreshView(boolean isJoin) {
         this.isJoin = isJoin;
+        if (!TextUtils.isEmpty(((EdusohoApp) getActivity().getApplication()).token)) {
+            initData();
+        }
     }
 
     @Override
@@ -198,18 +242,12 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
         }
     }
 
-    public void setSwipeToRefreshEnabled(boolean enabled) {
-        if (mSwipe != null && mUnLoginView.getVisibility() == View.GONE) {
-            mSwipe.setEnabled(enabled);
-        }
-    }
-
-    public void startThreadActivity(DiscussDetail.ResourcesBean resourcesBean){
+    private void startThreadActivity(DiscussDetail.ResourcesBean resourcesBean) {
         if (isJoin) {
             Bundle bundle = new Bundle();
             bundle.putString(DiscussDetailActivity.THREAD_TARGET_TYPE, getActivity() instanceof CourseStudyDetailActivity ? "course" : "classroom");
             bundle.putInt(DiscussDetailActivity.THREAD_TARGET_ID, getActivity() instanceof CourseStudyDetailActivity ? Integer.parseInt(resourcesBean.getCourseId())
-                                        : Integer.parseInt(resourcesBean.getTargetId()));
+                    : Integer.parseInt(resourcesBean.getTargetId()));
             bundle.putInt(AbstractIMChatActivity.FROM_ID, Integer.parseInt(resourcesBean.getId()));
             bundle.putString(AbstractIMChatActivity.TARGET_TYPE, resourcesBean.getType());
             CoreEngine.create(getContext()).runNormalPluginWithBundle("DiscussDetailActivity", getActivity(), bundle);
@@ -223,19 +261,19 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
                 .success(new NormalCallback<DiscussDetail>() {
                     @Override
                     public void success(DiscussDetail discussDetail) {
+                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+                            return;
+                        }
                         mSwipe.setRefreshing(false);
                         if (discussDetail.getResources() != null && discussDetail.getResources().size() != 0 && catalogueAdapter != null) {
-                            catalogueAdapter.mList.clear();
-                            catalogueAdapter.mList = discussDetail.getResources();
-                            catalogueAdapter.notifyDataSetChanged();
+                            catalogueAdapter.reFreshData(discussDetail.getResources());
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
-                    @Override
-                    public void success(VolleyError obj) {
-                        mSwipe.setRefreshing(false);
-                        setLessonEmptyViewVisibility(View.VISIBLE);
-                    }
+            @Override
+            public void success(VolleyError obj) {
+                mSwipe.setRefreshing(false);
+            }
         });
     }
 
@@ -265,5 +303,12 @@ public class CourseDiscussFragment extends Fragment implements MessageEngine.Mes
     public void onStop() {
         super.onStop();
         i = 0;
+    }
+
+    @Override
+    public void setTopViewVisibility(boolean enabled) {
+        if (mSwipe != null && mUnLoginView.getVisibility() == View.GONE) {
+            mSwipe.setEnabled(enabled);
+        }
     }
 }

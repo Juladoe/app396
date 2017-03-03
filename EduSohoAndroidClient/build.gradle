@@ -21,10 +21,10 @@ allprojects {
         jcenter()
         maven {
         	credentials {
-	            username 'admin'
-	            password 'kaifazhe'
+	            username 'deployment'
+	            password 'kaifazhe504'
         	}
-        	url "http://192.168.12.7:8081/repository/maven-snapshots/"
+        	url "http://maven.edusoho.cn:8081/nexus/content/repositories/snapshots/"
         }
     }
 }

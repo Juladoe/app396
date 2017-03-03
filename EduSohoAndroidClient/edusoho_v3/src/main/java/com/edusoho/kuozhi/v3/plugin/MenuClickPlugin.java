@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.plugin.appview.CourseConsultAction;
 import com.edusoho.kuozhi.v3.plugin.appview.GenseeLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.LonginusLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.SooonerLivePlayerAction;
+import com.edusoho.kuozhi.v3.plugin.appview.TalkFunLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.ThreadCreateAction;
 import com.edusoho.kuozhi.v3.plugin.appview.ThreadDiscussAction;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
@@ -470,16 +471,18 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
             new LonginusLivePlayerAction(mActivity).invoke(bundle);
         } else if ("genseeLivePlayer".equals(name)) {
             new GenseeLivePlayerAction(mActivity).invoke(bundle);
+        } else if ("talkfunLivePlayer".equals(name)) {
+            new TalkFunLivePlayerAction(mActivity).invoke(bundle);
         }
     }
 
     @JsAnnotation
-    public JSONArray getSupportLiveClients(JSONArray args, BridgeCallback callbackContext) throws JSONException{
+    public JSONArray getSupportLiveClients(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         JSONArray result = new JSONArray();
         result.put("gensee");
         result.put("sooner");
         result.put("longinus");
-
+        result.put("talkfun");
         return result;
     }
 
@@ -492,8 +495,8 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
                     "ClassroomDetailActivity", mActivity, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(Const.FROM_ID,chatRoomId);
-                            startIntent.putExtra(Const.ACTIONBAR_TITLE,"班级详情");
+                            startIntent.putExtra(Const.FROM_ID, chatRoomId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE, "班级详情");
                         }
                     }
             );
@@ -502,8 +505,8 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
                     "CourseDetailActivity", mActivity, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(Const.FROM_ID,chatRoomId);
-                            startIntent.putExtra(Const.ACTIONBAR_TITLE,"课程详情");
+                            startIntent.putExtra(Const.FROM_ID, chatRoomId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE, "课程详情");
                         }
                     }
             );

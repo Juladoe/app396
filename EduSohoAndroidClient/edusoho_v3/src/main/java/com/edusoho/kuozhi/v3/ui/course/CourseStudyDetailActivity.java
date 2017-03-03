@@ -50,11 +50,12 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by suju on 17/2/7.
  */
-public class CourseStudyDetailActivity extends BaseStudyDetailActivity implements CourseStateCallback {
+public class CourseStudyDetailActivity extends BaseStudyDetailActivity implements CourseStateCallback, BaseStudyDetailActivity.WidgtState {
     public CourseDetail mCourseDetail;
     private int mCourseId;
     private boolean mIsFavorite = false;
@@ -66,7 +67,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
         initView();
         initData();
-        startCacheServer();
     }
 
     @Override
@@ -81,7 +81,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     @Override
     protected void initData() {
         if (mCourseId == 0) {
-            CommonUtil.shortToast(getBaseContext(), "课程不存在");
+            CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_unexit));
             finish();
             return;
         }
@@ -90,15 +90,15 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                     @Override
                     public void onSuccess(CourseDetail data) {
                         mCourseDetail = data;
+                        mIsClassroomCourse = data.getCourse().parentId != 0;
                         if (mCourseDetail.getMember() == null) {
-                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
-                            ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
+                            refreshFragmentViews(false);
                             setLoadStatus(View.GONE);
                         } else {
-                            ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(true);
-                            ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(true);
+                            refreshFragmentViews(true);
                             tabPage(300);
                         }
+                        setBottomLayoutState(mCourseDetail.getMember() == null);
                         mTitle = mCourseDetail.getCourse().title;
                         refreshView();
                         if (data != null && data.getCourse() != null) {
@@ -108,8 +108,8 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
                     @Override
                     public void onFailure(String code, String message) {
-                        if ("课程不存在".equals(message)) {
-                            CommonUtil.shortToast(CourseStudyDetailActivity.this, "课程不存在");
+                        if (message.contains("课程不存在") || message.contains("课程未发布")) {
+                            CommonUtil.shortToast(CourseStudyDetailActivity.this, message);
                             finish();
                         }
                     }
@@ -130,6 +130,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void consult() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_consultation");
         if (((EdusohoApp) getApplication()).loginUser == null) {
             CourseUtil.notLogin();
             return;
@@ -139,7 +140,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         if (teachers.length > 0) {
             teacher = teachers[0];
         } else {
-            CommonUtil.shortToast(this, "课程目前没有老师");
+            CommonUtil.shortToast(this, getResources().getString(R.string.lesson_no_teacher));
             return;
         }
         CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
@@ -154,6 +155,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void grade() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_evaluation");
         CoreEngine.create(getBaseContext()).runNormalPluginForResult("ReviewActivity", this, ReviewActivity.REVIEW_RESULT
                 , new PluginRunCallback() {
                     @Override
@@ -166,6 +168,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void add() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_joinTheCourse");
         if (mCourseId != 0) {
             if (!"1".equals(mCourseDetail.getCourse().buyable)) {
                 CommonUtil.shortToast(CourseStudyDetailActivity.this, getResources()
@@ -213,11 +216,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                             hideProcesDialog();
                         }
                     });
+            mIsJump = true;
         }
     }
 
     @Override
     protected void collect() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_collection");
         if (mIsFavorite) {
             CourseUtil.uncollectCourse(mCourseId, new CourseUtil.OnCollectSuccessListener() {
                 @Override
@@ -243,17 +248,17 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     protected void share() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_share");
         if (mCourseDetail == null) {
             return;
         }
+        Course course = mCourseDetail.getCourse();
         final ShareTool shareTool =
                 new ShareTool(this
-                        , ((EdusohoApp) getApplication()).host + "/course/" + mCourseDetail.getCourse().id
-                        , mCourseDetail.getCourse().title
-                        , mCourseDetail.getCourse().about.length() > 20 ?
-                        mCourseDetail.getCourse().about.substring(0, 20)
-                        : mCourseDetail.getCourse().about
-                        , mCourseDetail.getCourse().middlePicture);
+                        , ((EdusohoApp) getApplication()).host + "/course/" + course.id
+                        , course.title
+                        , course.about.length() > 20 ? course.about.substring(0, 20) : course.about
+                        , course.middlePicture);
         new Handler((((EdusohoApp) getApplication()).mContext.getMainLooper())).post(new Runnable() {
             @Override
             public void run() {
@@ -304,12 +309,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         Member member = mCourseDetail.getMember();
         if (member == null) {
             mIsMemder = false;
-            if (getIntent().getBooleanExtra(Const.IS_CHILD_COURSE, false)) {
-                mBottomLayout.setVisibility(View.GONE);
-            } else {
-                mAddLayout.setVisibility(View.VISIBLE);
-                mBottomLayout.setVisibility(View.VISIBLE);
-            }
+            setBottomVisible(mIsClassroomCourse);
             mTvInclass.setVisibility(View.GONE);
             initViewPager();
             mIvGrade.setVisibility(View.GONE);
@@ -329,6 +329,21 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         }
     }
 
+    private void setBottomVisible(boolean isClassroomCourse) {
+        if (isClassroomCourse) {
+            mBottomLayout.setVisibility(View.GONE);
+        } else {
+            mAddLayout.setVisibility(View.VISIBLE);
+            mBottomLayout.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startCacheServer();
+    }
+
     @Override
     public void finish() {
         super.finish();
@@ -337,7 +352,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     @Override
-    protected void courseChange(LessonItem lessonItem) {
+    protected void courseChange(final LessonItem lessonItem) {
         mContinueLessonItem = lessonItem;
         coursePause();
         courseStart();
@@ -393,12 +408,16 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     private void playVideoLesson(LessonItem lessonItem) {
+        if (mContinueLessonItem.remainTime != null && Integer.parseInt(mContinueLessonItem.remainTime) <= 0) {
+            CommonUtil.shortCenterToast(getApplicationContext(), getResources().getString(R.string.lesson_had_reached_hint));
+            return;
+        }
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
         LessonVideoPlayerFragment fragment = new LessonVideoPlayerFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(Const.COURSE_ID, mCourseId);
         bundle.putInt(Const.LESSON_ID, lessonItem.id);
+        bundle.putString(Const.REMAINT_TIME, lessonItem.remainTime);
         fragment.setArguments(bundle);
         transaction.replace(R.id.fl_header_container, fragment);
         transaction.commitAllowingStateLoss();
@@ -424,7 +443,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
         mPlayLastLayout.setVisibility(View.GONE);
         mPlayButtonLayout.setVisibility(View.VISIBLE);
         if (mCourseDetail != null && mCourseDetail.getMember() != null) {
-            if ("1".equals(mCourseDetail.getMember().isLearned)) {
+            if ("2".equals(state)) {
                 mTvPlay.setText(R.string.txt_study_finish);
                 mTvPlay2.setText(R.string.txt_study_finish);
                 mPlayLayout.setBackgroundResource(R.drawable.shape_play_background);
@@ -490,16 +509,16 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     private void showCourseExpireDlg() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(((EdusohoApp) getApplication()).mContext);
-        builder.setTitle("提醒")
-                .setMessage("课程已过期，是否重新加入?")
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.lesson_join_hint)
+                .setMessage(R.string.lesson_has_past_hint)
+                .setPositiveButton(R.string.lesson_join_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         unLearnCourse();
                     }
                 })
-                .setNegativeButton("取消", null)
+                .setNegativeButton(R.string.lesson_join_cancel, null)
                 .create()
                 .show();
     }
@@ -521,13 +540,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                             ((CourseCatalogFragment) mSectionsPagerAdapter.getItem(1)).reFreshView(false);
                             ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).reFreshView(false);
                         } else {
-                            CommonUtil.shortToast(((EdusohoApp) getApplication()).mContext, "退出失败");
+                            CommonUtil.shortToast(((EdusohoApp) getApplication()).mContext, getResources().getString(R.string.lesson_quit_fail));
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
             @Override
             public void success(VolleyError obj) {
-                CommonUtil.shortToast(getBaseContext(), "退出失败");
+                CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_quit_fail));
             }
         });
     }
@@ -538,10 +557,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
     }
 
     private boolean validCourseIsExpird(Member courseMember) {
-        if (courseMember == null) {
-            return false;
-        }
-        return courseMember.deadline < 0;
+        return courseMember != null && courseMember.deadline < 0;
     }
 
     @Override
@@ -560,9 +576,21 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
     @Override
     public void handlerCourseExpired() {
+        showCourseExpireDlg();
     }
 
     protected AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    @Override
+    public void setTopViewVisibility(boolean isTop) {
+        if (isTop) {
+            mIvGrade.setVisibility(View.GONE);
+            mPlayLayout2.setVisibility(View.VISIBLE);
+        } else {
+            mIvGrade.setVisibility(mIsPlay ? View.GONE : View.VISIBLE);
+            mPlayLayout2.setVisibility(View.GONE);
+        }
     }
 }

@@ -7,13 +7,21 @@ package com.edusoho.kuozhi.v3.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
+import android.view.View;
+import android.view.ViewGroup;
 
+import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import java.lang.ref.WeakReference;
 
 public class ScrollableAppBarLayout extends AppBarLayout {
+
+    private boolean isResetTop;
     private AppBarLayout.Behavior mBehavior;
     private WeakReference<CoordinatorLayout> mParent;
     private ToolbarChange mQueuedChange = ToolbarChange.NONE;
@@ -37,6 +45,43 @@ public class ScrollableAppBarLayout extends AppBarLayout {
         }
     }
 
+    private synchronized void setStatusBarFits() {
+        if (getPaddingTop() <= 0) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            setPadding(0, 0, 0, 0);
+            View view = findToolbarView(this);
+            if (view != null) {
+                int top = AppUtil.dp2px(getContext(), 25);
+                view.setPadding(0, top, 0, 0);
+                ViewGroup.LayoutParams lp = view.getLayoutParams();
+                lp.height = getContext().getResources().getDimensionPixelOffset(R.dimen.action_bar_height) + top;
+                view.setLayoutParams(lp);
+            }
+        }
+    }
+
+    private View findToolbarView(ViewGroup target) {
+        int count = target.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = target.getChildAt(i);
+            if (child instanceof Toolbar) {
+                return child;
+            }
+            if (child instanceof ViewGroup) {
+                child = findToolbarView((ViewGroup) child);
+                if (child instanceof Toolbar) {
+                    return child;
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -51,6 +96,8 @@ public class ScrollableAppBarLayout extends AppBarLayout {
         if (r - l > 0 && b - t > 0 && mAfterFirstDraw && mQueuedChange != ToolbarChange.NONE) {
             analyzeQueuedChange();
         }
+
+        setStatusBarFits();
     }
 
     @Override
@@ -103,7 +150,7 @@ public class ScrollableAppBarLayout extends AppBarLayout {
 
     private void performCollapsingWithoutAnimation() {
         if (mParent.get() != null) {
-            mBehavior.onNestedPreScroll(mParent.get(), this, null, 0, getHeight()/2, new int[]{0, 0});
+            mBehavior.onNestedPreScroll(mParent.get(), this, null, 0, getHeight() / 2, new int[]{0, 0});
         }
     }
 

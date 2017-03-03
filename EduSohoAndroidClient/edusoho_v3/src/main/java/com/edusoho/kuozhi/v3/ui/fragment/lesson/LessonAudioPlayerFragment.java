@@ -70,7 +70,10 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
         .success(new NormalCallback<LessonItem>() {
             @Override
             public void success(LessonItem lessonItem) {
-                if (!isAdded() || isDetached()) {
+                if (getActivity() == null
+                        || getActivity().isFinishing()
+                        || !isAdded()
+                        || isDetached()) {
                     return;
                 }
                 changeToolBarState(false);
@@ -111,6 +114,9 @@ public class LessonAudioPlayerFragment extends AudioPlayerFragment {
             @Override
             public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
                 super.onLoadingComplete(imageUri, view, loadedImage);
+                if (getActivity() == null || getActivity().isFinishing() || isDetached()) {
+                    return;
+                }
                 Bitmap maskBg = ImageUtil.maskImage(getContext(), loadedImage);
                 containerView.setBackground(new BitmapDrawable(maskBg));
             }

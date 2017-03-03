@@ -91,7 +91,7 @@
         android:id="@+id/srl_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rlayout_filter_type">
+        android:layout_below="@+id/v_breakline">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rv_content"
@@ -102,10 +102,5 @@
             android:paddingRight="15dp" />
 
     </android.support.v4.widget.SwipeRefreshLayout>
-
-    <include
-        android:id="@id/view_empty"
-
-        layout="@layout/viewpager_empty" />
 
 </RelativeLayout>

@@ -1,23 +1,22 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.animation.ObjectAnimator;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -29,21 +28,23 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.SectionsPagerAdapter;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.entity.lesson.Lesson;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
-import com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity;
+import com.edusoho.kuozhi.v3.ui.course.ICourseStateListener;
 import com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.util.WeakReferenceHandler;
 import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 
 import extensions.PagerSlidingTabStrip;
@@ -53,7 +54,7 @@ import extensions.PagerSlidingTabStrip;
  */
 
 public abstract class BaseStudyDetailActivity extends AppCompatActivity
-        implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback, AppBarLayout.OnOffsetChangedListener{
+        implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback, AppBarLayout.OnOffsetChangedListener {
 
     protected MenuPop mMenuPop;
     protected int mRunStatus;
@@ -76,7 +77,6 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected TextView mTvAdd;
     protected TextView mTvInclass;
     protected PagerSlidingTabStrip mTabLayout;
-    protected SystemBarTintManager tintManager;
     protected Queue<WidgetMessage> mUIMessageQueue;
     protected View mMenu;
     protected TextView mIvGrade;
@@ -98,21 +98,21 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     protected WeakReferenceHandler mHandler = new WeakReferenceHandler(this);
     protected boolean mIsPlay = false;
     protected boolean mIsMemder = false;
+    protected boolean mIsJump = false;
     protected String mTitle;
     public int mMediaViewHeight = 210;
     protected static final int TAB_PAGE = 0;
     protected static final int LOADING_END = 1;
+    protected boolean mIsClassroomCourse = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Window window = getWindow();
-        window.addFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-
         setContentView(R.layout.activity_course_study_layout);
         mUIMessageQueue = new ArrayDeque<>();
         ((EdusohoApp) getApplication()).registMsgSource(this);
+        ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
     }
 
     public MenuPop getMenu() {
@@ -169,6 +169,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                     }
                 });
 
+
         setLoadStatus(View.VISIBLE);
         initEvent();
         mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -187,12 +188,31 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     protected String[] getTitleArray() {
-        return new String [] {
+        return new String[]{
                 "简介", "目录", "问答"
         };
     }
 
     protected abstract String[] getFragmentArray();
+
+    protected void setBottomLayoutState(boolean isShow) {
+        mBottomLayout.setVisibility(isShow ? View.VISIBLE : View.GONE);
+        CoordinatorLayout.LayoutParams lp = (CoordinatorLayout.LayoutParams) mViewPager.getLayoutParams();
+        lp.bottomMargin = isShow ? AppUtil.dp2px(getBaseContext(), 50) : 0;
+        mViewPager.setLayoutParams(lp);
+    }
+
+    protected void refreshFragmentViews(boolean isJoin) {
+        List<Fragment> list = getSupportFragmentManager().getFragments();
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+        for (Fragment fragment : list) {
+            if (fragment instanceof ICourseStateListener) {
+                ((ICourseStateListener)fragment).reFreshView(isJoin);
+            }
+        }
+    }
 
     private void initEvent() {
         mBackView.setOnClickListener(this);
@@ -215,12 +235,21 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 setBottomLayoutVisible(position, mIsMemder);
                 showEditTopic(position);
+                statTimes(position);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
             }
         });
+    }
+
+    protected void statTimes(int position){
+        if (position == 1) {
+            MobclickAgent.onEvent(this, "courseDetailsPage_contents");
+        } else if(position == 2) {
+            MobclickAgent.onEvent(this, "courseDetailsPage_Q&A");
+        }
     }
 
     @Override
@@ -243,12 +272,17 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             goClass();
         } else if (v.getId() == R.id.tv_edit_topic) {
             showEditPop();
-        } else if (v.getId() == R.id.back){
-            finish();
+        } else if (v.getId() == R.id.back) {
+            if (mIsFullScreen) {
+                fullScreen();
+            } else {
+                finish();
+            }
         }
     }
 
-    protected void grade() {}
+    protected void grade() {
+    }
 
     protected abstract void goClass();
 
@@ -277,6 +311,10 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        if (mIsJump) {
+            mIsJump = false;
+            hideProcesDialog();
+        }
         mRunStatus = MSG_RESUME;
         mAppBarLayout.addOnOffsetChangedListener(this);
     }
@@ -289,8 +327,8 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    public void finish() {
+        super.finish();
         ((EdusohoApp) getApplication()).unRegistMsgSource(this);
     }
 
@@ -301,34 +339,23 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             case Const.FULL_SCREEN:
                 fullScreen();
                 break;
-            case Const.COURSE_START:
-                courseStart();
-                break;
-            case Const.COURSE_PAUSE:
-                coursePause();
-                break;
-            case Const.COURSE_REFRESH:
-                initData();
-                break;
-            case Const.SCREEN_LOCK:
-                screenLock();
-                break;
             case Const.COURSE_CHANGE:
                 courseChange((LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
             case Const.COURSE_HASTRIAL:
-                courseHastrial(
-                        bundle.getString(Const.COURSE_CHANGE_STATE),
-                        (LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT)
-                );
+                courseHastrial(bundle.getString(Const.COURSE_CHANGE_STATE), (LessonItem) bundle.getSerializable(Const.COURSE_CHANGE_OBJECT));
                 break;
-            case Const.PAY_SUCCESS:
-                if (mRunStatus == MSG_RESUME) {
-                    saveMessage(message);
-                    return;
-                }
-                initData();
+            case Const.LOGIN_SUCCESS:
+            case Const.WEB_BACK_REFRESH:
+                reFreshFromWeb0rLogin();
+                break;
         }
+    }
+
+    private void reFreshFromWeb0rLogin() {
+        setLoadStatus(View.GONE);
+        hideProcesDialog();
+        initData();
     }
 
     private void changeToolbarStyle(boolean isTop) {
@@ -336,16 +363,13 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             setToolbarLayoutBackground(getResources().getColor(R.color.textIcons));
             mShareView.setTextColor(getResources().getColor(R.color.textPrimary));
             mBackView.setTextColor(getResources().getColor(R.color.textPrimary));
-            if (BaseStudyDetailActivity.this instanceof CourseStudyDetailActivity) {
-                mPlayLayout2.setVisibility(View.VISIBLE);
-            }
         } else {
             setToolbarLayoutBackground(getResources().getColor(R.color.transparent));
             mShareView.setTextColor(getResources().getColor(R.color.textIcons));
             mBackView.setTextColor(getResources().getColor(R.color.textIcons));
-            if (BaseStudyDetailActivity.this instanceof CourseStudyDetailActivity) {
-                mPlayLayout2.setVisibility(View.GONE);
-            }
+        }
+        if (this instanceof BaseStudyDetailActivity.WidgtState) {
+            ((BaseStudyDetailActivity.WidgtState) this).setTopViewVisibility(isTop);
         }
     }
 
@@ -353,9 +377,13 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
         if (mViewPager.getCurrentItem() == 2) {
             if (i == 0) {
-                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(true);
+                if (((AppBarLayout.LayoutParams) mToolBarLayout.getLayoutParams()).getScrollFlags() == 0) {
+                    ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(false);
+                } else {
+                    ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(true);
+                }
             } else {
-                ((CourseDiscussFragment) mSectionsPagerAdapter.getItem(2)).setSwipeToRefreshEnabled(false);
+                ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(false);
             }
         }
         int maxHeight = getResources().getDimensionPixelOffset(R.dimen.action_bar_height);
@@ -366,6 +394,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         }
         changeToolbarStyle(true);
     }
+
 
     protected void courseHastrial(String state, LessonItem lessonItem) {
     }
@@ -388,12 +417,18 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             }
             if (mIsFullScreen) {
                 fullScreen();
+                return true;
             }
         }
         return super.onKeyDown(keyCode, event);
     }
 
     protected void courseStart() {
+        if ("开始试学".equals(mTvPlay.getText().toString())) {
+            MobclickAgent.onEvent(this, "courseDetailsPage_tryItOut");
+        } else if ("继续学习".equals(mTvPlay.getText().toString())) {
+            MobclickAgent.onEvent(this, "courseDetailsPage_continueLearning");
+        }
         if (!mIsFullScreen) {
             mAppBarLayout.expandToolbar(true);
             AppBarLayout.LayoutParams lp = (AppBarLayout.LayoutParams) mToolBarLayout.getLayoutParams();
@@ -431,7 +466,8 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     private void fullScreen() {
         ViewGroup.LayoutParams params = mMediaLayout.getLayoutParams();
         if (!mIsFullScreen) {
-            getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
+            MobclickAgent.onEvent(this, "videoClassroom_fullScreen");
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             mIsFullScreen = true;
             params.height = AppUtil.getWidthPx(this);
             params.width = -1;
@@ -440,16 +476,16 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             mTvInclass.setVisibility(View.GONE);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else {
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             mIsFullScreen = false;
-            params.width = -1;
+            params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             params.height = AppUtil.dp2px(this, mMediaViewHeight);
             mMediaLayout.setLayoutParams(params);
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             if (!mIsMemder) {
-                mBottomLayout.setVisibility(View.GONE);
-            } else {
                 mBottomLayout.setVisibility(View.VISIBLE);
+            } else {
+                mBottomLayout.setVisibility(View.GONE);
             }
         }
     }
@@ -457,33 +493,14 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     @Override
     public MessageType[] getMsgTypes() {
         return new MessageType[]{
-                new MessageType(Const.SCROLL_STATE_SAVE),
                 new MessageType(Const.COURSE_HASTRIAL),
                 new MessageType(Const.FULL_SCREEN),
-                new MessageType(Const.COURSE_START),
                 new MessageType(Const.COURSE_CHANGE),
-                new MessageType(Const.COURSE_REFRESH),
-                new MessageType(Const.COURSE_PAUSE),
-                new MessageType(Const.SCREEN_LOCK),
-                new MessageType(Const.COURSE_HIDE_BAR),
-                new MessageType(Const.PAY_SUCCESS, MessageType.UI_THREAD)
+                new MessageType(Const.LOGIN_SUCCESS),
+                new MessageType(Const.WEB_BACK_REFRESH)
         };
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_REFRESH) {
-            setLoadStatus(View.GONE);
-            hideProcesDialog();
-            initData();
-        }
-        if (requestCode == RESULT_LOGIN) {
-            setLoadStatus(View.GONE);
-            hideProcesDialog();
-            initData();
-        }
-    }
 
     protected void showProcessDialog() {
         if (mProcessDialog == null) {
@@ -559,6 +576,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     private boolean isAdd;
 
     private void showEditPop() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_Q&A_launchButton");
         if (!isAdd) {
             isAdd = true;
             View popupView = getLayoutInflater().inflate(R.layout.dialog_discuss_publish, null);
@@ -570,6 +588,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             tvTopic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MobclickAgent.onEvent(BaseStudyDetailActivity.this, "courseDetailsPage_Q&A_topic");
                     showThreadCreateView("discussion");
                     mPopupWindow.dismiss();
                 }
@@ -578,6 +597,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
             tvQuestion.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    MobclickAgent.onEvent(BaseStudyDetailActivity.this, "courseDetailsPage_questionsAnswers");
                     showThreadCreateView("question");
                     mPopupWindow.dismiss();
                 }
@@ -605,7 +625,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
     }
 
     public void setBottomLayoutVisible(int curFragment, boolean isMember) {
-        if (getIntent().getBooleanExtra(Const.IS_CHILD_COURSE, false)) {
+        if (mIsClassroomCourse) {
             mBottomLayout.setVisibility(View.GONE);
             mTvInclass.setVisibility(View.GONE);
         } else {
@@ -644,5 +664,9 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         while ((message = mUIMessageQueue.poll()) != null) {
             invoke(message);
         }
+    }
+
+    public interface WidgtState{
+        void setTopViewVisibility(boolean isTop);
     }
 }

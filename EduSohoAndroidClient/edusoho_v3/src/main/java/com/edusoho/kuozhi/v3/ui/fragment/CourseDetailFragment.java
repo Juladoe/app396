@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,10 +27,10 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseReviewDetail;
 import com.edusoho.kuozhi.v3.ui.AllReviewActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,6 @@ public class CourseDetailFragment extends BaseDetailFragment {
             public void onSuccess(CourseDetail data) {
                 mCourseDetail = data;
                 if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                    Log.d("CourseDetailFragment", "activity is finish");
                     return;
                 }
                 refreshView();
@@ -90,7 +90,6 @@ public class CourseDetailFragment extends BaseDetailFragment {
                     @Override
                     public void onSuccess(List<CourseMember> data) {
                         if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                            Log.d("CourseDetailFragment", "activity is finish");
                             return;
                         }
                         initStudent(data);
@@ -143,8 +142,8 @@ public class CourseDetailFragment extends BaseDetailFragment {
         super.refreshView();
         Course course = mCourseDetail.getCourse();
         mTvTitle.setText(course.title);
-        mTvTitleDesc.setHtml(course.about, new HtmlHttpImageGetter(mTvTitleDesc, null, true));
         mTvStudentNum.setText(String.format("(%s)", mCourseDetail.getCourse().studentNum));
+        mTvTitleDesc.setText(Html.fromHtml(course.about, new EduHtmlHttpImageGetter(mTvTitleDesc, null, true), null));
         if (mCourseDetail.getMember() == null) {
             mPriceLayout.setVisibility(View.VISIBLE);
             if (mCourseDetail.getCourse().vipLevelId == 0) {
@@ -216,6 +215,7 @@ public class CourseDetailFragment extends BaseDetailFragment {
 
     @Override
     protected void moreStudent() {
+        MobclickAgent.onEvent(getActivity(), "courseDetailsPage_introduction_moreCoursesParticipants");
         final String url = String.format(
                 Const.MOBILE_APP_URL,
                 EdusohoApp.app.schoolHost,
