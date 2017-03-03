@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <FrameLayout
-        android:id="@+id/fragment_container"
+        android:id="@+id/chat_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/nav_bottom_layout"
@@ -23,7 +23,7 @@
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingTop="10dp"
-        android:text="@string/go_to_course"
+        android:text="@string/go_to_classroom"
         android:textColor="@color/disabled2_hint_color"
         android:textSize="@dimen/font_s" />
 </RelativeLayout>
