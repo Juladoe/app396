@@ -80,9 +80,6 @@ public class CourseCatalogueAdapter extends RecyclerView.Adapter<CourseCatalogue
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mSelect == holder.getAdapterPosition()) {
-                        return;
-                    }
                     if (mSelect == -1) {
                         mSelect = 0;
                     }
