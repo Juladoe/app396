@@ -271,6 +271,11 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
             }
 
             @Override
+            public boolean isIMEnable() {
+                return getAppSettingProvider().getAppConfig().isEnableIMChat;
+            }
+
+            @Override
             public void postDiscuss(String fromType) {
                 openDiscussActivity(fromType);
             }

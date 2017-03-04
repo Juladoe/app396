@@ -29,6 +29,8 @@ import com.edusoho.kuozhi.imserver.ui.adapter.MessageRecyclerListAdapter;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
@@ -401,7 +403,16 @@ public class LessonLivePlayerActivity extends PLMediaPlayerActivity implements I
             public void onShowActivity(final Bundle bundle) {
 
             }
+
+            @Override
+            public boolean isIMEnable() {
+                return getAppSettingProvider().getAppConfig().isEnableIMChat;
+            }
         };
+    }
+
+    public AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 
     protected MessageListFragment createFragment() {
