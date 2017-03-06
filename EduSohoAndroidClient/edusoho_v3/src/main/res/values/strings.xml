@@ -418,5 +418,7 @@
     <string name="question_post">发起</string>
     <string name="question_answer">回复</string>
     <string name="classroom_teacher_txt">班主任</string>
+    <string name="go_to_course">前往课程</string>
+    <string name="go_to_classroom">前往班级</string>
 
 </resources>

@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.ui;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -8,8 +10,10 @@ import android.widget.EditText;
 
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
 import com.edusoho.kuozhi.v3.model.provider.CourseProvider;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 
@@ -26,6 +30,9 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
     public static final String TARGET_TYPE = "targetType";
     public static final String THREAD_TYPE = "threadType";
     public static final String LESSON_ID = "lessonId";
+    /**
+     * 提问题 or 发话题
+     */
     public static final String TYPE = "type";
 
     private int mTargetId;
@@ -33,6 +40,7 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
     private String mCreateType;
     private String mTargetType;
     private String mThreadType;
+    private String mThreadId;
     private EditText mTitleEdt;
     private EditText mContenteEdt;
     private boolean isPosting;
@@ -78,24 +86,39 @@ public class ThreadCreateActivity extends ActionBarBaseActivity {
                         isPosting = false;
                         invalidateOptionsMenu();
                         if (result != null && result.containsKey("threadId")) {
+                            mThreadId = String.valueOf(result.get("threadId"));
                             createSuccess();
                         }
                     }
                 }).fail(new NormalCallback<VolleyError>() {
-                    @Override
-                    public void success(VolleyError obj) {
-                        isPosting = false;
-                        invalidateOptionsMenu();
-                    }
-                });
+            @Override
+            public void success(VolleyError obj) {
+                isPosting = false;
+                invalidateOptionsMenu();
+            }
+        });
     }
 
     private void createSuccess() {
         ToastUtils.show(getBaseContext(), "发表成功");
+        setResult(Activity.RESULT_OK, initRedirectBody());
         finish();
         Bundle bundle = new Bundle();
         bundle.putString("event", "createThreadEvent");
         MessageEngine.getInstance().sendMsg(WebViewActivity.SEND_EVENT, bundle);
+    }
+
+    private Intent initRedirectBody() {
+        Intent intent = new Intent();
+        RedirectBody redirectBody = RedirectBody.createByPostContent(mTitleEdt.getText().toString(),
+                mContenteEdt.getText().toString(),
+                mThreadType,
+                "discussion".equals(mCreateType) ? "topic" : mCreateType,
+                mTargetId,
+                mThreadId
+        );
+        intent.putExtra("body", getUtilFactory().getJsonParser().jsonToString(redirectBody));
+        return intent;
     }
 
     @Override
