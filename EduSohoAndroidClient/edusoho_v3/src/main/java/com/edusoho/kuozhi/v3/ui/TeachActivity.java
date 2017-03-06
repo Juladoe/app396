@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.view.View;
-import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -34,18 +32,7 @@ public class TeachActivity extends ActionBarBaseActivity {
         setContentView(R.layout.activity_teach);
         hideActionBar();
 
-        initView();
         initData();
-    }
-
-    private void initView() {
-        ((TextView) findViewById(R.id.tv_title)).setText(getIntent().getStringExtra(Const.COURSE_TITLE));
-        findViewById(R.id.iv_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                TeachActivity.this.finish();
-            }
-        });
     }
 
     private void initData() {
@@ -65,7 +52,7 @@ public class TeachActivity extends ActionBarBaseActivity {
     private void loadFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        Fragment fragment = CoreEngine.create(this).runPluginWithFragment("TeachFragment", getApplicationContext(), mTeachPluginFragmentCallback);
+        Fragment fragment = CoreEngine.create(getApplication()).runPluginWithFragment("TeachFragment", getApplicationContext(), mTeachPluginFragmentCallback);
         fragmentTransaction.replace(R.id.fl_fragment, fragment);
         fragmentTransaction.commit();
     }

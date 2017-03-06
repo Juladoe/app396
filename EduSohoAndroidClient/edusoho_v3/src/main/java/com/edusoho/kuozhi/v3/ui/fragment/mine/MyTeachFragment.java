@@ -74,15 +74,6 @@ public class MyTeachFragment extends BaseFragment implements MineFragment.Refres
         });
     }
 
-    private void disabledLoadingView() {
-        mSrlContent.setRefreshing(false);
-    }
-
-    @Override
-    public void refreshData() {
-        loadData();
-    }
-
     private void showLoadingView() {
         mSrlContent.post(new Runnable() {
             @Override
@@ -90,6 +81,15 @@ public class MyTeachFragment extends BaseFragment implements MineFragment.Refres
                 mSrlContent.setRefreshing(true);
             }
         });
+    }
+
+    private void disabledLoadingView() {
+        mSrlContent.setRefreshing(false);
+    }
+
+    @Override
+    public void refreshData() {
+        loadData();
     }
 
     @Override
