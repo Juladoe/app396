@@ -24,7 +24,7 @@ dependencies {
     compile project(':shard')
     compile project(':commonLib')
     compile project(':multi-image-selector')
-    compile project(':imserver')
+    compile 'com.edusoho.imserver:es-im:1.0.7-SNAPSHOT@aar'
     compile 'com.koushikdutta.async:androidasync:2.1.6'
     compile 'com.edusoho.videoplayer:es-videoplayer:1.2.8-SNAPSHOT@aar'
 
