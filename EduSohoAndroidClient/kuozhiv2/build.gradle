@@ -32,7 +32,7 @@ android {
 
     fir{
         apiToken 'fa4ff9122d709c485cb0e3c992a62980'
-        changeLog '1.输入网校带http修复\n2.直播限制时间'
+        changeLog ''
     }
 
     //签名
