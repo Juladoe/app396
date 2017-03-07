@@ -37,13 +37,13 @@ public class LiveChatMessageListPresenterImpl extends MessageListPresenterImpl {
     private Map<String, MessageBody> mNotSendMessageMap;
 
     public LiveChatMessageListPresenterImpl(
-                                            Context context,
-                                            Bundle params,
-                                            IMConvManager convManager,
-                                            IMRoleManager roleManager,
-                                            MessageResourceHelper messageResourceHelper,
-                                            IMessageDataProvider mIMessageDataProvider,
-                                            IMessageListView messageListView) {
+            Context context,
+            Bundle params,
+            IMConvManager convManager,
+            IMRoleManager roleManager,
+            MessageResourceHelper messageResourceHelper,
+            IMessageDataProvider mIMessageDataProvider,
+            IMessageListView messageListView) {
         super(params, convManager, roleManager, messageResourceHelper, mIMessageDataProvider, messageListView);
         this.mContext = context;
         mNotSendMessageMap = new ConcurrentHashMap<>();

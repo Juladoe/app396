@@ -37,13 +37,6 @@ public class AboutActivity extends ActionBarBaseActivity {
             }
         });
 
-        findViewById(R.id.rl_feedback).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                app.mEngine.runNormalPlugin("SuggestionActivity", mActivity, null);
-            }
-        });
-
         tvCheckUpdate = (EduUpdateView) findViewById(R.id.tv_check_update);
         View viewUpdate = findViewById(R.id.linear_check_update);
 

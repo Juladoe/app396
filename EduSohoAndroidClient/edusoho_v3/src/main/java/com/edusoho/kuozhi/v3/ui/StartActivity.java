@@ -66,7 +66,7 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
         findViewById(R.id.li_start_load).setBackgroundResource(R.drawable.load_bg);
     }
 
-    private void startAnim() {
+    protected void startAnim() {
         final View nameView = findViewById(R.id.tv_start_name);
         final View titleView = findViewById(R.id.tv_start_title);
         View iconView = findViewById(R.id.tv_start_icon);

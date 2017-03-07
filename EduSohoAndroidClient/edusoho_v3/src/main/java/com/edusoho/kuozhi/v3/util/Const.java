@@ -617,8 +617,14 @@ public class Const {
     public static final String LESSON_PLUGIN = "android.intent.action.LESSON_PLUGIN";
     public static final String TOKEN_LOSE = "token_lose";
     public static final String BADGE_UPDATE = "badge_update";
+    public static final String COURSE_TITLE = "course_title";
 
     public static String LIVE_HOST = "http://124.160.104.76:10007";
 
     public static String REMAINT_TIME = "remain_time";
+
+    /**
+     * 获取老师教学
+     */
+    public static final String TEACHER_TEACH = "/api/me/courses?relation=teaching&start=0&limit=1000";
 }
