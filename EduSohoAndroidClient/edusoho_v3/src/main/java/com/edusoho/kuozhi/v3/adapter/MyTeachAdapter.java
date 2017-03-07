@@ -11,9 +11,11 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.lesson.TeachLesson;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyTeachFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -30,15 +32,15 @@ public class MyTeachAdapter extends RecyclerView.Adapter {
     private static final int NOT_EMPTY = 1;
     private int mCurrentDataStatus;
 
-    private List<TeachLesson> mCourseList;
-    private TeachLesson mTeachLesson;
+    private List<TeachLesson.ResourcesBean> mCourseList;
+    private TeachLesson.ResourcesBean mTeachLesson;
 
     public MyTeachAdapter(Context context) {
         this.mContext = context;
         mCourseList = new ArrayList<>();
     }
 
-    public void setData(List<TeachLesson> list) {
+    public void setData(List<TeachLesson.ResourcesBean> list) {
         mCourseList.clear();
         mCourseList.addAll(list);
         notifyDataSetChanged();
@@ -77,7 +79,7 @@ public class MyTeachAdapter extends RecyclerView.Adapter {
                 courseTeachViewHolder.tvLive.setText("直播");
                 courseTeachViewHolder.tvLiveIcon.setVisibility(View.GONE);
             }
-            courseTeachViewHolder.tvStudyState.setText(String.format("参与人数  %s", mTeachLesson.getStudentNum()));
+            courseTeachViewHolder.tvStudyState.setText(String.format("%s人参与", mTeachLesson.getStudentNum()));
             courseTeachViewHolder.rLayoutItem.setTag(mTeachLesson);
             courseTeachViewHolder.rLayoutItem.setOnClickListener(getTeachCourseViewClickListener());
         }
@@ -87,12 +89,14 @@ public class MyTeachAdapter extends RecyclerView.Adapter {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               final TeachLesson teachLesson =  ((TeachLesson) v.getTag());
-                EdusohoApp.app.mEngine.runNormalPlugin("TeachActivity"
+               final TeachLesson.ResourcesBean teachLesson =  ((TeachLesson.ResourcesBean) v.getTag());
+                EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
                         , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(Const.COURSE_ID, teachLesson.getId());
+                                School school = SchoolUtil.getDefaultSchool(mContext);
+                                String url = String.format(Const.MOBILE_APP_URL, school.url + "/", String.format(Const.TEACHER_MANAGERMENT, teachLesson.getId()));
+                                startIntent.putExtra(Const.WEB_URL, url);
                             }
                         });
             }

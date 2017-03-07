@@ -1,55 +1,68 @@
 package com.edusoho.kuozhi.v3.entity.lesson;
 
+import java.util.List;
+
 /**
  * Created by DF on 2017/2/28.
  */
 
 public class TeachLesson {
 
-    private int id;
-    private String title;
-    private String type;
-    private String smallPicture;
-    private String studentNum;
+    private List<ResourcesBean> resources;
 
-    public int getId() {
-        return id;
+    public List<ResourcesBean> getResources() {
+        return resources;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setResources(List<ResourcesBean> resources) {
+        this.resources = resources;
     }
 
-    public String getTitle() {
-        return title;
-    }
+    public static class ResourcesBean {
+        private int id;
+        private String title;
+        private String type;
+        private String smallPicture;
+        private String studentNum;
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+        public int getId() {
+            return id;
+        }
 
-    public String getType() {
-        return type;
-    }
+        public void setId(int id) {
+            this.id = id;
+        }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+        public String getTitle() {
+            return title;
+        }
 
-    public String getSmallPicture() {
-        return smallPicture;
-    }
+        public void setTitle(String title) {
+            this.title = title;
+        }
 
-    public void setSmallPicture(String smallPicture) {
-        this.smallPicture = smallPicture;
-    }
+        public String getType() {
+            return type;
+        }
 
-    public String getStudentNum() {
-        return studentNum;
-    }
+        public void setType(String type) {
+            this.type = type;
+        }
 
-    public void setStudentNum(String studentNum) {
-        this.studentNum = studentNum;
-    }
+        public String getSmallPicture() {
+            return smallPicture;
+        }
 
+        public void setSmallPicture(String smallPicture) {
+            this.smallPicture = smallPicture;
+        }
+
+        public String getStudentNum() {
+            return studentNum;
+        }
+
+        public void setStudentNum(String studentNum) {
+            this.studentNum = studentNum;
+        }
+    }
 }

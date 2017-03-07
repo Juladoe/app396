@@ -1,58 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:scrollbars="none"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:scrollbars="none"
+    <FrameLayout
+        android:id="@+id/fl_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"/>
 
-        <RelativeLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <include
-                android:id="@+id/head_view"
-                layout="@layout/item_study_process_lesson_summary"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
-
-            <FrameLayout
-                android:id="@+id/fl_fragment"
-                android:layout_below="@id/head_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-
-        </RelativeLayout>
-
-    </ScrollView>
-
-    <LinearLayout
-        android:id="@+id/ll_frame_load"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/textIcons"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <ProgressBar
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:indeterminateDrawable="@drawable/load" />
-
-        <TextView
-            android:id="@+id/loading_txt"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="加载中.."
-            android:textColor="@color/base_black_54" />
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>
