@@ -31,6 +31,7 @@ import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
+import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
@@ -165,7 +166,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         bundle.putString(MessageListFragment.CONV_NO, mConversationNo);
         bundle.putInt(MessageListFragment.TARGET_ID, mTargetId);
         bundle.putString(MessageListFragment.TARGET_TYPE, getTargetType());
-
+        mMessageListFragment.setInputTextMode(IMessageInputView.INPUT_IMAGE_AND_VOICE);
         return new ChatMessageListPresenterImpl(
                 bundle,
                 IMClient.getClient().getConvManager(),

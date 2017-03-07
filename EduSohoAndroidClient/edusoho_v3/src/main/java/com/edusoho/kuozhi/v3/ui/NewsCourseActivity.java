@@ -24,6 +24,7 @@ import com.edusoho.kuozhi.imserver.managar.IMConvManager;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.error.Error;
@@ -324,6 +325,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
         MessageControllerListener
      */
     private void initChatRoomController(MessageListFragment messageListFragment) {
+        messageListFragment.setInputTextMode(IMessageInputView.INPUT_MULTIPLE_TEXT);
         mIMessageListPresenter = new ChatMessageListPresenterImpl(
                 messageListFragment.getArguments(),
                 IMClient.getClient().getConvManager(),
