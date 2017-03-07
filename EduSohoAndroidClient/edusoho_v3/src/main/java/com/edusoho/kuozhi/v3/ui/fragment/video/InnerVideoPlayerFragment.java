@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.v3.ui.fragment.video;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -18,7 +19,11 @@ import android.view.ViewParent;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.util.MediaUtil;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
+import com.edusoho.videoplayer.util.VLCOptions;
+
+import org.videolan.libvlc.util.AndroidUtil;
 
 
 /**
@@ -41,6 +46,17 @@ public class InnerVideoPlayerFragment extends VideoPlayerFragment {
         mSeekPositionSetting = getContext().getSharedPreferences(SEEK_POSITION, Context.MODE_PRIVATE);
         mSaveSeekTime = mSeekPositionSetting.getLong(String.format("%d-%d", mCourseId, mLessonId), 0);
         setSeekPosition(mSaveSeekTime);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        int mediaCoder = MediaUtil.getMediaSupportType(getContext());
+        if (mediaCoder == VLCOptions.NONE_RATE && AndroidUtil.isKitKatOrLater()) {
+            mediaCoder = VLCOptions.SUPPORT_RATE;
+            MediaUtil.saveMediaSupportType(getContext(), mediaCoder);
+        }
+        getArguments().putInt(PLAY_MEDIA_CODER, mediaCoder);
     }
 
     @Override
