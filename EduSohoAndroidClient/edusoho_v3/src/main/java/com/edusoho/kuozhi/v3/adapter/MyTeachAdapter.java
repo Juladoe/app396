@@ -11,9 +11,11 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.lesson.TeachLesson;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment;
 import com.edusoho.kuozhi.v3.ui.fragment.mine.MyTeachFragment;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -88,12 +90,13 @@ public class MyTeachAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                final TeachLesson.ResourcesBean teachLesson =  ((TeachLesson.ResourcesBean) v.getTag());
-                EdusohoApp.app.mEngine.runNormalPlugin("TeachActivity"
+                EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity"
                         , mContext, new PluginRunCallback() {
                             @Override
                             public void setIntentDate(Intent startIntent) {
-                                startIntent.putExtra(Const.COURSE_ID, teachLesson.getId());
-                                startIntent.putExtra(Const.COURSE_TITLE, teachLesson.getTitle());
+                                School school = SchoolUtil.getDefaultSchool(mContext);
+                                String url = String.format(Const.MOBILE_APP_URL, school.url + "/", String.format(Const.TEACHER_MANAGERMENT, teachLesson.getId()));
+                                startIntent.putExtra(Const.WEB_URL, url);
                             }
                         });
             }
