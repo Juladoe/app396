@@ -32,7 +32,8 @@ android {
 
     fir{
         apiToken 'fa4ff9122d709c485cb0e3c992a62980'
-        changeLog ''
+        def targetFile = new File('kuozhiv2/changeLog.txt')
+        changeLog targetFile.text
     }
 
     //签名
