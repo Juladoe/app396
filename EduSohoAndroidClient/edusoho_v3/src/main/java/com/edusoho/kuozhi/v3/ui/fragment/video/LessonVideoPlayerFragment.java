@@ -18,19 +18,31 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
+import com.edusoho.kuozhi.v3.model.bal.User;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
+import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.provider.LessonProvider;
+import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.M3U8Util;
+import com.edusoho.kuozhi.v3.util.MediaUtil;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.helper.LessonMenuHelper;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
+import com.edusoho.videoplayer.media.listener.SimpleVideoControllerListener;
 import com.edusoho.videoplayer.ui.VideoPlayerFragment;
+import com.edusoho.videoplayer.util.VLCOptions;
+import com.edusoho.videoplayer.view.VideoControllerView;
 import com.google.gson.reflect.TypeToken;
 
 import org.videolan.libvlc.MediaPlayer;
+import org.videolan.libvlc.util.AndroidUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -77,11 +89,12 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
         if (activity instanceof BaseStudyDetailActivity) {
             mMenuCallback = (BaseStudyDetailActivity) activity;
         }
-    }
-
-    @Override
-    protected void requestMediaUri() {
-        loadPlayUrl();
+        int mediaCoder = MediaUtil.getMediaSupportType(getContext());
+        if (mediaCoder == VLCOptions.NONE_RATE && AndroidUtil.isKitKatOrLater()) {
+            mediaCoder = VLCOptions.SUPPORT_RATE;
+            MediaUtil.saveMediaSupportType(getContext(), mediaCoder);
+        }
+        getArguments().putInt(PLAY_MEDIA_CODER, mediaCoder);
     }
 
     private void loadPlayUrl() {
@@ -112,6 +125,16 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     }
 
     private LessonItem getCachedLesson() {
+        User user = getAppSettingProvider().getCurrentUser();
+        School school = getAppSettingProvider().getCurrentSchool();
+        if (user == null || school == null) {
+            return null;
+        }
+        M3U8DbModel m3U8DbModel = M3U8Util.queryM3U8Model(
+                getContext(), user.id, mLessonId, school.getDomain(), M3U8Util.FINISH);
+        if (m3U8DbModel == null) {
+            return null;
+        }
         SqliteUtil sqliteUtil = SqliteUtil.getUtil(getContext());
         return sqliteUtil.queryForObj(
                 new TypeToken<LessonItem>(){},
@@ -138,6 +161,29 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
             mLessonMenuHelper.initMenu(mMenuCallback.getMenu());
         }
         loadPlayUrl();
+    }
+
+    @Override
+    protected VideoControllerView.ControllerListener getDefaultControllerListener() {
+
+        return new SimpleVideoControllerListener() {
+            @Override
+            public void onPlayStatusChange(boolean isPlay) {
+                mIsPlay = isPlay;
+            }
+
+            @Override
+            public void onChangeScreen(int orientation) {
+                super.onChangeScreen(orientation);
+                changeScreenLayout(orientation);
+            }
+
+            @Override
+            public void onChangeOverlay(boolean isShow) {
+                super.onChangeOverlay(isShow);
+                changeHeaderViewStatus(isShow);
+            }
+        };
     }
 
     @Override
@@ -208,16 +254,6 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
     }
 
     @Override
-    public void onMediaPlayerEvent(MediaPlayer.Event event) {
-        super.onMediaPlayerEvent(event);
-        if (event.type == MediaPlayer.Event.Playing) {
-            mIsPlay = true;
-        } else if (event.type == MediaPlayer.Event.Stopped){
-            mIsPlay = false;
-        }
-    }
-
-    @Override
     public void play() {
         if (mRemainTime != null && mTotalTime >= Integer.parseInt(mRemainTime) && mMenuCallback != null) {
             CommonUtil.shortCenterToast(mMenuCallback, getResources().getString(R.string.lesson_had_reached_hint));
@@ -245,7 +281,7 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
                                         @Override
                                         public void run() {
                                             mTimer.cancel();
-                                            pause();
+                                            //pause();
                                             CourseDetailModel.sendTime(mLessonId, mPlayTime, null);
                                             if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
                                                 return;
@@ -280,5 +316,9 @@ public class LessonVideoPlayerFragment extends VideoPlayerFragment implements Vi
             }
         };
         mTimer.schedule(timerTask, 120000, 120000);
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 }

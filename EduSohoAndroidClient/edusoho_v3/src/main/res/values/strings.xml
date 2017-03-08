@@ -47,7 +47,7 @@
     <string name="setting_online_duration">在线时段</string>
     <string name="setting_wifi_download">允许使用4G网络观看或缓存视频</string>
     <string name="setting_receive_msg">消息免打扰</string>
-    <string name="setting_mediacodec_type">默认视频解码方式:[%s]</string>
+    <string name="setting_mediacodec_support_rate">视频支持倍速播放</string>
     <string name="setting_clean_cache">清理缓存</string>
     <string name="setting_about">关于</string>
     <string name="msg_reminder_new_msg">接收新消息通知</string>

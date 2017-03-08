@@ -27,8 +27,7 @@ public class LessonProvider extends ModelProvider {
 
     public ProviderListener<LessonItem> getLesson(int lessonId) {
         School school = SchoolUtil.getDefaultSchool(mContext);
-        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
-        String token = tokenMap.get("token").toString();
+        String token = ApiTokenUtil.getTokenString(mContext);
 
         RequestUrl requestUrl = new RequestUrl(school.host + String.format(Const.LESSON, lessonId));
         requestUrl.heads.put("Auth-Token", token);
@@ -40,8 +39,7 @@ public class LessonProvider extends ModelProvider {
     }
 
     public ProviderListener<LinkedHashMap> getLiveRoom(String roomUrl) {
-        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
-        String token = tokenMap.get("token").toString();
+        String token = ApiTokenUtil.getTokenString(mContext);
 
         RequestUrl requestUrl = new RequestUrl(roomUrl + "&debug=1");
         requestUrl.heads.put("Auth-Token", token);
@@ -54,8 +52,7 @@ public class LessonProvider extends ModelProvider {
 
     public ProviderListener<LessonStatus> getLearnState(int lessonId, int courseId) {
         School school = SchoolUtil.getDefaultSchool(mContext);
-        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
-        String token = tokenMap.get("token").toString();
+        String token = ApiTokenUtil.getTokenString(mContext);
 
         String url = String.format("%s/%s?lessonId=%d&courseId=%d", school.url, Const.LESSON_STATUS, lessonId, courseId);
         RequestUrl requestUrl = new RequestUrl(url);
@@ -69,8 +66,7 @@ public class LessonProvider extends ModelProvider {
 
     public ProviderListener<LearnStatus> startLearnLesson(int lessonId, int courseId) {
         School school = SchoolUtil.getDefaultSchool(mContext);
-        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
-        String token = tokenMap.get("token").toString();
+        String token = ApiTokenUtil.getTokenString(mContext);
 
         String url = String.format("%s/%s?lessonId=%d&courseId=%d", school.url, Const.LEARN_LESSON, lessonId, courseId);
         RequestUrl requestUrl = new RequestUrl(url);
@@ -84,8 +80,7 @@ public class LessonProvider extends ModelProvider {
 
     public ProviderListener<LearnStatus> cancelLearnLesson(int lessonId, int courseId) {
         School school = SchoolUtil.getDefaultSchool(mContext);
-        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
-        String token = tokenMap.get("token").toString();
+        String token = ApiTokenUtil.getTokenString(mContext);
 
         String url = String.format("%s/%s?lessonId=%d&courseId=%d", school.url, Const.UN_LEARN_COURSE, lessonId, courseId);
         RequestUrl requestUrl = new RequestUrl(url);
@@ -113,8 +108,7 @@ public class LessonProvider extends ModelProvider {
 
     public ProviderListener<CourseCatalogue> getCourseLessons(int courseId) {
         School school = SchoolUtil.getDefaultSchool(mContext);
-        Map<String, ?> tokenMap = ApiTokenUtil.getToken(mContext);
-        String token = tokenMap.get("token").toString();
+        String token = ApiTokenUtil.getTokenString(mContext);
 
         RequestUrl requestUrl = new RequestUrl(String.format("%s%s?courseId=%d", school.host, Const.LESSON_CATALOG, courseId));
         requestUrl.heads.put("token", token);
