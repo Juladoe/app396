@@ -320,6 +320,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             initViewPager();
             mIvGrade.setVisibility(View.VISIBLE);
         }
+        mShareView.setVisibility(mIsMemder ? View.VISIBLE : View.GONE);
         if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null &&
                 ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
                 && mCourseDetail.getCourse().vipLevelId != 0) {
