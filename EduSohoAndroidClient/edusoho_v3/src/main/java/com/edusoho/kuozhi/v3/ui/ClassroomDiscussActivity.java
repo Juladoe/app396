@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
+import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.entity.error.Error;
@@ -64,6 +65,7 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
 
     private void initData() {
         tvGotoDetail.setOnClickListener(getGotoDetailClickListener());
+        mMessageListFragment.setInputTextMode(IMessageInputView.INPUT_MULTIPLE_TEXT);
     }
 
     private View.OnClickListener getGotoDetailClickListener() {
