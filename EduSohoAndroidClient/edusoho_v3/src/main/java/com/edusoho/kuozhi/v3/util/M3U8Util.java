@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8File;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8ListItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.service.HttpClientDownloadService;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
 
@@ -765,14 +766,15 @@ public class M3U8Util {
     }
 
     private void saveDownloadItem(DownloadModel downloadModel) throws FileNotFoundException {
-        String path = queryDownloadUriPath(downloadModel.reference);
-        File targetFile = new File(path);
-        Log.d(TAG, "targetFile:" + targetFile.exists());
+        File targetFile = findDownloadFileByName(DigestUtils.md5(downloadModel.url));
+        Log.d(TAG, "targetFile:" + targetFile);
         if ("key".equals(downloadModel.type)) {
-            StringBuilder stringBuilder = FileUtils.readFile(path, "utf-8");
+            StringBuilder stringBuilder = FileUtils.readFile(targetFile.getAbsolutePath(), "utf-8");
             if (stringBuilder != null) {
                 saveKey(DigestUtils.md5(downloadModel.url), stringBuilder.toString());
             }
+            targetFile.delete();
+            return;
         }
         copyFile(DigestUtils.md5(downloadModel.url), targetFile);
         targetFile.delete();
@@ -797,7 +799,6 @@ public class M3U8Util {
             return m3U8DbModel;
         }
         ContentValues cv = new ContentValues();
-        Log.d(TAG, String.format("down:%d totalL%d", m3U8DbModel.downloadNum, m3U8DbModel.totalNum));
         cv.put("download_num", m3U8DbModel.downloadNum);
         mSqliteUtil.update(
                 "data_m3u8",
@@ -1130,6 +1131,11 @@ public class M3U8Util {
         }
     }
 
+    private File findDownloadFileByName(String name) {
+        File downloadDir = mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+        return new File(downloadDir, name);
+    }
+
     class DownloadItem {
         public String url;
         public String type;
@@ -1176,22 +1182,8 @@ public class M3U8Util {
                 return;
             }
             String key = DigestUtils.md5(url);
-
-            DownloadManager downloadManager;
-            downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
-            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-
-            request.setDestinationInExternalFilesDir(mContext, Environment.DIRECTORY_DOWNLOADS, key);
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
-            request.addRequestHeader("Android", "Android-kuozhi v3");
-            if (EdusohoApp.app.config.offlineType == 1) {
-                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-            } else {
-                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-            }
-
-            long reference = downloadManager.enqueue(request);
-            insertM3U8SourceDownloadId(reference, url, type, mLessonId);
+            insertM3U8SourceDownloadId(0, url, type, mLessonId);
+            new HttpClientDownloadService(mContext).download(findDownloadFileByName(key), url);
         }
     }
 }

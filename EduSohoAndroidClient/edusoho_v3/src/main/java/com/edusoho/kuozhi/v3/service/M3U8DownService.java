@@ -59,11 +59,11 @@ public class M3U8DownService extends Service {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
-            mUpdateThreadPoolExecutor.execute(new OnChangeRunnable(selfChange, uri));
+            //mUpdateThreadPoolExecutor.execute(new OnChangeRunnable(selfChange, uri));
         }
     };
 
-    private class OnChangeRunnable implements Runnable {
+    /*private class OnChangeRunnable implements Runnable {
 
         private boolean selfChange;
         private Uri uri;
@@ -104,7 +104,7 @@ public class M3U8DownService extends Service {
                     m3U8Util.updateDownloadStatus(downloadModel, DownloadManager.STATUS_FAILED);
             }
         }
-    }
+    }*/
 
     protected DownloadStatusReceiver mDownLoadStatusReceiver = new DownloadStatusReceiver() {
 
@@ -122,19 +122,18 @@ public class M3U8DownService extends Service {
     private BroadcastReceiver mDownLoadCompleteReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            long reference = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-            if (reference == -1) {
-                return;
-            }
-            DownloadModel downloadModel = getDownloadModel(reference);
+            String url = intent.getStringExtra(HttpClientDownloadService.DOWNLOAD_COMPLETE_URL);
+            int status = intent.getIntExtra(HttpClientDownloadService.DOWNLOAD_STATUS, DownloadManager.STATUS_FAILED);
+            DownloadModel downloadModel = getDownloadModel(url);
+            Log.d(TAG, "complete:" + downloadModel);
             if (downloadModel == null) {
                 return;
             }
-            mThreadPoolExecutor.submit(new UpdateRunnable(reference, downloadModel));
+            mThreadPoolExecutor.submit(new UpdateRunnable(status, downloadModel));
         }
     };
 
-    private DownloadModel getDownloadModel(long reference) {
+    private DownloadModel getDownloadModel(String url) {
         SqliteUtil.QueryParser<DownloadModel> queryCallBack =
                 new SqliteUtil.QueryParser<DownloadModel>() {
                     @Override
@@ -147,11 +146,10 @@ public class M3U8DownService extends Service {
                         downloadModel.id = cursor.getInt(cursor.getColumnIndex("id"));
                         return downloadModel;
                     }};
-
         return SqliteUtil.getUtil(mContext).query(
                 queryCallBack,
-                "select * from download_item where reference=?",
-                String.valueOf(reference)
+                "select * from download_item where url=?",
+                url
         );
     }
 
@@ -183,7 +181,7 @@ public class M3U8DownService extends Service {
 
         registerReceiver(mDownLoadCompleteReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         registerReceiver(mDownLoadStatusReceiver, new IntentFilter(DownloadStatusReceiver.ACTION));
-        getContentResolver().registerContentObserver(Uri.parse("content://downloads/my_downloads"), true, mDownloadContentObserver);
+        //getContentResolver().registerContentObserver(Uri.parse("content://downloads/my_downloads"), true, mDownloadContentObserver);
     }
 
     public static M3U8DownService getService() {
