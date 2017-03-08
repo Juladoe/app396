@@ -32,7 +32,7 @@ public class CourseProvider extends ModelProvider {
         String token = tokenMap.get("token").toString();
 
         RequestUrl requestUrl = null;
-        requestUrl = new RequestUrl(String.format("%s%srelation=learn&limit=1000", school.host, Const.MY_COURSES));
+        requestUrl = new RequestUrl(String.format("%s%srelation=learn&limit=1000&type=normal", school.host, Const.MY_COURSES));
         requestUrl.heads.put("X-Auth-Token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(
