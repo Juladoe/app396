@@ -448,11 +448,11 @@ public class M3U8DownService extends Service {
      */
     class UpdateRunnable implements Runnable {
 
-        private long reference;
+        private int status;
         private DownloadModel downloadModel;
 
-        public UpdateRunnable(long reference, DownloadModel downloadModel) {
-            this.reference = reference;
+        public UpdateRunnable(int status, DownloadModel downloadModel) {
+            this.status = status;
             this.downloadModel = downloadModel;
         }
 
@@ -462,7 +462,7 @@ public class M3U8DownService extends Service {
             if (m3U8Util == null) {
                 return;
             }
-            m3U8Util.updateDownloadStatus(downloadModel, DownloadManager.STATUS_SUCCESSFUL);
+            m3U8Util.updateDownloadStatus(downloadModel, status);
             updateM3U8DownloadStatus(m3U8Util, downloadModel.targetId);
         }
     }

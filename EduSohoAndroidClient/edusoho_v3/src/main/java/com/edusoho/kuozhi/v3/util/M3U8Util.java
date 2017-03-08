@@ -93,7 +93,7 @@ public class M3U8Util {
     private String mTargetHost;
     private boolean isCancel;
     private int mDownloadStatus;
-    private Hashtable<String, Integer> mTimeOutList;
+    private volatile int mTimeOutCount;
     private ArrayList<Future> mFutures;
     private ScheduledThreadPoolExecutor mThreadPoolExecutor;
     private Queue<DownloadItem> mDownloadQueue;
@@ -652,7 +652,11 @@ public class M3U8Util {
             return;
         }
         if (status == DownloadManager.STATUS_FAILED) {
+            mTimeOutCount ++;
+        }
+        if (mTimeOutCount > 20) {
             setDownloadStatus(ERROR);
+            mTimeOutCount = 0;
             return;
         }
         mDownloadQueue.add(new DownloadItem(downloadModel.url, downloadModel.type));
@@ -828,9 +832,6 @@ public class M3U8Util {
             mDownloadQueue.clear();
         }
 
-        if (mTimeOutList != null) {
-            mTimeOutList.clear();
-        }
         if (mThreadPoolExecutor != null) {
             mThreadPoolExecutor.purge();
             mThreadPoolExecutor.shutdown();
@@ -838,18 +839,17 @@ public class M3U8Util {
 
         mThreadPoolExecutor = null;
         mDownloadQueue = null;
-        mTimeOutList = null;
+        mTimeOutCount = 0;
     }
 
     private void initDownloadEnv() {
         if (mFutures != null
-                && mTimeOutList != null
                 && mDownloadQueue != null
                 && mThreadPoolExecutor != null) {
             return;
         }
         mFutures = new ArrayList<>();
-        mTimeOutList = new Hashtable<>();
+        mTimeOutCount = 0;
         mDownloadQueue = new ArrayDeque<>();
         mThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
         mThreadPoolExecutor.setMaximumPoolSize(1);
@@ -900,16 +900,6 @@ public class M3U8Util {
         }
         Future future = mThreadPoolExecutor.schedule(new DownloadRunnable(type, url), 1, TimeUnit.MILLISECONDS);
         mFutures.add(future);
-    }
-
-    private void processTimeout(String type, String key, String url) {
-        //超时处理
-        int count = mTimeOutList.containsKey(key) ? mTimeOutList.get(key) : 0;
-        Log.d(TAG, "timeiout count " + count);
-        if (count < 30) {
-            getResourceFromNet(url, type);
-            mTimeOutList.put(key, ++count);
-        }
     }
 
     /*
