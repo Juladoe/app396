@@ -103,7 +103,7 @@ public class ChatSelectFragment extends AbstractChatSendFragment {
         @Override
         public void success(Integer index) {
             New newItem = mChatSelectListAdapter.getItem(index);
-            MessageBody messageBody = saveMessageToLoacl(newItem.getFromId(), newItem.convNo, newItem.getType());
+            MessageBody messageBody = saveMessageToLoacl(newItem.getFromId(), newItem.convNo, newItem.getType(), newItem.getTitle());
             sendMessageToServer(newItem.convNo, messageBody);
         }
     };
