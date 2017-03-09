@@ -226,6 +226,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
             mToolBar.setBackgroundColor(getResources().getColor(R.color.transparent));
             mToolBar.setNavigationIcon(R.drawable.icon_actionbar_back);
             mToolBarTitle.setTextColor(getResources().getColor(R.color.textIcons));
+            mToolBar.setTitle("");
         }
     }
 
