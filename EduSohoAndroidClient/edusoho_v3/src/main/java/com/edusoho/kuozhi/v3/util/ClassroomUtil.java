@@ -144,36 +144,40 @@ public class ClassroomUtil {
                 }
                 if (response != null) {
                     try {
-                        JSONObject jsonObject = new JSONObject(response);
-                        String status = jsonObject.getString("status");
-                        String paid = jsonObject.getString("paid");
-                        if (paid.equals("false")) {
-                            final String url = String.format(
-                                    Const.MOBILE_APP_URL,
-                                    EdusohoApp.app.schoolHost,
-                                    String.format("main#/coursepay/%s/%s",
-                                            builder.targetId
-                                            , "classroom")
-                            );
-                            EdusohoApp.app.mEngine.runNormalPluginForResult("WebViewActivity"
-                                    , EdusohoApp.app.mActivity
-                                    , BaseStudyDetailActivity.RESULT_REFRESH
-                                    ,new PluginRunCallback() {
-                                        @Override
-                                        public void setIntentDate(Intent startIntent) {
-                                            startIntent.putExtra(Const.WEB_URL, url);
-                                        }
-                                    });
-                            return;
-                        }
-                        if (status.equals("ok")) {
-                            if (onAddclassroomListener != null) {
-                                onAddclassroomListener.onAddClassroomSuccee(response);
+                        if (response.contains("status")) {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String status = jsonObject.getString("status");
+                            String paid = jsonObject.getString("paid");
+                            if (paid.equals("false")) {
+                                final String url = String.format(
+                                        Const.MOBILE_APP_URL,
+                                        EdusohoApp.app.schoolHost,
+                                        String.format("main#/coursepay/%s/%s",
+                                                builder.targetId
+                                                , "classroom")
+                                );
+                                EdusohoApp.app.mEngine.runNormalPluginForResult("WebViewActivity"
+                                        , EdusohoApp.app.mActivity
+                                        , BaseStudyDetailActivity.RESULT_REFRESH
+                                        ,new PluginRunCallback() {
+                                            @Override
+                                            public void setIntentDate(Intent startIntent) {
+                                                startIntent.putExtra(Const.WEB_URL, url);
+                                            }
+                                        });
+                                return;
+                            }
+                            if (status.equals("ok")) {
+                                if (onAddclassroomListener != null) {
+                                    onAddclassroomListener.onAddClassroomSuccee(response);
+                                }
+                            } else {
+                                if (onAddclassroomListener != null) {
+                                    onAddclassroomListener.onAddClassroomError(status);
+                                }
                             }
                         } else {
-                            if (onAddclassroomListener != null) {
-                                onAddclassroomListener.onAddClassroomError(status);
-                            }
+                            onAddclassroomListener.onAddClassroomError(response);
                         }
                     } catch (JSONException e) {
                         if (onAddclassroomListener != null) {

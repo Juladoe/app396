@@ -225,6 +225,8 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                     @Override
                     public void onAddClassroomError(String response) {
                         hideProcesDialog();
+                        CommonUtil.shortToast(ClassroomActivity.this, getResources()
+                                .getString(R.string.fail_add_classroom));
                     }
                 });
                 return;
@@ -248,6 +250,7 @@ public class ClassroomActivity extends BaseStudyDetailActivity implements View.O
                         @Override
                         public void onAddClassroomError(String error) {
                             hideProcesDialog();
+                            CommonUtil.shortToast(ClassroomActivity.this, error);
                         }
                     });
             mIsJump = true;

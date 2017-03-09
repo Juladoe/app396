@@ -73,6 +73,7 @@
     <string name="add_error_close">该课程限制加入，请联系管理员</string>
     <string name="fail_add_course">加入课程失败</string>
     <string name="success_add_classroom">成功加入班级</string>
+    <string name="fail_add_classroom">加入班级失败</string>
     <string name="clear_service_profile_record">清空历史记录</string>
     <string name="classroom_all_members">全体成员</string>
     <string name="classroom_announcement">班级公告</string>
