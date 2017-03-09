@@ -259,7 +259,7 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
                         , course.title
                         , course.about.length() > 20 ? course.about.substring(0, 20) : course.about
                         , course.middlePicture);
-        new Handler((((EdusohoApp) getApplication()).mContext.getMainLooper())).post(new Runnable() {
+        new Handler((getApplication().getMainLooper())).post(new Runnable() {
             @Override
             public void run() {
                 shareTool.shardCourse();
@@ -320,7 +320,6 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             initViewPager();
             mIvGrade.setVisibility(View.VISIBLE);
         }
-        mShareView.setVisibility(mIsMemder ? View.VISIBLE : View.GONE);
         if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null &&
                 ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
                 && mCourseDetail.getCourse().vipLevelId != 0) {
@@ -590,7 +589,9 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
             mIvGrade.setVisibility(View.GONE);
             mPlayLayout2.setVisibility(View.VISIBLE);
         } else {
-            mIvGrade.setVisibility(mIsPlay ? View.GONE : View.VISIBLE);
+            if (mIsMemder) {
+                mIvGrade.setVisibility(mIsPlay ? View.GONE : View.VISIBLE);
+            }
             mPlayLayout2.setVisibility(View.GONE);
         }
     }
