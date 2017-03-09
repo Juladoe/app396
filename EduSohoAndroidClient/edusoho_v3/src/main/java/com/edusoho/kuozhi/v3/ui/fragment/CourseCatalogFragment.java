@@ -291,7 +291,8 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                 currentFinishedLessonsBean = lessonsBean;
             }
         }
-        if ("finished".equals(learnStatuses.get(currentFinishedLessonsBean.getId())) && lessonsBeanList.indexOf(currentFinishedLessonsBean) + 1 < size) {
+        if (currentFinishedLessonsBean !=null && "finished".equals(learnStatuses.get(currentFinishedLessonsBean.getId()))
+                && lessonsBeanList.indexOf(currentFinishedLessonsBean) + 1 < size) {
             currentFinishedLessonsBean = lessonsBeanList.get(lessonsBeanList.indexOf(currentFinishedLessonsBean) + 1);
         }
         return currentFinishedLessonsBean;
