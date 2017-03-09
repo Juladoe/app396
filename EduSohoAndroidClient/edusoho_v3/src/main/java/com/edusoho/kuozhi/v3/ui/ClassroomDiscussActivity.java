@@ -13,6 +13,7 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.entity.Role;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
+import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
 import com.edusoho.kuozhi.imserver.ui.view.IMessageInputView;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
@@ -191,4 +192,29 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
     public int getMode() {
         return REGIST_CLASS;
     }
-}
+
+    @Override
+    public void openQuestionActivity(final String fromType) {
+        CoreEngine.create(getApplicationContext()).runNormalPluginForResult("ThreadCreateActivity", this, MessageListFragment.SEND_THREAD, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mTargetId);
+                startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, fromType);
+                startIntent.putExtra(ThreadCreateActivity.TYPE, "question");
+                startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, "common");
+            }
+        });
+    }
+
+    @Override
+    public void openDiscussActivity(final String fromType) {
+        CoreEngine.create(getApplicationContext()).runNormalPluginForResult("ThreadCreateActivity", this, MessageListFragment.SEND_THREAD, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ThreadCreateActivity.TARGET_ID, mTargetId);
+                startIntent.putExtra(ThreadCreateActivity.TARGET_TYPE, fromType);
+                startIntent.putExtra(ThreadCreateActivity.TYPE, "discussion");
+                startIntent.putExtra(ThreadCreateActivity.THREAD_TYPE, "common");
+            }
+        });
+    }
