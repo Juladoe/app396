@@ -20,7 +20,6 @@ public class FragmentPageActivity extends ActionBarBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("FragmentPageActivity", "start");
         setContentView(R.layout.fragment_page_layout);
         initView();
     }

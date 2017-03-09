@@ -90,7 +90,7 @@ public class GroupSelectFragment extends FriendSelectFragment {
                 createChatConvNo(friend.id);
                 return;
             }
-            sendMsg(friend.id, convEntity.getConvNo(), Destination.USER);
+            sendMsg(friend.id, convEntity.getConvNo(), convEntity.getType(), friend.getNickname());
         }
     };
 
@@ -101,7 +101,7 @@ public class GroupSelectFragment extends FriendSelectFragment {
         new ClassRoomProvider(mContext).getClassRoom(fromId)
                 .success(new NormalCallback<Classroom>() {
                     @Override
-                    public void success(Classroom classroom) {
+                    public void success(final Classroom classroom) {
                         if (classroom == null || TextUtils.isEmpty(classroom.convNo)) {
                             ToastUtils.show(mActivity.getBaseContext(), "发送失败,该讨论组不支持分享!");
                             return;
@@ -113,7 +113,7 @@ public class GroupSelectFragment extends FriendSelectFragment {
                                     @Override
                                     public void success(ConvEntity convEntity) {
                                         loadDialog.dismiss();
-                                        sendMsg(fromId, mConvNo, Destination.USER);
+                                        sendMsg(fromId, mConvNo, Destination.USER, classroom.title);
                                     }
                                 });
                     }
