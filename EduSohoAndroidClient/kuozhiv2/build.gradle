@@ -3,15 +3,15 @@ apply plugin: 'im.fir.plugin.gradle'
 apply plugin: 'com.antfortune.freeline'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion '22.0.1'
 
     defaultConfig {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
-        versionName "3.9.3"
-        versionCode 46
+        versionName "3.9.4"
+        versionCode 47
 
         ndk {
             abiFilters "armeabi-v7a"
@@ -30,9 +30,12 @@ android {
         productFlavor 'edusoho'
     }
 
+    def logFile = new File('kuozhiv2/changeLog.txt')
+    def log = logFile.exists() ? logFile.text : ''
+
     fir{
         apiToken 'fa4ff9122d709c485cb0e3c992a62980'
-        changeLog '1.输入网校带http修复\n2.直播限制时间'
+        changeLog log
     }
 
     //签名
