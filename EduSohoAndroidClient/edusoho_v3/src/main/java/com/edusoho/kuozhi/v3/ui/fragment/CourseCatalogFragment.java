@@ -202,7 +202,6 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
             return;
         }
         mAdapter.setData(mCourseCatalogue, isJoin, chapter, unit);
-        reFreshColor();
         mAdapter.setOnItemClickListener(new CourseCatalogueAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, CourseCatalogue.LessonsBean lessonsBean) {
@@ -261,7 +260,6 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                 lessonsBean = findFirseLearnLessonWithStatus(mCourseCatalogue);
                 bundle.putString(Const.COURSE_CHANGE_STATE, Const.COURSE_CHANGE_STATE_STARTED);
             }
-            reFreshColor();
             if (lessonsBean == null) {
                 return;
             }
@@ -386,6 +384,7 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
         }
 
         if ("live".equals(lessonsBean.getType())) {
+            isOk = true;
             School school = getAppSettingProvider().getCurrentSchool();
             final String url = String.format(school.host + Const.WEB_LESSON, mCourseId, lessonsBean.getId() );
             CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity", getContext(), new PluginRunCallback() {
@@ -435,14 +434,6 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
     }
 
     private boolean isOk = false;
-    public void reFreshColor(){
-        if (mLvCatalog != null && lessonsBean != null && isOk) {
-            int index = ((ArrayList) mCourseCatalogue.getLessons()).indexOf(lessonsBean);
-            //mLvCatalog.setItemChecked(index, true);
-        }
-        isOk = true;
-    }
-
     /**
      * 外部刷新数据
      */
@@ -450,6 +441,9 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
     public void reFreshView(boolean mIsJoin) {
         mMemberStatus = mIsJoin ? ISMEMBER : VISITOR;
         isJoin = mIsJoin;
+        if (isOk && isJoin) {
+            return;
+        }
         initCatalogue();
     }
 
