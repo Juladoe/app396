@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8DbModel;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8File;
 import com.edusoho.kuozhi.v3.model.bal.m3u8.M3U8ListItem;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.service.HttpClientDownloadService;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
 
@@ -92,7 +93,7 @@ public class M3U8Util {
     private String mTargetHost;
     private boolean isCancel;
     private int mDownloadStatus;
-    private Hashtable<String, Integer> mTimeOutList;
+    private volatile int mTimeOutCount;
     private ArrayList<Future> mFutures;
     private ScheduledThreadPoolExecutor mThreadPoolExecutor;
     private Queue<DownloadItem> mDownloadQueue;
@@ -651,7 +652,11 @@ public class M3U8Util {
             return;
         }
         if (status == DownloadManager.STATUS_FAILED) {
+            mTimeOutCount ++;
+        }
+        if (mTimeOutCount > 20) {
             setDownloadStatus(ERROR);
+            mTimeOutCount = 0;
             return;
         }
         mDownloadQueue.add(new DownloadItem(downloadModel.url, downloadModel.type));
@@ -765,14 +770,15 @@ public class M3U8Util {
     }
 
     private void saveDownloadItem(DownloadModel downloadModel) throws FileNotFoundException {
-        String path = queryDownloadUriPath(downloadModel.reference);
-        File targetFile = new File(path);
-        Log.d(TAG, "targetFile:" + targetFile.exists());
+        File targetFile = findDownloadFileByName(DigestUtils.md5(downloadModel.url));
+        Log.d(TAG, "targetFile:" + targetFile);
         if ("key".equals(downloadModel.type)) {
-            StringBuilder stringBuilder = FileUtils.readFile(path, "utf-8");
+            StringBuilder stringBuilder = FileUtils.readFile(targetFile.getAbsolutePath(), "utf-8");
             if (stringBuilder != null) {
                 saveKey(DigestUtils.md5(downloadModel.url), stringBuilder.toString());
             }
+            targetFile.delete();
+            return;
         }
         copyFile(DigestUtils.md5(downloadModel.url), targetFile);
         targetFile.delete();
@@ -797,7 +803,6 @@ public class M3U8Util {
             return m3U8DbModel;
         }
         ContentValues cv = new ContentValues();
-        Log.d(TAG, String.format("down:%d totalL%d", m3U8DbModel.downloadNum, m3U8DbModel.totalNum));
         cv.put("download_num", m3U8DbModel.downloadNum);
         mSqliteUtil.update(
                 "data_m3u8",
@@ -827,9 +832,6 @@ public class M3U8Util {
             mDownloadQueue.clear();
         }
 
-        if (mTimeOutList != null) {
-            mTimeOutList.clear();
-        }
         if (mThreadPoolExecutor != null) {
             mThreadPoolExecutor.purge();
             mThreadPoolExecutor.shutdown();
@@ -837,18 +839,17 @@ public class M3U8Util {
 
         mThreadPoolExecutor = null;
         mDownloadQueue = null;
-        mTimeOutList = null;
+        mTimeOutCount = 0;
     }
 
     private void initDownloadEnv() {
         if (mFutures != null
-                && mTimeOutList != null
                 && mDownloadQueue != null
                 && mThreadPoolExecutor != null) {
             return;
         }
         mFutures = new ArrayList<>();
-        mTimeOutList = new Hashtable<>();
+        mTimeOutCount = 0;
         mDownloadQueue = new ArrayDeque<>();
         mThreadPoolExecutor = new ScheduledThreadPoolExecutor(1);
         mThreadPoolExecutor.setMaximumPoolSize(1);
@@ -899,16 +900,6 @@ public class M3U8Util {
         }
         Future future = mThreadPoolExecutor.schedule(new DownloadRunnable(type, url), 1, TimeUnit.MILLISECONDS);
         mFutures.add(future);
-    }
-
-    private void processTimeout(String type, String key, String url) {
-        //超时处理
-        int count = mTimeOutList.containsKey(key) ? mTimeOutList.get(key) : 0;
-        Log.d(TAG, "timeiout count " + count);
-        if (count < 30) {
-            getResourceFromNet(url, type);
-            mTimeOutList.put(key, ++count);
-        }
     }
 
     /*
@@ -1130,6 +1121,11 @@ public class M3U8Util {
         }
     }
 
+    private File findDownloadFileByName(String name) {
+        File downloadDir = mContext.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+        return new File(downloadDir, name);
+    }
+
     class DownloadItem {
         public String url;
         public String type;
@@ -1176,22 +1172,8 @@ public class M3U8Util {
                 return;
             }
             String key = DigestUtils.md5(url);
-
-            DownloadManager downloadManager;
-            downloadManager = (DownloadManager) mContext.getSystemService(Context.DOWNLOAD_SERVICE);
-            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
-
-            request.setDestinationInExternalFilesDir(mContext, Environment.DIRECTORY_DOWNLOADS, key);
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
-            request.addRequestHeader("Android", "Android-kuozhi v3");
-            if (EdusohoApp.app.config.offlineType == 1) {
-                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE);
-            } else {
-                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI);
-            }
-
-            long reference = downloadManager.enqueue(request);
-            insertM3U8SourceDownloadId(reference, url, type, mLessonId);
+            insertM3U8SourceDownloadId(0, url, type, mLessonId);
+            new HttpClientDownloadService(mContext).download(findDownloadFileByName(key), url);
         }
     }
 }
