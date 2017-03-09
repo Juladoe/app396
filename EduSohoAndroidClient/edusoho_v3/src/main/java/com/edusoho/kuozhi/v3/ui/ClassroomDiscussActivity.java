@@ -218,3 +218,4 @@ public class ClassroomDiscussActivity extends ImChatActivity implements MessageE
             }
         });
     }
+}
