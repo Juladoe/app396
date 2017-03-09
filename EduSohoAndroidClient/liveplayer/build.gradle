@@ -1,8 +1,10 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion "22.0.1"
+
+    useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
         minSdkVersion 16
@@ -27,7 +29,7 @@ dependencies {
 
     compile 'com.qiniu:happy-dns:0.2.+'
     compile 'com.qiniu.pili:pili-android-qos:0.8.+'
-    compile 'com.android.support:appcompat-v7:22.2.1'
+    compile 'com.android.support:appcompat-v7:23.0.1'
     compile files('libs/pldroid-player-1.4.0.2.jar')
     compile 'com.umeng.analytics:analytics:latest.integration'
 
