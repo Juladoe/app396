@@ -50,6 +50,7 @@ android {
 
     buildTypes {
         debug {
+            testCoverageEnabled true
             zipAlignEnabled true
             minifyEnabled false
             signingConfig signingConfigs.debugConfig
