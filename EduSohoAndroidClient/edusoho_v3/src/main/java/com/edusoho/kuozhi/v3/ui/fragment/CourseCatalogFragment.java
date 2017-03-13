@@ -279,9 +279,12 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
 
         int size = lessonsBeanList.size();
         CourseCatalogue.LessonsBean currentFinishedLessonsBean = null;
+        String status = null;
         for (int i = 0; i < size; i++) {
             CourseCatalogue.LessonsBean lessonsBean = lessonsBeanList.get(i);
-            String status = learnStatuses.get(lessonsBean.getId());
+            if (lessonsBean != null) {
+                status = learnStatuses.get(lessonsBean.getId());
+            }
             if ("learning".equals(status)) {
                 return lessonsBean;
             }
@@ -289,7 +292,8 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
                 currentFinishedLessonsBean = lessonsBean;
             }
         }
-        if ("finished".equals(learnStatuses.get(currentFinishedLessonsBean.getId())) && lessonsBeanList.indexOf(currentFinishedLessonsBean) + 1 < size) {
+        if (currentFinishedLessonsBean != null && "finished".equals(learnStatuses.get(currentFinishedLessonsBean.getId()))
+                && lessonsBeanList.indexOf(currentFinishedLessonsBean) + 1 < size) {
             currentFinishedLessonsBean = lessonsBeanList.get(lessonsBeanList.indexOf(currentFinishedLessonsBean) + 1);
         }
         return currentFinishedLessonsBean;

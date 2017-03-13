@@ -423,10 +423,6 @@ public class NewsFragment extends BaseFragment {
                     CoreEngine.create(mContext).runNormalPlugin("NotifyActivity", mContext, null);
                     break;
                 case Destination.USER:
-                    if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
-                        CommonUtil.longToast(mContext, "聊天功能已关闭");
-                        return;
-                    }
                     app.mEngine.runNormalPlugin("ImChatActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
@@ -439,10 +435,6 @@ public class NewsFragment extends BaseFragment {
                     });
                     break;
                 case Destination.CLASSROOM:
-                    if (!getAppSettingProvider().getAppConfig().isEnableIMChat) {
-                        CommonUtil.longToast(mContext, "聊天功能已关闭");
-                        return;
-                    }
                     app.mEngine.runNormalPlugin("ClassroomDiscussActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {

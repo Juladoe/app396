@@ -59,7 +59,7 @@ public class MyTeachFragment extends BaseFragment implements MineFragment.Refres
         mRvContent.setAdapter(mMyTeachAdapter);
     }
 
-    private void loadData(){
+    private void loadData() {
         CourseDetailModel.getTeach(new ResponseCallbackListener<TeachLesson>() {
             @Override
             public void onSuccess(TeachLesson data) {

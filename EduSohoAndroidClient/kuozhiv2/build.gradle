@@ -3,7 +3,7 @@ apply plugin: 'im.fir.plugin.gradle'
 apply plugin: 'com.antfortune.freeline'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 23
     buildToolsVersion '22.0.1'
 
     defaultConfig {
@@ -50,6 +50,7 @@ android {
 
     buildTypes {
         debug {
+            testCoverageEnabled true
             zipAlignEnabled true
             minifyEnabled false
             signingConfig signingConfigs.debugConfig

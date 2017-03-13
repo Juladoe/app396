@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.v3.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
@@ -89,6 +91,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
         mStart += bulletinList.size();
         mBulletinAdapter = new BulletinAdapter(bulletinList);
         mListView.setAdapter(mBulletinAdapter);
+        mListView.setStackFromBottom(false);
         mListView.post(new ScrollRunnable(mStart));
         mPtrFrame.setLastUpdateTimeRelateObject(this);
         mPtrFrame.setPtrHandler(new PtrDefaultHandler() {
@@ -131,6 +134,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
             }
             bulletinList.add(bulletin);
         }
+        Collections.reverse(bulletinList);
         return bulletinList;
     }
 
@@ -241,7 +245,7 @@ public class BulletinActivity extends ActionBarBaseActivity {
                 holder.tvCreatedTime.setVisibility(View.VISIBLE);
                 holder.tvCreatedTime.setText(AppUtil.convertMills2Date((bulletin.getCreateTime())));
             }
-            holder.tvContent.setText(bulletin.title);
+            holder.tvContent.setText(Html.fromHtml(bulletin.title));
             ImageLoader.getInstance().displayImage(bulletin.getAvatar(), holder.ivHeadImageUrl, mOptions);
             return convertView;
         }
