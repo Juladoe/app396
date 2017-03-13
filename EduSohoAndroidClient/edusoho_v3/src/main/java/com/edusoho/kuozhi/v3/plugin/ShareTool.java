@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
@@ -56,7 +57,7 @@ public class ShareTool {
         mContext = ctx;
         mUrl = url;
         mTitle = title;
-        mAbout = about;
+        mAbout = fromHtml(about);
         mPic = pic;
     }
 
@@ -64,13 +65,13 @@ public class ShareTool {
         mContext = ctx;
         mUrl = url;
         mTitle = title;
-        mAbout = about;
+        mAbout = fromHtml(about);
         mPic = pic;
         mDialogType = type;
     }
 
-    public void setDismissEvent(ShardDialog.DismissEvent dismissEvent) {
-        mDismissEvent = dismissEvent;
+    private String fromHtml(String htmlCode) {
+        return Html.fromHtml(htmlCode).toString();
     }
 
     public void shardCourse() {
@@ -82,7 +83,8 @@ public class ShareTool {
 
             @Override
             public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-                CommonUtil.longToast(mContext, "课程图片获取失败");
+//                CommonUtil.longToast(mContext, "课程图片获取失败");
+                startShare(AppUtil.getUriById(mContext, R.drawable.default_classroom));
             }
         });
     }
@@ -105,10 +107,27 @@ public class ShareTool {
         shareUtil.show(getShareHandler());
     }
 
+    private void startShare(Uri imageUri) {
+        ShareUtil shareUtil = ShareUtil.getShareUtil(mContext);
+        shareUtil.setDismissEvent(mDismissEvent);
+        List<ListData> listDatas = shareUtil.getDataList();
+        listDatas.addAll(0, getCustomListData());
+        shareUtil.initShareParams(
+                R.mipmap.ic_launcher,
+                mTitle,
+                mUrl,
+                coverShareContent(mAbout, mUrl),
+                imageUri,
+                EdusohoApp.app.host
+                , mDialogType
+        );
+        shareUtil.show(getShareHandler());
+    }
+
     private String coverShareContent(String content, String url) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        String formatString  = Html.fromHtml(content).toString();
+        String formatString = Html.fromHtml(content).toString();
         int contentSize = 140 - url.length() - 3;
         if (formatString.length() > contentSize) {
             formatString = formatString.substring(0, contentSize);
@@ -173,7 +192,7 @@ public class ShareTool {
         startIntent.putExtra(Const.ACTIONBAR_TITLE, "选择");
         startIntent.putExtra(ChatSelectFragment.BODY, redirectBody);
         startIntent.putExtra(FragmentPageActivity.FRAGMENT, "ChatSelectFragment");
-        startIntent.setComponent(new ComponentName(mContext.getPackageName(), "FragmentPageActivity"));
+        startIntent.setComponent(new ComponentName(mContext, FragmentPageActivity.class));
         mContext.startActivity(startIntent);
     }
 
@@ -182,6 +201,8 @@ public class ShareTool {
         if (EdusohoApp.app.loginUser == null) {
             return listDatas;
         }
+
+        //校友修改位置
         ListData data = new ListData(
                 mContext.getResources().getDrawable(R.drawable.share_user),
                 "shareToUser",

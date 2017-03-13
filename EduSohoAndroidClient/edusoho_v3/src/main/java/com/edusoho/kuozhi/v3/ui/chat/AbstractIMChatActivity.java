@@ -26,11 +26,10 @@ import com.edusoho.kuozhi.imserver.ui.IMessageListPresenter;
 import com.edusoho.kuozhi.imserver.ui.IMessageListView;
 import com.edusoho.kuozhi.imserver.ui.MessageListFragment;
 import com.edusoho.kuozhi.imserver.ui.MessageListPresenterImpl;
-import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.data.DefautlMessageDataProvider;
 import com.edusoho.kuozhi.imserver.ui.data.IMessageDataProvider;
+import com.edusoho.kuozhi.imserver.ui.helper.MessageResourceHelper;
 import com.edusoho.kuozhi.imserver.ui.listener.MessageControllerListener;
-import com.edusoho.kuozhi.imserver.util.IMConnectStatus;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
@@ -55,6 +54,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
@@ -194,6 +195,31 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
         }
     }
 
+    private void handlerUrlAction(String url) {
+        Pattern WEB_URL_PAT = Pattern.compile("(http://)?(.+)/(course|classroom)/(\\d+)", Pattern.DOTALL);
+        Matcher matcher = WEB_URL_PAT.matcher(url);
+        if (matcher.find()) {
+            String type = matcher.group(3);
+            if (!TextUtils.isEmpty(type)) {
+                Bundle bundle = new Bundle();
+                switch (type) {
+                    case "course":
+                        bundle.putInt(Const.COURSE_ID, Integer.parseInt(matcher.group(4)));
+                        CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
+                        return;
+                    case "classroom":
+                        bundle.putInt(Const.CLASSROOM_ID, Integer.parseInt(matcher.group(4)));
+                        CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomActivity", mContext, bundle);
+                        return;
+                }
+            }
+        }
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Const.WEB_URL, url);
+        CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
+    }
+
     protected MessageControllerListener getMessageControllerListener() {
         return new MessageControllerListener() {
 
@@ -223,9 +249,7 @@ public abstract class AbstractIMChatActivity extends AppCompatActivity {
 
             @Override
             public void onShowWebPage(String url) {
-                Bundle bundle = new Bundle();
-                bundle.putString(Const.WEB_URL, url);
-                CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
+                handlerUrlAction(url);
             }
 
             @Override

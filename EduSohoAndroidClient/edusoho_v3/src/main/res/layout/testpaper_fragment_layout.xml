@@ -16,8 +16,6 @@
         <com.edusoho.kuozhi.v3.view.EduSohoButton
             android:visibility="gone"
             android:layout_weight="1"
-            android:layout_marginTop="9dp"
-            android:layout_marginBottom="9dp"
             android:layout_marginRight="20dp"
             android:layout_marginLeft="20dp"
             android:id="@+id/testpaper_redo_btn"
@@ -70,6 +68,7 @@
     </LinearLayout>
 
     <ListView
+        android:layout_marginTop="44dp"
         android:id="@+id/testpaper_listview"
         android:layout_above="@id/testpaper_tools_layout"
         android:dividerHeight="1px"

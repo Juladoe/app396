@@ -68,7 +68,7 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
 
     public static final int CLEAR = 0x10;
 
-    public static final String COURSE_ID = "course_id";
+    public static final String COURSE_ID = "courseId";
     public static final String SHOW_TYPE = "show_type";
 
     public static final int DISCUSS_TYPE = 0;
@@ -309,7 +309,8 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
                     MobclickAgent.onEvent(mContext, "dynamic_topRightCourseDetailsButton");
                     MobclickAgent.onEvent(mContext, "chatWindow_topRightCourseDetailsButton");
                     startIntent.putExtra(Const.FROM_ID, mCourseId);
-                    startIntent.putExtra(Const.FROM_ID, mCourseId);
+                    startIntent.putExtra(Const.ACTIONBAR_TITLE, mCourse == null
+                            ? getResources().getString(R.string.news_course_profile) : mCourse.title);
 
                     String convNo = getIntent().getStringExtra(CONV_NO);
                     if (TextUtils.isEmpty(convNo)) {
@@ -391,18 +392,18 @@ public class NewsCourseActivity extends AbstractIMChatActivity implements Messag
 
     private void getRoleInCourse(int courseId, int userId, final NormalCallback<String> normalCallback) {
         new CourseProvider(mContext).getMembership(courseId, userId)
-        .success(new NormalCallback<LinkedHashMap>() {
-            @Override
-            public void success(LinkedHashMap jsonObject) {
-                if ("teacher".equals(jsonObject.get("membership"))) {
-                    normalCallback.success("teacher");
-                } else if ("student".equals(jsonObject.get("membership"))) {
-                    normalCallback.success("student");
-                } else {
-                    normalCallback.success("none");
-                }
-            }
-        });
+                .success(new NormalCallback<LinkedHashMap>() {
+                    @Override
+                    public void success(LinkedHashMap jsonObject) {
+                        if ("teacher".equals(jsonObject.get("membership"))) {
+                            normalCallback.success("teacher");
+                        } else if ("student".equals(jsonObject.get("membership"))) {
+                            normalCallback.success("student");
+                        } else {
+                            normalCallback.success("none");
+                        }
+                    }
+                });
     }
 
     /*

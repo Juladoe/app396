@@ -17,6 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -33,14 +34,17 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.EdusohoAutoCompleteTextView;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.photo.SchoolSplashActivity;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -242,13 +246,13 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         mSearchEdt.setAdapter(adapter);
     }
 
-    private void searchSchool(String searchStr) {
-        if (TextUtils.isEmpty(searchStr)) {
-            CommonUtil.longToast(mContext, "请输入网校url");
-            return;
+    private void searchSchool(String url) {
+        if (!url.contains("http")) {
+            url = "http://" + url;
         }
-
-        String url = "http://" + searchStr + Const.VERIFYVERSION;
+        if (!url.contains(Const.VERIFYVERSION)) {
+            url = url + Const.VERIFYVERSION;
+        }
         mLoading = LoadDialog.create(mContext);
         mLoading.show();
 
@@ -264,6 +268,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                     PopupDialog.createNormal(mContext, "提示信息", "没有搜索到网校").show();
                     return;
                 }
+                app.schoolVersion = systemInfo.version;
 
                 getSchoolApi(systemInfo);
             }
@@ -377,10 +382,13 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
     @Override
     public void onErrorResponse(VolleyError error) {
         mLoading.dismiss();
-        if (error.networkResponse == null) {
-            CommonUtil.longToast(mActivity, getResources().getString(R.string.request_failed));
-        } else {
-            CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
+        if (error.networkResponse != null) {
+            if (error.networkResponse.statusCode == 302 || error.networkResponse.statusCode == 301) {
+                String redirectUrl = error.networkResponse.headers.get("location");
+                searchSchool(redirectUrl);
+            } else {
+                CommonUtil.longToast(mContext, mContext.getResources().getString(R.string.request_fail_text));
+            }
         }
     }
 
@@ -401,11 +409,13 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
                 if (schoolResult == null
                         || schoolResult.site == null) {
                     handlerError(response);
+                    mLoading.dismiss();
                     return;
                 }
 
                 School site = schoolResult.site;
                 if (!checkMobileVersion(site, site.apiVersionRange)) {
+                    mLoading.dismiss();
                     return;
                 }
                 bindApiToken(site);
@@ -446,6 +456,7 @@ public class NetSchoolActivity extends ActionBarBaseActivity implements Response
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                mLoading.dismiss();
                 app.setCurrentSchool(site);
                 app.removeToken();
                 app.registDevice(null);

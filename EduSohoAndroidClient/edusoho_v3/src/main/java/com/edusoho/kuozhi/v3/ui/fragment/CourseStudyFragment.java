@@ -20,10 +20,6 @@ import android.widget.Toast;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.imserver.IMClient;
-import com.edusoho.kuozhi.imserver.entity.MessageEntity;
-import com.edusoho.kuozhi.imserver.entity.message.Destination;
-import com.edusoho.kuozhi.imserver.entity.message.MessageBody;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.adapter.StudyProcessRecyclerAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
@@ -39,7 +35,6 @@ import com.edusoho.kuozhi.v3.model.bal.courseDynamics.CourseDynamicsItem;
 import com.edusoho.kuozhi.v3.model.bal.courseDynamics.DynamicsProvider;
 import com.edusoho.kuozhi.v3.model.bal.push.NewsCourseEntity;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.model.sys.School;
 import com.edusoho.kuozhi.v3.ui.ThreadCreateActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -47,13 +42,9 @@ import com.edusoho.kuozhi.v3.util.Promise;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.umeng.analytics.MobclickAgent;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -98,14 +89,9 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
     private View.OnClickListener summaryListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            CoreEngine.create(mContext).runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    School school = getAppSettingProvider().getCurrentSchool();
-                    String url = String.format(Const.MOBILE_APP_URL, school.url + "/", String.format(Const.MOBILE_WEB_COURSE, mCourseId));
-                    startIntent.putExtra(Const.WEB_URL, url);
-                }
-            });
+            Bundle bundle = new Bundle();
+            bundle.putInt(Const.COURSE_ID, mCourseId);
+            CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
         }
     };
 
@@ -421,9 +407,12 @@ public class CourseStudyFragment extends Fragment implements View.OnClickListene
     }
 
     private void addCourseSummary() {
+        if (getActivity() == null) {
+            return;
+        }
         EdusohoApp app = (EdusohoApp) getActivity().getApplication();
         RequestUrl requestUrl = app.bindUrl(Const.COURSE, false);
-        HashMap<String, String> params = requestUrl.getParams();
+        Map<String, String> params = requestUrl.getParams();
         params.put("courseId", mCourseId + "");
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override

@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -63,13 +64,16 @@ public class SystemProvider extends ModelProvider {
         return requestOption.build();
     }
 
-    public ProviderListener getImServerHosts() {
+    public ProviderListener getImServerHosts(String[] ignoreServers) {
         Map<String, String> tokenMap = ApiTokenUtil.getToken(mContext);
         String token = tokenMap.get("token");
         School school = SchoolUtil.getDefaultSchool(mContext);
         RequestUrl requestUrl = new RequestUrl(school.host + "/api/im/me/login");
         HashMap<String, String> params = getPlatformInfo();
         params.put("tag", "mobile");
+        if (ignoreServers != null) {
+            params.put("ignoreServers", coverArray2String(ignoreServers));
+        }
         requestUrl.setParams(params);
         requestUrl.getHeads().put("Auth-Token", token);
 
@@ -99,6 +103,15 @@ public class SystemProvider extends ModelProvider {
         return stringResponseListener;
     }
 
+    private String coverArray2String(String[] array) {
+        String result = Arrays.toString(array);
+        if (TextUtils.isEmpty(result)) {
+            return "";
+        }
+
+        return result.substring(1, result.length() - 1);
+    }
+
     public HashMap<String, String> getPlatformInfo() {
         HashMap<String, String> params = new HashMap<String, String>();
         TelephonyManager telephonyManager = (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
@@ -118,4 +131,5 @@ public class SystemProvider extends ModelProvider {
 
         return params;
     }
+
 }

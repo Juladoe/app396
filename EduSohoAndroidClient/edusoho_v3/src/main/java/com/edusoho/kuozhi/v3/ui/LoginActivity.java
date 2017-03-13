@@ -1,15 +1,15 @@
 package com.edusoho.kuozhi.v3.ui;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,18 +18,28 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PromiseCallback;
 import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
+import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
+import com.edusoho.kuozhi.v3.ui.base.BaseNoTitleActivity;
+import com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByPhoneFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.util.OpenLoginUtil;
 import com.edusoho.kuozhi.v3.util.Promise;
-import com.edusoho.kuozhi.v3.view.EduSohoLoadingButton;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
+import com.edusoho.kuozhi.v3.util.encrypt.XXTEA;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
+import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
 import com.google.gson.reflect.TypeToken;
+import com.umeng.analytics.MobclickAgent;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,38 +53,58 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import static com.edusoho.kuozhi.v3.ui.QrSchoolActivity.REQUEST_QR;
+
 /**
  * Created by JesseHuang on 15/5/22.
  */
-public class LoginActivity extends ActionBarBaseActivity {
+public class LoginActivity extends BaseNoTitleActivity {
 
     public static final int TYPE_LOGIN = 1;
     public static final int OK = 1003;
+    public static final String FIND_PASSWORD_ACCOUNT = "find_password_account";
     private static final String EnterSchool = "enter_school";
     private static boolean isRun;
     private EditText etUsername;
     private EditText etPassword;
-    private EduSohoLoadingButton mBtnLogin;
+    private View mTvLogin;
     private ImageView ivWeibo;
     private ImageView ivQQ;
     private ImageView ivWeixin;
+    private ImageView ivUserCancel;
+    private ImageView ivPwCancel;
     private TextView tvMore;
+    private TextView tvRegister;
+    private TextView tvForgetPassword;
     private String mAuthCancel;
+    private View vSao;
+    private View mParent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        setBackMode(BACK, "登录");
         mAuthCancel = mContext.getResources().getString(R.string.authorize_cancelled);
         initView();
     }
 
-    private void initView() {
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent != null) {
+            etUsername.setText(intent.getStringExtra(FIND_PASSWORD_ACCOUNT));
+            etPassword.requestFocus();
+            InputUtils.showKeyBoard(etPassword, mContext);
+        }
+    }
+
+    @Override
+    protected void initView() {
+        super.initView();
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
-        mBtnLogin = (EduSohoLoadingButton) findViewById(R.id.btn_login);
-        mBtnLogin.setOnClickListener(mLoginClickListener);
+        mTvLogin = findViewById(R.id.tv_login);
+        mTvLogin.setOnClickListener(mLoginClickListener);
         ivWeibo = (ImageView) findViewById(R.id.iv_weibo);
         ivWeibo.setOnClickListener(mWeiboLoginClickListener);
         ivQQ = (ImageView) findViewById(R.id.iv_qq);
@@ -82,15 +112,89 @@ public class LoginActivity extends ActionBarBaseActivity {
         ivWeixin = (ImageView) findViewById(R.id.iv_weixin);
         ivWeixin.setOnClickListener(mWeChatLoginClickListener);
         tvMore = (TextView) findViewById(R.id.tv_more);
+        tvRegister = (TextView) findViewById(R.id.tv_register);
+        tvForgetPassword = (TextView) findViewById(R.id.tv_forget);
+        ivPwCancel = (ImageView) findViewById(R.id.iv_password_cancel);
+        ivUserCancel = (ImageView) findViewById(R.id.iv_username_cancel);
+        vSao = findViewById(R.id.saoyisao);
+        mParent = findViewById(R.id.parent_rlayout);
+        ViewGroup.LayoutParams params = mParent.getLayoutParams();
+        params.height = AppUtil.getUnrealScreenHeightPx(this);
+        mParent.setLayoutParams(params);
+        tvForgetPassword.setOnClickListener(getForgetPasswordClickListener());
+        vSao.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "Login_scan_it");
+                Intent qrIntent = new Intent();
+                qrIntent.setClass(LoginActivity.this, CaptureActivity.class);
+                startActivityForResult(qrIntent, REQUEST_QR);
+            }
+        });
         tvMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent settingIntent = new Intent();
-                settingIntent.setComponent(new ComponentName(getPackageName(), "SettingActivity"));
-                startActivity(settingIntent);
+                MobclickAgent.onEvent(mContext, "Login_Select_the_school");
+                QrSchoolActivity.start(mActivity);
             }
         });
+        tvRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "Login_Register_an_account");
+                mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
+            }
+        });
+        ivPwCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etPassword.setText("");
+            }
+        });
+        ivUserCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                etUsername.setText("");
+            }
+        });
+        initEdit();
         initThirdLoginBtns();
+    }
+
+    private void initEdit() {
+        TextWatcher watcher = new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                mTvLogin.setAlpha(1f);
+                mTvLogin.setEnabled(true);
+                if (etUsername.getText().length() == 0) {
+                    ivUserCancel.setVisibility(View.INVISIBLE);
+                    mTvLogin.setAlpha(0.6f);
+                    mTvLogin.setEnabled(false);
+                } else {
+                    ivUserCancel.setVisibility(View.VISIBLE);
+                }
+                if (etPassword.getText().length() == 0) {
+                    ivPwCancel.setVisibility(View.INVISIBLE);
+                    mTvLogin.setAlpha(0.6f);
+                    mTvLogin.setEnabled(false);
+                } else {
+                    ivPwCancel.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+        etPassword.addTextChangedListener(watcher);
+        etUsername.addTextChangedListener(watcher);
     }
 
     private void initThirdLoginBtns() {
@@ -106,6 +210,16 @@ public class LoginActivity extends ActionBarBaseActivity {
         }
     }
 
+    private View.OnClickListener getForgetPasswordClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MobclickAgent.onEvent(mContext, "Forgot_your_password");
+                mActivity.app.mEngine.runNormalPlugin("ForgetPasswordActivity", mContext, null);
+            }
+        };
+    }
+
     public static void startLogin(Activity activity) {
         synchronized (activity) {
             if (isRun) {
@@ -119,17 +233,22 @@ public class LoginActivity extends ActionBarBaseActivity {
 
     private void login() {
         RequestUrl requestUrl = mActivity.app.bindUrl(Const.LOGIN, false);
-        HashMap<String, String> params = requestUrl.getParams();
+        Map<String, String> params = requestUrl.getParams();
         params.put("_username", etUsername.getText().toString().trim());
-        params.put("_password", etPassword.getText().toString().trim());
+        if (SchoolUtil.checkEncryptVersion(app.schoolVersion, getString(R.string.encrypt_version))) {
+            params.put("encrypt_password", XXTEA.encryptToBase64String(etPassword.getText().toString(), app.domain));
+        } else {
+            params.put("_password", etPassword.getText().toString());
+        }
 
-        mBtnLogin.setLoadingState();
-
+        final LoadDialog loadDialog = LoadDialog.create(this);
+        loadDialog.show();
         mActivity.ajaxPost(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 UserResult userResult = mActivity.parseJsonValue(response, new TypeToken<UserResult>() {
                 });
+                loadDialog.dismiss();
                 if (userResult != null && userResult.user != null) {
                     app.saveToken(userResult);
                     setResult(LoginActivity.OK);
@@ -139,15 +258,15 @@ public class LoginActivity extends ActionBarBaseActivity {
                     saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
                     app.sendMessage(Const.LOGIN_SUCCESS, null);
                     new IMServiceProvider(getBaseContext()).bindServer(userResult.user.id, userResult.user.nickname);
-                    mBtnLogin.setSuccessState();
-                    mBtnLogin.postDelayed(new Runnable() {
+                    MessageEngine.getInstance().sendMsg(Const.LOGIN_SUCCESS, null);
+                    MessageEngine.getInstance().sendMsg(Const.REFRESH_MY_FRAGMENT, null);
+                    mTvLogin.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             mActivity.finish();
                         }
                     }, 500);
                 } else {
-                    mBtnLogin.setInitState();
                     if (!TextUtils.isEmpty(response)) {
                         CommonUtil.longToast(mContext, response);
                     } else {
@@ -158,7 +277,7 @@ public class LoginActivity extends ActionBarBaseActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                mBtnLogin.setInitState();
+                loadDialog.dismiss();
                 CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
             }
         });
@@ -170,12 +289,10 @@ public class LoginActivity extends ActionBarBaseActivity {
             final String username = etUsername.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
             if (TextUtils.isEmpty(username)) {
-                CommonUtil.longToast(mContext, "请输入用户名");
                 etUsername.requestFocus();
                 return;
             }
             if (TextUtils.isEmpty(password)) {
-                CommonUtil.longToast(mContext, "请输入密码");
                 etPassword.requestFocus();
                 return;
             }
@@ -202,9 +319,9 @@ public class LoginActivity extends ActionBarBaseActivity {
     }
 
     private View.OnClickListener mWeiboLoginClickListener = new View.OnClickListener() {
-
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Login_weib_login");
             loginByPlatform("SinaWeibo");
         }
     };
@@ -212,6 +329,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     private View.OnClickListener mQQLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Login_qq_login");
             loginByPlatform("QQ");
         }
     };
@@ -220,6 +338,7 @@ public class LoginActivity extends ActionBarBaseActivity {
     private View.OnClickListener mWeChatLoginClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            MobclickAgent.onEvent(mContext, "Login_weixin_login");
             loginByPlatform("Wechat");
         }
     };
@@ -308,24 +427,26 @@ public class LoginActivity extends ActionBarBaseActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-        getMenuInflater().inflate(R.menu.login_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.item_register) {
-            mActivity.app.mEngine.runNormalPlugin("RegisterActivity", mActivity, null);
+    public void invoke(WidgetMessage message) {
+        switch (message.type.type) {
+            case FIND_PASSWORD_ACCOUNT:
+                etUsername.setText(message.data.getString(FindPasswordByPhoneFragment.FIND_PASSWORD_USERNAME));
+                break;
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        //overridePendingTransition(R.anim.up_to_down, R.anim.none);
+    public MessageType[] getMsgTypes() {
+        return new MessageType[]{new MessageType(FIND_PASSWORD_ACCOUNT)};
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        if (app.loginUser == null) {
+            setResult(DefaultPageActivity.LOGIN_CANCEL);
+        }
+        overridePendingTransition(R.anim.none, R.anim.up_to_down);
     }
 
     @Override

@@ -32,6 +32,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.google.gson.reflect.TypeToken;
 
@@ -133,6 +134,12 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     }
 
     public void startSplash() {
+        if (app.config.showSplash) {
+            app.mEngine.runNormalPlugin("SplashActivity", this, null);
+            app.config.showSplash = false;
+            app.saveConfig();
+            return;
+        }
         app.sendMessage(INIT_APP, null);
     }
 
@@ -178,11 +185,12 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
     protected void onDestroy() {
         app.unRegistMsgSource(this);
         super.onDestroy();
+        Log.d(TAG, "onDestroy");
     }
 
     protected void checkSchoolAndUserToken(SystemInfo systemInfo) {
         startLoading("登录用户");
-        ajaxGet(String.format("%s/%s?version=2", systemInfo.mobileApiUrl, Const.CHECKTOKEN), new Response.Listener<String>() {
+        ajaxGet(String.format("%s/%s?version=2&token=%s", systemInfo.mobileApiUrl, Const.CHECKTOKEN, app.token), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 UserResult userResult = parseJsonValue(response.toString(), new TypeToken<UserResult>() {
@@ -201,6 +209,8 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
                 app.setCurrentSchool(site);
                 if (userResult.user != null) {
                     app.saveToken(userResult);
+                } else {
+                    app.removeToken();
                 }
 
                 bindApiToken(site, new NormalCallback<Boolean>() {
@@ -348,14 +358,21 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
             @Override
             public void onResponse(String response) {
                 hideLoading();
-                SystemInfo info = parseJsonValue(response.toString(), new TypeToken<SystemInfo>() {
+                SystemInfo systemInfo = parseJsonValue(response.toString(), new TypeToken<SystemInfo>() {
                 });
-                if (info == null || info.mobileApiUrl == null || "".equals(info.mobileApiUrl)) {
+                if (systemInfo == null || systemInfo.mobileApiUrl == null || "".equals(systemInfo.mobileApiUrl)) {
                     showSchoolErrorDlg();
                     return;
                 }
 
-                checkSchoolAndUserToken(info);
+
+                app.schoolVersion = systemInfo.version;
+
+                if (TextUtils.isEmpty(app.token)) {
+                    checkSchoolVersion(systemInfo);
+                    return;
+                }
+                checkSchoolAndUserToken(systemInfo);
             }
         }, new Response.ErrorListener() {
             @Override

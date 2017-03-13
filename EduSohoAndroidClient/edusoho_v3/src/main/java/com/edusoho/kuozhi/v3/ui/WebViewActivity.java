@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
@@ -134,7 +135,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
     protected void onDestroy() {
         Log.d(TAG, "onDestroy");
         super.onDestroy();
-        destoryVideoResource();
+        MessageEngine.getInstance().sendMsg(Const.WEB_BACK_REFRESH, null);
         mWebView = null;
     }
 
@@ -159,6 +160,7 @@ public class WebViewActivity extends ActionBarBaseActivity {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                destoryVideoResource();
                 destoryWebView();
             }
         });

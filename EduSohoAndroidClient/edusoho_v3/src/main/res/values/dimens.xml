@@ -1,4 +1,20 @@
 <resources>
+    <!--kuozhi 4.0 font size guideline-->
+    <dimen name="font_xxxl">24sp</dimen>
+    <dimen name="font_xxl">20sp</dimen>
+    <dimen name="font_xl">17sp</dimen>
+    <dimen name="font_l">15sp</dimen>
+    <dimen name="font_m">14sp</dimen>
+    <dimen name="font_s">13sp</dimen>
+    <dimen name="font_s_">12sp</dimen>
+    <dimen name="font_xs">11sp</dimen>
+    <dimen name="font_xxs">10sp</dimen>
+
+    <dimen name="button_height">45dp</dimen>
+    <dimen name="action_bar_height">44dp</dimen>
+
+    <!-- end -->
+
     <dimen name="font_size_l">20sp</dimen>
     <dimen name="font_size_m">18sp</dimen>
     <dimen name="font_size_s">16sp</dimen>
@@ -18,21 +34,25 @@
     <dimen name="base_xx_large_size">24sp</dimen>
 
     <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="xxxx_large_font_size">36sp</dimen>
     <dimen name="xxx_large_font_size">32sp</dimen>
     <dimen name="xx_large_font_size">28sp</dimen>
     <dimen name="x_large_font_size">24sp</dimen>
     <!--大字-->
     <dimen name="large_font_size">20sp</dimen>
+    <dimen name="_large_font_size">18sp</dimen>
+
     <!--中字-->
     <dimen name="medium_font_size">16sp</dimen>
+    <dimen name="x_medium_font_size">15sp</dimen>
     <!--小一/二字-->
     <dimen name="small_font_size">14sp</dimen>
     <!--超小字-->
+    <dimen name="_x_small_font_size">13sp</dimen>
     <dimen name="x_small_font_size">12sp</dimen>
 
     <dimen name="xx_small_font_size">10sp</dimen>
     <dimen name="xxx_small_font_size">8sp</dimen>
-
 
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -153,4 +173,48 @@
 
     <dimen name="lesson_tool_height">48dp</dimen>
     <dimen name="testpaper_tool_height">56dp</dimen>
+
+    <!--3.8-->
+    <dimen name="tv_register_size">16sp</dimen>
+    <dimen name="class_catalog_iv_weight">130dp</dimen>
+    <dimen name="class_catalog_iv_height">73dp</dimen>
+    <dimen name="rl_register_margingTop">50dp</dimen>
+    <dimen name="iv_register">48dp</dimen>
+    <dimen name="view_marginTop">45dp</dimen>
+    <dimen name="head_register_height">44dp</dimen>
+    <dimen name="rl_register_margin">31dp</dimen>
+    <dimen name="btn_register_width">21dp</dimen>
+    <dimen name="btn_register_height">16dp</dimen>
+    <dimen name="view_register_margin">15dp</dimen>
+    <dimen name="view_register_height">1px</dimen>
+    <dimen name="register_btn_next">17sp</dimen>
+    <dimen name="complete_iv_width">80dp</dimen>
+    <dimen name="complete_iv_height">40dp</dimen>
+    <dimen name="common_height_xl">50dp</dimen>
+    <dimen name="common_dimen_xl">40dp</dimen>
+    <dimen name="common_dimen_l">30dp</dimen>
+    <dimen name="catalog_margin_left">25dp</dimen>
+    <dimen name="common_margin_right">15dp</dimen>
+    <dimen name="common_maring0">15dp</dimen>
+    <dimen name="common_margin">10dp</dimen>
+    <dimen name="common_margin1">9dp</dimen>
+    <dimen name="common_margin2">6dp</dimen>
+    <dimen name="common_marginl">5dp</dimen>
+    <dimen name="space_height">53dp</dimen>
+    <dimen name="catelog_chapter_height">54dp</dimen>
+    <dimen name="catelog_section_height">34dp</dimen>
+    <dimen name="catelog_lesson_height">53dp</dimen>
+    <dimen name="catelog_lesson_status">6dp</dimen>
+    <dimen name="lesson_status_height">16dp</dimen>
+    <dimen name="lesson_status_width">0.5dp</dimen>
+    <dimen name="lesson_free_top">19dp</dimen>
+    <dimen name="lesson_status">12dp</dimen>
+    <dimen name="lesson_view_height">21dp</dimen>
+    <dimen name="class_margin_right">20dp</dimen>
+    <!--字体大小-->
+    <!--<dimen name="font_size_l"-->
+
+    <!-- course toolbar height -->
+    <dimen name="course_toolbar_height">210dp</dimen>
+
 </resources>

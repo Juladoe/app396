@@ -20,7 +20,7 @@ import java.util.Map;
 public abstract class BaseVolleyRequest<T> extends Request<T> {
 
     private static final String TAG = "BaseVolleyRequest";
-    private static final int DEFUALT_TIME_OUT = 100 * 1000;
+    private static final int DEFUALT_TIME_OUT = 10 * 1000;
 
     protected static final int CACHE_MAX_AGE = 604800;
 

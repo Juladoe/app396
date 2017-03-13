@@ -109,13 +109,11 @@ public class NotifyActivity extends ActionBarBaseActivity implements NofityListA
 
     private synchronized void checkCanAutoLoad(RecyclerView recyclerView) {
         if (!canLoad || mPtrFrame.isAutoRefresh()) {
-            Log.d(TAG, "auto loading");
             return;
         }
         int chileCount = recyclerView.getChildCount();
         View firstView = recyclerView.getChildAt(chileCount - 1);
         if (firstView != null && firstView.getTop() == 0) {
-            Log.d(TAG, "auto load");
             mPtrFrame.autoRefresh(true, 200);
         }
     }
@@ -146,7 +144,7 @@ public class NotifyActivity extends ActionBarBaseActivity implements NofityListA
         CoreEngine.create(mContext).runNormalPluginWithBundle("WebViewActivity", mContext, bundle);
     }
 
-    protected AppSettingProvider getAppSettingProvider() {
+    public AppSettingProvider getAppSettingProvider() {
         return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 

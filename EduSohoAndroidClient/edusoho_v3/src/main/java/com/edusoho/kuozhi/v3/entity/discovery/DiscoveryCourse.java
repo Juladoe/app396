@@ -43,7 +43,7 @@ public class DiscoveryCourse extends Course implements DiscoveryCardProperty, Se
     @Override
     public String getTeacherAvatar() {
         if (hasTeachers()) {
-            return teachers[0].mediumAvatar;
+            return teachers[0].getSmallAvatar();
         }
         return "";
     }

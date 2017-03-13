@@ -14,7 +14,6 @@ import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.Role;
-import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -29,6 +28,7 @@ import com.edusoho.kuozhi.v3.plugin.appview.CourseConsultAction;
 import com.edusoho.kuozhi.v3.plugin.appview.GenseeLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.LonginusLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.SooonerLivePlayerAction;
+import com.edusoho.kuozhi.v3.plugin.appview.TalkFunLivePlayerAction;
 import com.edusoho.kuozhi.v3.plugin.appview.ThreadCreateAction;
 import com.edusoho.kuozhi.v3.plugin.appview.ThreadDiscussAction;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
@@ -59,7 +59,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by JesseHuang on 15/6/2.
@@ -75,8 +74,6 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
     public void sendNativeMessage(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
         String type = args.getString(0);
         JSONObject data = args.getJSONObject(1);
-        if ("token_lose".equals(type)) {
-        }
         MessageEngine.getInstance().sendMsg(type, JsonObject2Bundle(data));
     }
 
@@ -95,9 +92,17 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
     }
 
     @JsAnnotation
-    public JSONArray getThirdConfig(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
-        List<String> types = ThirdPartyLogin.getInstance(mContext).getLoginTypes();
-        return new JSONArray(types);
+    public void openNativeCourseDetailPage(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.COURSE_ID, args.getInt(0));
+        CoreEngine.create(mContext).runNormalPluginWithBundle("CourseActivity", mContext, bundle);
+    }
+
+    @JsAnnotation
+    public void openNativeClassroomDetailPage(JSONArray args, final BridgeCallback callbackContext) throws JSONException {
+        Bundle bundle = new Bundle();
+        bundle.putInt(Const.CLASSROOM_ID, args.getInt(0));
+        CoreEngine.create(mContext).runNormalPluginWithBundle("ClassroomActivity", mContext, bundle);
     }
 
     @JsAnnotation
@@ -466,16 +471,18 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
             new LonginusLivePlayerAction(mActivity).invoke(bundle);
         } else if ("genseeLivePlayer".equals(name)) {
             new GenseeLivePlayerAction(mActivity).invoke(bundle);
+        } else if ("talkfunLivePlayer".equals(name)) {
+            new TalkFunLivePlayerAction(mActivity).invoke(bundle);
         }
     }
 
     @JsAnnotation
-    public JSONArray getSupportLiveClients(JSONArray args, BridgeCallback callbackContext) throws JSONException{
+    public JSONArray getSupportLiveClients(JSONArray args, BridgeCallback callbackContext) throws JSONException {
         JSONArray result = new JSONArray();
         result.put("gensee");
         result.put("sooner");
         result.put("longinus");
-
+        result.put("talkfun");
         return result;
     }
 
@@ -488,8 +495,8 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
                     "ClassroomDetailActivity", mActivity, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(Const.FROM_ID,chatRoomId);
-                            startIntent.putExtra(Const.ACTIONBAR_TITLE,"班级详情");
+                            startIntent.putExtra(Const.FROM_ID, chatRoomId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE, "班级详情");
                         }
                     }
             );
@@ -498,12 +505,23 @@ public class MenuClickPlugin extends BaseBridgePlugin<Activity> {
                     "CourseDetailActivity", mActivity, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(Const.FROM_ID,chatRoomId);
-                            startIntent.putExtra(Const.ACTIONBAR_TITLE,"课程详情");
+                            startIntent.putExtra(Const.FROM_ID, chatRoomId);
+                            startIntent.putExtra(Const.ACTIONBAR_TITLE, "课程详情");
                         }
                     }
             );
         }
+    }
+
+    @JsAnnotation
+    public void originalLogin(JSONArray args, BridgeCallback callbackContext) throws JSONException {
+        EdusohoApp app = (EdusohoApp) mActivity.getApplication();
+        app.mEngine.runNormalPluginWithAnim("LoginActivity", mContext, null, new NormalCallback() {
+            @Override
+            public void success(Object obj) {
+                mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
+            }
+        });
     }
 
     private int[] coverJsonArrayToIntArray(JSONArray jsonArray) {

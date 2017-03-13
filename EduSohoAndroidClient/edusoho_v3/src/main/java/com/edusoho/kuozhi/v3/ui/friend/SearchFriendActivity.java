@@ -28,6 +28,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -251,7 +252,7 @@ public class SearchFriendActivity extends ActionBarBaseActivity {
                     StringBuffer stringBuffer = new StringBuffer(requestUrl.url);
                     stringBuffer.append(friend.id + "/followers");
                     requestUrl.url = stringBuffer.toString();
-                    HashMap<String, String> params = requestUrl.getParams();
+                    Map<String, String> params = requestUrl.getParams();
                     params.put("method", "follow");
                     params.put("userId", app.loginUser.id + "");
                     ajaxPost(requestUrl, new Response.Listener<String>() {

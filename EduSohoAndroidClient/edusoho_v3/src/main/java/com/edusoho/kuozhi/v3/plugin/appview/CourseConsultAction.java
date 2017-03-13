@@ -15,6 +15,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by 菊 on 2016/4/11.
@@ -31,7 +32,7 @@ public class CourseConsultAction {
     public void invoke(final Bundle bundle) {
         final EdusohoApp app = (EdusohoApp) mActivity.getApplication();
         RequestUrl requestUrl = app.bindUrl(Const.USERINFO, false);
-        HashMap<String, String> params = requestUrl.getParams();
+        Map<String, String> params = requestUrl.getParams();
         params.put("userId", bundle.getString("userId"));
         app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override

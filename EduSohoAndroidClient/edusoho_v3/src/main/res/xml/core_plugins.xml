@@ -61,6 +61,11 @@
         version="1.0" />
 
     <plugin
+        name="AllReviewActivity"
+        package="com.edusoho.kuozhi.v3.ui.AllReviewActivity"
+        version="1.0" />
+
+    <plugin
         name="ChatActivity"
         package="com.edusoho.kuozhi.v3.ui.ImChatActivity"
         version="1.0" />
@@ -147,7 +152,26 @@
 
     <plugin
         name="MineFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.MineFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MineFragment"
+        version="1.0" />
+
+    <plugin
+        name="MyStudyFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyStudyFragment"
+        version="1.0" />
+
+    <plugin
+        name="MyFavoriteFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyFavoriteFragment"
+        version="1.0" />
+
+    <plugin
+        name="MyQuestionFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyQuestionFragment"
+        version="1.0" />
+    <plugin
+        name="MyVideoCacheFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.mine.MyVideoCacheFragment"
         version="1.0" />
 
     <plugin
@@ -183,7 +207,7 @@
 
     <plugin
         name="VideoLessonFragment"
-        package="com.edusoho.kuozhi.v3.ui.fragment.video.CustomVideoFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.video.InnerVideoPlayerFragment"
         version="1.0" />
 
     <plugin
@@ -209,6 +233,26 @@
     <plugin
         name="MediaPlayerFragment"
         package="com.edusoho.kuozhi.v3.view.video.MediaPlayerFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseDetailFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.CourseDetailFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseCatalogFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.CourseCatalogFragment"
+        version="1.0" />
+
+    <plugin
+        name="ClassCatalogFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.ClassCatalogFragment"
+        version="1.0" />
+
+    <plugin
+        name="ClassroomDetailFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.ClassroomDetailFragment"
         version="1.0" />
 
     <plugin
@@ -315,6 +359,10 @@
         package="com.edusoho.kuozhi.v3.ui.QrSearchActivity"
         version="1.0" />
     <plugin
+        name="ReviewActivity"
+        package="com.edusoho.kuozhi.v3.ui.ReviewActivity"
+        version="1.0" />
+    <plugin
         name="AboutFragment"
         package="com.edusoho.kuozhi.v3.ui.fragment.AboutFragment"
         version="1.0" />
@@ -401,7 +449,65 @@
         version="1.0" />
 
     <plugin
+        name="ForgetPasswordActivity"
+        package="com.edusoho.kuozhi.v3.ui.ForgetPasswordActivity"
+        version="1.0" />
+
+    <plugin
+        name="FindPasswordFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FindPasswordFragment"
+        version="1.0" />
+
+    <plugin
+        name="FindPasswordByPhoneFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByPhoneFragment"
+        version="1.0" />
+
+    <plugin
+        name="FindPasswordByMailFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.FindPasswordByMailFragment"
+        version="1.0" />
+
+    <plugin
         name="NotifyActivity"
         package="com.edusoho.kuozhi.v3.ui.NotifyActivity"
+        version="1.0" />
+
+    <plugin
+        name="CourseActivity"
+        package="com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity"
+        version="1.0" />
+    <plugin
+        name="ClassroomActivity"
+        package="com.edusoho.kuozhi.v3.ui.ClassroomActivity"
+        version="1.0" />
+
+    <plugin
+        name="WebViewDataActivity"
+        package="com.edusoho.kuozhi.v3.ui.WebViewDataActivity"
+        version="1.0" />
+
+    <plugin
+        name="CourseDiscussFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.CourseDiscussFragment"
+        version="1.0" />
+
+    <plugin
+        name="QuestionAnswerActivity"
+        package="com.edusoho.kuozhi.v3.ui.QuestionAnswerActivity"
+        version="1.0" />
+
+    <plugin
+        name="DiscussDetailActivity"
+        package="com.edusoho.kuozhi.v3.ui.DiscussDetailActivity"
+        version="1.0" />
+    <plugin
+        name="MyDownloadFragment"
+        package="com.edusoho.kuozhi.v3.ui.fragment.MyDownloadFragment"
+        version="1.0" />
+
+    <plugin
+        name="VideoPlayerActivity"
+        package="com.edusoho.kuozhi.v3.ui.VideoPlayerActivity"
         version="1.0" />
 </plugins>

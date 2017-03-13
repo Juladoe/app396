@@ -4,7 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <ExpandableListView
+    <ListView
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
         android:id="@+id/el_downloaded"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -12,57 +14,36 @@
         android:layout_alignParentTop="true"
         android:layout_gravity="center_horizontal"
         android:background="@android:color/white"
-        android:childDivider="@android:color/white"
-        android:dividerHeight="0dp"
-        android:groupIndicator="@null" />
+        android:divider="@color/disabled_hint_color"
+        android:dividerHeight="1px" />
 
-    <LinearLayout
-        android:id="@+id/download_tools_layout"
+    <include
+        android:visibility="gone"
+        layout="@layout/view_download_tool_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
+        android:layout_alignParentBottom="true" />
+
+    <LinearLayout
         android:visibility="gone"
+        android:id="@+id/ll_downloading_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@drawable/download_tool_line" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:orientation="horizontal">
+            android:src="@drawable/no_review" />
 
-            <TextView
-                android:id="@+id/tv_select_all"
-                android:layout_width="wrap_content"
-                android:layout_height="49dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:gravity="center"
-                android:text="@string/select_all"
-                android:textColor="@color/green_alpha"
-                android:textSize="@dimen/medium_font_size" />
 
-            <ImageView
-                android:layout_width="2px"
-                android:layout_height="16dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/login_line_bg" />
-
-            <TextView
-                android:id="@+id/tv_delete"
-                android:layout_width="wrap_content"
-                android:layout_height="49dp"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:gravity="center"
-                android:text="删除"
-                android:textColor="@color/green_alpha"
-                android:textSize="@dimen/medium_font_size" />
-        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="@string/download_no_complete_lesson" />
     </LinearLayout>
 </RelativeLayout>

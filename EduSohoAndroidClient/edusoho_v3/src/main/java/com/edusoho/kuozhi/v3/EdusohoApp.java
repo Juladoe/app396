@@ -26,6 +26,7 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NoConnectionError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
@@ -48,7 +49,7 @@ import com.edusoho.kuozhi.v3.model.sys.Token;
 import com.edusoho.kuozhi.v3.service.DownLoadService;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
-import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -58,10 +59,12 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.util.RequestUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
+import com.edusoho.kuozhi.v3.util.json.GsonEnumTypeAdapter;
 import com.edusoho.kuozhi.v3.util.server.CacheServer;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.util.volley.StringVolleyRequest;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.cache.disc.impl.UnlimitedDiscCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -84,6 +87,7 @@ public class EdusohoApp extends Application {
     public School defaultSchool;
     public User loginUser;
     public String apiVersion;
+    public String schoolVersion;
     public String schoolHost = "";
     public CoreEngine mEngine;
 
@@ -110,6 +114,7 @@ public class EdusohoApp extends Application {
 
     private ImageLoaderConfiguration mImageLoaderConfiguration;
     public DisplayImageOptions mOptions;
+    public DisplayImageOptions mAvatarOptions;
 
     //cache 缓存服务器
     private CacheServer mResouceCacheServer;
@@ -176,6 +181,10 @@ public class EdusohoApp extends Application {
             @Override
             public void onErrorResponse(VolleyError error) {
                 if (error instanceof NoConnectionError) {
+                    errorListener.onErrorResponse(error);
+                    return;
+                }
+                if (error instanceof TimeoutError) {
                     errorListener.onErrorResponse(error);
                     return;
                 }
@@ -283,9 +292,15 @@ public class EdusohoApp extends Application {
         SqliteUtil.getUtil(this).close();
     }
 
+    private Gson createGson() {
+        return new GsonBuilder()
+                .registerTypeAdapter(UserRole.class, new GsonEnumTypeAdapter<>(UserRole.NO_SUPPORT))
+                .create();
+    }
+
     private void init() {
         app = this;
-        gson = new Gson();
+        gson = createGson();
         apiVersion = getString(R.string.api_version);
         setHost(getString(R.string.app_host));
         notifyMap = new HashMap<>();
@@ -358,8 +373,10 @@ public class EdusohoApp extends Application {
                 .diskCache(new UnlimitedDiscCache(file)).imageDownloader(new BaseImageDownloader(this, Const.TIMEOUT, Const.TIMEOUT))
                 .build();
         ImageLoader.getInstance().init(mImageLoaderConfiguration);
-        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.defaultpic).
-                showImageOnFail(R.drawable.defaultpic).build();
+        mOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.default_course).
+                showImageOnFail(R.drawable.default_course).build();
+        mAvatarOptions = new DisplayImageOptions.Builder().cacheOnDisk(true).showImageForEmptyUri(R.drawable.icon_default_avatar).
+                showImageOnFail(R.drawable.icon_default_avatar).build();
     }
 
     public HashMap<String, String> getPlatformInfo() {
@@ -688,6 +705,14 @@ public class EdusohoApp extends Application {
         return requestUrl;
     }
 
+    public RequestUrl bindNewHostUrl(String url, boolean addToken) {
+        RequestUrl requestUrl = new RequestUrl(url);
+        if (addToken) {
+            requestUrl.heads.put("X-Auth-Token", token);
+        }
+        return requestUrl;
+    }
+
     public RequestUrl bindPushUrl(String url) {
         StringBuffer sb = new StringBuffer(Const.PUSH_HOST);
         sb.append(url);
@@ -760,7 +785,7 @@ public class EdusohoApp extends Application {
      * @param activity
      * @return
      */
-    public CacheServer startPlayCacheServer(ActionBarBaseActivity activity) {
+    public CacheServer startPlayCacheServer(BaseActivity activity) {
         if (mPlayCacheServer == null) {
             mPlayCacheServer = new CacheServer(activity, Const.CACHE_PROT);
             mPlayCacheServer.start();
@@ -814,10 +839,18 @@ public class EdusohoApp extends Application {
     }
 
     public String getCurrentUserRole() {
+        if (loginUser == null || loginUser.roles == null) {
+            return "";
+        }
+
+        UserRole[] userRoles = app.loginUser.roles;
         if (TextUtils.isEmpty(loginUser.role)) {
-            String[] roles = new String[app.loginUser.roles.length];
-            for (int i = 0; i < app.loginUser.roles.length; i++) {
-                roles[i] = app.loginUser.roles[i].toString();
+            String[] roles = new String[userRoles.length];
+            for (int i = 0; i < userRoles.length; i++) {
+                UserRole role = userRoles[i];
+                if (role != null) {
+                    roles[i] = role.toString();
+                }
             }
             if (CommonUtil.inArray(UserRole.ROLE_TEACHER.name(), roles)) {
                 loginUser.role = PushUtil.ChatUserType.TEACHER;

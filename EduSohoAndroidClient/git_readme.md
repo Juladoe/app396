@@ -34,3 +34,7 @@
 1. 可以从release/x.x.x版本中建立，命名是custom/xxxxxx
 
 [参考](http://nvie.com/posts/a-successful-git-branching-model/)
+
+上传fir
+./gradlew publishApkEdusohoDebug //上传debug版本
+./gradlew publishApkEdusohoRelease //上传release版本

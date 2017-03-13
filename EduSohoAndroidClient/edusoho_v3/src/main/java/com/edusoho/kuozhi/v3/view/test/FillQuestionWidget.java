@@ -155,7 +155,7 @@ public class FillQuestionWidget extends BaseQuestionWidget {
         if ("noAnswer".equals(testResult.status)) {
             myAnswer = "未答题";
         } else {
-            myAnswer = listToStr(testResult.answer);
+            myAnswer = listToStr(coverResultAnswer(testResult.answer));
         }
 
         myAnswerText.setText("你的答案:\n" + myAnswer);
