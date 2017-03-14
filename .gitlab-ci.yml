@@ -1,22 +1,7 @@
 image: registry.cn-hangzhou.aliyuncs.com/codeages/android-ci:3.0.6
 
 stages:
-- test
 - build
-
-test:
-  stage: test
-  image: registry.cn-hangzhou.aliyuncs.com/codeages/android-ci:3.0.6
-  script:
-    - emulator64-arm -avd myandroid22 -no-window -no-audio & android-wait-for-emulator
-    - cd EduSohoAndroidClient
-    - gradle createEdusohoDebugCoverageReport
-  artifacts:
-    paths:
-    - EduSohoAndroidClient/kuozhiv2/build/reports/coverage
-    expire_in: 1 week
-  only:
-    - develop
 
 build:
   stage: build
