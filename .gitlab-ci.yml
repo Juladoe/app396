@@ -1,16 +1,10 @@
+image: registry.cn-hangzhou.aliyuncs.com/codeages/android-ci:3.0.6
+
 stages:
-#- Test
-- Package
+- build
 
-# Unit Test:
-#   stage: Test
-#   image: li7tlemk/edusoho-android-ci:3.0.4
-#   script:
-#     - echo "unit test."
-
-Package apk:
-  stage: Package
-  image: li7tlemk/edusoho-android-ci:3.0.5
+build:
+  stage: build
   script:
     - cd EduSohoAndroidClient/kuozhiv2
     - gradle build -x lint
@@ -22,3 +16,5 @@ Package apk:
   only:
     - develop
     - master
+    
+
