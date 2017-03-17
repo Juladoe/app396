@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="300dp">
+
+    <TextView
+        android:gravity="center"
+        android:text="@string/coupons"
+        android:textColor="@color/primary_font_color"
+        android:textSize="@dimen/font_xl"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+    
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:text="@string/confirm"
+        android:gravity="center"
+        android:textColor="@color/disabled2_hint_color"
+        android:background="@color/primary_color"
+        android:textSize="@dimen/font_xl"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+</LinearLayout>
