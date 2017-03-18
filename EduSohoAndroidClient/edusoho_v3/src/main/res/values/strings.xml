@@ -424,8 +424,11 @@
     <string name="study_progress">学习进度</string>
     <string name="pay_way">支付方式</string>
     <string name="zhifubao">支付宝</string>
-    <string name="vitural_coin">虚拟币</string>
+    <string name="virtual_coin">虚拟币</string>
     <string name="coupons">优惠券</string>
     <string name="confirm">确定</string>
+    <string name="confirm1">确认</string>
+    <string name="account_balance">账号余额:</string>
+    <string name="order_amount">订单金额:</string>
 
 </resources>

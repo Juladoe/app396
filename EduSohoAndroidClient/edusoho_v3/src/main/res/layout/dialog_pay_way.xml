@@ -79,7 +79,7 @@
             android:layout_height="24dp" />
 
         <TextView
-            android:text="@string/vitural_coin"
+            android:text="@string/virtual_coin"
             android:layout_marginLeft="34dp"
             android:textSize="@dimen/font_s"
             android:textColor="@color/primary_font_color"
