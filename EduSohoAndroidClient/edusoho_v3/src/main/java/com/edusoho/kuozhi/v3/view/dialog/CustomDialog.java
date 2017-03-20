@@ -88,8 +88,8 @@ public class CustomDialog extends Dialog {
                 getWindow().setAttributes(lp);
                 TextView tvAccountBalance = (TextView) findViewById(R.id.tv_account_balance);
                 TextView tvOrderAmount = (TextView) findViewById(R.id.tv_order_amount);
-                tvAccountBalance.setText(mAccountBalance);
-                tvOrderAmount.setText(mOrderAmount);
+//                tvAccountBalance.setText(mAccountBalance);
+//                tvOrderAmount.setText(mOrderAmount);
                 break;
             case 5:
                 break;
@@ -170,5 +170,8 @@ public class CustomDialog extends Dialog {
         return this;
     }
 
+    public interface EventListener {
+        void on
+    }
 
 }
