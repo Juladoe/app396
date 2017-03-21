@@ -27,7 +27,7 @@ public class EduSohoTextBtn extends LinearLayout {
     private float iconSizeScale;
     private ColorStateList color;
     private TextView mText;
-    private EduSohoIconView mIcon;
+    private EduSohoNewIconView mIcon;
     private FrameLayout mIconLayout;
     private TextView mUpdateIcon;
 
@@ -64,7 +64,7 @@ public class EduSohoTextBtn extends LinearLayout {
         layoutParams.gravity = Gravity.CENTER;
 
         mIconLayout = new FrameLayout(mContext);
-        mIcon = new EduSohoIconView(mContext);
+        mIcon = new EduSohoNewIconView(mContext);
         mIcon.setText(icon);
         mIcon.setTextColor(color);
         mIcon.setTextSize(TypedValue.COMPLEX_UNIT_PX, size * iconSizeScale);
