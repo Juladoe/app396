@@ -94,8 +94,6 @@ public class CustomDialog extends Dialog {
             case 5:
                 break;
         }
-
-
     }
 
     private void initEvent() {
@@ -134,7 +132,7 @@ public class CustomDialog extends Dialog {
 
     }
 
-    private void setPayOnclick() {
+    private void setPayOnClick() {
         findViewById(R.id.rl_zhifubao).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,7 +169,7 @@ public class CustomDialog extends Dialog {
     }
 
     public interface EventListener {
-        void on
+
     }
 
 }
