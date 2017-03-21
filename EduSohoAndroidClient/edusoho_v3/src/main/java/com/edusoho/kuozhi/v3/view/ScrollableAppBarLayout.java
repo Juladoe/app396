@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+
 import java.lang.ref.WeakReference;
 
 public class ScrollableAppBarLayout extends AppBarLayout {
@@ -59,7 +60,7 @@ public class ScrollableAppBarLayout extends AppBarLayout {
                 int top = AppUtil.dp2px(getContext(), 25);
                 view.setPadding(0, top, 0, 0);
                 ViewGroup.LayoutParams lp = view.getLayoutParams();
-                lp.height = getContext().getResources().getDimensionPixelOffset(R.dimen.action_bar_height) + top;
+                lp.height = getContext().getResources().getDimensionPixelOffset(android.R.attr.actionBarSize) + top;
                 view.setLayoutParams(lp);
             }
         }
