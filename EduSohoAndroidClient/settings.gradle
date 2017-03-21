@@ -1,3 +1,4 @@
 include ':kuozhiv2', ':edusoho_v3', ':homework', ':liveplayer', ':imserver'
 include ':bdvideoplayer', ':commonUtils', ':shard', ':commonLib'
 include ':multi-image-selector'
+include ':custom_builder'
