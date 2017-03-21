@@ -343,4 +343,13 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">false</item>
     </style>
+
+    <style name="common_tv_fonts">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/font_s</item>
+        <item name="android:color">@color/disabled2_hint_color</item>
+    </style>
+
 </resources>
