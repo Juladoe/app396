@@ -3,6 +3,8 @@ package com.edusoho.kuozhi.v3.adapter;
 import android.support.v4.view.PagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
 import com.edusoho.kuozhi.R;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -38,6 +40,7 @@ public class ViewPagerAdapter extends PagerAdapter {
     @Override
     public View instantiateItem(ViewGroup container, int position) {
         PhotoView photoView = new PhotoView(container.getContext());
+        photoView.setScaleType(ImageView.ScaleType.FIT_XY);
         if (mImages[position].contains("http://")) {
             ImageLoader.getInstance().displayImage(mImages[position], photoView, mOptions);
         } else {

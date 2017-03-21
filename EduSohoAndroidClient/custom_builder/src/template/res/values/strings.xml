@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">{{appname}}</string>
+
+    <string name="app_host">http://{{apphost}}</string>
+    <string name="app_code">{{appcode}}</string>
+    <string name="about_welcome">关于{{appname}}</string>
+    <string name="channel_name">{{appcode}}</string>
+    <string name="splash_num">0</string>
+    <string name="splash_padding">0</string>
+    <string name="app_id">{{WechatAppId}}</string>
+
+    <string-array
+        name="shard_filter"
+        >
+        <item>TencentWeibo</item>
+        <item>QZone</item>
+
+    </string-array>
+
+</resources>

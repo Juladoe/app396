@@ -1,0 +1,28 @@
+
+android {
+    //签名
+    signingConfigs {
+        {{appcode}} {
+            storeFile file("key/com.edusoho.{{appcode}}.jks")
+            storePassword "10001000"
+            keyAlias "cn"
+            keyPassword "10001000"
+        }
+    }
+    sourceSets {
+
+        kunluncloud {
+            java.srcDirs = ['src/{{appcode}}/java']
+            res.srcDirs = ['src/{{appcode}}/res']
+            assets.srcDirs = ['src/{{appcode}}/assets']
+        }
+    }
+
+    productFlavors {
+        {{appcode}} {
+            signingConfig signingConfigs.{{appcode}}
+            applicationId "com.edusoho.{{appcode}}"
+            manifestPlaceholders = [wxpkg: "com.edusoho.{{appcode}}"]
+        }
+    }
+}
