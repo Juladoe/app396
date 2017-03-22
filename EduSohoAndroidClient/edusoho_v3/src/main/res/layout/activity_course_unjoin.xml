@@ -36,7 +36,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="210dp"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/aw" />
+                    android:src="@drawable/default_course" />
 
                 <LinearLayout
                     android:id="@+id/ll_limit_activities"
@@ -47,13 +47,11 @@
                     android:layout_height="40dp">
 
                     <TextView
-                        android:text="[双十二活动]"
                         style="@style/common_tv_fonts"
                         android:layout_marginLeft="@dimen/common_marginl"
                         android:layout_marginRight="@dimen/common_margin1"/>
 
                     <TextView
-                        android:text="剩余00天12小时28分"
                         style="@style/common_tv_fonts" />
 
                 </LinearLayout>
@@ -139,6 +137,7 @@
 
     <LinearLayout
         android:id="@+id/bottom_add_layout"
+        android:background="@color/disabled2_hint_color"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_gravity="bottom"
@@ -211,8 +210,7 @@
         android:layout_height="match_parent"
         android:background="@color/textIcons"
         android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
         <ProgressBar
             android:layout_width="25dp"

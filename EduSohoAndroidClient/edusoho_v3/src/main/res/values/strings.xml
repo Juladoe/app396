@@ -421,5 +421,7 @@
     <string name="classroom_teacher_txt">班主任</string>
     <string name="go_to_course">前往课程</string>
     <string name="go_to_classroom">前往班级</string>
+    <string name="course_introduce">课程简介</string>
+    <string name="discount">折</string>
 
 </resources>

@@ -27,13 +27,13 @@ import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
-import com.edusoho.kuozhi.v3.ui.BaseStudyDetailActivity;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -47,7 +47,7 @@ import extensions.PagerSlidingTabStrip;
  */
 
 public class CourseUnJoinActivity extends AppCompatActivity
-        implements View.OnClickListener, AppBarLayout.OnOffsetChangedListener{
+        implements View.OnClickListener, AppBarLayout.OnOffsetChangedListener {
 
     //CourseUnjoinView ;
     private View mLoadView;
@@ -79,7 +79,7 @@ public class CourseUnJoinActivity extends AppCompatActivity
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
         mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
-        initLoadView();
+        isJoin();
     }
 
     @Override
@@ -94,12 +94,6 @@ public class CourseUnJoinActivity extends AppCompatActivity
         mAppBarLayout.removeOnOffsetChangedListener(this);
     }
 
-    private void initLoadView() {
-        mLoadView = findViewById(R.id.ll_frame_load);
-//        mLoadView.setVisibility(View.VISIBLE);
-        isJoin();
-    }
-
     private void isJoin() {
         // TODO: 2017/3/21 判断是否已经加入计划
         initView();
@@ -107,8 +101,8 @@ public class CourseUnJoinActivity extends AppCompatActivity
         initData();
     }
 
-
     private void initView() {
+        mLoadView = findViewById(R.id.ll_frame_load);
         mBackView = (TextView) findViewById(R.id.iv_back);
         mIvBackGraound = (ImageView) findViewById(R.id.iv_background);
         mAddLayout = (ViewGroup) findViewById(R.id.bottom_add_layout);
@@ -186,9 +180,10 @@ public class CourseUnJoinActivity extends AppCompatActivity
                 .showImageOnFail(R.drawable.default_course)
                 .showImageOnLoading(R.drawable.default_course)
                 .build();
-        ImageLoader.getInstance().displayImage(
-                mCourseDetail.getCourse().largePicture,
-                mIvBackGraound, imageOptions);
+        String img = mCourseDetail.getCourse().largePicture.substring(mCourseDetail.getCourse()
+                .largePicture.indexOf("file"));
+        String url = SchoolUtil.getDefaultSchool(getBaseContext()).host + "/" + img;
+        ImageLoader.getInstance().displayImage(url, mIvBackGraound, imageOptions);
         if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null &&
                 ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
                 && mCourseDetail.getCourse().vipLevelId != 0) {
@@ -196,6 +191,7 @@ public class CourseUnJoinActivity extends AppCompatActivity
         } else {
             mTvAdd.setText(R.string.txt_add_course);
         }
+        mLoadView.setVisibility(View.GONE);
     }
 
     @Override
@@ -203,13 +199,13 @@ public class CourseUnJoinActivity extends AppCompatActivity
         int id = v.getId();
         if (id == R.id.iv_back) {
             finish();
-        } else if(id == R.id.iv_share){
+        } else if (id == R.id.iv_share) {
             share();
-        } else if (id == R.id.collect_layout){
+        } else if (id == R.id.collect_layout) {
             collect();
-        } else if(id == R.id.consult_layout) {
+        } else if (id == R.id.consult_layout) {
             consult();
-        } else if(id == R.id.tv_add) {
+        } else if (id == R.id.tv_add) {
             add();
         }
     }
@@ -258,8 +254,8 @@ public class CourseUnJoinActivity extends AppCompatActivity
             mShareView.setTextColor(ContextCompat.getColor(this, R.color.textIcons));
             mBackView.setTextColor(ContextCompat.getColor(this, R.color.textIcons));
         }
-        if (this instanceof BaseStudyDetailActivity.WidgtState) {
-            ((BaseStudyDetailActivity.WidgtState) this).setTopViewVisibility(isTop);
+        if (this instanceof CourseUnJoinActivity.WidgtState) {
+            ((CourseUnJoinActivity.WidgtState) this).setTopViewVisibility(isTop);
         }
     }
 
@@ -267,7 +263,7 @@ public class CourseUnJoinActivity extends AppCompatActivity
         mToolBarLayout.setContentScrimColor(color);
     }
 
-    public interface WidgtState{
+    public interface WidgtState {
         void setTopViewVisibility(boolean isTop);
     }
 
@@ -393,7 +389,6 @@ public class CourseUnJoinActivity extends AppCompatActivity
 //            mIsJump = true;
         }
     }
-
 
     protected void showProcessDialog() {
         if (mProcessDialog == null) {

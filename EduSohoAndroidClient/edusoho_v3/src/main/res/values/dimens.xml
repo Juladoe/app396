@@ -195,6 +195,12 @@
     <dimen name="common_dimen_l">30dp</dimen>
     <dimen name="catalog_margin_left">25dp</dimen>
     <dimen name="common_margin_right">15dp</dimen>
+    <dimen name="common_44">44dp</dimen>
+    <dimen name="common_25">25dp</dimen>
+    <dimen name="common_22">22dp</dimen>
+    <dimen name="common_20">20dp</dimen>
+    <dimen name="common_16">16dp</dimen>
+    <dimen name="common_14">14dp</dimen>
     <dimen name="common_maring0">15dp</dimen>
     <dimen name="common_margin">10dp</dimen>
     <dimen name="common_margin1">9dp</dimen>

@@ -327,6 +327,10 @@
         <item name="android:layout_alignParentBottom">true</item>
     </style>
 
+    <style name="NewBottomLine" parent="BottomLine">
+        <item name="android:layout_marginRight">0dp</item>
+    </style>
+
     <style name="DiscussDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowFrame">@null</item>
         <item name="android:windowIsFloating">true</item>
