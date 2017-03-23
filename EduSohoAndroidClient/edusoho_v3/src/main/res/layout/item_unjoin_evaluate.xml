@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/iv_user_icon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:scaleType="centerCrop"
+        app:riv_oval="true"/>
+
+    <TextView
+        tools:text="测试000"
+        android:id="@+id/tv_evaluate_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/secondary_font_color"
+        android:layout_marginLeft="40dp" />
+
+    <TextView
+        tools:text="一天前"
+        android:id="@+id/tv_evaluate_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="7dp"
+        android:layout_below="@+id/tv_evaluate_name"
+        android:textSize="@dimen/font_xxs"
+        android:textColor="@color/secondary2_font_color" />
+
+    <TextView
+        tools:text="来自:要么孤独，要么庸俗"
+        android:id="@+id/tv_evaluate_from"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/tv_evaluate_time"
+        android:layout_toRightOf="@id/tv_evaluate_time"
+        android:layout_marginLeft="10dp"
+        android:textSize="@dimen/font_xxs"
+        android:textColor="@color/secondary2_font_color" />
+
+    <TextView
+        tools:text="彻底的原理"
+        android:id="@+id/tv_evaluate_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:layout_below="@id/tv_evaluate_time"
+        android:layout_marginTop="10dp"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/primary_font_color" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_alignLeft="@+id/tv_evaluate_desc"
+        android:layout_below="@+id/tv_evaluate_desc"
+        android:layout_marginTop="15dp"
+        android:background="@color/disabled_hint_color" />
+
+    <com.edusoho.kuozhi.v3.view.ReviewStarView
+        android:id="@+id/rv_evaluate_star"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/tv_evaluate_name"
+        android:layout_alignParentRight="true" />
+
+</RelativeLayout>

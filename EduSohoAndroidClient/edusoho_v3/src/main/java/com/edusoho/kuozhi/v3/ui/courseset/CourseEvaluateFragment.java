@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.ui.courseset;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 
@@ -10,20 +12,24 @@ import com.edusoho.kuozhi.R;
 
 public class CourseEvaluateFragment extends BaseLazyFragment {
 
+    private RecyclerView mRvContent;
+    private TextView mTvEmpty;
+    private View mLoadView;
+
     @Override
     protected int initContentView() {
-        return R.layout.fragment_course_introduce;
+        return R.layout.fragment_course_evaluate;
     }
 
     @Override
     protected void initView(View view) {
-
+        mRvContent = (RecyclerView) view.findViewById(R.id.rv_content);
+        mTvEmpty = (TextView) view.findViewById(R.id.ll_discuss_empty);
+        mLoadView = view.findViewById(R.id.ll_frame_load);
     }
 
     @Override
-    protected void initEvent() {
-
-    }
+    protected void initEvent() {}
 
     @Override
     protected void lazyLoad() {
