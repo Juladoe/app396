@@ -42,7 +42,7 @@ public class CustomDialog extends Dialog {
     }
 
     /**
-     * 初始化dialog的类型1:学习进度 2:支付方式 3:优惠券 4:虚拟币 5:输入支付密码
+     * 初始化dialog的类型1:学习进度 2:支付方式 3:优惠券 4:虚拟币 5:输入支付密码 6:确认加入课程
      * @param type
      * @return
      */
@@ -63,6 +63,8 @@ public class CustomDialog extends Dialog {
                 return R.layout.dialog_virtual_coin;
             case 5:
                 break;
+            case 6:
+                return R.layout.dialog_confirm_buy;
         }
         return 0;
     }
@@ -113,7 +115,7 @@ public class CustomDialog extends Dialog {
                         dismiss();
                     }
                 });
-                setPayOnclick();
+//                setPayOnclick();
                 break;
             case 3:
                 break;
@@ -127,6 +129,8 @@ public class CustomDialog extends Dialog {
                 });
                 break;
             case 5:
+                break;
+            case 6:
                 break;
         }
 

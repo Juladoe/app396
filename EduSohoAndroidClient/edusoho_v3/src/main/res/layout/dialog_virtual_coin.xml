@@ -30,7 +30,6 @@
         
         <TextView
             android:id="@+id/tv_account_balance"
-            android:text="1000币"
             android:textSize="@dimen/font_l"
             android:textColor="@color/primary_font_color"
             android:layout_alignParentRight="true"
@@ -65,7 +64,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:text="200币"
             android:textColor="@color/primary_font_color"
             android:textSize="@dimen/font_l" />
 
