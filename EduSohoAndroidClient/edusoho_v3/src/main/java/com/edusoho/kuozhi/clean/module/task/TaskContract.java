@@ -24,7 +24,7 @@ public interface TaskContract {
 
     interface Presenter extends BasePresenter {
 
-        void getTaskInfo(int taskId);
+        void getTaskInfo();
 
         void getTasks(int taskId);
 
