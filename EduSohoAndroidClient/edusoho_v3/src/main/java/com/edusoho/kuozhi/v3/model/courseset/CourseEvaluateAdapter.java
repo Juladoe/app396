@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.model.courseset;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,6 @@ import java.util.List;
 
 public class CourseEvaluateAdapter extends RecyclerView.Adapter {
 
-    private Context mContext;
     private List<CourseReview> mList;
     private View mItem;
 
@@ -40,9 +38,27 @@ public class CourseEvaluateAdapter extends RecyclerView.Adapter {
     //上拉加载更多状态-默认为0
     private int mLoadMoreStatus = 0;
 
-    public CourseEvaluateAdapter(Context mContext) {
-        this.mContext = mContext;
+    public CourseEvaluateAdapter() {
         this.mList = new ArrayList<>();
+    }
+
+    public void reFreshData(List<CourseReview> list){
+        this.mList = list;
+        notifyDataSetChanged();
+    }
+
+    public void addData(List<CourseReview> list){
+        this.mList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void changeMoreStatus(int status){
+        mLoadMoreStatus=status;
+        notifyDataSetChanged();
+    }
+
+    public void setStatus(int status) {
+        mLoadMoreStatus = status;
     }
 
     @Override
@@ -75,6 +91,10 @@ public class CourseEvaluateAdapter extends RecyclerView.Adapter {
                     break;
                 case LOADING_MORE:
                     footerViewHolder.mTvLoadText.setText("正加载更多...");
+                    break;
+                case NO_LOAD_MORE:
+                    footerViewHolder.mLoadLayout.setVisibility(View.GONE);
+                    break;
             }
         }
     }

@@ -31,7 +31,6 @@
         android:id="@+id/ll_frame_load"
         android:background="@color/textIcons"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

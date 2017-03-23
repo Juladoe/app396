@@ -16,7 +16,6 @@
         app:riv_oval="true"/>
 
     <TextView
-        tools:text="测试000"
         android:id="@+id/tv_evaluate_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,7 +24,6 @@
         android:layout_marginLeft="40dp" />
 
     <TextView
-        tools:text="一天前"
         android:id="@+id/tv_evaluate_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,7 +34,6 @@
         android:textColor="@color/secondary2_font_color" />
 
     <TextView
-        tools:text="来自:要么孤独，要么庸俗"
         android:id="@+id/tv_evaluate_from"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,7 +44,6 @@
         android:textColor="@color/secondary2_font_color" />
 
     <TextView
-        tools:text="彻底的原理"
         android:id="@+id/tv_evaluate_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
