@@ -340,6 +340,11 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="dialog_custom" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
     <style name="dialog_big_image" parent="DiscussDialog">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">fill_parent</item>
