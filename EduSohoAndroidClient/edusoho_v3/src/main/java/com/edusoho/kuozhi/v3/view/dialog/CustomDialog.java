@@ -5,12 +5,15 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.model.courseset.GuaranteServiceAdapter;
 
 /**
  * Created by DF on 2017/3/17.
@@ -42,7 +45,8 @@ public class CustomDialog extends Dialog {
     }
 
     /**
-     * 初始化dialog的类型1:学习进度 2:支付方式 3:优惠券 4:虚拟币 5:输入支付密码 6:确认加入课程
+     * 初始化dialog的类型1:学习进度 2:支付方式 3:优惠券 4:虚拟币 5:输入支付密码 6:确认加入课程 7:承诺服务
+     *
      * @param type
      * @return
      */
@@ -51,7 +55,7 @@ public class CustomDialog extends Dialog {
         return this;
     }
 
-    private int getContentView(int mType){
+    private int getContentView(int mType) {
         switch (mType) {
             case 1:
                 return R.layout.dialog_study_progress;
@@ -65,6 +69,8 @@ public class CustomDialog extends Dialog {
                 break;
             case 6:
                 return R.layout.dialog_confirm_buy;
+            case 7:
+                return R.layout.dialog_guaranteed_service;
         }
         return 0;
     }
@@ -75,7 +81,7 @@ public class CustomDialog extends Dialog {
                 TextView tvAlreadyPlan = (TextView) findViewById(R.id.already_plan);
                 TextView tvPlanCom = (TextView) findViewById(R.id.plan_complete);
                 TextView tvCourseDate = (TextView) findViewById(R.id.course_date);
-                tvAlreadyPlan.setText(String.format("%s%s","已经完成计划: ", mAlreadyPlan));
+                tvAlreadyPlan.setText(String.format("%s%s", "已经完成计划: ", mAlreadyPlan));
                 tvPlanCom.setText(String.format("%s%s", "计划完成任务: ", mPlanComplete));
                 tvCourseDate.setText(String.format("%s%s", "课程有效期至: ", mCourseDate));
                 break;
@@ -84,10 +90,7 @@ public class CustomDialog extends Dialog {
             case 3:
                 break;
             case 4:
-                WindowManager.LayoutParams lp = getWindow().getAttributes();
-                lp.width = getContext().getResources().getDisplayMetrics().widthPixels;
-                getWindow().setGravity(Gravity.BOTTOM);
-                getWindow().setAttributes(lp);
+                setPositionBottom();
                 TextView tvAccountBalance = (TextView) findViewById(R.id.tv_account_balance);
                 TextView tvOrderAmount = (TextView) findViewById(R.id.tv_order_amount);
 //                tvAccountBalance.setText(mAccountBalance);
@@ -95,7 +98,24 @@ public class CustomDialog extends Dialog {
                 break;
             case 5:
                 break;
+            case 6:
+                setPositionBottom();
+                break;
+            case 7:
+                setPositionBottom();
+                RecyclerView rv = (RecyclerView) findViewById(R.id.rv_content);
+                GuaranteServiceAdapter guaranteServiceAdapter = new GuaranteServiceAdapter();
+                rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                rv.setAdapter(guaranteServiceAdapter);
+                break;
         }
+    }
+
+    private void setPositionBottom() {
+        WindowManager.LayoutParams lp = getWindow().getAttributes();
+        lp.width = getContext().getResources().getDisplayMetrics().widthPixels;
+        getWindow().setGravity(Gravity.BOTTOM);
+        getWindow().setAttributes(lp);
     }
 
     private void initEvent() {
@@ -153,9 +173,10 @@ public class CustomDialog extends Dialog {
 
     /**
      * 初始化学习进度dialog中的信息
+     *
      * @return
      */
-    public Dialog initText(String... text) {
+    public Dialog initData(String... text) {
         switch (mType) {
             case 1:
                 //已完成计划，计划完成任务，课程有效期至

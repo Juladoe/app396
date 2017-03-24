@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingTop="@dimen/common_maring0"
+    android:paddingBottom="@dimen/common_maring0"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_type"
+        android:text="批"
+        android:gravity="center"
+        android:background="@color/primary"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_xs"
+        android:layout_width="20dp"
+        android:layout_height="20dp" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:text="24小时作业批阅"
+        android:textColor="@color/primary_font_color"
+        android:textSize="@dimen/font_l"
+        android:layout_toRightOf="@id/tv_type"
+        android:layout_alignTop="@id/tv_type"
+        android:layout_marginLeft="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_alignLeft="@id/tv_title"
+        android:layout_below="@id/tv_title"
+        android:layout_marginTop="17dp"
+        android:text="24小时内完成作业批阅，及时反馈并巩固您的学习效果 24小时内完成作业批阅，及时反馈并巩固您的学习效果"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/secondary_font_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</RelativeLayout>
