@@ -1,8 +1,11 @@
 package com.edusoho.kuozhi.v3.ui.courseset;
 
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.model.courseset.StudyPlanAdapter;
 
 /**
  * Created by DF on 2017/3/21.
@@ -10,14 +13,22 @@ import com.edusoho.kuozhi.R;
 
 public class StudyPlayFragment extends BaseLazyFragment {
 
+    private View mLoad;
+    private RecyclerView mRv;
+    private StudyPlanAdapter mStudyPlanAdapter;
+
     @Override
     protected int initContentView() {
-        return R.layout.fragment_course_introduce;
+        return R.layout.fragment_study_plan;
     }
 
     @Override
     protected void initView(View view) {
-
+        mRv = (RecyclerView) view.findViewById(R.id.rv_content);
+        mLoad = view.findViewById(R.id.ll_frame_load);
+        mStudyPlanAdapter = new StudyPlanAdapter(getContext());
+        mRv.setLayoutManager(new LinearLayoutManager(getContext()));
+        mRv.setAdapter(mStudyPlanAdapter);
     }
 
     @Override
