@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.task;
+package com.edusoho.kuozhi.clean.module.course;
 
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
@@ -7,15 +7,9 @@ import com.edusoho.kuozhi.clean.module.base.BaseView;
  * Created by JesseHuang on 2017/3/22.
  * 学习计划Contract
  */
-public interface TaskContract {
+public interface CourseProjectContract {
 
     interface View extends BaseView<Presenter> {
-
-        void showTaskInfo();
-
-        void showTasks();
-
-        void showRates();
 
         void showTasksCover();
 
@@ -23,10 +17,6 @@ public interface TaskContract {
     }
 
     interface Presenter extends BasePresenter {
-
-        void getTaskInfo();
-
-        void getTasks(int taskId);
 
         void learnTask(int taskId);
 

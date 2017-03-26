@@ -1,6 +1,6 @@
 package com.edusoho.kuozhi.clean.api;
 
-import com.edusoho.kuozhi.clean.bean.Task;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
 
 import java.util.List;
 
@@ -15,5 +15,5 @@ import retrofit2.http.Path;
 public interface ApiService {
 
     @GET("/courses/{id}/tasks")
-    Observable<List<Task>> getTasks(@Path("id") int id);
+    Observable<List<CourseTask>> getTasks(@Path("id") int id);
 }

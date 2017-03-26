@@ -1,6 +1,6 @@
 package com.edusoho.kuozhi.clean.api;
 
-import com.edusoho.kuozhi.clean.bean.Task;
+import com.edusoho.kuozhi.clean.bean.CourseTask;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class RetrofitService {
         mApiService = retrofit.create(ApiService.class);
     }
 
-    public static Observable<List<Task>> getTasks(int id) {
+    public static Observable<List<CourseTask>> getTasks(int id) {
         return mApiService.getTasks(id)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
