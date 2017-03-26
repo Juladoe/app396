@@ -11,9 +11,11 @@ public interface CourseProjectContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showTasksCover();
+        void showTasksCover(String imageUrl);
 
         void setTitle(String title);
+
+        void showFragments(CourseProjectEnum[] courseProjectModules);
     }
 
     interface Presenter extends BasePresenter {
@@ -23,5 +25,7 @@ public interface CourseProjectContract {
         void favorite(int taskId);
 
         void consult();
+
+        void initFragments();
     }
 }

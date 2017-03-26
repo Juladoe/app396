@@ -16,6 +16,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
+        mView.setPresenter(this);
     }
 
     @Override
@@ -41,5 +42,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public void unsubscribe() {
 
+    }
+
+    @Override
+    public void initFragments() {
+        CourseProjectEnum[] courses = {CourseProjectEnum.INFO, CourseProjectEnum.TASKS, CourseProjectEnum.RATE};
+        mView.showFragments(courses);
     }
 }

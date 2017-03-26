@@ -5,7 +5,7 @@ package com.edusoho.kuozhi.clean.module.course.rate;
  */
 
 public class CourseProjectRatesPresenter implements CourseProjectRatesContract.Presenter {
-    
+
     @Override
     public void getRates(int courseProjectId) {
 

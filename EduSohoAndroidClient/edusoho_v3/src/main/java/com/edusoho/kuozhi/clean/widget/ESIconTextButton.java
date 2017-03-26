@@ -19,7 +19,6 @@ import java.util.HashMap;
 /**
  * Created by JesseHuang on 2017/3/23.
  */
-
 public class ESIconTextButton extends LinearLayout {
     private Context mContext;
     private String text;

@@ -515,4 +515,25 @@
         name="VideoPlayerActivity"
         package="com.edusoho.kuozhi.v3.ui.VideoPlayerActivity"
         version="1.0" />
+
+    <plugin
+        name="CourseProjectInfoFragment"
+        package="com.edusoho.kuozhi.clean.module.course.info.CourseProjectInfoFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseProjectRatesFragment"
+        package="com.edusoho.kuozhi.clean.module.course.rate.CourseProjectRatesFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseTasksFragment"
+        package="com.edusoho.kuozhi.clean.module.course.task.CourseTasksFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseProjectActivity"
+        package="com.edusoho.kuozhi.clean.module.course.CourseProjectActivity"
+        version="1.0" />
+
 </plugins>

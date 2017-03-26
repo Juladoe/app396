@@ -203,14 +203,16 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MobclickAgent.onEvent(mContext, "i_userInformationPortal");
-                mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_INFO);
-                        startIntent.putExtra(Const.WEB_URL, url);
-                    }
-                });
+//                MobclickAgent.onEvent(mContext, "i_userInformationPortal");
+//                mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+//                    @Override
+//                    public void setIntentDate(Intent startIntent) {
+//                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_INFO);
+//                        startIntent.putExtra(Const.WEB_URL, url);
+//                    }
+//                });
+
+                mActivity.app.mEngine.runNormalPlugin("CourseProjectActivity", mContext, null);
             }
         };
     }

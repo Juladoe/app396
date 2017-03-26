@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.course.tasks;
+package com.edusoho.kuozhi.clean.module.course.task;
 
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;

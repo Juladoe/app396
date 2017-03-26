@@ -421,5 +421,8 @@
     <string name="classroom_teacher_txt">班主任</string>
     <string name="go_to_course">前往课程</string>
     <string name="go_to_classroom">前往班级</string>
+    <string name="course_project_favorite">收藏</string>
+    <string name="course_project_consult">咨询</string>
+    <string name="learn_course_project">加入学习</string>
 
 </resources>
