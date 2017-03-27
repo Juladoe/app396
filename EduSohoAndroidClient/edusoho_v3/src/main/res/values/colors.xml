@@ -13,6 +13,7 @@
 
     <!-- end -->
 
+    <color name="color_gray">#F6F6F6</color>
     <color name="base_card_bg">#ffffff</color>
     <color name="base_light">#fdb933</color>
     <color name="base_light_red">#ff5822</color>

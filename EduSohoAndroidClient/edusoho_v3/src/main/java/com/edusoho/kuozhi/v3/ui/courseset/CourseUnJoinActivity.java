@@ -35,6 +35,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
+import com.edusoho.kuozhi.v3.view.dialog.CustomDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -212,17 +213,6 @@ public class CourseUnJoinActivity extends AppCompatActivity
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-//        if (mViewPager.getCurrentItem() == 2) {
-//            if (i == 0) {
-//                if (((AppBarLayout.LayoutParams) mToolBarLayout.getLayoutParams()).getScrollFlags() == 0) {
-//                    ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(false);
-//                } else {
-//                    ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(true);
-//                }
-//            } else {
-//                ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(false);
-//            }
-//        }
         int maxHeight = getResources().getDimensionPixelOffset(R.dimen.action_bar_height);
         int toolbarHeight = AppUtil.dp2px(getBaseContext(), 210);
         if (toolbarHeight + i > maxHeight * 2) {
@@ -254,17 +244,10 @@ public class CourseUnJoinActivity extends AppCompatActivity
             mShareView.setTextColor(ContextCompat.getColor(this, R.color.textIcons));
             mBackView.setTextColor(ContextCompat.getColor(this, R.color.textIcons));
         }
-        if (this instanceof CourseUnJoinActivity.WidgtState) {
-            ((CourseUnJoinActivity.WidgtState) this).setTopViewVisibility(isTop);
-        }
     }
 
     protected void setToolbarLayoutBackground(int color) {
         mToolBarLayout.setContentScrimColor(color);
-    }
-
-    public interface WidgtState {
-        void setTopViewVisibility(boolean isTop);
     }
 
     private void share() {
@@ -344,7 +327,7 @@ public class CourseUnJoinActivity extends AppCompatActivity
                         .getString(R.string.add_error_close));
                 return;
             }
-            showProcessDialog();
+//            showProcessDialog();
             if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
                     && ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
                     && mCourseDetail.getCourse().vipLevelId != 0) {
@@ -357,7 +340,7 @@ public class CourseUnJoinActivity extends AppCompatActivity
 //                                .getString(R.string.success_add_course));
 //                        initData();
 //                    }
-
+//
 //                    @Override
 //                    public void onAddCourseError(String response) {
 //                        hideProcesDialog();
@@ -365,27 +348,28 @@ public class CourseUnJoinActivity extends AppCompatActivity
 //                });
                 return;
             }
-            CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
-                            .setCouponCode("")
-                            .setPayment("")
-                            .setPayPassword("")
-                            .setTargetId(String.valueOf(mCourseDetail.getCourse().id))
-                            .setTargetType("course")
-                            .setTotalPrice(String.valueOf(mCourseDetail.getCourse().price))
-                    , new CourseUtil.OnAddCourseListener() {
-                        @Override
-                        public void onAddCourseSuccess(String response) {
-                            hideProcesDialog();
-                            CommonUtil.shortToast(CourseUnJoinActivity.this, getResources()
-                                    .getString(R.string.success_add_course));
-                            initData();
-                        }
-
-                        @Override
-                        public void onAddCourseError(String error) {
-                            hideProcesDialog();
-                        }
-                    });
+            new CustomDialog(this).initType(6).show();
+//            CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
+//                            .setCouponCode("")
+//                            .setPayment("")
+//                            .setPayPassword("")
+//                            .setTargetId(String.valueOf(mCourseDetail.getCourse().id))
+//                            .setTargetType("course")
+//                            .setTotalPrice(String.valueOf(mCourseDetail.getCourse().price))
+//                    , new CourseUtil.OnAddCourseListener() {
+//                        @Override
+//                        public void onAddCourseSuccess(String response) {
+//                            hideProcesDialog();
+//                            CommonUtil.shortToast(CourseUnJoinActivity.this, getResources()
+//                                    .getString(R.string.success_add_course));
+//                            initData();
+//                        }
+//
+//                        @Override
+//                        public void onAddCourseError(String error) {
+//                            hideProcesDialog();
+//                        }
+//                    });
 //            mIsJump = true;
         }
     }

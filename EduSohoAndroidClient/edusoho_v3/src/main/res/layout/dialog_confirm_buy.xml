@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@drawable/dialog_white_background"
-    android:paddingTop="17dp"
+    android:paddingTop="15dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -18,7 +17,7 @@
         android:layout_height="wrap_content" />
 
     <View
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="15dp"
         android:background="@color/disabled_hint_color"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"/>
@@ -26,7 +25,7 @@
     <LinearLayout
         android:id="@+id/rl_up"
         android:layout_width="match_parent"
-        android:layout_height="58.5dp"
+        android:layout_height="55dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingLeft="15dp"
@@ -34,15 +33,15 @@
 
         <TextView
             android:id="@+id/tv_discount_price"
-            tools:text="¥ 286"
+            android:text="¥ 286"
             android:textSize="@dimen/font_xl"
             android:textColor="@color/secondary_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            android:id="@+id/original_price"
-            tools:text="900"
+            android:id="@+id/tv_original_price"
+            android:text="900"
             android:textColor="@color/secondary2_font_color"
             android:textSize="@dimen/font_l"
             android:layout_marginLeft="10dp"
@@ -73,90 +72,98 @@
         android:text="教学计划"
         android:textColor="@color/primary_font_color"
         android:textSize="@dimen/font_l"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <com.edusoho.kuozhi.v3.view.FlowRadioGroup
+        android:id="@+id/rg_type"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     
     <View
         android:background="@color/disabled_hint_color"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_width="match_parent"
-        android:layout_height="0.5dp"/>
+        android:layout_height="1dp"/>
 
     <TextView
         android:text="概述"
         android:textSize="@dimen/font_l"
         android:textColor="@color/primary_font_color"
         android:layout_marginLeft="15dp"
-        android:layout_marginTop="20.5dp"
+        android:layout_marginTop="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tv_service"
-        tools:text="承诺服务: 二十四小时作业批阅、提问答题"
+        android:text="承诺服务: 二十四小时作业批阅、提问答题"
         android:textSize="@dimen/font_s"
         android:textColor="@color/secondary_font_color"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tv_way"
-        tools:text="学习方式: 随到随学"
+        android:text="学习方式: 随到随学"
         android:textSize="@dimen/font_s"
         android:textColor="@color/secondary_font_color"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tv_validity"
-        tools:text="有效期: 180天"
+        android:text="有效期: 180天"
         android:textSize="@dimen/font_s"
         android:textColor="@color/secondary_font_color"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tv_task"
-        tools:text="学习任务: 130个"
+        android:text="学习任务: 130个"
         android:textSize="@dimen/font_s"
         android:textColor="@color/secondary_font_color"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
 
     <TextView
-        tools:text="VIP会员免费加入学习"
+        android:text="VIP会员免费加入学习"
         android:textSize="@dimen/font_s"
         android:textColor="@color/primary"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="15dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
     <View
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="18dp"
         android:background="@color/disabled_hint_color"
         android:layout_width="wrap_content"
         android:layout_height="0.5dp"/>
 
     <TextView
         android:text="@string/confirm1"
+        android:id="@+id/tv_confirm"
         android:background="@color/primary"
         android:textColor="@color/disabled1_hint_color"
         android:layout_below="@id/rl_up"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="25dp"
         android:textSize="@dimen/font_xl"
         android:gravity="center"
         android:layout_width="match_parent"
