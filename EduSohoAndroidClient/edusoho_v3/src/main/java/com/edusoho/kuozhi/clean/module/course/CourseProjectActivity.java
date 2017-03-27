@@ -10,14 +10,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 
 /**
  * Created by JesseHuang on 2017/3/22.
@@ -56,8 +58,14 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setDisplayShowHomeEnabled(true);
+
         mPresenter = new CourseProjectPresenter(1, this);
-        mPresenter.initFragments();
+        mPresenter.subscribe();
+    }
+
+    @Override
+    public void setPresenter(CourseProjectContract.Presenter presenter) {
+        mPresenter = presenter;
     }
 
     @Override
@@ -71,39 +79,41 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     @Override
-    public void setPresenter(CourseProjectContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showFragments(CourseProjectEnum[] courseProjects) {
-        CourseProjectViewPagerAdapter adapter = new CourseProjectViewPagerAdapter(getSupportFragmentManager(), courseProjects);
+    public void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject) {
+        CourseProjectViewPagerAdapter adapter = new CourseProjectViewPagerAdapter(getSupportFragmentManager(), courseProjectModules, courseProject);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
 
-        private CourseProjectEnum[] mCourseProjects;
+        private CourseProjectEnum[] mCourseProjectModules;
+        private CourseProject mCourseProject;
 
-        public CourseProjectViewPagerAdapter(FragmentManager fm, CourseProjectEnum[] courseProjects) {
+        public CourseProjectViewPagerAdapter(FragmentManager fm, CourseProjectEnum[] courseProjects, CourseProject courseProject) {
             super(fm);
-            mCourseProjects = courseProjects;
+            mCourseProjectModules = courseProjects;
+            mCourseProject = courseProject;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return CoreEngine.create(getApplicationContext()).runPluginWithFragment(mCourseProjects[position].getModuleName(), CourseProjectActivity.this, null);
+            return CoreEngine.create(getApplicationContext()).runPluginWithFragment(mCourseProjectModules[position].getModuleName(), CourseProjectActivity.this, new PluginFragmentCallback() {
+                @Override
+                public void setArguments(Bundle bundle) {
+                    bundle.putSerializable(CommonConstant.COURSE_PROJECT, mCourseProject);
+                }
+            });
         }
 
         @Override
         public int getCount() {
-            return mCourseProjects.length;
+            return mCourseProjectModules.length;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mCourseProjects[position].getModuleTitle();
+            return mCourseProjectModules[position].getModuleTitle();
         }
     }
 }

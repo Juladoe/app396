@@ -6,7 +6,13 @@ package com.edusoho.kuozhi.clean.module.base;
 
 public interface BasePresenter {
 
+    /**
+     * 初始化数据
+     */
     void subscribe();
 
+    /**
+     * 保存数据，用于onPause()
+     */
     void unsubscribe();
 }

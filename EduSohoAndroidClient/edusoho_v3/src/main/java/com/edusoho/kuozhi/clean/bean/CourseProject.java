@@ -8,4 +8,5 @@ import java.io.Serializable;
  */
 
 public class CourseProject implements Serializable {
+    public String courseSetId;
 }

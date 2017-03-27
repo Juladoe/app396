@@ -1,6 +1,14 @@
 package com.edusoho.kuozhi.clean.module.course;
 
-import android.support.annotation.Nullable;
+import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseSet;
+
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action0;
+import rx.functions.Func1;
+
 
 /**
  * Created by JesseHuang on 2017/3/23.
@@ -8,16 +16,15 @@ import android.support.annotation.Nullable;
 
 public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
-    @Nullable
-    private int mCourseProjectId;
-
     private CourseProjectContract.View mView;
+    private int mCourseProjectId;
 
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
         mView.setPresenter(this);
     }
+
 
     @Override
     public void learnTask(int taskId) {
@@ -36,7 +43,30 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     @Override
     public void subscribe() {
+        getCourseProject(mCourseProjectId)
+                .flatMap(new Func1<CourseProject, Observable<CourseSet>>() {
+                    @Override
+                    public Observable<CourseSet> call(CourseProject courseProject) {
+                        mView.showFragments(initCourseModules(), courseProject);
+                        return getCourseSet(courseProject.courseSetId);
+                    }
+                })
+                .subscribe(new Subscriber<CourseSet>() {
+                    @Override
+                    public void onCompleted() {
 
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseSet courseSet) {
+                        mView.showTasksCover(courseSet.cover);
+                    }
+                });
     }
 
     @Override
@@ -44,9 +74,15 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     }
 
-    @Override
-    public void initFragments() {
-        CourseProjectEnum[] courses = {CourseProjectEnum.INFO, CourseProjectEnum.TASKS, CourseProjectEnum.RATE};
-        mView.showFragments(courses);
+    private CourseProjectEnum[] initCourseModules() {
+        return new CourseProjectEnum[]{CourseProjectEnum.INFO, CourseProjectEnum.TASKS, CourseProjectEnum.RATE};
+    }
+
+    private Observable<CourseProject> getCourseProject(int id) {
+        return RetrofitService.getCourseProject(id);
+    }
+
+    private Observable<CourseSet> getCourseSet(String id) {
+        return RetrofitService.getCourseSet(id);
     }
 }

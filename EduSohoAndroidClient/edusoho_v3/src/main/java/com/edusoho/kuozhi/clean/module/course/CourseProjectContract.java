@@ -1,7 +1,9 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
+
 
 /**
  * Created by JesseHuang on 2017/3/22.
@@ -15,10 +17,12 @@ public interface CourseProjectContract {
 
         void setTitle(String title);
 
-        void showFragments(CourseProjectEnum[] courseProjectModules);
+        void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject);
     }
 
     interface Presenter extends BasePresenter {
+
+        //Observable<CourseProject> getCourseProject(int id);
 
         void learnTask(int taskId);
 
@@ -26,6 +30,6 @@ public interface CourseProjectContract {
 
         void consult();
 
-        void initFragments();
+        //CourseProjectEnum[] initCourseModules();
     }
 }
