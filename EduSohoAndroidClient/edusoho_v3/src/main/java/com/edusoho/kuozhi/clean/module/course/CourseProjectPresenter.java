@@ -43,30 +43,33 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     @Override
     public void subscribe() {
-        getCourseProject(mCourseProjectId)
-                .flatMap(new Func1<CourseProject, Observable<CourseSet>>() {
-                    @Override
-                    public Observable<CourseSet> call(CourseProject courseProject) {
-                        mView.showFragments(initCourseModules(), courseProject);
-                        return getCourseSet(courseProject.courseSetId);
-                    }
-                })
-                .subscribe(new Subscriber<CourseSet>() {
-                    @Override
-                    public void onCompleted() {
+        CourseProject courseProject = new CourseProject();
+        mView.showFragments(initCourseModules(), courseProject);
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(CourseSet courseSet) {
-                        mView.showTasksCover(courseSet.cover);
-                    }
-                });
+//        getCourseProject(mCourseProjectId)
+//                .flatMap(new Func1<CourseProject, Observable<CourseSet>>() {
+//                    @Override
+//                    public Observable<CourseSet> call(CourseProject courseProject) {
+//                        mView.showFragments(initCourseModules(), courseProject);
+//                        return getCourseSet(courseProject.courseSetId);
+//                    }
+//                })
+//                .subscribe(new Subscriber<CourseSet>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(CourseSet courseSet) {
+//                        mView.showTasksCover(courseSet.cover);
+//                    }
+//                });
     }
 
     @Override

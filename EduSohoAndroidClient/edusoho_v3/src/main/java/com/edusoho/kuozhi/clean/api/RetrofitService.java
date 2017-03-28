@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.api;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -22,12 +23,12 @@ public class RetrofitService {
     private RetrofitService() {
 
     }
-    
+
     public static void init(String host) {
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl(host).build();
+                .baseUrl("http://demo.edusoho.com/api/").build();
         mApiService = retrofit.create(ApiService.class);
     }
 

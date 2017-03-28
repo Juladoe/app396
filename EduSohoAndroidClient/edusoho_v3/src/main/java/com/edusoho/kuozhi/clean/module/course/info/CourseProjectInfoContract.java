@@ -9,11 +9,11 @@ import com.edusoho.kuozhi.clean.module.base.BaseView;
 
 public interface CourseProjectInfoContract {
 
-    interface TaskInfo extends BaseView<TaskInfoPresenter> {
+    interface View extends BaseView<Presenter> {
 
     }
 
-    interface TaskInfoPresenter extends BasePresenter {
+    interface Presenter extends BasePresenter {
 
         void getTaskInfo();
 

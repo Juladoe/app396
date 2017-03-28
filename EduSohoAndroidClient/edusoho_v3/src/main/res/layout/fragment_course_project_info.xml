@@ -1,7 +1,305 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/tv_course_project_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="学霸班"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_xxl" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="3950名学生"
+                android:textColor="@color/secondary_font_color"
+                android:textSize="@dimen/font_s_" />
+
+            <RatingBar
+                style="?android:attr/ratingBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:isIndicator="true"
+                android:progressTint="@color/secondary2_color"
+                android:rating="4.0"
+                android:scrollbarSize="5dp" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:id="@+id/tv_sale_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="¥ 28-580"
+                android:textColor="@color/secondary_color"
+                android:textSize="@dimen/font_xl" />
+
+            <TextView
+                android:id="@+id/tv_original_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/tv_sale_price"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/tv_sale_price"
+                android:text="¥725"
+                android:textColor="@color/secondary_font_color"
+                android:textSize="@dimen/font_l" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="27dp"
+                android:layout_toRightOf="@+id/tv_original_price" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/grey_dddddd" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_vip_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/iv_vip_icon"
+                android:text="加入钻石会员，免费学习189门课程"
+                android:textColor="@color/secondary_font_color"
+                android:textSize="@dimen/font_s" />
+
+            <com.edusoho.kuozhi.clean.widget.ESIconView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/font_right_arrow"
+                android:textColor="@color/primary_font_color"
+                android:textSize="@dimen/font_xl" />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="25dp"
+            android:background="@color/grey_dddddd" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="承诺服务"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_l" />
+
+                <com.edusoho.kuozhi.clean.widget.ESIconView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/font_right_arrow"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_xl" />
+
+            </RelativeLayout>
+
+            <com.wefika.flowlayout.FlowLayout
+                android:id="@+id/fl_promise_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@android:color/white" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="25dp"
+            android:background="@color/grey_dddddd" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="课程简介"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_l" />
+
+        <TextView
+            android:id="@+id/tv_course_project_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="25dp"
+            android:background="@color/grey_dddddd" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="适宜人群"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_l" />
+
+        <TextView
+            android:id="@+id/tv_suitable_for"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="网校用户"
+            android:textColor="@color/secondary_font_color"
+            android:textSize="@dimen/font_s" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="25dp"
+            android:background="@color/grey_dddddd" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="讲师"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_l" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView
+                android:layout_width="50dp"
+                android:layout_height="50dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_teacher_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="咯米"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_s" />
+
+                <TextView
+                    android:id="@+id/tv_teacher_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="EduSoho官方运营"
+                    android:textColor="@color/primary_font_color"
+                    android:textSize="@dimen/font_xs" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="25dp"
+            android:background="@color/grey_dddddd" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:text="课程学员（233）"
+                android:textColor="@color/primary_font_color"
+                android:textSize="@dimen/font_l" />
+
+            <com.edusoho.kuozhi.clean.widget.ESIconView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="@string/font_right_arrow"
+                android:textColor="@color/primary_font_color"
+                android:textSize="@dimen/font_xl" />
+        </RelativeLayout>
+
+        <com.edusoho.kuozhi.v3.view.EduSohoGridView
+            android:id="@+id/ev_user_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:columnWidth="50dp"
+            android:horizontalSpacing="12dp"
+            android:numColumns="5" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_marginBottom="25dp"
+            android:layout_marginTop="25dp"
+            android:background="@color/grey_dddddd" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="相关学习计划"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_l" />
+
+    </LinearLayout>
+</ScrollView>
