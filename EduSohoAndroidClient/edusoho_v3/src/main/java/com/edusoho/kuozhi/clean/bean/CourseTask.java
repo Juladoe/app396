@@ -8,5 +8,11 @@ import java.io.Serializable;
  */
 
 public class CourseTask implements Serializable {
-
+    public String chapterNum;
+    public String chapterTitle;
+    public String itemType;
+    public String taskType;
+    public String taskTitle;
+    public String taskTime;
+    public String isTaskFree;
 }

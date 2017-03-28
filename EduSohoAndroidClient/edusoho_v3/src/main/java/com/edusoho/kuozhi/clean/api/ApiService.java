@@ -17,7 +17,7 @@ import rx.Observable;
 public interface ApiService {
 
     @GET("/courses/{id}/tasks")
-    Observable<List<CourseTask>> getTasks(@Path("id") int id);
+    Observable<List<CourseTask>> getTasks(@Path("id") String id);
 
     @GET("/courses/{id}")
     Observable<CourseProject> getCourseProject(@Path("id") int id);

@@ -32,7 +32,7 @@ public class RetrofitService {
         mApiService = retrofit.create(ApiService.class);
     }
 
-    public static Observable<List<CourseTask>> getTasks(int id) {
+    public static Observable<List<CourseTask>> getTasks(String id) {
         return mApiService.getTasks(id);
     }
 
