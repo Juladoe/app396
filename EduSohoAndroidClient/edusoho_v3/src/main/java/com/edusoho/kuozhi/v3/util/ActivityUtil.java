@@ -37,7 +37,7 @@ public class ActivityUtil {
     public static void setStatusViewBackgroud(Activity activity, int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ViewGroup decorView = (ViewGroup) activity.getWindow().getDecorView();
-            View statusView  = decorView.findViewById(R.id.custom_status_view);
+            View statusView = decorView.findViewById(R.id.custom_status_view);
             statusView.setBackgroundColor(color);
         }
     }

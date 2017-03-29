@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:layout_alignParentTop="true"
+        android:layout_marginTop="25dp"
         android:background="@android:color/transparent"
         app:contentInsetStart="0dp">
 

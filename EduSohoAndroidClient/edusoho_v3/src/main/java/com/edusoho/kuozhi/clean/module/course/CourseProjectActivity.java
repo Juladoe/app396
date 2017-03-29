@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 
 /**
  * Created by JesseHuang on 2017/3/22.
@@ -74,6 +75,8 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(false);
+
+        ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
         RetrofitService.init(EdusohoApp.app.host);
 
