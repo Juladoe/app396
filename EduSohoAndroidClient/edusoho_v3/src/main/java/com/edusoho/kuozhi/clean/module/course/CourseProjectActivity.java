@@ -115,7 +115,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
 
         @Override
         public Fragment getItem(int position) {
-            Fragment fragment = Fragment.instantiate(getApplicationContext(), mCourseProjectModules[position].getModuleName());
+            Fragment fragment = Fragment.instantiate(CourseProjectActivity.this, mCourseProjectModules[position].getModuleName());
             Bundle bundle = new Bundle();
             bundle.putSerializable(((CourseProjectFragmentListener) fragment).getBundleKey(), mCourseProject);
             fragment.setArguments(bundle);

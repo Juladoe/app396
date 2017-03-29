@@ -30,6 +30,10 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
     private FlowLayout promiseFlowLayout;
 
+
+    public CourseProjectInfoFragment() {
+    }
+
     public CourseProjectFragmentListener newInstance(CourseProject courseProject) {
         CourseProjectInfoFragment fragment = new CourseProjectInfoFragment();
         Bundle bundle = new Bundle();
