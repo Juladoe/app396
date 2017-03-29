@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 
 import java.util.List;
@@ -21,10 +22,26 @@ import java.util.List;
  * Created by JesseHuang on 2017/3/26.
  */
 
-public class CourseTasksFragment extends Fragment implements CourseTasksContract.View {
+public class CourseTasksFragment extends Fragment implements
+        CourseTasksContract.View, CourseProjectFragmentListener {
 
+    private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
     private CourseTasksContract.Presenter mPresenter;
     private RecyclerView taskRecyclerView;
+
+
+    public CourseProjectFragmentListener newInstance(CourseProject courseProject) {
+        CourseTasksFragment fragment = new CourseTasksFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(COURSE_PROJECT_MODEL, courseProject);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public String getBundleKey() {
+        return COURSE_PROJECT_MODEL;
+    }
 
     @Nullable
     @Override

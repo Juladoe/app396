@@ -17,14 +17,13 @@ import rx.functions.Func1;
 public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private CourseProjectContract.View mView;
-    private int mCourseProjectId;
+    private String mCourseProjectId;
 
-    public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
+    public CourseProjectPresenter(String courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
         mView.setPresenter(this);
     }
-
 
     @Override
     public void learnTask(int taskId) {

@@ -8,12 +8,30 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 
 /**
  * Created by JesseHuang on 2017/3/26.
  */
 
-public class CourseProjectRatesFragment extends Fragment implements CourseProjectRatesContract.View {
+public class CourseProjectRatesFragment extends Fragment implements
+        CourseProjectRatesContract.View, CourseProjectFragmentListener {
+
+    private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
+
+    public CourseProjectFragmentListener newInstance(CourseProject courseProject) {
+        CourseProjectRatesFragment fragment = new CourseProjectRatesFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(COURSE_PROJECT_MODEL, courseProject);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public String getBundleKey() {
+        return COURSE_PROJECT_MODEL;
+    }
 
     @Override
     public void showRates() {

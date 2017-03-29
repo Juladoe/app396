@@ -29,6 +29,9 @@ import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 
 public class CourseProjectActivity extends AppCompatActivity implements CourseProjectContract.View {
 
+    private static final String COURSE_PROJECT_ID = "CourseProjectId";
+
+    private String mCourseProjectId;
     private CourseProjectContract.Presenter mPresenter;
     private Toolbar mToolbar;
     private ImageView mCourseCoverImageView;
@@ -39,10 +42,20 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private ESIconTextButton mFavoriteESIconTextButton;
     private TextView mLearnTextView;
 
+    public static CourseProjectActivity newInstance(String courseProjectId) {
+        CourseProjectActivity activity = new CourseProjectActivity();
+        Bundle bundle = new Bundle();
+        bundle.putString(COURSE_PROJECT_ID, courseProjectId);
+        return activity;
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task);
+        if (getIntent() != null) {
+            mCourseProjectId = getIntent().getStringExtra(COURSE_PROJECT_ID);
+        }
         init();
     }
 
@@ -63,7 +76,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
 
         RetrofitService.init(EdusohoApp.app.host);
 
-        mPresenter = new CourseProjectPresenter(1, this);
+        mPresenter = new CourseProjectPresenter(mCourseProjectId, this);
         mPresenter.subscribe();
     }
 
@@ -102,12 +115,11 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
 
         @Override
         public Fragment getItem(int position) {
-            return CoreEngine.create(getApplicationContext()).runPluginWithFragment(mCourseProjectModules[position].getModuleName(), CourseProjectActivity.this, new PluginFragmentCallback() {
-                @Override
-                public void setArguments(Bundle bundle) {
-                    bundle.putSerializable(CommonConstant.COURSE_PROJECT, mCourseProject);
-                }
-            });
+            Fragment fragment = Fragment.instantiate(getApplicationContext(), mCourseProjectModules[position].getModuleName());
+            Bundle bundle = new Bundle();
+            bundle.putSerializable(((CourseProjectFragmentListener) fragment).getBundleKey(), mCourseProject);
+            fragment.setArguments(bundle);
+            return fragment;
         }
 
         @Override

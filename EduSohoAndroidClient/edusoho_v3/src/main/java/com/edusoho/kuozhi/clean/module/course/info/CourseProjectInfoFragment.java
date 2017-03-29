@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectContract;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectEnum;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.wefika.flowlayout.FlowLayout;
 
@@ -24,9 +25,23 @@ import com.wefika.flowlayout.FlowLayout;
  * 教学计划简介
  */
 
-public class CourseProjectInfoFragment extends Fragment implements CourseProjectInfoContract.View {
+public class CourseProjectInfoFragment extends Fragment implements CourseProjectInfoContract.View, CourseProjectFragmentListener {
 
+    private static final String COURSE_PROJECT_MODEL = "CourseProjectModel";
     private FlowLayout promiseFlowLayout;
+
+    public CourseProjectFragmentListener newInstance(CourseProject courseProject) {
+        CourseProjectInfoFragment fragment = new CourseProjectInfoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(COURSE_PROJECT_MODEL, courseProject);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
+    @Override
+    public String getBundleKey() {
+        return COURSE_PROJECT_MODEL;
+    }
 
     @Nullable
     @Override
