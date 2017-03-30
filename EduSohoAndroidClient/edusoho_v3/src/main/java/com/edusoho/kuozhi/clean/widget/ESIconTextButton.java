@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.view;
+package com.edusoho.kuozhi.clean.widget;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
@@ -12,13 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.view.EduSohoNewIconView;
 
 import java.util.HashMap;
 
 /**
- * Created by howzhi on 14-8-7.
+ * Created by JesseHuang on 2017/3/23.
  */
-public class EduSohoTextBtn extends LinearLayout {
+public class ESIconTextButton extends LinearLayout {
     private Context mContext;
     private String text;
     private String icon;
@@ -34,12 +35,12 @@ public class EduSohoTextBtn extends LinearLayout {
     private boolean mIsUpdate;
     private HashMap<String, Object> notifyTypes;
 
-    public EduSohoTextBtn(Context context) {
+    public ESIconTextButton(Context context) {
         super(context);
         mContext = context;
     }
 
-    public EduSohoTextBtn(Context context, android.util.AttributeSet attrs) {
+    public ESIconTextButton(Context context, android.util.AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         initView(attrs);

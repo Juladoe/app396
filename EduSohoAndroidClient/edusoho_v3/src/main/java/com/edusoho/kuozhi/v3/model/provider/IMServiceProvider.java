@@ -19,6 +19,7 @@ import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.service.message.CommandFactory;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -67,9 +68,9 @@ public class IMServiceProvider extends ModelProvider {
 
     private void connectServer(int clientId, String clientName, String[] ignoreServers) {
         IMClient.getClient().setIMConnectStatus(IMConnectStatus.CONNECTING);
-        new SystemProvider(mContext).getImServerHosts(ignoreServers).success(new NormalCallback<LinkedHashMap>() {
+        new SystemProvider(mContext).getImServerHosts(ignoreServers).success(new NormalCallback<LinkedTreeMap>() {
             @Override
-            public void success(LinkedHashMap hostMap) {
+            public void success(LinkedTreeMap hostMap) {
                 Log.d("IMServiceProvider", "init im service" + hostMap.size());
                 if (hostMap == null
                         || hostMap.isEmpty()
@@ -89,7 +90,7 @@ public class IMServiceProvider extends ModelProvider {
         });
     }
 
-    private void successBindImserver(LinkedHashMap hostMap) {
+    private void successBindImserver(LinkedTreeMap hostMap) {
         IMClient.getClient().start(
                 new ArrayList(hostMap.keySet()),
                 new ArrayList(hostMap.values())

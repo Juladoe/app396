@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -14,6 +15,8 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,6 +43,7 @@ import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.SystemBarTintManager;
 import com.edusoho.kuozhi.v3.util.VolleySingleton;
 import com.edusoho.kuozhi.v3.view.EduSohoTextBtn;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
@@ -70,6 +74,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private Queue<Request<String>> mAjaxQueue;
     private boolean mLogoutFlag = false;
     private View vToolbarBreakline;
+    private SystemBarTintManager mTintManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,14 +246,17 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             tag = "NewsFragment";
             setTitle(getString(R.string.title_news));
             setTitleLoading(true);
+            setStatusBarBackgroundColor(getResources().getColor(R.color.primary_fb));
         } else if (id == R.id.nav_tab_find) {
             tag = "FindFragment";
             setTitle(getSchoolTitle());
             setTitleLoading(false);
+            setStatusBarBackgroundColor(getResources().getColor(R.color.primary_fb));
         } else if (id == R.id.nav_tab_friends) {
             tag = "FriendFragment";
             setTitle(getString(R.string.title_friends));
             setTitleLoading(false);
+            setStatusBarBackgroundColor(getResources().getColor(R.color.primary_fb));
         } else {
             MobclickAgent.onEvent(this, "i_userInformationPortal");
             tag = "MineFragment";
@@ -258,6 +266,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
             tvSitting.setVisibility(View.VISIBLE);
             vToolbarBreakline.setVisibility(View.VISIBLE);
             setTitleLoading(false);
+            setStatusBarBackgroundColor(Color.BLACK);
         }
         if (tag.equals(mCurrentTag)) {
             return;
@@ -519,6 +528,16 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == LOGIN_CANCEL) {
             selectDownTab(R.id.nav_tab_find);
+        }
+    }
+
+    private void setStatusBarBackgroundColor(int color) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (mTintManager == null) {
+                mTintManager = new SystemBarTintManager(this);
+                mTintManager.setStatusBarTintEnabled(true);
+            }
+            mTintManager.setTintColor(color);
         }
     }
 }

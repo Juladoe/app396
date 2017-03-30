@@ -120,9 +120,8 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="?attr/actionBarSize"
                 android:background="@color/transparent"
-                android:minHeight="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 app:titleMarginTop="15dp">
@@ -136,7 +135,7 @@
                     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                         android:id="@+id/back"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/action_bar_height"
+                        android:layout_height="wrap_content"
                         android:gravity="center"
                         android:paddingRight="15dp"
                         android:text="@string/new_font_back"
@@ -169,8 +168,8 @@
 
                     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                         android:id="@+id/iv_share"
-                        android:layout_width="@dimen/action_bar_height"
-                        android:layout_height="@dimen/action_bar_height"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:gravity="center"
                         android:text="@string/new_font_share"
@@ -179,8 +178,8 @@
 
                     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                         android:id="@+id/iv_grade"
-                        android:layout_width="@dimen/action_bar_height"
-                        android:layout_height="@dimen/action_bar_height"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="36dp"
                         android:gravity="center"
@@ -191,8 +190,8 @@
 
                     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                         android:id="@+id/layout_menu"
-                        android:layout_width="@dimen/action_bar_height"
-                        android:layout_height="@dimen/action_bar_height"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_marginRight="36dp"
                         android:gravity="center"

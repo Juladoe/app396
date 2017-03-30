@@ -51,7 +51,7 @@ import java.util.Queue;
  * Created by Zhang on 2016/12/8.
  */
 public abstract class DetailActivity extends BaseNoTitleActivity
-        implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback{
+        implements View.OnClickListener, Handler.Callback, MessageEngine.MessageCallback {
 
     public static final int RESULT_REFRESH = 0x111;
     public static final int RESULT_LOGIN = 0x222;
@@ -175,7 +175,10 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         initEvent();
     }
 
-    protected void initFragment(List<Fragment> fragments){};
+    protected void initFragment(List<Fragment> fragments) {
+    }
+
+    ;
 
     protected void initEvent() {
         mShareView.setOnClickListener(this);
@@ -281,7 +284,7 @@ public abstract class DetailActivity extends BaseNoTitleActivity
         } else if (v.getId() == R.id.tv_inclass) {
             goClass();
         } else if (v.getId() == R.id.tv_edit_topic) {
-                showDialog();
+            showDialog();
         }
     }
 
