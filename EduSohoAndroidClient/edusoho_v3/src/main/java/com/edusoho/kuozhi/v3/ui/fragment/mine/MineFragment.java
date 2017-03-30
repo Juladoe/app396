@@ -13,7 +13,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -212,7 +214,8 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
 //                    }
 //                });
 
-                mActivity.app.mEngine.runNormalPlugin("CourseProjectActivity", mContext, null);
+                CourseProjectActivity.newInstance(mContext, "1");
+//                mActivity.app.mEngine.runNormalPlugin("CourseProjectActivity", mContext, null);
             }
         };
     }

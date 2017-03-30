@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -44,11 +46,10 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private ESIconTextButton mFavoriteESIconTextButton;
     private TextView mLearnTextView;
 
-    public static CourseProjectActivity newInstance(String courseProjectId) {
-        CourseProjectActivity activity = new CourseProjectActivity();
-        Bundle bundle = new Bundle();
-        bundle.putString(COURSE_PROJECT_ID, courseProjectId);
-        return activity;
+    public static void newInstance(Context context, String courseProjectId) {
+        Intent intent = new Intent(context, CourseProjectActivity.class);
+        intent.putExtra(COURSE_PROJECT_ID, courseProjectId);
+        context.startActivity(intent);
     }
 
     @Override
@@ -57,6 +58,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         setContentView(R.layout.activity_task);
         if (getIntent() != null) {
             mCourseProjectId = getIntent().getStringExtra(COURSE_PROJECT_ID);
+            mCourseProjectId = "1";
         }
         init();
     }

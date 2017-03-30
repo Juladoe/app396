@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import android.util.Log;
+
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
@@ -46,6 +48,22 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         mView.showFragments(initCourseModules(), courseProject);
 
 //        getCourseProject(mCourseProjectId)
+//                .subscribe(new Subscriber<CourseProject>() {
+//                    @Override
+//                    public void onCompleted() {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(CourseProject courseProject) {
+//                        Log.d("getCourseProject", "onNext: " + courseProject.toString());
+//                    }
+//                });
 //                .flatMap(new Func1<CourseProject, Observable<CourseSet>>() {
 //                    @Override
 //                    public Observable<CourseSet> call(CourseProject courseProject) {

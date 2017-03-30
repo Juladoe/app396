@@ -30,14 +30,15 @@ public class RetrofitService {
     }
 
     public static void init(String host) {
-        OkHttpClient okHttpClient = new OkHttpClient();
-        okHttpClient.interceptors().add(new Interceptor() {
+        OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
-                Request request = chain.request().newBuilder().addHeader("Accept", "application/vnd.edusoho.v2+json").build();
+                Request request = chain.request().newBuilder().
+                        addHeader("Accept", "application/vnd.edusoho.v2+json").
+                        build();
                 return chain.proceed(request);
             }
-        });
+        }).build();
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
