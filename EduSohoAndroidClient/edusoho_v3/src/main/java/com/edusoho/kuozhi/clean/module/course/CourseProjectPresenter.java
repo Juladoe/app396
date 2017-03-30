@@ -80,7 +80,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         return new CourseProjectEnum[]{CourseProjectEnum.INFO, CourseProjectEnum.TASKS, CourseProjectEnum.RATE};
     }
 
-    private Observable<CourseProject> getCourseProject(int id) {
+    private Observable<CourseProject> getCourseProject(String id) {
         return RetrofitService.getCourseProject(id);
     }
 
