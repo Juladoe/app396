@@ -223,7 +223,7 @@ public class CourseUnJoinActivity extends AppCompatActivity
 //                ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(false);
 //            }
 //        }
-        int maxHeight = getResources().getDimensionPixelOffset(R.dimen.action_bar_height);
+        int maxHeight = AppUtil.dp2px(this, 44);
         int toolbarHeight = AppUtil.dp2px(getBaseContext(), 210);
         if (toolbarHeight + i > maxHeight * 2) {
             changeToolbarStyle(false);

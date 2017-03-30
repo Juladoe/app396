@@ -77,7 +77,7 @@
                     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                         android:id="@+id/iv_back"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/action_bar_height"
+                        android:layout_height="44dp"
                         android:gravity="center"
                         android:paddingRight="15dp"
                         android:text="@string/new_font_back"
@@ -86,8 +86,8 @@
 
                     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                         android:id="@+id/iv_share"
-                        android:layout_width="@dimen/action_bar_height"
-                        android:layout_height="@dimen/action_bar_height"
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
                         android:layout_alignParentRight="true"
                         android:gravity="center"
                         android:text="@string/new_font_share"
