@@ -1,12 +1,12 @@
 package com.edusoho.kuozhi.clean.module.course.info;
 
-import android.graphics.Paint;
-import android.view.View;
-
-import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
-import java.util.Locale;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by JesseHuang on 2017/3/26.
@@ -42,12 +42,41 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     @Override
     public void subscribe() {
         mView.showCourseProjectInfo(mCourseProject);
+        showPrice();
+        showVip(mCourseProject.vipLevelId);
+    }
+
+    private void showPrice() {
         if (mCourseProject.originPrice.compareTo(mCourseProject.price) == 0 && FREE.equals(mCourseProject.originPrice)) {
             mView.showPrice(CourseProjectPriceEnum.FREE, mCourseProject.price, mCourseProject.originPrice);
         } else if (mCourseProject.originPrice.compareTo(mCourseProject.price) == 0) {
             mView.showPrice(CourseProjectPriceEnum.ORIGINAL, mCourseProject.price, mCourseProject.originPrice);
         } else {
             mView.showPrice(CourseProjectPriceEnum.SALE, mCourseProject.price, mCourseProject.originPrice);
+        }
+    }
+
+    private void showVip(String vipLevelId) {
+        if (!NO_VIP.equals(vipLevelId)) {
+            RetrofitService.getVipLevel(vipLevelId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<VipLevel>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(VipLevel vipLevel) {
+                            mView.showVipAdvertising(vipLevel.name);
+                        }
+                    });
         }
     }
 

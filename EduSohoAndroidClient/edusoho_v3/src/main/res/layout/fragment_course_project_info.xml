@@ -89,8 +89,10 @@
             android:background="@color/grey_dddddd" />
 
         <RelativeLayout
+            android:id="@+id/rl_vip_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/iv_vip_icon"
@@ -100,6 +102,7 @@
                 android:src="@drawable/icon_vip" />
 
             <TextView
+                android:id="@+id/tv_vip_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
@@ -125,7 +128,8 @@
             android:layout_height="1px"
             android:layout_marginBottom="25dp"
             android:layout_marginTop="25dp"
-            android:background="@color/grey_dddddd" />
+            android:background="@color/grey_dddddd"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"

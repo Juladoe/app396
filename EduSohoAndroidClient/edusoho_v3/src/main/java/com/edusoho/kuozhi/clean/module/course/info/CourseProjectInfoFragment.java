@@ -38,6 +38,8 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private ImageView mVipIcon;
     private TextView mSaleWord;
     private View mVipLine;
+    private View mVipLayout;
+    private TextView mVipText;
 
     @Nullable
     @Override
@@ -56,6 +58,8 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mVipIcon = (ImageView) view.findViewById(R.id.iv_vip_icon);
         mSaleWord = (TextView) view.findViewById(R.id.tv_sale_word);
         mVipLine = view.findViewById(R.id.v_vip_line);
+        mVipLayout = view.findViewById(R.id.rl_vip_layout);
+        mVipText = (TextView) view.findViewById(R.id.tv_vip_text);
 
 
 //        String[] str = {"24小时作业批阅", "24小时阅卷点评", "提问必答", "24小时作业11111批阅"};
@@ -115,8 +119,10 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showVipAdvertising(String vipId) {
-
+    public void showVipAdvertising(String vipName) {
+        mVipLine.setVisibility(View.VISIBLE);
+        mVipLayout.setVisibility(View.VISIBLE);
+        mVipText.setText(String.format(getString(R.string.join_vip), vipName));
     }
 
     public CourseProjectFragmentListener newInstance(CourseProject courseProject) {

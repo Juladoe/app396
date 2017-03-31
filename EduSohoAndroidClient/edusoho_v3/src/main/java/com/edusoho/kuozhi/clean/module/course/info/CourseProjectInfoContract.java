@@ -14,7 +14,7 @@ public interface CourseProjectInfoContract {
 
         void showCourseProjectInfo(CourseProject courseProject);
 
-        void showVipAdvertising(String vipId);
+        void showVipAdvertising(String vipName);
 
         void showPrice(CourseProjectPriceEnum type, String price, String originPrice);
     }

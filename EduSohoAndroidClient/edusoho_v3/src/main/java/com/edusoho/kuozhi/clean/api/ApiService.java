@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.api;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
 import java.util.List;
 
@@ -24,4 +25,7 @@ public interface ApiService {
 
     @GET("course_sets/{id}")
     Observable<CourseSet> getCourseSet(@Path("id") String id);
+
+    @GET("plugins/vip/vip_levels/{id}")
+    Observable<VipLevel> getVipLevel(@Path("id") String id);
 }

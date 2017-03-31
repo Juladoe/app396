@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.api;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.google.gson.Gson;
 
@@ -58,12 +59,13 @@ public class RetrofitService {
 
     public static Observable<CourseProject> getCourseProject(String id) {
         return mApiService.getCourseProject(id);
-//                .subscribeOn(Schedulers.io())
-//                .unsubscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public static Observable<CourseSet> getCourseSet(String id) {
         return mApiService.getCourseSet(id);
+    }
+
+    public static Observable<VipLevel> getVipLevel(String id) {
+        return mApiService.getVipLevel(id);
     }
 }
