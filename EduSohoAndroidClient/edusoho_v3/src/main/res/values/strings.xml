@@ -421,10 +421,20 @@
     <string name="classroom_teacher_txt">班主任</string>
     <string name="go_to_course">前往课程</string>
     <string name="go_to_classroom">前往班级</string>
+
     <string name="course_introduce">课程简介</string>
     <string name="discount">折</string>
     <string name="course_project_favorite">收藏</string>
     <string name="course_project_consult">咨询</string>
     <string name="learn_course_project">加入学习</string>
-
+    <string name="study_progress">学习进度</string>
+    <string name="pay_way">支付方式</string>
+    <string name="zhifubao">支付宝</string>
+    <string name="virtual_coin">虚拟币</string>
+    <string name="coupons">优惠券</string>
+    <string name="confirm">确定</string>
+    <string name="confirm1">确认</string>
+    <string name="cancle">取消</string>
+    <string name="account_balance">账号余额:</string>
+    <string name="order_amount">订单金额:</string>
 </resources>

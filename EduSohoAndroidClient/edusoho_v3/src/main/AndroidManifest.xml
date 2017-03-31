@@ -342,6 +342,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
 
+        <activity
+            android:name=".clean.module.courseset.CourseUnJoinActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar"/>
+
     </application>
 
 </manifest>

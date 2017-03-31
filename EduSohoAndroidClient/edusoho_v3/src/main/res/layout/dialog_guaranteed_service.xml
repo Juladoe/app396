@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/dialog_white_background"
+    android:layout_width="match_parent"
+    android:layout_height="344dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:text="承诺服务"
+        android:textSize="@dimen/font_xl"
+        android:textColor="@color/primary_font_color"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_content"
+        android:paddingLeft="@dimen/common_maring0"
+        android:paddingRight="@dimen/common_maring0"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+    
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:text="@string/confirm1"
+        android:background="@color/primary"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_xl"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_height_xl" />
+
+</LinearLayout>

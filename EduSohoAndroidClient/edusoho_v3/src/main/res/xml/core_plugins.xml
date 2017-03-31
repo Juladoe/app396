@@ -531,6 +531,7 @@
         package="com.edusoho.kuozhi.clean.module.courseset.review.CourseEvaluateFragment"
         version="1.0"/>
 
+    <plugin
         name="CourseProjectInfoFragment"
         package="com.edusoho.kuozhi.clean.module.course.info.CourseProjectInfoFragment"
         version="1.0" />

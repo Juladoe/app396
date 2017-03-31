@@ -1,9 +1,9 @@
 package com.edusoho.kuozhi.clean.api;
 
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,10 +43,9 @@ public class RetrofitService {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
-                .baseUrl("http://es.devtest1/api/")
+                .baseUrl("http://es.devtest1/")
                 .build();
         mApiService = retrofit.create(ApiService.class);
-
     }
 
     public static Observable<List<CourseTask>> getTasks(String id) {
@@ -59,5 +58,9 @@ public class RetrofitService {
 
     public static Observable<CourseSet> getCourseSet(String id) {
         return mApiService.getCourseSet(id);
+    }
+
+    public static Observable<CourseReview> getCourseReview(String id, int limit, int offset) {
+        return mApiService.getCourseReview(id, limit, offset);
     }
 }

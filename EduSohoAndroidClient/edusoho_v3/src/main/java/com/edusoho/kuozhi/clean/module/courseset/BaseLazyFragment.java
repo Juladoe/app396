@@ -34,7 +34,6 @@ public abstract class BaseLazyFragment extends Fragment {
         return mContentView;
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

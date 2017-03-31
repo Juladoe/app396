@@ -58,6 +58,9 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     private int mCourseId;
     private TextView mTvVipDesc;
 
+    public CourseIntroduceFragment() {
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

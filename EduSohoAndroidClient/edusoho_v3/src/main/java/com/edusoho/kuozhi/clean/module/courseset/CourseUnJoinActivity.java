@@ -6,6 +6,9 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,11 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.adapter.SectionsPagerAdapter;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
-import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
@@ -35,6 +37,7 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
+import com.edusoho.kuozhi.v3.view.dialog.CustomDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -47,7 +50,7 @@ import extensions.PagerSlidingTabStrip;
  */
 
 public class CourseUnJoinActivity extends AppCompatActivity
-        implements View.OnClickListener, AppBarLayout.OnOffsetChangedListener {
+        implements CourseUnJoinContract.View, View.OnClickListener, AppBarLayout.OnOffsetChangedListener {
 
     //CourseUnjoinView ;
     private View mLoadView;
@@ -63,13 +66,13 @@ public class CourseUnJoinActivity extends AppCompatActivity
     private ScrollableAppBarLayout mAppBarLayout;
     private CollapsingToolbarLayout mToolBarLayout;
     private TextView mShareView;
-    private SectionsPagerAdapter mSectionsPagerAdapter;
     private LoadDialog mProcessDialog;
 
     private int mCourseId;
     private boolean mIsFavorite = false;
-    private LessonItem mContinueLessonItem;
     private CourseDetail mCourseDetail;
+    private ViewPager mViewPager;
+    private CourseUnJoinContract.Presenter mPresenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -98,7 +101,7 @@ public class CourseUnJoinActivity extends AppCompatActivity
         // TODO: 2017/3/21 判断是否已经加入计划
         initView();
         initEvent();
-        initData();
+//        initData();
     }
 
     private void initView() {
@@ -115,20 +118,35 @@ public class CourseUnJoinActivity extends AppCompatActivity
         mToolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         mShareView = (TextView) findViewById(R.id.iv_share);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setOffscreenPageLimit(2);
         mTabLayout = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         setSupportActionBar(mToolbar);
         mTabLayout.setIndicatorColor(R.color.primary_color);
-        mSectionsPagerAdapter = new SectionsPagerAdapter(
-                getSupportFragmentManager(),
-                getBaseContext(),
-                getTitleArray(),
-                getFragmentArray(),
-                getIntent().getExtras()
-        );
-        mViewPager.setAdapter(mSectionsPagerAdapter);
+
+        RetrofitService.init(EdusohoApp.app.host);
+
+        mPresenter = new CourseUnJoinPresenter(mCourseId + "", this);
+        mPresenter.subscribe();
+    }
+
+    @Override
+    public void showFragments(String[] titleArray, String[] fragmentArray) {
+        CourseUnJoinPagerAdapter courseUnJoinPagerAdapter = new CourseUnJoinPagerAdapter(
+                                getSupportFragmentManager(), titleArray, fragmentArray, getIntent().getExtras());
+        mViewPager.setAdapter(courseUnJoinPagerAdapter);
         mTabLayout.setViewPager(mViewPager);
+    }
+
+    @Override
+    public void newFinish() {
+        CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_unexit));
+        finish();
+    }
+
+    @Override
+    public void setPresenter(CourseUnJoinContract.Presenter presenter) {
+        this.mPresenter = presenter;
     }
 
     private void initEvent() {
@@ -140,11 +158,6 @@ public class CourseUnJoinActivity extends AppCompatActivity
     }
 
     private void initData() {
-        if (mCourseId == 0) {
-            CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_unexit));
-            finish();
-            return;
-        }
         CourseDetailModel.getCourseDetail(mCourseId,
                 new ResponseCallbackListener<CourseDetail>() {
                     @Override
@@ -212,17 +225,6 @@ public class CourseUnJoinActivity extends AppCompatActivity
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
-//        if (mViewPager.getCurrentItem() == 2) {
-//            if (i == 0) {
-//                if (((AppBarLayout.LayoutParams) mToolBarLayout.getLayoutParams()).getScrollFlags() == 0) {
-//                    ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(false);
-//                } else {
-//                    ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(true);
-//                }
-//            } else {
-//                ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(false);
-//            }
-//        }
         int maxHeight = AppUtil.dp2px(this, 44);
         int toolbarHeight = AppUtil.dp2px(getBaseContext(), 210);
         if (toolbarHeight + i > maxHeight * 2) {
@@ -230,18 +232,6 @@ public class CourseUnJoinActivity extends AppCompatActivity
             return;
         }
         changeToolbarStyle(true);
-    }
-
-    private String[] getFragmentArray() {
-        return new String[]{
-                "CourseIntroduceFragment", "StudyPlayFragment", "CourseEvaluateFragment"
-        };
-    }
-
-    private String[] getTitleArray() {
-        return new String[]{
-                "简介", "计划", "评价"
-        };
     }
 
     private void changeToolbarStyle(boolean isTop) {
@@ -254,17 +244,10 @@ public class CourseUnJoinActivity extends AppCompatActivity
             mShareView.setTextColor(ContextCompat.getColor(this, R.color.textIcons));
             mBackView.setTextColor(ContextCompat.getColor(this, R.color.textIcons));
         }
-        if (this instanceof CourseUnJoinActivity.WidgtState) {
-            ((CourseUnJoinActivity.WidgtState) this).setTopViewVisibility(isTop);
-        }
     }
 
     protected void setToolbarLayoutBackground(int color) {
         mToolBarLayout.setContentScrimColor(color);
-    }
-
-    public interface WidgtState {
-        void setTopViewVisibility(boolean isTop);
     }
 
     private void share() {
@@ -338,13 +321,13 @@ public class CourseUnJoinActivity extends AppCompatActivity
 
     protected void add() {
         MobclickAgent.onEvent(this, "courseDetailsPage_joinTheCourse");
-        if (mCourseId != 0) {
+        if (!"0".equals(mCourseId)) {
             if (!"1".equals(mCourseDetail.getCourse().buyable)) {
                 CommonUtil.shortToast(CourseUnJoinActivity.this, getResources()
                         .getString(R.string.add_error_close));
                 return;
             }
-            showProcessDialog();
+//            showProcessDialog();
             if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
                     && ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
                     && mCourseDetail.getCourse().vipLevelId != 0) {
@@ -357,7 +340,7 @@ public class CourseUnJoinActivity extends AppCompatActivity
 //                                .getString(R.string.success_add_course));
 //                        initData();
 //                    }
-
+//
 //                    @Override
 //                    public void onAddCourseError(String response) {
 //                        hideProcesDialog();
@@ -365,27 +348,28 @@ public class CourseUnJoinActivity extends AppCompatActivity
 //                });
                 return;
             }
-            CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
-                            .setCouponCode("")
-                            .setPayment("")
-                            .setPayPassword("")
-                            .setTargetId(String.valueOf(mCourseDetail.getCourse().id))
-                            .setTargetType("course")
-                            .setTotalPrice(String.valueOf(mCourseDetail.getCourse().price))
-                    , new CourseUtil.OnAddCourseListener() {
-                        @Override
-                        public void onAddCourseSuccess(String response) {
-                            hideProcesDialog();
-                            CommonUtil.shortToast(CourseUnJoinActivity.this, getResources()
-                                    .getString(R.string.success_add_course));
-                            initData();
-                        }
-
-                        @Override
-                        public void onAddCourseError(String error) {
-                            hideProcesDialog();
-                        }
-                    });
+            new CustomDialog(this).initType(6).show();
+//            CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
+//                            .setCouponCode("")
+//                            .setPayment("")
+//                            .setPayPassword("")
+//                            .setTargetId(String.valueOf(mCourseDetail.getCourse().id))
+//                            .setTargetType("course")
+//                            .setTotalPrice(String.valueOf(mCourseDetail.getCourse().price))
+//                    , new CourseUtil.OnAddCourseListener() {
+//                        @Override
+//                        public void onAddCourseSuccess(String response) {
+//                            hideProcesDialog();
+//                            CommonUtil.shortToast(CourseUnJoinActivity.this, getResources()
+//                                    .getString(R.string.success_add_course));
+//                            initData();
+//                        }
+//
+//                        @Override
+//                        public void onAddCourseError(String error) {
+//                            hideProcesDialog();
+//                        }
+//                    });
 //            mIsJump = true;
         }
     }
@@ -403,6 +387,38 @@ public class CourseUnJoinActivity extends AppCompatActivity
         }
         if (mProcessDialog.isShowing()) {
             mProcessDialog.dismiss();
+        }
+    }
+
+
+    private class CourseUnJoinPagerAdapter extends FragmentPagerAdapter {
+
+        private String[] mTitleArray;
+        private String[] mFragmentArray;
+        private Bundle mBundle;
+
+        public CourseUnJoinPagerAdapter(FragmentManager fm, String[] titleArray, String[] fragmentArray, Bundle bundle) {
+            super(fm);
+            this.mBundle = bundle;
+            this.mTitleArray = titleArray;
+            this.mFragmentArray = fragmentArray;
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            Fragment fragment = Fragment.instantiate(CourseUnJoinActivity.this, mFragmentArray[position]);
+            fragment.setArguments(mBundle);
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            return mTitleArray.length;
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mTitleArray[position];
         }
     }
 }
