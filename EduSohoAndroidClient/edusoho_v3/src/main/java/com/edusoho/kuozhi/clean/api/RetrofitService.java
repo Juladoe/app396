@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.api;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -16,6 +17,8 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by JesseHuang on 2017/3/23.
@@ -40,10 +43,10 @@ public class RetrofitService {
             }
         }).build();
         Retrofit retrofit = new Retrofit.Builder()
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okHttpClient)
-                .baseUrl("http://es.devtest1/api/")
+                .baseUrl("http://devtest.edusoho.cn:82/api/")
                 .build();
         mApiService = retrofit.create(ApiService.class);
 
@@ -55,6 +58,9 @@ public class RetrofitService {
 
     public static Observable<CourseProject> getCourseProject(String id) {
         return mApiService.getCourseProject(id);
+//                .subscribeOn(Schedulers.io())
+//                .unsubscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public static Observable<CourseSet> getCourseSet(String id) {

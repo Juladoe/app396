@@ -13,42 +13,29 @@ public class CourseProject implements Serializable {
     public String id;
     public String courseSetId;
     public String title;
-    public String learnMode;
     public String expiryMode;
     public String expiryDays;
-    public Object expiryStartDate;
-    public Object expiryEndDate;
     public String summary;
-    public String isDefault;
-    public String maxStudentNum;
-    public String status;
-    public String isFree;
-    public String price;
-    public String vipLevelId;
-    public String buyable;
-    public String tryLookable;
-    public String tryLookLength;
-    public String watchLimit;
-    public String taskNum;
-    public String studentNum;
-    public String parentId;
-    public String publishedTaskNum;
-    public String createdTime;
-    public String updatedTime;
-    public CreatorBean creator;
-    public List<?> goals;
+    public int studentNum;
     public List<String> audiences;
-    public List<String> services;
-    public List<TeachersBean> teachers;
+    public String rating;
+    public String price;
+    public String originPrice;
+    public String vipLevelId;
+    public int publishedTaskNum;
+    public List<Service> services;
+    public List<Teacher> teachers;
 
-    public static class CreatorBean {
-        public String id;
-        public String nickname;
-        public String title;
+    //    public List<String> services;
+//    public List<TeachersBean> teachers;
+//
+    public static class Service implements Serializable {
+        private String short_name;
+        private String full_name;
+        private String summary;
     }
 
-    public static class TeachersBean {
-
+    public static class Teacher implements Serializable {
         public String id;
         public String nickname;
         public String title;

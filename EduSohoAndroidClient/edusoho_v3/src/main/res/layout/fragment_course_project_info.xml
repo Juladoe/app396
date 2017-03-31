@@ -15,7 +15,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:text="学霸班"
             android:textColor="@color/primary_font_color"
             android:textSize="@dimen/font_xxl" />
 
@@ -25,20 +24,21 @@
             android:layout_marginTop="16dp">
 
             <TextView
+                android:id="@+id/tv_student_num"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:text="3950名学生"
                 android:textColor="@color/secondary_font_color"
                 android:textSize="@dimen/font_s_" />
 
             <RatingBar
+                android:id="@+id/rb_course_rate"
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:isIndicator="true"
-                android:progressTint="@color/secondary2_color"
+                android:progress="@color/secondary2_color"
                 android:rating="4.0"
                 android:scrollbarSize="5dp" />
         </RelativeLayout>
@@ -53,7 +53,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="¥ 28-580"
+                android:layout_marginRight="10dp"
                 android:textColor="@color/secondary_color"
                 android:textSize="@dimen/font_xl" />
 
@@ -61,18 +61,23 @@
                 android:id="@+id/tv_original_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBaseline="@+id/tv_sale_price"
-                android:layout_marginLeft="10dp"
+                android:layout_alignParentTop="true"
                 android:layout_toRightOf="@+id/tv_sale_price"
-                android:text="¥725"
                 android:textColor="@color/secondary_font_color"
                 android:textSize="@dimen/font_l" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="27dp"
-                android:layout_toRightOf="@+id/tv_original_price" />
+            <TextView
+                android:id="@+id/tv_sale_word"
+                android:layout_width="22dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="20dp"
+                android:layout_toRightOf="@+id/tv_original_price"
+                android:background="@color/secondary_color"
+                android:gravity="center"
+                android:text="@string/sale_word"
+                android:textColor="@color/disabled2_hint_color"
+                android:textSize="@dimen/font_xxs"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
@@ -91,14 +96,15 @@
                 android:id="@+id/iv_vip_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true" />
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/icon_vip" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/iv_vip_icon"
-                android:text="加入钻石会员，免费学习189门课程"
+                android:text="@string/join_vip"
                 android:textColor="@color/secondary_font_color"
                 android:textSize="@dimen/font_s" />
 
@@ -114,6 +120,7 @@
         </RelativeLayout>
 
         <View
+            android:id="@+id/v_vip_line"
             android:layout_width="match_parent"
             android:layout_height="1px"
             android:layout_marginBottom="25dp"

@@ -424,5 +424,9 @@
     <string name="course_project_favorite">收藏</string>
     <string name="course_project_consult">咨询</string>
     <string name="learn_course_project">加入学习</string>
+    <string name="student_num">名学生</string>
+    <string name="free_course_project">免费</string>
+    <string name="sale_word">折</string>
+    <string name="join_vip">加入%s会员，免费学习课程</string>
 
 </resources>
