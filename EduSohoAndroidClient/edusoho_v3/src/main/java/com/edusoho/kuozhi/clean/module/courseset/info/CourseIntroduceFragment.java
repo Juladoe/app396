@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.ui.courseset;
+package com.edusoho.kuozhi.clean.module.courseset.info;
 
 import android.content.Intent;
 import android.graphics.Paint;
@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;

@@ -7,8 +7,6 @@ import com.edusoho.kuozhi.clean.bean.CourseTask;
 import java.util.List;
 
 import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.Headers;
 import retrofit2.http.Path;
 import rx.Observable;
 
@@ -26,4 +24,5 @@ public interface ApiService {
 
     @GET("/course_sets/{id}")
     Observable<CourseSet> getCourseSet(@Path("id") String id);
+
 }

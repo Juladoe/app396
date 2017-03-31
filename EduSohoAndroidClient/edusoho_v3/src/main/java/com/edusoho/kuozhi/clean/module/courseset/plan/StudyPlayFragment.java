@@ -1,8 +1,9 @@
-package com.edusoho.kuozhi.v3.ui.courseset;
+package com.edusoho.kuozhi.clean.module.courseset.plan;
 
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
 
 /**
  * Created by DF on 2017/3/21.

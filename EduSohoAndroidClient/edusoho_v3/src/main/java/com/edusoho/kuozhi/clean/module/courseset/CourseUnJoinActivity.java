@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.ui.courseset;
+package com.edusoho.kuozhi.clean.module.courseset;
 
 import android.content.Intent;
 import android.os.Bundle;
