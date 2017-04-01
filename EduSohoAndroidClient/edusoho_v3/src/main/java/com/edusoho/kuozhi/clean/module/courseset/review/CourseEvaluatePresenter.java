@@ -47,21 +47,25 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
                     @Override
                     public void onNext(CourseReview courseReview) {
                         mView.setLoadViewVis(false);
-                        if (courseReview != null) {
-                            int length = courseReview.getData().size();
-                            if (length < 10) {
-                                mIsHave = false;
-                                mView.setRecyclerViewStatus(CourseEvaluateAdapter.NO_LOAD_MORE);
-                            }
-                            mStart += 10;
-                            if (length == 0) {
-                                mView.setEmptyViewVis(true);
-                            } else {
-                                mView.showCompanies(courseReview.getData());
-                            }
-                        }
+                        firstLoad(courseReview);
                     }
                 });
+    }
+
+    private void firstLoad(CourseReview courseReview){
+        if (courseReview != null) {
+            int length = courseReview.getData().size();
+            if (length < 10) {
+                mIsHave = false;
+                mView.setRecyclerViewStatus(CourseEvaluateAdapter.NO_LOAD_MORE);
+            }
+            mStart += 10;
+            if (length == 0) {
+                mView.setEmptyViewVis(true);
+            } else {
+                mView.showCompanies(courseReview.getData());
+            }
+        }
     }
 
     @Override
