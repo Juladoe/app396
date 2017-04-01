@@ -17,7 +17,7 @@ public class ApiTokenUtil {
 
     public static RequestUrl bindNewUrl(Context context, String url, boolean hasToken) {
         School school = SchoolUtil.getDefaultSchool(context);
-        String token = ApiTokenUtil.getToken(context).get("token").toString();
+        String token = ApiTokenUtil.getTokenString(context);
         StringBuffer sb = new StringBuffer(school.host);
         sb.append(url);
         RequestUrl requestUrl = new RequestUrl(sb.toString());

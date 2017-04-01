@@ -1,5 +1,4 @@
 package com.edusoho.kuozhi.v3.service;
-
 import android.app.DownloadManager;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -33,46 +32,34 @@ import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.google.gson.reflect.TypeToken;
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
-
 /**
  * Created by howzhi on 14-10-11.
  */
 public class M3U8DownService extends Service {
-
     private Context mContext;
-
     private NotificationManager notificationManager;
     private SparseArray<Notification> notificationList;
     private SparseArray<M3U8Util> mM3U8UitlList = new SparseArray<M3U8Util>();
     private ScheduledThreadPoolExecutor mThreadPoolExecutor;
     private ScheduledThreadPoolExecutor mUpdateThreadPoolExecutor;
-
     private static M3U8DownService mService;
-
     private static final String TAG = "M3U8DownService";
     private Object mLock = new Object();
-
     private Handler mContentObserverHandler = new Handler();
-
     protected ContentObserver mDownloadContentObserver = new ContentObserver(mContentObserverHandler) {
-
         @Override
         public void onChange(boolean selfChange, Uri uri) {
             super.onChange(selfChange, uri);
             mUpdateThreadPoolExecutor.execute(new OnChangeRunnable(selfChange, uri));
         }
     };
-
     private class OnChangeRunnable implements Runnable {
-
         private boolean selfChange;
         private Uri uri;
-
         public OnChangeRunnable(boolean selfChange, Uri uri) {
             this.selfChange = selfChange;
             this.uri = uri;
         }
-
         @Override
         public void run() {
             long reference = AppUtil.parseLong(uri.getLastPathSegment());
@@ -83,7 +70,6 @@ public class M3U8DownService extends Service {
             if (downloadModel == null) {
                 return;
             }
-
             M3U8Util m3U8Util = mM3U8UitlList.get(downloadModel.targetId);
             if (m3U8Util == null) {
                 return;
@@ -105,9 +91,7 @@ public class M3U8DownService extends Service {
             }
         }
     }
-
     protected DownloadStatusReceiver mDownLoadStatusReceiver = new DownloadStatusReceiver() {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             super.onReceive(context, intent);
@@ -118,7 +102,6 @@ public class M3U8DownService extends Service {
             }
         }
     };
-
     private BroadcastReceiver mDownLoadCompleteReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -133,7 +116,6 @@ public class M3U8DownService extends Service {
             mThreadPoolExecutor.submit(new UpdateRunnable(reference, downloadModel));
         }
     };
-
     private DownloadModel getDownloadModel(long reference) {
         SqliteUtil.QueryParser<DownloadModel> queryCallBack =
                 new SqliteUtil.QueryParser<DownloadModel>() {
@@ -147,14 +129,12 @@ public class M3U8DownService extends Service {
                         downloadModel.id = cursor.getInt(cursor.getColumnIndex("id"));
                         return downloadModel;
                     }};
-
         return SqliteUtil.getUtil(mContext).query(
                 queryCallBack,
                 "select * from download_item where reference=?",
                 String.valueOf(reference)
         );
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -165,14 +145,12 @@ public class M3U8DownService extends Service {
         getContentResolver().unregisterContentObserver(mDownloadContentObserver);
         Log.d(TAG, "m3u8 download_service destroy");
     }
-
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "m3u8 download_service create");
         mService = this;
         mContext = this;
-
         notificationList = new SparseArray<>();
         mUpdateThreadPoolExecutor = new ScheduledThreadPoolExecutor(5);
         mUpdateThreadPoolExecutor.setMaximumPoolSize(10);
@@ -180,20 +158,16 @@ public class M3U8DownService extends Service {
         mThreadPoolExecutor.setMaximumPoolSize(1);
         notificationManager = (NotificationManager)
                 this.getSystemService(Context.NOTIFICATION_SERVICE);
-
         registerReceiver(mDownLoadCompleteReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
         registerReceiver(mDownLoadStatusReceiver, new IntentFilter(DownloadStatusReceiver.ACTION));
         getContentResolver().registerContentObserver(Uri.parse("content://downloads/my_downloads"), true, mDownloadContentObserver);
     }
-
     public static M3U8DownService getService() {
         return mService;
     }
-
     public void cancelDownloadTask(int lessonId) {
         cancelDownloadTask(lessonId, M3U8Util.PAUSE);
     }
-
     public void cancelDownloadTask(int lessonId, int status) {
         if (mM3U8UitlList.indexOfKey(lessonId) < 0) {
             return;
