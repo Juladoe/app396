@@ -17,22 +17,19 @@ public class CourseProject implements Serializable {
     public String expiryDays;
     public String summary;
     public int studentNum;
-    public List<String> audiences;
+    public String[] audiences;
     public String rating;
     public String price;
     public String originPrice;
     public String vipLevelId;
     public int publishedTaskNum;
-    public List<Service> services;
-    public List<Teacher> teachers;
+    public Service[] services;
+    public Teacher[] teachers;
 
-    //    public List<String> services;
-//    public List<TeachersBean> teachers;
-//
     public static class Service implements Serializable {
-        private String short_name;
-        private String full_name;
-        private String summary;
+        public String short_name;
+        public String full_name;
+        public String summary;
     }
 
     public static class Teacher implements Serializable {

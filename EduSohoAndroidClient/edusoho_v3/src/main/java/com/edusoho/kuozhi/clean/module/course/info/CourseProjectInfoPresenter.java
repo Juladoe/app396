@@ -2,8 +2,14 @@ package com.edusoho.kuozhi.clean.module.course.info;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 
+import java.util.List;
+
+import cn.trinea.android.common.util.StringUtils;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -44,6 +50,33 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
         mView.showCourseProjectInfo(mCourseProject);
         showPrice();
         showVip(mCourseProject.vipLevelId);
+        showServices(mCourseProject.services);
+
+        RetrofitService.getCourseSet(mCourseProject.courseSetId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseSet>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseSet courseSet) {
+                        mView.showCover(courseSet.cover);
+                        showIntroduce(mCourseProject, courseSet);
+                    }
+                });
+
+        showAudiences(mCourseProject.audiences);
+        if (mCourseProject.teachers != null && mCourseProject.teachers.length > 0) {
+            showTeacher(mCourseProject.teachers[0]);
+        }
     }
 
     private void showPrice() {
@@ -78,6 +111,30 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
                         }
                     });
         }
+    }
+
+    private void showIntroduce(CourseProject courseProject, CourseSet courseSet) {
+        if (StringUtils.isEmpty(courseProject.summary)) {
+            mView.showIntroduce(courseProject.summary);
+        } else {
+            mView.showIntroduce(courseSet.summary);
+        }
+    }
+
+    private void showServices(CourseProject.Service[] services) {
+        mView.showServices(services);
+    }
+
+    private void showAudiences(String[] audiences) {
+        mView.showAudiences(audiences);
+    }
+
+    private void showTeacher(CourseProject.Teacher teacher) {
+        mView.showTeacher(teacher);
+    }
+
+    private void showStudents(){
+
     }
 
     @Override

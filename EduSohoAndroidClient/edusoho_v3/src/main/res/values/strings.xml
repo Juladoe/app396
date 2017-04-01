@@ -428,5 +428,6 @@
     <string name="free_course_project">免费</string>
     <string name="sale_word">折</string>
     <string name="join_vip">加入%s会员，免费学习课程</string>
+    <string name="course_info">课程简介</string>
 
 </resources>

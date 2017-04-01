@@ -9,4 +9,5 @@ import java.io.Serializable;
 public class CourseSet implements Serializable {
 
     public String cover;
+    public String summary;
 }

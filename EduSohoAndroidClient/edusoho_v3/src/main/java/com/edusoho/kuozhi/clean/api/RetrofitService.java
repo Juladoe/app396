@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.api;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.google.gson.Gson;
@@ -50,7 +51,6 @@ public class RetrofitService {
                 .baseUrl("http://devtest.edusoho.cn:82/api/")
                 .build();
         mApiService = retrofit.create(ApiService.class);
-
     }
 
     public static Observable<List<CourseTask>> getTasks(String id) {
@@ -67,5 +67,13 @@ public class RetrofitService {
 
     public static Observable<VipLevel> getVipLevel(String id) {
         return mApiService.getVipLevel(id);
+    }
+
+    public static Observable<List<Member>> getCourseMembers(String courseId) {
+        return mApiService.getCourseMembers(courseId);
+    }
+
+    public static Observable<List<CourseProject>> getCourses(String courseSetId) {
+        return mApiService.getCourses(courseSetId);
     }
 }

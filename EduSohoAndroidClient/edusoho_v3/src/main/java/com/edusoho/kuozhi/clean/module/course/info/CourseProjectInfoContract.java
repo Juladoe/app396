@@ -17,6 +17,16 @@ public interface CourseProjectInfoContract {
         void showVipAdvertising(String vipName);
 
         void showPrice(CourseProjectPriceEnum type, String price, String originPrice);
+
+        void showServices(CourseProject.Service[] services);
+
+        void showIntroduce(String content);
+
+        void showCover(String coverUrl);
+
+        void showAudiences(String[] audiences);
+
+        void showTeacher(CourseProject.Teacher teacher);
     }
 
     interface Presenter extends BasePresenter {
