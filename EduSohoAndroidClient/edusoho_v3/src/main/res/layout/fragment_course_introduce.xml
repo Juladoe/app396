@@ -197,10 +197,10 @@
                     android:id="@+id/tv_student_num"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/tv_student"
+                    android:layout_alignTop="@id/tv_student"
                     android:layout_marginLeft="@dimen/common_marginl"
                     android:layout_marginTop="1dp"
-                    android:layout_toRightOf="@+id/tv_student"
+                    android:layout_toRightOf="@id/tv_student"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_s" />
 
@@ -218,7 +218,7 @@
                     android:id="@+id/student_icon_llayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_student"
+                    android:layout_below="@id/tv_student"
                     android:layout_marginRight="@dimen/common_maring0"
                     android:layout_marginTop="@dimen/common_14"
                     android:gravity="center"

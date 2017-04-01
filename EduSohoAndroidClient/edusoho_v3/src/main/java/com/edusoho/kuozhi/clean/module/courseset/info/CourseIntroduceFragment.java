@@ -18,9 +18,7 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -38,25 +36,25 @@ import java.util.List;
 public class CourseIntroduceFragment extends BaseLazyFragment
         implements View.OnClickListener {
 
-    private TextView mTvPriceOld;
-    private TextView mTvPriceNow;
-    private TextView mTvTitle;
+    private TextView mPriceOld;
+    private TextView mPriceNow;
+    private TextView mTitle;
     private ReviewStarView mReviewStar;
-    private TextView mTvTitleStudentNum;
-    private TextView mTvTitleDesc;
+    private TextView mTitleStudentNum;
+    private TextView mTitleDesc;
     private View mVipLayout;
-    private TextView mTvPeopleDesc;
-    private TextView mTvStudentNum;
+    private TextView mPeopleDesc;
+    private TextView mStudentNum;
     private View mStudentMore;
     private LinearLayout mStudentIconLayout;
-    private TextView mTvStudent1;
-    private View mTvStudentNone;
+    private TextView mStudent;
+    private View mStudentNone;
     private View mLoadView;
     private View mPeopleLayout;
 
     private CourseDetail mCourseDetail;
     private int mCourseId;
-    private TextView mTvVipDesc;
+    private TextView mVipDesc;
 
     public CourseIntroduceFragment() {
     }
@@ -73,22 +71,22 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     }
 
     protected void initView(View view) {
-        mTvPriceOld = (TextView) view.findViewById(R.id.tv_price_old);
-        mTvPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-        mTvPriceNow = (TextView) view.findViewById(R.id.tv_price_now);
-        mTvTitle = (TextView) view.findViewById(R.id.tv_title);
+        mPriceOld = (TextView) view.findViewById(R.id.tv_price_old);
+        mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+        mPriceNow = (TextView) view.findViewById(R.id.tv_price_now);
+        mTitle = (TextView) view.findViewById(R.id.tv_title);
         mReviewStar = (ReviewStarView) view.findViewById(R.id.review_star);
-        mTvTitleStudentNum = (TextView) view.findViewById(R.id.tv_title_student_num);
-        mTvTitleDesc = (TextView) view.findViewById(R.id.tv_title_desc);
+        mTitleStudentNum = (TextView) view.findViewById(R.id.tv_title_student_num);
+        mTitleDesc = (TextView) view.findViewById(R.id.tv_title_desc);
         mVipLayout = view.findViewById(R.id.vip_rlayout);
-        mTvPeopleDesc = (TextView) view.findViewById(R.id.tv_people_desc);
-        mTvStudentNum = (TextView) view.findViewById(R.id.tv_student_num);
-        mTvVipDesc = (TextView) view.findViewById(R.id.tv_vip_desc);
+        mPeopleDesc = (TextView) view.findViewById(R.id.tv_people_desc);
+        mStudentNum = (TextView) view.findViewById(R.id.tv_student_num);
+        mVipDesc = (TextView) view.findViewById(R.id.tv_vip_desc);
         mStudentMore = view.findViewById(R.id.tv_student_more);
         mStudentIconLayout = (LinearLayout) view.findViewById(R.id.student_icon_llayout);
-        mTvStudent1 = (TextView) view.findViewById(R.id.tv_student1);
+        mStudent = (TextView) view.findViewById(R.id.tv_student);
         mPeopleLayout = view.findViewById(R.id.people_rlayout);
-        mTvStudentNone = view.findViewById(R.id.tv_student_none);
+        mStudentNone = view.findViewById(R.id.tv_student_none);
         mLoadView = view.findViewById(R.id.ll_detail_load);
     }
 
@@ -101,71 +99,71 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     protected void lazyLoad() {
         super.lazyLoad();
         mLoadView.setVisibility(View.VISIBLE);
-        CourseDetailModel.getCourseDetail(mCourseId, new ResponseCallbackListener<CourseDetail>() {
-            @Override
-            public void onSuccess(CourseDetail data) {
-                mCourseDetail = data;
-                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                    return;
-                }
-                refreshView();
-                mLoadView.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onFailure(String code, String message) {
-                mLoadView.setVisibility(View.GONE);
-            }
-        });
-        CourseDetailModel.getCourseMember(mCourseId,
-                new ResponseCallbackListener<List<CourseMember>>() {
-                    @Override
-                    public void onSuccess(List<CourseMember> data) {
-                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-                            return;
-                        }
-                        initStudent(data);
-                    }
-
-                    @Override
-                    public void onFailure(String code, String message) {
-                    }
-                });
+//        CourseDetailModel.getCourseDetail(mCourseId, new ResponseCallbackListener<CourseDetail>() {
+//            @Override
+//            public void onSuccess(CourseDetail data) {
+//                mCourseDetail = data;
+//                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+//                    return;
+//                }
+//                refreshView();
+//                mLoadView.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onFailure(String code, String message) {
+//                mLoadView.setVisibility(View.GONE);
+//            }
+//        });
+//        CourseDetailModel.getCourseMember(mCourseId,
+//                new ResponseCallbackListener<List<CourseMember>>() {
+//                    @Override
+//                    public void onSuccess(List<CourseMember> data) {
+//                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+//                            return;
+//                        }
+//                        initStudent(data);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(String code, String message) {
+//                    }
+//                });
     }
 
     private void refreshView() {
         Course course = mCourseDetail.getCourse();
-        mTvTitle.setText(course.title);
-        mTvStudentNum.setText(String.format("(%s)", mCourseDetail.getCourse().studentNum));
-        mTvTitleDesc.setText(Html.fromHtml(course.about, new EduHtmlHttpImageGetter(mTvTitleDesc, null, true), null));
+        mTitle.setText(course.title);
+        mStudentNum.setText(String.format("(%s)", mCourseDetail.getCourse().studentNum));
+        mTitleDesc.setText(Html.fromHtml(course.about, new EduHtmlHttpImageGetter(mTitleDesc, null, true), null));
         if (mCourseDetail.getCourse().vipLevelId == 0) {
             mVipLayout.setVisibility(View.GONE);
         } else {
             mVipLayout.setVisibility(View.VISIBLE);
-            mTvVipDesc.setText(String.format("加入%s，免费学习更多课程",
+            mVipDesc.setText(String.format("加入%s，免费学习更多课程",
                     mCourseDetail.getVipLevels().size() > course.vipLevelId - 1 ?
                             mCourseDetail.getVipLevels().get(course.vipLevelId - 1).name : ""));
         }
         if (course.price == 0) {
-            mTvPriceNow.setText("免费");
-            mTvPriceNow.setTextSize(18);
-            mTvPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.primary_color));
+            mPriceNow.setText("免费");
+            mPriceNow.setTextSize(18);
+            mPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.primary_color));
         } else {
-            mTvPriceNow.setText(String.valueOf(course.price));
-            mTvPriceNow.setTextSize(24);
-            mTvPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.secondary_color));
+            mPriceNow.setText(String.valueOf(course.price));
+            mPriceNow.setTextSize(24);
+            mPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.secondary_color));
         }
         if (course.originPrice == 0) {
-            mTvPriceOld.setVisibility(View.GONE);
+            mPriceOld.setVisibility(View.GONE);
         } else {
             if (course.originPrice == course.price) {
-                mTvPriceOld.setVisibility(View.GONE);
+                mPriceOld.setVisibility(View.GONE);
             } else {
-                mTvPriceOld.setVisibility(View.VISIBLE);
-                mTvPriceOld.setText("¥" + course.originPrice);
+                mPriceOld.setVisibility(View.VISIBLE);
+                mPriceOld.setText("¥" + course.originPrice);
             }
         }
-        mTvTitleStudentNum.setText(String.format("%s名学生",
+        mTitleStudentNum.setText(String.format("%s名学生",
                 course.studentNum));
         mReviewStar.setRating((int) course.rating);
         StringBuilder sb = new StringBuilder();
@@ -180,7 +178,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                     sb.append("；");
                 }
             }
-            mTvPeopleDesc.setText(sb.toString());
+            mPeopleDesc.setText(sb.toString());
         }
     }
 
@@ -194,9 +192,9 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                     }
                 };
         if (data.size() == 0) {
-            mTvStudentNone.setVisibility(View.VISIBLE);
+            mStudentNone.setVisibility(View.VISIBLE);
         } else {
-            mTvStudentNone.setVisibility(View.GONE);
+            mStudentNone.setVisibility(View.GONE);
         }
         for (int i = 0; i < 5; i++) {
             View view = LayoutInflater.from(getContext())
