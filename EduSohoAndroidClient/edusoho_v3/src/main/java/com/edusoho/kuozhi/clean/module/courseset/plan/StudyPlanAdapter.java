@@ -12,9 +12,9 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.FlowLayout;
-import com.edusoho.kuozhi.v3.view.PointLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,16 +28,19 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         implements View.OnClickListener {
 
     private List<CourseStudyPlan> mList;
+    private List<VipInfo> mVipInfos;
     private Context mContext;
     private int maxIndex = -1;
 
     public StudyPlanAdapter(Context context) {
         this.mContext = context;
         this.mList = new ArrayList();
+        this.mVipInfos = new ArrayList();
     }
 
-    public void reFreshData(List<CourseStudyPlan> list) {
+    public void reFreshData(List<CourseStudyPlan> list, List<VipInfo> mVipInfos) {
         this.mList = list;
+        this.mVipInfos = mVipInfos;
         int num = 0;
         for (int i = 0; i < mList.size(); i++) {
             if (mList.get(i).getStudentNum() > num) {
@@ -63,18 +66,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         loadPrice(holder, courseStudyPlan);
         loadService(holder, courseStudyPlan);
         loadHot(holder, position);
-    }
-
-    private void loadHot(StudyPlanViewHolder holder, int position) {
-        if (mList.size() > 1) {
-            if (maxIndex == position) {
-                holder.mHot.setVisibility(View.VISIBLE);
-            } else {
-                holder.mHot.setVisibility(View.GONE);
-            }
-        } else {
-            holder.mHot.setVisibility(View.GONE);
-        }
+        loadVip(holder, courseStudyPlan);
     }
 
     private void loadPrice(StudyPlanViewHolder holder, CourseStudyPlan courseStudyPlan) {
@@ -97,6 +89,29 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         } else {
             holder.mService.setVisibility(View.GONE);
             holder.mFlayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void loadHot(StudyPlanViewHolder holder, int position) {
+        if (mList.size() > 1) {
+            if (maxIndex == position) {
+                holder.mHot.setVisibility(View.VISIBLE);
+            } else {
+                holder.mHot.setVisibility(View.GONE);
+            }
+        } else {
+            holder.mHot.setVisibility(View.GONE);
+        }
+    }
+
+    private void loadVip(StudyPlanViewHolder holder, CourseStudyPlan courseStudyPlan) {
+        holder.mVip.setVisibility(View.GONE);
+        for (int i = 0; i < mVipInfos.size(); i++) {
+            VipInfo vipInfo = mVipInfos.get(i);
+            if (courseStudyPlan.getVipLevelId().equals(vipInfo.getId())) {
+                holder.mVip.setVisibility(View.VISIBLE);
+                holder.mVip.setText(String.format("%s%s", vipInfo.getName(), "会员免费加入学习"));
+            }
         }
     }
 

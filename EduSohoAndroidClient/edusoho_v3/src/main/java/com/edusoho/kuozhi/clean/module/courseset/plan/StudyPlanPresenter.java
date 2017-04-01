@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.clean.module.courseset.plan;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
 
 import java.util.List;
 
@@ -18,6 +19,7 @@ public class StudyPlanPresenter implements StudyPlanContract.Presenter {
 
     private String mCourseId;
     private StudyPlanContract.View mView;
+    List<CourseStudyPlan> mCourseStudyPlen;
 
     public StudyPlanPresenter(StudyPlanContract.View view, String id) {
         this.mView = view;
@@ -44,13 +46,38 @@ public class StudyPlanPresenter implements StudyPlanContract.Presenter {
 
                     @Override
                     public void onNext(List<CourseStudyPlan> courseStudyPlen) {
+                        getVipInfoData();
+                        mCourseStudyPlen = courseStudyPlen;
+                    }
+                });
+    }
+
+    private void getVipInfoData() {
+        getVipInfo()
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<VipInfo>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
                         mView.setLoadViewVis(false);
-                        if (courseStudyPlen != null && courseStudyPlen.size() != 0) {
-                            mView.showComPanies(courseStudyPlen);
+                    }
+
+                    @Override
+                    public void onNext(List<VipInfo> vipInfo) {
+                        mView.setLoadViewVis(false);
+                        if (mCourseStudyPlen != null && mCourseStudyPlen.size() != 0 && vipInfo != null) {
+                            mView.showComPanies(mCourseStudyPlen, vipInfo);
                         }
                     }
                 });
     }
+
 
     @Override
     public void unsubscribe() {
@@ -59,5 +86,9 @@ public class StudyPlanPresenter implements StudyPlanContract.Presenter {
 
     private Observable<List<CourseStudyPlan>> getCourseStudyPlan(String id) {
         return RetrofitService.getCourseStudyPlan(id);
+    }
+
+    private Observable<List<VipInfo>> getVipInfo() {
+        return RetrofitService.getVipInfo();
     }
 }

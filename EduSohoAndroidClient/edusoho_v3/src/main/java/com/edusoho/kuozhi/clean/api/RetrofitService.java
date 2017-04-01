@@ -5,6 +5,7 @@ import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
 
 import java.io.IOException;
 import java.util.List;
@@ -67,5 +68,9 @@ public class RetrofitService {
 
     public static Observable<List<CourseStudyPlan>> getCourseStudyPlan(String id){
         return mApiService.getCourseStudyPlan(id);
+    }
+
+    public static Observable<List<VipInfo>> getVipInfo(){
+        return mApiService.getVipInfo();
     }
 }
