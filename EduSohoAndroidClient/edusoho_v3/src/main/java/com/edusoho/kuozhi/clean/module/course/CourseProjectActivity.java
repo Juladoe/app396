@@ -87,11 +87,6 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     @Override
-    public void setPresenter(CourseProjectContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
     public void showTasksCover(String imageUrl) {
 
     }

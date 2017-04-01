@@ -63,11 +63,6 @@ public class CourseTasksFragment extends Fragment implements
         taskRecyclerView.setAdapter(adapter);
     }
 
-    @Override
-    public void setPresenter(CourseTasksContract.Presenter presenter) {
-
-    }
-
     public static class CourseTaskViewHolder extends RecyclerView.ViewHolder {
         public ESIconView taskType;
         public TextView taskName;
