@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.FlowLayout;
+import com.edusoho.kuozhi.v3.view.PointLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
 
     private List<CourseStudyPlan> mList;
     private Context mContext;
+    private int maxIndex = -1;
 
     public StudyPlanAdapter(Context context) {
         this.mContext = context;
@@ -36,6 +38,13 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
 
     public void reFreshData(List<CourseStudyPlan> list) {
         this.mList = list;
+        int num = 0;
+        for (int i = 0; i < mList.size(); i++) {
+            if (mList.get(i).getStudentNum() > num) {
+                num = mList.get(i).getStudentNum();
+                maxIndex = i;
+            }
+        }
         notifyDataSetChanged();
     }
 
@@ -46,8 +55,49 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
 
     @Override
     public void onBindViewHolder(StudyPlanViewHolder holder, int position) {
+        CourseStudyPlan courseStudyPlan = mList.get(position);
         holder.mRlItem.setOnClickListener(this);
         holder.mFlayout.removeAllViews();
+        holder.mClassType.setText(courseStudyPlan.getTitle());
+        holder.mTask.setText(String.format("%s%s", "学习任务: ", courseStudyPlan.getTaskNum() + "个"));
+        loadPrice(holder, courseStudyPlan);
+        loadService(holder, courseStudyPlan);
+        loadHot(holder, position);
+    }
+
+    private void loadHot(StudyPlanViewHolder holder, int position) {
+        if (mList.size() > 1) {
+            if (maxIndex == position) {
+                holder.mHot.setVisibility(View.VISIBLE);
+            } else {
+                holder.mHot.setVisibility(View.GONE);
+            }
+        } else {
+            holder.mHot.setVisibility(View.GONE);
+        }
+    }
+
+    private void loadPrice(StudyPlanViewHolder holder, CourseStudyPlan courseStudyPlan) {
+        if ("1".equals(courseStudyPlan.getIsFree())) {
+            holder.mSymbol.setVisibility(View.GONE);
+            holder.mPrice.setText("免费");
+            holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
+        } else {
+            holder.mSymbol.setVisibility(View.VISIBLE);
+            holder.mPrice.setText(courseStudyPlan.getPrice());
+            holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.secondary_color));
+        }
+    }
+
+    private void loadService(StudyPlanViewHolder holder, CourseStudyPlan courseStudyPlan) {
+        if (courseStudyPlan.getServices().size() != 0) {
+            holder.mService.setVisibility(View.VISIBLE);
+            holder.mFlayout.setVisibility(View.VISIBLE);
+            addFlowItem(holder, courseStudyPlan.getServices());
+        } else {
+            holder.mService.setVisibility(View.GONE);
+            holder.mFlayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -60,44 +110,46 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
 
     }
 
-    private void addFlowItem(StudyPlanViewHolder holder, String text) {
-        int ranHeight = AppUtil.dp2px(mContext, 18);
+    private void addFlowItem(StudyPlanViewHolder holder, List<CourseStudyPlan.ServicesBean> list) {
+        int ranHeight = AppUtil.dp2px(mContext, 16);
         ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ranHeight);
-        lp.setMargins(0, AppUtil.dp2px(mContext, 3), AppUtil.dp2px(mContext, 10), AppUtil.dp2px(mContext, 2));
-        TextView tv = new TextView(mContext);
-        tv.setPadding(AppUtil.dp2px(mContext, 3), 0, AppUtil.dp2px(mContext, 3), 0);
-        tv.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
-        tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-        tv.setText(text);
-        tv.setGravity(Gravity.CENTER);
-        tv.setLines(1);
-        tv.setBackgroundResource(R.drawable.common_circular_bg);
-        holder.mFlayout.addView(tv, lp);
+        lp.setMargins(0, 0, AppUtil.dp2px(mContext, 10), 0);
+        for (int i = 0; i < list.size(); i++) {
+            TextView tv = new TextView(mContext);
+            tv.setPadding(AppUtil.dp2px(mContext, 3), 0, AppUtil.dp2px(mContext, 3), 0);
+            tv.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
+            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+            tv.setText(list.get(i).getShort_name());
+            tv.setGravity(Gravity.CENTER);
+            tv.setLines(1);
+            tv.setBackgroundResource(R.drawable.common_circular_bg);
+            holder.mFlayout.addView(tv, lp);
+        }
     }
 
     public static class StudyPlanViewHolder extends RecyclerView.ViewHolder {
 
         private final View mRlItem;
-        private final View mHasJoin;
         private final View mSymbol;
-        private final View mIvHot;
-        private final TextView mTvClassType;
-        private final TextView mTvPrice;
-        private final TextView mTvTask;
+        private final View mHot;
+        private final TextView mClassType;
+        private final TextView mPrice;
+        private final TextView mTask;
         private final FlowLayout mFlayout;
-        private final TextView mTvVip;
+        private final TextView mVip;
+        private final View mService;
 
         public StudyPlanViewHolder(View itemView) {
             super(itemView);
             mRlItem = itemView.findViewById(R.id.rl_item);
-            mHasJoin = itemView.findViewById(R.id.tv_has_join);
             mSymbol = itemView.findViewById(R.id.tv_symbol);
-            mIvHot = itemView.findViewById(R.id.iv_hot);
-            mTvClassType = (TextView) itemView.findViewById(R.id.tv_class_type);
-            mTvPrice = (TextView) itemView.findViewById(R.id.tv_price);
-            mTvTask = (TextView) itemView.findViewById(R.id.tv_task);
+            mHot = itemView.findViewById(R.id.iv_hot);
+            mClassType = (TextView) itemView.findViewById(R.id.tv_class_type);
+            mPrice = (TextView) itemView.findViewById(R.id.tv_price);
+            mTask = (TextView) itemView.findViewById(R.id.tv_task);
+            mService = itemView.findViewById(R.id.tv_service);
             mFlayout = (FlowLayout) itemView.findViewById(R.id.fl_service);
-            mTvVip = (TextView) itemView.findViewById(R.id.tv_vip);
+            mVip = (TextView) itemView.findViewById(R.id.tv_vip);
         }
     }
 }

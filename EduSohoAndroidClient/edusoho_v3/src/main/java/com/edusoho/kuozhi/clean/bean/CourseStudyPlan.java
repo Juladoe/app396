@@ -17,19 +17,14 @@ public class CourseStudyPlan implements Serializable{
     private String expiryDays;
     private Object expiryStartDate;
     private Object expiryEndDate;
-    private String summary;
-    private String isDefault;
     private String maxStudentNum;
     private String status;
     private String isFree;
     private String price;
     private String vipLevelId;
     private String buyable;
-    private String tryLookable;
-    private String tryLookLength;
-    private String watchLimit;
     private String taskNum;
-    private String studentNum;
+    private int studentNum;
     private String parentId;
     private String ratingNum;
     private String rating;
@@ -39,10 +34,6 @@ public class CourseStudyPlan implements Serializable{
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getCourseSetId() {
@@ -73,14 +64,6 @@ public class CourseStudyPlan implements Serializable{
         return expiryEndDate;
     }
 
-    public String getSummary() {
-        return summary;
-    }
-
-    public String getIsDefault() {
-        return isDefault;
-    }
-
     public String getMaxStudentNum() {
         return maxStudentNum;
     }
@@ -105,23 +88,11 @@ public class CourseStudyPlan implements Serializable{
         return buyable;
     }
 
-    public String getTryLookable() {
-        return tryLookable;
-    }
-
-    public String getTryLookLength() {
-        return tryLookLength;
-    }
-
-    public String getWatchLimit() {
-        return watchLimit;
-    }
-
     public String getTaskNum() {
         return taskNum;
     }
 
-    public String getStudentNum() {
+    public int getStudentNum() {
         return studentNum;
     }
 
@@ -143,22 +114,6 @@ public class CourseStudyPlan implements Serializable{
 
     public String getPublishedTaskNum() {
         return publishedTaskNum;
-    }
-
-    public String getCreatedTime() {
-        return createdTime;
-    }
-
-    public String getUpdatedTime() {
-        return updatedTime;
-    }
-
-    public List<?> getGoals() {
-        return goals;
-    }
-
-    public List<String> getAudiences() {
-        return audiences;
     }
 
     public List<ServicesBean> getServices() {

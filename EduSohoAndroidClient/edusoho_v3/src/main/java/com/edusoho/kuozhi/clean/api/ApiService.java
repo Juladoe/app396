@@ -31,6 +31,6 @@ public interface ApiService {
     @GET("api/course_sets/{id}/reviews")
     Observable<CourseReview> getCourseReview(@Path("id") String id, @Query("limit") int limit, @Query("offset") int offset);
 
-    @GET("api/courses/{id}/tasks")
-    Observable<List<CourseStudyPlan>> getCourseStudyPlan(@Path("id") String id);
+    @GET("api/course_sets/{course_setId}/courses")
+    Observable<List<CourseStudyPlan>> getCourseStudyPlan(@Path("course_setId") String id);
 }

@@ -78,7 +78,7 @@ public class CourseEvaluateAdapter extends RecyclerView.Adapter {
         if (holder instanceof EvaluateViewHolder) {
             DataBean courseReview = mList.get(position);
             EvaluateViewHolder evaluateViewHolder = (EvaluateViewHolder) holder;
-            // TODO: 2017/3/23     评论来自哪个计划
+            evaluateViewHolder.mFrom.setText(String.format("%s%s", "来自: ", courseReview.getCourse().getTitle()));
             evaluateViewHolder.mName.setText(courseReview.getUser().getNickname());
             evaluateViewHolder.mTime.setText(CommonUtil.convertWeekTime(courseReview.getCreatedTime()));
             evaluateViewHolder.mDesc.setText(courseReview.getContent());
