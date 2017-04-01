@@ -209,7 +209,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         }
         for (Fragment fragment : list) {
             if (fragment instanceof ICourseStateListener) {
-                ((ICourseStateListener)fragment).reFreshView(isJoin);
+                ((ICourseStateListener) fragment).reFreshView(isJoin);
             }
         }
     }
@@ -244,10 +244,10 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         });
     }
 
-    protected void statTimes(int position){
+    protected void statTimes(int position) {
         if (position == 1) {
             MobclickAgent.onEvent(this, "courseDetailsPage_contents");
-        } else if(position == 2) {
+        } else if (position == 2) {
             MobclickAgent.onEvent(this, "courseDetailsPage_Q&A");
         }
     }
@@ -386,12 +386,12 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
                 ((WidgtState) mSectionsPagerAdapter.getItem(2)).setTopViewVisibility(false);
             }
         }
-        int maxHeight = getResources().getDimensionPixelOffset(R.dimen.action_bar_height);
-        int toolbarHeight = AppUtil.dp2px(getBaseContext(), 210);
-        if (toolbarHeight + i > maxHeight * 2) {
-            changeToolbarStyle(false);
-            return;
-        }
+//        int maxHeight = getResources().getDimensionPixelOffset(android.R.attr.actionBarSize);
+//        int toolbarHeight = AppUtil.dp2px(getBaseContext(), 210);
+//        if (toolbarHeight + i > maxHeight * 2) {
+//            changeToolbarStyle(false);
+//            return;
+//        }
         changeToolbarStyle(true);
     }
 
@@ -666,7 +666,7 @@ public abstract class BaseStudyDetailActivity extends AppCompatActivity
         }
     }
 
-    public interface WidgtState{
+    public interface WidgtState {
         void setTopViewVisibility(boolean isTop);
     }
 }
