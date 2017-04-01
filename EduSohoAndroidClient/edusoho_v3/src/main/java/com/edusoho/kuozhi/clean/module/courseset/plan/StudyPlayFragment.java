@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 
@@ -69,7 +70,7 @@ public class StudyPlayFragment extends BaseLazyFragment
     }
 
     @Override
-    public void showComPanies(List<CourseStudyPlan> list) {
-        mStudyPlanAdapter.reFreshData(list);
+    public void showComPanies(List<CourseStudyPlan> list, List<VipInfo> vipInfos) {
+        mStudyPlanAdapter.reFreshData(list, vipInfos);
     }
 }

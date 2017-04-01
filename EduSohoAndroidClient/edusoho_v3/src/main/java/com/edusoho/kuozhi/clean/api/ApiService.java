@@ -5,6 +5,7 @@ import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
 
 import java.util.List;
 
@@ -33,4 +34,7 @@ public interface ApiService {
 
     @GET("api/course_sets/{course_setId}/courses")
     Observable<List<CourseStudyPlan>> getCourseStudyPlan(@Path("course_setId") String id);
+
+    @GET("api/plugins/vip/vip_levels")
+    Observable<List<VipInfo>> getVipInfo();
 }
