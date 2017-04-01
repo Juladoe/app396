@@ -3,10 +3,9 @@ package com.edusoho.kuozhi.clean.api;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
-import com.edusoho.kuozhi.v3.model.result.UserResult;
-import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,8 +18,6 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by JesseHuang on 2017/3/23.
@@ -69,7 +66,7 @@ public class RetrofitService {
         return mApiService.getVipLevel(id);
     }
 
-    public static Observable<List<Member>> getCourseMembers(String courseId) {
+    public static Observable<DataPageResult<Member>> getCourseMembers(String courseId) {
         return mApiService.getCourseMembers(courseId);
     }
 
