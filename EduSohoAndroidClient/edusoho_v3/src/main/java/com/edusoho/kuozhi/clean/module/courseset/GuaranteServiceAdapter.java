@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.model.courseset;
+package com.edusoho.kuozhi.clean.module.courseset;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

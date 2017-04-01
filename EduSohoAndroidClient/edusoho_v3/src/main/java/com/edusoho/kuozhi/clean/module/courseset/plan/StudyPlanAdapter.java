@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.model.courseset;
+package com.edusoho.kuozhi.clean.module.courseset.plan;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.FlowLayout;
 
@@ -25,13 +26,17 @@ import java.util.List;
 public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.StudyPlanViewHolder>
         implements View.OnClickListener {
 
-
-    private List mList;
+    private List<CourseStudyPlan> mList;
     private Context mContext;
 
     public StudyPlanAdapter(Context context) {
         this.mContext = context;
         this.mList = new ArrayList();
+    }
+
+    public void reFreshData(List<CourseStudyPlan> list) {
+        this.mList = list;
+        notifyDataSetChanged();
     }
 
     @Override

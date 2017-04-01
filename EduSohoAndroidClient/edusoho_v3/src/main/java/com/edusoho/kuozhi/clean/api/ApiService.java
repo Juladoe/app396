@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.api;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 
 import java.util.List;
@@ -29,4 +30,7 @@ public interface ApiService {
 
     @GET("api/course_sets/{id}/reviews")
     Observable<CourseReview> getCourseReview(@Path("id") String id, @Query("limit") int limit, @Query("offset") int offset);
+
+    @GET("api/courses/{id}/tasks")
+    Observable<List<CourseStudyPlan>> getCourseStudyPlan(@Path("id") String id);
 }

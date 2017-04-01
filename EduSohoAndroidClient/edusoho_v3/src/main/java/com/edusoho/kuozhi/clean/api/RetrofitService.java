@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.api;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 
 import java.io.IOException;
@@ -62,5 +63,9 @@ public class RetrofitService {
 
     public static Observable<CourseReview> getCourseReview(String id, int limit, int offset) {
         return mApiService.getCourseReview(id, limit, offset);
+    }
+
+    public static Observable<List<CourseStudyPlan>> getCourseStudyPlan(String id){
+        return mApiService.getCourseStudyPlan(id);
     }
 }

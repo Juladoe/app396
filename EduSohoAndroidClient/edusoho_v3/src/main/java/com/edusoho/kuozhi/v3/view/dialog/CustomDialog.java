@@ -19,7 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.v3.model.courseset.GuaranteServiceAdapter;
+import com.edusoho.kuozhi.clean.module.courseset.GuaranteServiceAdapter;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 
 /**
