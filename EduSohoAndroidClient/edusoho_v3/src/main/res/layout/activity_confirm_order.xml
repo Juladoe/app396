@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/color_gray"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:background="@color/disabled1_hint_color"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/head_register_height">
+
+        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+            android:id="@+id/iv_back"
+            android:text="@string/new_font_back"
+            android:textSize="@dimen/font_xl"
+            android:layout_width="@dimen/head_register_height"
+            android:layout_height="@dimen/head_register_height"
+            android:layout_centerVertical="true" />
+
+        <TextView
+            android:text="确认订单"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_xl"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <View
+        android:background="@color/disabled_hint_color"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <RelativeLayout
+        android:background="@color/disabled2_hint_color"
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_course_image"
+            android:scaleType="centerCrop"
+            android:layout_width="130dp"
+            android:layout_height="73dp" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            tools:text="新概念CG创作理念可"
+            android:layout_toRightOf="@id/iv_course_image"
+            android:layout_marginTop="16dp"
+            android:layout_marginLeft="15dp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textSize="@dimen/font_l"
+            android:textColor="@color/primary_font_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_price"
+            tools:text="¥300"
+            android:textSize="@dimen/font_xs"
+            android:textColor="@color/secondary_color"
+            android:layout_below="@id/tv_title"
+            android:layout_alignLeft="@id/tv_title"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        
+        <View
+            android:background="@color/disabled_hint_color"
+            android:layout_alignLeft="@id/tv_title"
+            android:layout_below="@id/iv_course_image"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"/>
+
+        <TextView
+            android:id="@+id/tv_from"
+            android:text="来自课程  |   "
+            android:textSize="@dimen/font_s"
+            android:textColor="@color/secondary2_color"
+            android:layout_alignLeft="@id/tv_price"
+            android:layout_below="@id/iv_course_image"
+            android:layout_marginTop="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            tools:text="摄影后期高手班"
+            android:textSize="@dimen/font_xs"
+            android:textColor="@color/secondary_font_color"
+            android:paddingTop="2dp"
+            android:layout_toRightOf="@id/tv_from"
+            android:layout_alignTop="@id/tv_from"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="15dp"/>
+
+    <RelativeLayout
+        android:background="@color/disabled2_hint_color"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <TextView
+            tools:text="优惠券"
+            android:textSize="@dimen/font_l"
+            android:layout_centerVertical="true"
+            android:textColor="@color/primary_font_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+            android:id="@+id/iv_discount"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:text="@string/new_font_more"
+            android:textColor="@color/primary_font_color"
+            android:textSize="13dp" />
+
+        <TextView
+            tools:text="减¥50"
+            android:textSize="@dimen/font_s"
+            android:textColor="@color/secondary_color"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_discount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="15dp"/>
+
+    <RelativeLayout
+        android:background="@color/disabled2_hint_color"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <TextView
+            tools:text="虚拟币"
+            android:textSize="@dimen/font_l"
+            android:layout_centerVertical="true"
+            android:textColor="@color/primary_font_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
+            android:id="@+id/iv_virtual"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:text="@string/new_font_more"
+            android:textColor="@color/primary_font_color"
+            android:textSize="13dp" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+    <RelativeLayout
+        android:background="@color/disabled2_hint_color"
+        android:layout_gravity="bottom"
+        android:paddingRight="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:id="@+id/tv_pay"
+            android:text="去支付"
+            android:textSize="@dimen/font_l"
+            android:textColor="@color/disabled2_hint_color"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:background="@color/primary"
+            android:layout_width="80dp"
+            android:layout_height="36dp" />
+
+        <TextView
+            android:id="@+id/tv_sum"
+            tools:text="合计: 188元"
+            android:textColor="@color/secondary_color"
+            android:textSize="@dimen/font_l"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="13dp"
+            android:layout_toLeftOf="@id/tv_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_original"
+            tools:text="¥233"
+            android:textSize="@dimen/font_l"
+            android:textColor="@color/secondary2_font_color"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/tv_sum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -480,7 +480,7 @@
 
     <plugin
         name="CourseActivity"
-        package="com.edusoho.kuozhi.v3.ui.courseset.CourseUnJoinActivity"
+        package="com.edusoho.kuozhi.clean.module.courseset.CourseUnJoinActivity"
         version="1.0" />
     <plugin
         name="ClassroomActivity"
@@ -518,16 +518,37 @@
 
     <plugin
         name="CourseIntroduceFragment"
-        package="com.edusoho.kuozhi.v3.ui.courseset.CourseIntroduceFragment"
+        package="com.edusoho.kuozhi.clean.module.courseset.info.CourseIntroduceFragment"
         version="1.0"/>
 
     <plugin
         name="CourseEvaluateFragment"
-        package="com.edusoho.kuozhi.v3.ui.courseset.CourseEvaluateFragment"
+        package="com.edusoho.kuozhi.clean.module.courseset.plan.StudyPlayFragment"
         version="1.0"/>
 
     <plugin
         name="StudyPlayFragment"
-        package="com.edusoho.kuozhi.v3.ui.courseset.StudyPlayFragment"
+        package="com.edusoho.kuozhi.clean.module.courseset.review.CourseEvaluateFragment"
         version="1.0"/>
+
+    <plugin
+        name="CourseProjectInfoFragment"
+        package="com.edusoho.kuozhi.clean.module.course.info.CourseProjectInfoFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseProjectRatesFragment"
+        package="com.edusoho.kuozhi.clean.module.course.rate.CourseProjectRatesFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseTasksFragment"
+        package="com.edusoho.kuozhi.clean.module.course.task.CourseTasksFragment"
+        version="1.0" />
+
+    <plugin
+        name="CourseProjectActivity"
+        package="com.edusoho.kuozhi.clean.module.course.CourseProjectActivity"
+        version="1.0" />
+
 </plugins>

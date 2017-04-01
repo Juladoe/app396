@@ -128,8 +128,6 @@
         <item name="homeAsUpIndicator">@drawable/action_bar_back</item>
         <item name="android:homeAsUpIndicator">@drawable/action_bar_back</item>
         <item name="android:windowAnimationStyle">@style/SlideToWindowAnimTheme</item>
-        <item name="actionBarSize">@dimen/action_bar_height</item>
-        <item name="android:actionBarSize">@dimen/action_bar_height</item>
         <item name="colorAccent">@color/underline_color</item>
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_fb</item>
@@ -245,7 +243,6 @@
         <item name="colorPrimaryDark">@color/primary_fb</item>
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textSize">@dimen/base_large_size</item>
-        <item name="actionBarSize">@dimen/action_bar_height</item>
         <item name="android:windowAnimationStyle">@style/SlideToWindowAnimTheme</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
@@ -253,7 +250,6 @@
     <style name="VideoPlayerActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textSize">@dimen/base_large_size</item>
-        <item name="actionBarSize">@dimen/action_bar_height</item>
         <item name="android:windowAnimationStyle">@style/SlideToWindowAnimTheme</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
@@ -338,6 +334,11 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@color/trans_color</item>
         <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="dialog_custom" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
     </style>
 
     <style name="dialog_big_image" parent="DiscussDialog">

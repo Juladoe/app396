@@ -17,6 +17,7 @@ import com.edusoho.kuozhi.v3.model.sys.SchoolBanner;
 import com.edusoho.kuozhi.v3.util.ApiTokenUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.util.volley.BaseVolleyRequest;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.Arrays;
@@ -59,7 +60,8 @@ public class SystemProvider extends ModelProvider {
         requestUrl.getHeads().put("Auth-Token", token);
 
         RequestOption requestOption = buildSimpleGetRequest(
-                requestUrl, new TypeToken<LinkedHashMap>(){});
+                requestUrl, new TypeToken<LinkedHashMap>() {
+                });
 
         return requestOption.build();
     }
@@ -77,7 +79,7 @@ public class SystemProvider extends ModelProvider {
         requestUrl.setParams(params);
         requestUrl.getHeads().put("Auth-Token", token);
 
-        final ProviderListener<LinkedHashMap> stringResponseListener = new ProviderListener<LinkedHashMap>() {
+        final ProviderListener<LinkedTreeMap> stringResponseListener = new ProviderListener<LinkedTreeMap>() {
         };
         ProviderListener<LinkedHashMap> responseListener = new ProviderListener<LinkedHashMap>() {
         };
@@ -88,7 +90,7 @@ public class SystemProvider extends ModelProvider {
                 if (hashMap == null || !hashMap.containsKey("servers")) {
                     return;
                 }
-                LinkedHashMap hostList = (LinkedHashMap) hashMap.get("servers");
+                LinkedTreeMap hostList = (LinkedTreeMap) hashMap.get("servers");
                 stringResponseListener.onResponse(hostList);
             }
         }).fail(new NormalCallback<VolleyError>() {

@@ -37,7 +37,6 @@ public class CourseDiscussAdapter extends RecyclerView.Adapter implements View.O
     public static final int LOADING_MORE     = 1;
     //没有加载更多 隐藏
     public static final int NO_LOAD_MORE     = 2;
-
     //上拉加载更多状态-默认为0
     private int mLoadMoreStatus = 0;
 

@@ -14,6 +14,7 @@
 
     <!-- end -->
 
+    <color name="color_gray">#F6F6F6</color>
     <color name="base_card_bg">#ffffff</color>
     <color name="base_light">#fdb933</color>
     <color name="base_light_red">#ff5822</color>
@@ -477,5 +478,5 @@
     <color name="register_view">#d8d8d8</color>
     <color name="trans_color">#00000000</color>
     <color name="question_detail">#97BCF0</color>
-
+    <color name="dialog_gradient">#29CB89</color>
 </resources>

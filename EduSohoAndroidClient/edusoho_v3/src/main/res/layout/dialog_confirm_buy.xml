@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_white_background"
+    android:paddingTop="15dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:text="@string/cancel"
+        android:textSize="@dimen/font_l"
+        android:textColor="@color/primary_font_color"
+        android:layout_gravity="right"
+        android:layout_marginRight="25dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_marginTop="15dp"
+        android:background="@color/disabled_hint_color"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"/>
+
+    <LinearLayout
+        android:id="@+id/rl_up"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp">
+
+        <TextView
+            android:id="@+id/tv_discount_price"
+            android:text="¥ 286"
+            android:textSize="@dimen/font_xl"
+            android:textColor="@color/secondary_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_original_price"
+            android:text="900"
+            android:textColor="@color/secondary2_font_color"
+            android:textSize="@dimen/font_l"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        
+        <TextView
+            android:id="@+id/discount"
+            android:text="折"
+            android:textSize="@dimen/font_xxs"
+            android:textColor="@color/disabled2_hint_color"
+            android:gravity="center"
+            android:background="@color/secondary_color"
+            android:layout_marginLeft="20dp"
+            android:layout_width="22dp"
+            android:layout_height="16dp" />
+
+    </LinearLayout>
+    
+    <View
+        android:background="@color/disabled_hint_color"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <TextView
+        android:text="教学计划"
+        android:textColor="@color/primary_font_color"
+        android:textSize="@dimen/font_l"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <com.edusoho.kuozhi.v3.view.FlowRadioGroup
+        android:id="@+id/rg_type"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    
+    <View
+        android:background="@color/disabled_hint_color"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <TextView
+        android:text="概述"
+        android:textSize="@dimen/font_l"
+        android:textColor="@color/primary_font_color"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_service"
+        android:text="承诺服务: 二十四小时作业批阅、提问答题"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/secondary_font_color"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_way"
+        android:text="学习方式: 随到随学"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/secondary_font_color"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_validity"
+        android:text="有效期: 180天"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/secondary_font_color"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_task"
+        android:text="学习任务: 130个"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/secondary_font_color"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+
+    <TextView
+        android:text="VIP会员免费加入学习"
+        android:textSize="@dimen/font_s"
+        android:textColor="@color/primary"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_marginTop="18dp"
+        android:background="@color/disabled_hint_color"
+        android:layout_width="wrap_content"
+        android:layout_height="0.5dp"/>
+
+    <TextView
+        android:text="@string/confirm1"
+        android:id="@+id/tv_confirm"
+        android:background="@color/primary"
+        android:textColor="@color/disabled1_hint_color"
+        android:layout_below="@id/rl_up"
+        android:layout_marginTop="25dp"
+        android:textSize="@dimen/font_xl"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+</LinearLayout>

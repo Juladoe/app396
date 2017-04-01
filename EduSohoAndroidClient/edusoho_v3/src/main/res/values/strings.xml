@@ -196,14 +196,14 @@
     <string name="font_my_collection">&#xe661;</string>
     <string name="font_my_question">&#xe66a;</string>
     <string name="font_my_setting">&#xe60e;</string>
-    <string name="font_friends">&#xe628;</string>
-    <string name="font_friends_pressed">&#xe609;</string>
-    <string name="font_news">&#xe66c;</string>
-    <string name="font_news_pressed">&#xe647;</string>
-    <string name="font_find">&#xe646;</string>
-    <string name="font_find_pressed">&#xe645;</string>
-    <string name="font_mine">&#xe66d;</string>
-    <string name="font_mine_pressed">&#xe64b;</string>
+    <string name="font_friends">&#xe6a9;</string>
+    <string name="font_friends_pressed">&#xe6b0;</string>
+    <string name="font_news">&#xe6ab;</string>
+    <string name="font_news_pressed">&#xe6ad;</string>
+    <string name="font_find">&#xe6b1;</string>
+    <string name="font_find_pressed">&#xe6b2;</string>
+    <string name="font_mine">&#xe6a8;</string>
+    <string name="font_mine_pressed">&#xe6af;</string>
     <string name="font_lock">&#xe60e;</string>
     <string name="font_person">&#xe601;</string>
     <string name="font_downloading">&#xe614;</string>
@@ -421,7 +421,20 @@
     <string name="classroom_teacher_txt">班主任</string>
     <string name="go_to_course">前往课程</string>
     <string name="go_to_classroom">前往班级</string>
+
     <string name="course_introduce">课程简介</string>
     <string name="discount">折</string>
-
+    <string name="course_project_favorite">收藏</string>
+    <string name="course_project_consult">咨询</string>
+    <string name="learn_course_project">加入学习</string>
+    <string name="study_progress">学习进度</string>
+    <string name="pay_way">支付方式</string>
+    <string name="zhifubao">支付宝</string>
+    <string name="virtual_coin">虚拟币</string>
+    <string name="coupons">优惠券</string>
+    <string name="confirm">确定</string>
+    <string name="confirm1">确认</string>
+    <string name="cancle">取消</string>
+    <string name="account_balance">账号余额:</string>
+    <string name="order_amount">订单金额:</string>
 </resources>

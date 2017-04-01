@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_content"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        tools:listitem="@layout/item_unjoin_evaluate"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/ll_discuss_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="55dp"
+        android:layout_marginTop="60dp"
+        android:drawablePadding="12dp"
+        android:drawableTop="@drawable/no_review"
+        android:text="@string/course_no_review"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/secondary2_font_color"
+        android:textSize="@dimen/font_s" />
+
+    <com.edusoho.kuozhi.v3.view.InnerLoadView
+        android:id="@+id/ll_frame_load"
+        android:background="@color/textIcons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>
