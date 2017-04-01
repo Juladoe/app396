@@ -4,6 +4,7 @@ package com.edusoho.kuozhi.v3.util.server;
 import android.content.Context;
 import android.util.Log;
 import com.edusoho.kuozhi.v3.service.handler.FileHandler;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
@@ -125,7 +126,7 @@ public class CacheServer extends Thread {
             try {
                 if (mServerSocket != null) {
                     mServerSocket.close();
-                    Log.d(null, "mServerSocket close");
+                    Log.d(TAG, "mServerSocket close");
                 }
             } catch (IOException e) {
                 e.printStackTrace();

@@ -116,6 +116,7 @@ public class LessonActivity extends ActionBarBaseActivity implements MessageEngi
         User user = getAppSettingProvider().getCurrentUser();
         School school = getAppSettingProvider().getCurrentSchool();
         if (user == null || school == null) {
+            CommonUtil.longToast(getBaseContext(), "登录用户信息失败,请重新登录!");
             return;
         }
         CacheServerFactory.getInstance().start(getBaseContext(), school.host, user.id);
