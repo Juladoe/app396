@@ -8,6 +8,12 @@ import java.io.Serializable;
 
 public class CourseSet implements Serializable {
 
-    public String cover;
     public String summary;
+    public Cover cover;
+
+    public static class Cover implements Serializable {
+        public String large;
+        public String middle;
+        public String small;
+    }
 }

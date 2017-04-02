@@ -54,6 +54,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private CircularImageView mTeacherAvatar;
     private TextView mTeacherName;
     private TextView mTeacherTitle;
+    private CourseProject courseProject;
 
     @Nullable
     @Override
@@ -149,11 +150,6 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showCover(String coverUrl) {
-        Log.d("showCover", "showCover: " + coverUrl);
-    }
-
-    @Override
     public void showIntroduce(String content) {
         if (!StringUtils.isEmpty(content)) {
             mIntroduceLayout.setVisibility(View.VISIBLE);
@@ -192,8 +188,5 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         return COURSE_PROJECT_MODEL;
     }
 
-    @Override
-    public void setPresenter(CourseProjectInfoContract.Presenter presenter) {
 
-    }
 }

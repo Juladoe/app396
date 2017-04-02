@@ -22,8 +22,6 @@ public interface CourseProjectInfoContract {
 
         void showIntroduce(String content);
 
-        void showCover(String coverUrl);
-
         void showAudiences(String[] audiences);
 
         void showTeacher(CourseProject.Teacher teacher);

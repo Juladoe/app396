@@ -1,12 +1,17 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import android.util.Log;
+
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -44,18 +49,36 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         getCourseProject(mCourseProjectId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<CourseProject>() {
+                .doOnNext(new Action1<CourseProject>() {
+                    @Override
+                    public void call(CourseProject courseProject) {
+                        Log.d("getCourseProject", "doOnNext: " + Thread.currentThread().getId());
+                        mView.showFragments(initCourseModules(), courseProject);
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<CourseProject, Observable<CourseSet>>() {
+                    @Override
+                    public Observable<CourseSet> call(CourseProject courseProject) {
+                        Log.d("getCourseProject", "flatMap: " + Thread.currentThread().getId());
+                        return getCourseSet(courseProject.courseSetId);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseSet>() {
                     @Override
                     public void onCompleted() {
+
                     }
 
                     @Override
                     public void onError(Throwable e) {
+
                     }
 
                     @Override
-                    public void onNext(CourseProject courseProject) {
-                        mView.showFragments(initCourseModules(), courseProject);
+                    public void onNext(CourseSet courseSet) {
+                        mView.showCover("http://devtest.edusoho.cn:82/files/default/2017/03-27/1015517e16ce598464.jpg");
                     }
                 });
     }

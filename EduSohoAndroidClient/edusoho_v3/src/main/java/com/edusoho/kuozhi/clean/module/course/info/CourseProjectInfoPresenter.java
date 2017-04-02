@@ -68,7 +68,6 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
 
                     @Override
                     public void onNext(CourseSet courseSet) {
-                        mView.showCover(courseSet.cover);
                         showIntroduce(mCourseProject, courseSet);
                     }
                 });
@@ -80,7 +79,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showPrice() {
-        if (mCourseProject.originPrice.compareTo(mCourseProject.price) == 0 && FREE.equals(mCourseProject.originPrice)) {
+        if (mCourseProject.originPrice == mCourseProject.price && FREE == mCourseProject.originPrice) {
             mView.showPrice(CourseProjectPriceEnum.FREE, mCourseProject.price, mCourseProject.originPrice);
         } else if (mCourseProject.originPrice.compareTo(mCourseProject.price) == 0) {
             mView.showPrice(CourseProjectPriceEnum.ORIGINAL, mCourseProject.price, mCourseProject.originPrice);
@@ -133,7 +132,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
         mView.showTeacher(teacher);
     }
 
-    private void showStudents(){
+    private void showStudents() {
 
     }
 
