@@ -56,6 +56,7 @@ public class StudyPlayFragment extends BaseLazyFragment
 
     @Override
     protected void lazyLoad() {
+        super.lazyLoad();
         mPresenter.subscribe();
     }
 

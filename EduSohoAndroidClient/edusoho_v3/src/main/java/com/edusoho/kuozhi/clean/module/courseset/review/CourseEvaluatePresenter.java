@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.module.courseset.review;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
+import com.edusoho.kuozhi.v3.adapter.discuss.CourseDiscussAdapter;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -75,6 +76,8 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
                 mIsFirst = false;
                 mView.showToast();
             }
+            mView.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
+            return;
         }
         getCourseReview(mCourseId, 10, mStart)
                 .subscribeOn(Schedulers.io())

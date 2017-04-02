@@ -11,6 +11,10 @@ public interface CourseIntroduceContract {
 
     interface View extends BaseView<Presenter> {
 
+        void setLoadViewVis(boolean isVis);
+
+        void showHead();
+
     }
 
     interface Presenter extends BasePresenter{

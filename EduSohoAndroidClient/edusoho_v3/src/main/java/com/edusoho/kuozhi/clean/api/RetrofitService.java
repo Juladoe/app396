@@ -45,7 +45,7 @@ public class RetrofitService {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(okHttpClient)
-                .baseUrl("http://es.devtest1/")
+                .baseUrl("http://devtest.edusoho.cn:82/")
                 .build();
         mApiService = retrofit.create(ApiService.class);
     }

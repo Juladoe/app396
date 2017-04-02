@@ -34,7 +34,7 @@ import java.util.List;
  */
 
 public class CourseIntroduceFragment extends BaseLazyFragment
-        implements View.OnClickListener {
+        implements View.OnClickListener, CourseIntroduceContract.View{
 
     private TextView mPriceOld;
     private TextView mPriceNow;
@@ -45,6 +45,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     private View mVipLayout;
     private TextView mPeopleDesc;
     private TextView mStudentNum;
+    private TextView mVipDesc;
     private View mStudentMore;
     private LinearLayout mStudentIconLayout;
     private TextView mStudent;
@@ -54,7 +55,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
 
     private CourseDetail mCourseDetail;
     private int mCourseId;
-    private TextView mVipDesc;
+    private CourseIntroduceContract.Presenter mPresenter;
 
     public CourseIntroduceFragment() {
     }
@@ -109,12 +110,6 @@ public class CourseIntroduceFragment extends BaseLazyFragment
 //                refreshView();
 //                mLoadView.setVisibility(View.GONE);
 //            }
-//
-//            @Override
-//            public void onFailure(String code, String message) {
-//                mLoadView.setVisibility(View.GONE);
-//            }
-//        });
 //        CourseDetailModel.getCourseMember(mCourseId,
 //                new ResponseCallbackListener<List<CourseMember>>() {
 //                    @Override
@@ -129,6 +124,20 @@ public class CourseIntroduceFragment extends BaseLazyFragment
 //                    public void onFailure(String code, String message) {
 //                    }
 //                });
+    }
+
+    @Override
+    public void setLoadViewVis(boolean isVis) {
+        mLoadView.setVisibility(isVis ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showHead() {
+        mTitle.setText("");
+        mReviewStar.setRating(0);
+        //判断是否显示学生数量
+        mTitleStudentNum.setText(String.format("%s名学生", ""));
+        //
     }
 
     private void refreshView() {
@@ -280,4 +289,10 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                     }
                 });
     }
+
+    @Override
+    public void setPresenter(CourseIntroduceContract.Presenter presenter) {
+        this.mPresenter = presenter;
+    }
+
 }
