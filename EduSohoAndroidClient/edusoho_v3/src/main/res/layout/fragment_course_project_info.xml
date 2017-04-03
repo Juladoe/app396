@@ -319,14 +319,21 @@
                 android:textSize="@dimen/font_xl" />
         </RelativeLayout>
 
-        <com.edusoho.kuozhi.v3.view.EduSohoGridView
-            android:id="@+id/ev_user_list"
+        <!--<com.edusoho.kuozhi.v3.view.EduSohoGridView-->
+        <!--android:id="@+id/ev_user_list"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="15dp"-->
+        <!--android:columnWidth="50dp"-->
+        <!--android:horizontalSpacing="12dp"-->
+        <!--android:numColumns="5" />-->
+
+        <LinearLayout
+            android:id="@+id/ll_course_members"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:columnWidth="50dp"
-            android:horizontalSpacing="12dp"
-            android:numColumns="5" />
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"/>
 
         <View
             android:layout_width="match_parent"

@@ -17,9 +17,11 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.util.Locale;
@@ -55,7 +57,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private TextView mTeacherName;
     private TextView mTeacherTitle;
     private TextView mCourseMemberCount;
-
+    private View mCourseMembers;
     private CourseProject courseProject;
 
     @Nullable
@@ -85,6 +87,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mTeacherName = (TextView) view.findViewById(R.id.tv_teacher_name);
         mTeacherTitle = (TextView) view.findViewById(R.id.tv_teacher_title);
         mCourseMemberCount = (TextView) view.findViewById(R.id.tv_course_member_count);
+        mCourseMembers = view.findViewById(R.id.ll_course_members);
     }
 
     @Override
@@ -175,6 +178,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     public void showTeacher(CourseProject.Teacher teacher) {
         mTeacherName.setText(teacher.nickname);
         mTeacherTitle.setText(teacher.title);
+        ImageLoader.getInstance().displayImage(teacher.avatar, mTeacherAvatar, EdusohoApp.app.mAvatarOptions);
     }
 
     @Override
