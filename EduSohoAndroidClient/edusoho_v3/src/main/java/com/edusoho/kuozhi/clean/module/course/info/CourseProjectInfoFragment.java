@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
+import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
 import com.wefika.flowlayout.FlowLayout;
@@ -41,7 +42,6 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private RatingBar mCourseRate;
     private TextView mSalePrice;
     private TextView mOriginalPrice;
-    private ImageView mVipIcon;
     private TextView mSaleWord;
     private View mVipLine;
     private View mVipLayout;
@@ -54,6 +54,8 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private CircularImageView mTeacherAvatar;
     private TextView mTeacherName;
     private TextView mTeacherTitle;
+    private TextView mCourseMemberCount;
+
     private CourseProject courseProject;
 
     @Nullable
@@ -70,7 +72,6 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mCourseRate = (RatingBar) view.findViewById(R.id.rb_course_rate);
         mSalePrice = (TextView) view.findViewById(R.id.tv_sale_price);
         mOriginalPrice = (TextView) view.findViewById(R.id.tv_original_price);
-        mVipIcon = (ImageView) view.findViewById(R.id.iv_vip_icon);
         mSaleWord = (TextView) view.findViewById(R.id.tv_sale_word);
         mVipLine = view.findViewById(R.id.v_vip_line);
         mVipLayout = view.findViewById(R.id.rl_vip_layout);
@@ -83,6 +84,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mTeacherAvatar = (CircularImageView) view.findViewById(R.id.civ_teacher_avatar);
         mTeacherName = (TextView) view.findViewById(R.id.tv_teacher_name);
         mTeacherTitle = (TextView) view.findViewById(R.id.tv_teacher_title);
+        mCourseMemberCount = (TextView) view.findViewById(R.id.tv_course_member_count);
     }
 
     @Override
@@ -97,7 +99,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     @Override
     public void showCourseProjectInfo(CourseProject courseProject) {
         mTitle.setText(courseProject.title);
-        mStudentNum.setText(String.format(Locale.CHINA, "%d" + getString(R.string.student_num), courseProject.studentNum));
+        mStudentNum.setText(String.format(getString(R.string.course_student_count), courseProject.studentNum));
         mCourseRate.setRating(Float.valueOf(courseProject.rating));
     }
 
@@ -173,6 +175,16 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     public void showTeacher(CourseProject.Teacher teacher) {
         mTeacherName.setText(teacher.nickname);
         mTeacherTitle.setText(teacher.title);
+    }
+
+    @Override
+    public void showMemberNum(int count) {
+        mCourseMemberCount.setText(String.format(getString(R.string.course_member_count), count));
+    }
+
+    @Override
+    public void showMembers(Member[] members) {
+
     }
 
     public CourseProjectFragmentListener newInstance(CourseProject courseProject) {

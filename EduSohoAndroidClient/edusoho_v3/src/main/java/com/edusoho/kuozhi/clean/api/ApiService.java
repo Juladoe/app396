@@ -11,6 +11,7 @@ import java.util.List;
 
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import rx.Observable;
 
 /**
@@ -32,7 +33,7 @@ public interface ApiService {
     Observable<VipLevel> getVipLevel(@Path("id") String id);
 
     @GET("/courses/{courseId}/members")
-    Observable<DataPageResult<Member>> getCourseMembers(@Path("courseId") String courseId);
+    Observable<DataPageResult<Member>> getCourseMembers(@Path("courseId") String courseId, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("course_sets/{course_setId}/courses")
     Observable<List<CourseProject>> getCourses(@Path("course_setId") String courseSetId);

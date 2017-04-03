@@ -283,7 +283,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:layout_weight="1"
-                        android:text="EduSoho官方运营"
                         android:textColor="@color/primary_font_color"
                         android:textSize="@dimen/font_xs" />
                 </LinearLayout>
@@ -302,11 +301,11 @@
             android:layout_marginTop="25dp">
 
             <TextView
+                android:id="@+id/tv_course_member_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:text="课程学员（233）"
                 android:textColor="@color/primary_font_color"
                 android:textSize="@dimen/font_l" />
 

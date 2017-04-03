@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.module.course.info;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
+import com.edusoho.kuozhi.v3.model.bal.Member;
 
 /**
  * Created by JesseHuang on 2017/3/26.
@@ -25,15 +26,13 @@ public interface CourseProjectInfoContract {
         void showAudiences(String[] audiences);
 
         void showTeacher(CourseProject.Teacher teacher);
+
+        void showMemberNum(int count);
+
+        void showMembers(Member[] members);
     }
 
     interface Presenter extends BasePresenter {
-
-        void getTaskInfo();
-
-        void getRelativeTask();
-
-        void getTaskMembers();
 
     }
 

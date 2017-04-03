@@ -1,13 +1,10 @@
 package com.edusoho.kuozhi.clean.module.course;
 
-import android.util.Log;
-
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 
 import rx.Observable;
-import rx.Observer;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -52,7 +49,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 .doOnNext(new Action1<CourseProject>() {
                     @Override
                     public void call(CourseProject courseProject) {
-                        Log.d("getCourseProject", "doOnNext: " + Thread.currentThread().getId());
                         mView.showFragments(initCourseModules(), courseProject);
                     }
                 })
@@ -60,7 +56,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 .flatMap(new Func1<CourseProject, Observable<CourseSet>>() {
                     @Override
                     public Observable<CourseSet> call(CourseProject courseProject) {
-                        Log.d("getCourseProject", "flatMap: " + Thread.currentThread().getId());
                         return getCourseSet(courseProject.courseSetId);
                     }
                 })
@@ -78,7 +73,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                     @Override
                     public void onNext(CourseSet courseSet) {
-                        mView.showCover("http://devtest.edusoho.cn:82/files/default/2017/03-27/1015517e16ce598464.jpg");
+                        mView.showCover(courseSet.cover.large);
                     }
                 });
     }
