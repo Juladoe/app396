@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
@@ -52,10 +53,13 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     private View mStudentNone;
     private View mLoadView;
     private View mPeopleLayout;
+    private View mInfoLayout;
 
     private CourseDetail mCourseDetail;
-    private int mCourseId;
+    private int mCourseId = 1;
     private CourseIntroduceContract.Presenter mPresenter;
+    private CourseSet mCourseSet;
+    private View mDiscount;
 
     public CourseIntroduceFragment() {
     }
@@ -63,7 +67,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCourseId = getArguments().getInt(Const.COURSE_ID);
+//        mCourseId = getArguments().getInt(Const.COURSE_ID);
     }
 
     @Override
@@ -80,6 +84,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
         mTitleStudentNum = (TextView) view.findViewById(R.id.tv_title_student_num);
         mTitleDesc = (TextView) view.findViewById(R.id.tv_title_desc);
         mVipLayout = view.findViewById(R.id.vip_rlayout);
+        mInfoLayout = view.findViewById(R.id.rl_info);
         mPeopleDesc = (TextView) view.findViewById(R.id.tv_people_desc);
         mStudentNum = (TextView) view.findViewById(R.id.tv_student_num);
         mVipDesc = (TextView) view.findViewById(R.id.tv_vip_desc);
@@ -89,6 +94,9 @@ public class CourseIntroduceFragment extends BaseLazyFragment
         mPeopleLayout = view.findViewById(R.id.people_rlayout);
         mStudentNone = view.findViewById(R.id.tv_student_none);
         mLoadView = view.findViewById(R.id.ll_detail_load);
+        mDiscount = view.findViewById(R.id.tv_discount);
+
+        mPresenter = new CourseIntroducePresenter(mCourseId + "", this);
     }
 
     protected void initEvent() {
@@ -99,31 +107,12 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     @Override
     protected void lazyLoad() {
         super.lazyLoad();
-        mLoadView.setVisibility(View.VISIBLE);
-//        CourseDetailModel.getCourseDetail(mCourseId, new ResponseCallbackListener<CourseDetail>() {
-//            @Override
-//            public void onSuccess(CourseDetail data) {
-//                mCourseDetail = data;
-//                if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-//                    return;
-//                }
-//                refreshView();
-//                mLoadView.setVisibility(View.GONE);
-//            }
-//        CourseDetailModel.getCourseMember(mCourseId,
-//                new ResponseCallbackListener<List<CourseMember>>() {
-//                    @Override
-//                    public void onSuccess(List<CourseMember> data) {
-//                        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
-//                            return;
-//                        }
-//                        initStudent(data);
-//                    }
-//
-//                    @Override
-//                    public void onFailure(String code, String message) {
-//                    }
-//                });
+        mPresenter.subscribe();
+    }
+
+    @Override
+    public void setData(CourseSet courseSet) {
+        this.mCourseSet = courseSet;
     }
 
     @Override
@@ -133,18 +122,56 @@ public class CourseIntroduceFragment extends BaseLazyFragment
 
     @Override
     public void showHead() {
-        mTitle.setText("");
-        mReviewStar.setRating(0);
-        //判断是否显示学生数量
-        mTitleStudentNum.setText(String.format("%s名学生", ""));
-        //
+        mTitle.setText(mCourseSet.getTitle());
+        mReviewStar.setRating((int) mCourseSet.getRating());
+        int studentNum = mCourseSet.getStudentNum();
+        mTitleStudentNum.setText(studentNum != 0 ?
+                                    String.format("%s名学生", studentNum) : "");
+        showCoursePrice();
+    }
+
+    private void showCoursePrice() {
+        if (mCourseSet.getMaxCoursePrice() == 0) {
+            mPriceNow.setText("免费");
+            mPriceNow.setText(ContextCompat.getColor(getContext(), R.color.primary));
+        } else {
+            float discount = mCourseSet.getDiscount();
+            if (discount != 10) {
+                mDiscount.setVisibility(View.VISIBLE);
+                mPriceNow.setText(String.format("¥ %s-%s", (int)(mCourseSet.getMinCoursePrice() * discount),
+                        (int)(mCourseSet.getMaxCoursePrice() * discount)));
+                mPriceOld.setText(((int) mCourseSet.getMaxCoursePrice()));
+                mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            } else {
+                mPriceNow.setText(String.format("¥ %s-%s", ((int) mCourseSet.getMinCoursePrice()),
+                        ((int) mCourseSet.getMaxCoursePrice())));
+            }
+        }
+    }
+
+
+    @Override
+    public void showInfoAndPeople() {
+        mInfoLayout.setVisibility(View.VISIBLE);
+        mTitleDesc.setText(Html.fromHtml(mCourseSet.getSummary(), new EduHtmlHttpImageGetter(mTitleDesc, null, true), null));
+        StringBuilder sb = new StringBuilder();
+        int length = mCourseSet.getAudiences().length;
+        if (length == 0) {
+            mPeopleLayout.setVisibility(View.GONE);
+        } else {
+            String[] audiences = mCourseSet.getAudiences();
+            for (int i = 0; i < length; i++) {
+                sb.append(audiences[i]);
+                if (i != length - 1) {
+                    sb.append("\n");
+                }
+            }
+            mPeopleDesc.setText(sb);
+        }
     }
 
     private void refreshView() {
         Course course = mCourseDetail.getCourse();
-        mTitle.setText(course.title);
-        mStudentNum.setText(String.format("(%s)", mCourseDetail.getCourse().studentNum));
-        mTitleDesc.setText(Html.fromHtml(course.about, new EduHtmlHttpImageGetter(mTitleDesc, null, true), null));
         if (mCourseDetail.getCourse().vipLevelId == 0) {
             mVipLayout.setVisibility(View.GONE);
         } else {
@@ -153,45 +180,10 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                     mCourseDetail.getVipLevels().size() > course.vipLevelId - 1 ?
                             mCourseDetail.getVipLevels().get(course.vipLevelId - 1).name : ""));
         }
-        if (course.price == 0) {
-            mPriceNow.setText("免费");
-            mPriceNow.setTextSize(18);
-            mPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.primary_color));
-        } else {
-            mPriceNow.setText(String.valueOf(course.price));
-            mPriceNow.setTextSize(24);
-            mPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.secondary_color));
-        }
-        if (course.originPrice == 0) {
-            mPriceOld.setVisibility(View.GONE);
-        } else {
-            if (course.originPrice == course.price) {
-                mPriceOld.setVisibility(View.GONE);
-            } else {
-                mPriceOld.setVisibility(View.VISIBLE);
-                mPriceOld.setText("¥" + course.originPrice);
-            }
-        }
-        mTitleStudentNum.setText(String.format("%s名学生",
-                course.studentNum));
-        mReviewStar.setRating((int) course.rating);
-        StringBuilder sb = new StringBuilder();
-        int length = course.audiences.length;
-        if (length == 0) {
-            mPeopleLayout.setVisibility(View.GONE);
-        } else {
-            mPeopleLayout.setVisibility(View.VISIBLE);
-            for (int i = 0; i < length; i++) {
-                sb.append(course.audiences[i]);
-                if (i != length - 1) {
-                    sb.append("；");
-                }
-            }
-            mPeopleDesc.setText(sb.toString());
-        }
     }
 
-    private void initStudent(List<CourseMember> data) {
+    @Override
+    public void showStudent(List<CourseMember> data) {
         View.OnClickListener onClickListener =
                 new View.OnClickListener() {
                     @Override
@@ -225,22 +217,6 @@ public class CourseIntroduceFragment extends BaseLazyFragment
             }
             mStudentIconLayout.addView(view);
         }
-    }
-
-    private void jumpToMember(String id) {
-        final String url = String.format(
-                Const.MOBILE_APP_URL,
-                EdusohoApp.app.schoolHost,
-                String.format("main#/userinfo/%s",
-                        id)
-        );
-        CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
-                , getActivity(), new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.WEB_URL, url);
-                    }
-                });
     }
 
     @Override
@@ -290,9 +266,20 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                 });
     }
 
-    @Override
-    public void setPresenter(CourseIntroduceContract.Presenter presenter) {
-        this.mPresenter = presenter;
+    private void jumpToMember(String id) {
+        final String url = String.format(
+                Const.MOBILE_APP_URL,
+                EdusohoApp.app.schoolHost,
+                String.format("main#/userinfo/%s",
+                        id)
+        );
+        CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
+                , getActivity(), new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        startIntent.putExtra(Const.WEB_URL, url);
+                    }
+                });
     }
 
 }

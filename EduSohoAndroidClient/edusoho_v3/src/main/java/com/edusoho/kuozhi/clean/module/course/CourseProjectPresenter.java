@@ -8,8 +8,10 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.functions.Action0;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -24,7 +26,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     public CourseProjectPresenter(String courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
-        mView.setPresenter(this);
     }
 
     @Override
@@ -44,49 +45,41 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     @Override
     public void subscribe() {
-        CourseProject courseProject = new CourseProject();
-        mView.showFragments(initCourseModules(), courseProject);
+        getCourseProject(mCourseProjectId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Action1<CourseProject>() {
+                    @Override
+                    public void call(CourseProject courseProject) {
+                        Log.d("getCourseProject", "doOnNext: " + Thread.currentThread().getId());
+                        mView.showFragments(initCourseModules(), courseProject);
+                    }
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<CourseProject, Observable<CourseSet>>() {
+                    @Override
+                    public Observable<CourseSet> call(CourseProject courseProject) {
+                        Log.d("getCourseProject", "flatMap: " + Thread.currentThread().getId());
+                        return getCourseSet(courseProject.courseSetId);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseSet>() {
+                    @Override
+                    public void onCompleted() {
 
-//        getCourseProject(mCourseProjectId)
-//                .subscribe(new Subscriber<CourseProject>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(CourseProject courseProject) {
-//                        Log.d("getCourseProject", "onNext: " + courseProject.toString());
-//                    }
-//                });
-//                .flatMap(new Func1<CourseProject, Observable<CourseSet>>() {
-//                    @Override
-//                    public Observable<CourseSet> call(CourseProject courseProject) {
-//                        mView.showFragments(initCourseModules(), courseProject);
-//                        return getCourseSet(courseProject.courseSetId);
-//                    }
-//                })
-//                .subscribe(new Subscriber<CourseSet>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onNext(CourseSet courseSet) {
-//                        mView.showTasksCover(courseSet.cover);
-//                    }
-//                });
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseSet courseSet) {
+                        mView.showCover("http://devtest.edusoho.cn:82/files/default/2017/03-27/1015517e16ce598464.jpg");
+                    }
+                });
     }
 
     @Override

@@ -83,6 +83,7 @@
                     android:textSize="@dimen/font_xxs"
                     android:background="@color/secondary_color"
                     android:gravity="center"
+                    android:visibility="gone"
                     android:layout_centerVertical="true"
                     android:layout_width="@dimen/common_22"
                     android:layout_height="@dimen/common_16" />
@@ -128,25 +129,37 @@
                 <View style="@style/NewBottomLine" />
             </RelativeLayout>
 
-            <TextView
-                android:text="@string/course_introduce"
-                android:layout_marginTop="@dimen/common_maring0"
-                android:textSize="@dimen/font_l"
-                android:textColor="@color/primary_font_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+            <RelativeLayout
+                android:id="@+id/rl_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/tv_title_desc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/common_maring0"
-                android:textColor="@color/secondary_font_color"
-                android:textSize="@dimen/font_s" />
+                <TextView
+                    android:id="@+id/tv_info"
+                    android:text="@string/course_introduce"
+                    android:layout_marginTop="@dimen/common_maring0"
+                    android:textSize="@dimen/font_l"
+                    android:textColor="@color/primary_font_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
-            <View
-                style="@style/NewBottomLine"
-                android:layout_marginTop="@dimen/common_25" />
+                <TextView
+                    android:id="@+id/tv_title_desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_info"
+                    android:layout_marginTop="@dimen/common_maring0"
+                    android:textColor="@color/secondary_font_color"
+                    android:textSize="@dimen/font_s" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="@color/disabled_hint_color"
+                    android:layout_below="@id/tv_title_desc"
+                    android:layout_marginTop="@dimen/common_25" />
+
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/people_rlayout"

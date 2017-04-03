@@ -13,7 +13,7 @@ public interface CourseProjectContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showTasksCover(String imageUrl);
+        void showCover(String imageUrl);
 
         void setTitle(String title);
 

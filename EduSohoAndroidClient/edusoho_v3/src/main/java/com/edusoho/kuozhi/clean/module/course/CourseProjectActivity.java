@@ -12,7 +12,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,12 +19,10 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.core.CoreEngine;
-import com.edusoho.kuozhi.v3.listener.PluginFragmentCallback;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 /**
  * Created by JesseHuang on 2017/3/22.
@@ -38,12 +35,12 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private String mCourseProjectId;
     private CourseProjectContract.Presenter mPresenter;
     private Toolbar mToolbar;
-    private ImageView mCourseCoverImageView;
+    private ImageView mCourseCover;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private View mBottomView;
-    private ESIconTextButton mConsultESIconTextButton;
-    private ESIconTextButton mFavoriteESIconTextButton;
+    private ESIconTextButton mConsult;
+    private ESIconTextButton mFavorite;
     private TextView mLearnTextView;
 
     public static void newInstance(Context context, String courseProjectId) {
@@ -55,7 +52,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_task);
+        setContentView(R.layout.activity_course_project);
         if (getIntent() != null) {
             mCourseProjectId = getIntent().getStringExtra(COURSE_PROJECT_ID);
             mCourseProjectId = "1";
@@ -65,12 +62,12 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
 
     private void init() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        mCourseCoverImageView = (ImageView) findViewById(R.id.iv_course_cover);
+        mCourseCover = (ImageView) findViewById(R.id.iv_course_cover);
         mTabLayout = (TabLayout) findViewById(R.id.tl_task);
         mViewPager = (ViewPager) findViewById(R.id.vp_content);
         mBottomView = findViewById(R.id.tl_bottom);
-        mConsultESIconTextButton = (ESIconTextButton) findViewById(R.id.tb_consult);
-        mFavoriteESIconTextButton = (ESIconTextButton) findViewById(R.id.tb_favorite);
+        mConsult = (ESIconTextButton) findViewById(R.id.tb_consult);
+        mFavorite = (ESIconTextButton) findViewById(R.id.tb_favorite);
         mLearnTextView = (TextView) findViewById(R.id.tv_learn);
 
         setSupportActionBar(mToolbar);
@@ -87,13 +84,8 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     @Override
-    public void setPresenter(CourseProjectContract.Presenter presenter) {
-        mPresenter = presenter;
-    }
-
-    @Override
-    public void showTasksCover(String imageUrl) {
-
+    public void showCover(String imageUrl) {
+        ImageLoader.getInstance().displayImage(imageUrl, mCourseCover, EdusohoApp.app.mOptions);
     }
 
     @Override

@@ -30,22 +30,7 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
 
     @Override
     public void subscribe() {
-        getCourseTasks(mCourseProjectId).subscribe(new Subscriber<List<CourseTask>>() {
-            @Override
-            public void onCompleted() {
 
-            }
-
-            @Override
-            public void onError(Throwable e) {
-
-            }
-
-            @Override
-            public void onNext(List<CourseTask> courseTasks) {
-                mView.showCourseTasks(courseTasks);
-            }
-        });
     }
 
     @Override

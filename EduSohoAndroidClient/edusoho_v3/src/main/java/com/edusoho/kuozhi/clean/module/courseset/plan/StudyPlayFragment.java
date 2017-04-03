@@ -10,7 +10,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
-import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.clean.module.courseset.CourseUnJoinContract;
 
 import java.util.List;
 
@@ -25,12 +25,12 @@ public class StudyPlayFragment extends BaseLazyFragment
     private RecyclerView mRv;
     private StudyPlanAdapter mStudyPlanAdapter;
     private StudyPlanContract.Presenter mPresenter;
-    private int mCourseId;
+    private int mCourseId = 1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCourseId = getArguments().getInt(Const.COURSE_ID);
+//        mCourseId = getArguments().getInt(Const.COURSE_ID);
     }
 
     @Override
@@ -61,17 +61,19 @@ public class StudyPlayFragment extends BaseLazyFragment
     }
 
     @Override
-    public void setPresenter(StudyPlanContract.Presenter presenter) {
-        this.mPresenter = presenter;
-    }
-
-    @Override
     public void setLoadViewVis(boolean isVis) {
+        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+            return;
+        }
         mLoad.setVisibility(isVis ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void showComPanies(List<CourseStudyPlan> list, List<VipInfo> vipInfos) {
+        if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
+            return;
+        }
         mStudyPlanAdapter.reFreshData(list, vipInfos);
+        ((CourseUnJoinContract.View) getActivity()).setPlanData(list, vipInfos);
     }
 }

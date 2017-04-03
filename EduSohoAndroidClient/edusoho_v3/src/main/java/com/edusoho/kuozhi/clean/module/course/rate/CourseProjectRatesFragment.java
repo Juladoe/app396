@@ -41,11 +41,6 @@ public class CourseProjectRatesFragment extends Fragment implements
 
     }
 
-    @Override
-    public void setPresenter(CourseProjectRatesContract.Presenter presenter) {
-
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

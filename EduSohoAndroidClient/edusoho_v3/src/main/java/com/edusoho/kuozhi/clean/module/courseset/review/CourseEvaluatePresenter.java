@@ -25,7 +25,6 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
     public CourseEvaluatePresenter(CourseEvaluateContract.View mView, String mCourseId) {
         this.mView = mView;
         this.mCourseId = mCourseId;
-        this.mView.setPresenter(this);
     }
 
     @Override

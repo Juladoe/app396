@@ -3,9 +3,13 @@ package com.edusoho.kuozhi.clean.api;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.bean.CourseSetMember;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.v3.model.bal.Member;
+import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
 import java.io.IOException;
 import java.util.List;
@@ -42,10 +46,10 @@ public class RetrofitService {
             }
         }).build();
         Retrofit retrofit = new Retrofit.Builder()
+                .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .client(okHttpClient)
-                .baseUrl("http://devtest.edusoho.cn:82/")
+                .baseUrl("http://devtest.edusoho.cn:82/api/")
                 .build();
         mApiService = retrofit.create(ApiService.class);
     }
@@ -58,19 +62,35 @@ public class RetrofitService {
         return mApiService.getCourseProject(id);
     }
 
-    public static Observable<CourseSet> getCourseSet(String id) {
-        return mApiService.getCourseSet(id);
+    public static Observable<CourseSet> getCourseSet(String courseSetId) {
+        return mApiService.getCourseSet(courseSetId);
     }
 
-    public static Observable<CourseReview> getCourseReview(String id, int limit, int offset) {
-        return mApiService.getCourseReview(id, limit, offset);
+    public static Observable<CourseReview> getCourseReview(String courseSetId, int limit, int offset) {
+        return mApiService.getCourseReview(courseSetId, limit, offset);
     }
 
-    public static Observable<List<CourseStudyPlan>> getCourseStudyPlan(String id){
-        return mApiService.getCourseStudyPlan(id);
+    public static Observable<List<CourseStudyPlan>> getCourseStudyPlan(String courseSetId){
+        return mApiService.getCourseStudyPlan(courseSetId);
     }
 
-    public static Observable<List<VipInfo>> getVipInfo(){
+    public static Observable<List<VipInfo>> getVipInfo() {
         return mApiService.getVipInfo();
+    }
+
+    public static Observable<VipLevel> getVipLevel(String id) {
+        return mApiService.getVipLevel(id);
+    }
+
+    public static Observable<DataPageResult<Member>> getCourseMembers(String courseId) {
+        return mApiService.getCourseMembers(courseId);
+    }
+
+    public static Observable<List<CourseProject>> getCourses(String courseSetId) {
+        return mApiService.getCourses(courseSetId);
+    }
+
+    public static Observable<CourseSetMember> getCourseSetMember(String courseSetId) {
+        return mApiService.getCourseSetMember(courseSetId);
     }
 }

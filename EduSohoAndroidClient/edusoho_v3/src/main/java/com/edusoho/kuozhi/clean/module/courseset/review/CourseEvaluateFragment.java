@@ -11,7 +11,6 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.util.Const;
 
 import java.util.List;
 
@@ -26,12 +25,12 @@ public class CourseEvaluateFragment extends BaseLazyFragment implements CourseEv
     private View mLoadView;
     private CourseEvaluateAdapter mCeAdapter;
     private CourseEvaluateContract.Presenter mPresenter;
-    private int mCourseId;
+    private int mCourseId = 1;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCourseId = getArguments().getInt(Const.COURSE_ID);
+//        mCourseId = getArguments().getInt(Const.COURSE_ID);
     }
 
     @Override
@@ -79,11 +78,6 @@ public class CourseEvaluateFragment extends BaseLazyFragment implements CourseEv
     protected void lazyLoad() {
         super.lazyLoad();
         mPresenter.subscribe();
-    }
-
-    @Override
-    public void setPresenter(CourseEvaluateContract.Presenter presenter) {
-        this.mPresenter = presenter;
     }
 
     @Override

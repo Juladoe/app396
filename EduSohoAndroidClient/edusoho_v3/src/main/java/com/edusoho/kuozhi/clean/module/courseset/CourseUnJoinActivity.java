@@ -20,20 +20,19 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.listener.ResponseCallbackListener;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.model.bal.course.Course;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseDetailModel;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
@@ -42,6 +41,8 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+
+import java.util.List;
 
 import extensions.PagerSlidingTabStrip;
 
@@ -68,11 +69,13 @@ public class CourseUnJoinActivity extends AppCompatActivity
     private TextView mShareView;
     private LoadDialog mProcessDialog;
 
-    private int mCourseId;
+    private int mCourseId = 1;
     private boolean mIsFavorite = false;
     private CourseDetail mCourseDetail;
     private ViewPager mViewPager;
     private CourseUnJoinContract.Presenter mPresenter;
+    private List<VipInfo> mVipInfos;
+    private List<CourseStudyPlan> mCourseStudPlans;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -81,7 +84,7 @@ public class CourseUnJoinActivity extends AppCompatActivity
         getWindow().setBackgroundDrawable(null);
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
-        mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
+//        mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
         isJoin();
     }
 
@@ -139,14 +142,14 @@ public class CourseUnJoinActivity extends AppCompatActivity
     }
 
     @Override
-    public void newFinish() {
+    public void newFinish(boolean isShow) {
         CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_unexit));
         finish();
     }
 
     @Override
-    public void setPresenter(CourseUnJoinContract.Presenter presenter) {
-        this.mPresenter = presenter;
+    public void setPlanData(List<CourseStudyPlan> list, List<VipInfo> vipInfo) {
+
     }
 
     private void initEvent() {
@@ -155,26 +158,6 @@ public class CourseUnJoinActivity extends AppCompatActivity
         mConsult.setOnClickListener(this);
         mCollect.setOnClickListener(this);
         mTvAdd.setOnClickListener(this);
-    }
-
-    private void initData() {
-        CourseDetailModel.getCourseDetail(mCourseId,
-                new ResponseCallbackListener<CourseDetail>() {
-                    @Override
-                    public void onSuccess(CourseDetail data) {
-                        mCourseDetail = data;
-                        mAddLayout.setVisibility(data.getCourse().parentId != 0 ? View.GONE : View.VISIBLE);
-                        reLoadView();
-                    }
-
-                    @Override
-                    public void onFailure(String code, String message) {
-                        if (message.contains("课程不存在") || message.contains("课程未发布")) {
-                            CommonUtil.shortToast(CourseUnJoinActivity.this, message);
-                            finish();
-                        }
-                    }
-                });
     }
 
     private void reLoadView() {
@@ -322,15 +305,15 @@ public class CourseUnJoinActivity extends AppCompatActivity
     protected void add() {
         MobclickAgent.onEvent(this, "courseDetailsPage_joinTheCourse");
         if (!"0".equals(mCourseId)) {
-            if (!"1".equals(mCourseDetail.getCourse().buyable)) {
-                CommonUtil.shortToast(CourseUnJoinActivity.this, getResources()
-                        .getString(R.string.add_error_close));
-                return;
-            }
-//            showProcessDialog();
-            if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
-                    && ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
-                    && mCourseDetail.getCourse().vipLevelId != 0) {
+//            if (!"1".equals(mCourseDetail.getCourse().buyable)) {
+//                CommonUtil.shortToast(CourseUnJoinActivity.this, getResources()
+//                        .getString(R.string.add_error_close));
+//                return;
+//            }
+////            showProcessDialog();
+//            if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null
+//                    && ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
+//                    && mCourseDetail.getCourse().vipLevelId != 0) {
                 // TODO: 2017/3/21
 //                CourseUtil.addCourseVip(mCourseId, new CourseUtil.OnAddCourseListener() {
 //                    @Override
@@ -346,31 +329,9 @@ public class CourseUnJoinActivity extends AppCompatActivity
 //                        hideProcesDialog();
 //                    }
 //                });
-                return;
-            }
+//                return;
+//            }
             new CustomDialog(this).initType(6).show();
-//            CourseUtil.addCourse(new CourseUtil.CourseParamsBuilder()
-//                            .setCouponCode("")
-//                            .setPayment("")
-//                            .setPayPassword("")
-//                            .setTargetId(String.valueOf(mCourseDetail.getCourse().id))
-//                            .setTargetType("course")
-//                            .setTotalPrice(String.valueOf(mCourseDetail.getCourse().price))
-//                    , new CourseUtil.OnAddCourseListener() {
-//                        @Override
-//                        public void onAddCourseSuccess(String response) {
-//                            hideProcesDialog();
-//                            CommonUtil.shortToast(CourseUnJoinActivity.this, getResources()
-//                                    .getString(R.string.success_add_course));
-//                            initData();
-//                        }
-//
-//                        @Override
-//                        public void onAddCourseError(String error) {
-//                            hideProcesDialog();
-//                        }
-//                    });
-//            mIsJump = true;
         }
     }
 

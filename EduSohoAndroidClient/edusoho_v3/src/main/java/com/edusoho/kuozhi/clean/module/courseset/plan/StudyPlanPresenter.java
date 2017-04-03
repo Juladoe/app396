@@ -24,7 +24,6 @@ public class StudyPlanPresenter implements StudyPlanContract.Presenter {
     public StudyPlanPresenter(StudyPlanContract.View view, String id) {
         this.mView = view;
         this.mCourseId = id;
-        this.mView.setPresenter(this);
     }
 
     @Override
@@ -46,8 +45,8 @@ public class StudyPlanPresenter implements StudyPlanContract.Presenter {
 
                     @Override
                     public void onNext(List<CourseStudyPlan> courseStudyPlen) {
-                        getVipInfoData();
                         mCourseStudyPlen = courseStudyPlen;
+                        getVipInfoData();
                     }
                 });
     }
