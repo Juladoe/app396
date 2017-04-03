@@ -9,17 +9,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
@@ -57,7 +57,8 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private TextView mTeacherName;
     private TextView mTeacherTitle;
     private TextView mCourseMemberCount;
-    private View mCourseMembers;
+    private LinearLayout mCourseMembers;
+    private View mCourseMembersLine;
     private CourseProject courseProject;
 
     @Nullable
@@ -87,7 +88,8 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mTeacherName = (TextView) view.findViewById(R.id.tv_teacher_name);
         mTeacherTitle = (TextView) view.findViewById(R.id.tv_teacher_title);
         mCourseMemberCount = (TextView) view.findViewById(R.id.tv_course_member_count);
-        mCourseMembers = view.findViewById(R.id.ll_course_members);
+        mCourseMembers = (LinearLayout) view.findViewById(R.id.ll_course_members);
+        mCourseMembersLine = view.findViewById(R.id.v_course_members_line);
     }
 
     @Override
@@ -187,8 +189,29 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showMembers(Member[] members) {
-
+    public void showMembers(CourseMember[] courseMembers) {
+        if (courseMembers != null && courseMembers.length > 0) {
+            mCourseMembers.setVisibility(View.VISIBLE);
+            mCourseMembersLine.setVisibility(View.VISIBLE);
+            mCourseMemberCount.setVisibility(View.VISIBLE);
+            int screenWidth = EdusohoApp.screenW;
+            int memberAvatarWidth = CommonUtil.dip2px(getActivity(), 50);
+            int avatarMargin = CommonUtil.dip2px(getActivity(), 24);
+            int viewMargin = CommonUtil.dip2px(getActivity(), 15);
+            int showMemberCount;
+            showMemberCount = (screenWidth + avatarMargin - 2 * viewMargin) / (memberAvatarWidth + avatarMargin);
+            int size = (showMemberCount < courseMembers.length ? showMemberCount : courseMembers.length);
+            for (int i = 0; i < size; i++) {
+                CircularImageView memberAvatar = new CircularImageView(getActivity());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(CommonUtil.dip2px(getActivity(), 50), CommonUtil.dip2px(getActivity(), 50));
+                if (i != size - 1) {
+                    lp.rightMargin = CommonUtil.dip2px(getActivity(), 24);
+                }
+                memberAvatar.setLayoutParams(lp);
+                ImageLoader.getInstance().displayImage(courseMembers[i].user.getMediumAvatar(), memberAvatar, EdusohoApp.app.mAvatarOptions);
+                mCourseMembers.addView(memberAvatar);
+            }
+        }
     }
 
     public CourseProjectFragmentListener newInstance(CourseProject courseProject) {

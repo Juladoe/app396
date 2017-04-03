@@ -298,7 +298,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp">
+            android:layout_marginTop="25dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tv_course_member_count"
@@ -319,32 +320,26 @@
                 android:textSize="@dimen/font_xl" />
         </RelativeLayout>
 
-        <!--<com.edusoho.kuozhi.v3.view.EduSohoGridView-->
-        <!--android:id="@+id/ev_user_list"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_marginTop="15dp"-->
-        <!--android:columnWidth="50dp"-->
-        <!--android:horizontalSpacing="12dp"-->
-        <!--android:numColumns="5" />-->
-
         <LinearLayout
             android:id="@+id/ll_course_members"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
             android:orientation="horizontal"
-            android:layout_marginTop="15dp"/>
+            android:visibility="gone" />
 
         <View
+            android:id="@+id/v_course_members_line"
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_marginBottom="25dp"
             android:layout_marginTop="25dp"
-            android:background="@color/grey_dddddd" />
+            android:background="@color/grey_dddddd"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
             android:text="相关学习计划"
             android:textColor="@color/primary_font_color"
             android:textSize="@dimen/font_l" />

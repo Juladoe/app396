@@ -1,10 +1,10 @@
 package com.edusoho.kuozhi.clean.api;
 
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
-import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
 import java.io.IOException;
@@ -66,7 +66,7 @@ public class RetrofitService {
         return mApiService.getVipLevel(id);
     }
 
-    public static Observable<DataPageResult<Member>> getCourseMembers(String courseId, int offset, int limit) {
+    public static Observable<DataPageResult<CourseMember>> getCourseMembers(String courseId, int offset, int limit) {
         return mApiService.getCourseMembers(courseId, offset, limit);
     }
 

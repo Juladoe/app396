@@ -1,10 +1,10 @@
 package com.edusoho.kuozhi.clean.api;
 
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
-import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
 import java.util.List;
@@ -32,8 +32,8 @@ public interface ApiService {
     @GET("plugins/vip/vip_levels/{id}")
     Observable<VipLevel> getVipLevel(@Path("id") String id);
 
-    @GET("/courses/{courseId}/members")
-    Observable<DataPageResult<Member>> getCourseMembers(@Path("courseId") String courseId, @Query("offset") int offset, @Query("limit") int limit);
+    @GET("courses/{courseId}/members")
+    Observable<DataPageResult<CourseMember>> getCourseMembers(@Path("courseId") String courseId, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("course_sets/{course_setId}/courses")
     Observable<List<CourseProject>> getCourses(@Path("course_setId") String courseSetId);

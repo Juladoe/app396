@@ -1,6 +1,9 @@
 package com.edusoho.kuozhi.clean.module.course.info;
 
+import android.util.Log;
+
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
@@ -123,7 +126,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
         RetrofitService.getCourseMembers(courseId, 0, 10)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<DataPageResult<Member>>() {
+                .subscribe(new Subscriber<DataPageResult<CourseMember>>() {
                     @Override
                     public void onCompleted() {
 
@@ -131,11 +134,11 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e("showMembers", "onError: " + e.toString());
                     }
 
                     @Override
-                    public void onNext(DataPageResult<Member> memberDataPageResult) {
+                    public void onNext(DataPageResult<CourseMember> memberDataPageResult) {
                         mView.showMembers(memberDataPageResult.data);
                     }
                 });
