@@ -5,6 +5,7 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
 import java.util.List;
@@ -37,4 +38,7 @@ public interface ApiService {
 
     @GET("course_sets/{course_setId}/courses")
     Observable<List<CourseProject>> getCourseProjects(@Path("course_setId") String courseSetId);
+
+    @GET("course_sets/{id}/reviews")
+    Observable<List<Review>> getCourseProjectReview(@Path("id") String courseSetId, @Query("courseId") String courseId, @Query("offset") int offset, @Query("limit") int limit);
 }

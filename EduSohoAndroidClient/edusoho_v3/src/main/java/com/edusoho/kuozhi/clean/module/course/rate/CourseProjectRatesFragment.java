@@ -1,19 +1,25 @@
 package com.edusoho.kuozhi.clean.module.course.rate;
 
+import android.content.Context;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
-import com.edusoho.kuozhi.clean.module.course.info.CourseProjectInfoPresenter;
-import com.edusoho.kuozhi.clean.module.course.info.RelativeCourseAdapter;
+import com.edusoho.kuozhi.clean.widget.ESDividerItemDecoration;
+import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
 
 import java.util.List;
 
@@ -59,19 +65,29 @@ public class CourseProjectRatesFragment extends Fragment implements
     }
 
     @Override
-    public void showRates() {
-
+    public void showRates(List<Review> reviews) {
+        CourseProjectRatingAdapter adapter = new CourseProjectRatingAdapter(getActivity(), reviews);
+        rateRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        ESDividerItemDecoration esDividerItemDecoration = new ESDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
+        esDividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.course_project_services));
+        rateRecyclerView.addItemDecoration(esDividerItemDecoration);
+        rateRecyclerView.setAdapter(adapter);
     }
 
-    @Override
-    public void showTest(List<CourseProject> courseProjects) {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public CircularImageView userAvatar;
+        public TextView username;
+        public RatingBar courseRating;
+        public TextView postTime;
+        public TextView ratingContent;
 
-    }
-
-    public static class RateViewHolder extends RecyclerView.ViewHolder {
-
-        public RateViewHolder(View itemView) {
-            super(itemView);
+        public ViewHolder(View view) {
+            super(view);
+            userAvatar = (CircularImageView) view.findViewById(R.id.civ_user_avatar);
+            username = (TextView) view.findViewById(R.id.tv_user_name);
+            courseRating = (RatingBar) view.findViewById(R.id.rb_rating);
+            postTime = (TextView) view.findViewById(R.id.tv_post_time);
+            ratingContent = (TextView) view.findViewById(R.id.tv_rate_content);
         }
     }
 }
