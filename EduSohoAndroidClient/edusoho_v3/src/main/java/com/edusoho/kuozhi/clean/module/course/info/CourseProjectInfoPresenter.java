@@ -9,10 +9,15 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
+import com.edusoho.videoplayer.util.AndroidDevices;
+
+import java.util.List;
 
 import cn.trinea.android.common.util.StringUtils;
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -44,6 +49,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
         }
         showMemberNum(mCourseProject.studentNum);
         showMembers(mCourseProject.id);
+        showRelativeCourseProjects(mCourseProject.courseSetId, mCourseProject.id);
     }
 
     private void showPrice() {
@@ -140,6 +146,41 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
                     @Override
                     public void onNext(DataPageResult<CourseMember> memberDataPageResult) {
                         mView.showMembers(memberDataPageResult.data);
+                    }
+                });
+    }
+
+    private void showRelativeCourseProjects(String courseSetId, final String currentCourseProjectId) {
+        RetrofitService.getCourseProjects(courseSetId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<CourseProject>, Observable<CourseProject>>() {
+                    @Override
+                    public Observable<CourseProject> call(List<CourseProject> courseProjects) {
+                        return Observable.from(courseProjects);
+                    }
+                })
+                .filter(new Func1<CourseProject, Boolean>() {
+                    @Override
+                    public Boolean call(CourseProject courseProject) {
+                        return !courseProject.id.equals(currentCourseProjectId);
+                    }
+                })
+                .toList()
+                .subscribe(new Subscriber<List<CourseProject>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d("RelativeCourse", "onError: " + e.toString());
+                    }
+
+                    @Override
+                    public void onNext(List<CourseProject> courseProjects) {
+                        mView.showRelativeCourseProjects(courseProjects);
                     }
                 });
     }

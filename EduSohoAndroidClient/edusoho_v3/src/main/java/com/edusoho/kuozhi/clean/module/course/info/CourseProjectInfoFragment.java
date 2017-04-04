@@ -2,10 +2,13 @@ package com.edusoho.kuozhi.clean.module.course.info;
 
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,7 @@ import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
 
+import java.util.List;
 import java.util.Locale;
 
 import cn.trinea.android.common.util.StringUtils;
@@ -56,10 +60,11 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private CircularImageView mTeacherAvatar;
     private TextView mTeacherName;
     private TextView mTeacherTitle;
+    private View mCourseMemberCountLayout;
     private TextView mCourseMemberCount;
     private LinearLayout mCourseMembers;
     private View mCourseMembersLine;
-    private CourseProject courseProject;
+    private RecyclerView mRelativeCourses;
 
     @Nullable
     @Override
@@ -87,9 +92,11 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mTeacherAvatar = (CircularImageView) view.findViewById(R.id.civ_teacher_avatar);
         mTeacherName = (TextView) view.findViewById(R.id.tv_teacher_name);
         mTeacherTitle = (TextView) view.findViewById(R.id.tv_teacher_title);
+        mCourseMemberCountLayout = view.findViewById(R.id.rl_course_member_num);
         mCourseMemberCount = (TextView) view.findViewById(R.id.tv_course_member_count);
         mCourseMembers = (LinearLayout) view.findViewById(R.id.ll_course_members);
         mCourseMembersLine = view.findViewById(R.id.v_course_members_line);
+        mRelativeCourses = (RecyclerView) view.findViewById(R.id.rv_relative_courses);
     }
 
     @Override
@@ -192,8 +199,8 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     public void showMembers(CourseMember[] courseMembers) {
         if (courseMembers != null && courseMembers.length > 0) {
             mCourseMembers.setVisibility(View.VISIBLE);
+            mCourseMemberCountLayout.setVisibility(View.VISIBLE);
             mCourseMembersLine.setVisibility(View.VISIBLE);
-            mCourseMemberCount.setVisibility(View.VISIBLE);
             int screenWidth = EdusohoApp.screenW;
             int memberAvatarWidth = CommonUtil.dip2px(getActivity(), 50);
             int avatarMargin = CommonUtil.dip2px(getActivity(), 24);
@@ -214,6 +221,16 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         }
     }
 
+    @Override
+    public void showRelativeCourseProjects(List<CourseProject> courseProjectList) {
+        mRelativeCourses.setHasFixedSize(true);
+        mRelativeCourses.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRelativeCourses.setItemAnimator(new DefaultItemAnimator());
+        mRelativeCourses.setNestedScrollingEnabled(false);
+        RelativeCourseAdapter relativeCourseAdapter = new RelativeCourseAdapter(getActivity(), courseProjectList);
+        mRelativeCourses.setAdapter(relativeCourseAdapter);
+    }
+
     public CourseProjectFragmentListener newInstance(CourseProject courseProject) {
         CourseProjectInfoFragment fragment = new CourseProjectInfoFragment();
         Bundle bundle = new Bundle();
@@ -227,5 +244,18 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         return COURSE_PROJECT_MODEL;
     }
 
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView courseTitle;
+        public TextView coursePrice;
+        public TextView courseTasks;
+        public LinearLayout promiseServiceLayout;
 
+        public ViewHolder(View view) {
+            super(view);
+            courseTitle = (TextView) view.findViewById(R.id.tv_course_project_title);
+            coursePrice = (TextView) view.findViewById(R.id.tv_course_project_price);
+            courseTasks = (TextView) view.findViewById(R.id.tv_course_tasks);
+            promiseServiceLayout = (LinearLayout) view.findViewById(R.id.ll_promise_layout);
+        }
+    }
 }

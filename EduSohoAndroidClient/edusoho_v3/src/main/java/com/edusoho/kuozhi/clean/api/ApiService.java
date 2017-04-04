@@ -36,5 +36,5 @@ public interface ApiService {
     Observable<DataPageResult<CourseMember>> getCourseMembers(@Path("courseId") String courseId, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("course_sets/{course_setId}/courses")
-    Observable<List<CourseProject>> getCourses(@Path("course_setId") String courseSetId);
+    Observable<List<CourseProject>> getCourseProjects(@Path("course_setId") String courseSetId);
 }

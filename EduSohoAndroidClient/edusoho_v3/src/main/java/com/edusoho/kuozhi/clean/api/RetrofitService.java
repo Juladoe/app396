@@ -70,7 +70,7 @@ public class RetrofitService {
         return mApiService.getCourseMembers(courseId, offset, limit);
     }
 
-    public static Observable<List<CourseProject>> getCourses(String courseSetId) {
-        return mApiService.getCourses(courseSetId);
+    public static Observable<List<CourseProject>> getCourseProjects(String courseSetId) {
+        return mApiService.getCourseProjects(courseSetId);
     }
 }
