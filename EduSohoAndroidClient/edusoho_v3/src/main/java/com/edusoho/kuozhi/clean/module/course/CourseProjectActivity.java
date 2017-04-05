@@ -96,15 +96,15 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     @Override
-    public void setTitle(String title) {
-
-    }
-
-    @Override
     public void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject) {
         CourseProjectViewPagerAdapter adapter = new CourseProjectViewPagerAdapter(getSupportFragmentManager(), courseProjectModules, courseProject);
         mViewPager.setAdapter(adapter);
         mTabLayout.setupWithViewPager(mViewPager);
+    }
+
+    @Override
+    public void setBottomLayoutVisible(boolean visible) {
+        mBottomView.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {

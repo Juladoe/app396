@@ -27,16 +27,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     @Override
-    public void learnTask(int taskId) {
-
-    }
-
-    @Override
-    public void favorite(int taskId) {
-
-    }
-
-    @Override
     public void consult() {
 
     }
@@ -76,6 +66,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.showCover(courseSet.cover.large);
                     }
                 });
+
     }
 
     @Override

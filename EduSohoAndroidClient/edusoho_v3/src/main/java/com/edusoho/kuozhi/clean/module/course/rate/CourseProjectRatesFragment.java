@@ -67,7 +67,7 @@ public class CourseProjectRatesFragment extends Fragment implements
         CourseProjectRatingAdapter adapter = new CourseProjectRatingAdapter(getActivity(), reviews);
         rateRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         ESDividerItemDecoration esDividerItemDecoration = new ESDividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL);
-        esDividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.course_project_services));
+        esDividerItemDecoration.setDrawable(getResources().getDrawable(R.drawable.course_project_rate_divider));
         rateRecyclerView.addItemDecoration(esDividerItemDecoration);
         rateRecyclerView.setAdapter(adapter);
     }
