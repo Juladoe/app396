@@ -32,7 +32,7 @@
             android:textColor="@color/primary_font_color"
             android:textSize="@dimen/font_s" />
 
-        <RatingBar
+        <android.support.v7.widget.AppCompatRatingBar
             android:id="@+id/rb_rating"
             style="?android:attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
@@ -40,9 +40,9 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:isIndicator="true"
-            android:progressTint="@color/secondary2_color"
             android:rating="4.0"
-            android:scrollbarSize="5dp" />
+            android:scrollbarSize="5dp"
+            android:theme="@style/RatingBar" />
 
         <TextView
             android:id="@+id/tv_post_time"

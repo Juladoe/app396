@@ -40,7 +40,6 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private ViewPager mViewPager;
     private View mBottomView;
     private ESIconTextButton mConsult;
-    private ESIconTextButton mFavorite;
     private TextView mLearnTextView;
 
     public static void newInstance(Context context, String courseProjectId) {
@@ -67,7 +66,6 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         mViewPager = (ViewPager) findViewById(R.id.vp_content);
         mBottomView = findViewById(R.id.tl_bottom);
         mConsult = (ESIconTextButton) findViewById(R.id.tb_consult);
-        mFavorite = (ESIconTextButton) findViewById(R.id.tb_favorite);
         mLearnTextView = (TextView) findViewById(R.id.tv_learn);
 
         setSupportActionBar(mToolbar);

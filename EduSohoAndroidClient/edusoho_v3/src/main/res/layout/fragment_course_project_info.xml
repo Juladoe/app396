@@ -33,16 +33,16 @@
                 android:textColor="@color/secondary_font_color"
                 android:textSize="@dimen/font_s_" />
 
-            <RatingBar
+            <android.support.v7.widget.AppCompatRatingBar
                 android:id="@+id/rb_course_rate"
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:isIndicator="true"
-                android:progress="@color/secondary2_color"
                 android:rating="4.0"
-                android:scrollbarSize="5dp" />
+                android:scrollbarSize="5dp"
+                android:theme="@style/RatingBar" />
         </RelativeLayout>
 
         <RelativeLayout
