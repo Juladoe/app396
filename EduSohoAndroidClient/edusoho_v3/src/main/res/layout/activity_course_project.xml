@@ -29,6 +29,7 @@
             android:layout_height="wrap_content">
 
             <com.edusoho.kuozhi.clean.widget.ESIconView
+                android:id="@+id/iv_back"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
                 android:layout_alignParentLeft="true"

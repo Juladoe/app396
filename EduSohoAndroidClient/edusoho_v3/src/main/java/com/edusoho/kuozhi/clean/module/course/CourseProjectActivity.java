@@ -20,6 +20,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
+import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -41,6 +42,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private View mBottomView;
     private ESIconTextButton mConsult;
     private TextView mLearnTextView;
+    private ESIconView mBack;
 
     public static void newInstance(Context context, String courseProjectId) {
         Intent intent = new Intent(context, CourseProjectActivity.class);
@@ -67,6 +69,13 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         mBottomView = findViewById(R.id.tl_bottom);
         mConsult = (ESIconTextButton) findViewById(R.id.tb_consult);
         mLearnTextView = (TextView) findViewById(R.id.tv_learn);
+        mBack = (ESIconView) findViewById(R.id.iv_back);
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
