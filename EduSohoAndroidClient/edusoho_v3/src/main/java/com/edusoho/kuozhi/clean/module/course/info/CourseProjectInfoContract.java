@@ -32,7 +32,7 @@ public interface CourseProjectInfoContract {
 
         void showMemberNum(int count);
 
-        void showMembers(CourseMember[] members);
+        void showMembers(List<CourseMember> members);
 
         void showRelativeCourseProjects(List<CourseProject> courseProjectList);
     }

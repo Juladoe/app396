@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.api;
 
+import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
@@ -51,8 +52,8 @@ public class RetrofitService {
         mApiService = retrofit.create(ApiService.class);
     }
 
-    public static Observable<List<CourseTask>> getTasks(String id) {
-        return mApiService.getTasks(id);
+    public static Observable<List<CourseItem>> getTasks(String id) {
+        return mApiService.getCourseItems(id);
     }
 
     public static Observable<CourseProject> getCourseProject(String id) {

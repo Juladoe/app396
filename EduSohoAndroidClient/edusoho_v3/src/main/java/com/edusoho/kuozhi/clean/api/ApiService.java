@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.api;
 
+import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
@@ -24,8 +25,8 @@ public interface ApiService {
     @GET("course_sets/{id}")
     Observable<CourseSet> getCourseSet(@Path("id") String id);
 
-    @GET("courses/{id}/tasks")
-    Observable<List<CourseTask>> getTasks(@Path("id") String id);
+    @GET("courses/{id}/items")
+    Observable<List<CourseItem>> getCourseItems(@Path("id") String id);
 
     @GET("courses/{id}")
     Observable<CourseProject> getCourseProject(@Path("id") String id);

@@ -11,8 +11,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.TaskItem;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 
@@ -57,8 +58,8 @@ public class CourseTasksFragment extends Fragment implements
     }
 
     @Override
-    public void showCourseTasks(List<CourseTask> courseTasks) {
-        CourseTaskAdapter adapter = new CourseTaskAdapter(getActivity(), courseTasks);
+    public void showCourseTasks(List<TaskItem> taskItems) {
+        CourseTaskAdapter adapter = new CourseTaskAdapter(getActivity(), taskItems);
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         taskRecyclerView.setAdapter(adapter);
     }
@@ -66,26 +67,31 @@ public class CourseTasksFragment extends Fragment implements
     public static class CourseTaskViewHolder extends RecyclerView.ViewHolder {
         public ESIconView taskType;
         public TextView taskName;
-        public TextView isTaskFree;
         public TextView taskTime;
 
         public CourseTaskViewHolder(View view) {
             super(view);
             taskType = (ESIconView) view.findViewById(R.id.ev_task_type);
             taskName = (TextView) view.findViewById(R.id.tv_task_name);
-            isTaskFree = (TextView) view.findViewById(R.id.tv_free_task);
             taskTime = (TextView) view.findViewById(R.id.tv_task_time);
         }
     }
 
+    public static class CourseTaskUnitViewHolder extends RecyclerView.ViewHolder {
+        public TextView unitTitle;
+
+        public CourseTaskUnitViewHolder(View view) {
+            super(view);
+            unitTitle = (TextView) view.findViewById(R.id.tv_chapter_title);
+        }
+    }
+
     public static class CourseTaskChapterViewHolder extends RecyclerView.ViewHolder {
-        public TextView chapterNum;
-        public TextView chapterName;
+        public TextView chapterTitle;
 
         public CourseTaskChapterViewHolder(View view) {
             super(view);
-            chapterNum = (TextView) view.findViewById(R.id.tv_chapter_num);
-            chapterName = (TextView) view.findViewById(R.id.tv_chapter_name);
+            chapterTitle = (TextView) view.findViewById(R.id.tv_chapter_title);
         }
     }
 }

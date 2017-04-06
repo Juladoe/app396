@@ -434,5 +434,7 @@
     <string name="promise_services">承诺服务：</string>
     <string name="relative_course_project">相关学习计划</string>
     <string name="course_task_num">学习任务：%d个</string>
+    <string name="course_project_chapter">第%d章 %s</string>
+    <string name="course_project_unit">第%d节 %s</string>
 
 </resources>

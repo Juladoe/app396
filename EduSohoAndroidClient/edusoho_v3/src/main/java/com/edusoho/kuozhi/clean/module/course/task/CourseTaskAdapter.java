@@ -7,62 +7,71 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.bean.CourseTask;
+import com.edusoho.kuozhi.clean.bean.TaskItem;
 
 import java.util.List;
+
+import static com.edusoho.kuozhi.clean.module.course.task.CourseTasksFragment.CourseTaskChapterViewHolder;
+import static com.edusoho.kuozhi.clean.module.course.task.CourseTasksFragment.CourseTaskUnitViewHolder;
+import static com.edusoho.kuozhi.clean.module.course.task.CourseTasksFragment.CourseTaskViewHolder;
 
 /**
  * Created by JesseHuang on 2017/3/28.
  */
 
 public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    private static final int CHAPTER = 0;
-    private static final int TASK = 1;
-    private List<CourseTask> courseTasks;
+    private List<TaskItem> mTaskItem;
     private Context mContext;
 
-    public CourseTaskAdapter(Context context, List<CourseTask> courseTasks) {
-        this.courseTasks = courseTasks;
+    public CourseTaskAdapter(Context context, List<TaskItem> taskItems) {
+        this.mTaskItem = taskItems;
         this.mContext = context;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if ("chapter".equals(courseTasks.get(position).itemType)) {
-            return CHAPTER;
+        if (CourseItemEnum.CHAPTER.toString().equals(mTaskItem.get(position).type)) {
+            return CourseItemEnum.CHAPTER.getIndex();
+        } else if (CourseItemEnum.UNIT.toString().equals(mTaskItem.get(position).type)) {
+            return CourseItemEnum.UNIT.getIndex();
+        } else {
+            return CourseItemEnum.LESSON.getIndex();
         }
-        return TASK;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == CHAPTER) {
+        if (viewType == CourseItemEnum.CHAPTER.getIndex()) {
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_course_task_chapter, parent, false);
-            return new CourseTasksFragment.CourseTaskChapterViewHolder(view);
+            return new CourseTaskChapterViewHolder(view);
+        } else if (viewType == CourseItemEnum.UNIT.getIndex()) {
+            View view = LayoutInflater.from(mContext).inflate(R.layout.item_course_task_unit, parent, false);
+            return new CourseTaskUnitViewHolder(view);
         } else {
             View view = LayoutInflater.from(mContext).inflate(R.layout.item_course_task, parent, false);
-            return new CourseTasksFragment.CourseTaskViewHolder(view);
+            return new CourseTaskViewHolder(view);
         }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        CourseTask task = courseTasks.get(position);
-        if (holder instanceof CourseTasksFragment.CourseTaskChapterViewHolder) {
-            CourseTasksFragment.CourseTaskChapterViewHolder chapterHolder = (CourseTasksFragment.CourseTaskChapterViewHolder) holder;
-            chapterHolder.chapterNum.setText(task.chapterNum);
-            chapterHolder.chapterName.setText(task.chapterTitle);
-        } else if (holder instanceof CourseTasksFragment.CourseTaskViewHolder) {
-            CourseTasksFragment.CourseTaskViewHolder taskHolder = (CourseTasksFragment.CourseTaskViewHolder) holder;
-            taskHolder.isTaskFree.setVisibility(task.isTaskFree == "1" ? View.VISIBLE : View.INVISIBLE);
-            taskHolder.taskName.setText(task.taskTitle);
-            taskHolder.taskTime.setText(task.taskTime);
+        TaskItem taskItem = mTaskItem.get(position);
+        if (holder instanceof CourseTaskChapterViewHolder) {
+            CourseTaskChapterViewHolder chapterHolder = (CourseTaskChapterViewHolder) holder;
+            chapterHolder.chapterTitle.setText(String.format(mContext.getString(R.string.course_project_chapter), taskItem.number, taskItem.title));
+        } else if (holder instanceof CourseTaskUnitViewHolder) {
+            CourseTaskUnitViewHolder unitHolder = (CourseTaskUnitViewHolder) holder;
+            unitHolder.unitTitle.setText(String.format(mContext.getString(R.string.course_project_unit), taskItem.number, taskItem.title));
+        } else if (holder instanceof CourseTaskViewHolder) {
+            CourseTaskViewHolder taskHolder = (CourseTaskViewHolder) holder;
+            taskHolder.taskName.setText(taskItem.toTaskSequence() + " " + taskItem.title);
+            taskHolder.taskTime.setText(taskItem.length);
+            //taskHolder.taskType
         }
     }
 
     @Override
     public int getItemCount() {
-        return courseTasks.size();
+        return mTaskItem.size();
     }
 }
