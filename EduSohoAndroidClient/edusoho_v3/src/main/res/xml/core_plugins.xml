@@ -480,7 +480,7 @@
 
     <plugin
         name="CourseActivity"
-        package="com.edusoho.kuozhi.clean.module.courseset.CourseUnJoinActivity"
+        package="com.edusoho.kuozhi.clean.module.courseset.CourseUnLearnActivity"
         version="1.0" />
     <plugin
         name="ClassroomActivity"

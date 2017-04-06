@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
+import com.edusoho.kuozhi.clean.module.base.BaseLazyFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
@@ -210,7 +210,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                 image.setTag(data.get(i).user.id);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
-                ImageLoader.getInstance().displayImage(data.get(i).user.getAvatar(), image, EdusohoApp.app.mAvatarOptions);
+                ImageLoader.getInstance().displayImage(data.get(i).user.smallAvatar, image, EdusohoApp.app.mAvatarOptions);
             } else {
                 txt.setText("");
                 image.setImageAlpha(0);

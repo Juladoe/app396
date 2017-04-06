@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
-import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
+import com.edusoho.kuozhi.clean.module.base.BaseLazyFragment;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 
 import java.util.List;

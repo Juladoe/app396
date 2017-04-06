@@ -3,13 +3,13 @@ package com.edusoho.kuozhi.clean.api;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseSetMember;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 
 import java.util.List;
 
@@ -40,7 +40,10 @@ public interface ApiService {
     Observable<List<CourseStudyPlan>> getCourseStudyPlan(@Path("course_setId") String id);
 
     @GET("course_sets/{courseSetId}/members")
-    Observable<CourseSetMember> getCourseSetMember(@Path("courseSetId") String id);
+    Observable<DataPageResult<CourseMember>> getCourseSetMember(@Path("courseSetId") String id);
+
+    @GET("course_sets/{courseSetId}/members")
+    Observable<DataPageResult<CourseMember>> getCourseSetMember1(@Path("courseSetId") String id);
 
     @GET("plugins/vip/vip_levels")
     Observable<List<VipInfo>> getVipInfo();

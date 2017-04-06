@@ -33,7 +33,6 @@
 
         <TextView
             android:id="@+id/tv_discount_price"
-            android:text="¥ 286"
             android:textSize="@dimen/font_xl"
             android:textColor="@color/secondary_color"
             android:layout_width="wrap_content"
@@ -41,13 +40,13 @@
 
         <TextView
             android:id="@+id/tv_original_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
             android:text="900"
             android:textColor="@color/secondary2_font_color"
-            android:textSize="@dimen/font_l"
-            android:layout_marginLeft="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        
+            android:textSize="@dimen/font_l" />
+
         <TextView
             android:id="@+id/discount"
             android:text="折"
@@ -103,7 +102,6 @@
 
     <TextView
         android:id="@+id/tv_service"
-        android:text="承诺服务: 二十四小时作业批阅、提问答题"
         android:textSize="@dimen/font_s"
         android:textColor="@color/secondary_font_color"
         android:layout_marginTop="15dp"
@@ -123,7 +121,6 @@
 
     <TextView
         android:id="@+id/tv_validity"
-        android:text="有效期: 180天"
         android:textSize="@dimen/font_s"
         android:textColor="@color/secondary_font_color"
         android:layout_marginTop="15dp"
@@ -133,7 +130,6 @@
 
     <TextView
         android:id="@+id/tv_task"
-        android:text="学习任务: 130个"
         android:textSize="@dimen/font_s"
         android:textColor="@color/secondary_font_color"
         android:layout_marginTop="15dp"
@@ -143,7 +139,7 @@
 
 
     <TextView
-        android:text="VIP会员免费加入学习"
+        android:id="@+id/tv_vip"
         android:textSize="@dimen/font_s"
         android:textColor="@color/primary"
         android:layout_marginTop="15dp"

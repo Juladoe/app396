@@ -2,11 +2,14 @@ package com.edusoho.kuozhi.clean.module.courseset.info;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseSetMember;
+import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -27,21 +30,10 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
     public void subscribe() {
         getCourseSetIntro(mCourseId)
                 .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CourseSet>() {
+                .doOnNext(new Action1<CourseSet>() {
                     @Override
-                    public void onCompleted() {
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.setLoadViewVis(false);
-                    }
-
-                    @Override
-                    public void onNext(CourseSet courseSet) {
+                    public void call(CourseSet courseSet) {
                         mView.setLoadViewVis(false);
                         if (courseSet != null) {
                             mView.setData(courseSet);
@@ -49,12 +41,16 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
                             mView.showInfoAndPeople();
                         }
                     }
-                });
-        getCourseSetMember(mCourseId)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<CourseSet, Observable<DataPageResult<CourseMember>>>() {
+                    @Override
+                    public Observable<DataPageResult<CourseMember>> call(CourseSet courseSet) {
+                        return getCourseSetMember(mCourseId);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CourseSetMember>() {
+                .subscribe(new Subscriber<DataPageResult<CourseMember>>() {
                     @Override
                     public void onCompleted() {
 
@@ -62,11 +58,11 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
 
                     @Override
                     public void onError(Throwable e) {
-
+                        mView.setLoadViewVis(false);
                     }
 
                     @Override
-                    public void onNext(CourseSetMember courseMembers) {
+                    public void onNext(DataPageResult<CourseMember> courseMembers) {
                         if (courseMembers != null) {
                             mView.showStudent(courseMembers.data);
                         }
@@ -83,7 +79,7 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
         return RetrofitService.getCourseSet(id);
     }
 
-    private Observable<CourseSetMember> getCourseSetMember(String id){
+    private Observable<DataPageResult<CourseMember>> getCourseSetMember(String id){
         return RetrofitService.getCourseSetMember(id);
     }
 

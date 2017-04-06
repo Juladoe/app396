@@ -343,7 +343,7 @@
             android:theme="@style/AppThemeNoActionBar" />
 
         <activity
-            android:name=".clean.module.courseset.CourseUnJoinActivity"
+            android:name=".clean.module.courseset.CourseUnLearnActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar"/>

@@ -3,13 +3,13 @@ package com.edusoho.kuozhi.clean.api;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseSetMember;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
+import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 
 import java.io.IOException;
 import java.util.List;
@@ -90,7 +90,7 @@ public class RetrofitService {
         return mApiService.getCourses(courseSetId);
     }
 
-    public static Observable<CourseSetMember> getCourseSetMember(String courseSetId) {
+    public static Observable<DataPageResult<CourseMember>> getCourseSetMember(String courseSetId) {
         return mApiService.getCourseSetMember(courseSetId);
     }
 }

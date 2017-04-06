@@ -9,8 +9,7 @@ import android.view.View;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
-import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
-import com.edusoho.kuozhi.clean.module.courseset.CourseUnJoinContract;
+import com.edusoho.kuozhi.clean.module.base.BaseLazyFragment;
 
 import java.util.List;
 
@@ -74,6 +73,5 @@ public class StudyPlayFragment extends BaseLazyFragment
             return;
         }
         mStudyPlanAdapter.reFreshData(list, vipInfos);
-        ((CourseUnJoinContract.View) getActivity()).setPlanData(list, vipInfos);
     }
 }

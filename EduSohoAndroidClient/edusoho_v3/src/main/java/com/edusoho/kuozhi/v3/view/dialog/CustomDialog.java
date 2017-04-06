@@ -3,8 +3,10 @@ package com.edusoho.kuozhi.v3.view.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.StyleRes;
 import android.support.v4.content.ContextCompat;
@@ -19,8 +21,12 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.GuaranteServiceAdapter;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+
+import java.util.List;
 
 /**
  * Created by DF on 2017/3/17.
@@ -37,6 +43,8 @@ public class CustomDialog extends Dialog {
     private String mOrderAmount;
 
     private RadioButton mRb;
+    private List<CourseStudyPlan> mCourseStudyPlans;
+    private List<VipInfo> mVipInfos;
 
     public CustomDialog(@NonNull Context context) {
         super(context, R.style.dialog_custom);
@@ -111,14 +119,8 @@ public class CustomDialog extends Dialog {
                 break;
             case 6:
                 setPositionBottom();
-//                ((TextView) findViewById(R.id.tv_discount_price)).setText("");
-//                ((TextView) findViewById(R.id.tv_original_price)).setText("");
-//                ((TextView) findViewById(R.id.tv_service)).setText("");
-//                ((TextView) findViewById(R.id.tv_way)).setText("");
-//                ((TextView) findViewById(R.id.tv_validity)).setText("");
-//                ((TextView) findViewById(R.id.tv_task)).setText("");
-                findViewById(R.id.discount).setVisibility(View.VISIBLE);
                 RadioGroup rg = (RadioGroup) findViewById(R.id.rg_type);
+                rg.setOnCheckedChangeListener(getOnCheckedChangeListener());
                 addButton(rg);
                 break;
             case 7:
@@ -136,23 +138,22 @@ public class CustomDialog extends Dialog {
      * @param rg
      */
     private void addButton(RadioGroup rg) {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < mCourseStudyPlans.size(); i++) {
             mRb = new RadioButton(mContext);
             mRb.setGravity(Gravity.CENTER);
             RadioGroup.LayoutParams mp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             mp.setMargins(0, 0, AppUtil.dp2px(mContext, 10), AppUtil.dp2px(mContext, 5));
-            mRb.setTextSize(AppUtil.sp2px(mContext, 3));
+            mRb.setTextSize(AppUtil.sp2px(mContext, 4));
             mRb.setTextColor(mContext.getResources().getColorStateList(R.color.teach_type_text_selector));
             mRb.setButtonDrawable(new ColorDrawable(Color.TRANSPARENT));
             mRb.setPadding(AppUtil.dp2px(mContext, 7), AppUtil.dp2px(mContext, 4)
                     , AppUtil.dp2px(mContext, 7), AppUtil.dp2px(mContext, 4));
             mRb.setBackground(ContextCompat.getDrawable(mContext, R.drawable.teach_type_rb_selector));
-            if (i % 2 == 0) {
-                mRb.setText("第" + i + "个");
-            } else {
-                mRb.setText("下车好啊记得啦时间");
-            }
+            mRb.setText(mCourseStudyPlans.get(i).getTitle());
             rg.addView(mRb, mp);
+            if (i == 0) {
+                rg.check(mRb.getId());
+            }
         }
     }
 
@@ -249,6 +250,65 @@ public class CustomDialog extends Dialog {
                 break;
         }
         return this;
+    }
+
+    public Dialog initPlanData(List<CourseStudyPlan> list, List<VipInfo> vipInfo){
+        mCourseStudyPlans = list;
+        mVipInfos = vipInfo;
+        return this;
+    }
+
+    private RadioGroup.OnCheckedChangeListener getOnCheckedChangeListener() {
+        return new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+                View view = group.findViewById(checkedId);
+                int position = group.indexOfChild(view);
+                CourseStudyPlan courseStudyPlan = mCourseStudyPlans.get(position);
+                if ("1".equals(mCourseStudyPlans.get(position).getIsFree())) {
+                    findViewById(R.id.discount).setVisibility(View.GONE);
+                    findViewById(R.id.tv_original_price).setVisibility(View.GONE);
+                    ((TextView) findViewById(R.id.tv_discount_price)).setText("免费");
+                    ((TextView) findViewById(R.id.tv_discount_price)).setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
+                } else {
+                    findViewById(R.id.discount).setVisibility(View.VISIBLE);
+                    ((TextView) findViewById(R.id.tv_discount_price)).setText(String.format("%s%s", "¥ ", courseStudyPlan.getPrice()));
+                    ((TextView) findViewById(R.id.tv_original_price)).setText(String.format("%s%s", "¥ ", courseStudyPlan.getOriginPrice()));
+                    ((TextView) findViewById(R.id.tv_original_price)).getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);;
+                    ((TextView) findViewById(R.id.tv_discount_price)).setTextColor(ContextCompat.getColor(getContext(), R.color.secondary_color));
+                }
+                findViewById(R.id.tv_service).setVisibility(View.GONE);
+                List<CourseStudyPlan.ServicesBean> servicesList = courseStudyPlan.getServices();
+                if (servicesList != null && servicesList.size() != 0) {
+                    findViewById(R.id.tv_service).setVisibility(View.VISIBLE);
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("承诺服务: ");
+                    for (int i = 0; i < servicesList.size(); i++) {
+                        sb.append(servicesList.get(i).getFull_name());
+                        if (i != servicesList.size() - 1) {
+                            sb.append(" 、 ");
+                        }
+                    }
+                    ((TextView) findViewById(R.id.tv_service)).setText(sb);
+                }
+//                ((TextView) findViewById(R.id.tv_way)).setText("");
+                if ("days".equals(courseStudyPlan.getExpiryMode())) {
+                    ((TextView) findViewById(R.id.tv_validity)).setText(String.format("%s%s", "有效期:  ", courseStudyPlan.getExpiryDays() + "天"));
+                } else {
+                    ((TextView) findViewById(R.id.tv_validity)).setText("有效期:  永久");
+                }
+                ((TextView) findViewById(R.id.tv_task)).setText(String.format("%s%s", "学习任务:  ", courseStudyPlan.getTaskNum() + "个"));
+                findViewById(R.id.tv_vip).setVisibility(View.GONE);
+                for (int i = 0; i < mVipInfos.size(); i++) {
+                    VipInfo vipInfo = mVipInfos.get(i);
+                    if (vipInfo.getId().equals(courseStudyPlan.getId())) {
+                        findViewById(R.id.tv_vip).setVisibility(View.VISIBLE);
+                        ((TextView) findViewById(R.id.tv_vip)).setText(String.format("%s%s", vipInfo.getName(), "会员免费加入学习"));
+                        break;
+                    }
+                }
+            }
+        };
     }
 
     public interface EventListener {

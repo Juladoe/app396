@@ -40,6 +40,7 @@ public class CourseMember implements Serializable {
         public String title;
 
         public String avatar;
+        public String smallAvatar;
 
         public String getAvatar() {
             int schemIndex = avatar.lastIndexOf("http://");

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset;
+package com.edusoho.kuozhi.clean.module.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

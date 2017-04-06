@@ -443,4 +443,10 @@
     <string name="join_vip">加入%s会员，免费学习课程</string>
     <string name="course_info">课程简介</string>
 
+    <string-array name="unlearn_tab">
+        <item>简介</item>
+        <item>计划</item>
+        <item>评价</item>
+    </string-array>
+
 </resources>

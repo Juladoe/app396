@@ -9,6 +9,8 @@ import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -30,31 +32,20 @@ public class StudyPlanPresenter implements StudyPlanContract.Presenter {
     public void subscribe() {
         getCourseStudyPlan(mCourseId)
                 .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<CourseStudyPlan>>() {
+                .doOnNext(new Action1<List<CourseStudyPlan>>() {
                     @Override
-                    public void onCompleted() {
-
+                    public void call(List<CourseStudyPlan> list) {
+                        mCourseStudyPlen = list;
                     }
-
+                })
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<List<CourseStudyPlan>, Observable<List<VipInfo>>>() {
                     @Override
-                    public void onError(Throwable e) {
-                        mView.setLoadViewVis(false);
+                    public Observable<List<VipInfo>> call(List<CourseStudyPlan> list) {
+                        return getVipInfo();
                     }
-
-                    @Override
-                    public void onNext(List<CourseStudyPlan> courseStudyPlen) {
-                        mCourseStudyPlen = courseStudyPlen;
-                        getVipInfoData();
-                    }
-                });
-    }
-
-    private void getVipInfoData() {
-        getVipInfo()
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<List<VipInfo>>() {
                     @Override
