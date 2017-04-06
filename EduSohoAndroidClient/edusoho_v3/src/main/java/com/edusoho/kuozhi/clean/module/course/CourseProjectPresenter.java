@@ -47,7 +47,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 .doOnNext(new Action1<CourseProject>() {
                     @Override
                     public void call(CourseProject courseProject) {
-                        mTeacher = courseProject.teachers[0];
+                        if (courseProject.teachers.length > 0) {
+                            mTeacher = courseProject.teachers[0];
+                        }
                         mView.showFragments(initCourseModules(), courseProject);
                         mView.setBottomLayoutVisible(true);
                     }

@@ -5,6 +5,7 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
 import java.io.IOException;
@@ -72,5 +73,9 @@ public class RetrofitService {
 
     public static Observable<List<CourseProject>> getCourseProjects(String courseSetId) {
         return mApiService.getCourseProjects(courseSetId);
+    }
+
+    public static Observable<DataPageResult<Review>> getCourseProjectReviews(String courseSetId, String courseId, int offset, int limit) {
+        return mApiService.getCourseProjectReviews(courseSetId, courseId, offset, limit);
     }
 }

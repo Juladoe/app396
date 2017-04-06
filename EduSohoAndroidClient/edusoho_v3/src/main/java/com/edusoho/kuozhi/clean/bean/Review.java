@@ -11,6 +11,7 @@ import java.io.Serializable;
 public class Review implements Serializable {
     public int id;
     public int courseId;
+    public String createdTime;
     public String updatedTime;
     public float rating;
     public User user;
