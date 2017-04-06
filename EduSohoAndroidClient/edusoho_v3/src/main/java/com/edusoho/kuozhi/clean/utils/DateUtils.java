@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by JesseHuang on 2017/4/6.
  */
 
-public class DataUtils {
+public class DateUtils {
 
     public static String getPostDays(String postTime) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -37,7 +37,7 @@ public class DataUtils {
                 return "刚刚";
             }
         } catch (Exception ex) {
-            Log.d("AppUtil.getPostDays", ex.toString());
+            Log.d("DateUtils::getPostDays", ex.toString());
         }
 
         return String.valueOf(l) + "秒前";

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.Review;
-import com.edusoho.kuozhi.clean.utils.DataUtils;
+import com.edusoho.kuozhi.clean.utils.DateUtils;
 import com.edusoho.kuozhi.clean.utils.StringUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -40,7 +40,7 @@ public class CourseProjectRatingAdapter extends RecyclerView.Adapter<CourseProje
         ImageLoader.getInstance().displayImage(review.user.avatar, holder.userAvatar, EdusohoApp.app.mAvatarOptions);
         holder.username.setText(review.user.nickname);
         holder.courseRating.setRating(review.rating);
-        String postTime = DataUtils.getPostDays(StringUtils.isEmpty(review.updatedTime) ? review.createdTime : review.updatedTime);
+        String postTime = DateUtils.getPostDays(StringUtils.isEmpty(review.updatedTime) ? review.createdTime : review.updatedTime);
         holder.postTime.setText(postTime);
         holder.ratingContent.setText(review.content);
     }
