@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.ui.fragment.mine;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
@@ -14,8 +13,6 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
-import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -214,7 +211,7 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
 //                    }
 //                });
 
-                CourseProjectActivity.newInstance(mContext, "1");
+                CourseProjectActivity.launch(mContext, "1");
 //                mActivity.app.mEngine.runNormalPlugin("CourseProjectActivity", mContext, null);
             }
         };

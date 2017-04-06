@@ -22,6 +22,9 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.core.CoreEngine;
+import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
+import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -44,7 +47,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private TextView mLearnTextView;
     private ESIconView mBack;
 
-    public static void newInstance(Context context, String courseProjectId) {
+    public static void launch(Context context, String courseProjectId) {
         Intent intent = new Intent(context, CourseProjectActivity.class);
         intent.putExtra(COURSE_PROJECT_ID, courseProjectId);
         context.startActivity(intent);
@@ -68,6 +71,12 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         mViewPager = (ViewPager) findViewById(R.id.vp_content);
         mBottomView = findViewById(R.id.tl_bottom);
         mConsult = (ESIconTextButton) findViewById(R.id.tb_consult);
+        mConsult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPresenter.consult();
+            }
+        });
         mLearnTextView = (TextView) findViewById(R.id.tv_learn);
         mBack = (ESIconView) findViewById(R.id.iv_back);
         mBack.setOnClickListener(new View.OnClickListener() {
@@ -105,6 +114,18 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     @Override
     public void setBottomLayoutVisible(boolean visible) {
         mBottomView.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void launchImChatWithTeacher(final CourseProject.Teacher teacher) {
+        CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", getApplicationContext(), new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
+                startIntent.putExtra(ImChatActivity.FROM_ID, teacher.id);
+                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
+            }
+        });
     }
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {

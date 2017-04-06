@@ -81,7 +81,8 @@
         android:id="@+id/tl_bottom"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
 
         <com.edusoho.kuozhi.clean.widget.ESIconTextButton
             android:id="@+id/tb_consult"
@@ -91,7 +92,7 @@
             android:orientation="vertical"
             app:fontColor="@color/nav_btn_sel"
             app:iconSizeScale="2.0"
-            app:image="@string/font_mine"
+            app:image="@string/new_font_consult"
             app:size="@dimen/nav_layout_btn_size"
             app:text="@string/course_project_consult"
             app:text_size="@dimen/font_xxs" />

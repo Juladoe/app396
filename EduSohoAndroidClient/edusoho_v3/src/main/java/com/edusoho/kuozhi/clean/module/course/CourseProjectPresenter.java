@@ -4,12 +4,18 @@ import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import rx.subjects.BehaviorSubject;
+import rx.subjects.PublishSubject;
 
 
 /**
@@ -20,6 +26,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private CourseProjectContract.View mView;
     private String mCourseProjectId;
+    private CourseProject mCourseProject;
+    private CourseProject.Teacher mTeacher;
 
     public CourseProjectPresenter(String courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
@@ -28,7 +36,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     @Override
     public void consult() {
-
+        mView.launchImChatWithTeacher(mTeacher);
     }
 
     @Override
@@ -39,7 +47,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 .doOnNext(new Action1<CourseProject>() {
                     @Override
                     public void call(CourseProject courseProject) {
+                        mTeacher = courseProject.teachers[0];
                         mView.showFragments(initCourseModules(), courseProject);
+                        mView.setBottomLayoutVisible(true);
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -66,7 +76,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.showCover(courseSet.cover.large);
                     }
                 });
-
     }
 
     @Override
