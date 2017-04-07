@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.clean.module.courseset;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -19,16 +20,19 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
+import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
+import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -44,7 +48,6 @@ import extensions.PagerSlidingTabStrip;
 public class CourseUnLearnActivity extends AppCompatActivity
         implements CourseUnLearnContract.View, View.OnClickListener, AppBarLayout.OnOffsetChangedListener {
 
-    //CourseUnjoinView ;
     private View mLoadView;
     private PagerSlidingTabStrip mTabLayout;
     private ImageView mIvBackGraound;
@@ -65,6 +68,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
     private CourseDetail mCourseDetail;
     private ViewPager mViewPager;
     private CourseUnLearnContract.Presenter mPresenter;
+    private CourseSet mCourseSet;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -145,39 +149,13 @@ public class CourseUnLearnActivity extends AppCompatActivity
         mTvAdd.setOnClickListener(this);
     }
 
-    private void reLoadView() {
-        mIsFavorite = mCourseDetail.isUserFavorited();
-        if (mIsFavorite) {
-            mTvCollect.setText(getResources().getString(R.string.new_font_collected));
-            mTvCollect.setTextColor(ContextCompat.getColor(this, R.color.primary_color));
-            mTvCollectTxt.setTextColor(ContextCompat.getColor(this, R.color.primary_color));
-        } else {
-            mTvCollect.setText(getResources().getString(R.string.new_font_collect));
-            mTvCollect.setTextColor(ContextCompat.getColor(this, R.color.secondary_font_color));
-            mTvCollectTxt.setTextColor(ContextCompat.getColor(this, R.color.secondary_font_color));
-        }
-        DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
-                .showImageForEmptyUri(R.drawable.default_course)
-                .showImageOnFail(R.drawable.default_course)
-                .showImageOnLoading(R.drawable.default_course)
-                .build();
-        if (((EdusohoApp) getApplication()).loginUser != null && ((EdusohoApp) getApplication()).loginUser.vip != null &&
-                ((EdusohoApp) getApplication()).loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
-                && mCourseDetail.getCourse().vipLevelId != 0) {
-            mTvAdd.setText(R.string.txt_vip_free);
-        } else {
-            mTvAdd.setText(R.string.txt_add_course);
-        }
-        mLoadView.setVisibility(View.GONE);
-    }
-
     @Override
     public void onClick(View v) {
         int id = v.getId();
         if (id == R.id.iv_back) {
             finish();
         } else if (id == R.id.iv_share) {
-            mPresenter.share();
+            share();
         } else if (id == R.id.collect_layout) {
             collect();
         } else if (id == R.id.consult_layout) {
@@ -185,6 +163,24 @@ public class CourseUnLearnActivity extends AppCompatActivity
         } else if (id == R.id.tv_add) {
             add();
         }
+    }
+
+    private void share() {
+        if (mCourseSet == null) {
+            return;
+        }
+        final ShareTool shareTool =
+                new ShareTool(this
+                        , SchoolUtil.getDefaultSchool(getBaseContext()).host + "/course/" + mCourseSet.getId()
+                        , mCourseSet.getTitle()
+                        , mCourseSet.summary.length() > 20 ? mCourseSet.summary.substring(0, 20) : mCourseSet.summary
+                    , mCourseSet.cover.middle);
+        new Handler((getApplication().getMainLooper())).post(new Runnable() {
+            @Override
+            public void run() {
+                shareTool.shardCourse();
+            }
+        });
     }
 
     @Override
@@ -240,13 +236,28 @@ public class CourseUnLearnActivity extends AppCompatActivity
     }
 
     @Override
-    public void showBackGround(String img) {
+    public void showBackGround(String img, CourseSet courseSet) {
+        mCourseSet = courseSet;
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .showImageForEmptyUri(R.drawable.default_course)
                 .showImageOnFail(R.drawable.default_course)
                 .showImageOnLoading(R.drawable.default_course)
                 .build();
         ImageLoader.getInstance().displayImage(img, mIvBackGraound, imageOptions);
+    }
+
+    @Override
+    public void showFavorite(boolean isFavorite) {
+        mIsFavorite = isFavorite;
+        if (mIsFavorite) {
+            mTvCollect.setText(getResources().getString(R.string.new_font_collected));
+            mTvCollect.setTextColor(ContextCompat.getColor(this, R.color.primary_color));
+            mTvCollectTxt.setTextColor(ContextCompat.getColor(this, R.color.primary_color));
+        } else {
+            mTvCollect.setText(getResources().getString(R.string.new_font_collect));
+            mTvCollect.setTextColor(ContextCompat.getColor(this, R.color.secondary_font_color));
+            mTvCollectTxt.setTextColor(ContextCompat.getColor(this, R.color.secondary_font_color));
+        }
     }
 
     private void consult() {

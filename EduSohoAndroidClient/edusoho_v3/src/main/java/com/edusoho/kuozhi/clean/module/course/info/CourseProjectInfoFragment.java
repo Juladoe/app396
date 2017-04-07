@@ -5,21 +5,28 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
 
+import java.util.List;
 import java.util.Locale;
 
 import cn.trinea.android.common.util.StringUtils;
@@ -40,7 +47,6 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private RatingBar mCourseRate;
     private TextView mSalePrice;
     private TextView mOriginalPrice;
-    private ImageView mVipIcon;
     private TextView mSaleWord;
     private View mVipLine;
     private View mVipLayout;
@@ -53,7 +59,11 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private CircularImageView mTeacherAvatar;
     private TextView mTeacherName;
     private TextView mTeacherTitle;
-    private CourseProject courseProject;
+    private View mCourseMemberCountLayout;
+    private TextView mCourseMemberCount;
+    private LinearLayout mCourseMembers;
+    private View mCourseMembersLine;
+    private RecyclerView mRelativeCourses;
 
     @Nullable
     @Override
@@ -69,7 +79,6 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mCourseRate = (RatingBar) view.findViewById(R.id.rb_course_rate);
         mSalePrice = (TextView) view.findViewById(R.id.tv_sale_price);
         mOriginalPrice = (TextView) view.findViewById(R.id.tv_original_price);
-        mVipIcon = (ImageView) view.findViewById(R.id.iv_vip_icon);
         mSaleWord = (TextView) view.findViewById(R.id.tv_sale_word);
         mVipLine = view.findViewById(R.id.v_vip_line);
         mVipLayout = view.findViewById(R.id.rl_vip_layout);
@@ -82,6 +91,11 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mTeacherAvatar = (CircularImageView) view.findViewById(R.id.civ_teacher_avatar);
         mTeacherName = (TextView) view.findViewById(R.id.tv_teacher_name);
         mTeacherTitle = (TextView) view.findViewById(R.id.tv_teacher_title);
+        mCourseMemberCountLayout = view.findViewById(R.id.rl_course_member_num);
+        mCourseMemberCount = (TextView) view.findViewById(R.id.tv_course_member_count);
+        mCourseMembers = (LinearLayout) view.findViewById(R.id.ll_course_members);
+        mCourseMembersLine = view.findViewById(R.id.v_course_members_line);
+        mRelativeCourses = (RecyclerView) view.findViewById(R.id.rv_relative_courses);
     }
 
     @Override
@@ -96,7 +110,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     @Override
     public void showCourseProjectInfo(CourseProject courseProject) {
         mTitle.setText(courseProject.title);
-        mStudentNum.setText(String.format(Locale.CHINA, "%d" + getString(R.string.student_num), courseProject.studentNum));
+        mStudentNum.setText(String.format(getString(R.string.course_student_count), courseProject.studentNum));
         mCourseRate.setRating(Float.valueOf(courseProject.rating));
     }
 
@@ -172,6 +186,48 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     public void showTeacher(CourseProject.Teacher teacher) {
         mTeacherName.setText(teacher.nickname);
         mTeacherTitle.setText(teacher.title);
+        ImageLoader.getInstance().displayImage(teacher.avatar, mTeacherAvatar, EdusohoApp.app.mAvatarOptions);
+    }
+
+    @Override
+    public void showMemberNum(int count) {
+        mCourseMemberCount.setText(String.format(getString(R.string.course_member_count), count));
+    }
+
+    @Override
+    public void showMembers(CourseMember[] courseMembers) {
+        if (courseMembers != null && courseMembers.length > 0) {
+            mCourseMembers.setVisibility(View.VISIBLE);
+            mCourseMemberCountLayout.setVisibility(View.VISIBLE);
+            mCourseMembersLine.setVisibility(View.VISIBLE);
+            int screenWidth = EdusohoApp.screenW;
+            int memberAvatarWidth = CommonUtil.dip2px(getActivity(), 50);
+            int avatarMargin = CommonUtil.dip2px(getActivity(), 24);
+            int viewMargin = CommonUtil.dip2px(getActivity(), 15);
+            int showMemberCount;
+            showMemberCount = (screenWidth + avatarMargin - 2 * viewMargin) / (memberAvatarWidth + avatarMargin);
+            int size = (showMemberCount < courseMembers.length ? showMemberCount : courseMembers.length);
+            for (int i = 0; i < size; i++) {
+                CircularImageView memberAvatar = new CircularImageView(getActivity());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(CommonUtil.dip2px(getActivity(), 50), CommonUtil.dip2px(getActivity(), 50));
+                if (i != size - 1) {
+                    lp.rightMargin = CommonUtil.dip2px(getActivity(), 24);
+                }
+                memberAvatar.setLayoutParams(lp);
+                ImageLoader.getInstance().displayImage(courseMembers[i].user.getMediumAvatar(), memberAvatar, EdusohoApp.app.mAvatarOptions);
+                mCourseMembers.addView(memberAvatar);
+            }
+        }
+    }
+
+    @Override
+    public void showRelativeCourseProjects(List<CourseProject> courseProjectList) {
+        mRelativeCourses.setHasFixedSize(true);
+        mRelativeCourses.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRelativeCourses.setItemAnimator(new DefaultItemAnimator());
+        mRelativeCourses.setNestedScrollingEnabled(false);
+        RelativeCourseAdapter relativeCourseAdapter = new RelativeCourseAdapter(getActivity(), courseProjectList);
+        mRelativeCourses.setAdapter(relativeCourseAdapter);
     }
 
     public CourseProjectFragmentListener newInstance(CourseProject courseProject) {
@@ -187,5 +243,18 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         return COURSE_PROJECT_MODEL;
     }
 
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView courseTitle;
+        public TextView coursePrice;
+        public TextView courseTasks;
+        public LinearLayout promiseServiceLayout;
 
+        public ViewHolder(View view) {
+            super(view);
+            courseTitle = (TextView) view.findViewById(R.id.tv_course_project_title);
+            coursePrice = (TextView) view.findViewById(R.id.tv_course_project_price);
+            courseTasks = (TextView) view.findViewById(R.id.tv_course_tasks);
+            promiseServiceLayout = (LinearLayout) view.findViewById(R.id.ll_promise_layout);
+        }
+    }
 }

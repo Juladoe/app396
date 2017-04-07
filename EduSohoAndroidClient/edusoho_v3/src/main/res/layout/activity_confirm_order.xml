@@ -91,6 +91,7 @@
 
         <TextView
             tools:text="摄影后期高手班"
+            android:id="@+id/tv_from_course"
             android:textSize="@dimen/font_xs"
             android:textColor="@color/secondary_font_color"
             android:paddingTop="2dp"
@@ -106,6 +107,7 @@
         android:layout_height="15dp"/>
 
     <RelativeLayout
+        android:id="@+id/rl_discount"
         android:background="@color/disabled2_hint_color"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
@@ -113,7 +115,7 @@
         android:layout_height="40dp">
 
         <TextView
-            tools:text="优惠券"
+            android:text="优惠券"
             android:textSize="@dimen/font_l"
             android:layout_centerVertical="true"
             android:textColor="@color/primary_font_color"
@@ -131,7 +133,7 @@
             android:textSize="13dp" />
 
         <TextView
-            tools:text="减¥50"
+            android:id="@+id/tv_discount_subtract"
             android:textSize="@dimen/font_s"
             android:textColor="@color/secondary_color"
             android:layout_centerVertical="true"
@@ -145,33 +147,6 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="15dp"/>
-
-    <RelativeLayout
-        android:background="@color/disabled2_hint_color"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="40dp">
-
-        <TextView
-            tools:text="虚拟币"
-            android:textSize="@dimen/font_l"
-            android:layout_centerVertical="true"
-            android:textColor="@color/primary_font_color"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-            android:id="@+id/iv_virtual"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:padding="10dp"
-            android:text="@string/new_font_more"
-            android:textColor="@color/primary_font_color"
-            android:textSize="13dp" />
-
-    </RelativeLayout>
 
     <View
         android:layout_weight="1"
@@ -193,7 +168,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:background="@color/primary"
+            android:background="@drawable/round_green_bg"
             android:layout_width="80dp"
             android:layout_height="36dp" />
 
@@ -218,7 +193,6 @@
             android:layout_toLeftOf="@id/tv_sum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
 
     </RelativeLayout>
 

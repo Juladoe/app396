@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.module.courseset.review;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ public class CourseEvaluateAdapter extends RecyclerView.Adapter {
 
     private List<DataBean> mList;
     private View mItem;
+    private Context mContext;
 
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
@@ -39,7 +41,8 @@ public class CourseEvaluateAdapter extends RecyclerView.Adapter {
     //上拉加载更多状态-默认为0
     private int mLoadMoreStatus = 0;
 
-    public CourseEvaluateAdapter() {
+    public CourseEvaluateAdapter(Context context) {
+        this.mContext = context;
         this.mList = new ArrayList<>();
     }
 
@@ -78,7 +81,7 @@ public class CourseEvaluateAdapter extends RecyclerView.Adapter {
         if (holder instanceof EvaluateViewHolder) {
             DataBean courseReview = mList.get(position);
             EvaluateViewHolder evaluateViewHolder = (EvaluateViewHolder) holder;
-            evaluateViewHolder.mFrom.setText(String.format("%s%s", "来自: ", courseReview.getCourse().getTitle()));
+            evaluateViewHolder.mFrom.setText(String.format(mContext.getString(R.string.review_free), courseReview.getCourse().getTitle()));
             evaluateViewHolder.mName.setText(courseReview.getUser().getNickname());
             evaluateViewHolder.mTime.setText(CommonUtil.convertWeekTime(courseReview.getCreatedTime()));
             evaluateViewHolder.mDesc.setText(courseReview.getContent());

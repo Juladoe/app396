@@ -21,9 +21,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.GuaranteServiceAdapter;
+import com.edusoho.kuozhi.clean.module.courseset.confirmorder.ConfirmOrderActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import java.util.List;
@@ -45,6 +47,8 @@ public class CustomDialog extends Dialog {
     private RadioButton mRb;
     private List<CourseStudyPlan> mCourseStudyPlans;
     private List<VipInfo> mVipInfos;
+    private CourseSet mCourseSet;
+    private CourseStudyPlan mCourseStudyPlan;
 
     public CustomDialog(@NonNull Context context) {
         super(context, R.style.dialog_custom);
@@ -127,7 +131,7 @@ public class CustomDialog extends Dialog {
                 setPositionBottom();
                 RecyclerView rv = (RecyclerView) findViewById(R.id.rv_content);
                 GuaranteServiceAdapter guaranteServiceAdapter = new GuaranteServiceAdapter();
-                rv.setLayoutManager(new LinearLayoutManager(getContext()));
+                rv.setLayoutManager(new LinearLayoutManager(mContext));
                 rv.setAdapter(guaranteServiceAdapter);
                 break;
         }
@@ -159,7 +163,7 @@ public class CustomDialog extends Dialog {
 
     private void setPositionBottom() {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
-        lp.width = getContext().getResources().getDisplayMetrics().widthPixels;
+        lp.width = mContext.getResources().getDisplayMetrics().widthPixels;
         getWindow().setGravity(Gravity.BOTTOM);
         getWindow().setAttributes(lp);
     }
@@ -207,7 +211,13 @@ public class CustomDialog extends Dialog {
                 findViewById(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
+                        Bundle bundle = new Bundle();
+                        bundle.putString(ConfirmOrderActivity.PLANTITLE, mCourseStudyPlan.getTitle());
+                        bundle.putInt(ConfirmOrderActivity.PLANPRICE, ((int) mCourseStudyPlan.getPrice()));
+                        bundle.putString(ConfirmOrderActivity.PLANFROM, mCourseSet.getTitle());
+                        bundle.putString(ConfirmOrderActivity.COURSEIMG, mCourseSet.cover.middle);
+                        bundle.putString(ConfirmOrderActivity.PLANID, mCourseStudyPlan.getId());
+                        ConfirmOrderActivity.newInstance(mContext, bundle);
                     }
                 });
                 break;
@@ -252,9 +262,10 @@ public class CustomDialog extends Dialog {
         return this;
     }
 
-    public Dialog initPlanData(List<CourseStudyPlan> list, List<VipInfo> vipInfo){
+    public Dialog initPlanData(List<CourseStudyPlan> list, List<VipInfo> vipInfo, CourseSet courseSet){
         mCourseStudyPlans = list;
         mVipInfos = vipInfo;
+        mCourseSet = courseSet;
         return this;
     }
 
@@ -264,25 +275,25 @@ public class CustomDialog extends Dialog {
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 View view = group.findViewById(checkedId);
                 int position = group.indexOfChild(view);
-                CourseStudyPlan courseStudyPlan = mCourseStudyPlans.get(position);
+                mCourseStudyPlan = mCourseStudyPlans.get(position);
                 if ("1".equals(mCourseStudyPlans.get(position).getIsFree())) {
                     findViewById(R.id.discount).setVisibility(View.GONE);
                     findViewById(R.id.tv_original_price).setVisibility(View.GONE);
-                    ((TextView) findViewById(R.id.tv_discount_price)).setText("免费");
-                    ((TextView) findViewById(R.id.tv_discount_price)).setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
+                    ((TextView) findViewById(R.id.tv_discount_price)).setText(R.string.free_course_project);
+                    ((TextView) findViewById(R.id.tv_discount_price)).setTextColor(ContextCompat.getColor(mContext, R.color.primary));
                 } else {
                     findViewById(R.id.discount).setVisibility(View.VISIBLE);
-                    ((TextView) findViewById(R.id.tv_discount_price)).setText(String.format("%s%s", "¥ ", courseStudyPlan.getPrice()));
-                    ((TextView) findViewById(R.id.tv_original_price)).setText(String.format("%s%s", "¥ ", courseStudyPlan.getOriginPrice()));
+                    ((TextView) findViewById(R.id.tv_discount_price)).setText(String.format("%s%s", "¥ ", mCourseStudyPlan.getPrice()));
+                    ((TextView) findViewById(R.id.tv_original_price)).setText(String.format("%s%s", "¥ ", mCourseStudyPlan.getOriginPrice()));
                     ((TextView) findViewById(R.id.tv_original_price)).getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);;
-                    ((TextView) findViewById(R.id.tv_discount_price)).setTextColor(ContextCompat.getColor(getContext(), R.color.secondary_color));
+                    ((TextView) findViewById(R.id.tv_discount_price)).setTextColor(ContextCompat.getColor(mContext, R.color.secondary_color));
                 }
                 findViewById(R.id.tv_service).setVisibility(View.GONE);
-                List<CourseStudyPlan.ServicesBean> servicesList = courseStudyPlan.getServices();
+                List<CourseStudyPlan.ServicesBean> servicesList = mCourseStudyPlan.getServices();
                 if (servicesList != null && servicesList.size() != 0) {
                     findViewById(R.id.tv_service).setVisibility(View.VISIBLE);
                     StringBuilder sb = new StringBuilder();
-                    sb.append("承诺服务: ");
+                    sb.append(mContext.getString(R.string.promise_services));
                     for (int i = 0; i < servicesList.size(); i++) {
                         sb.append(servicesList.get(i).getFull_name());
                         if (i != servicesList.size() - 1) {
@@ -291,19 +302,20 @@ public class CustomDialog extends Dialog {
                     }
                     ((TextView) findViewById(R.id.tv_service)).setText(sb);
                 }
-//                ((TextView) findViewById(R.id.tv_way)).setText("");
-                if ("days".equals(courseStudyPlan.getExpiryMode())) {
-                    ((TextView) findViewById(R.id.tv_validity)).setText(String.format("%s%s", "有效期:  ", courseStudyPlan.getExpiryDays() + "天"));
+                ((TextView) findViewById(R.id.tv_way)).setText("freeMode".equals(mCourseStudyPlan.getLearnMode()) ?
+                                           mContext.getString(R.string.free_mode): mContext.getString(R.string.locked_mode) );
+                if ("days".equals(mCourseStudyPlan.getExpiryMode())) {
+                    ((TextView) findViewById(R.id.tv_validity)).setText(String.format(mContext.getString(R.string.validity_day), mCourseStudyPlan.getExpiryDays()));
                 } else {
-                    ((TextView) findViewById(R.id.tv_validity)).setText("有效期:  永久");
+                    ((TextView) findViewById(R.id.tv_validity)).setText(R.string.validity_forever);
                 }
-                ((TextView) findViewById(R.id.tv_task)).setText(String.format("%s%s", "学习任务:  ", courseStudyPlan.getTaskNum() + "个"));
+                ((TextView) findViewById(R.id.tv_task)).setText(String.format(mContext.getString(R.string.course_task_num), mCourseStudyPlan.getTaskNum()));
                 findViewById(R.id.tv_vip).setVisibility(View.GONE);
                 for (int i = 0; i < mVipInfos.size(); i++) {
                     VipInfo vipInfo = mVipInfos.get(i);
-                    if (vipInfo.getId().equals(courseStudyPlan.getId())) {
+                    if (vipInfo.getId().equals(mCourseStudyPlan.getId())) {
                         findViewById(R.id.tv_vip).setVisibility(View.VISIBLE);
-                        ((TextView) findViewById(R.id.tv_vip)).setText(String.format("%s%s", vipInfo.getName(), "会员免费加入学习"));
+                        ((TextView) findViewById(R.id.tv_vip)).setText(String.format(mContext.getString(R.string.vip_free), vipInfo.getName()));
                         break;
                     }
                 }

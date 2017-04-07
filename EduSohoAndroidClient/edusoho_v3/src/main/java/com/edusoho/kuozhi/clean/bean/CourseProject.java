@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.clean.bean;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.util.List;
 
@@ -36,5 +38,7 @@ public class CourseProject implements Serializable {
         public String id;
         public String nickname;
         public String title;
+        @SerializedName("largeAvatar")
+        public String avatar;
     }
 }

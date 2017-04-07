@@ -20,10 +20,10 @@ public class CourseStudyPlan implements Serializable{
     private String maxStudentNum;
     private String status;
     private String isFree;
-    private String price;
+    private float price;
     private String vipLevelId;
     private String buyable;
-    private String taskNum;
+    private int taskNum;
     private int studentNum;
     private String parentId;
     private String ratingNum;
@@ -76,7 +76,7 @@ public class CourseStudyPlan implements Serializable{
         return isFree;
     }
 
-    public String getPrice() {
+    public float getPrice() {
         return price;
     }
 
@@ -88,7 +88,7 @@ public class CourseStudyPlan implements Serializable{
         return buyable;
     }
 
-    public String getTaskNum() {
+    public int getTaskNum() {
         return taskNum;
     }
 

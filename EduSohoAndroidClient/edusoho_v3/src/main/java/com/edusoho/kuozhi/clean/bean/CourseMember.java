@@ -10,7 +10,6 @@ import java.io.Serializable;
 
 public class CourseMember implements Serializable {
     public String id;
-    public String courseSetId;
     public String courseId;
     public User user;
 }

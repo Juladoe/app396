@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.api;
 
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
@@ -7,9 +8,7 @@ import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
-import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +21,7 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.Observable;
+
 
 /**
  * Created by JesseHuang on 2017/3/23.
@@ -82,15 +82,19 @@ public class RetrofitService {
         return mApiService.getVipLevel(id);
     }
 
-    public static Observable<DataPageResult<Member>> getCourseMembers(String courseId) {
-        return mApiService.getCourseMembers(courseId);
+    public static Observable<DataPageResult<CourseMember>> getCourseMembers(String courseId, int offset, int limit) {
+        return mApiService.getCourseMembers(courseId, offset, limit);
     }
 
-    public static Observable<List<CourseProject>> getCourses(String courseSetId) {
-        return mApiService.getCourses(courseSetId);
+    public static Observable<List<CourseProject>> getCourseProjects(String courseSetId) {
+        return mApiService.getCourseProjects(courseSetId);
     }
 
-    public static Observable<DataPageResult<CourseMember>> getCourseSetMember(String courseSetId) {
+    public static Observable<DataPageResult<com.edusoho.kuozhi.v3.model.bal.course.CourseMember>> getCourseSetMember(String courseSetId) {
         return mApiService.getCourseSetMember(courseSetId);
+    }
+
+    public static Observable<Boolean> getFavorite(int userId, String courseId) {
+        return mApiService.getFavorite(userId, courseId);
     }
 }

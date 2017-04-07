@@ -94,42 +94,6 @@
                 android:layout_marginTop="@dimen/common_16"/>
 
             <RelativeLayout
-                android:id="@+id/vip_rlayout"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="63dp">
-
-                <ImageView
-                    android:id="@+id/iv_vip"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/icon_vip" />
-
-                <TextView
-                    android:id="@+id/tv_vip_desc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/common_margin"
-                    android:layout_toRightOf="@+id/iv_vip"
-                    android:textColor="@color/secondary_font_color"
-                    android:textSize="@dimen/font_s" />
-
-                <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-                    android:layout_width="@dimen/common_20"
-                    android:layout_height="@dimen/common_44"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:gravity="center"
-                    android:text="@string/new_font_more"
-                    android:textColor="@color/primary_font_color"
-                    android:textSize="@dimen/font_s" />
-
-                <View style="@style/NewBottomLine" />
-            </RelativeLayout>
-
-            <RelativeLayout
                 android:id="@+id/rl_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">

@@ -62,7 +62,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         holder.mRlItem.setOnClickListener(this);
         holder.mFlayout.removeAllViews();
         holder.mClassType.setText(courseStudyPlan.getTitle());
-        holder.mTask.setText(String.format("%s%s", "学习任务: ", courseStudyPlan.getTaskNum() + "个"));
+        holder.mTask.setText(String.format(mContext.getString(R.string.course_task_num), courseStudyPlan.getTaskNum()));
         loadPrice(holder, courseStudyPlan);
         loadService(holder, courseStudyPlan);
         loadHot(holder, position);
@@ -72,11 +72,11 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
     private void loadPrice(StudyPlanViewHolder holder, CourseStudyPlan courseStudyPlan) {
         if ("1".equals(courseStudyPlan.getIsFree())) {
             holder.mSymbol.setVisibility(View.GONE);
-            holder.mPrice.setText("免费");
+            holder.mPrice.setText(R.string.free_course_project);
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
         } else {
             holder.mSymbol.setVisibility(View.VISIBLE);
-            holder.mPrice.setText(courseStudyPlan.getPrice());
+            holder.mPrice.setText(((int) courseStudyPlan.getPrice()) + "");
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.secondary_color));
         }
     }
@@ -110,7 +110,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
             VipInfo vipInfo = mVipInfos.get(i);
             if (courseStudyPlan.getVipLevelId().equals(vipInfo.getId())) {
                 holder.mVip.setVisibility(View.VISIBLE);
-                holder.mVip.setText(String.format("%s%s", vipInfo.getName(), "会员免费加入学习"));
+                holder.mVip.setText(String.format(mContext.getString(R.string.vip_free), vipInfo.getName()));
             }
         }
     }

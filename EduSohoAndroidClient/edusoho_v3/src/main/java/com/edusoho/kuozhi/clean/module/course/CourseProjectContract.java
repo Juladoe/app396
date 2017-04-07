@@ -15,7 +15,7 @@ public interface CourseProjectContract {
 
         void showCover(String imageUrl);
 
-        void setTitle(String title);
+        void setBottomLayoutVisible(boolean visible);
 
         void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject);
     }
@@ -23,10 +23,6 @@ public interface CourseProjectContract {
     interface Presenter extends BasePresenter {
 
         //Observable<CourseProject> getCourseProject(int id);
-
-        void learnTask(int taskId);
-
-        void favorite(int taskId);
 
         void consult();
 

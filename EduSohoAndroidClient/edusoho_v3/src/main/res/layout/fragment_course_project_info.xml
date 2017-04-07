@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,16 +33,16 @@
                 android:textColor="@color/secondary_font_color"
                 android:textSize="@dimen/font_s_" />
 
-            <RatingBar
+            <android.support.v7.widget.AppCompatRatingBar
                 android:id="@+id/rb_course_rate"
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:isIndicator="true"
-                android:progress="@color/secondary2_color"
                 android:rating="4.0"
-                android:scrollbarSize="5dp" />
+                android:scrollbarSize="5dp"
+                android:theme="@style/RatingBar" />
         </RelativeLayout>
 
         <RelativeLayout
@@ -283,7 +285,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:layout_weight="1"
-                        android:text="EduSoho官方运营"
                         android:textColor="@color/primary_font_color"
                         android:textSize="@dimen/font_xs" />
                 </LinearLayout>
@@ -297,16 +298,18 @@
         </LinearLayout>
 
         <RelativeLayout
+            android:id="@+id/rl_course_member_num"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="25dp">
+            android:layout_marginTop="25dp"
+            android:visibility="gone">
 
             <TextView
+                android:id="@+id/tv_course_member_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:text="课程学员（233）"
                 android:textColor="@color/primary_font_color"
                 android:textSize="@dimen/font_l" />
 
@@ -320,28 +323,36 @@
                 android:textSize="@dimen/font_xl" />
         </RelativeLayout>
 
-        <com.edusoho.kuozhi.v3.view.EduSohoGridView
-            android:id="@+id/ev_user_list"
+        <LinearLayout
+            android:id="@+id/ll_course_members"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:columnWidth="50dp"
-            android:horizontalSpacing="12dp"
-            android:numColumns="5" />
+            android:orientation="horizontal"
+            android:visibility="gone" />
 
         <View
+            android:id="@+id/v_course_members_line"
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_marginBottom="25dp"
             android:layout_marginTop="25dp"
-            android:background="@color/grey_dddddd" />
+            android:background="@color/grey_dddddd"
+            android:visibility="gone" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="相关学习计划"
+            android:layout_marginTop="25dp"
+            android:text="@string/relative_course_project"
             android:textColor="@color/primary_font_color"
             android:textSize="@dimen/font_l" />
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_relative_courses"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp" />
+
     </LinearLayout>
-</ScrollView>
+</android.support.v4.widget.NestedScrollView>

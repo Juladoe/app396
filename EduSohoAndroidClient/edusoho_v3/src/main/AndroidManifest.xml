@@ -348,6 +348,18 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar"/>
 
+        <activity
+            android:name=".clean.module.courseset.paywayselector.PayWayActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar"/>
+
+        <activity
+            android:name=".clean.module.courseset.confirmorder.ConfirmOrderActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar" />
+
     </application>
 
 </manifest>

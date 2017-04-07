@@ -16,7 +16,7 @@ public class CourseSet implements Serializable {
     private String serializeMode;
     private String status;
     public String summary;
-    private Cover cover;
+    public Cover cover;
     private String ratingNum;
     private float rating;
     private String noteNum;

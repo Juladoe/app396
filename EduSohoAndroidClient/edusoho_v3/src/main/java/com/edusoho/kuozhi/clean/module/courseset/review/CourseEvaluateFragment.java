@@ -43,7 +43,7 @@ public class CourseEvaluateFragment extends BaseLazyFragment implements CourseEv
         mContent = (RecyclerView) view.findViewById(R.id.rv_content);
         mEmpty = (TextView) view.findViewById(R.id.ll_discuss_empty);
         mLoadView = view.findViewById(R.id.ll_frame_load);
-        mCeAdapter = new CourseEvaluateAdapter();
+        mCeAdapter = new CourseEvaluateAdapter(getContext());
         mContent.setLayoutManager(new LinearLayoutManager(getContext()));
         mContent.setAdapter(mCeAdapter);
 

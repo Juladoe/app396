@@ -6,8 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
-import android.support.v7.internal.widget.DecorToolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,7 +41,6 @@ import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.SideBar;
 import com.umeng.analytics.MobclickAgent;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -296,7 +293,7 @@ public class FriendFragment extends BaseFragment {
         if (messageType.type.equals(Const.THIRD_PARTY_LOGIN_SUCCESS)) {
             initViewData();
         }
-        if (messageType.type.equals(Const.DELETE_FRIEND)){
+        if (messageType.type.equals(Const.DELETE_FRIEND)) {
             initViewData();
         }
         if (messageType.code == Const.NEW_FANS) {
@@ -315,22 +312,5 @@ public class FriendFragment extends BaseFragment {
                 , new MessageType(Const.THIRD_PARTY_LOGIN_SUCCESS)
                 , new MessageType(Const.DELETE_FRIEND)};
         return messageTypes;
-    }
-
-    public View getToolbarView() {
-
-        View view = null;
-        try {
-            ActionBar actionBar = mActivity.getSupportActionBar();
-            Field toolbarField = actionBar.getClass().getDeclaredField("mDecorToolbar");
-            toolbarField.setAccessible(true);
-            DecorToolbar toolbar = (DecorToolbar) toolbarField.get(actionBar);
-            view = toolbar.getViewGroup();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return view;
     }
 }

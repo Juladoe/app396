@@ -357,4 +357,8 @@
         <item name="android:color">@color/disabled2_hint_color</item>
     </style>
 
+    <style name="RatingBar" parent="Theme.AppCompat">
+        <item name="colorControlActivated">@color/secondary2_color</item>
+        <item name="colorControlNormal">@color/disabled_hint_color</item>
+    </style>
 </resources>

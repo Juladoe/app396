@@ -435,13 +435,25 @@
     <string name="confirm">确定</string>
     <string name="confirm1">确认</string>
     <string name="cancle">取消</string>
+    <string name="vip_free">%s会员免费加入学习</string>
+    <string name="review_free">来自: %s</string>
     <string name="account_balance">账号余额:</string>
     <string name="order_amount">订单金额:</string>
-    <string name="student_num">名学生</string>
     <string name="free_course_project">免费</string>
     <string name="sale_word">折</string>
     <string name="join_vip">加入%s会员，免费学习课程</string>
     <string name="course_info">课程简介</string>
+    <string name="course_member_count">课程学员（%d）</string>
+    <string name="course_student_count">%d名学生</string>
+    <string name="promise_services">承诺服务: </string>
+    <string name="relative_course_project">相关学习计划</string>
+    <string name="course_task_num">学习任务: %d个</string>
+    <string name="free_mode">学习方式: 自由式学习</string>
+    <string name="locked_mode">学习方式: 解锁式学习</string>
+    <string name="validity_day">有效期: %s天</string>
+    <string name="validity_forever">有效期:  永久</string>
+    <string name="input_pay_password">输入支付密码</string>
+    <string name="setting_password_hint">设置/重置密码: \n网页版—个人设置—安全设置—支付密码</string>
 
     <string-array name="unlearn_tab">
         <item>简介</item>
