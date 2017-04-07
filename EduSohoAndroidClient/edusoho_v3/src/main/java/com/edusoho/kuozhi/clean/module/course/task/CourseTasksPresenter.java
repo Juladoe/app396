@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskItem;
 
@@ -22,12 +23,12 @@ import rx.schedulers.Schedulers;
 
 public class CourseTasksPresenter implements CourseTasksContract.Presenter {
 
-    private String mCourseProjectId;
     private CourseTasksContract.View mView;
+    private CourseProject mCourseProject;
 
-    public CourseTasksPresenter(CourseTasksContract.View view, String courseProjectId) {
+    public CourseTasksPresenter(CourseTasksContract.View view, CourseProject courseProject) {
         mView = view;
-        mCourseProjectId = courseProjectId;
+        mCourseProject = courseProject;
     }
 
     public Observable<List<CourseItem>> getCourseItems(String courseId) {
@@ -36,7 +37,7 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
 
     @Override
     public void subscribe() {
-        getCourseItems(mCourseProjectId)
+        getCourseItems(mCourseProject.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<List<CourseItem>, Observable<CourseItem>>() {

@@ -231,14 +231,6 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mRelativeCourses.setAdapter(relativeCourseAdapter);
     }
 
-    public CourseProjectFragmentListener newInstance(CourseProject courseProject) {
-        CourseProjectInfoFragment fragment = new CourseProjectInfoFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(COURSE_PROJECT_MODEL, courseProject);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Override
     public String getBundleKey() {
         return COURSE_PROJECT_MODEL;

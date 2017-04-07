@@ -30,15 +30,6 @@ public class CourseTasksFragment extends Fragment implements
     private CourseTasksContract.Presenter mPresenter;
     private RecyclerView taskRecyclerView;
 
-
-    public CourseProjectFragmentListener newInstance(CourseProject courseProject) {
-        CourseTasksFragment fragment = new CourseTasksFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(COURSE_PROJECT_MODEL, courseProject);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Override
     public String getBundleKey() {
         return COURSE_PROJECT_MODEL;
@@ -53,7 +44,9 @@ public class CourseTasksFragment extends Fragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         taskRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
-        mPresenter = new CourseTasksPresenter(this, "5");
+        Bundle bundle = getArguments();
+        CourseProject courseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
+        mPresenter = new CourseTasksPresenter(this, courseProject);
         mPresenter.subscribe();
     }
 
