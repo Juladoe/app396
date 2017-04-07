@@ -68,8 +68,8 @@ public class RetrofitService {
         return mApiService.getVipLevel(id);
     }
 
-    public static Observable<DataPageResult<CourseMember>> getCourseMembers(String courseId, int offset, int limit) {
-        return mApiService.getCourseMembers(courseId, offset, limit);
+    public static Observable<DataPageResult<CourseMember>> getCourseMembers(String courseId, String role, int offset, int limit) {
+        return mApiService.getCourseMembers(courseId, role, offset, limit);
     }
 
     public static Observable<List<CourseProject>> getCourseProjects(String courseSetId) {

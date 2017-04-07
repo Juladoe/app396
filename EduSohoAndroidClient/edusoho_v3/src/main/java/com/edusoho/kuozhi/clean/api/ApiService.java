@@ -34,11 +34,12 @@ public interface ApiService {
     @GET("plugins/vip/vip_levels/{id}")
     Observable<VipLevel> getVipLevel(@Path("id") String id);
 
-    @GET("courses/{courseId}/members")
-    Observable<DataPageResult<CourseMember>> getCourseMembers(@Path("courseId") String courseId, @Query("offset") int offset, @Query("limit") int limit);
+    @GET("courses/{id}/members")
+    Observable<DataPageResult<CourseMember>> getCourseMembers(@Path("id") String courseId, @Query("role") String role,
+                                                              @Query("offset") int offset, @Query("limit") int limit);
 
-    @GET("course_sets/{course_setId}/courses")
-    Observable<List<CourseProject>> getCourseProjects(@Path("course_setId") String courseSetId);
+    @GET("course_sets/{id}/courses")
+    Observable<List<CourseProject>> getCourseProjects(@Path("id") String courseSetId);
 
     @GET("course_sets/{id}/reviews")
     Observable<DataPageResult<Review>> getCourseSetReviews(@Query("courseId") String courseId,

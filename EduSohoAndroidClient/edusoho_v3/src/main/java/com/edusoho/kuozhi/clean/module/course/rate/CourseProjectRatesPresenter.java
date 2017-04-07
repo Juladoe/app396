@@ -4,10 +4,6 @@ import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Review;
-import com.edusoho.kuozhi.v3.model.bal.User;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
