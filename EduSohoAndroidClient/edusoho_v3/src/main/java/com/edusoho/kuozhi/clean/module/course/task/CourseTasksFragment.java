@@ -53,7 +53,7 @@ public class CourseTasksFragment extends Fragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         taskRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
-        mPresenter = new CourseTasksPresenter(this, "1");
+        mPresenter = new CourseTasksPresenter(this, "5");
         mPresenter.subscribe();
     }
 
@@ -67,13 +67,15 @@ public class CourseTasksFragment extends Fragment implements
     public static class CourseTaskViewHolder extends RecyclerView.ViewHolder {
         public ESIconView taskType;
         public TextView taskName;
-        public TextView taskTime;
+        public TextView taskDuration;
+        public TextView taskIsFree;
 
         public CourseTaskViewHolder(View view) {
             super(view);
             taskType = (ESIconView) view.findViewById(R.id.ev_task_type);
             taskName = (TextView) view.findViewById(R.id.tv_task_name);
-            taskTime = (TextView) view.findViewById(R.id.tv_task_time);
+            taskDuration = (TextView) view.findViewById(R.id.tv_task_duration);
+            taskIsFree = (TextView) view.findViewById(R.id.tv_task_is_free);
         }
     }
 
@@ -82,7 +84,7 @@ public class CourseTasksFragment extends Fragment implements
 
         public CourseTaskUnitViewHolder(View view) {
             super(view);
-            unitTitle = (TextView) view.findViewById(R.id.tv_chapter_title);
+            unitTitle = (TextView) view.findViewById(R.id.tv_unit_title);
         }
     }
 

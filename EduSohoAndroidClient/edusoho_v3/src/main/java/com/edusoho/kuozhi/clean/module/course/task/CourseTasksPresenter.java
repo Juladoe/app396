@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.clean.module.course.task;
 
+import android.util.Log;
+
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
@@ -63,6 +65,7 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
 
                     @Override
                     public void onNext(List<TaskItem> taskItems) {
+                        Log.d("getCourseI1tems", "onNext: " + taskItems.toString());
                         mView.showCourseTasks(taskItems);
                     }
                 });

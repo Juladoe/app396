@@ -12,6 +12,7 @@ public class TaskItem implements Serializable {
     public String courseId;
     public String type;
     public String parentId;
+    public int isFree;
     public int number;
     public int secondNumber;
     public int seq;
@@ -25,7 +26,7 @@ public class TaskItem implements Serializable {
         } else if (secondNumber == 0) {
             return number + "";
         } else {
-            return String.format("%d-%d", number, secondNumber);
+            return String.format("%d-%d：", number, secondNumber);
         }
     }
 }

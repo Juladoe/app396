@@ -14,7 +14,7 @@ public class CourseTask implements Serializable {
     public String categoryId;
     public String activityId;
     public String title;
-    public String isFree;
+    public int isFree;
     public String isOptional;
     public String startTime;
     public String endTime;

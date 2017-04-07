@@ -28,12 +28,24 @@ public class CourseItem implements Serializable {
             taskItem.number = number;
             taskItem.title = title;
             taskItems.add(taskItem);
+        } else if (tasks.size() == 1) {
+            CourseTask courseTask = tasks.get(0);
+            TaskItem taskItem = new TaskItem();
+            taskItem.id = courseTask.id;
+            taskItem.title = courseTask.title;
+            taskItem.isFree = courseTask.isFree;
+            taskItem.type = courseTask.type;
+            taskItem.number = courseTask.number;
+            taskItem.secondNumber = 0;
+            taskItem.length = courseTask.length;
+            taskItems.add(taskItem);
         } else {
             int index = 1;
             for (CourseTask courseTask : tasks) {
                 TaskItem taskItem = new TaskItem();
                 taskItem.id = courseTask.id;
                 taskItem.title = courseTask.title;
+                taskItem.isFree = courseTask.isFree;
                 taskItem.type = courseTask.type;
                 taskItem.number = courseTask.number;
                 taskItem.secondNumber = index++;

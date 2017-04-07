@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="horizontal"
+    android:paddingBottom="20dp"
+    android:paddingLeft="15dp"
     android:paddingRight="15dp"
-    app:paddingLeft="15dp">
+    android:paddingTop="20dp">
 
     <com.edusoho.kuozhi.clean.widget.ESIconView
         android:id="@+id/ev_task_type"
@@ -20,12 +21,19 @@
         android:id="@+id/tv_task_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="碰到不想接的话题时，如何进行引导"
+        android:layout_marginLeft="10dp"
         android:textColor="@color/secondary_font_color"
         android:textSize="@dimen/font_s" />
 
     <TextView
-        android:id="@+id/tv_task_time"
+        android:id="@+id/tv_task_is_free"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/font_xxs" />
+
+    <TextView
+        android:id="@+id/tv_task_duration"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="05:20"

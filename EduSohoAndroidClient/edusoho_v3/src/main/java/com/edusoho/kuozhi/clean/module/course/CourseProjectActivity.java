@@ -59,7 +59,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         setContentView(R.layout.activity_course_project);
         if (getIntent() != null) {
             mCourseProjectId = getIntent().getStringExtra(COURSE_PROJECT_ID);
-            mCourseProjectId = "1";
+            mCourseProjectId = "5";
         }
         init();
     }

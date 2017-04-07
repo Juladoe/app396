@@ -64,9 +64,9 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             unitHolder.unitTitle.setText(String.format(mContext.getString(R.string.course_project_unit), taskItem.number, taskItem.title));
         } else if (holder instanceof CourseTaskViewHolder) {
             CourseTaskViewHolder taskHolder = (CourseTaskViewHolder) holder;
-            taskHolder.taskName.setText(taskItem.toTaskSequence() + " " + taskItem.title);
-            taskHolder.taskTime.setText(taskItem.length);
-            //taskHolder.taskType
+            taskHolder.taskName.setText(String.format(mContext.getString(R.string.course_project_task_item_name), taskItem.toTaskSequence(), taskItem.title));
+            taskHolder.taskDuration.setText(taskItem.length);
+            taskHolder.taskIsFree.setVisibility(taskItem.isFree == 1 ? View.VISIBLE : View.GONE);
         }
     }
 
