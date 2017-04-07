@@ -256,6 +256,20 @@
     <string name="catalog_lesson_ppt">&#xe68f;</string>
     <string name="catalog_lesson_text">&#xe682;</string>
     <string name="catalog_lesson_flash">&#xe689;</string>
+
+    <string name="task_text">&#xe682;</string>
+    <string name="task_video">&#xe673;</string>
+    <string name="task_audio">&#xe674;</string>
+    <string name="task_live">&#xe691;</string>
+    <string name="task_discuss">&#xe674;</string>
+    <string name="task_flash">&#xe689;</string>
+    <string name="task_doc">&#xe690;</string>
+    <string name="task_ppt">&#xe68f;</string>
+    <string name="task_testpaper">&#xe680;</string>
+    <string name="task_homework">&#xe674;</string>
+    <string name="task_exercise">&#xe674;</string>
+    <string name="task_download">&#xe672;</string>
+
     <string name="discuss_comment">&#xe698;</string>
     <string name="discuss_publish">&#xe697;</string>
     <string name="discuss_close">&#xe671;</string>

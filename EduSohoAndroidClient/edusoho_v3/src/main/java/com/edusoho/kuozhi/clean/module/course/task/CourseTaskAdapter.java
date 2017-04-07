@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.clean.module.course.task;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,19 +21,19 @@ import static com.edusoho.kuozhi.clean.module.course.task.CourseTasksFragment.Co
  */
 
 public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private List<TaskItem> mTaskItem;
+    private List<TaskItem> mTaskItems;
     private Context mContext;
 
     public CourseTaskAdapter(Context context, List<TaskItem> taskItems) {
-        this.mTaskItem = taskItems;
+        this.mTaskItems = taskItems;
         this.mContext = context;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (CourseItemEnum.CHAPTER.toString().equals(mTaskItem.get(position).type)) {
+        if (CourseItemEnum.CHAPTER.toString().equals(mTaskItems.get(position).type)) {
             return CourseItemEnum.CHAPTER.getIndex();
-        } else if (CourseItemEnum.UNIT.toString().equals(mTaskItem.get(position).type)) {
+        } else if (CourseItemEnum.UNIT.toString().equals(mTaskItems.get(position).type)) {
             return CourseItemEnum.UNIT.getIndex();
         } else {
             return CourseItemEnum.LESSON.getIndex();
@@ -55,7 +56,7 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        TaskItem taskItem = mTaskItem.get(position);
+        TaskItem taskItem = mTaskItems.get(position);
         if (holder instanceof CourseTaskChapterViewHolder) {
             CourseTaskChapterViewHolder chapterHolder = (CourseTaskChapterViewHolder) holder;
             chapterHolder.chapterTitle.setText(String.format(mContext.getString(R.string.course_project_chapter), taskItem.number, taskItem.title));
@@ -67,11 +68,39 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             taskHolder.taskName.setText(String.format(mContext.getString(R.string.course_project_task_item_name), taskItem.toTaskSequence(), taskItem.title));
             taskHolder.taskDuration.setText(taskItem.length);
             taskHolder.taskIsFree.setVisibility(taskItem.isFree == 1 ? View.VISIBLE : View.GONE);
+            Log.d("onBindViewHolder", "onBindViewHolder: " + taskItem.type);
+            taskHolder.taskType.setText(getTaskIconResId(taskItem.type));
         }
     }
 
     @Override
     public int getItemCount() {
-        return mTaskItem.size();
+        return mTaskItems.size();
+    }
+
+    private int getTaskIconResId(String type) {
+        TaskIconEnum icon = TaskIconEnum.fromString(type);
+        switch (icon) {
+            case TEXT:
+                return R.string.task_text;
+            case VIDEO:
+                return R.string.task_video;
+            case AUDIO:
+                return R.string.task_audio;
+            case LIVE:
+                return R.string.task_live;
+            case FLASH:
+                return R.string.task_flash;
+            case DOC:
+                return R.string.task_doc;
+            case TESTPAPER:
+                return R.string.task_testpaper;
+            case HOMEWORK:
+                return R.string.task_homework;
+            case EXERCISE:
+                return R.string.task_exercise;
+            default:
+                return R.string.task_download;
+        }
     }
 }

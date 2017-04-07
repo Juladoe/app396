@@ -65,7 +65,6 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
 
                     @Override
                     public void onNext(List<TaskItem> taskItems) {
-                        Log.d("getCourseI1tems", "onNext: " + taskItems.toString());
                         mView.showCourseTasks(taskItems);
                     }
                 });
