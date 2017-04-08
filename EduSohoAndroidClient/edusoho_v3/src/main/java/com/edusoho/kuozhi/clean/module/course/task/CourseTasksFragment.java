@@ -31,8 +31,11 @@ public class CourseTasksFragment extends Fragment implements
     private RecyclerView taskRecyclerView;
 
     @Override
-    public String getBundleKey() {
-        return COURSE_PROJECT_MODEL;
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        CourseProject courseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
+        mPresenter = new CourseTasksPresenter(this, courseProject);
     }
 
     @Nullable
@@ -44,10 +47,12 @@ public class CourseTasksFragment extends Fragment implements
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         taskRecyclerView = (RecyclerView) view.findViewById(R.id.rv_content);
-        Bundle bundle = getArguments();
-        CourseProject courseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
-        mPresenter = new CourseTasksPresenter(this, courseProject);
         mPresenter.subscribe();
+    }
+
+    @Override
+    public String getBundleKey() {
+        return COURSE_PROJECT_MODEL;
     }
 
     @Override

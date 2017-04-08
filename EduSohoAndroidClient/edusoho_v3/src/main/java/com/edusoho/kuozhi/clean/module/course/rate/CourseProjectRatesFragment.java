@@ -32,6 +32,14 @@ public class CourseProjectRatesFragment extends Fragment implements
     private CourseProjectRatesContract.Presenter mPresenter;
     private RecyclerView rateRecyclerView;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        CourseProject courseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
+        mPresenter = new CourseProjectRatesPresenter(courseProject, this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,9 +51,6 @@ public class CourseProjectRatesFragment extends Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Bundle bundle = getArguments();
-        CourseProject courseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
-        mPresenter = new CourseProjectRatesPresenter(courseProject, this);
         mPresenter.subscribe();
     }
 

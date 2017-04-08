@@ -1,17 +1,12 @@
 package com.edusoho.kuozhi.clean.module.course.info;
 
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +18,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
-import com.edusoho.kuozhi.clean.widget.ESIconView;
-import com.edusoho.kuozhi.clean.widget.ESPromiseService;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -71,6 +63,14 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private View mCourseMembersLine;
     private RecyclerView mRelativeCourses;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        CourseProject courseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
+        mPresenter = new CourseProjectInfoPresenter(courseProject, this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,7 +79,6 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-
         mPromise = (FlowLayout) view.findViewById(R.id.fl_promise_layout);
         mTitle = (TextView) view.findViewById(R.id.tv_course_project_title);
         mStudentNum = (TextView) view.findViewById(R.id.tv_student_num);
@@ -108,9 +107,6 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Bundle bundle = getArguments();
-        CourseProject courseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
-        mPresenter = new CourseProjectInfoPresenter(courseProject, this);
         mPresenter.subscribe();
     }
 
