@@ -20,6 +20,15 @@
         <attr name="iconSizeScale" format="float" />
     </declare-styleable>
 
+    <declare-styleable name="ESPromiseService">
+        <attr name="text" format="string" />
+        <attr name="text_size" format="dimension" />
+        <attr name="text_color" format="color" />
+        <attr name="icon" format="string" />
+        <attr name="icon_size" format="dimension" />
+        <attr name="icon_color" format="color" />
+    </declare-styleable>
+
     <declare-styleable name="ESExpandableTextView">
         <attr name="maxCollapsedLines" format="integer" />
         <attr name="animDuration" format="integer" />

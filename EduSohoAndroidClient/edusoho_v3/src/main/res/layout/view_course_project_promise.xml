@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <com.edusoho.kuozhi.clean.widget.ESIconView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:text="@string/course_project_promise_icon"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/font_m" />
+
+    <TextView
+        android:id="@+id/tv_promise"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:textColor="@color/secondary_font_color"
+        android:textSize="@dimen/font_s" />
+
+</LinearLayout>

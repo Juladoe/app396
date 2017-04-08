@@ -7,8 +7,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
+import com.edusoho.kuozhi.clean.widget.ESIconView;
+import com.edusoho.kuozhi.clean.widget.ESPromiseService;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
@@ -74,6 +79,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+
         mPromise = (FlowLayout) view.findViewById(R.id.fl_promise_layout);
         mTitle = (TextView) view.findViewById(R.id.tv_course_project_title);
         mStudentNum = (TextView) view.findViewById(R.id.tv_student_num);
@@ -152,14 +158,11 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         }
         mServicesLayout.setVisibility(View.VISIBLE);
         for (CourseProject.Service service : services) {
-            TextView tv = new TextView(getActivity());
-            tv.setTextColor(Color.BLACK);
-            tv.setText(service.full_name);
-            tv.setTextSize(AppUtil.px2sp(getActivity(), getResources().getDimension(R.dimen.font_s)));
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.view_course_project_promise, null);
+            ((TextView) view.findViewById(R.id.tv_promise)).setText(service.full_name);
             FlowLayout.LayoutParams lp = new FlowLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.rightMargin = 20;
-            tv.setLayoutParams(lp);
-            mPromise.addView(tv);
+            view.setLayoutParams(lp);
+            mPromise.addView(view);
         }
     }
 
