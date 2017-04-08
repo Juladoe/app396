@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.clean.utils.StringUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,11 +22,15 @@ import java.util.List;
 
 public class CourseProjectRatingAdapter extends RecyclerView.Adapter<CourseProjectRatesFragment.ViewHolder> {
     private Context mContext;
-    private List<Review> mReviews;
+    private List<Review> mReviews = new ArrayList<>();
 
-    public CourseProjectRatingAdapter(Context context, List<Review> reviews) {
+    public CourseProjectRatingAdapter(Context context) {
         this.mContext = context;
-        this.mReviews = reviews;
+    }
+
+    public void addDatas(List<Review> reviews) {
+        mReviews.addAll(reviews);
+        notifyDataSetChanged();
     }
 
     @Override

@@ -5,5 +5,7 @@ package com.edusoho.kuozhi.clean.utils;
  */
 
 public class CommonConstant {
+    public static final int LIMIT = 10;
+
     public static final String COURSE_PROJECT = "course_project";
 }

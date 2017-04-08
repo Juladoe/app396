@@ -453,5 +453,6 @@
     <string name="course_project_chapter">第%1$d章 %2$s</string>
     <string name="course_project_unit">第%1$d节 %2$s</string>
     <string name="course_project_task_item_name">任务%1$s %2$s</string>
+    <string name="load_more_text">正在加载...</string>
 
 </resources>

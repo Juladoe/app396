@@ -5,7 +5,7 @@
     android:background="@color/disabled2_hint_color"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
+    <com.edusoho.kuozhi.clean.widget.ESRecyclerView.ESPullAndLoadRecyclerView
         android:id="@+id/rv_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
