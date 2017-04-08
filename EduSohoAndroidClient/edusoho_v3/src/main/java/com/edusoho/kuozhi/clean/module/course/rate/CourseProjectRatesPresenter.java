@@ -27,7 +27,7 @@ public class CourseProjectRatesPresenter implements CourseProjectRatesContract.P
 
     @Override
     public void getRates() {
-        getRates(mCourseProject.courseSetId, mCourseProject.id);
+        getRates("3", "13");
     }
 
     public void getRates(String courseProjectId, String courseId) {
