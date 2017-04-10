@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.imserver.IMClient;
@@ -37,8 +38,8 @@ import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.article.Article;
-import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.article.ArticleList;
+import com.edusoho.kuozhi.v3.model.bal.article.ArticleModel;
 import com.edusoho.kuozhi.v3.model.bal.article.MenuItem;
 import com.edusoho.kuozhi.v3.model.provider.ArticleProvider;
 import com.edusoho.kuozhi.v3.model.provider.ModelProvider;
@@ -58,6 +59,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -307,8 +309,8 @@ public class ArticleFragment extends BaseFragment {
     private ArrayList<ArticleModel> getChatList(int start) {
         List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConvNo).getMessageList(start);
         ArrayList<ArticleModel> articleModels = new ArrayList<>();
-        for (MessageEntity messageEntity : messageEntityList) {
-            articleModels.add(new ArticleModel(messageEntity));
+        for (int i=0;i<messageEntityList.size();i++){
+            articleModels.add(new ArticleModel(messageEntityList.get(messageEntityList.size()-1-i)));
         }
         return articleModels;
     }

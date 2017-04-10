@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">北师大教师资格证</string>
+
+    <string name="app_host">http://v.laoshiok.com</string>
+    <string name="app_code">jingshi</string>
+    <string name="about_welcome">关于北师大教师资格证</string>
+    <string name="channel_name">jingshi</string>
+    <string name="splash_num">3</string>
+    <string name="splash_padding">0</string>
+    <string name="app_id">wx9ebbb540452e7852</string>
+
+    <string-array
+        name="shard_filter"
+        >
+        <item>TencentWeibo</item>
+        <item>QZone</item>
+
+    </string-array>
+
+</resources>

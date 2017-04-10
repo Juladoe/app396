@@ -22,6 +22,7 @@
             android:src="@drawable/icon_close" />
 
         <ImageView
+            android:visibility="gone"
             android:id="@+id/saoyisao"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -110,6 +111,7 @@
             </RelativeLayout>
 
             <TextView
+                android:visibility="invisible"
                 android:id="@+id/tv_more"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
