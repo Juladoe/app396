@@ -256,6 +256,20 @@
     <string name="catalog_lesson_ppt">&#xe68f;</string>
     <string name="catalog_lesson_text">&#xe682;</string>
     <string name="catalog_lesson_flash">&#xe689;</string>
+
+    <string name="task_text">&#xe682;</string>
+    <string name="task_video">&#xe673;</string>
+    <string name="task_audio">&#xe674;</string>
+    <string name="task_live">&#xe691;</string>
+    <string name="task_discuss">&#xe674;</string>
+    <string name="task_flash">&#xe689;</string>
+    <string name="task_doc">&#xe690;</string>
+    <string name="task_ppt">&#xe68f;</string>
+    <string name="task_testpaper">&#xe680;</string>
+    <string name="task_homework">&#xe674;</string>
+    <string name="task_exercise">&#xe674;</string>
+    <string name="task_download">&#xe672;</string>
+
     <string name="discuss_comment">&#xe698;</string>
     <string name="discuss_publish">&#xe697;</string>
     <string name="discuss_close">&#xe671;</string>
@@ -441,13 +455,8 @@
     <string name="order_amount">订单金额:</string>
     <string name="free_course_project">免费</string>
     <string name="sale_word">折</string>
-    <string name="join_vip">加入%s会员，免费学习课程</string>
+    <string name="join_vip">加入%1$s会员，免费学习课程</string>
     <string name="course_info">课程简介</string>
-    <string name="course_member_count">课程学员（%d）</string>
-    <string name="course_student_count">%d名学生</string>
-    <string name="promise_services">承诺服务: </string>
-    <string name="relative_course_project">相关学习计划</string>
-    <string name="course_task_num">学习任务: %d个</string>
     <string name="free_mode">学习方式: 自由式学习</string>
     <string name="locked_mode">学习方式: 解锁式学习</string>
     <string name="validity_day">有效期: %s天</string>
@@ -460,5 +469,18 @@
         <item>计划</item>
         <item>评价</item>
     </string-array>
+    <string name="course_member_count">课程学员（%1$d）</string>
+    <string name="course_student_count">%1$d名学生</string>
+    <string name="promise_services">承诺服务: </string>
+    <string name="course_project_promise_service">承诺服务</string>
+    <string name="relative_course_project">相关学习计划</string>
+    <string name="course_task_num">学习任务：%1$d个</string>
+    <string name="course_project_chapter">第%1$d章 %2$s</string>
+    <string name="course_project_unit">第%1$d节 %2$s</string>
+    <string name="course_project_task_item_name">任务%1$s %2$s</string>
+    <string name="cancel_favorite">取消收藏成功</string>
+    <string name="favorite_success">收藏成功</string>
+    <string name="join_success">加入成功</string>
+    <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
 
 </resources>

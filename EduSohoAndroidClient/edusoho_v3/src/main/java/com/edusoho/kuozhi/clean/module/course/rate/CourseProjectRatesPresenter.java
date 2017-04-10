@@ -1,11 +1,17 @@
 package com.edusoho.kuozhi.clean.module.course.rate;
 
+import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.v3.model.bal.User;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by JesseHuang on 2017/3/26.
@@ -21,25 +27,31 @@ public class CourseProjectRatesPresenter implements CourseProjectRatesContract.P
         this.mView = view;
     }
 
-    private void getRates(String courseProjectId) {
-        List<Review> reviews = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Review review = new Review();
-            review.content = "this is content ";
-            User user = new User();
-            user.nickname = "Jesse";
-            user.avatar = "http://devtest.edusoho.cn:82/files/user/2017/03-27/100636c6d340042729.png";
-            review.user = user;
-            review.updatedTime = "2017-03-30";
-            review.rating = 4.3f;
-            reviews.add(review);
-        }
-        mView.showRates(reviews);
+    private void getRates(String courseProjectId, String courseId) {
+        RetrofitService.getCourseProjectReviews(courseProjectId, courseId, 0, 10)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<DataPageResult<Review>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(DataPageResult<Review> reviewDataPageResult) {
+                        mView.showRates(reviewDataPageResult.data);
+                    }
+                });
     }
 
     @Override
     public void subscribe() {
-        getRates(mCourseProject.id);
+        getRates(mCourseProject.courseSetId, mCourseProject.id);
     }
 
     @Override

@@ -26,7 +26,7 @@ public class CourseSet implements Serializable {
     private String recommendedTime;
     private String orgId;
     private String orgCode;
-    private String discountId;
+    private int discountId;
     private float discount;
     private String hitNum;
     private String maxRate;
@@ -41,6 +41,7 @@ public class CourseSet implements Serializable {
     private List<?> tags;
     private List<?> goals;
     private String[] audiences;
+    private List<CreatorBean> teachers;
 
     public String getId() {
         return id;
@@ -111,7 +112,7 @@ public class CourseSet implements Serializable {
         return orgCode;
     }
 
-    public String getDiscountId() {
+    public int getDiscountId() {
         return discountId;
     }
 
@@ -179,14 +180,20 @@ public class CourseSet implements Serializable {
         return audiences;
     }
 
+    public List<CreatorBean> getTeachers() {
+        return teachers;
+    }
+
+    public void setTeachers(List<CreatorBean> teachers) {
+        this.teachers = teachers;
+    }
+
     public static class CreatorBean {
 
         private String id;
         private String nickname;
         private String title;
         private String smallAvatar;
-        private String mediumAvatar;
-        private String largeAvatar;
 
         public String getId() {
             return id;
@@ -202,14 +209,6 @@ public class CourseSet implements Serializable {
 
         public String getSmallAvatar() {
             return smallAvatar;
-        }
-
-        public String getMediumAvatar() {
-            return mediumAvatar;
-        }
-
-        public String getLargeAvatar() {
-            return largeAvatar;
         }
     }
 

@@ -15,6 +15,8 @@ public interface PayWayContract {
 
     interface Presenter extends BasePresenter{
 
+        void goPay(String type, String payWay);
+
     }
 
 }

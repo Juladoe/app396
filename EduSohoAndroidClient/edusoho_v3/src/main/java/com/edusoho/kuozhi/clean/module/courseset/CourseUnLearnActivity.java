@@ -23,9 +23,7 @@ import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
-import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.Teacher;
 import com.edusoho.kuozhi.v3.plugin.ShareTool;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
@@ -38,6 +36,8 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
+
+import java.util.List;
 
 import extensions.PagerSlidingTabStrip;
 
@@ -65,10 +65,14 @@ public class CourseUnLearnActivity extends AppCompatActivity
 
     private int mCourseId = 1;
     private boolean mIsFavorite = false;
-    private CourseDetail mCourseDetail;
     private ViewPager mViewPager;
     private CourseUnLearnContract.Presenter mPresenter;
     private CourseSet mCourseSet;
+    private ViewGroup mDiscountLayout;
+    private TextView mDiscountName;
+    private TextView mDiscountTime;
+    private Handler mHandler;
+    private Runnable mRunnable;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -94,9 +98,10 @@ public class CourseUnLearnActivity extends AppCompatActivity
     }
 
     private void isJoin() {
-        // TODO: 2017/3/21 判断是否已经加入计划
         initView();
-        initEvent();
+        RetrofitService.init(EdusohoApp.app.host);
+        mPresenter = new CourseUnLearnPresenter(mCourseId + "", this);
+        mPresenter.subscribe();
     }
 
     private void initView() {
@@ -112,17 +117,15 @@ public class CourseUnLearnActivity extends AppCompatActivity
         mAppBarLayout = (ScrollableAppBarLayout) findViewById(R.id.app_bar);
         mToolBarLayout = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         mShareView = (TextView) findViewById(R.id.iv_share);
+        mDiscountLayout = (ViewGroup) findViewById(R.id.ll_limit_activities);
+        mDiscountName = (TextView) findViewById(R.id.discount_activity_name);
+        mDiscountTime = (TextView) findViewById(R.id.discount_activity_time);
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setOffscreenPageLimit(2);
         mTabLayout = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         setSupportActionBar(mToolbar);
         mTabLayout.setIndicatorColor(R.color.primary_color);
-
-        RetrofitService.init(EdusohoApp.app.host);
-
-        mPresenter = new CourseUnLearnPresenter(mCourseId + "", this);
-        mPresenter.subscribe();
     }
 
     @Override
@@ -131,12 +134,13 @@ public class CourseUnLearnActivity extends AppCompatActivity
                                 getSupportFragmentManager(), titleArray, fragmentArray, getIntent().getExtras());
         mViewPager.setAdapter(courseUnJoinPagerAdapter);
         mTabLayout.setViewPager(mViewPager);
+        initEvent();
     }
 
     @Override
-    public void newFinish(boolean isShow) {
+    public void newFinish(boolean isShow, int content) {
         if (isShow) {
-            CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_unexit));
+            CommonUtil.shortToast(getBaseContext(), getResources().getString(content));
         }
         finish();
     }
@@ -147,6 +151,26 @@ public class CourseUnLearnActivity extends AppCompatActivity
         mConsult.setOnClickListener(this);
         mCollect.setOnClickListener(this);
         mTvAdd.setOnClickListener(this);
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 0) {
+                    mAddLayout.setVisibility(View.VISIBLE);
+                } else {
+                    mAddLayout.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
@@ -220,6 +244,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
                     mTvCollect.setText(getResources().getString(R.string.new_font_collect));
                     mTvCollect.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.secondary_font_color));
                     mTvCollectTxt.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.secondary_font_color));
+                    CommonUtil.shortToast(CourseUnLearnActivity.this, getString(R.string.cancel_favorite));
                 }
             });
         } else {
@@ -230,6 +255,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
                     mTvCollect.setText(getResources().getString(R.string.new_font_collected));
                     mTvCollect.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.primary_color));
                     mTvCollectTxt.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.primary_color));
+                    CommonUtil.shortToast(CourseUnLearnActivity.this, getString(R.string.favorite_success));
                 }
             });
         }
@@ -247,6 +273,51 @@ public class CourseUnLearnActivity extends AppCompatActivity
     }
 
     @Override
+    public void showDiscountInfo(String... text) {
+        mHandler = new Handler();
+        mDiscountLayout.setVisibility(View.VISIBLE);
+        mDiscountName.setText(text[1]);
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
+                // TODO: 2017/4/10  
+            }
+        };
+        mHandler.postDelayed(mRunnable, 1000);
+    }
+
+    private void consult() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_consultation");
+        if (((EdusohoApp) getApplication()).loginUser == null) {
+            CourseUtil.notLogin();
+            return;
+        }
+        List<CourseSet.CreatorBean> list = mCourseSet.getTeachers();
+        final CourseSet.CreatorBean creatorBean;
+        if (list.size() > 0) {
+            creatorBean = list.get(0);
+        } else {
+            CommonUtil.shortToast(this, getResources().getString(R.string.lesson_no_teacher));
+            return;
+        }
+        CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ImChatActivity.FROM_NAME, creatorBean.getNickname());
+                startIntent.putExtra(ImChatActivity.FROM_ID, creatorBean.getId());
+                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, creatorBean.getSmallAvatar());
+            }
+        });
+    }
+
+    protected void add() {
+        MobclickAgent.onEvent(this, "courseDetailsPage_joinTheCourse");
+        if (!"0".equals(mCourseId)) {
+            mPresenter.joinStudy();
+        }
+    }
+
+    @Override
     public void showFavorite(boolean isFavorite) {
         mIsFavorite = isFavorite;
         if (mIsFavorite) {
@@ -260,37 +331,6 @@ public class CourseUnLearnActivity extends AppCompatActivity
         }
     }
 
-    private void consult() {
-        MobclickAgent.onEvent(this, "courseDetailsPage_consultation");
-        if (((EdusohoApp) getApplication()).loginUser == null) {
-            CourseUtil.notLogin();
-            return;
-        }
-        Teacher[] teachers = mCourseDetail.getCourse().teachers;
-        final Teacher teacher;
-        if (teachers.length > 0) {
-            teacher = teachers[0];
-        } else {
-            CommonUtil.shortToast(this, getResources().getString(R.string.lesson_no_teacher));
-            return;
-        }
-        CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ImChatActivity.FROM_NAME, teacher.nickname);
-                startIntent.putExtra(ImChatActivity.FROM_ID, teacher.id);
-                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
-            }
-        });
-    }
-
-    protected void add() {
-        MobclickAgent.onEvent(this, "courseDetailsPage_joinTheCourse");
-        if (!"0".equals(mCourseId)) {
-            mPresenter.joinStudy(this);
-        }
-    }
-
     @Override
     public void showProcessDialog(boolean isShow) {
         if (isShow) {
@@ -298,6 +338,11 @@ public class CourseUnLearnActivity extends AppCompatActivity
         } else {
             hideProcesDialog();
         }
+    }
+
+    @Override
+    public void showLoadView(boolean isShow) {
+        mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
     }
 
     protected void showProcessDialog() {
@@ -316,6 +361,13 @@ public class CourseUnLearnActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mHandler != null) {
+            mHandler.removeCallbacks(mRunnable);
+        }
+    }
 
     private class CourseUnJoinPagerAdapter extends FragmentPagerAdapter {
 

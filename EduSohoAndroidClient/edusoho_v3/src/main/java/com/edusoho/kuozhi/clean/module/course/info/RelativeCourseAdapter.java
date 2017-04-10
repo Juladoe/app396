@@ -48,17 +48,22 @@ public class RelativeCourseAdapter extends RecyclerView.Adapter<CourseProjectInf
             holder.coursePrice.setTextColor(mContext.getResources().getColor(R.color.secondary_color));
         }
         holder.courseTasks.setText(String.format(mContext.getString(R.string.course_task_num), courseProject.publishedTaskNum));
-        for (CourseProject.Service service : courseProject.services) {
-            TextView serviceTextView = new TextView(mContext);
-            serviceTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-            serviceTextView.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-            serviceTextView.setText(service.short_name);
-            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.rightMargin = CommonUtil.dip2px(mContext, 10);
+        if (courseProject.services == null || courseProject.services.length == 0) {
+            holder.promiseServiceLayout.setVisibility(View.GONE);
+        } else {
+            holder.promiseServiceLayout.setVisibility(View.VISIBLE);
+            for (CourseProject.Service service : courseProject.services) {
+                TextView serviceTextView = new TextView(mContext);
+                serviceTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+                serviceTextView.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+                serviceTextView.setText(service.short_name);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                lp.rightMargin = CommonUtil.dip2px(mContext, 10);
 
-            serviceTextView.setLayoutParams(lp);
-            serviceTextView.setBackgroundResource(R.drawable.course_project_services);
-            holder.promiseServiceLayout.addView(serviceTextView);
+                serviceTextView.setLayoutParams(lp);
+                serviceTextView.setBackgroundResource(R.drawable.course_project_services);
+                holder.promiseServiceLayout.addView(serviceTextView);
+            }
         }
     }
 

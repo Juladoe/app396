@@ -40,14 +40,6 @@ public class CourseProjectRatesFragment extends Fragment implements
         return view;
     }
 
-    public CourseProjectFragmentListener newInstance(CourseProject courseProject) {
-        CourseProjectRatesFragment fragment = new CourseProjectRatesFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(COURSE_PROJECT_MODEL, courseProject);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);

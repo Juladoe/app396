@@ -18,6 +18,8 @@ public interface CourseProjectContract {
         void setBottomLayoutVisible(boolean visible);
 
         void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject);
+
+        void launchImChatWithTeacher(CourseProject.Teacher teacher);
     }
 
     interface Presenter extends BasePresenter {

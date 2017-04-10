@@ -15,7 +15,6 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
@@ -205,17 +204,15 @@ public class MineFragment extends BaseFragment implements AppBarLayout.OnOffsetC
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                MobclickAgent.onEvent(mContext, "i_userInformationPortal");
-//                mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
-//                    @Override
-//                    public void setIntentDate(Intent startIntent) {
-//                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_INFO);
-//                        startIntent.putExtra(Const.WEB_URL, url);
-//                    }
-//                });
-
-                CourseProjectActivity.newInstance(mContext, "1");
-//                mActivity.app.mEngine.runNormalPlugin("CourseProjectActivity", mContext, null);
+                MobclickAgent.onEvent(mContext, "i_userInformationPortal");
+                mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+                        String url = String.format(Const.MOBILE_APP_URL, mActivity.app.schoolHost, Const.MY_INFO);
+                        startIntent.putExtra(Const.WEB_URL, url);
+                    }
+                });
+                mActivity.app.mEngine.runNormalPlugin("CourseProjectActivity", mContext, null);
             }
         };
     }

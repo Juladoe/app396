@@ -24,22 +24,10 @@
             android:layout_height="wrap_content" />
 
         <TextView
-            android:text="¥ "
-            android:id="@+id/tv_symbol"
-            android:textColor="@color/secondary_color"
-            android:textSize="@dimen/font_s_"
-            android:layout_below="@id/tv_class_type"
-            android:gravity="bottom"
-            android:layout_marginTop="6dp"
-            android:layout_width="wrap_content"
-            android:layout_height="18dp" />
-
-        <TextView
             android:id="@+id/tv_price"
             android:textColor="@color/secondary_color"
             android:textSize="@dimen/font_l"
             android:gravity="bottom"
-            android:layout_toRightOf="@id/tv_symbol"
             android:layout_below="@id/tv_class_type"
             android:layout_marginTop="6dp"
             android:layout_width="wrap_content"
@@ -56,8 +44,8 @@
 
         <TextView
             android:id="@+id/tv_service"
-            android:text="承诺服务:  "
             android:textSize="@dimen/font_s"
+            android:text="@string/promise_services"
             android:layout_below="@id/tv_task"
             android:layout_marginTop="10dp"
             android:layout_width="wrap_content"

@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.clean.module.courseset;
 
-import android.content.Context;
-
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
@@ -17,16 +15,20 @@ public interface CourseUnLearnContract {
 
         void showBackGround(String img, CourseSet courseSet);
 
+        void showDiscountInfo(String... text);
+
         void showFavorite(boolean isFavorite);
 
-        void newFinish(boolean isShow);
+        void newFinish(boolean isShow, int content);
 
         void showProcessDialog(boolean isShow);
+
+        void showLoadView(boolean isShow);
     }
 
     interface Presenter extends BasePresenter {
         void isJoin();
 
-        void joinStudy(Context context);
+        void joinStudy();
     }
 }

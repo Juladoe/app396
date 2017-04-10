@@ -20,6 +20,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private CourseProjectContract.View mView;
     private String mCourseProjectId;
+    private CourseProject mCourseProject;
+    private CourseProject.Teacher mTeacher;
 
     public CourseProjectPresenter(String courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
@@ -28,7 +30,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     @Override
     public void consult() {
-
+        mView.launchImChatWithTeacher(mTeacher);
     }
 
     @Override
@@ -39,7 +41,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 .doOnNext(new Action1<CourseProject>() {
                     @Override
                     public void call(CourseProject courseProject) {
+                        if (courseProject.teachers.length > 0) {
+                            mTeacher = courseProject.teachers[0];
+                        }
                         mView.showFragments(initCourseModules(), courseProject);
+                        mView.setBottomLayoutVisible(true);
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -66,7 +72,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.showCover(courseSet.cover.large);
                     }
                 });
-
     }
 
     @Override

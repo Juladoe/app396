@@ -5,6 +5,8 @@ import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 
+import java.util.List;
+
 /**
  * Created by DF on 2017/4/1.
  */
@@ -21,7 +23,7 @@ public interface CourseIntroduceContract {
 
         void showInfoAndPeople();
 
-        void showStudent(CourseMember[] courseMembers);
+        void showStudent(List<CourseMember> courseMembers);
 
     }
 

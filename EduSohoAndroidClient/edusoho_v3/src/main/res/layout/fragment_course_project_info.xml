@@ -149,7 +149,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
-                    android:text="承诺服务"
+                    android:text="@string/course_project_promise_service"
                     android:textColor="@color/primary_font_color"
                     android:textSize="@dimen/font_l" />
 

@@ -195,8 +195,8 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showMembers(CourseMember[] courseMembers) {
-        if (courseMembers != null && courseMembers.length > 0) {
+    public void showMembers(List<CourseMember> courseMembers) {
+        if (courseMembers != null && courseMembers.size() > 0) {
             mCourseMembers.setVisibility(View.VISIBLE);
             mCourseMemberCountLayout.setVisibility(View.VISIBLE);
             mCourseMembersLine.setVisibility(View.VISIBLE);
@@ -206,7 +206,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
             int viewMargin = CommonUtil.dip2px(getActivity(), 15);
             int showMemberCount;
             showMemberCount = (screenWidth + avatarMargin - 2 * viewMargin) / (memberAvatarWidth + avatarMargin);
-            int size = (showMemberCount < courseMembers.length ? showMemberCount : courseMembers.length);
+            int size = (showMemberCount < courseMembers.size() ? showMemberCount : courseMembers.size());
             for (int i = 0; i < size; i++) {
                 CircularImageView memberAvatar = new CircularImageView(getActivity());
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(CommonUtil.dip2px(getActivity(), 50), CommonUtil.dip2px(getActivity(), 50));
@@ -214,7 +214,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
                     lp.rightMargin = CommonUtil.dip2px(getActivity(), 24);
                 }
                 memberAvatar.setLayoutParams(lp);
-                ImageLoader.getInstance().displayImage(courseMembers[i].user.getMediumAvatar(), memberAvatar, EdusohoApp.app.mAvatarOptions);
+                ImageLoader.getInstance().displayImage(courseMembers.get(i).user.getMediumAvatar(), memberAvatar, EdusohoApp.app.mAvatarOptions);
                 mCourseMembers.addView(memberAvatar);
             }
         }
@@ -228,14 +228,6 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mRelativeCourses.setNestedScrollingEnabled(false);
         RelativeCourseAdapter relativeCourseAdapter = new RelativeCourseAdapter(getActivity(), courseProjectList);
         mRelativeCourses.setAdapter(relativeCourseAdapter);
-    }
-
-    public CourseProjectFragmentListener newInstance(CourseProject courseProject) {
-        CourseProjectInfoFragment fragment = new CourseProjectInfoFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(COURSE_PROJECT_MODEL, courseProject);
-        fragment.setArguments(bundle);
-        return fragment;
     }
 
     @Override

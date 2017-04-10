@@ -15,8 +15,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -236,6 +234,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                     mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
                 }
             });
+//            CourseProjectActivity.launch(mContext, "5");
             return;
         }
         mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));

@@ -20,7 +20,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Created by DF on 2017/3/25.
  */
 
-public class ConfirmOrderActivity extends AppCompatActivity implements View.OnClickListener{
+public class ConfirmOrderActivity extends AppCompatActivity implements View.OnClickListener, ConfirmOrderContract.View{
 
     public static final String COURSEIMG = "course_img";
     public static final String PLANFROM = "from_course";
@@ -40,6 +40,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements View.OnCl
     private TextView mSum;
     private TextView mOriginal;
     private ConfirmOrderContract.Presenter mPresenter;
+    private int mPlanId;
 
     public static void newInstance(Context context, Bundle bundle) {
         Intent intent = new Intent(context, ConfirmOrderActivity.class);
@@ -52,6 +53,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements View.OnCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_order);
 
+        mPlanId = getIntent().getExtras().getInt(PLANID);
         initView();
         initEvent();
         showView();
@@ -70,7 +72,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements View.OnCl
         mSum = (TextView) findViewById(R.id.tv_sum);
         mOriginal = (TextView) findViewById(R.id.tv_original);
 
-        mPresenter = new ConfirmOrderPresenter();
+        mPresenter = new ConfirmOrderPresenter(this, mPlanId);
         mPresenter.subscribe();
     }
 
@@ -89,7 +91,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements View.OnCl
                 .build();
         ImageLoader.getInstance().displayImage(bundle.getString(COURSEIMG), mCourseImg, imageOptions);
         mPlanTitle.setText(bundle.getString(PLANTITLE));
-        int price = bundle.getInt(PLANPRICE);
+        float price = bundle.getFloat(PLANPRICE);
         if (price > 0) {
             mPlanPrice.setText(String.format("%s%s", "¥", price));
         } else {
@@ -109,7 +111,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements View.OnCl
         }else if(id == R.id.rl_discount){
 
         }else if(id == R.id.tv_pay) {
-            PayWayActivity.newInstance(this);
+            PayWayActivity.newInstance(this, mPlanId);
         }
     }
 }

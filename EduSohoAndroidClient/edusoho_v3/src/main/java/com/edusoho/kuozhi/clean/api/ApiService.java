@@ -1,19 +1,25 @@
 package com.edusoho.kuozhi.clean.api;
 
+import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
-import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
+import com.google.gson.JsonObject;
 
 import java.util.List;
+import java.util.Map;
 
+import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
@@ -28,8 +34,8 @@ public interface ApiService {
     @GET("course_sets/{id}")
     Observable<CourseSet> getCourseSet(@Path("id") String id);
 
-    @GET("courses/{id}/tasks")
-    Observable<List<CourseTask>> getTasks(@Path("id") String id);
+    @GET("courses/{id}/items")
+    Observable<List<CourseItem>> getCourseItems(@Path("id") String id);
 
     @GET("courses/{id}")
     Observable<CourseProject> getCourseProject(@Path("id") String id);
@@ -49,18 +55,34 @@ public interface ApiService {
     @GET("plugins/vip/vip_levels/{id}")
     Observable<VipLevel> getVipLevel(@Path("id") String id);
 
+    @GET("plugins/discount/discounts/{discountId}")
+    Observable<Discount> getDiscountInfo(@Path("discountId") int discountId);
+
     @GET("courses/{courseId}/members")
     Observable<DataPageResult<CourseMember>> getCourseMembers(@Path("courseId") String courseId, @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("course_sets/{course_setId}/courses")
     Observable<List<CourseProject>> getCourseProjects(@Path("course_setId") String courseSetId);
 
-    @GET("course_sets/{id}/reviews")
-    Observable<List<Review>> getCourseProjectReview(@Path("id") String courseSetId, @Query("courseId") String courseId, @Query("offset") int offset, @Query("limit") int limit);
-
     @GET("users/{userId}/favorite_courses/{courseId}")
-    Observable<Boolean> getFavorite(@Path("userId") int userId, @Path("courseId") String courseId);
+    Observable<JsonObject> getFavorite(@Path("userId") int userId, @Path("courseId") String courseId);
 
-//    @GET("me/cash_account")
-//    Observable
+    @GET("course_sets/{id}/reviews")
+    Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("id") String courseSetId, @Query("courseId") String courseId,
+                                                               @Query("offset") int offset, @Query("limit") int limit);
+
+    @POST("order_info")
+    Observable<String> postOrderInfo(@Field("targetType") String type, @Field("targetId") int id);
+
+    @POST("orders")
+    Observable<String> createOrder(@FieldMap Map<String, String> map);
+
+    @POST("pay_center")
+    Observable<String> goPay(@Field("orderId") int id, @Field("targetType") String type, @Field("payment") String payWay);
+
+    @GET("me/coupons")
+    Observable<String> getMyCoupons();
+
+    @GET("me/cash_account")
+    Observable<String> getMyVirtualCoin();
 }

@@ -26,6 +26,8 @@ import com.edusoho.kuozhi.v3.view.ReviewStarView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 
+import java.util.List;
+
 /**
  * Created by DF on 2017/3/21.
  */
@@ -71,7 +73,6 @@ public class CourseIntroduceFragment extends BaseLazyFragment
 
     protected void initView(View view) {
         mPriceOld = (TextView) view.findViewById(R.id.tv_price_old);
-        mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         mPriceNow = (TextView) view.findViewById(R.id.tv_price_now);
         mTitle = (TextView) view.findViewById(R.id.tv_title);
         mReviewStar = (ReviewStarView) view.findViewById(R.id.review_star);
@@ -124,14 +125,14 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     private void showCoursePrice() {
         if (mCourseSet.getMaxCoursePrice() == 0) {
             mPriceNow.setText("免费");
-            mPriceNow.setText(ContextCompat.getColor(getContext(), R.color.primary));
+            mPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
         } else {
             float discount = mCourseSet.getDiscount();
             if (discount != 10) {
                 mDiscount.setVisibility(View.VISIBLE);
-                mPriceNow.setText(String.format("¥ %s-%s", (int)(mCourseSet.getMinCoursePrice() * discount),
-                        (int)(mCourseSet.getMaxCoursePrice() * discount)));
-                mPriceOld.setText(((int) mCourseSet.getMaxCoursePrice()));
+                mPriceNow.setText(String.format("¥ %s-%s", (mCourseSet.getMinCoursePrice() * discount / 10),
+                        (mCourseSet.getMaxCoursePrice() * discount / 10)));
+                mPriceOld.setText(mCourseSet.getMaxCoursePrice() + "");
                 mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
                 mPriceNow.setText(String.format("¥ %s-%s", ((int) mCourseSet.getMinCoursePrice()),
@@ -162,7 +163,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     }
 
     @Override
-    public void showStudent(CourseMember[] data) {
+    public void showStudent(List<CourseMember> data) {
         View.OnClickListener onClickListener =
                 new View.OnClickListener() {
                     @Override
@@ -171,7 +172,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                         jumpToMember(id);
                     }
                 };
-        if (data.length == 0) {
+        if (data.size() == 0) {
             mStudentNone.setVisibility(View.VISIBLE);
         } else {
             mStudentNone.setVisibility(View.GONE);
@@ -185,11 +186,11 @@ public class CourseIntroduceFragment extends BaseLazyFragment
             view.setLayoutParams(params);
             ImageView image = (ImageView) view.findViewById(R.id.iv_avatar_icon);
             TextView txt = (TextView) view.findViewById(R.id.tv_avatar_name);
-            if (data.length > i && data[i].user != null) {
-                image.setTag(data[i].user.id);
+            if (data.size() > i && data.get(i).user != null) {
+                image.setTag(data.get(i).user.id);
                 image.setOnClickListener(onClickListener);
-                txt.setText(data[i].user.nickname);
-                ImageLoader.getInstance().displayImage(data[i].user.smallAvatar, image, EdusohoApp.app.mAvatarOptions);
+                txt.setText(data.get(i).user.nickname);
+                ImageLoader.getInstance().displayImage(data.get(i).user.smallAvatar, image, EdusohoApp.app.mAvatarOptions);
             } else {
                 txt.setText("");
                 image.setImageAlpha(0);

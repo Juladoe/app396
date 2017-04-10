@@ -26,6 +26,8 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 public class PayWayActivity extends AppCompatActivity implements View.OnClickListener,PayWayContract.View {
 
+    public static final String PLANID = "plan_id";
+
     private View mBack;
     private View mZhiFuBao;
     private View mVirtualCoin;
@@ -36,9 +38,11 @@ public class PayWayActivity extends AppCompatActivity implements View.OnClickLis
     private LoadDialog mProcessDialog;
     private PayWayContract.Presenter mPresenter;
     private EditText mInputPw;
+    private int mPlanId;
 
-    public static void newInstance(Context context) {
+    public static void newInstance(Context context, int id) {
         Intent intent = new Intent(context, PayWayActivity.class);
+        intent.putExtra(PLANID, id);
         context.startActivity(intent);
     }
 
@@ -46,6 +50,7 @@ public class PayWayActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_way);
+        mPlanId = getIntent().getIntExtra(PLANID, 0);
 
         initView();
         initEvent();
@@ -60,7 +65,7 @@ public class PayWayActivity extends AppCompatActivity implements View.OnClickLis
         mOriginal = (TextView) findViewById(R.id.tv_original);
         mPay = findViewById(R.id.tv_pay);
 
-        mPresenter = new PayWayPresenter(this);
+        mPresenter = new PayWayPresenter(this, mPlanId);
     }
 
     private void initEvent() {
@@ -116,7 +121,6 @@ public class PayWayActivity extends AppCompatActivity implements View.OnClickLis
             mInputPw.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    Toast.makeText(PayWayActivity.this, "测试中。。。。。。", Toast.LENGTH_SHORT).show();
                     showProcessDialog();
                     mDialog.dismiss();
                     return true;

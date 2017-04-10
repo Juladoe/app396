@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -139,9 +140,11 @@ public class CustomDialog extends Dialog {
 
     /**
      * 动态添加RadioButton到RadioGroup中
+     *
      * @param rg
      */
     private void addButton(RadioGroup rg) {
+        int mostStudentNumPlan = getMostStudentNumPlan();
         for (int i = 0; i < mCourseStudyPlans.size(); i++) {
             mRb = new RadioButton(mContext);
             mRb.setGravity(Gravity.CENTER);
@@ -154,6 +157,12 @@ public class CustomDialog extends Dialog {
                     , AppUtil.dp2px(mContext, 7), AppUtil.dp2px(mContext, 4));
             mRb.setBackground(ContextCompat.getDrawable(mContext, R.drawable.teach_type_rb_selector));
             mRb.setText(mCourseStudyPlans.get(i).getTitle());
+            if (mostStudentNumPlan == i) {
+                Drawable drawable = mContext.getResources().getDrawable(R.drawable.hot);
+                drawable.setBounds(0, 0 , AppUtil.dp2px(mContext, 10), AppUtil.dp2px(mContext, 13));
+                mRb.setCompoundDrawablePadding(AppUtil.dp2px(mContext, 5));
+                mRb.setCompoundDrawables(null, null, drawable, null);
+            }
             rg.addView(mRb, mp);
             if (i == 0) {
                 rg.check(mRb.getId());
@@ -213,7 +222,7 @@ public class CustomDialog extends Dialog {
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
                         bundle.putString(ConfirmOrderActivity.PLANTITLE, mCourseStudyPlan.getTitle());
-                        bundle.putInt(ConfirmOrderActivity.PLANPRICE, ((int) mCourseStudyPlan.getPrice()));
+                        bundle.putFloat(ConfirmOrderActivity.PLANPRICE,  mCourseStudyPlan.getPrice());
                         bundle.putString(ConfirmOrderActivity.PLANFROM, mCourseSet.getTitle());
                         bundle.putString(ConfirmOrderActivity.COURSEIMG, mCourseSet.cover.middle);
                         bundle.putString(ConfirmOrderActivity.PLANID, mCourseStudyPlan.getId());
@@ -321,6 +330,18 @@ public class CustomDialog extends Dialog {
                 }
             }
         };
+    }
+
+    public int getMostStudentNumPlan() {
+        int index = 0;
+        for (int i = 0; i < mCourseStudyPlans.size(); i++) {
+            if (i > 0) {
+                if (mCourseStudyPlans.get(i - 1).getStudentNum() < mCourseStudyPlans.get(i).getStudentNum()) {
+                    index = i;
+                }
+            }
+        }
+        return index;
     }
 
     public interface EventListener {

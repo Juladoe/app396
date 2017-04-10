@@ -1,17 +1,21 @@
 package com.edusoho.kuozhi.clean.api;
 
+import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
-import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.clean.bean.Discount;
+import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
+import com.google.gson.JsonObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -54,8 +58,8 @@ public class RetrofitService {
         mApiService = retrofit.create(ApiService.class);
     }
 
-    public static Observable<List<CourseTask>> getTasks(String id) {
-        return mApiService.getTasks(id);
+    public static Observable<List<CourseItem>> getTasks(String id) {
+        return mApiService.getCourseItems(id);
     }
 
     public static Observable<CourseProject> getCourseProject(String id) {
@@ -94,7 +98,35 @@ public class RetrofitService {
         return mApiService.getCourseSetMember(courseSetId);
     }
 
-    public static Observable<Boolean> getFavorite(int userId, String courseId) {
+    public static Observable<JsonObject> getFavorite(int userId, String courseId) {
         return mApiService.getFavorite(userId, courseId);
+    }
+
+    public static Observable<DataPageResult<Review>> getCourseProjectReviews(String courseSetId, String courseId, int offset, int limit) {
+        return mApiService.getCourseProjectReviews(courseSetId, courseId, offset, limit);
+    }
+
+    public static Observable<Discount> getDiscountInfo(int discountId){
+        return mApiService.getDiscountInfo(discountId);
+    }
+
+    public static Observable<String> postOrderInfo(String type, int id){
+        return mApiService.postOrderInfo(type, id);
+    }
+
+    public static Observable<String> createOrder(Map<String, String> map){
+        return mApiService.createOrder(map);
+    }
+
+    public static Observable<String> goPay(int id, String type, String payWay){
+        return mApiService.goPay(id, type, payWay);
+    }
+
+    public static Observable<String> getMyCoupons(){
+        return mApiService.getMyCoupons();
+    }
+
+    public static Observable<String> getMyVirtualCoin(){
+        return mApiService.getMyVirtualCoin();
     }
 }

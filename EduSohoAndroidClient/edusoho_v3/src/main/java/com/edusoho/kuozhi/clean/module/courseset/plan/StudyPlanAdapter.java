@@ -8,12 +8,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.FlowLayout;
 
 import java.util.ArrayList;
@@ -67,16 +70,16 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         loadService(holder, courseStudyPlan);
         loadHot(holder, position);
         loadVip(holder, courseStudyPlan);
+        holder.mRlItem.setTag(position);
+        holder.mRlItem.setOnClickListener(getOnClickListener());
     }
 
     private void loadPrice(StudyPlanViewHolder holder, CourseStudyPlan courseStudyPlan) {
         if ("1".equals(courseStudyPlan.getIsFree())) {
-            holder.mSymbol.setVisibility(View.GONE);
             holder.mPrice.setText(R.string.free_course_project);
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
         } else {
-            holder.mSymbol.setVisibility(View.VISIBLE);
-            holder.mPrice.setText(((int) courseStudyPlan.getPrice()) + "");
+            holder.mPrice.setText("¥ " + courseStudyPlan.getPrice());
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.secondary_color));
         }
     }
@@ -130,22 +133,32 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ranHeight);
         lp.setMargins(0, 0, AppUtil.dp2px(mContext, 10), 0);
         for (int i = 0; i < list.size(); i++) {
-            TextView tv = new TextView(mContext);
-            tv.setPadding(AppUtil.dp2px(mContext, 3), 0, AppUtil.dp2px(mContext, 3), 0);
-            tv.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
-            tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-            tv.setText(list.get(i).getShort_name());
-            tv.setGravity(Gravity.CENTER);
-            tv.setLines(1);
-            tv.setBackgroundResource(R.drawable.common_circular_bg);
-            holder.mFlayout.addView(tv, lp);
+            TextView serviceTextView = new TextView(mContext);
+            serviceTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
+            serviceTextView.setTextColor(mContext.getResources().getColor(R.color.primary_color));
+            serviceTextView.setText(list.get(i).getShort_name());
+            lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            lp.rightMargin = CommonUtil.dip2px(mContext, 10);
+            serviceTextView.setLayoutParams(lp);
+            serviceTextView.setBackgroundResource(R.drawable.course_project_services);
+
+            holder.mFlayout.addView(serviceTextView, lp);
         }
+    }
+
+    public View.OnClickListener getOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = (int) v.getTag();
+                CourseProjectActivity.launch(mContext, mList.get(position).getId());
+            }
+        };
     }
 
     public static class StudyPlanViewHolder extends RecyclerView.ViewHolder {
 
         private final View mRlItem;
-        private final View mSymbol;
         private final View mHot;
         private final TextView mClassType;
         private final TextView mPrice;
@@ -157,7 +170,6 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         public StudyPlanViewHolder(View itemView) {
             super(itemView);
             mRlItem = itemView.findViewById(R.id.rl_item);
-            mSymbol = itemView.findViewById(R.id.tv_symbol);
             mHot = itemView.findViewById(R.id.iv_hot);
             mClassType = (TextView) itemView.findViewById(R.id.tv_class_type);
             mPrice = (TextView) itemView.findViewById(R.id.tv_price);
