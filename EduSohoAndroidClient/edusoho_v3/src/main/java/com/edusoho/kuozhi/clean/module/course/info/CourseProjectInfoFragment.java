@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.utils.ItemClickSupport;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
@@ -129,14 +131,14 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
                 mSalePrice.setVisibility(View.GONE);
                 break;
             case ORIGINAL:
-                mOriginalPrice.setText(String.format(Locale.CHINA, "￥%s", originPrice));
+                mOriginalPrice.setText(String.format(getString(R.string.price_format), originPrice));
                 mOriginalPrice.setTextColor(getResources().getColor(R.color.secondary_color));
                 mSalePrice.setVisibility(View.GONE);
                 break;
             case SALE:
-                mSalePrice.setText(String.format(Locale.CHINA, "￥%s", price));
+                mSalePrice.setText(String.format(getString(R.string.price_format), price));
                 mOriginalPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-                mOriginalPrice.setText(String.format(Locale.CHINA, "￥%s", originPrice));
+                mOriginalPrice.setText(String.format(getString(R.string.price_format), originPrice));
                 mOriginalPrice.setText(originPrice);
                 mSaleWord.setVisibility(View.VISIBLE);
                 break;
@@ -169,7 +171,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     public void showIntroduce(String content) {
         if (!StringUtils.isEmpty(content)) {
             mIntroduceLayout.setVisibility(View.VISIBLE);
-            mIntroduce.setText(content);
+            mIntroduce.setText(Html.fromHtml(content, new EduHtmlHttpImageGetter(mIntroduce, null, true), null));
         }
     }
 
