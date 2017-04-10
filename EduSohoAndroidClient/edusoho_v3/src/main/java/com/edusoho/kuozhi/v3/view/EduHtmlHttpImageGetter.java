@@ -57,13 +57,6 @@ public class EduHtmlHttpImageGetter implements Html.ImageGetter {
         return urlDrawable;
     }
 
-    /**
-     * Static inner {@link AsyncTask} that keeps a {@link WeakReference} to the {@link org.sufficientlysecure.htmltextview.HtmlHttpImageGetter.UrlDrawable}
-     * and {@link org.sufficientlysecure.htmltextview.HtmlHttpImageGetter}.
-     * <p/>
-     * This way, if the AsyncTask has a longer life span than the UrlDrawable,
-     * we won't leak the UrlDrawable or the HtmlRemoteImageGetter.
-     */
     private static class ImageGetterAsyncTask extends AsyncTask<String, Void, Drawable> {
         private final WeakReference<UrlDrawable> drawableReference;
         private final WeakReference<EduHtmlHttpImageGetter> imageGetterReference;

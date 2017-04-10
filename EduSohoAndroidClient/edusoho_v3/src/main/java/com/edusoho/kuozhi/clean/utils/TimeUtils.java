@@ -12,19 +12,16 @@ import java.util.Date;
 
 public class TimeUtils {
     private static final SimpleDateFormat UTC_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+    private static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     public static String getPostDays(String postTime) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         long l = 1;
         try {
-            String tDate = postTime.split("[+]")[0].replace('T', ' ');
-            long milliSec = 1000;
-            Date date = new Date();
-            l = (date.getTime() - sdf.parse(tDate).getTime()) / (milliSec);
+            Date date = UTC_DATE_FORMAT.parse(postTime);
+            l = (new Date().getTime() - date.getTime()) / (1000);
 
-            //如果大于24返回天数
             if (l > 30 * 24 * 60 * 60) {
-                return postTime.split("T")[0];
+                return DEFAULT_DATE_FORMAT.format(date);
             } else if (l > 24 * 60 * 60) {
                 l = l / (24 * 60 * 60);
                 return String.valueOf(l) + "天前";
@@ -49,9 +46,8 @@ public class TimeUtils {
         try {
             date = UTC_DATE_FORMAT.parse(time);
         } catch (ParseException ex) {
-            
+
         }
         return date;
     }
-
 }
