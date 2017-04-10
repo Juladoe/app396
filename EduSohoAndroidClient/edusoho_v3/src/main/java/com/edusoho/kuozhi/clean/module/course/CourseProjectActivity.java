@@ -107,6 +107,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     public void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject) {
         CourseProjectViewPagerAdapter adapter = new CourseProjectViewPagerAdapter(getSupportFragmentManager(), courseProjectModules, courseProject);
         mViewPager.setAdapter(adapter);
+        mViewPager.setOffscreenPageLimit(courseProjectModules.length);
         mTabLayout.setupWithViewPager(mViewPager);
     }
 

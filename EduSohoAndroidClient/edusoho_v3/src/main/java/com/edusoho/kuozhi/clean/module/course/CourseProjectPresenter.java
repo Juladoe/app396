@@ -29,7 +29,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private CourseProjectContract.View mView;
     private String mCourseProjectId;
-    private CourseProject mCourseProject;
     private CourseProject.Teacher mTeacher;
 
     public CourseProjectPresenter(String courseProjectId, CourseProjectContract.View view) {
