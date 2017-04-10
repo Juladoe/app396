@@ -12,16 +12,16 @@ import java.util.Date;
 
 public class TimeUtils {
     private static final SimpleDateFormat UTC_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+    private static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     public static String getPostDays(String postTime) {
         long l = 1;
         try {
-
             Date date = UTC_DATE_FORMAT.parse(postTime);
             l = (new Date().getTime() - date.getTime()) / (1000);
-            
+
             if (l > 30 * 24 * 60 * 60) {
-                return postTime.split("T")[0];
+                return DEFAULT_DATE_FORMAT.format(date);
             } else if (l > 24 * 60 * 60) {
                 l = l / (24 * 60 * 60);
                 return String.valueOf(l) + "天前";
