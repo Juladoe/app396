@@ -54,7 +54,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             mTeacher = courseProject.teachers[0];
                         }
                         mView.showFragments(initCourseModules(), courseProject);
-                        mView.showBottomLayout(true);
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -93,7 +92,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("getCourseMember", "onError: " + e.toString());
+
                     }
 
                     @Override
