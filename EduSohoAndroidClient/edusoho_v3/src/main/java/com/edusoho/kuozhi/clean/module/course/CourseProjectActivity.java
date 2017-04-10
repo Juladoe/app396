@@ -111,7 +111,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     @Override
-    public void setBottomLayoutVisible(boolean visible) {
+    public void showBottomLayout(boolean visible) {
         mBottomView.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 

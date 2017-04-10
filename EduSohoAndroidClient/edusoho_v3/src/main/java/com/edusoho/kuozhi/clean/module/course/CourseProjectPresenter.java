@@ -1,6 +1,9 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import android.util.Log;
+
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 
@@ -51,7 +54,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             mTeacher = courseProject.teachers[0];
                         }
                         mView.showFragments(initCourseModules(), courseProject);
-                        mView.setBottomLayoutVisible(true);
+                        mView.showBottomLayout(true);
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -78,6 +81,26 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.showCover(courseSet.cover.large);
                     }
                 });
+
+        getCourseMember(mCourseProjectId, "3")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseMember>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d("getCourseMember", "onError: " + e.toString());
+                    }
+
+                    @Override
+                    public void onNext(CourseMember courseMember) {
+                        mView.showBottomLayout(courseMember == null);
+                    }
+                });
     }
 
     @Override
@@ -91,6 +114,10 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private Observable<CourseProject> getCourseProject(String id) {
         return RetrofitService.getCourseProject(id);
+    }
+
+    private Observable<CourseMember> getCourseMember(String courseId, String userId) {
+        return RetrofitService.getCourseMember(courseId, userId);
     }
 
     private Observable<CourseSet> getCourseSet(String id) {

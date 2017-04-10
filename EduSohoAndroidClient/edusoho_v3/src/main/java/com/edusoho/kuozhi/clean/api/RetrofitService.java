@@ -4,7 +4,6 @@ import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
@@ -72,11 +71,15 @@ public class RetrofitService {
         return mApiService.getCourseMembers(courseId, role, offset, limit);
     }
 
+    public static Observable<CourseMember> getCourseMember(String courseId, String userId) {
+        return mApiService.getCourseMember(courseId, userId);
+    }
+
     public static Observable<List<CourseProject>> getCourseProjects(String courseSetId) {
         return mApiService.getCourseProjects(courseSetId);
     }
 
-    public static Observable<DataPageResult<Review>> getCourseProjectReviews(String courseSetId, String courseId, int offset, int limit) {
-        return mApiService.getCourseProjectReviews(courseSetId, courseId, offset, limit);
+    public static Observable<DataPageResult<Review>> getCourseProjectReviews(String courseId, int offset, int limit) {
+        return mApiService.getCourseProjectReviews(courseId, offset, limit);
     }
 }

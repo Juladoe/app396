@@ -27,11 +27,11 @@ public class CourseProjectRatesPresenter implements CourseProjectRatesContract.P
 
     @Override
     public void getRates() {
-        getRates("3", "13");
+        getRates(mCourseProject.id);
     }
 
-    public void getRates(String courseProjectId, String courseId) {
-        RetrofitService.getCourseProjectReviews(courseProjectId, courseId, mOffset, CommonConstant.LIMIT)
+    public void getRates(String courseId) {
+        RetrofitService.getCourseProjectReviews(courseId, mOffset, CommonConstant.LIMIT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<DataPageResult<Review>>() {
@@ -57,7 +57,7 @@ public class CourseProjectRatesPresenter implements CourseProjectRatesContract.P
 
     @Override
     public void subscribe() {
-        getRates(mCourseProject.courseSetId, mCourseProject.id);
+        getRates(mCourseProject.id);
     }
 
     @Override
