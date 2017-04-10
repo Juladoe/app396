@@ -19,8 +19,7 @@ public class TimeUtils {
 
             Date date = UTC_DATE_FORMAT.parse(postTime);
             l = (new Date().getTime() - date.getTime()) / (1000);
-
-            //如果大于24返回天数
+            
             if (l > 30 * 24 * 60 * 60) {
                 return postTime.split("T")[0];
             } else if (l > 24 * 60 * 60) {
