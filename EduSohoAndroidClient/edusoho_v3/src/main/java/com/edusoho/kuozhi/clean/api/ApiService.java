@@ -58,17 +58,21 @@ public interface ApiService {
     @GET("plugins/discount/discounts/{discountId}")
     Observable<Discount> getDiscountInfo(@Path("discountId") int discountId);
 
-    @GET("courses/{courseId}/members")
-    Observable<DataPageResult<CourseMember>> getCourseMembers(@Path("courseId") String courseId, @Query("offset") int offset, @Query("limit") int limit);
+    @GET("courses/{id}/members")
+    Observable<DataPageResult<CourseMember>> getCourseMembers(@Path("id") String courseId, @Query("role") String role,
+                                                              @Query("offset") int offset, @Query("limit") int limit);
 
-    @GET("course_sets/{course_setId}/courses")
-    Observable<List<CourseProject>> getCourseProjects(@Path("course_setId") String courseSetId);
+    @GET("courses/{courseId}/members/{userId}")
+    Observable<CourseMember> getCourseMember(@Path("courseId") String courseId, @Path("userId") String userId);
+
+    @GET("course_sets/{id}/courses")
+    Observable<List<CourseProject>> getCourseProjects(@Path("id") String courseSetId);
 
     @GET("users/{userId}/favorite_courses/{courseId}")
     Observable<JsonObject> getFavorite(@Path("userId") int userId, @Path("courseId") String courseId);
 
-    @GET("course_sets/{id}/reviews")
-    Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("id") String courseSetId, @Query("courseId") String courseId,
+    @GET("courses/{courseId}/reviews")
+    Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("courseId") String courseId,
                                                                @Query("offset") int offset, @Query("limit") int limit);
 
     @POST("order_info")

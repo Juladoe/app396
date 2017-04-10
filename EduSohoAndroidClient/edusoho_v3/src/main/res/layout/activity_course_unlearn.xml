@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_rlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -43,17 +42,17 @@
                     android:id="@+id/ll_limit_activities"
                     android:orientation="horizontal"
                     android:background="@color/secondary_color"
-                    android:layout_below="@id/iv_background"
+                    android:paddingLeft="10dp"
                     android:visibility="gone"
+                    android:layout_below="@id/iv_background"
                     android:layout_width="match_parent"
                     android:layout_height="40dp">
 
                     <TextView
-                        tools:text="双十二活动"
                         android:id="@+id/discount_activity_name"
                         style="@style/common_tv_fonts"
                         android:drawableLeft="@drawable/discount_time"
-                        android:drawablePadding="5dp"
+                        android:drawablePadding="7dp"
                         android:layout_marginLeft="@dimen/common_marginl"
                         android:layout_marginRight="@dimen/common_margin1"/>
 

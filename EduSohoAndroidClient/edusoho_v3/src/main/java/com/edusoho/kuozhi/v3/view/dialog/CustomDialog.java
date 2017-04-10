@@ -150,7 +150,7 @@ public class CustomDialog extends Dialog {
             mRb.setGravity(Gravity.CENTER);
             RadioGroup.LayoutParams mp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             mp.setMargins(0, 0, AppUtil.dp2px(mContext, 10), AppUtil.dp2px(mContext, 5));
-            mRb.setTextSize(AppUtil.sp2px(mContext, 4));
+            mRb.setTextSize(AppUtil.sp2px(mContext, 5));
             mRb.setTextColor(mContext.getResources().getColorStateList(R.color.teach_type_text_selector));
             mRb.setButtonDrawable(new ColorDrawable(Color.TRANSPARENT));
             mRb.setPadding(AppUtil.dp2px(mContext, 7), AppUtil.dp2px(mContext, 4)

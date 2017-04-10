@@ -15,7 +15,7 @@ public interface CourseProjectContract {
 
         void showCover(String imageUrl);
 
-        void setBottomLayoutVisible(boolean visible);
+        void showBottomLayout(boolean visible);
 
         void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject);
 

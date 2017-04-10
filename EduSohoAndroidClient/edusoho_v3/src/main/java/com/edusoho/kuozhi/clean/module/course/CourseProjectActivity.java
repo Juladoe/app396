@@ -107,11 +107,12 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     public void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject) {
         CourseProjectViewPagerAdapter adapter = new CourseProjectViewPagerAdapter(getSupportFragmentManager(), courseProjectModules, courseProject);
         mViewPager.setAdapter(adapter);
+        mViewPager.setOffscreenPageLimit(courseProjectModules.length);
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
     @Override
-    public void setBottomLayoutVisible(boolean visible) {
+    public void showBottomLayout(boolean visible) {
         mBottomView.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 

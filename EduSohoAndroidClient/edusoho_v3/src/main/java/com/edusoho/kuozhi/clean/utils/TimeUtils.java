@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.clean.utils;
 
 import android.util.Log;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -9,7 +10,8 @@ import java.util.Date;
  * Created by JesseHuang on 2017/4/6.
  */
 
-public class DateUtils {
+public class TimeUtils {
+    private static final SimpleDateFormat UTC_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
 
     public static String getPostDays(String postTime) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -39,7 +41,17 @@ public class DateUtils {
         } catch (Exception ex) {
             Log.d("DateUtils::getPostDays", ex.toString());
         }
-
         return String.valueOf(l) + "秒前";
     }
+
+    public static Date getUTCtoDate(String time) {
+        Date date = new Date();
+        try {
+            date = UTC_DATE_FORMAT.parse(time);
+        } catch (ParseException ex) {
+            
+        }
+        return date;
+    }
+
 }

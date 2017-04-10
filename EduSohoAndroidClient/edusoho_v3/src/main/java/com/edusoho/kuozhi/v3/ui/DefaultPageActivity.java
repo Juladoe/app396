@@ -51,6 +51,8 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.LinkedHashMap;
 import java.util.Queue;
 
+import retrofit2.http.HEAD;
+
 /**
  * Created by JesseHuang on 15/4/24.
  */
@@ -234,7 +236,6 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
                     mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
                 }
             });
-//            CourseProjectActivity.launch(mContext, "5");
             return;
         }
         mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));

@@ -21,6 +21,10 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
+import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
+import com.edusoho.kuozhi.clean.module.courseset.confirmorder.ConfirmOrderActivity;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -32,12 +36,15 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
+import com.edusoho.kuozhi.v3.view.dialog.CustomDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import extensions.PagerSlidingTabStrip;
 
@@ -64,6 +71,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
     private LoadDialog mProcessDialog;
 
     private int mCourseId = 1;
+    private long mEndTime;
     private boolean mIsFavorite = false;
     private ViewPager mViewPager;
     private CourseUnLearnContract.Presenter mPresenter;
@@ -71,8 +79,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
     private ViewGroup mDiscountLayout;
     private TextView mDiscountName;
     private TextView mDiscountTime;
-    private Handler mHandler;
-    private Runnable mRunnable;
+    private Timer mTimer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -128,23 +135,6 @@ public class CourseUnLearnActivity extends AppCompatActivity
         mTabLayout.setIndicatorColor(R.color.primary_color);
     }
 
-    @Override
-    public void showFragments(String[] titleArray, String[] fragmentArray) {
-        CourseUnJoinPagerAdapter courseUnJoinPagerAdapter = new CourseUnJoinPagerAdapter(
-                                getSupportFragmentManager(), titleArray, fragmentArray, getIntent().getExtras());
-        mViewPager.setAdapter(courseUnJoinPagerAdapter);
-        mTabLayout.setViewPager(mViewPager);
-        initEvent();
-    }
-
-    @Override
-    public void newFinish(boolean isShow, int content) {
-        if (isShow) {
-            CommonUtil.shortToast(getBaseContext(), getResources().getString(content));
-        }
-        finish();
-    }
-
     private void initEvent() {
         mBackView.setOnClickListener(this);
         mShareView.setOnClickListener(this);
@@ -185,7 +175,8 @@ public class CourseUnLearnActivity extends AppCompatActivity
         } else if (id == R.id.consult_layout) {
             consult();
         } else if (id == R.id.tv_add) {
-            add();
+            MobclickAgent.onEvent(this, "courseDetailsPage_joinTheCourse");
+            mPresenter.joinStudy();
         }
     }
 
@@ -234,6 +225,28 @@ public class CourseUnLearnActivity extends AppCompatActivity
         mToolBarLayout.setContentScrimColor(color);
     }
 
+    @Override
+    public void setCourseSet(CourseSet courseSet) {
+        mCourseSet = courseSet;
+    }
+
+    @Override
+    public void showFragments(String[] titleArray, String[] fragmentArray) {
+        CourseUnJoinPagerAdapter courseUnJoinPagerAdapter = new CourseUnJoinPagerAdapter(
+                                getSupportFragmentManager(), titleArray, fragmentArray, getIntent().getExtras());
+        mViewPager.setAdapter(courseUnJoinPagerAdapter);
+        mTabLayout.setViewPager(mViewPager);
+        initEvent();
+    }
+
+    @Override
+    public void newFinish(boolean isShow, int content) {
+        if (isShow) {
+            CommonUtil.shortToast(getBaseContext(), getResources().getString(content));
+        }
+        finish();
+    }
+
     private void collect() {
         MobclickAgent.onEvent(this, "courseDetailsPage_collection");
         if (mIsFavorite) {
@@ -262,8 +275,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
     }
 
     @Override
-    public void showBackGround(String img, CourseSet courseSet) {
-        mCourseSet = courseSet;
+    public void showBackGround(String img) {
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .showImageForEmptyUri(R.drawable.default_course)
                 .showImageOnFail(R.drawable.default_course)
@@ -273,17 +285,46 @@ public class CourseUnLearnActivity extends AppCompatActivity
     }
 
     @Override
-    public void showDiscountInfo(String... text) {
-        mHandler = new Handler();
+    public void showDiscountInfo(String name, long time) {
+        mEndTime = time;
         mDiscountLayout.setVisibility(View.VISIBLE);
-        mDiscountName.setText(text[1]);
-        mRunnable = new Runnable() {
+        mDiscountName.setText(String.format("【%s】  ", name));
+        mTimer = new Timer();
+        TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                // TODO: 2017/4/10  
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mEndTime > 0) {
+                            mDiscountTime.setText(getTime(mEndTime));
+                        } else {
+                            mDiscountLayout.setVisibility(View.GONE);
+                        }
+                        mEndTime--;
+                    }
+                });
             }
         };
-        mHandler.postDelayed(mRunnable, 1000);
+        mTimer.schedule(timerTask, 0, 1000);
+    }
+
+    private String getTime(long time) {
+        String sTime;
+        long day = time/(60*60*24);
+        long hour = (time - 60*60*24*day)/3600;
+        long minute = (time - 60*60*24*day - 3600*hour)/60;
+        long second = time - 60*60*24*day - 3600*hour - 60*minute;
+        StringBuilder sb = new StringBuilder();
+        sTime = day > 0 ? (day > 9 ? day + "" : "0" + day) : "00";
+        sb.append("剩余 " + day + " 天 ");
+        sTime = hour > 0 ? (hour > 9 ? hour + "" : "0" + hour) : "00";
+        sb.append(sTime + " 小时 ");
+        sTime = minute > 0 ? (minute > 9 ? minute + "" : "0" + minute) : "00";
+        sb.append(sTime + " 分 ");
+        sTime = second > 0 ? (second > 9 ? second + "" : "0" + second) : "00";
+        sb.append(sTime + " 秒 ");
+        return sb.toString();
     }
 
     private void consult() {
@@ -310,13 +351,6 @@ public class CourseUnLearnActivity extends AppCompatActivity
         });
     }
 
-    protected void add() {
-        MobclickAgent.onEvent(this, "courseDetailsPage_joinTheCourse");
-        if (!"0".equals(mCourseId)) {
-            mPresenter.joinStudy();
-        }
-    }
-
     @Override
     public void showFavorite(boolean isFavorite) {
         mIsFavorite = isFavorite;
@@ -336,13 +370,23 @@ public class CourseUnLearnActivity extends AppCompatActivity
         if (isShow) {
             showProcessDialog();
         } else {
-            hideProcesDialog();
+            hideProcessDialog();
         }
     }
 
     @Override
     public void showLoadView(boolean isShow) {
         mLoadView.setVisibility(isShow ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showToast(int content) {
+        CommonUtil.shortToast(this, getString(content));
+    }
+
+    @Override
+    public void showPlanDialog(List<CourseStudyPlan> list, List<VipInfo> vipInfo, CourseSet courseSet) {
+        new CustomDialog(this).initType(6).initPlanData(list, vipInfo, mCourseSet).show();
     }
 
     protected void showProcessDialog() {
@@ -352,7 +396,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
         mProcessDialog.show();
     }
 
-    protected void hideProcesDialog() {
+    protected void hideProcessDialog() {
         if (mProcessDialog == null) {
             return;
         }
@@ -362,10 +406,26 @@ public class CourseUnLearnActivity extends AppCompatActivity
     }
 
     @Override
+    public void goToConfirmOrderActivity(CourseStudyPlan courseStudyPlan) {
+        Bundle bundle = new Bundle();
+        bundle.putString(ConfirmOrderActivity.COURSEIMG, mCourseSet.cover.middle);
+        bundle.putString(ConfirmOrderActivity.PLANFROM, mCourseSet.getTitle());
+        bundle.putFloat(ConfirmOrderActivity.PLANPRICE, courseStudyPlan.getPrice());
+        bundle.putString(ConfirmOrderActivity.PLANTITLE, courseStudyPlan.getTitle());
+        bundle.putString(ConfirmOrderActivity.PLANID, courseStudyPlan.getId());
+        ConfirmOrderActivity.newInstance(this, bundle);
+    }
+
+    @Override
+    public void goToCourseProjectActivity(String courseProjectId) {
+        CourseProjectActivity.launch(this, courseProjectId);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mHandler != null) {
-            mHandler.removeCallbacks(mRunnable);
+        if (mTimer != null) {
+            mTimer.cancel();
         }
     }
 
@@ -375,7 +435,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
         private String[] mFragmentArray;
         private Bundle mBundle;
 
-        public CourseUnJoinPagerAdapter(FragmentManager fm, String[] titleArray, String[] fragmentArray, Bundle bundle) {
+        private CourseUnJoinPagerAdapter(FragmentManager fm, String[] titleArray, String[] fragmentArray, Bundle bundle) {
             super(fm);
             this.mBundle = bundle;
             this.mTitleArray = titleArray;

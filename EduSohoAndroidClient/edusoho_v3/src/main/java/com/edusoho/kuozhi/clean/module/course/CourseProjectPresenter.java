@@ -1,8 +1,14 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import android.util.Log;
+
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.utils.TimeUtils;
+
+import java.util.Date;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -20,7 +26,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private CourseProjectContract.View mView;
     private String mCourseProjectId;
-    private CourseProject mCourseProject;
     private CourseProject.Teacher mTeacher;
 
     public CourseProjectPresenter(String courseProjectId, CourseProjectContract.View view) {
@@ -45,7 +50,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             mTeacher = courseProject.teachers[0];
                         }
                         mView.showFragments(initCourseModules(), courseProject);
-                        mView.setBottomLayoutVisible(true);
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -72,11 +76,35 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.showCover(courseSet.cover.large);
                     }
                 });
+
+        getCourseMember(mCourseProjectId, "3")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseMember>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseMember courseMember) {
+                        mView.showBottomLayout(!(courseMember.user != null && !isExpired(courseMember.deadline)));
+                    }
+                });
     }
 
     @Override
     public void unsubscribe() {
 
+    }
+
+    private boolean isExpired(String utcTime) {
+        return TimeUtils.getUTCtoDate(utcTime).compareTo(new Date()) < 0;
     }
 
     private CourseProjectEnum[] initCourseModules() {
@@ -85,6 +113,10 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private Observable<CourseProject> getCourseProject(String id) {
         return RetrofitService.getCourseProject(id);
+    }
+
+    private Observable<CourseMember> getCourseMember(String courseId, String userId) {
+        return RetrofitService.getCourseMember(courseId, userId);
     }
 
     private Observable<CourseSet> getCourseSet(String id) {

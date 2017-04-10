@@ -86,8 +86,12 @@ public class RetrofitService {
         return mApiService.getVipLevel(id);
     }
 
-    public static Observable<DataPageResult<CourseMember>> getCourseMembers(String courseId, int offset, int limit) {
-        return mApiService.getCourseMembers(courseId, offset, limit);
+    public static Observable<DataPageResult<CourseMember>> getCourseMembers(String courseId, String role, int offset, int limit) {
+        return mApiService.getCourseMembers(courseId, role, offset, limit);
+    }
+
+    public static Observable<CourseMember> getCourseMember(String courseId, String userId) {
+        return mApiService.getCourseMember(courseId, userId);
     }
 
     public static Observable<List<CourseProject>> getCourseProjects(String courseSetId) {
@@ -102,8 +106,8 @@ public class RetrofitService {
         return mApiService.getFavorite(userId, courseId);
     }
 
-    public static Observable<DataPageResult<Review>> getCourseProjectReviews(String courseSetId, String courseId, int offset, int limit) {
-        return mApiService.getCourseProjectReviews(courseSetId, courseId, offset, limit);
+    public static Observable<DataPageResult<Review>> getCourseProjectReviews(String courseId, int offset, int limit) {
+        return mApiService.getCourseProjectReviews(courseId, offset, limit);
     }
 
     public static Observable<Discount> getDiscountInfo(int discountId){

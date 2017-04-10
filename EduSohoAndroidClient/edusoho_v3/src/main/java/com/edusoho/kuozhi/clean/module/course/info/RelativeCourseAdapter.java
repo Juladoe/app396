@@ -19,7 +19,7 @@ import java.util.List;
  * Created by JesseHuang on 2017/4/3.
  */
 
-public class RelativeCourseAdapter extends RecyclerView.Adapter<CourseProjectInfoFragment.ViewHolder> {
+public class RelativeCourseAdapter extends RecyclerView.Adapter<RelativeCourseAdapter.ViewHolder> {
 
     private static final String FREE = "0.00";
     private Context mContext;
@@ -31,13 +31,13 @@ public class RelativeCourseAdapter extends RecyclerView.Adapter<CourseProjectInf
     }
 
     @Override
-    public CourseProjectInfoFragment.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RelativeCourseAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_relative_course_project, parent, false);
-        return new CourseProjectInfoFragment.ViewHolder(view);
+        return new RelativeCourseAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(CourseProjectInfoFragment.ViewHolder holder, int position) {
+    public void onBindViewHolder(RelativeCourseAdapter.ViewHolder holder, int position) {
         final CourseProject courseProject = mCourseProjects.get(position);
         holder.courseTitle.setText(courseProject.title);
         if (FREE.equals(courseProject.price)) {
@@ -67,8 +67,27 @@ public class RelativeCourseAdapter extends RecyclerView.Adapter<CourseProjectInf
         }
     }
 
+    public CourseProject getItem(int position) {
+        return mCourseProjects.get(position);
+    }
+
     @Override
     public int getItemCount() {
         return mCourseProjects.size();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public TextView courseTitle;
+        public TextView coursePrice;
+        public TextView courseTasks;
+        public LinearLayout promiseServiceLayout;
+
+        public ViewHolder(View view) {
+            super(view);
+            courseTitle = (TextView) view.findViewById(R.id.tv_course_project_title);
+            coursePrice = (TextView) view.findViewById(R.id.tv_course_project_price);
+            courseTasks = (TextView) view.findViewById(R.id.tv_course_tasks);
+            promiseServiceLayout = (LinearLayout) view.findViewById(R.id.ll_promise_layout);
+        }
     }
 }

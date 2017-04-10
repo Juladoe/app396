@@ -15,7 +15,7 @@ public interface CourseProjectInfoContract {
 
     interface View extends BaseView<Presenter> {
 
-        void showCourseProjectInfo(CourseProject courseProject);
+        void showCourseProjectInfo(CourseProject course);
 
         void showVipAdvertising(String vipName);
 
@@ -33,7 +33,9 @@ public interface CourseProjectInfoContract {
 
         void showMembers(List<CourseMember> members);
 
-        void showRelativeCourseProjects(List<CourseProject> courseProjectList);
+        void showRelativeCourseProjects(List<CourseProject> courseList);
+
+        void launchCourseProject(String courseId);
     }
 
     interface Presenter extends BasePresenter {

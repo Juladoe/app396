@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.clean.module.course.info;
 
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -18,9 +18,10 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
+import com.edusoho.kuozhi.clean.utils.ItemClickSupport;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -65,6 +66,14 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     private View mCourseMembersLine;
     private RecyclerView mRelativeCourses;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        CourseProject courseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
+        mPresenter = new CourseProjectInfoPresenter(courseProject, this);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -101,17 +110,14 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        Bundle bundle = getArguments();
-        CourseProject courseProject = (CourseProject) bundle.getSerializable(COURSE_PROJECT_MODEL);
-        mPresenter = new CourseProjectInfoPresenter(courseProject, this);
         mPresenter.subscribe();
     }
 
     @Override
-    public void showCourseProjectInfo(CourseProject courseProject) {
-        mTitle.setText(courseProject.title);
-        mStudentNum.setText(String.format(getString(R.string.course_student_count), courseProject.studentNum));
-        mCourseRate.setRating(Float.valueOf(courseProject.rating));
+    public void showCourseProjectInfo(CourseProject course) {
+        mTitle.setText(course.title);
+        mStudentNum.setText(String.format(getString(R.string.course_student_count), course.studentNum));
+        mCourseRate.setRating(Float.valueOf(course.rating));
     }
 
     @Override
@@ -151,14 +157,11 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         }
         mServicesLayout.setVisibility(View.VISIBLE);
         for (CourseProject.Service service : services) {
-            TextView tv = new TextView(getActivity());
-            tv.setTextColor(Color.BLACK);
-            tv.setText(service.full_name);
-            tv.setTextSize(AppUtil.px2sp(getActivity(), getResources().getDimension(R.dimen.font_s)));
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.view_course_project_promise, null);
+            ((TextView) view.findViewById(R.id.tv_promise)).setText(service.full_name);
             FlowLayout.LayoutParams lp = new FlowLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            lp.rightMargin = 20;
-            tv.setLayoutParams(lp);
-            mPromise.addView(tv);
+            view.setLayoutParams(lp);
+            mPromise.addView(view);
         }
     }
 
@@ -221,32 +224,28 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showRelativeCourseProjects(List<CourseProject> courseProjectList) {
+    public void showRelativeCourseProjects(List<CourseProject> courseList) {
         mRelativeCourses.setHasFixedSize(true);
         mRelativeCourses.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRelativeCourses.setItemAnimator(new DefaultItemAnimator());
         mRelativeCourses.setNestedScrollingEnabled(false);
-        RelativeCourseAdapter relativeCourseAdapter = new RelativeCourseAdapter(getActivity(), courseProjectList);
+        final RelativeCourseAdapter relativeCourseAdapter = new RelativeCourseAdapter(getActivity(), courseList);
         mRelativeCourses.setAdapter(relativeCourseAdapter);
+        ItemClickSupport.addTo(mRelativeCourses).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                CourseProjectActivity.launch(getActivity(), relativeCourseAdapter.getItem(position).id);
+            }
+        });
+    }
+
+    @Override
+    public void launchCourseProject(String courseId) {
+        CourseProjectActivity.launch(getActivity(), courseId);
     }
 
     @Override
     public String getBundleKey() {
         return COURSE_PROJECT_MODEL;
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView courseTitle;
-        public TextView coursePrice;
-        public TextView courseTasks;
-        public LinearLayout promiseServiceLayout;
-
-        public ViewHolder(View view) {
-            super(view);
-            courseTitle = (TextView) view.findViewById(R.id.tv_course_project_title);
-            coursePrice = (TextView) view.findViewById(R.id.tv_course_project_price);
-            courseTasks = (TextView) view.findViewById(R.id.tv_course_tasks);
-            promiseServiceLayout = (LinearLayout) view.findViewById(R.id.ll_promise_layout);
-        }
     }
 }

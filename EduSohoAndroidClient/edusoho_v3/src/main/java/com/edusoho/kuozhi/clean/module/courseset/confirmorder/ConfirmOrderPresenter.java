@@ -5,6 +5,7 @@ import com.edusoho.kuozhi.clean.api.RetrofitService;
 import java.util.Map;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -25,6 +26,7 @@ public class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
     public void subscribe() {
         RetrofitService.getMyCoupons()
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
@@ -52,6 +54,7 @@ public class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
     public void postOrderInfo(String type) {
         RetrofitService.postOrderInfo(type, mPlanId)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
@@ -74,6 +77,7 @@ public class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
     public void createOrder(Map<String, String> map) {
         RetrofitService.createOrder(map)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {

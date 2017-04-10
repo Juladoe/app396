@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.clean.module.courseset;
 
 import android.content.Context;
-import android.os.Bundle;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
@@ -10,15 +9,11 @@ import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
-import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
-import com.edusoho.kuozhi.clean.module.courseset.confirmorder.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.module.courseset.info.CourseIntroduceFragment;
 import com.edusoho.kuozhi.clean.module.courseset.plan.StudyPlayFragment;
 import com.edusoho.kuozhi.clean.module.courseset.review.CourseEvaluateFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.view.dialog.CustomDialog;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -38,13 +33,11 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
     private CourseUnLearnContract.View mView;
     private String mCourseId;
-    private Context mContext;
     private CourseSet mCourseSet;
     private List<CourseStudyPlan> mCourseStudyPlans;
     private List<VipInfo> mVipInfos;
 
     public CourseUnLearnPresenter(String mCourseId, CourseUnLearnContract.View view) {
-        this.mContext = ((Context) view);
         this.mCourseId = mCourseId;
         this.mView = view;
     }
@@ -87,7 +80,8 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                                 }
                             }
                             if (isMember) {
-                                CourseProjectActivity.launch(mContext, courseId + "");
+                                mView.goToCourseProjectActivity(courseId + "");
+                                mView.newFinish(false, 0);
                             } else {
                                 getCourseSet();
                                 getFavoriteInfo(EdusohoApp.app.loginUser.id, mCourseId);
@@ -109,11 +103,12 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                         if (courseSet != null) {
                             mCourseSet = courseSet;
                             mView.showFragments(getTitleArray(), getFragmentArray());
-                            mView.showBackGround("http://demo.edusoho.com/files/course/2016/11-03/132045d61012373326.jpg", courseSet);
-                            if (mCourseSet.getDiscountId() != 0) {
+                            mView.setCourseSet(courseSet);
+                            mView.showBackGround("http://demo.edusoho.com/files/course/2016/11-03/132045d61012373326.jpg");
+//                            if (mCourseSet.getDiscountId() != 0) {
 //                                getDiscountInfo(mCourseSet.getDiscountId());
                                 getDiscountInfo(1);
-                            }
+//                            }
                         }
                     }
                 })
@@ -187,6 +182,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     private void getDiscountInfo(int discountId){
         RetrofitService.getDiscountInfo(discountId)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Discount>() {
                     @Override
                     public void onCompleted() {
@@ -201,10 +197,9 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     @Override
                     public void onNext(Discount discount) {
                         if (discount != null) {
-                            if ("unstart".equals(discount.getStatus())) {
-                                mView.showDiscountInfo("unstart", discount.getName(), discount.getStartTime());
-                            } else if("running".equals(discount.getStatus())) {
-                                mView.showDiscountInfo("running", discount.getName(), discount.getEndTime());
+                            if("running".equals(discount.getStatus())) {
+                                long time = Long.parseLong(discount.getEndTime()) - Long.parseLong(discount.getStartTime());
+                                mView.showDiscountInfo(discount.getName(), time);
                             }
                         }
                     }
@@ -230,24 +225,26 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
     @Override
     public void joinStudy() {
-        mView.showProcessDialog(true);
-        if (mCourseStudyPlans != null && mVipInfos != null) {
-            if (mCourseStudyPlans.size() == 1) {
-                CourseStudyPlan courseStudyPlan = mCourseStudyPlans.get(0);
-                if ("0".equals(courseStudyPlan.getBuyable())) {
-                    CommonUtil.shortToast(mContext, mContext.getString(R.string.course_limit_join));
-                    return;
-                }
+        if (!"0".equals(mCourseId)) {
+            mView.showProcessDialog(true);
+            if (mCourseStudyPlans != null && mVipInfos != null) {
+                if (mCourseStudyPlans.size() == 1) {
+                    CourseStudyPlan courseStudyPlan = mCourseStudyPlans.get(0);
+                    if ("0".equals(courseStudyPlan.getBuyable())) {
+                        mView.showToast(R.string.course_limit_join);
+                        return;
+                    }
 
-                if ("1".equals(courseStudyPlan.getIsFree())) {
-                    mView.newFinish(true, R.string.join_success);
-                    CourseProjectActivity.launch(mContext, mCourseStudyPlans.get(0).getId());
+                    if ("1".equals(courseStudyPlan.getIsFree())) {
+                        mView.goToCourseProjectActivity(mCourseStudyPlans.get(0).getId());
+                        mView.newFinish(true, R.string.join_success);
+                    }
+                    mView.goToConfirmOrderActivity(courseStudyPlan);
                 }
-                goToConfirmOrderActivity(mContext, courseStudyPlan);
+                mView.showPlanDialog(mCourseStudyPlans, mVipInfos, mCourseSet);
             }
-
-            new CustomDialog(mContext).initType(6).initPlanData(mCourseStudyPlans, mVipInfos, mCourseSet).show();
         }
+
 //            if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip != null
 //                    && EdusohoApp.app.loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
 //                    && mCourseDetail.getCourse().vipLevelId != 0) {
@@ -268,17 +265,6 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 //                return;
 //            }
     }
-
-    private void goToConfirmOrderActivity(Context context, CourseStudyPlan courseStudyPlan) {
-        Bundle bundle = new Bundle();
-        bundle.putString(ConfirmOrderActivity.COURSEIMG, mCourseSet.cover.middle);
-        bundle.putString(ConfirmOrderActivity.PLANFROM, mCourseSet.getTitle());
-        bundle.putFloat(ConfirmOrderActivity.PLANPRICE, courseStudyPlan.getPrice());
-        bundle.putString(ConfirmOrderActivity.PLANTITLE, courseStudyPlan.getTitle());
-        bundle.putString(ConfirmOrderActivity.PLANID, courseStudyPlan.getId());
-        ConfirmOrderActivity.newInstance(context, bundle);
-    }
-
 
     private Observable<CourseSet> getCourseSet(String id) {
         return RetrofitService.getCourseSet(id);

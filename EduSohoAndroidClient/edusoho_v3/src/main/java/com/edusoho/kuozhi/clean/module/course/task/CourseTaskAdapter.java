@@ -6,15 +6,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.TaskItem;
+import com.edusoho.kuozhi.clean.widget.ESIconView;
 
 import java.util.List;
-
-import static com.edusoho.kuozhi.clean.module.course.task.CourseTasksFragment.CourseTaskChapterViewHolder;
-import static com.edusoho.kuozhi.clean.module.course.task.CourseTasksFragment.CourseTaskUnitViewHolder;
-import static com.edusoho.kuozhi.clean.module.course.task.CourseTasksFragment.CourseTaskViewHolder;
 
 /**
  * Created by JesseHuang on 2017/3/28.
@@ -101,6 +99,39 @@ public class CourseTaskAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 return R.string.task_exercise;
             default:
                 return R.string.task_download;
+        }
+    }
+
+    public static class CourseTaskViewHolder extends RecyclerView.ViewHolder {
+        public ESIconView taskType;
+        public TextView taskName;
+        public TextView taskDuration;
+        public TextView taskIsFree;
+
+        public CourseTaskViewHolder(View view) {
+            super(view);
+            taskType = (ESIconView) view.findViewById(R.id.ev_task_type);
+            taskName = (TextView) view.findViewById(R.id.tv_task_name);
+            taskDuration = (TextView) view.findViewById(R.id.tv_task_duration);
+            taskIsFree = (TextView) view.findViewById(R.id.tv_task_is_free);
+        }
+    }
+
+    public static class CourseTaskUnitViewHolder extends RecyclerView.ViewHolder {
+        public TextView unitTitle;
+
+        public CourseTaskUnitViewHolder(View view) {
+            super(view);
+            unitTitle = (TextView) view.findViewById(R.id.tv_unit_title);
+        }
+    }
+
+    public static class CourseTaskChapterViewHolder extends RecyclerView.ViewHolder {
+        public TextView chapterTitle;
+
+        public CourseTaskChapterViewHolder(View view) {
+            super(view);
+            chapterTitle = (TextView) view.findViewById(R.id.tv_chapter_title);
         }
     }
 }

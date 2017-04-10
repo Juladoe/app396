@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.module.courseset.paywayselector;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -23,6 +24,7 @@ public class PayWayPresenter implements PayWayContract.Presenter {
     public void subscribe() {
         RetrofitService.getMyVirtualCoin()
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
@@ -49,6 +51,7 @@ public class PayWayPresenter implements PayWayContract.Presenter {
     public void goPay(String type, String payWay) {
         RetrofitService.goPay(mPlanId, type, payWay)
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {

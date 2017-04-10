@@ -269,6 +269,7 @@
     <string name="task_homework">&#xe674;</string>
     <string name="task_exercise">&#xe674;</string>
     <string name="task_download">&#xe672;</string>
+    <string name="course_project_promise_icon">&#xe6be;</string>
 
     <string name="discuss_comment">&#xe698;</string>
     <string name="discuss_publish">&#xe697;</string>
@@ -482,5 +483,6 @@
     <string name="favorite_success">收藏成功</string>
     <string name="join_success">加入成功</string>
     <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
+    <string name="load_more_text">正在加载...</string>
 
 </resources>
