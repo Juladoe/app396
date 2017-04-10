@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -17,7 +18,9 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
+import com.edusoho.kuozhi.clean.utils.ItemClickSupport;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
@@ -111,10 +114,10 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showCourseProjectInfo(CourseProject courseProject) {
-        mTitle.setText(courseProject.title);
-        mStudentNum.setText(String.format(getString(R.string.course_student_count), courseProject.studentNum));
-        mCourseRate.setRating(Float.valueOf(courseProject.rating));
+    public void showCourseProjectInfo(CourseProject course) {
+        mTitle.setText(course.title);
+        mStudentNum.setText(String.format(getString(R.string.course_student_count), course.studentNum));
+        mCourseRate.setRating(Float.valueOf(course.rating));
     }
 
     @Override
@@ -221,32 +224,28 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showRelativeCourseProjects(List<CourseProject> courseProjectList) {
+    public void showRelativeCourseProjects(List<CourseProject> courseList) {
         mRelativeCourses.setHasFixedSize(true);
         mRelativeCourses.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRelativeCourses.setItemAnimator(new DefaultItemAnimator());
         mRelativeCourses.setNestedScrollingEnabled(false);
-        RelativeCourseAdapter relativeCourseAdapter = new RelativeCourseAdapter(getActivity(), courseProjectList);
+        final RelativeCourseAdapter relativeCourseAdapter = new RelativeCourseAdapter(getActivity(), courseList);
         mRelativeCourses.setAdapter(relativeCourseAdapter);
+        ItemClickSupport.addTo(mRelativeCourses).setOnItemClickListener(new ItemClickSupport.OnItemClickListener() {
+            @Override
+            public void onItemClicked(RecyclerView recyclerView, int position, View v) {
+                CourseProjectActivity.launch(getActivity(), relativeCourseAdapter.getItem(position).id);
+            }
+        });
+    }
+
+    @Override
+    public void launchCourseProject(String courseId) {
+        CourseProjectActivity.launch(getActivity(), courseId);
     }
 
     @Override
     public String getBundleKey() {
         return COURSE_PROJECT_MODEL;
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView courseTitle;
-        public TextView coursePrice;
-        public TextView courseTasks;
-        public LinearLayout promiseServiceLayout;
-
-        public ViewHolder(View view) {
-            super(view);
-            courseTitle = (TextView) view.findViewById(R.id.tv_course_project_title);
-            coursePrice = (TextView) view.findViewById(R.id.tv_course_project_price);
-            courseTasks = (TextView) view.findViewById(R.id.tv_course_tasks);
-            promiseServiceLayout = (LinearLayout) view.findViewById(R.id.ll_promise_layout);
-        }
     }
 }

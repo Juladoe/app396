@@ -6,7 +6,10 @@ import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.utils.TimeUtils;
 
+import java.text.ParseException;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -96,7 +99,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                     @Override
                     public void onNext(CourseMember courseMember) {
-                        mView.showBottomLayout(courseMember == null);
+                        mView.showBottomLayout(!(courseMember.user != null && !isExpired(courseMember.deadline)));
                     }
                 });
     }
@@ -104,6 +107,10 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public void unsubscribe() {
 
+    }
+
+    private boolean isExpired(String utcTime) {
+        return TimeUtils.getUTCtoDate(utcTime).compareTo(new Date()) < 0;
     }
 
     private CourseProjectEnum[] initCourseModules() {

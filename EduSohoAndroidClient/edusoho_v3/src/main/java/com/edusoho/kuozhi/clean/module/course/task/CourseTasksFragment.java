@@ -61,37 +61,4 @@ public class CourseTasksFragment extends Fragment implements
         taskRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         taskRecyclerView.setAdapter(adapter);
     }
-
-    public static class CourseTaskViewHolder extends RecyclerView.ViewHolder {
-        public ESIconView taskType;
-        public TextView taskName;
-        public TextView taskDuration;
-        public TextView taskIsFree;
-
-        public CourseTaskViewHolder(View view) {
-            super(view);
-            taskType = (ESIconView) view.findViewById(R.id.ev_task_type);
-            taskName = (TextView) view.findViewById(R.id.tv_task_name);
-            taskDuration = (TextView) view.findViewById(R.id.tv_task_duration);
-            taskIsFree = (TextView) view.findViewById(R.id.tv_task_is_free);
-        }
-    }
-
-    public static class CourseTaskUnitViewHolder extends RecyclerView.ViewHolder {
-        public TextView unitTitle;
-
-        public CourseTaskUnitViewHolder(View view) {
-            super(view);
-            unitTitle = (TextView) view.findViewById(R.id.tv_unit_title);
-        }
-    }
-
-    public static class CourseTaskChapterViewHolder extends RecyclerView.ViewHolder {
-        public TextView chapterTitle;
-
-        public CourseTaskChapterViewHolder(View view) {
-            super(view);
-            chapterTitle = (TextView) view.findViewById(R.id.tv_chapter_title);
-        }
-    }
 }

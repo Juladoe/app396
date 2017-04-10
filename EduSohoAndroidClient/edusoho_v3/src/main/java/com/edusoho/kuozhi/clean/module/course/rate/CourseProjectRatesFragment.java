@@ -1,18 +1,13 @@
 package com.edusoho.kuozhi.clean.module.course.rate;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RatingBar;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
@@ -20,7 +15,6 @@ import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.widget.ESDividerItemDecoration;
 import com.edusoho.kuozhi.clean.widget.ESRecyclerView.ESPullAndLoadRecyclerView;
-import com.edusoho.kuozhi.v3.view.circleImageView.CircularImageView;
 
 import java.util.List;
 
@@ -103,22 +97,5 @@ public class CourseProjectRatesFragment extends Fragment implements
     @Override
     public void loadMoreCompleted() {
         mRateRecyclerView.setPullLoadMoreCompleted();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public CircularImageView userAvatar;
-        public TextView username;
-        public RatingBar courseRating;
-        public TextView postTime;
-        public TextView ratingContent;
-
-        public ViewHolder(View view) {
-            super(view);
-            userAvatar = (CircularImageView) view.findViewById(R.id.civ_user_avatar);
-            username = (TextView) view.findViewById(R.id.tv_user_name);
-            courseRating = (RatingBar) view.findViewById(R.id.rb_rating);
-            postTime = (TextView) view.findViewById(R.id.tv_post_time);
-            ratingContent = (TextView) view.findViewById(R.id.tv_rate_content);
-        }
     }
 }
