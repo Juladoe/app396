@@ -4,6 +4,7 @@ import android.util.Log;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -12,7 +13,8 @@ import java.util.Date;
 
 public class TimeUtils {
     private static final SimpleDateFormat UTC_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-    private static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static String getPostDays(String postTime) {
         long l = 1;
@@ -21,7 +23,7 @@ public class TimeUtils {
             l = (new Date().getTime() - date.getTime()) / (1000);
 
             if (l > 30 * 24 * 60 * 60) {
-                return DEFAULT_DATE_FORMAT.format(date);
+                return SIMPLE_DATE_FORMAT.format(date);
             } else if (l > 24 * 60 * 60) {
                 l = l / (24 * 60 * 60);
                 return String.valueOf(l) + "天前";
