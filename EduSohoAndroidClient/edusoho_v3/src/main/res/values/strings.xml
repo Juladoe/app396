@@ -470,6 +470,7 @@
         <item>计划</item>
         <item>评价</item>
     </string-array>
+    <string name="confirm_order">确认订单</string>
     <string name="course_member_count">课程学员（%1$d）</string>
     <string name="course_student_count">%1$d名学生</string>
     <string name="promise_services">承诺服务: </string>

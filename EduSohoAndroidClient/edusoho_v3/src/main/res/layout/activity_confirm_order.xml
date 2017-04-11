@@ -20,7 +20,7 @@
             android:layout_centerVertical="true" />
 
         <TextView
-            android:text="确认订单"
+            android:text="@string/confirm_order"
             android:textColor="@color/primary_font_color"
             android:textSize="@dimen/font_xl"
             android:layout_centerInParent="true"
@@ -36,7 +36,7 @@
 
     <RelativeLayout
         android:background="@color/disabled2_hint_color"
-        android:padding="20dp"
+        android:padding="@dimen/common_20"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -50,8 +50,8 @@
             android:id="@+id/tv_title"
             tools:text="新概念CG创作理念"
             android:layout_toRightOf="@id/iv_course_image"
-            android:layout_marginTop="16dp"
-            android:layout_marginLeft="15dp"
+            android:layout_marginTop="@dimen/common_16"
+            android:layout_marginLeft="@dimen/common_15"
             android:maxLines="2"
             android:ellipsize="end"
             android:textSize="@dimen/font_l"
@@ -61,12 +61,11 @@
 
         <TextView
             android:id="@+id/tv_price"
-            tools:text="¥300"
             android:textSize="@dimen/font_xs"
             android:textColor="@color/secondary_color"
             android:layout_below="@id/tv_title"
             android:layout_alignLeft="@id/tv_title"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/common_10"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         
@@ -74,13 +73,13 @@
             android:background="@color/disabled_hint_color"
             android:layout_alignLeft="@id/tv_title"
             android:layout_below="@id/iv_course_image"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/common_10"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"/>
 
         <TextView
             android:id="@+id/tv_from"
-            android:text="来自课程  |   "
+            android:text="来自课程  |    "
             android:textSize="@dimen/font_s"
             android:textColor="@color/secondary2_color"
             android:layout_alignLeft="@id/tv_price"
@@ -106,18 +105,18 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="15dp"/>
+        android:layout_height="@dimen/common_15"/>
 
     <RelativeLayout
         android:id="@+id/rl_discount"
         android:background="@color/disabled2_hint_color"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
+        android:paddingLeft="@dimen/common_15"
+        android:paddingRight="@dimen/common_15"
         android:layout_width="match_parent"
-        android:layout_height="40dp">
+        android:layout_height="@dimen/common_40">
 
         <TextView
-            android:text="优惠券"
+            android:text="@string/coupons"
             android:textSize="@dimen/font_l"
             android:layout_centerVertical="true"
             android:textColor="@color/primary_font_color"
@@ -129,10 +128,10 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:padding="10dp"
+            android:padding="@dimen/common_10"
             android:text="@string/new_font_more"
             android:textColor="@color/primary_font_color"
-            android:textSize="13dp" />
+            android:textSize="@dimen/common_13" />
 
         <TextView
             android:id="@+id/tv_discount_subtract"
@@ -148,7 +147,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="15dp"/>
+        android:layout_height="@dimen/common_15"/>
 
     <View
         android:layout_weight="1"
@@ -158,9 +157,9 @@
     <RelativeLayout
         android:background="@color/disabled2_hint_color"
         android:layout_gravity="bottom"
-        android:paddingRight="15dp"
+        android:paddingRight="@dimen/common_15"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="@dimen/common_50">
 
         <TextView
             android:id="@+id/tv_pay"
@@ -180,7 +179,7 @@
             android:textColor="@color/secondary_color"
             android:textSize="@dimen/font_l"
             android:layout_centerVertical="true"
-            android:layout_marginRight="13dp"
+            android:layout_marginRight="@dimen/common_13"
             android:layout_toLeftOf="@id/tv_pay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -191,7 +190,7 @@
             android:textSize="@dimen/font_l"
             android:textColor="@color/secondary2_font_color"
             android:layout_centerVertical="true"
-            android:layout_marginRight="10dp"
+            android:layout_marginRight="@dimen/common_10"
             android:layout_toLeftOf="@id/tv_sum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

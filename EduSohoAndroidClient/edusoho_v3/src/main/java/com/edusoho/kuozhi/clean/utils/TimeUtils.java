@@ -11,8 +11,9 @@ import java.util.Date;
  */
 
 public class TimeUtils {
-    private static final SimpleDateFormat UTC_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
-    private static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final SimpleDateFormat UTC_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private static final SimpleDateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public static String getPostDays(String postTime) {
         long l = 1;
@@ -21,7 +22,7 @@ public class TimeUtils {
             l = (new Date().getTime() - date.getTime()) / (1000);
 
             if (l > 30 * 24 * 60 * 60) {
-                return DEFAULT_DATE_FORMAT.format(date);
+                return SIMPLE_DATE_FORMAT.format(date);
             } else if (l > 24 * 60 * 60) {
                 l = l / (24 * 60 * 60);
                 return String.valueOf(l) + "天前";
@@ -41,6 +42,11 @@ public class TimeUtils {
         return String.valueOf(l) + "秒前";
     }
 
+    /**
+     * convert to date type
+     * @param time UTC TIME, 1970-01-01T08:00:00+08:00
+     * @return
+     */
     public static Date getUTCtoDate(String time) {
         Date date = new Date();
         try {
@@ -49,5 +55,14 @@ public class TimeUtils {
 
         }
         return date;
+    }
+
+    /**
+     * convert to millisecond
+     * @param time UTC TIME, 1970-01-01T08:00:00+08:00
+     * @return
+     */
+    public static long getMillisecond(String time){
+        return getUTCtoDate(time).getTime();
     }
 }

@@ -14,9 +14,9 @@
             android:id="@+id/ll_detail_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="25dp"
-            android:paddingRight="15dp"
-            android:paddingLeft="15dp"
+            android:paddingTop="@dimen/common_25"
+            android:paddingRight="@dimen/common_15"
+            android:paddingLeft="@dimen/common_15"
             android:orientation="vertical">
 
             <TextView
@@ -157,7 +157,7 @@
 
             <RelativeLayout
                 android:id="@+id/student_rlayout"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="@dimen/common_50"
                 android:layout_width="match_parent"
                 android:layout_height="148dp">
 
@@ -186,7 +186,7 @@
                     android:layout_width="@dimen/common_20"
                     android:layout_height="@dimen/common_44"
                     android:layout_alignParentRight="true"
-                    android:layout_marginTop="18dp"
+                    android:layout_marginTop="@dimen/common_18"
                     android:text="@string/new_font_more"
                     android:textColor="@color/primary_font_color"
                     android:textSize="13dp" />

@@ -42,19 +42,19 @@
                     android:id="@+id/ll_limit_activities"
                     android:orientation="horizontal"
                     android:background="@color/secondary_color"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="@dimen/common_10"
                     android:visibility="gone"
                     android:layout_below="@id/iv_background"
                     android:layout_width="match_parent"
-                    android:layout_height="40dp">
+                    android:layout_height="@dimen/common_40">
 
                     <TextView
                         android:id="@+id/discount_activity_name"
                         style="@style/common_tv_fonts"
                         android:drawableLeft="@drawable/discount_time"
-                        android:drawablePadding="7dp"
+                        android:drawablePadding="@dimen/common_7"
                         android:layout_marginLeft="@dimen/common_marginl"
-                        android:layout_marginRight="@dimen/common_margin1"/>
+                        android:layout_marginRight="@dimen/common_marginl"/>
 
                     <TextView
                         android:id="@+id/discount_activity_time"
@@ -67,12 +67,12 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="44dp"
+                android:layout_height="@dimen/common_44"
                 android:background="@color/transparent"
                 android:minHeight="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:titleMarginTop="15dp">
+                app:titleMarginTop="@dimen/common_15">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -83,22 +83,22 @@
                     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                         android:id="@+id/iv_back"
                         android:layout_width="wrap_content"
-                        android:layout_height="44dp"
+                        android:layout_height="@dimen/common_44"
                         android:gravity="center"
-                        android:paddingRight="15dp"
+                        android:paddingRight="@dimen/common_15"
                         android:text="@string/new_font_back"
                         android:textColor="@color/disabled2_hint_color"
-                        android:textSize="17dp" />
+                        android:textSize="@dimen/font_xl" />
 
                     <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
                         android:id="@+id/iv_share"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
+                        android:layout_width="@dimen/common_44"
+                        android:layout_height="@dimen/common_44"
                         android:layout_alignParentRight="true"
                         android:gravity="center"
                         android:text="@string/new_font_share"
                         android:textColor="@color/textIcons"
-                        android:textSize="15sp" />
+                        android:textSize="@dimen/font_l" />
 
                 </RelativeLayout>
             </android.support.v7.widget.Toolbar>
@@ -122,13 +122,13 @@
                 app:pst_other_color="@color/secondary_font_color"
                 app:pst_textColor="@color/primary_color"
                 app:pst_textSize="@dimen/medium_font_size"
-                app:tabPaddingLeftRight="2dip"
+                app:tabPaddingLeftRight="2dp"
                 app:underlineColor="@color/transparent"
                 app:underlineHeight="0dp" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="7dp"
+                android:layout_height="@dimen/common_7"
                 android:layout_below="@id/tabs"
                 android:background="@drawable/shape_line_shadow" />
         </RelativeLayout>
@@ -145,13 +145,13 @@
         android:id="@+id/bottom_add_layout"
         android:background="@color/disabled2_hint_color"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="@dimen/common_50"
         android:layout_gravity="bottom"
         android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/consult_layout"
-            android:layout_width="55dp"
+            android:layout_width="@dimen/common_55"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical">
@@ -161,7 +161,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/new_font_consult"
                 android:textColor="@color/secondary_font_color"
-                android:textSize="14sp" />
+                android:textSize="@dimen/font_m" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -175,7 +175,7 @@
 
         <LinearLayout
             android:id="@+id/collect_layout"
-            android:layout_width="55dp"
+            android:layout_width="@dimen/common_55"
             android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical">
@@ -186,14 +186,14 @@
                 android:layout_height="wrap_content"
                 android:text="@string/new_font_collect"
                 android:textColor="@color/secondary_font_color"
-                android:textSize="14sp" />
+                android:textSize="@dimen/font_m" />
 
             <TextView
                 android:id="@+id/tv_collect_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:text="收藏"
+                android:layout_marginTop="@dimen/common_6"
+                android:text="@string/course_project_favorite"
                 android:textColor="@color/secondary_font_color"
                 android:textSize="@dimen/font_xxs" />
 
@@ -205,7 +205,7 @@
             android:layout_height="match_parent"
             android:background="@color/primary_color"
             android:gravity="center"
-            android:text="加入学习"
+            android:text="@string/txt_add_course"
             android:textColor="@color/disabled2_hint_color"
             android:textSize="@dimen/font_xl" />
     </LinearLayout>
@@ -219,16 +219,16 @@
         android:orientation="vertical">
 
         <ProgressBar
-            android:layout_width="25dp"
-            android:layout_height="25dp"
+            android:layout_width="@dimen/common_25"
+            android:layout_height="@dimen/common_25"
             android:indeterminateDrawable="@drawable/load" />
 
         <TextView
             android:id="@+id/loading_txt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:text="加载中.."
+            android:layout_marginTop="@dimen/common_5"
+            android:text="@string/load_more_text"
             android:textColor="@color/base_black_54" />
     </LinearLayout>
 

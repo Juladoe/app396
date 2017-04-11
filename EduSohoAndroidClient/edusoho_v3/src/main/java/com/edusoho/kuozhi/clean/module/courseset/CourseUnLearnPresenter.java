@@ -12,6 +12,7 @@ import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.info.CourseIntroduceFragment;
 import com.edusoho.kuozhi.clean.module.courseset.plan.StudyPlayFragment;
 import com.edusoho.kuozhi.clean.module.courseset.review.CourseEvaluateFragment;
+import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
@@ -199,7 +200,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     public void onNext(Discount discount) {
                         if (discount != null) {
                             if("running".equals(discount.status)) {
-                                long time = Long.parseLong(discount.endTime) - Long.parseLong(discount.startTime);
+                                long time = TimeUtils.getMillisecond(discount.endTime)/1000 - TimeUtils.getMillisecond(discount.startTime)/1000;
                                 mView.showDiscountInfo(discount.name, time);
                             }
                         }
