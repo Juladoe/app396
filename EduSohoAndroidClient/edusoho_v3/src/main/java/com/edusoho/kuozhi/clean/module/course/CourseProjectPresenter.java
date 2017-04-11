@@ -1,7 +1,5 @@
 package com.edusoho.kuozhi.clean.module.course;
 
-import android.util.Log;
-
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
@@ -9,20 +7,14 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 
-import java.text.ParseException;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
-import rx.subjects.BehaviorSubject;
-import rx.subjects.PublishSubject;
 
 
 /**
