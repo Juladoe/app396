@@ -6,6 +6,7 @@ import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 
 import java.text.ParseException;
@@ -110,7 +111,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     private boolean isExpired(String utcTime) {
-        return TimeUtils.getUTCtoDate(utcTime).compareTo(new Date()) < 0;
+        return !CommonConstant.EXPIRED_MODE_FOREVER.equals(utcTime) && TimeUtils.getUTCtoDate(utcTime).compareTo(new Date()) < 0;
     }
 
     private CourseProjectEnum[] initCourseModules() {

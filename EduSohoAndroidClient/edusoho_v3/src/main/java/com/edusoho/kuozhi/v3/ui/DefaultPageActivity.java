@@ -234,13 +234,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private void selectDownTab(int id) {
         String tag;
         if (app.loginUser == null && id != R.id.nav_tab_find) {
-            app.mEngine.runNormalPluginWithAnim("LoginActivity", mContext, null, new NormalCallback() {
-                @Override
-                public void success(Object obj) {
-                    mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
-                }
-            });
-            //CourseProjectActivity.launch(mContext, "1");
+//            app.mEngine.runNormalPluginWithAnim("LoginActivity", mContext, null, new NormalCallback() {
+//                @Override
+//                public void success(Object obj) {
+//                    mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
+//                }
+//            });
+            CourseProjectActivity.launch(mContext, "1");
             return;
         }
         mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));
