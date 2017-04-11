@@ -43,6 +43,11 @@ public class TimeUtils {
         return String.valueOf(l) + "秒前";
     }
 
+    /**
+     * convert to date type
+     * @param time UTC TIME, 1970-01-01T08:00:00+08:00
+     * @return
+     */
     public static Date getUTCtoDate(String time) {
         Date date = new Date();
         try {
@@ -51,5 +56,14 @@ public class TimeUtils {
 
         }
         return date;
+    }
+
+    /**
+     * convert to millisecond
+     * @param time UTC TIME, 1970-01-01T08:00:00+08:00
+     * @return
+     */
+    public static long getMillisecond(String time){
+        return getUTCtoDate(time).getTime();
     }
 }
