@@ -39,11 +39,15 @@ public interface CourseUnLearnContract {
         void goToConfirmOrderActivity(CourseStudyPlan courseStudyPlan);
 
         void goToCourseProjectActivity(String courseProjectId);
+
+        void goToImChatActivity(CourseSet.CreatorBean creatorBean);
     }
 
     interface Presenter extends BasePresenter {
         void isJoin();
 
         void joinStudy();
+
+        void consultTeacher();
     }
 }

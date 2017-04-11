@@ -26,7 +26,8 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.GuaranteServiceAdapter;
-import com.edusoho.kuozhi.clean.module.courseset.confirmorder.ConfirmOrderActivity;
+import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import java.util.List;
@@ -156,7 +157,7 @@ public class CustomDialog extends Dialog {
             mRb.setPadding(AppUtil.dp2px(mContext, 7), AppUtil.dp2px(mContext, 4)
                     , AppUtil.dp2px(mContext, 7), AppUtil.dp2px(mContext, 4));
             mRb.setBackground(ContextCompat.getDrawable(mContext, R.drawable.teach_type_rb_selector));
-            mRb.setText(mCourseStudyPlans.get(i).getTitle());
+            mRb.setText(mCourseStudyPlans.get(i).title);
             if (mostStudentNumPlan == i) {
                 Drawable drawable = mContext.getResources().getDrawable(R.drawable.hot);
                 drawable.setBounds(0, 0 , AppUtil.dp2px(mContext, 10), AppUtil.dp2px(mContext, 13));
@@ -221,11 +222,11 @@ public class CustomDialog extends Dialog {
                     @Override
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
-                        bundle.putString(ConfirmOrderActivity.PLANTITLE, mCourseStudyPlan.getTitle());
-                        bundle.putFloat(ConfirmOrderActivity.PLANPRICE,  mCourseStudyPlan.getPrice());
-                        bundle.putString(ConfirmOrderActivity.PLANFROM, mCourseSet.getTitle());
+                        bundle.putString(ConfirmOrderActivity.PLANTITLE, mCourseStudyPlan.title);
+                        bundle.putFloat(ConfirmOrderActivity.PLANPRICE,  mCourseStudyPlan.price);
+                        bundle.putString(ConfirmOrderActivity.PLANFROM, mCourseSet.title);
                         bundle.putString(ConfirmOrderActivity.COURSEIMG, mCourseSet.cover.middle);
-                        bundle.putString(ConfirmOrderActivity.PLANID, mCourseStudyPlan.getId());
+                        bundle.putString(ConfirmOrderActivity.PLANID, mCourseStudyPlan.id);
                         ConfirmOrderActivity.newInstance(mContext, bundle);
                     }
                 });
@@ -285,58 +286,61 @@ public class CustomDialog extends Dialog {
                 View view = group.findViewById(checkedId);
                 int position = group.indexOfChild(view);
                 mCourseStudyPlan = mCourseStudyPlans.get(position);
-                if ("1".equals(mCourseStudyPlans.get(position).getIsFree())) {
+                if ("1".equals(mCourseStudyPlans.get(position).isFree)) {
                     findViewById(R.id.discount).setVisibility(View.GONE);
                     findViewById(R.id.tv_original_price).setVisibility(View.GONE);
                     ((TextView) findViewById(R.id.tv_discount_price)).setText(R.string.free_course_project);
                     ((TextView) findViewById(R.id.tv_discount_price)).setTextColor(ContextCompat.getColor(mContext, R.color.primary));
                 } else {
                     findViewById(R.id.discount).setVisibility(View.VISIBLE);
-                    ((TextView) findViewById(R.id.tv_discount_price)).setText(String.format("%s%s", "¥ ", mCourseStudyPlan.getPrice()));
-                    ((TextView) findViewById(R.id.tv_original_price)).setText(String.format("%s%s", "¥ ", mCourseStudyPlan.getOriginPrice()));
+                    ((TextView) findViewById(R.id.tv_discount_price)).setText(String.format("%s%s", "¥ ", mCourseStudyPlan.price));
+                    ((TextView) findViewById(R.id.tv_original_price)).setText(String.format("%s%s", "¥ ", mCourseStudyPlan.originPrice));
                     ((TextView) findViewById(R.id.tv_original_price)).getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);;
                     ((TextView) findViewById(R.id.tv_discount_price)).setTextColor(ContextCompat.getColor(mContext, R.color.secondary_color));
                 }
                 findViewById(R.id.tv_service).setVisibility(View.GONE);
-                List<CourseStudyPlan.ServicesBean> servicesList = mCourseStudyPlan.getServices();
+                List<CourseStudyPlan.ServicesBean> servicesList = mCourseStudyPlan.services;
                 if (servicesList != null && servicesList.size() != 0) {
                     findViewById(R.id.tv_service).setVisibility(View.VISIBLE);
                     StringBuilder sb = new StringBuilder();
                     sb.append(mContext.getString(R.string.promise_services));
                     for (int i = 0; i < servicesList.size(); i++) {
-                        sb.append(servicesList.get(i).getFull_name());
+                        sb.append(servicesList.get(i).full_name);
                         if (i != servicesList.size() - 1) {
                             sb.append(" 、 ");
                         }
                     }
                     ((TextView) findViewById(R.id.tv_service)).setText(sb);
                 }
-                ((TextView) findViewById(R.id.tv_way)).setText("freeMode".equals(mCourseStudyPlan.getLearnMode()) ?
+                ((TextView) findViewById(R.id.tv_way)).setText("freeMode".equals(mCourseStudyPlan.learnMode) ?
                                            mContext.getString(R.string.free_mode): mContext.getString(R.string.locked_mode) );
-                if ("days".equals(mCourseStudyPlan.getExpiryMode())) {
-                    ((TextView) findViewById(R.id.tv_validity)).setText(String.format(mContext.getString(R.string.validity_day), mCourseStudyPlan.getExpiryDays()));
+                if ("days".equals(mCourseStudyPlan.expiryMode)) {
+                    ((TextView) findViewById(R.id.tv_validity)).setText(String.format(mContext.getString(R.string.validity_day), mCourseStudyPlan.expiryDays));
                 } else {
                     ((TextView) findViewById(R.id.tv_validity)).setText(R.string.validity_forever);
                 }
-                ((TextView) findViewById(R.id.tv_task)).setText(String.format(mContext.getString(R.string.course_task_num), mCourseStudyPlan.getTaskNum()));
+                ((TextView) findViewById(R.id.tv_task)).setText(String.format(mContext.getString(R.string.course_task_num), mCourseStudyPlan.taskNum));
                 findViewById(R.id.tv_vip).setVisibility(View.GONE);
                 for (int i = 0; i < mVipInfos.size(); i++) {
                     VipInfo vipInfo = mVipInfos.get(i);
-                    if (vipInfo.getId().equals(mCourseStudyPlan.getId())) {
+                    if (vipInfo.id == mCourseStudyPlan.vipLevelId) {
                         findViewById(R.id.tv_vip).setVisibility(View.VISIBLE);
-                        ((TextView) findViewById(R.id.tv_vip)).setText(String.format(mContext.getString(R.string.vip_free), vipInfo.getName()));
+                        ((TextView) findViewById(R.id.tv_vip)).setText(String.format(mContext.getString(R.string.vip_free), vipInfo.name));
                         break;
                     }
+                }
+                if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip.levelId > mCourseStudyPlan.vipLevelId) {
+                    ((TextView) findViewById(R.id.tv_confirm)).setText(getContext().getString(R.string.txt_vip_free));
                 }
             }
         };
     }
 
-    public int getMostStudentNumPlan() {
+    private int getMostStudentNumPlan() {
         int index = 0;
         for (int i = 0; i < mCourseStudyPlans.size(); i++) {
             if (i > 0) {
-                if (mCourseStudyPlans.get(i - 1).getStudentNum() < mCourseStudyPlans.get(i).getStudentNum()) {
+                if (mCourseStudyPlans.get(i - 1).studentNum < mCourseStudyPlans.get(i).studentNum) {
                     index = i;
                 }
             }

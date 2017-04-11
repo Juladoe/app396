@@ -8,24 +8,8 @@ import java.io.Serializable;
 
 public class VipInfo implements Serializable {
 
-    private String id;
-    private String name;
-    private String description;
-    private String maxRate;
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getMaxRate() {
-        return maxRate;
-    }
+    public int id;
+    public String name;
+    public String description;
+    public String maxRate;
 }

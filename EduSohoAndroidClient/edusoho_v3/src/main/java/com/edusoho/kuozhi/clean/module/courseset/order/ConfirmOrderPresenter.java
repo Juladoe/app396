@@ -1,28 +1,30 @@
-package com.edusoho.kuozhi.clean.module.courseset.paywayselector;
+package com.edusoho.kuozhi.clean.module.courseset.order;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+
+import java.util.Map;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
- * Created by DF on 2017/4/7.
+ * Created by DF on 2017/4/6.
  */
 
-public class PayWayPresenter implements PayWayContract.Presenter {
+public class ConfirmOrderPresenter implements com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderContract.Presenter {
 
-    private PayWayContract.View mView;
+    private com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderContract.View mView;
     private int mPlanId;
 
-    public PayWayPresenter(PayWayContract.View mView, int mPlanId) {
+    public ConfirmOrderPresenter(com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderContract.View mView, int mPlanId) {
         this.mView = mView;
         this.mPlanId = mPlanId;
     }
 
     @Override
     public void subscribe() {
-        RetrofitService.getMyVirtualCoin()
+        RetrofitService.getMyCoupons()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
@@ -45,11 +47,12 @@ public class PayWayPresenter implements PayWayContract.Presenter {
 
     @Override
     public void unsubscribe() {
+
     }
 
     @Override
-    public void goPay(String type, String payWay) {
-        RetrofitService.goPay(mPlanId, type, payWay)
+    public void postOrderInfo(String type) {
+        RetrofitService.postOrderInfo(type, mPlanId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
@@ -69,4 +72,29 @@ public class PayWayPresenter implements PayWayContract.Presenter {
                     }
                 });
     }
+
+    @Override
+    public void createOrder(Map<String, String> map) {
+        RetrofitService.createOrder(map)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+
+                    }
+                });
+
+    }
+
 }

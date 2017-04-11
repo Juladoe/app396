@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.confirmorder;
+package com.edusoho.kuozhi.clean.module.courseset.order;
 
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;

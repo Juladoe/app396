@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.confirmorder;
+package com.edusoho.kuozhi.clean.module.courseset.order;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.module.courseset.paywayselector.PayWayActivity;
+import com.edusoho.kuozhi.clean.module.courseset.payment.PayWayActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 

@@ -46,8 +46,8 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         this.mVipInfos = mVipInfos;
         int num = 0;
         for (int i = 0; i < mList.size(); i++) {
-            if (mList.get(i).getStudentNum() > num) {
-                num = mList.get(i).getStudentNum();
+            if (mList.get(i).studentNum > num) {
+                num = mList.get(i).studentNum;
                 maxIndex = i;
             }
         }
@@ -64,8 +64,8 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         CourseStudyPlan courseStudyPlan = mList.get(position);
         holder.mRlItem.setOnClickListener(this);
         holder.mFlayout.removeAllViews();
-        holder.mClassType.setText(courseStudyPlan.getTitle());
-        holder.mTask.setText(String.format(mContext.getString(R.string.course_task_num), courseStudyPlan.getTaskNum()));
+        holder.mClassType.setText(courseStudyPlan.title);
+        holder.mTask.setText(String.format(mContext.getString(R.string.course_task_num), courseStudyPlan.taskNum));
         loadPrice(holder, courseStudyPlan);
         loadService(holder, courseStudyPlan);
         loadHot(holder, position);
@@ -75,20 +75,20 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
     }
 
     private void loadPrice(StudyPlanViewHolder holder, CourseStudyPlan courseStudyPlan) {
-        if ("1".equals(courseStudyPlan.getIsFree())) {
+        if ("1".equals(courseStudyPlan.isFree)) {
             holder.mPrice.setText(R.string.free_course_project);
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
         } else {
-            holder.mPrice.setText("¥ " + courseStudyPlan.getPrice());
+            holder.mPrice.setText("¥ " + courseStudyPlan.price);
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.secondary_color));
         }
     }
 
     private void loadService(StudyPlanViewHolder holder, CourseStudyPlan courseStudyPlan) {
-        if (courseStudyPlan.getServices().size() != 0) {
+        if (courseStudyPlan.services.size() != 0) {
             holder.mService.setVisibility(View.VISIBLE);
             holder.mFlayout.setVisibility(View.VISIBLE);
-            addFlowItem(holder, courseStudyPlan.getServices());
+            addFlowItem(holder, courseStudyPlan.services);
         } else {
             holder.mService.setVisibility(View.GONE);
             holder.mFlayout.setVisibility(View.GONE);
@@ -111,9 +111,9 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         holder.mVip.setVisibility(View.GONE);
         for (int i = 0; i < mVipInfos.size(); i++) {
             VipInfo vipInfo = mVipInfos.get(i);
-            if (courseStudyPlan.getVipLevelId().equals(vipInfo.getId())) {
+            if (courseStudyPlan.vipLevelId == vipInfo.id) {
                 holder.mVip.setVisibility(View.VISIBLE);
-                holder.mVip.setText(String.format(mContext.getString(R.string.vip_free), vipInfo.getName()));
+                holder.mVip.setText(String.format(mContext.getString(R.string.vip_free), vipInfo.name));
             }
         }
     }
@@ -136,7 +136,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
             TextView serviceTextView = new TextView(mContext);
             serviceTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
             serviceTextView.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-            serviceTextView.setText(list.get(i).getShort_name());
+            serviceTextView.setText(list.get(i).short_name);
             lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             lp.rightMargin = CommonUtil.dip2px(mContext, 10);
             serviceTextView.setLayoutParams(lp);
@@ -151,7 +151,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
             @Override
             public void onClick(View v) {
                 int position = (int) v.getTag();
-                CourseProjectActivity.launch(mContext, mList.get(position).getId());
+                CourseProjectActivity.launch(mContext, mList.get(position).id);
             }
         };
     }

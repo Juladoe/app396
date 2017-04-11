@@ -54,7 +54,7 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
 
     private void firstLoad(CourseReview courseReview){
         if (courseReview != null) {
-            int length = courseReview.getData().size();
+            int length = courseReview.data.size();
             if (length < 10) {
                 mIsHave = false;
                 mView.setRecyclerViewStatus(CourseEvaluateAdapter.NO_LOAD_MORE);
@@ -63,7 +63,7 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
             if (length == 0) {
                 mView.setEmptyViewVis(true);
             } else {
-                mView.showCompanies(courseReview.getData());
+                mView.showCompanies(courseReview.data);
             }
         }
     }
@@ -96,10 +96,10 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
                     @Override
                     public void onNext(CourseReview courseReview) {
                         if (courseReview != null) {
-                            int length = courseReview.getData().size();
+                            int length = courseReview.data.size();
                             mStart += 10;
                             mIsHave = length > 10;
-                            mView.addData(courseReview.getData());
+                            mView.addData(courseReview.data);
                         }
                     }
                 });

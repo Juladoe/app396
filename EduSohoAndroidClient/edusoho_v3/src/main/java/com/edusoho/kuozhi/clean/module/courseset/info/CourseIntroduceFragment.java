@@ -14,10 +14,9 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.module.base.BaseLazyFragment;
+import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
-import com.edusoho.kuozhi.v3.entity.course.CourseDetail;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -45,13 +44,11 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     private TextView mStudentNum;
     private View mStudentMore;
     private LinearLayout mStudentIconLayout;
-    private TextView mStudent;
     private View mStudentNone;
     private View mLoadView;
     private View mPeopleLayout;
     private View mInfoLayout;
 
-    private CourseDetail mCourseDetail;
     private int mCourseId = 1;
     private CourseIntroduceContract.Presenter mPresenter;
     private CourseSet mCourseSet;
@@ -83,7 +80,6 @@ public class CourseIntroduceFragment extends BaseLazyFragment
         mStudentNum = (TextView) view.findViewById(R.id.tv_student_num);
         mStudentMore = view.findViewById(R.id.tv_student_more);
         mStudentIconLayout = (LinearLayout) view.findViewById(R.id.student_icon_llayout);
-        mStudent = (TextView) view.findViewById(R.id.tv_student);
         mPeopleLayout = view.findViewById(R.id.people_rlayout);
         mStudentNone = view.findViewById(R.id.tv_student_none);
         mLoadView = view.findViewById(R.id.ll_detail_load);
@@ -114,29 +110,29 @@ public class CourseIntroduceFragment extends BaseLazyFragment
 
     @Override
     public void showHead() {
-        mTitle.setText(mCourseSet.getTitle());
-        mReviewStar.setRating((int) mCourseSet.getRating());
-        int studentNum = mCourseSet.getStudentNum();
+        mTitle.setText(mCourseSet.title);
+        mReviewStar.setRating((int) mCourseSet.rating);
+        int studentNum = mCourseSet.studentNum;
         mTitleStudentNum.setText(studentNum != 0 ?
                                     String.format(getContext().getString(R.string.course_student_count), studentNum) : "");
         showCoursePrice();
     }
 
     private void showCoursePrice() {
-        if (mCourseSet.getMaxCoursePrice() == 0) {
+        if (mCourseSet.maxCoursePrice == 0) {
             mPriceNow.setText("免费");
             mPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
         } else {
-            float discount = mCourseSet.getDiscount();
+            float discount = mCourseSet.discount;
             if (discount != 10) {
                 mDiscount.setVisibility(View.VISIBLE);
-                mPriceNow.setText(String.format("¥ %s-%s", (mCourseSet.getMinCoursePrice() * discount / 10),
-                        (mCourseSet.getMaxCoursePrice() * discount / 10)));
-                mPriceOld.setText(mCourseSet.getMaxCoursePrice() + "");
+                mPriceNow.setText(String.format("¥ %s-%s", (mCourseSet.minCoursePrice * discount / 10),
+                        (mCourseSet.maxCoursePrice * discount / 10)));
+                mPriceOld.setText(mCourseSet.maxCoursePrice + "");
                 mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
-                mPriceNow.setText(String.format("¥ %s-%s", ((int) mCourseSet.getMinCoursePrice()),
-                        ((int) mCourseSet.getMaxCoursePrice())));
+                mPriceNow.setText(String.format("¥ %s-%s", ((int) mCourseSet.minCoursePrice),
+                        ((int) mCourseSet.maxCoursePrice)));
             }
         }
     }
@@ -145,13 +141,13 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     @Override
     public void showInfoAndPeople() {
         mInfoLayout.setVisibility(View.VISIBLE);
-        mTitleDesc.setText(Html.fromHtml(mCourseSet.getSummary(), new EduHtmlHttpImageGetter(mTitleDesc, null, true), null));
+        mTitleDesc.setText(Html.fromHtml(mCourseSet.summary, new EduHtmlHttpImageGetter(mTitleDesc, null, true), null));
         StringBuilder sb = new StringBuilder();
-        int length = mCourseSet.getAudiences().length;
+        int length = mCourseSet.audiences.length;
         if (length == 0) {
             mPeopleLayout.setVisibility(View.GONE);
         } else {
-            String[] audiences = mCourseSet.getAudiences();
+            String[] audiences = mCourseSet.audiences;
             for (int i = 0; i < length; i++) {
                 sb.append(audiences[i]);
                 if (i != length - 1) {
@@ -175,11 +171,12 @@ public class CourseIntroduceFragment extends BaseLazyFragment
         if (data.size() == 0) {
             mStudentNone.setVisibility(View.VISIBLE);
         } else {
+            mStudentNum.setText(String.format("(%s)", data.size()));
             mStudentNone.setVisibility(View.GONE);
         }
         for (int i = 0; i < 5; i++) {
             View view = LayoutInflater.from(getContext())
-                    .inflate(R.layout.item_detail_avatar, null);
+                    .inflate(R.layout.item_detail_avatar, mStudentIconLayout, false);
             LinearLayout.LayoutParams params =
                     new LinearLayout.LayoutParams(0, -1);
             params.weight = 1;

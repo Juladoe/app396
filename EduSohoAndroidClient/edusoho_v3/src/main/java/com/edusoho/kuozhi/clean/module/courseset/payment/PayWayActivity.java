@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.paywayselector;
+package com.edusoho.kuozhi.clean.module.courseset.payment;
 
 import android.app.Dialog;
 import android.content.Context;

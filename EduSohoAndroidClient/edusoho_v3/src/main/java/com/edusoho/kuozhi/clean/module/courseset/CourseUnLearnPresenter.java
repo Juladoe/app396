@@ -14,6 +14,7 @@ import com.edusoho.kuozhi.clean.module.courseset.plan.StudyPlayFragment;
 import com.edusoho.kuozhi.clean.module.courseset.review.CourseEvaluateFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
+import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.google.gson.JsonObject;
 
 import java.util.List;
@@ -197,9 +198,9 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     @Override
                     public void onNext(Discount discount) {
                         if (discount != null) {
-                            if("running".equals(discount.getStatus())) {
-                                long time = Long.parseLong(discount.getEndTime()) - Long.parseLong(discount.getStartTime());
-                                mView.showDiscountInfo(discount.getName(), time);
+                            if("running".equals(discount.status)) {
+                                long time = Long.parseLong(discount.endTime) - Long.parseLong(discount.startTime);
+                                mView.showDiscountInfo(discount.name, time);
                             }
                         }
                     }
@@ -230,13 +231,13 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             if (mCourseStudyPlans != null && mVipInfos != null) {
                 if (mCourseStudyPlans.size() == 1) {
                     CourseStudyPlan courseStudyPlan = mCourseStudyPlans.get(0);
-                    if ("0".equals(courseStudyPlan.getBuyable())) {
+                    if ("0".equals(courseStudyPlan.buyable)) {
                         mView.showToast(R.string.course_limit_join);
                         return;
                     }
 
-                    if ("1".equals(courseStudyPlan.getIsFree())) {
-                        mView.goToCourseProjectActivity(mCourseStudyPlans.get(0).getId());
+                    if ("1".equals(courseStudyPlan.isFree)) {
+                        mView.goToCourseProjectActivity(mCourseStudyPlans.get(0).id);
                         mView.newFinish(true, R.string.join_success);
                     }
                     mView.goToConfirmOrderActivity(courseStudyPlan);
@@ -264,6 +265,23 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 //                });
 //                return;
 //            }
+    }
+
+    @Override
+    public void consultTeacher() {
+        if (EdusohoApp.app.loginUser == null) {
+            CourseUtil.notLogin();
+            return;
+        }
+        List<CourseSet.CreatorBean> list = mCourseSet.teachers;
+        final CourseSet.CreatorBean creatorBean;
+        if (list.size() > 0) {
+            creatorBean = list.get(0);
+        } else {
+            mView.showToast(R.string.lesson_no_teacher);
+            return;
+        }
+        mView.goToImChatActivity(creatorBean);
     }
 
     private Observable<CourseSet> getCourseSet(String id) {

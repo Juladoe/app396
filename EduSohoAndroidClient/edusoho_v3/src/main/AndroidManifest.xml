@@ -349,13 +349,13 @@
             android:theme="@style/AppThemeNoActionBar"/>
 
         <activity
-            android:name=".clean.module.courseset.paywayselector.PayWayActivity"
+            android:name=".clean.module.courseset.payment.PayWayActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar"/>
 
         <activity
-            android:name=".clean.module.courseset.confirmorder.ConfirmOrderActivity"
+            android:name=".clean.module.courseset.order.ConfirmOrderActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />

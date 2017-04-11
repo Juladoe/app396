@@ -8,49 +8,13 @@ import java.io.Serializable;
 
 public class Discount implements Serializable {
 
-    private String id;
-    private String name;
-    private String type;
-    private String startTime;
-    private String endTime;
-    private String itemType;
-    private String itemCount;
-    private String globalDiscount;
-    private String status;
-
-    public String getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public String getItemType() {
-        return itemType;
-    }
-
-    public String getItemCount() {
-        return itemCount;
-    }
-
-    public String getGlobalDiscount() {
-        return globalDiscount;
-    }
-
-    public String getStatus() {
-        return status;
-    }
+    public String id;
+    public String name;
+    public String type;
+    public String startTime;
+    public String endTime;
+    public String itemType;
+    public String itemCount;
+    public String globalDiscount;
+    public String status;
 }

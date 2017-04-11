@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.paywayselector;
+package com.edusoho.kuozhi.clean.module.courseset.payment;
 
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;

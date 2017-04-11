@@ -24,7 +24,7 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
-import com.edusoho.kuozhi.clean.module.courseset.confirmorder.ConfirmOrderActivity;
+import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -186,8 +186,8 @@ public class CourseUnLearnActivity extends AppCompatActivity
         }
         final ShareTool shareTool =
                 new ShareTool(this
-                        , SchoolUtil.getDefaultSchool(getBaseContext()).host + "/course/" + mCourseSet.getId()
-                        , mCourseSet.getTitle()
+                        , SchoolUtil.getDefaultSchool(getBaseContext()).host + "/course/" + mCourseSet.id
+                        , mCourseSet.title
                         , mCourseSet.summary.length() > 20 ? mCourseSet.summary.substring(0, 20) : mCourseSet.summary
                     , mCourseSet.cover.middle);
         new Handler((getApplication().getMainLooper())).post(new Runnable() {
@@ -288,7 +288,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
     public void showDiscountInfo(String name, long time) {
         mEndTime = time;
         mDiscountLayout.setVisibility(View.VISIBLE);
-        mDiscountName.setText(String.format("【%s】  ", name));
+        mDiscountName.setText(String.format("【%s】", name));
         mTimer = new Timer();
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -329,26 +329,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
 
     private void consult() {
         MobclickAgent.onEvent(this, "courseDetailsPage_consultation");
-        if (((EdusohoApp) getApplication()).loginUser == null) {
-            CourseUtil.notLogin();
-            return;
-        }
-        List<CourseSet.CreatorBean> list = mCourseSet.getTeachers();
-        final CourseSet.CreatorBean creatorBean;
-        if (list.size() > 0) {
-            creatorBean = list.get(0);
-        } else {
-            CommonUtil.shortToast(this, getResources().getString(R.string.lesson_no_teacher));
-            return;
-        }
-        CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
-            @Override
-            public void setIntentDate(Intent startIntent) {
-                startIntent.putExtra(ImChatActivity.FROM_NAME, creatorBean.getNickname());
-                startIntent.putExtra(ImChatActivity.FROM_ID, creatorBean.getId());
-                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, creatorBean.getSmallAvatar());
-            }
-        });
+        mPresenter.consultTeacher();
     }
 
     @Override
@@ -409,16 +390,28 @@ public class CourseUnLearnActivity extends AppCompatActivity
     public void goToConfirmOrderActivity(CourseStudyPlan courseStudyPlan) {
         Bundle bundle = new Bundle();
         bundle.putString(ConfirmOrderActivity.COURSEIMG, mCourseSet.cover.middle);
-        bundle.putString(ConfirmOrderActivity.PLANFROM, mCourseSet.getTitle());
-        bundle.putFloat(ConfirmOrderActivity.PLANPRICE, courseStudyPlan.getPrice());
-        bundle.putString(ConfirmOrderActivity.PLANTITLE, courseStudyPlan.getTitle());
-        bundle.putString(ConfirmOrderActivity.PLANID, courseStudyPlan.getId());
+        bundle.putString(ConfirmOrderActivity.PLANFROM, mCourseSet.title);
+        bundle.putFloat(ConfirmOrderActivity.PLANPRICE, courseStudyPlan.price);
+        bundle.putString(ConfirmOrderActivity.PLANTITLE, courseStudyPlan.title);
+        bundle.putString(ConfirmOrderActivity.PLANID, courseStudyPlan.id);
         ConfirmOrderActivity.newInstance(this, bundle);
     }
 
     @Override
     public void goToCourseProjectActivity(String courseProjectId) {
         CourseProjectActivity.launch(this, courseProjectId);
+    }
+
+    @Override
+    public void goToImChatActivity(final CourseSet.CreatorBean creatorBean) {
+        CoreEngine.create(getBaseContext()).runNormalPlugin("ImChatActivity", ((EdusohoApp) getApplication()).mContext, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(ImChatActivity.FROM_NAME, creatorBean.nickname);
+                startIntent.putExtra(ImChatActivity.FROM_ID, creatorBean.id);
+                startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, creatorBean.smallAvatar);
+            }
+        });
     }
 
     @Override

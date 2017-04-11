@@ -68,8 +68,8 @@ public interface ApiService {
     @GET("course_sets/{id}/courses")
     Observable<List<CourseProject>> getCourseProjects(@Path("id") String courseSetId);
 
-    @GET("users/{userId}/favorite_courses/{courseId}")
-    Observable<JsonObject> getFavorite(@Path("userId") int userId, @Path("courseId") String courseId);
+    @GET("users/{userId}/favorite_course_sets/{courseSetId}")
+    Observable<JsonObject> getFavorite(@Path("userId") int userId, @Path("courseSetId") String courseId);
 
     @GET("courses/{courseId}/reviews")
     Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("courseId") String courseId,

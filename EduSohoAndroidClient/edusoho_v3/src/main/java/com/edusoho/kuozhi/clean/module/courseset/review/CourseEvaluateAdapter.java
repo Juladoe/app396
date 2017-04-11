@@ -81,12 +81,12 @@ public class CourseEvaluateAdapter extends RecyclerView.Adapter {
         if (holder instanceof EvaluateViewHolder) {
             DataBean courseReview = mList.get(position);
             EvaluateViewHolder evaluateViewHolder = (EvaluateViewHolder) holder;
-            evaluateViewHolder.mFrom.setText(String.format(mContext.getString(R.string.review_free), courseReview.getCourse().getTitle()));
-            evaluateViewHolder.mName.setText(courseReview.getUser().getNickname());
-            evaluateViewHolder.mTime.setText(CommonUtil.convertWeekTime(courseReview.getCreatedTime()));
-            evaluateViewHolder.mDesc.setText(courseReview.getContent());
-            evaluateViewHolder.mStar.setRating(Integer.parseInt(courseReview.getRating()));
-            ImageLoader.getInstance().displayImage(courseReview.getUser().getMediumlAvatar(), evaluateViewHolder.mUserIcon, EdusohoApp.app.mAvatarOptions);
+            evaluateViewHolder.mFrom.setText(String.format(mContext.getString(R.string.review_free), courseReview.course.title));
+            evaluateViewHolder.mName.setText(courseReview.user.nickname);
+            evaluateViewHolder.mTime.setText(CommonUtil.convertWeekTime(courseReview.createdTime));
+            evaluateViewHolder.mDesc.setText(courseReview.content);
+            evaluateViewHolder.mStar.setRating(Integer.parseInt(courseReview.rating));
+            ImageLoader.getInstance().displayImage(courseReview.user.mediumAvatar, evaluateViewHolder.mUserIcon, EdusohoApp.app.mAvatarOptions);
         } else {
             FooterViewHolder footerViewHolder = (FooterViewHolder) holder;
             switch (mLoadMoreStatus) {
@@ -126,7 +126,7 @@ public class CourseEvaluateAdapter extends RecyclerView.Adapter {
         private TextView mDesc;
         private ReviewStarView mStar;
 
-        public EvaluateViewHolder(View itemView) {
+        private EvaluateViewHolder(View itemView) {
             super(itemView);
             mUserIcon = (ImageView) itemView.findViewById(R.id.iv_user_icon);
             mName = (TextView) itemView.findViewById(R.id.tv_evaluate_name);
