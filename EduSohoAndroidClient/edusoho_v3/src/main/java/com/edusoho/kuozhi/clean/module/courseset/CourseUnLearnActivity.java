@@ -36,7 +36,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
-import com.edusoho.kuozhi.v3.view.dialog.CustomDialog;
+import com.edusoho.kuozhi.clean.widget.CustomDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -317,13 +317,13 @@ public class CourseUnLearnActivity extends AppCompatActivity
         long second = time - 60*60*24*day - 3600*hour - 60*minute;
         StringBuilder sb = new StringBuilder();
         sTime = day > 0 ? (day > 9 ? day + "" : "0" + day) : "00";
-        sb.append("剩余 " + day + " 天 ");
+        sb.append(String.format(getString(R.string.remain), sTime));
         sTime = hour > 0 ? (hour > 9 ? hour + "" : "0" + hour) : "00";
-        sb.append(sTime + " 小时 ");
+        sb.append(String.format(getString(R.string.hour), sTime));
         sTime = minute > 0 ? (minute > 9 ? minute + "" : "0" + minute) : "00";
-        sb.append(sTime + " 分 ");
+        sb.append(String.format(getString(R.string.minute), sTime));
         sTime = second > 0 ? (second > 9 ? second + "" : "0" + second) : "00";
-        sb.append(sTime + " 秒 ");
+        sb.append(String.format(getString(R.string.second), sTime));
         return sb.toString();
     }
 
@@ -388,13 +388,9 @@ public class CourseUnLearnActivity extends AppCompatActivity
 
     @Override
     public void goToConfirmOrderActivity(CourseStudyPlan courseStudyPlan) {
-        Bundle bundle = new Bundle();
-        bundle.putString(ConfirmOrderActivity.COURSEIMG, mCourseSet.cover.middle);
-        bundle.putString(ConfirmOrderActivity.PLANFROM, mCourseSet.title);
-        bundle.putFloat(ConfirmOrderActivity.PLANPRICE, courseStudyPlan.price);
-        bundle.putString(ConfirmOrderActivity.PLANTITLE, courseStudyPlan.title);
-        bundle.putString(ConfirmOrderActivity.PLANID, courseStudyPlan.id);
-        ConfirmOrderActivity.newInstance(this, bundle);
+        if (mCourseSet != null && courseStudyPlan != null) {
+            ConfirmOrderActivity.newInstance(this, mCourseSet, courseStudyPlan);
+        }
     }
 
     @Override

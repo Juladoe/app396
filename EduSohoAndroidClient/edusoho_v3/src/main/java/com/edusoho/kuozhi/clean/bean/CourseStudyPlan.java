@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CourseStudyPlan implements Serializable{
 
-    public String id;
+    public int id;
     public String courseSetId;
     public String title;
     public String learnMode;
@@ -32,7 +32,7 @@ public class CourseStudyPlan implements Serializable{
     public String publishedTaskNum;
     public List<ServicesBean> services;
 
-    public static class ServicesBean {
+    public static class ServicesBean implements Serializable{
 
         public String code;
         public String short_name;

@@ -8,6 +8,7 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
+import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
@@ -53,7 +54,7 @@ public class RetrofitService {
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl("http://devtest.edusoho.cn:82/api/")
+                .baseUrl("http://192.168.9.10/api/")
                 .build();
         mApiService = retrofit.create(ApiService.class);
     }
@@ -114,20 +115,16 @@ public class RetrofitService {
         return mApiService.getDiscountInfo(discountId);
     }
 
-    public static Observable<String> postOrderInfo(String type, int id){
-        return mApiService.postOrderInfo(type, id);
+    public static Observable<OrderInfo> postOrderInfo(String token, String type, int id){
+        return mApiService.postOrderInfo(token, type, id);
     }
 
-    public static Observable<String> createOrder(Map<String, String> map){
-        return mApiService.createOrder(map);
+    public static Observable<String> createOrder(String token, Map<String, String> map){
+        return mApiService.createOrder(token, map);
     }
 
     public static Observable<String> goPay(int id, String type, String payWay){
         return mApiService.goPay(id, type, payWay);
-    }
-
-    public static Observable<String> getMyCoupons(){
-        return mApiService.getMyCoupons();
     }
 
     public static Observable<String> getMyVirtualCoin(){

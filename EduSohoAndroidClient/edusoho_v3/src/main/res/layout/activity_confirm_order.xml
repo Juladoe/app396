@@ -79,7 +79,7 @@
 
         <TextView
             android:id="@+id/tv_from"
-            android:text="来自课程  |    "
+            android:text="@string/from_course_set"
             android:textSize="@dimen/font_s"
             android:textColor="@color/secondary2_color"
             android:layout_alignLeft="@id/tv_price"
@@ -108,23 +108,24 @@
         android:layout_height="@dimen/common_15"/>
 
     <RelativeLayout
-        android:id="@+id/rl_discount"
+        android:id="@+id/rl_coupon"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_40"
+        android:visibility="gone"
         android:background="@color/disabled2_hint_color"
         android:paddingLeft="@dimen/common_15"
-        android:paddingRight="@dimen/common_15"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/common_40">
+        android:paddingRight="@dimen/common_15">
 
         <TextView
-            android:text="@string/coupons"
-            android:textSize="@dimen/font_l"
-            android:layout_centerVertical="true"
-            android:textColor="@color/primary_font_color"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/coupons"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_l" />
 
         <com.edusoho.kuozhi.v3.view.EduSohoNewIconView
-            android:id="@+id/iv_discount"
+            android:id="@+id/iv_coupon"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
@@ -134,14 +135,14 @@
             android:textSize="@dimen/common_13" />
 
         <TextView
-            android:id="@+id/tv_discount_subtract"
-            android:textSize="@dimen/font_s"
-            android:textColor="@color/secondary_color"
-            android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/iv_discount"
+            android:id="@+id/tv_coupon_subtract"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_coupon"
+            android:textColor="@color/secondary_color"
+            android:textSize="@dimen/font_s"
+            tools:text="有哦挥拳" />
 
     </RelativeLayout>
 
@@ -163,15 +164,17 @@
 
         <TextView
             android:id="@+id/tv_pay"
-            android:text="去支付"
+            android:text="@string/confirm_pay"
             android:textSize="@dimen/font_l"
             android:textColor="@color/disabled2_hint_color"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
             android:gravity="center"
             android:background="@drawable/round_green_bg"
             android:layout_width="80dp"
-            android:layout_height="36dp" />
+            android:layout_height="36dp"
+            android:layout_alignBaseline="@+id/tv_sum"
+            android:layout_alignBottom="@+id/tv_sum"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
 
         <TextView
             android:id="@+id/tv_sum"

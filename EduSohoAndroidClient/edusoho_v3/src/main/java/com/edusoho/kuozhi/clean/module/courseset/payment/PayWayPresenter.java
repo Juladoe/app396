@@ -2,6 +2,8 @@ package com.edusoho.kuozhi.clean.module.courseset.payment;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 
+import java.util.Map;
+
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -44,7 +46,26 @@ public class PayWayPresenter implements com.edusoho.kuozhi.clean.module.coursese
     }
 
     @Override
-    public void unsubscribe() {
+    public void createOrder(String token, Map<String, String> map) {
+        RetrofitService.createOrder(token, map)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+
+                    }
+                });
     }
 
     @Override
@@ -68,5 +89,9 @@ public class PayWayPresenter implements com.edusoho.kuozhi.clean.module.coursese
 
                     }
                 });
+    }
+
+    @Override
+    public void unsubscribe() {
     }
 }

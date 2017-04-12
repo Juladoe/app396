@@ -151,7 +151,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
             @Override
             public void onClick(View v) {
                 int position = (int) v.getTag();
-                CourseProjectActivity.launch(mContext, mList.get(position).id);
+                CourseProjectActivity.launch(mContext, mList.get(position).id + "");
             }
         };
     }

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.v3.view.dialog;
+package com.edusoho.kuozhi.clean.widget;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -27,7 +27,6 @@ import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.GuaranteServiceAdapter;
 import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
-import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import java.util.List;
@@ -221,13 +220,7 @@ public class CustomDialog extends Dialog {
                 findViewById(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Bundle bundle = new Bundle();
-                        bundle.putString(ConfirmOrderActivity.PLANTITLE, mCourseStudyPlan.title);
-                        bundle.putFloat(ConfirmOrderActivity.PLANPRICE,  mCourseStudyPlan.price);
-                        bundle.putString(ConfirmOrderActivity.PLANFROM, mCourseSet.title);
-                        bundle.putString(ConfirmOrderActivity.COURSEIMG, mCourseSet.cover.middle);
-                        bundle.putString(ConfirmOrderActivity.PLANID, mCourseStudyPlan.id);
-                        ConfirmOrderActivity.newInstance(mContext, bundle);
+                        ConfirmOrderActivity.newInstance(mContext, mCourseSet, mCourseStudyPlan);
                     }
                 });
                 break;
@@ -329,9 +322,9 @@ public class CustomDialog extends Dialog {
                         break;
                     }
                 }
-                if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip.levelId > mCourseStudyPlan.vipLevelId) {
-                    ((TextView) findViewById(R.id.tv_confirm)).setText(getContext().getString(R.string.txt_vip_free));
-                }
+//                if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip.levelId > mCourseStudyPlan.vipLevelId) {
+//                    ((TextView) findViewById(R.id.tv_confirm)).setText(getContext().getString(R.string.txt_vip_free));
+//                }
             }
         };
     }

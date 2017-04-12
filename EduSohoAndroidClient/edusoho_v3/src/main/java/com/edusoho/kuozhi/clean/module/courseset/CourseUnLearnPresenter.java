@@ -238,7 +238,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     }
 
                     if ("1".equals(courseStudyPlan.isFree)) {
-                        mView.goToCourseProjectActivity(mCourseStudyPlans.get(0).id);
+                        mView.goToCourseProjectActivity(mCourseStudyPlans.get(0).id + "");
                         mView.newFinish(true, R.string.join_success);
                     }
                     mView.goToConfirmOrderActivity(courseStudyPlan);

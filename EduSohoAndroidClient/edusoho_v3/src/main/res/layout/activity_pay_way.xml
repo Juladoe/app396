@@ -37,7 +37,7 @@
     <TextView
         android:text="支付方式"
         android:layout_marginTop="31dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="@dimen/common_15"
         android:textSize="@dimen/font_l"
         android:textColor="@color/primary_font_color"
         android:layout_width="wrap_content"
@@ -45,8 +45,8 @@
 
     <LinearLayout
         android:id="@+id/rg_pay_way"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginLeft="@dimen/common_15"
+        android:layout_marginTop="@dimen/common_15"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -58,7 +58,7 @@
             android:scaleType="center"
             android:gravity="center"
             android:layout_width="140dp"
-            android:layout_height="50dp" />
+            android:layout_height="@dimen/common_50" />
 
         <TextView
             android:id="@+id/tv_virtual_coin"
@@ -68,15 +68,15 @@
             android:drawableLeft="@drawable/virtual_coin"
             android:drawablePadding="-20dp"
             android:gravity="center"
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="@dimen/common_15"
             android:layout_width="140dp"
-            android:layout_height="50dp" />
+            android:layout_height="@dimen/common_50" />
 
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="15dp"
+        android:layout_marginTop="@dimen/common_40"
+        android:layout_marginLeft="@dimen/common_15"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
@@ -113,9 +113,9 @@
         android:gravity="center"
         android:textColor="@color/disabled2_hint_color"
         android:textSize="@dimen/font_xl"
-        android:layout_margin="15dp"
+        android:layout_margin="@dimen/common_15"
         android:background="@color/primary"
         android:layout_width="match_parent"
-        android:layout_height="45dp" />
+        android:layout_height="@dimen/common_45" />
 
 </LinearLayout>

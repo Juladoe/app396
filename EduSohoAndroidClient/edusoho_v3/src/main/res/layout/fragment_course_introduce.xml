@@ -90,7 +90,10 @@
 
             </RelativeLayout>
 
-            <View style="@style/NewBottomLine"
+            <View
+                android:background="@color/disabled_hint_color"
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
                 android:layout_marginTop="@dimen/common_16"/>
 
             <RelativeLayout
@@ -109,7 +112,7 @@
 
                 <TextView
                     android:id="@+id/tv_title_desc"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_info"
                     android:layout_marginTop="@dimen/common_maring0"
@@ -211,7 +214,11 @@
 
                 </LinearLayout>
 
-                <View style="@style/NewBottomLine" />
+                <View
+                    android:background="@color/disabled_hint_color"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_alignParentBottom="true"/>
             </RelativeLayout>
 
         </LinearLayout>

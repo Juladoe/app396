@@ -120,7 +120,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
 
     private void showCoursePrice() {
         if (mCourseSet.maxCoursePrice == 0) {
-            mPriceNow.setText("免费");
+            mPriceNow.setText(getContext().getString(R.string.txt_free));
             mPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
         } else {
             float discount = mCourseSet.discount;

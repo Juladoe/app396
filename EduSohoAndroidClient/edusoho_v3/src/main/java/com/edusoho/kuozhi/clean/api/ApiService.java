@@ -8,6 +8,7 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
+import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
@@ -18,7 +19,9 @@ import java.util.Map;
 
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -75,17 +78,17 @@ public interface ApiService {
     Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("courseId") String courseId,
                                                                @Query("offset") int offset, @Query("limit") int limit);
 
+    @FormUrlEncoded
     @POST("order_info")
-    Observable<String> postOrderInfo(@Field("targetType") String type, @Field("targetId") int id);
+    Observable<OrderInfo> postOrderInfo(@Header("X-Auth-Token") String token, @Field("targetType") String type, @Field("targetId") int id);
 
+    @FormUrlEncoded
     @POST("orders")
-    Observable<String> createOrder(@FieldMap Map<String, String> map);
+    Observable<String> createOrder(@Header("X-Auth-Token") String token, @FieldMap Map<String, String> map);
 
+    @FormUrlEncoded
     @POST("pay_center")
     Observable<String> goPay(@Field("orderId") int id, @Field("targetType") String type, @Field("payment") String payWay);
-
-    @GET("me/coupons")
-    Observable<String> getMyCoupons();
 
     @GET("me/cash_account")
     Observable<String> getMyVirtualCoin();

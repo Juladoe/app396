@@ -43,7 +43,7 @@ public class CourseSet implements Serializable {
     public String[] audiences;
     public List<CreatorBean> teachers;
 
-    public static class CreatorBean {
+    public static class CreatorBean implements Serializable{
 
         public String id;
         public String nickname;
