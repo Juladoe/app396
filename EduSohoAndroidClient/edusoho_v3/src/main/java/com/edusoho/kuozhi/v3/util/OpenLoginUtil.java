@@ -83,13 +83,23 @@ public class OpenLoginUtil {
         final EdusohoApp app = (EdusohoApp) activity.getApplication();
         RequestUrl requestUrl = app.bindNewUrl(Const.BIND_LOGIN, false);
 
-        requestUrl.setParams(new String[]{
-                "type", params[3],
-                "id", params[0],
-                "name", params[1],
-                "avatar", params[2],
-                "unionid",params[5]
-        });
+        if(params.length > 5){
+            requestUrl.setParams(new String[]{
+                    "type", params[3],
+                    "id", params[0],
+                    "name", params[1],
+                    "avatar", params[2],
+                    "unionid",params[5]
+            });
+        } else {
+            requestUrl.setParams(new String[]{
+                    "type", params[3],
+                    "id", params[0],
+                    "name", params[1],
+                    "avatar", params[2],
+            });
+        }
+
         thirdPartyType = params.length > 4 ? params[4] : "";
         Looper.prepare();
 
