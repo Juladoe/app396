@@ -152,7 +152,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showServices(CourseProject.Service[] services) {
+    public void showServices(final CourseProject.Service[] services) {
         if (services == null || services.length == 0) {
             return;
         }
@@ -168,9 +168,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mServicesLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ESBottomDialog dialog = new ESBottomDialog();
-                //dialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.custom_dialog);
-                dialog.show(getFragmentManager(), "123");
+                ServicesDialog.newInstance(services).show(getFragmentManager(), "ServicesDialog");
             }
         });
     }
