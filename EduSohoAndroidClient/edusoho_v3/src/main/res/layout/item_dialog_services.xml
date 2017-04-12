@@ -11,9 +11,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@color/primary_color"
-        android:padding="2dp"
-        android:textColor="@color/disabled2_hint_color" />
+        android:background="@drawable/bg_dialog_service"
+        android:paddingBottom="2dp"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:paddingTop="2dp"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_xs" />
 
     <LinearLayout
         android:layout_width="match_parent"
