@@ -24,7 +24,6 @@ import com.edusoho.kuozhi.R;
 public class ESBottomDialog extends DialogFragment {
 
     private BottomDialogContentView mContentView;
-    private TextView mConfirm;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,17 +33,18 @@ public class ESBottomDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_services, container, false);
+        return inflater.inflate(R.layout.dialog_bottom, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FrameLayout mContent = (FrameLayout) view.findViewById(R.id.content);
-        mConfirm = (TextView) view.findViewById(R.id.tv_confirm);
+        FrameLayout content = (FrameLayout) view.findViewById(R.id.content);
+        TextView confirm = (TextView) view.findViewById(R.id.tv_confirm);
         if (mContentView != null) {
-            mContent.addView(mContentView.getContentView());
-            mConfirm.setOnClickListener(mContentView.addConfirmClickListener());
+            content.addView(mContentView.getContentView(content));
+            confirm.setOnClickListener(mContentView.addConfirmClickListener());
+            confirm.setVisibility(mContentView.showConfirm() ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -65,8 +65,10 @@ public class ESBottomDialog extends DialogFragment {
 
     public interface BottomDialogContentView {
 
-        View getContentView();
+        View getContentView(ViewGroup parentView);
 
         View.OnClickListener addConfirmClickListener();
+
+        boolean showConfirm();
     }
 }
