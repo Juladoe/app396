@@ -17,9 +17,7 @@ public interface PayWayContract {
 
     interface Presenter extends BasePresenter{
 
-        void createOrder(String token, Map<String, String> map);
-
-        void goPay(String type, String payWay);
+        void createOrderAndPay(Map<String, String> map, String type, String payment);
 
     }
 

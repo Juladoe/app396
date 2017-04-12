@@ -51,6 +51,8 @@ import com.umeng.analytics.MobclickAgent;
 import java.util.LinkedHashMap;
 import java.util.Queue;
 
+import retrofit2.http.HEAD;
+
 /**
  * Created by JesseHuang on 15/4/24.
  */

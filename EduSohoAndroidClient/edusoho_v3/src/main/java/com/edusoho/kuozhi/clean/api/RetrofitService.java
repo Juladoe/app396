@@ -119,7 +119,7 @@ public class RetrofitService {
         return mApiService.postOrderInfo(token, type, id);
     }
 
-    public static Observable<String> createOrder(String token, Map<String, String> map){
+    public static Observable<JsonObject> createOrder(String token, Map<String, String> map){
         return mApiService.createOrder(token, map);
     }
 

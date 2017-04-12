@@ -84,7 +84,7 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("orders")
-    Observable<String> createOrder(@Header("X-Auth-Token") String token, @FieldMap Map<String, String> map);
+    Observable<JsonObject> createOrder(@Header("X-Auth-Token") String token, @FieldMap Map<String, String> map);
 
     @FormUrlEncoded
     @POST("pay_center")

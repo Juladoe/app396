@@ -1,11 +1,15 @@
 package com.edusoho.kuozhi.clean.module.courseset.payment;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.google.gson.JsonObject;
 
 import java.util.Map;
 
+import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -46,32 +50,21 @@ public class PayWayPresenter implements com.edusoho.kuozhi.clean.module.coursese
     }
 
     @Override
-    public void createOrder(String token, Map<String, String> map) {
-        RetrofitService.createOrder(token, map)
+    public void createOrderAndPay(Map<String, String> map, final String type, final String payment) {
+        map.put("targetId", mPlanId + "");
+        RetrofitService.createOrder(EdusohoApp.app.token , map)
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<JsonObject, Observable<String>>() {
                     @Override
-                    public void onCompleted() {
-
+                    public Observable<String> call(JsonObject jsonObject) {
+                        if (jsonObject != null) {
+                            int id = jsonObject.get("id").getAsInt();
+                            return RetrofitService.goPay(id, type, payment);
+                        }
+                        return null;
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-
-                    }
-                });
-    }
-
-    @Override
-    public void goPay(String type, String payWay) {
-        RetrofitService.goPay(mPlanId, type, payWay)
-                .subscribeOn(Schedulers.io())
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<String>() {
                     @Override

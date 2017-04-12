@@ -52,7 +52,7 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/iv_zhifubao"
+            android:id="@+id/iv_alipay"
             android:background="@drawable/pay_way_bg_selector"
             android:src="@drawable/zhifubao"
             android:scaleType="center"

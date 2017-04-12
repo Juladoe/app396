@@ -28,7 +28,7 @@ public class CourseStudyPlan implements Serializable{
     public String parentId;
     public String ratingNum;
     public String rating;
-    public String originPrice;
+    public float originPrice;
     public String publishedTaskNum;
     public List<ServicesBean> services;
 

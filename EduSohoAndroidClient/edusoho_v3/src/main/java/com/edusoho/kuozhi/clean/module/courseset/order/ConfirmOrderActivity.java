@@ -111,7 +111,7 @@ public class ConfirmOrderActivity extends AppCompatActivity implements View.OnCl
         }else if(id == R.id.rl_coupon){
 
         }else if(id == R.id.tv_pay) {
-            PayWayActivity.newInstance(this, mStudyPlan.id);
+            PayWayActivity.newInstance(this, mStudyPlan);
         }
     }
 

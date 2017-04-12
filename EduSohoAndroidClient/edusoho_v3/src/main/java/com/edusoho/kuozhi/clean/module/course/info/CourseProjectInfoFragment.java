@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -22,6 +21,7 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.utils.ItemClickSupport;
+import com.edusoho.kuozhi.clean.widget.ESBottomDialog;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
@@ -30,7 +30,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.wefika.flowlayout.FlowLayout;
 
 import java.util.List;
-import java.util.Locale;
 
 import cn.trinea.android.common.util.StringUtils;
 
@@ -165,6 +164,15 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
             view.setLayoutParams(lp);
             mPromise.addView(view);
         }
+
+        mServicesLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ESBottomDialog dialog = new ESBottomDialog();
+                //dialog.setStyle(DialogFragment.STYLE_NO_TITLE, R.style.custom_dialog);
+                dialog.show(getFragmentManager(), "123");
+            }
+        });
     }
 
     @Override
