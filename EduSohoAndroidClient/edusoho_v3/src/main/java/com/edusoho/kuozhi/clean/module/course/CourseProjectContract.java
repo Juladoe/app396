@@ -20,6 +20,10 @@ public interface CourseProjectContract {
         void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject);
 
         void launchImChatWithTeacher(CourseProject.Teacher teacher);
+
+        void showCacheButton(boolean visible);
+
+        void showShareButton(boolean visible);
     }
 
     interface Presenter extends BasePresenter {

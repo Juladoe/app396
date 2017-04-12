@@ -34,6 +34,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     @Override
     public void consult() {
+        //这里需要修改，应该要和RxJava结合使用
         mView.launchImChatWithTeacher(mTeacher);
     }
 
@@ -92,7 +93,10 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                     @Override
                     public void onNext(CourseMember courseMember) {
-                        mView.showBottomLayout(!(courseMember.user != null && !isExpired(courseMember.deadline)));
+                        boolean isLearned = courseMember.user != null && !isExpired(courseMember.deadline);
+                        mView.showBottomLayout(!isLearned);
+                        mView.showCacheButton(isLearned);
+                        mView.showShareButton(!isLearned);
                     }
                 });
     }

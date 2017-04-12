@@ -46,6 +46,8 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private ESIconTextButton mConsult;
     private TextView mLearnTextView;
     private ESIconView mBack;
+    private ESIconView mShare;
+    private ESIconView mCache;
 
     public static void launch(Context context, String courseProjectId) {
         Intent intent = new Intent(context, CourseProjectActivity.class);
@@ -78,6 +80,9 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         });
         mLearnTextView = (TextView) findViewById(R.id.tv_learn);
         mBack = (ESIconView) findViewById(R.id.iv_back);
+        mShare = (ESIconView) findViewById(R.id.icon_share);
+        mCache = (ESIconView) findViewById(R.id.icon_cache);
+
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -126,6 +131,16 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
                 startIntent.putExtra(ImChatActivity.HEAD_IMAGE_URL, teacher.avatar);
             }
         });
+    }
+
+    @Override
+    public void showCacheButton(boolean visible) {
+        mCache.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showShareButton(boolean visible) {
+        mShare.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
