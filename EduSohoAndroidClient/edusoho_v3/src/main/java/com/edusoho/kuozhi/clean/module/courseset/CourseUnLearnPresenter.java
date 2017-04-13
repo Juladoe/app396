@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
@@ -14,14 +15,9 @@ import com.edusoho.kuozhi.clean.module.courseset.plan.CourseProjectsFragment;
 import com.edusoho.kuozhi.clean.module.courseset.review.CourseEvaluateFragment;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.google.gson.JsonObject;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
 import rx.Observable;
@@ -336,9 +332,9 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(List<com.edusoho.kuozhi.clean.bean.CourseMember> courseMembers) {
-                        com.edusoho.kuozhi.clean.bean.CourseMember maxItem = courseMembers.get(0);
-                        for (com.edusoho.kuozhi.clean.bean.CourseMember courseMember : courseMembers) {
+                    public void onNext(List<CourseMember> courseMembers) {
+                        CourseMember maxItem = courseMembers.get(0);
+                        for (CourseMember courseMember : courseMembers) {
                             if (TimeUtils.getUTCtoDate(maxItem.lastViewTime).compareTo(TimeUtils.getUTCtoDate(courseMember.lastViewTime)) >= 1) {
                                 maxItem = courseMember;
                             }
