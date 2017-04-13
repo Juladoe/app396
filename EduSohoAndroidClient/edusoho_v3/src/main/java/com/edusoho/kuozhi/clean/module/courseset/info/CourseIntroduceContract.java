@@ -27,7 +27,7 @@ public interface CourseIntroduceContract {
 
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
 
     }
 

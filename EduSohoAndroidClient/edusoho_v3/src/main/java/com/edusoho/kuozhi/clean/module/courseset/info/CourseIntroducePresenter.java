@@ -74,7 +74,7 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
         return RetrofitService.getCourseSet(id);
     }
 
-    private Observable<DataPageResult<CourseMember>> getCourseSetMember(int id){
+    private Observable<DataPageResult<CourseMember>> getCourseSetMember(int id) {
         return RetrofitService.getCourseSetMember(id);
     }
 

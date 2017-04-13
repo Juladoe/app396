@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.module.courseset;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -33,7 +34,6 @@ import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
-import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -53,6 +53,8 @@ import extensions.PagerSlidingTabStrip;
 
 public class CourseUnLearnActivity extends BaseFinishActivity
         implements CourseUnLearnContract.View, View.OnClickListener, AppBarLayout.OnOffsetChangedListener {
+
+    public static final String COURSE_SET_ID = "course_set_id";
 
     private View mLoadView;
     private PagerSlidingTabStrip mTabLayout;
@@ -81,6 +83,13 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     private Timer mTimer;
     private SelectProjectDialog mSelectDialog;
 
+    public static void launch(Context context, int courseSetId){
+        Intent intent = new Intent(context, CourseUnLearnActivity.class);
+        intent.putExtra(COURSE_SET_ID, courseSetId);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +97,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
         getWindow().setBackgroundDrawable(null);
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
-        mCourseSetId = getIntent().getIntExtra(Const.COURSE_ID, 0);
+        mCourseSetId = getIntent().getIntExtra(COURSE_SET_ID, 0);
         mCourseSetId = 1;
         isJoin();
     }
@@ -392,7 +401,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     @Override
     public void goToConfirmOrderActivity(CourseProject courseStudyPlan) {
         if (mCourseSet != null && courseStudyPlan != null) {
-            ConfirmOrderActivity.newInstance(this, mCourseSet, courseStudyPlan);
+            ConfirmOrderActivity.launch(this, mCourseSet, courseStudyPlan);
         }
     }
 

@@ -13,10 +13,14 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
 import com.edusoho.kuozhi.clean.module.courseset.payment.PaymentsActivity;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.List;
 
 /**
  * Created by DF on 2017/3/25.
@@ -40,8 +44,9 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
     private ConfirmOrderContract.Presenter mPresenter;
     private CourseSet mCourseSet;
     private CourseProject mStudyPlan;
+    private LoadDialog mProcessDialog;
 
-    public static void newInstance(Context context, CourseSet courseSet, CourseProject courseStudyPlan) {
+    public static void launch(Context context, CourseSet courseSet, CourseProject courseStudyPlan) {
         Intent intent = new Intent(context, ConfirmOrderActivity.class);
         intent.putExtra(COURSE_SET, courseSet);
         intent.putExtra(STUDY_PLAN, courseStudyPlan);
@@ -53,6 +58,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirm_order);
 
+        showProcessDialog();
         Intent intent = getIntent();
         mCourseSet = (CourseSet) intent.getSerializableExtra(COURSE_SET);
         mStudyPlan = (CourseProject) intent.getSerializableExtra(STUDY_PLAN);
@@ -99,7 +105,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
             mPlanPrice.setText(getString(R.string.free_course_project));
         }
         mPlanFrom.setText(mCourseSet.title);
-        mOriginal.setText(String.format("%s%s", "¥", price));
+        mOriginal.setText(String.format("%s%.2f", "¥", price));
         mOriginal.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
@@ -111,12 +117,44 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
         }else if(id == R.id.rl_coupon){
 
         }else if(id == R.id.tv_pay) {
-            PaymentsActivity.newInstance(this, mStudyPlan);
+            PaymentsActivity.launch(this, mStudyPlan);
         }
     }
 
     @Override
-    public void showCouponView() {
+    public void showCouponView(List<OrderInfo.AvailableCouponsBean> availableCoupons) {
+        mCouponSub.setText(String.format("%s%.2f", "减¥", availableCoupons.get(0).rate));
+        mRlCoupon.setVisibility(View.VISIBLE);
+        mRlCoupon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
+    }
+
+    @Override
+    public void showProcessDialog(boolean isShow) {
+        if (isShow) {
+            showProcessDialog();
+        } else {
+            hideProcessDialog();
+        }
+    }
+
+    protected void showProcessDialog() {
+        if (mProcessDialog == null) {
+            mProcessDialog = LoadDialog.create(this);
+        }
+        mProcessDialog.show();
+    }
+
+    protected void hideProcessDialog() {
+        if (mProcessDialog == null) {
+            return;
+        }
+        if (mProcessDialog.isShowing()) {
+            mProcessDialog.dismiss();
+        }
     }
 }

@@ -2,12 +2,12 @@ package com.edusoho.kuozhi.clean.api;
 
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
-import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
@@ -49,10 +49,6 @@ public interface ApiService {
 
     @GET("course_sets/{course_setId}/courses")
     Observable<List<CourseProject>> getCourseStudyPlan(@Path("course_setId") int courseSetId);
-
-    @GET("course_sets/{courseSetId}/members")
-    Observable<DataPageResult<CourseMember>> getUserInfo(
-            @Path("courseSetId") int courseSetId, @Query("userId") int userId);
 
     @GET("course_sets/{courseSetId}/members")
     Observable<DataPageResult<CourseMember>> getCourseSetMember(@Path("courseSetId") int courseSetId);
@@ -115,7 +111,6 @@ public interface ApiService {
     @POST("me/favorite_course_sets")
     Observable<JsonObject> favoriteCourseSet(@Header("X-Auth-Token") String token, @Field("courseSetId") int courseSetId);
 
-    @FormUrlEncoded
     @DELETE("me/favorite_course_sets/{courseSetId}")
     Observable<JsonObject> cancelFavoriteCourseSet(@Header("X-Auth-Token") String token, @Path("courseSetId") int courseSetId);
 

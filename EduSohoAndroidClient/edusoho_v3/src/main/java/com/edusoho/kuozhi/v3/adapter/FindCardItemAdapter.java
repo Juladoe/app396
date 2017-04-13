@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.module.courseset.CourseUnLearnActivity;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCardProperty;
 import com.edusoho.kuozhi.v3.entity.discovery.DiscoveryCourse;
@@ -322,13 +323,8 @@ public class FindCardItemAdapter extends BaseAdapter {
     View.OnClickListener mViewOnClickListener2 = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            final int id = (int) v.getTag(R.id.card_cover);
-            EdusohoApp.app.mEngine.runNormalPlugin("CourseActivity", mContext, new PluginRunCallback() {
-                @Override
-                public void setIntentDate(Intent startIntent) {
-                    startIntent.putExtra(Const.COURSE_ID, id);
-                }
-            });
+            int id = (int) v.getTag(R.id.card_cover);
+            CourseUnLearnActivity.launch(mContext, id);
         }
     };
 

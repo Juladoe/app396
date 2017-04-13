@@ -43,7 +43,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     private EditText mInputPw;
     private CourseProject mCourseStudyPlan;
 
-    public static void newInstance(Context context, CourseProject courseStudyPlan) {
+    public static void launch(Context context, CourseProject courseStudyPlan) {
         Intent intent = new Intent(context, PaymentsActivity.class);
         intent.putExtra(STUDY_PLAN, courseStudyPlan);
         context.startActivity(intent);
@@ -145,7 +145,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
 
     @Override
     public void goToAlipay(final String data) {
-        AlipayActivity.newInstance(this, data);
+        AlipayActivity.launch(this, data);
     }
 
     protected void showProcessDialog() {

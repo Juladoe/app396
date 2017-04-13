@@ -21,10 +21,13 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESBottomDialog;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.util.List;
 
@@ -35,9 +38,10 @@ import java.util.List;
 public class SelectProjectDialog extends ESBottomDialog implements
         ESBottomDialog.BottomDialogContentView,SelectProjectDialogContract.View {
 
-    public static final String COURSE_SET = "1";
-    public static final String STUDY_PLANS = "2";
-    public static final String VIP_INFOS = "3";
+    private final String COURSE_SET = "1";
+    private final String STUDY_PLANS = "2";
+    private final String VIP_INFOS = "3";
+
     private RadioButton mRb;
     private RadioGroup mRg;
     private View mDiscount;
@@ -55,6 +59,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
     private List<VipInfo> mVipInfos;
     private CourseSet mCourseSet;
     private SelectProjectDialogContract.Presenter mPresenter;
+    private LoadDialog mProcessDialog;
 
     public void setData(CourseSet courseSet, List<CourseProject> courseStudyPlans, List<VipInfo> vipInfos) {
         this.mCourseSet = courseSet;
@@ -82,9 +87,27 @@ public class SelectProjectDialog extends ESBottomDialog implements
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ConfirmOrderActivity.newInstance(getContext(), mCourseSet, mCourseStudyPlan);
+                mPresenter.confirm(mCourseStudyPlan);
             }
         });
+    }
+
+    @Override
+    public void showToastOrFinish(int content, boolean isFinish) {
+        CommonUtil.shortToast(getContext(), getString(content));
+        if (isFinish) {
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void goToConfirmOrderActivity() {
+        ConfirmOrderActivity.launch(getContext(), mCourseSet, mCourseStudyPlan);
+    }
+
+    @Override
+    public void goToCourseProjectActivity() {
+        CourseProjectActivity.launch(getContext(), mCourseStudyPlan.id);
     }
 
     private void initView(View view) {
@@ -105,6 +128,31 @@ public class SelectProjectDialog extends ESBottomDialog implements
                 dismiss();
             }
         });
+    }
+
+    @Override
+    public void showProcessDialog(boolean isShow) {
+        if (isShow) {
+            showProcessDialog();
+        } else {
+            hideProcessDialog();
+        }
+    }
+
+    protected void showProcessDialog() {
+        if (mProcessDialog == null) {
+            mProcessDialog = LoadDialog.create(getContext());
+        }
+        mProcessDialog.show();
+    }
+
+    protected void hideProcessDialog() {
+        if (mProcessDialog == null) {
+            return;
+        }
+        if (mProcessDialog.isShowing()) {
+            mProcessDialog.dismiss();
+        }
     }
 
     /**
@@ -217,7 +265,8 @@ public class SelectProjectDialog extends ESBottomDialog implements
             }
         }
         if (EdusohoApp.app.loginUser.vip != null
-                && EdusohoApp.app.loginUser.vip.levelId >= mCourseStudyPlan.vipLevelId) {
+                && EdusohoApp.app.loginUser.vip.levelId >= mCourseStudyPlan.vipLevelId
+                && mCourseStudyPlan.vipLevelId != 0) {
             mConfirm.setText(R.string.txt_vip_free);
         } else {
             mConfirm.setText(R.string.confirm);

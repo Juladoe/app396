@@ -19,15 +19,5 @@
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
-    
-    <TextView
-        android:id="@+id/tv_confirm"
-        android:text="@string/confirm"
-        android:gravity="center"
-        android:textColor="@color/disabled2_hint_color"
-        android:background="@color/primary_color"
-        android:textSize="@dimen/font_xl"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
 
 </LinearLayout>

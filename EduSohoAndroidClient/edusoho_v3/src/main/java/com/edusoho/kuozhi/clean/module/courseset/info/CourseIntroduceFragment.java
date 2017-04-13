@@ -32,7 +32,7 @@ import java.util.List;
  */
 
 public class CourseIntroduceFragment extends BaseLazyFragment
-        implements View.OnClickListener, CourseIntroduceContract.View{
+        implements View.OnClickListener, CourseIntroduceContract.View {
 
     private TextView mPriceOld;
     private TextView mPriceNow;
@@ -116,7 +116,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
         mReviewStar.setRating((int) mCourseSet.rating);
         int studentNum = mCourseSet.studentNum;
         mTitleStudentNum.setText(studentNum != 0 ?
-                                    String.format(getContext().getString(R.string.course_student_count), studentNum) : "");
+                String.format(getContext().getString(R.string.course_student_count), studentNum) : "");
         showCoursePrice();
     }
 
@@ -133,8 +133,8 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                 mPriceOld.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice, mCourseSet.maxCoursePrice));
                 mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
-                mPriceNow.setText(String.format("¥ %.2f-%.2f",  mCourseSet.minCoursePrice,
-                         mCourseSet.maxCoursePrice));
+                mPriceNow.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice,
+                        mCourseSet.maxCoursePrice));
             }
         }
     }
@@ -208,7 +208,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     }
 
     private void moreStudent() {
-        if(studentNum < 1){
+        if (studentNum < 1) {
             return;
         }
         MobclickAgent.onEvent(getActivity(), "courseDetailsPage_introduction_moreCoursesParticipants");

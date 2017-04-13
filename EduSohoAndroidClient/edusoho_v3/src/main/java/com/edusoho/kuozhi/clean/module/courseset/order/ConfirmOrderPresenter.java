@@ -35,13 +35,15 @@ public class ConfirmOrderPresenter implements com.edusoho.kuozhi.clean.module.co
 
                     @Override
                     public void onError(Throwable e) {
-
+                        mView.showProcessDialog(false);
                     }
 
                     @Override
                     public void onNext(OrderInfo orderInfo) {
-                        if (orderInfo != null && "1".equals(orderInfo.fullCoinPayable)) {
-                            mView.showCouponView();
+                        mView.showProcessDialog(false);
+                        if (orderInfo != null && orderInfo.availableCoupons != null
+                                && orderInfo.availableCoupons.size() != 0) {
+                            mView.showCouponView(orderInfo.availableCoupons);
                         }
                     }
                 });
