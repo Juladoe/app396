@@ -317,7 +317,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 });
     }
 
-    private void lauchLastViewCourseProject(int courseSetId) {
+    private void launchLastViewCourseProject(int courseSetId) {
         RetrofitService.getMyJoinCourses(EdusohoApp.app.token, courseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
