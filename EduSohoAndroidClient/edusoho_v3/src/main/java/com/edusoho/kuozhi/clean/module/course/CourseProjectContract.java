@@ -4,6 +4,8 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 
+import java.util.List;
+
 
 /**
  * Created by JesseHuang on 2017/3/22.
@@ -17,13 +19,15 @@ public interface CourseProjectContract {
 
         void showBottomLayout(boolean visible);
 
-        void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject);
+        void showFragments(List<CourseProjectEnum> courseProjectModules, CourseProject courseProject);
 
         void launchImChatWithTeacher(CourseProject.Teacher teacher);
 
         void showCacheButton(boolean visible);
 
         void showShareButton(boolean visible);
+
+        void initLearnedLayout();
     }
 
     interface Presenter extends BasePresenter {

@@ -7,7 +7,9 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -35,7 +37,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public void consult() {
         //这里需要修改，应该要和RxJava结合使用
-        mView.launchImChatWithTeacher(mTeacher);
+        //mView.launchImChatWithTeacher(mTeacher);
+        mView.initLearnedLayout();
     }
 
     @Override
@@ -77,7 +80,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     }
                 });
 
-        getCourseMember(mCourseProjectId, "3")
+        getCourseMember(mCourseProjectId, "4")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseMember>() {
@@ -110,8 +113,12 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         return !CommonConstant.EXPIRED_MODE_FOREVER.equals(utcTime) && TimeUtils.getUTCtoDate(utcTime).compareTo(new Date()) < 0;
     }
 
-    private CourseProjectEnum[] initCourseModules() {
-        return new CourseProjectEnum[]{CourseProjectEnum.INFO, CourseProjectEnum.TASKS, CourseProjectEnum.RATE};
+    private List<CourseProjectEnum> initCourseModules() {
+        List<CourseProjectEnum> list = new ArrayList<>();
+        list.add(CourseProjectEnum.INFO);
+        list.add(CourseProjectEnum.TASKS);
+        list.add(CourseProjectEnum.RATE);
+        return list;
     }
 
     private Observable<CourseProject> getCourseProject(String id) {

@@ -28,6 +28,11 @@ import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by JesseHuang on 2017/3/22.
  */
@@ -38,6 +43,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
 
     private String mCourseProjectId;
     private CourseProjectContract.Presenter mPresenter;
+    private CourseProjectViewPagerAdapter mAdapter;
     private Toolbar mToolbar;
     private ImageView mCourseCover;
     private TabLayout mTabLayout;
@@ -108,11 +114,12 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         ImageLoader.getInstance().displayImage(imageUrl, mCourseCover, EdusohoApp.app.mOptions);
     }
 
+
     @Override
-    public void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject) {
-        CourseProjectViewPagerAdapter adapter = new CourseProjectViewPagerAdapter(getSupportFragmentManager(), courseProjectModules, courseProject);
-        mViewPager.setAdapter(adapter);
-        mViewPager.setOffscreenPageLimit(courseProjectModules.length);
+    public void showFragments(List<CourseProjectEnum> courseProjectModules, CourseProject courseProject) {
+        mAdapter = new CourseProjectViewPagerAdapter(getSupportFragmentManager(), courseProjectModules, courseProject);
+        mViewPager.setAdapter(mAdapter);
+        mViewPager.setOffscreenPageLimit(courseProjectModules.size());
         mTabLayout.setupWithViewPager(mViewPager);
     }
 
@@ -143,34 +150,65 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         mShare.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
+    @Override
+    public void initLearnedLayout() {
+        mTabLayout.setVisibility(View.GONE);
+        mAdapter.removeFragment(CourseProjectEnum.RATE.getPosition());
+        mAdapter.removeFragment(CourseProjectEnum.INFO.getPosition());
+    }
+
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
 
-        private CourseProjectEnum[] mCourseProjectModules;
+        private List<CourseProjectEnum> mCourseProjectModules;
         private CourseProject mCourseProject;
+        private List<Fragment> mFragments;
+        private long baseId = 0;
 
-        public CourseProjectViewPagerAdapter(FragmentManager fm, CourseProjectEnum[] courseProjects, CourseProject courseProject) {
+        public CourseProjectViewPagerAdapter(FragmentManager fm, List<CourseProjectEnum> courseProjects, CourseProject courseProject) {
             super(fm);
+            mFragments = new ArrayList<>();
             mCourseProjectModules = courseProjects;
             mCourseProject = courseProject;
         }
 
         @Override
         public Fragment getItem(int position) {
-            Fragment fragment = Fragment.instantiate(CourseProjectActivity.this, mCourseProjectModules[position].getModuleName());
+            Fragment fragment = Fragment.instantiate(CourseProjectActivity.this, mCourseProjectModules.get(position).getModuleName());
             Bundle bundle = new Bundle();
             bundle.putSerializable(((CourseProjectFragmentListener) fragment).getBundleKey(), mCourseProject);
             fragment.setArguments(bundle);
+            mFragments.add(fragment);
             return fragment;
+        }
+
+        public void removeFragment(int position) {
+            mCourseProjectModules.remove(position);
+            notifyChangeInPosition(position);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return baseId + position;
+        }
+
+        public void notifyChangeInPosition(int n) {
+            baseId += getCount() + n;
+        }
+
+        @Override
+        public int getItemPosition(Object object) {
+            return POSITION_NONE;
         }
 
         @Override
         public int getCount() {
-            return mCourseProjectModules.length;
+            return mCourseProjectModules.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mCourseProjectModules[position].getModuleTitle();
+            return mCourseProjectModules.get(position).getModuleTitle();
         }
     }
 }
