@@ -81,6 +81,9 @@ public interface ApiService {
     Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("courseId") int courseId,
                                                                @Query("offset") int offset, @Query("limit") int limit);
 
+    @GET("course_sets/{id}/my_join_courses")
+    Observable<List<CourseProject>> getMyCourseProject(@Header("X-Auth-Token") String token, @Path("courseSetId") int id);
+
     @FormUrlEncoded
     @POST("order_info")
     Observable<OrderInfo> postOrderInfo(@Header("X-Auth-Token") String token,
