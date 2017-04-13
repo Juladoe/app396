@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESBottomDialog;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import java.util.List;
@@ -205,6 +206,9 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
                 mVip.setText(String.format(getContext().getString(R.string.vip_free), vipInfo.name));
                 break;
             }
+        }
+        if (EdusohoApp.app.loginUser.vip.levelId >= mCourseStudyPlan.vipLevelId) {
+
         }
     }
 

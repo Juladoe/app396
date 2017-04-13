@@ -153,7 +153,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 });
     }
 
-    private void getFavoriteInfo(int userId, int courseSetId){
+    private void getFavoriteInfo(int userId, int courseSetId) {
         getFavorite(userId, courseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -179,7 +179,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 });
     }
 
-    private void getDiscountInfo(int discountId){
+    private void getDiscountInfo(int discountId) {
         RetrofitService.getDiscountInfo(discountId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -197,9 +197,9 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     @Override
                     public void onNext(Discount discount) {
                         if (discount != null) {
-                            if("running".equals(discount.status)) {
+                            if ("running".equals(discount.status)) {
                                 long currentTime = System.currentTimeMillis();
-                                long time = TimeUtils.getMillisecond(discount.endTime)/1000 - currentTime/1000;
+                                long time = TimeUtils.getMillisecond(discount.endTime) / 1000 - currentTime / 1000;
                                 if (time > 0) {
                                     mView.showDiscountInfo(discount.name, time);
 
@@ -332,7 +332,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
         return RetrofitService.getVipInfo();
     }
 
-    private Observable<JsonObject> getFavorite(int userId, int courseSetId){
+    private Observable<JsonObject> getFavorite(int userId, int courseSetId) {
         return RetrofitService.getFavorite(userId, courseSetId);
     }
 

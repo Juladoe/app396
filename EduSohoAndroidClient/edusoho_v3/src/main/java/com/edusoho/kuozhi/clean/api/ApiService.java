@@ -49,7 +49,11 @@ public interface ApiService {
     Observable<List<CourseProject>> getCourseStudyPlan(@Path("course_setId") int courseSetId);
 
     @GET("course_sets/{courseSetId}/members")
-    Observable<DataPageResult<com.edusoho.kuozhi.v3.model.bal.course.CourseMember>> getCourseSetMember(@Path("courseSetId") int id);
+    Observable<DataPageResult<com.edusoho.kuozhi.v3.model.bal.course.CourseMember>> getUserInfo(
+            @Path("courseSetId") int courseSetId, @Query("userId") int userId);
+
+    @GET("course_sets/{courseSetId}/members")
+    Observable<DataPageResult<com.edusoho.kuozhi.v3.model.bal.course.CourseMember>> getCourseSetMember(@Path("courseSetId") int courseSetId);
 
     @GET("plugins/vip/vip_levels")
     Observable<List<VipInfo>> getVipInfo();
