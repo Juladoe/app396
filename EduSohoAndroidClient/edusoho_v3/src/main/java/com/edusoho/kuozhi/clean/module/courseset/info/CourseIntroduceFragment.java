@@ -49,10 +49,11 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     private View mPeopleLayout;
     private View mInfoLayout;
 
-    private int mCourseId = 1;
+    private int mCourseId;
     private CourseIntroduceContract.Presenter mPresenter;
     private CourseSet mCourseSet;
     private View mDiscount;
+    private int studentNum;
 
     public CourseIntroduceFragment() {
     }
@@ -60,7 +61,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        mCourseId = getArguments().getInt(Const.COURSE_ID);
+        mCourseId = getArguments().getInt(Const.COURSE_ID);
     }
 
     @Override
@@ -168,6 +169,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                         jumpToMember(id);
                     }
                 };
+        studentNum = data.size();
         if (data.size() == 0) {
             mStudentNone.setVisibility(View.VISIBLE);
         } else {
@@ -205,6 +207,9 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     }
 
     private void moreStudent() {
+        if(studentNum < 1){
+            return;
+        }
         MobclickAgent.onEvent(getActivity(), "courseDetailsPage_introduction_moreCoursesParticipants");
         final String url = String.format(
                 Const.MOBILE_APP_URL,

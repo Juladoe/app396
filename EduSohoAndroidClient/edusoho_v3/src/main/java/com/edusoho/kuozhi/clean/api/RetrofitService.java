@@ -123,11 +123,15 @@ public class RetrofitService {
         return mApiService.createOrder(token, map);
     }
 
-    public static Observable<String> goPay(int id, String type, String payWay){
-        return mApiService.goPay(id, type, payWay);
+    public static Observable<JsonObject> goPay(String token, int id, String type, String payWay){
+        return mApiService.goPay(token, id, type, payWay);
     }
 
     public static Observable<String> getMyVirtualCoin(){
         return mApiService.getMyVirtualCoin();
+    }
+
+    public static Observable<JsonObject> joinFreeCourse(String token) {
+        return mApiService.joinFreeCourse(token);
     }
 }

@@ -80,15 +80,22 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("order_info")
-    Observable<OrderInfo> postOrderInfo(@Header("X-Auth-Token") String token, @Field("targetType") String type, @Field("targetId") int id);
+    Observable<OrderInfo> postOrderInfo(@Header("X-Auth-Token") String token,
+                                        @Field("targetType") String type, @Field("targetId") int id);
 
     @FormUrlEncoded
     @POST("orders")
-    Observable<JsonObject> createOrder(@Header("X-Auth-Token") String token, @FieldMap Map<String, String> map);
+    Observable<JsonObject> createOrder(@Header("X-Auth-Token") String token,
+                                       @FieldMap Map<String, String> map);
 
     @FormUrlEncoded
     @POST("pay_center")
-    Observable<String> goPay(@Field("orderId") int id, @Field("targetType") String type, @Field("payment") String payWay);
+    Observable<JsonObject> goPay(@Header("X-Auth-Token") String token, @Field("orderId") int id,
+                             @Field("targetType") String type, @Field("payment") String payWay);
+
+    @FormUrlEncoded
+    @POST("courses/{id}/members")
+    Observable<JsonObject> joinFreeCourse(@Header("X-Auth-Token") String token);
 
     @GET("me/cash_account")
     Observable<String> getMyVirtualCoin();

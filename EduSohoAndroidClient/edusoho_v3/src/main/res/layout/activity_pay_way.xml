@@ -118,4 +118,9 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_45" />
 
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

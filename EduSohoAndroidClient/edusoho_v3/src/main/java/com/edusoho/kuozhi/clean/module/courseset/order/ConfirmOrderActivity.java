@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -14,6 +13,7 @@ import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
+import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
 import com.edusoho.kuozhi.clean.module.courseset.payment.PayWayActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -22,7 +22,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Created by DF on 2017/3/25.
  */
 
-public class ConfirmOrderActivity extends AppCompatActivity implements View.OnClickListener, ConfirmOrderContract.View{
+public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnClickListener, ConfirmOrderContract.View{
 
     public static final String COURSE_SET = "course_set";
     public static final String STUDY_PLAN = "study_plan";

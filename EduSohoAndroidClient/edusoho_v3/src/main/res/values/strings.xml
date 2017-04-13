@@ -492,6 +492,6 @@
     <string name="hour">%s&#160;小时&#160;</string>
     <string name="minute">%s&#160;分&#160;</string>
     <string name="second">%s&#160;秒&#160;</string>
-    <string name="yuan">%1%f元</string>
+    <string name="yuan">%.1f元</string>
 
 </resources>

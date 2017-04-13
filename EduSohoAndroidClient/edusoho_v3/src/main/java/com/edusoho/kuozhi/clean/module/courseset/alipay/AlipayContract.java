@@ -1,28 +1,22 @@
-package com.edusoho.kuozhi.clean.module.courseset.payment;
+package com.edusoho.kuozhi.clean.module.courseset.alipay;
 
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 
-import java.util.Map;
-
 /**
- * Created by DF on 2017/4/7.
+ * Created by DF on 2017/4/12.
  */
 
-public interface PayWayContract {
+public interface AlipayContract {
 
     interface View extends BaseView<Presenter>{
 
         void showLoadDialog(boolean isShow);
-
-        void goToAlipay(String data);
-
     }
 
     interface Presenter extends BasePresenter{
 
-        void createOrderAndPay(Map<String, String> map, String type, String payment);
-
     }
+
 
 }

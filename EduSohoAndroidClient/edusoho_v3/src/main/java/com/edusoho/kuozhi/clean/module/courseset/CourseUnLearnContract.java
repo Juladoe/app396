@@ -41,6 +41,8 @@ public interface CourseUnLearnContract {
         void goToCourseProjectActivity(String courseProjectId);
 
         void goToImChatActivity(CourseSet.CreatorBean creatorBean);
+
+        void goToLoginActivity();
     }
 
     interface Presenter extends BasePresenter {

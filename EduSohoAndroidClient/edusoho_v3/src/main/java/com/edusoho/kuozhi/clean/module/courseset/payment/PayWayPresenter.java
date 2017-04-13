@@ -5,6 +5,8 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.google.gson.JsonObject;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -28,6 +30,7 @@ public class PayWayPresenter implements com.edusoho.kuozhi.clean.module.coursese
 
     @Override
     public void subscribe() {
+        mView.showLoadDialog(true);
         RetrofitService.getMyVirtualCoin()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -39,34 +42,35 @@ public class PayWayPresenter implements com.edusoho.kuozhi.clean.module.coursese
 
                     @Override
                     public void onError(Throwable e) {
-
+                        mView.showLoadDialog(false);
                     }
 
                     @Override
                     public void onNext(String s) {
-
+                        mView.showLoadDialog(false);
                     }
                 });
     }
 
     @Override
     public void createOrderAndPay(Map<String, String> map, final String type, final String payment) {
+        mView.showLoadDialog(true);
         map.put("targetId", mPlanId + "");
         RetrofitService.createOrder(EdusohoApp.app.token , map)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<JsonObject, Observable<String>>() {
+                .flatMap(new Func1<JsonObject, Observable<JsonObject>>() {
                     @Override
-                    public Observable<String> call(JsonObject jsonObject) {
+                    public Observable<JsonObject> call(JsonObject jsonObject) {
                         if (jsonObject != null) {
                             int id = jsonObject.get("id").getAsInt();
-                            return RetrofitService.goPay(id, type, payment);
+                            return RetrofitService.goPay(EdusohoApp.app.token, id, type, payment);
                         }
                         return null;
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<String>() {
+                .subscribe(new Subscriber<JsonObject>() {
                     @Override
                     public void onCompleted() {
 
@@ -74,12 +78,17 @@ public class PayWayPresenter implements com.edusoho.kuozhi.clean.module.coursese
 
                     @Override
                     public void onError(Throwable e) {
-
+                        mView.showLoadDialog(false);
                     }
 
                     @Override
-                    public void onNext(String s) {
-
+                    public void onNext(JsonObject s) {
+                        mView.showLoadDialog(false);
+                        String data = s.get("paymentHtml").getAsString();
+                        Pattern p = Pattern.compile("post");
+                        Matcher m = p.matcher(data);
+                        data = m.replaceFirst("get");
+                        mView.goToAlipay(data);
                     }
                 });
     }

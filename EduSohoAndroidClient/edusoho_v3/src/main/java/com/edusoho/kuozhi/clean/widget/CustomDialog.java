@@ -2,10 +2,7 @@ package com.edusoho.kuozhi.clean.widget;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -15,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -26,8 +22,6 @@ import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.GuaranteServiceAdapter;
-import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
-import com.edusoho.kuozhi.v3.util.AppUtil;
 
 import java.util.List;
 
@@ -69,7 +63,7 @@ public class CustomDialog extends Dialog {
     }
 
     /**
-     * 初始化dialog的类型1:学习进度 2:支付方式 3:优惠券 4:虚拟币 5:输入支付密码 6:确认加入课程 7:承诺服务
+     * 初始化dialog的类型1:学习进度 2:支付方式 3:优惠券 4:虚拟币 7:承诺服务
      *
      * @param type
      * @return
@@ -89,10 +83,6 @@ public class CustomDialog extends Dialog {
                 return R.layout.dialog_coupons;
             case 4:
                 return R.layout.dialog_virtual_coin;
-            case 5:
-                break;
-            case 6:
-                return R.layout.dialog_confirm_buy;
             case 7:
                 return R.layout.dialog_guaranteed_service;
         }
@@ -120,14 +110,6 @@ public class CustomDialog extends Dialog {
 //                tvAccountBalance.setText(mAccountBalance);
 //                tvOrderAmount.setText(mOrderAmount);
                 break;
-            case 5:
-                break;
-            case 6:
-                setPositionBottom();
-                RadioGroup rg = (RadioGroup) findViewById(R.id.rg_type);
-                rg.setOnCheckedChangeListener(getOnCheckedChangeListener());
-                addButton(rg);
-                break;
             case 7:
                 setPositionBottom();
                 RecyclerView rv = (RecyclerView) findViewById(R.id.rv_content);
@@ -135,38 +117,6 @@ public class CustomDialog extends Dialog {
                 rv.setLayoutManager(new LinearLayoutManager(mContext));
                 rv.setAdapter(guaranteServiceAdapter);
                 break;
-        }
-    }
-
-    /**
-     * 动态添加RadioButton到RadioGroup中
-     *
-     * @param rg
-     */
-    private void addButton(RadioGroup rg) {
-        int mostStudentNumPlan = getMostStudentNumPlan();
-        for (int i = 0; i < mCourseStudyPlans.size(); i++) {
-            mRb = new RadioButton(mContext);
-            mRb.setGravity(Gravity.CENTER);
-            RadioGroup.LayoutParams mp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            mp.setMargins(0, 0, AppUtil.dp2px(mContext, 10), AppUtil.dp2px(mContext, 5));
-            mRb.setTextSize(AppUtil.sp2px(mContext, 5));
-            mRb.setTextColor(mContext.getResources().getColorStateList(R.color.teach_type_text_selector));
-            mRb.setButtonDrawable(new ColorDrawable(Color.TRANSPARENT));
-            mRb.setPadding(AppUtil.dp2px(mContext, 7), AppUtil.dp2px(mContext, 4)
-                    , AppUtil.dp2px(mContext, 7), AppUtil.dp2px(mContext, 4));
-            mRb.setBackground(ContextCompat.getDrawable(mContext, R.drawable.teach_type_rb_selector));
-            mRb.setText(mCourseStudyPlans.get(i).title);
-            if (mostStudentNumPlan == i) {
-                Drawable drawable = mContext.getResources().getDrawable(R.drawable.hot);
-                drawable.setBounds(0, 0 , AppUtil.dp2px(mContext, 10), AppUtil.dp2px(mContext, 13));
-                mRb.setCompoundDrawablePadding(AppUtil.dp2px(mContext, 5));
-                mRb.setCompoundDrawables(null, null, drawable, null);
-            }
-            rg.addView(mRb, mp);
-            if (i == 0) {
-                rg.check(mRb.getId());
-            }
         }
     }
 
@@ -204,23 +154,6 @@ public class CustomDialog extends Dialog {
                     public void onClick(View v) {
                         dismiss();
                         // TODO: 2017/3/18
-                    }
-                });
-                break;
-            case 5:
-
-                break;
-            case 6:
-                findViewById(R.id.tv_cancel).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dismiss();
-                    }
-                });
-                findViewById(R.id.tv_confirm).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ConfirmOrderActivity.newInstance(mContext, mCourseSet, mCourseStudyPlan);
                     }
                 });
                 break;
@@ -329,17 +262,6 @@ public class CustomDialog extends Dialog {
         };
     }
 
-    private int getMostStudentNumPlan() {
-        int index = 0;
-        for (int i = 0; i < mCourseStudyPlans.size(); i++) {
-            if (i > 0) {
-                if (mCourseStudyPlans.get(i - 1).studentNum < mCourseStudyPlans.get(i).studentNum) {
-                    index = i;
-                }
-            }
-        }
-        return index;
-    }
 
     public interface EventListener {
 

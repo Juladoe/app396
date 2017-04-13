@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +35,6 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
-import com.edusoho.kuozhi.clean.widget.CustomDialog;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -52,7 +50,7 @@ import extensions.PagerSlidingTabStrip;
  * Created by DF on 2017/3/21.
  */
 
-public class CourseUnLearnActivity extends AppCompatActivity
+public class CourseUnLearnActivity extends BaseFinishActivity
         implements CourseUnLearnContract.View, View.OnClickListener, AppBarLayout.OnOffsetChangedListener {
 
     private View mLoadView;
@@ -70,7 +68,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
     private TextView mShareView;
     private LoadDialog mProcessDialog;
 
-    private int mCourseId = 1;
+    private int mCourseId;
     private long mEndTime;
     private boolean mIsFavorite = false;
     private ViewPager mViewPager;
@@ -80,6 +78,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
     private TextView mDiscountName;
     private TextView mDiscountTime;
     private Timer mTimer;
+    private SelectProjectDialog mSelectDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,6 +88,7 @@ public class CourseUnLearnActivity extends AppCompatActivity
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
 //        mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
+        mCourseId = 1;
         isJoin();
     }
 
@@ -367,7 +367,11 @@ public class CourseUnLearnActivity extends AppCompatActivity
 
     @Override
     public void showPlanDialog(List<CourseStudyPlan> list, List<VipInfo> vipInfo, CourseSet courseSet) {
-        new CustomDialog(this).initType(6).initPlanData(list, vipInfo, mCourseSet).show();
+        if (mSelectDialog == null) {
+            mSelectDialog = new SelectProjectDialog();
+            mSelectDialog.setData(courseSet, list, vipInfo);
+        }
+        mSelectDialog.show(getSupportFragmentManager(),"SelectProjectDialog");
     }
 
     protected void showProcessDialog() {
@@ -411,6 +415,17 @@ public class CourseUnLearnActivity extends AppCompatActivity
     }
 
     @Override
+    public void goToLoginActivity() {
+        CoreEngine.create(getBaseContext()).runNormalPluginForResult("LoginActivity", this
+                , 0, new PluginRunCallback() {
+                    @Override
+                    public void setIntentDate(Intent startIntent) {
+
+                    }
+                });
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (mTimer != null) {
@@ -448,4 +463,6 @@ public class CourseUnLearnActivity extends AppCompatActivity
             return mTitleArray[position];
         }
     }
+
+
 }

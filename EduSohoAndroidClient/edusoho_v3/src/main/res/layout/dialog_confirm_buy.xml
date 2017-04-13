@@ -153,16 +153,4 @@
         android:layout_width="wrap_content"
         android:layout_height="0.5dp"/>
 
-    <TextView
-        android:text="@string/confirm1"
-        android:id="@+id/tv_confirm"
-        android:background="@color/primary"
-        android:textColor="@color/disabled1_hint_color"
-        android:layout_below="@id/rl_up"
-        android:layout_marginTop="25dp"
-        android:textSize="@dimen/font_xl"
-        android:gravity="center"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
-
 </LinearLayout>

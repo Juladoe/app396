@@ -106,11 +106,10 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                             mCourseSet = courseSet;
                             mView.showFragments(getTitleArray(), getFragmentArray());
                             mView.setCourseSet(courseSet);
-                            mView.showBackGround("http://demo.edusoho.com/files/course/2016/11-03/132045d61012373326.jpg");
-//                            if (mCourseSet.getDiscountId() != 0) {
-//                                getDiscountInfo(mCourseSet.getDiscountId());
-                                getDiscountInfo(1);
-//                            }
+                            mView.showBackGround(courseSet.cover.middle);
+                            if (mCourseSet.discountId != 0) {
+                                getDiscountInfo(mCourseSet.discountId);
+                            }
                         }
                     }
                 })
@@ -228,7 +227,10 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     @Override
     public void joinStudy() {
         if (!"0".equals(mCourseId)) {
-            mView.showProcessDialog(true);
+            if (EdusohoApp.app.loginUser == null) {
+                mView.goToLoginActivity();
+                return;
+            }
             if (mCourseStudyPlans != null && mVipInfos != null) {
                 if (mCourseStudyPlans.size() == 1) {
                     CourseStudyPlan courseStudyPlan = mCourseStudyPlans.get(0);
@@ -236,10 +238,9 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                         mView.showToast(R.string.course_limit_join);
                         return;
                     }
-
                     if ("1".equals(courseStudyPlan.isFree)) {
-                        mView.goToCourseProjectActivity(mCourseStudyPlans.get(0).id + "");
-                        mView.newFinish(true, R.string.join_success);
+                        mView.showProcessDialog(true);
+                        joinFreeCourse();
                     }
                     mView.goToConfirmOrderActivity(courseStudyPlan);
                 }
@@ -283,6 +284,33 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             return;
         }
         mView.goToImChatActivity(creatorBean);
+    }
+
+    public void joinFreeCourse() {
+        RetrofitService.joinFreeCourse(EdusohoApp.app.token)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<JsonObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.showProcessDialog(false);
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        if (jsonObject.get("success").getAsBoolean()) {
+                            mView.goToCourseProjectActivity(mCourseStudyPlans.get(0).id + "");
+                            mView.newFinish(true, R.string.join_success);
+                        } else {
+                            mView.showProcessDialog(false);
+                        }
+                    }
+                });
     }
 
     private Observable<CourseSet> getCourseSet(String id) {

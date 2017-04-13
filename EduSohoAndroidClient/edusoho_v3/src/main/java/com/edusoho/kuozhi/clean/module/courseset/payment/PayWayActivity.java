@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,6 +17,8 @@ import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
+import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
+import com.edusoho.kuozhi.clean.module.courseset.alipay.AlipayActivity;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
@@ -28,10 +29,9 @@ import java.util.TreeMap;
  * Created by DF on 2017/4/7.
  */
 
-public class PayWayActivity extends AppCompatActivity implements View.OnClickListener,PayWayContract.View {
+public class PayWayActivity extends BaseFinishActivity implements View.OnClickListener, PayWayContract.View {
 
     public static final String STUDY_PLAN = "study_plan";
-
 
     private View mBack;
     private View mAlipay;
@@ -148,6 +148,11 @@ public class PayWayActivity extends AppCompatActivity implements View.OnClickLis
         mDialog.show();
     }
 
+    @Override
+    public void goToAlipay(final String data) {
+        AlipayActivity.newInstance(this, data);
+    }
+
     protected void showProcessDialog() {
         if (mProcessDialog == null) {
             mProcessDialog = LoadDialog.create(this);
@@ -161,6 +166,15 @@ public class PayWayActivity extends AppCompatActivity implements View.OnClickLis
         }
         if (mProcessDialog.isShowing()) {
             mProcessDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void showLoadDialog(boolean isShow) {
+        if (isShow) {
+            showProcessDialog();
+        } else {
+            hideProcesDialog();
         }
     }
 }

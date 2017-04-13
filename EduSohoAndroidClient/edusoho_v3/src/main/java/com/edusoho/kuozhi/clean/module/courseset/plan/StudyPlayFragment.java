@@ -10,6 +10,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
+import com.edusoho.kuozhi.v3.util.Const;
 
 import java.util.List;
 
@@ -24,12 +25,12 @@ public class StudyPlayFragment extends BaseLazyFragment
     private RecyclerView mRv;
     private StudyPlanAdapter mStudyPlanAdapter;
     private StudyPlanContract.Presenter mPresenter;
-    private int mCourseId = 1;
+    private int mCourseId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        mCourseId = getArguments().getInt(Const.COURSE_ID);
+        mCourseId = getArguments().getInt(Const.COURSE_ID);
     }
 
     @Override
