@@ -91,7 +91,7 @@ public class RetrofitService {
         return mApiService.getCourseMembers(courseId, role, offset, limit);
     }
 
-    public static Observable<CourseMember> getCourseMember(int courseId, String userId) {
+    public static Observable<CourseMember> getCourseMember(int courseId, int userId) {
         return mApiService.getCourseMember(courseId, userId);
     }
 

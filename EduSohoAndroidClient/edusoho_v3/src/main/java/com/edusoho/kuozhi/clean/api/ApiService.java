@@ -66,7 +66,7 @@ public interface ApiService {
                                                               @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("courses/{courseId}/members/{userId}")
-    Observable<CourseMember> getCourseMember(@Path("courseId") int courseId, @Path("userId") String userId);
+    Observable<CourseMember> getCourseMember(@Path("courseId") int courseId, @Path("userId") int userId);
 
     @GET("course_sets/{id}/courses")
     Observable<List<CourseProject>> getCourseProjects(@Path("id") int courseSetId);
@@ -91,7 +91,7 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("pay_center")
     Observable<JsonObject> goPay(@Header("X-Auth-Token") String token, @Field("orderId") int id,
-                             @Field("targetType") String type, @Field("payment") String payWay);
+                                 @Field("targetType") String type, @Field("payment") String payWay);
 
     @FormUrlEncoded
     @POST("courses/{id}/members")

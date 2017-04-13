@@ -19,7 +19,7 @@ public interface CourseProjectInfoContract {
 
         void showVipAdvertising(String vipName);
 
-        void showPrice(CourseProjectPriceEnum type, String price, String originPrice);
+        void showPrice(CourseProjectPriceEnum type, float price, float originPrice);
 
         void showServices(CourseProject.Service[] services);
 

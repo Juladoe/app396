@@ -36,7 +36,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
 
     private static final String COURSE_PROJECT_ID = "CourseProjectId";
 
-    private String mCourseProjectId;
+    private int mCourseProjectId;
     private CourseProjectContract.Presenter mPresenter;
     private Toolbar mToolbar;
     private ImageView mCourseCover;
@@ -60,7 +60,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_course_project);
         if (getIntent() != null) {
-            mCourseProjectId = getIntent().getStringExtra(COURSE_PROJECT_ID);
+            mCourseProjectId = getIntent().getIntExtra(COURSE_PROJECT_ID, 0);
         }
         init();
     }

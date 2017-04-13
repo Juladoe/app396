@@ -24,10 +24,10 @@ import rx.schedulers.Schedulers;
 public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private CourseProjectContract.View mView;
-    private String mCourseProjectId;
+    private int mCourseProjectId;
     private CourseProject.Teacher mTeacher;
 
-    public CourseProjectPresenter(String courseProjectId, CourseProjectContract.View view) {
+    public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
     }
@@ -77,7 +77,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     }
                 });
 
-        getCourseMember(mCourseProjectId, "3")
+        getCourseMember(mCourseProjectId, 3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseMember>() {
@@ -114,15 +114,15 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         return new CourseProjectEnum[]{CourseProjectEnum.INFO, CourseProjectEnum.TASKS, CourseProjectEnum.RATE};
     }
 
-    private Observable<CourseProject> getCourseProject(String id) {
+    private Observable<CourseProject> getCourseProject(int id) {
         return RetrofitService.getCourseProject(id);
     }
 
-    private Observable<CourseMember> getCourseMember(String courseId, String userId) {
+    private Observable<CourseMember> getCourseMember(int courseId, int userId) {
         return RetrofitService.getCourseMember(courseId, userId);
     }
 
-    private Observable<CourseSet> getCourseSet(String id) {
+    private Observable<CourseSet> getCourseSet(int id) {
         return RetrofitService.getCourseSet(id);
     }
 }

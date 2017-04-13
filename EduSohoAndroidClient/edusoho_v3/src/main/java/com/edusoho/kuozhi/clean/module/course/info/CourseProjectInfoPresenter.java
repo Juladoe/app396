@@ -27,7 +27,7 @@ import rx.schedulers.Schedulers;
 public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Presenter {
 
     private static final String NO_VIP = "0";
-    private static final String FREE = "0.00";
+    private static final float FREE = 0;
     private CourseProject mCourseProject;
     private CourseProjectInfoContract.View mView;
 
@@ -53,16 +53,16 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showPrice() {
-        if (mCourseProject.originPrice.compareTo(mCourseProject.price) == 0 && FREE.equals(mCourseProject.originPrice)) {
+        if (mCourseProject.originPrice == mCourseProject.price && FREE == mCourseProject.originPrice) {
             mView.showPrice(CourseProjectPriceEnum.FREE, mCourseProject.price, mCourseProject.originPrice);
-        } else if (mCourseProject.originPrice.compareTo(mCourseProject.price) == 0) {
+        } else if (mCourseProject.originPrice == mCourseProject.price) {
             mView.showPrice(CourseProjectPriceEnum.ORIGINAL, mCourseProject.price, mCourseProject.originPrice);
         } else {
             mView.showPrice(CourseProjectPriceEnum.SALE, mCourseProject.price, mCourseProject.originPrice);
         }
     }
 
-    private void showVip(String vipLevelId) {
+    private void showVip(int vipLevelId) {
         if (!NO_VIP.equals(vipLevelId)) {
             RetrofitService.getVipLevel(vipLevelId)
                     .subscribeOn(Schedulers.io())
@@ -128,7 +128,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
         mView.showMemberNum(count);
     }
 
-    private void showMembers(String courseId, String role) {
+    private void showMembers(int courseId, String role) {
         RetrofitService.getCourseMembers(courseId, role, 0, 10)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -150,7 +150,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
                 });
     }
 
-    private void showRelativeCourseProjects(String courseSetId, final String currentCourseProjectId) {
+    private void showRelativeCourseProjects(int courseSetId, final int currentCourseProjectId) {
         RetrofitService.getCourseProjects(courseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -163,7 +163,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
                 .filter(new Func1<CourseProject, Boolean>() {
                     @Override
                     public Boolean call(CourseProject courseProject) {
-                        return !courseProject.id.equals(currentCourseProjectId);
+                        return courseProject.id == currentCourseProjectId;
                     }
                 })
                 .toList()
