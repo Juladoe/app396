@@ -1,7 +1,7 @@
 package com.edusoho.kuozhi.clean.module.courseset;
 
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
@@ -34,9 +34,9 @@ public interface CourseUnLearnContract {
 
         void showToast(int content);
 
-        void showPlanDialog(List<CourseStudyPlan> list, List<VipInfo> vipInfo, CourseSet courseSet);
+        void showPlanDialog(List<CourseProject> list, List<VipInfo> vipInfo, CourseSet courseSet);
 
-        void goToConfirmOrderActivity(CourseStudyPlan courseStudyPlan);
+        void goToConfirmOrderActivity(CourseProject courseStudyPlan);
 
         void goToCourseProjectActivity(String courseProjectId);
 
@@ -46,7 +46,6 @@ public interface CourseUnLearnContract {
     }
 
     interface Presenter extends BasePresenter {
-        void isJoin();
 
         void joinStudy();
 

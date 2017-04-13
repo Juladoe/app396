@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
@@ -36,7 +36,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     private CourseUnLearnContract.View mView;
     private String mCourseId;
     private CourseSet mCourseSet;
-    private List<CourseStudyPlan> mCourseStudyPlans;
+    private List<CourseProject> mCourseStudyPlans;
     private List<VipInfo> mVipInfos;
 
     public CourseUnLearnPresenter(String mCourseId, CourseUnLearnContract.View view) {
@@ -53,7 +53,6 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
         isJoin();
     }
 
-    @Override
     public void isJoin() {
         if (EdusohoApp.app.loginUser != null) {
             getCourseSetMember(mCourseId)
@@ -114,23 +113,23 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     }
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<CourseSet, Observable<List<CourseStudyPlan>>>() {
+                .flatMap(new Func1<CourseSet, Observable<List<CourseProject>>>() {
                     @Override
-                    public Observable<List<CourseStudyPlan>> call(CourseSet courseSet) {
+                    public Observable<List<CourseProject>> call(CourseSet courseSet) {
                         return getCourseStudyPlan(mCourseId);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<List<CourseStudyPlan>>() {
+                .doOnNext(new Action1<List<CourseProject>>() {
                     @Override
-                    public void call(List<CourseStudyPlan> list) {
+                    public void call(List<CourseProject> list) {
                         mCourseStudyPlans = list;
                     }
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<CourseStudyPlan>, Observable<List<VipInfo>>>() {
+                .flatMap(new Func1<List<CourseProject>, Observable<List<VipInfo>>>() {
                     @Override
-                    public Observable<List<VipInfo>> call(List<CourseStudyPlan> list) {
+                    public Observable<List<VipInfo>> call(List<CourseProject> list) {
                         return getVipInfo();
                     }
                 })
@@ -199,8 +198,12 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     public void onNext(Discount discount) {
                         if (discount != null) {
                             if("running".equals(discount.status)) {
-                                long time = TimeUtils.getMillisecond(discount.endTime)/1000 - TimeUtils.getMillisecond(discount.startTime)/1000;
-                                mView.showDiscountInfo(discount.name, time);
+                                long currentTime = System.currentTimeMillis();
+                                long time = TimeUtils.getMillisecond(discount.endTime)/1000 - currentTime/1000;
+                                if (time > 0) {
+                                    mView.showDiscountInfo(discount.name, time);
+
+                                }
                             }
                         }
                     }
@@ -233,7 +236,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             }
             if (mCourseStudyPlans != null && mVipInfos != null) {
                 if (mCourseStudyPlans.size() == 1) {
-                    CourseStudyPlan courseStudyPlan = mCourseStudyPlans.get(0);
+                    CourseProject courseStudyPlan = mCourseStudyPlans.get(0);
                     if ("0".equals(courseStudyPlan.buyable)) {
                         mView.showToast(R.string.course_limit_join);
                         return;
@@ -321,7 +324,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
         return RetrofitService.getCourseSetMember(id);
     }
 
-    private Observable<List<CourseStudyPlan>> getCourseStudyPlan(String id) {
+    private Observable<List<CourseProject>> getCourseStudyPlan(String id) {
         return RetrofitService.getCourseStudyPlan(id);
     }
 

@@ -128,12 +128,12 @@ public class CourseIntroduceFragment extends BaseLazyFragment
             float discount = mCourseSet.discount;
             if (discount != 10) {
                 mDiscount.setVisibility(View.VISIBLE);
-                mPriceNow.setText(String.format("¥ %s-%s", (mCourseSet.minCoursePrice * discount / 10),
+                mPriceNow.setText(String.format("¥ %.2f-%.2f", (mCourseSet.minCoursePrice * discount / 10),
                         (mCourseSet.maxCoursePrice * discount / 10)));
-                mPriceOld.setText(String.format("¥ %s-%s", mCourseSet.minCoursePrice, mCourseSet.maxCoursePrice));
+                mPriceOld.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice, mCourseSet.maxCoursePrice));
                 mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
-                mPriceNow.setText(String.format("¥ %s-%s",  mCourseSet.minCoursePrice,
+                mPriceNow.setText(String.format("¥ %.2f-%.2f",  mCourseSet.minCoursePrice,
                          mCourseSet.maxCoursePrice));
             }
         }
@@ -153,7 +153,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
             for (int i = 0; i < length; i++) {
                 sb.append(audiences[i]);
                 if (i != length - 1) {
-                    sb.append("\n");
+                    sb.append("、");
                 }
             }
             mPeopleDesc.setText(sb);

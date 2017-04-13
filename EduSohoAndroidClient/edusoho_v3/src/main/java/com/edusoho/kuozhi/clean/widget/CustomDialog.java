@@ -18,8 +18,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.GuaranteServiceAdapter;
 
@@ -40,10 +40,10 @@ public class CustomDialog extends Dialog {
     private String mOrderAmount;
 
     private RadioButton mRb;
-    private List<CourseStudyPlan> mCourseStudyPlans;
+    private List<CourseProject> mCourseStudyPlans;
     private List<VipInfo> mVipInfos;
     private CourseSet mCourseSet;
-    private CourseStudyPlan mCourseStudyPlan;
+    private CourseProject mCourseStudyPlan;
 
     public CustomDialog(@NonNull Context context) {
         super(context, R.style.dialog_custom);
@@ -198,7 +198,7 @@ public class CustomDialog extends Dialog {
         return this;
     }
 
-    public Dialog initPlanData(List<CourseStudyPlan> list, List<VipInfo> vipInfo, CourseSet courseSet){
+    public Dialog initPlanData(List<CourseProject> list, List<VipInfo> vipInfo, CourseSet courseSet){
         mCourseStudyPlans = list;
         mVipInfos = vipInfo;
         mCourseSet = courseSet;
@@ -225,14 +225,14 @@ public class CustomDialog extends Dialog {
                     ((TextView) findViewById(R.id.tv_discount_price)).setTextColor(ContextCompat.getColor(mContext, R.color.secondary_color));
                 }
                 findViewById(R.id.tv_service).setVisibility(View.GONE);
-                List<CourseStudyPlan.ServicesBean> servicesList = mCourseStudyPlan.services;
-                if (servicesList != null && servicesList.size() != 0) {
+                CourseProject.Service[] services = mCourseStudyPlan.services;
+                if (services != null && services.length != 0) {
                     findViewById(R.id.tv_service).setVisibility(View.VISIBLE);
                     StringBuilder sb = new StringBuilder();
                     sb.append(mContext.getString(R.string.promise_services));
-                    for (int i = 0; i < servicesList.size(); i++) {
-                        sb.append(servicesList.get(i).full_name);
-                        if (i != servicesList.size() - 1) {
+                    for (int i = 0; i < services.length; i++) {
+                        sb.append(services[i].full_name);
+                        if (i != services.length - 1) {
                             sb.append(" 、 ");
                         }
                     }
@@ -249,7 +249,8 @@ public class CustomDialog extends Dialog {
                 findViewById(R.id.tv_vip).setVisibility(View.GONE);
                 for (int i = 0; i < mVipInfos.size(); i++) {
                     VipInfo vipInfo = mVipInfos.get(i);
-                    if (vipInfo.id == mCourseStudyPlan.vipLevelId) {
+                    int vipId = Integer.parseInt(mCourseStudyPlan.vipLevelId);
+                    if (vipInfo.id == vipId) {
                         findViewById(R.id.tv_vip).setVisibility(View.VISIBLE);
                         ((TextView) findViewById(R.id.tv_vip)).setText(String.format(mContext.getString(R.string.vip_free), vipInfo.name));
                         break;

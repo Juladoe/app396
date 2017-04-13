@@ -5,7 +5,6 @@ import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
@@ -47,7 +46,7 @@ public interface ApiService {
     Observable<CourseReview> getCourseReview(@Path("id") String id, @Query("limit") int limit, @Query("offset") int offset);
 
     @GET("course_sets/{course_setId}/courses")
-    Observable<List<CourseStudyPlan>> getCourseStudyPlan(@Path("course_setId") String id);
+    Observable<List<CourseProject>> getCourseStudyPlan(@Path("course_setId") String id);
 
     @GET("course_sets/{courseSetId}/members")
     Observable<DataPageResult<com.edusoho.kuozhi.v3.model.bal.course.CourseMember>> getCourseSetMember(@Path("courseSetId") String id);

@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
 import com.edusoho.kuozhi.clean.module.courseset.alipay.AlipayActivity;
@@ -43,7 +44,7 @@ public class PayWayActivity extends BaseFinishActivity implements View.OnClickLi
     private EditText mInputPw;
     private CourseStudyPlan mCourseStudyPlan;
 
-    public static void newInstance(Context context, CourseStudyPlan courseStudyPlan) {
+    public static void newInstance(Context context, CourseProject courseStudyPlan) {
         Intent intent = new Intent(context, PayWayActivity.class);
         intent.putExtra(STUDY_PLAN, courseStudyPlan);
         context.startActivity(intent);

@@ -5,7 +5,6 @@ import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
@@ -75,7 +74,7 @@ public class RetrofitService {
         return mApiService.getCourseReview(courseSetId, limit, offset);
     }
 
-    public static Observable<List<CourseStudyPlan>> getCourseStudyPlan(String courseSetId){
+    public static Observable<List<CourseProject>> getCourseStudyPlan(String courseSetId){
         return mApiService.getCourseStudyPlan(courseSetId);
     }
 

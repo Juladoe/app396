@@ -11,8 +11,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
 import com.edusoho.kuozhi.clean.module.courseset.payment.PayWayActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -39,9 +39,9 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
     private TextView mOriginal;
     private ConfirmOrderContract.Presenter mPresenter;
     private CourseSet mCourseSet;
-    private CourseStudyPlan mStudyPlan;
+    private CourseProject mStudyPlan;
 
-    public static void newInstance(Context context, CourseSet courseSet, CourseStudyPlan courseStudyPlan) {
+    public static void newInstance(Context context, CourseSet courseSet, CourseProject courseStudyPlan) {
         Intent intent = new Intent(context, ConfirmOrderActivity.class);
         intent.putExtra(COURSE_SET, courseSet);
         intent.putExtra(STUDY_PLAN, courseStudyPlan);
@@ -55,7 +55,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
 
         Intent intent = getIntent();
         mCourseSet = (CourseSet) intent.getSerializableExtra(COURSE_SET);
-        mStudyPlan = (CourseStudyPlan) intent.getSerializableExtra(STUDY_PLAN);
+        mStudyPlan = (CourseProject) intent.getSerializableExtra(STUDY_PLAN);
         initView();
         initEvent();
         showTopView();

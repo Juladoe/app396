@@ -19,8 +19,8 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
@@ -367,7 +367,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     }
 
     @Override
-    public void showPlanDialog(List<CourseStudyPlan> list, List<VipInfo> vipInfo, CourseSet courseSet) {
+    public void showPlanDialog(List<CourseProject> list, List<VipInfo> vipInfo, CourseSet courseSet) {
         if (mSelectDialog == null) {
             mSelectDialog = new SelectProjectDialog();
             mSelectDialog.setData(courseSet, list, vipInfo);
@@ -392,7 +392,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     }
 
     @Override
-    public void goToConfirmOrderActivity(CourseStudyPlan courseStudyPlan) {
+    public void goToConfirmOrderActivity(CourseProject courseStudyPlan) {
         if (mCourseSet != null && courseStudyPlan != null) {
             ConfirmOrderActivity.newInstance(this, mCourseSet, courseStudyPlan);
         }

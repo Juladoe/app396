@@ -18,8 +18,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESBottomDialog;
@@ -47,12 +47,12 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
     private TextView mTask;
     private TextView mVip;
 
-    private List<CourseStudyPlan> mCourseStudyPlans;
-    private CourseStudyPlan mCourseStudyPlan;
+    private List<CourseProject> mCourseStudyPlans;
+    private CourseProject mCourseStudyPlan;
     private List<VipInfo> mVipInfos;
     private CourseSet mCourseSet;
 
-    public void setData(CourseSet mCourseSet, List<CourseStudyPlan> mCourseStudyPlans, List<VipInfo> mVipInfos) {
+    public void setData(CourseSet mCourseSet, List<CourseProject> mCourseStudyPlans, List<VipInfo> mVipInfos) {
         this.mCourseSet = mCourseSet;
         this.mCourseStudyPlans = mCourseStudyPlans;
         this.mVipInfos = mVipInfos;
@@ -66,7 +66,7 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
 
     @Override
     public View getContentView(ViewGroup parentView) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_confirm_buy, parentView, false);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_confirm_select, parentView, false);
         initView(view);
         addButton();
         return view;
@@ -159,24 +159,29 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
             mDiscountPrice.setText(R.string.free_course_project);
             mDiscountPrice.setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
         } else {
-            mDiscount.setVisibility(View.VISIBLE);
-            mDiscountPrice.setText(String.format("%s%s", "¥ ", mCourseStudyPlan.price));
-            mOriginalPrice.setText(String.format("%s%s", "¥ ", mCourseStudyPlan.originPrice));
-            mOriginalPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);;
             mDiscountPrice.setTextColor(ContextCompat.getColor(getContext(), R.color.secondary_color));
+            if (mCourseStudyPlan.price == mCourseStudyPlan.price) {
+                mDiscount.setVisibility(View.GONE);
+                mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseStudyPlan.price));
+                return;
+            }
+            mDiscount.setVisibility(View.VISIBLE);
+            mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseStudyPlan.price));
+            mOriginalPrice.setText(String.format("%s%.2f", "¥ ", mCourseStudyPlan.originPrice));
+            mOriginalPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);;
         }
     }
 
     private void setServiceView() {
         mService.setVisibility(View.GONE);
-        List<CourseStudyPlan.ServicesBean> servicesList = mCourseStudyPlan.services;
-        if (servicesList != null && servicesList.size() != 0) {
+        CourseProject.Service[] services = mCourseStudyPlan.services;
+        if (services != null && services.length != 0) {
             mService.setVisibility(View.VISIBLE);
             StringBuilder sb = new StringBuilder();
             sb.append(getContext().getString(R.string.promise_services));
-            for (int i = 0; i < servicesList.size(); i++) {
-                sb.append(servicesList.get(i).full_name);
-                if (i != servicesList.size() - 1) {
+            for (int i = 0; i < services.length; i++) {
+                sb.append(services[i].full_name);
+                if (i != services.length - 1) {
                     sb.append(" 、 ");
                 }
             }
@@ -194,7 +199,8 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
         mVip.setVisibility(View.GONE);
         for (int i = 0; i < mVipInfos.size(); i++) {
             VipInfo vipInfo = mVipInfos.get(i);
-            if (vipInfo.id == mCourseStudyPlan.vipLevelId) {
+            int vipId = Integer.parseInt(mCourseStudyPlan.vipLevelId);
+            if (vipInfo.id == vipId) {
                 mVip.setVisibility(View.VISIBLE);
                 mVip.setText(String.format(getContext().getString(R.string.vip_free), vipInfo.name));
                 break;
