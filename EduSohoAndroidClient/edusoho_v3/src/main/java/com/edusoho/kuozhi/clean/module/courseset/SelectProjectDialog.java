@@ -209,13 +209,8 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
     }
 
     @Override
-    public View.OnClickListener addConfirmClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ConfirmOrderActivity.newInstance(getContext(), mCourseSet, mCourseStudyPlan);
-            }
-        };
+    public void setButtonState(TextView btn) {
+
     }
 
     @Override

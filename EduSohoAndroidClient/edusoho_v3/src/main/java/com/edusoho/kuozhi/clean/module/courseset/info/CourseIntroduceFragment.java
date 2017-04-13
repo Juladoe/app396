@@ -13,12 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
 import com.edusoho.kuozhi.v3.view.ReviewStarView;
@@ -32,7 +32,7 @@ import java.util.List;
  */
 
 public class CourseIntroduceFragment extends BaseLazyFragment
-        implements View.OnClickListener, CourseIntroduceContract.View{
+        implements View.OnClickListener, CourseIntroduceContract.View {
 
     private TextView mPriceOld;
     private TextView mPriceNow;
@@ -116,7 +116,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
         mReviewStar.setRating((int) mCourseSet.rating);
         int studentNum = mCourseSet.studentNum;
         mTitleStudentNum.setText(studentNum != 0 ?
-                                    String.format(getContext().getString(R.string.course_student_count), studentNum) : "");
+                String.format(getContext().getString(R.string.course_student_count), studentNum) : "");
         showCoursePrice();
     }
 
@@ -133,8 +133,8 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                 mPriceOld.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice, mCourseSet.maxCoursePrice));
                 mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
-                mPriceNow.setText(String.format("¥ %.2f-%.2f",  mCourseSet.minCoursePrice,
-                         mCourseSet.maxCoursePrice));
+                mPriceNow.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice,
+                        mCourseSet.maxCoursePrice));
             }
         }
     }
@@ -190,7 +190,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                 image.setTag(data.get(i).user.id);
                 image.setOnClickListener(onClickListener);
                 txt.setText(data.get(i).user.nickname);
-                ImageLoader.getInstance().displayImage(data.get(i).user.smallAvatar, image, EdusohoApp.app.mAvatarOptions);
+                ImageLoader.getInstance().displayImage(data.get(i).user.avatar, image, EdusohoApp.app.mAvatarOptions);
             } else {
                 txt.setText("");
                 image.setImageAlpha(0);
@@ -208,7 +208,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     }
 
     private void moreStudent() {
-        if(studentNum < 1){
+        if (studentNum < 1) {
             return;
         }
         MobclickAgent.onEvent(getActivity(), "courseDetailsPage_introduction_moreCoursesParticipants");

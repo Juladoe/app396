@@ -1,9 +1,9 @@
 package com.edusoho.kuozhi.clean.module.courseset.info;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
-import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -75,11 +75,11 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
 
     }
 
-    private Observable<CourseSet> getCourseSetIntro(int id){
+    private Observable<CourseSet> getCourseSetIntro(int id) {
         return RetrofitService.getCourseSet(id);
     }
 
-    private Observable<DataPageResult<CourseMember>> getCourseSetMember(int id){
+    private Observable<DataPageResult<CourseMember>> getCourseSetMember(int id) {
         return RetrofitService.getCourseSetMember(id);
     }
 

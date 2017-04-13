@@ -51,6 +51,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             return;
         }
         isJoin();
+        //lauchLastViewCourseProject(mCourseSetId);
     }
 
     private void isJoin() {
