@@ -18,6 +18,10 @@ import com.edusoho.kuozhi.v3.model.bal.course.CourseMember;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.google.gson.JsonObject;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import rx.Observable;
@@ -153,7 +157,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 });
     }
 
-    private void getFavoriteInfo(int userId, int courseSetId){
+    private void getFavoriteInfo(int userId, int courseSetId) {
         getFavorite(userId, courseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -179,7 +183,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 });
     }
 
-    private void getDiscountInfo(int discountId){
+    private void getDiscountInfo(int discountId) {
         RetrofitService.getDiscountInfo(discountId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -197,9 +201,9 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     @Override
                     public void onNext(Discount discount) {
                         if (discount != null) {
-                            if("running".equals(discount.status)) {
+                            if ("running".equals(discount.status)) {
                                 long currentTime = System.currentTimeMillis();
-                                long time = TimeUtils.getMillisecond(discount.endTime)/1000 - currentTime/1000;
+                                long time = TimeUtils.getMillisecond(discount.endTime) / 1000 - currentTime / 1000;
                                 if (time > 0) {
                                     mView.showDiscountInfo(discount.name, time);
 
@@ -316,6 +320,34 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 });
     }
 
+    private void lauchLastViewCourseProject(int courseSetId) {
+        RetrofitService.getMyJoinCourses(EdusohoApp.app.token, courseSetId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<com.edusoho.kuozhi.clean.bean.CourseMember>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<com.edusoho.kuozhi.clean.bean.CourseMember> courseMembers) {
+                        com.edusoho.kuozhi.clean.bean.CourseMember maxItem = courseMembers.get(0);
+                        for (com.edusoho.kuozhi.clean.bean.CourseMember courseMember : courseMembers) {
+                            if (TimeUtils.getUTCtoDate(maxItem.lastViewTime).compareTo(TimeUtils.getUTCtoDate(courseMember.lastViewTime)) >= 1) {
+                                maxItem = courseMember;
+                            }
+                        }
+                        mView.goToCourseProjectActivity(maxItem.courseId);
+                    }
+                });
+    }
+
     private Observable<CourseSet> getCourseSet(int courseSetId) {
         return RetrofitService.getCourseSet(courseSetId);
     }
@@ -332,7 +364,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
         return RetrofitService.getVipInfo();
     }
 
-    private Observable<JsonObject> getFavorite(int userId, int courseSetId){
+    private Observable<JsonObject> getFavorite(int userId, int courseSetId) {
         return RetrofitService.getFavorite(userId, courseSetId);
     }
 
