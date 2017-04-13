@@ -18,10 +18,10 @@ import rx.schedulers.Schedulers;
 
 public class CourseIntroducePresenter implements CourseIntroduceContract.Presenter {
 
-    private String mCourseSetId;
+    private int mCourseSetId;
     private CourseIntroduceContract.View mView;
 
-    public CourseIntroducePresenter(String mCourseSetId, CourseIntroduceContract.View mView) {
+    public CourseIntroducePresenter(int mCourseSetId, CourseIntroduceContract.View mView) {
         this.mView = mView;
         this.mCourseSetId = mCourseSetId;
     }
@@ -75,11 +75,11 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
 
     }
 
-    private Observable<CourseSet> getCourseSetIntro(String id){
+    private Observable<CourseSet> getCourseSetIntro(int id){
         return RetrofitService.getCourseSet(id);
     }
 
-    private Observable<DataPageResult<CourseMember>> getCourseSetMember(String id){
+    private Observable<DataPageResult<CourseMember>> getCourseSetMember(int id){
         return RetrofitService.getCourseSetMember(id);
     }
 

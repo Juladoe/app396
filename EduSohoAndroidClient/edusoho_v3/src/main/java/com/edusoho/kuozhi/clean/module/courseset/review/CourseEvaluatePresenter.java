@@ -17,12 +17,12 @@ import rx.schedulers.Schedulers;
 public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter {
 
     private CourseEvaluateContract.View mView;
-    private String mCourseSetId;
+    private int mCourseSetId;
     private int mStart = 0;
     private boolean mIsHave = true;
     private boolean mIsFirst = true;
 
-    public CourseEvaluatePresenter(CourseEvaluateContract.View mView, String mCourseSetId) {
+    public CourseEvaluatePresenter(CourseEvaluateContract.View mView, int mCourseSetId) {
         this.mView = mView;
         this.mCourseSetId = mCourseSetId;
     }
@@ -110,7 +110,7 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
 
     }
 
-    private Observable<CourseReview> getCourseReview(String id, int limit, int offset) {
+    private Observable<CourseReview> getCourseReview(int id, int limit, int offset) {
         return RetrofitService.getCourseReview(id, limit, offset);
     }
 }

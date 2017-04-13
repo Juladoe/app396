@@ -110,7 +110,7 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
             mRb.setText(mCourseStudyPlans.get(i).title);
             if (mostStudentNumPlan == i) {
                 Drawable drawable = getContext().getResources().getDrawable(R.drawable.hot);
-                drawable.setBounds(0, 0 , AppUtil.dp2px(getContext(), 10), AppUtil.dp2px(getContext(), 13));
+                drawable.setBounds(0, 0, AppUtil.dp2px(getContext(), 10), AppUtil.dp2px(getContext(), 13));
                 mRb.setCompoundDrawablePadding(AppUtil.dp2px(getContext(), 5));
                 mRb.setCompoundDrawables(null, null, drawable, null);
             }
@@ -143,7 +143,7 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
                 setPriceView(position);
                 setServiceView();
                 mWay.setText("freeMode".equals(mCourseStudyPlan.learnMode) ?
-                        getContext().getString(R.string.free_mode): getContext().getString(R.string.locked_mode) );
+                        getContext().getString(R.string.free_mode) : getContext().getString(R.string.locked_mode));
                 setOtherView();
 //                if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip.levelId > mCourseStudyPlan.vipLevelId) {
 //                    ((TextView) findViewById(R.id.tv_confirm)).setText(getContext().getString(R.string.txt_vip_free));
@@ -168,7 +168,8 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
             mDiscount.setVisibility(View.VISIBLE);
             mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseStudyPlan.price));
             mOriginalPrice.setText(String.format("%s%.2f", "¥ ", mCourseStudyPlan.originPrice));
-            mOriginalPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);;
+            mOriginalPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            ;
         }
     }
 
@@ -199,8 +200,7 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
         mVip.setVisibility(View.GONE);
         for (int i = 0; i < mVipInfos.size(); i++) {
             VipInfo vipInfo = mVipInfos.get(i);
-            int vipId = Integer.parseInt(mCourseStudyPlan.vipLevelId);
-            if (vipInfo.id == vipId) {
+            if (vipInfo.id == mCourseStudyPlan.vipLevelId) {
                 mVip.setVisibility(View.VISIBLE);
                 mVip.setText(String.format(getContext().getString(R.string.vip_free), vipInfo.name));
                 break;

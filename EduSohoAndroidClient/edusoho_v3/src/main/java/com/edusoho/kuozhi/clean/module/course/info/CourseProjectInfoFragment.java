@@ -21,7 +21,6 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.utils.ItemClickSupport;
-import com.edusoho.kuozhi.clean.widget.ESBottomDialog;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
@@ -122,7 +121,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showPrice(CourseProjectPriceEnum type, String price, String originPrice) {
+    public void showPrice(CourseProjectPriceEnum type, float price, float originPrice) {
         switch (type) {
             case FREE:
                 mOriginalPrice.setText(R.string.free_course_project);
@@ -137,8 +136,8 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
             case SALE:
                 mSalePrice.setText(String.format(getString(R.string.price_format), price));
                 mOriginalPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-                mOriginalPrice.setText(String.format(getString(R.string.price_format), originPrice));
-                mOriginalPrice.setText(originPrice);
+                mOriginalPrice.setText(String.format(getString(R.string.price_format), originPrice + ""));
+                mOriginalPrice.setText(originPrice + "");
                 mSaleWord.setVisibility(View.VISIBLE);
                 break;
         }
@@ -248,7 +247,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void launchCourseProject(String courseId) {
+    public void launchCourseProject(int courseId) {
         CourseProjectActivity.launch(getActivity(), courseId);
     }
 

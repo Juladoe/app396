@@ -9,7 +9,7 @@ import java.util.List;
 
 public class OrderInfo implements Serializable {
 
-    public String targetId;
+    public int targetId;
     public String targetType;
     public String totalPrice;
     public String title;
@@ -22,9 +22,9 @@ public class OrderInfo implements Serializable {
     public int maxCoin;
     public int fullCoinPayable;
     public List<?> availableCoupons;
-    
+
     public static class AccountBean {
-        public String id;
+        public int id;
         public String userId;
         public String cash;
     }

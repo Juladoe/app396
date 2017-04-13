@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -30,7 +29,7 @@ import java.util.List;
 public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.StudyPlanViewHolder>
         implements View.OnClickListener {
 
-    private List<CourseStudyPlan> mList;
+    private List<CourseProject> mList;
     private List<VipInfo> mVipInfos;
     private Context mContext;
     private int maxIndex = -1;
@@ -41,7 +40,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         this.mVipInfos = new ArrayList();
     }
 
-    public void reFreshData(List<CourseStudyPlan> list, List<VipInfo> mVipInfos) {
+    public void reFreshData(List<CourseProject> list, List<VipInfo> mVipInfos) {
         this.mList = list;
         this.mVipInfos = mVipInfos;
         int num = 0;
@@ -61,7 +60,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
 
     @Override
     public void onBindViewHolder(StudyPlanViewHolder holder, int position) {
-        CourseStudyPlan courseStudyPlan = mList.get(position);
+        CourseProject courseStudyPlan = mList.get(position);
         holder.mRlItem.setOnClickListener(this);
         holder.mFlayout.removeAllViews();
         holder.mClassType.setText(courseStudyPlan.title);
@@ -74,7 +73,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         holder.mRlItem.setOnClickListener(getOnClickListener());
     }
 
-    private void loadPrice(StudyPlanViewHolder holder, CourseStudyPlan courseStudyPlan) {
+    private void loadPrice(StudyPlanViewHolder holder, CourseProject courseStudyPlan) {
         if ("1".equals(courseStudyPlan.isFree)) {
             holder.mPrice.setText(R.string.free_course_project);
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
@@ -84,8 +83,8 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         }
     }
 
-    private void loadService(StudyPlanViewHolder holder, CourseStudyPlan courseStudyPlan) {
-        if (courseStudyPlan.services.size() != 0) {
+    private void loadService(StudyPlanViewHolder holder, CourseProject courseStudyPlan) {
+        if (courseStudyPlan.services.length != 0) {
             holder.mService.setVisibility(View.VISIBLE);
             holder.mFlayout.setVisibility(View.VISIBLE);
             addFlowItem(holder, courseStudyPlan.services);
@@ -107,7 +106,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
         }
     }
 
-    private void loadVip(StudyPlanViewHolder holder, CourseStudyPlan courseStudyPlan) {
+    private void loadVip(StudyPlanViewHolder holder, CourseProject courseStudyPlan) {
         holder.mVip.setVisibility(View.GONE);
         for (int i = 0; i < mVipInfos.size(); i++) {
             VipInfo vipInfo = mVipInfos.get(i);
@@ -128,15 +127,15 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
 
     }
 
-    private void addFlowItem(StudyPlanViewHolder holder, List<CourseStudyPlan.ServicesBean> list) {
+    private void addFlowItem(StudyPlanViewHolder holder, CourseProject.Service[] services) {
         int ranHeight = AppUtil.dp2px(mContext, 16);
         ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ranHeight);
         lp.setMargins(0, 0, AppUtil.dp2px(mContext, 10), 0);
-        for (int i = 0; i < list.size(); i++) {
+        for (int i = 0; i < services.length; i++) {
             TextView serviceTextView = new TextView(mContext);
             serviceTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
             serviceTextView.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-            serviceTextView.setText(list.get(i).short_name);
+            serviceTextView.setText(services[i].short_name);
             lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             lp.rightMargin = CommonUtil.dip2px(mContext, 10);
             serviceTextView.setLayoutParams(lp);
@@ -151,7 +150,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
             @Override
             public void onClick(View v) {
                 int position = (int) v.getTag();
-                CourseProjectActivity.launch(mContext, mList.get(position).id + "");
+                CourseProjectActivity.launch(mContext, mList.get(position).id);
             }
         };
     }

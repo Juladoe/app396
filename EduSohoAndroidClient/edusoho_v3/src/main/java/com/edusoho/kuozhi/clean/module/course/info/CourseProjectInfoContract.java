@@ -19,7 +19,7 @@ public interface CourseProjectInfoContract {
 
         void showVipAdvertising(String vipName);
 
-        void showPrice(CourseProjectPriceEnum type, String price, String originPrice);
+        void showPrice(CourseProjectPriceEnum type, float price, float originPrice);
 
         void showServices(CourseProject.Service[] services);
 
@@ -35,7 +35,7 @@ public interface CourseProjectInfoContract {
 
         void showRelativeCourseProjects(List<CourseProject> courseList);
 
-        void launchCourseProject(String courseId);
+        void launchCourseProject(int courseId);
     }
 
     interface Presenter extends BasePresenter {

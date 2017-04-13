@@ -1,7 +1,7 @@
 package com.edusoho.kuozhi.clean.module.courseset.plan;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 
 import java.util.List;
@@ -19,11 +19,11 @@ import rx.schedulers.Schedulers;
 
 public class StudyPlanPresenter implements StudyPlanContract.Presenter {
 
-    private String mCourseSetId;
+    private int mCourseSetId;
     private StudyPlanContract.View mView;
-    List<CourseStudyPlan> mCourseStudyPlen;
+    List<CourseProject> mCourseStudyPlen;
 
-    public StudyPlanPresenter(StudyPlanContract.View view, String id) {
+    public StudyPlanPresenter(StudyPlanContract.View view, int id) {
         this.mView = view;
         this.mCourseSetId = id;
     }
@@ -33,16 +33,16 @@ public class StudyPlanPresenter implements StudyPlanContract.Presenter {
         getCourseStudyPlan(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Action1<List<CourseStudyPlan>>() {
+                .doOnNext(new Action1<List<CourseProject>>() {
                     @Override
-                    public void call(List<CourseStudyPlan> list) {
+                    public void call(List<CourseProject> list) {
                         mCourseStudyPlen = list;
                     }
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<List<CourseStudyPlan>, Observable<List<VipInfo>>>() {
+                .flatMap(new Func1<List<CourseProject>, Observable<List<VipInfo>>>() {
                     @Override
-                    public Observable<List<VipInfo>> call(List<CourseStudyPlan> list) {
+                    public Observable<List<VipInfo>> call(List<CourseProject> list) {
                         return getVipInfo();
                     }
                 })
@@ -74,8 +74,8 @@ public class StudyPlanPresenter implements StudyPlanContract.Presenter {
 
     }
 
-    private Observable<List<CourseStudyPlan>> getCourseStudyPlan(String id) {
-        return RetrofitService.getCourseStudyPlan(id);
+    private Observable<List<CourseProject>> getCourseStudyPlan(int courseSetId) {
+        return RetrofitService.getCourseStudyPlan(courseSetId);
     }
 
     private Observable<List<VipInfo>> getVipInfo() {

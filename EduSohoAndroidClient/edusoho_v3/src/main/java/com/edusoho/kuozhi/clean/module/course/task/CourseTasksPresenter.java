@@ -31,7 +31,7 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
         mCourseProject = courseProject;
     }
 
-    public Observable<List<CourseItem>> getCourseItems(String courseId) {
+    public Observable<List<CourseItem>> getCourseItems(int courseId) {
         return RetrofitService.getTasks(courseId);
     }
 

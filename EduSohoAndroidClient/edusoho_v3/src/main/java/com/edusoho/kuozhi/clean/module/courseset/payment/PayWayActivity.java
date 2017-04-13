@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
 import com.edusoho.kuozhi.clean.module.courseset.alipay.AlipayActivity;
 import com.edusoho.kuozhi.v3.util.InputUtils;
@@ -42,7 +41,7 @@ public class PayWayActivity extends BaseFinishActivity implements View.OnClickLi
     private LoadDialog mProcessDialog;
     private PayWayContract.Presenter mPresenter;
     private EditText mInputPw;
-    private CourseStudyPlan mCourseStudyPlan;
+    private CourseProject mCourseStudyPlan;
 
     public static void newInstance(Context context, CourseProject courseStudyPlan) {
         Intent intent = new Intent(context, PayWayActivity.class);
@@ -54,7 +53,7 @@ public class PayWayActivity extends BaseFinishActivity implements View.OnClickLi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_way);
-        mCourseStudyPlan = (CourseStudyPlan) getIntent().getSerializableExtra(STUDY_PLAN);
+        mCourseStudyPlan = (CourseProject) getIntent().getSerializableExtra(STUDY_PLAN);
 
         initView();
         initEvent();

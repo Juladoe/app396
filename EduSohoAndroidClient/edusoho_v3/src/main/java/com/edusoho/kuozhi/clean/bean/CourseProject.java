@@ -12,7 +12,7 @@ import java.io.Serializable;
 public class CourseProject implements Serializable {
 
     public int id;
-    public String courseSetId;
+    public int courseSetId;
     public String title;
     public String expiryMode;
     public String expiryDays;
@@ -22,11 +22,11 @@ public class CourseProject implements Serializable {
     public String rating;
     public float price;
     public float originPrice;
-    public String vipLevelId;
     public String learnMode;
     public String isFree;
-    public String taskNum;
+    public int taskNum;
     public String buyable;
+    public int vipLevelId;
     public int publishedTaskNum;
     public Service[] services;
     public Teacher[] teachers;
@@ -38,7 +38,7 @@ public class CourseProject implements Serializable {
     }
 
     public static class Teacher implements Serializable {
-        public String id;
+        public int id;
         public String nickname;
         public String title;
         @SerializedName("largeAvatar")

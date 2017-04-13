@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.bean.CourseStudyPlan;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
 import com.edusoho.kuozhi.v3.util.Const;
@@ -47,7 +47,7 @@ public class StudyPlayFragment extends BaseLazyFragment
         mRv.setLayoutManager(new LinearLayoutManager(getContext()));
         mRv.setAdapter(mStudyPlanAdapter);
 
-        mPresenter = new StudyPlanPresenter(this, mCourseSetId + "");
+        mPresenter = new StudyPlanPresenter(this, mCourseSetId);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class StudyPlayFragment extends BaseLazyFragment
     }
 
     @Override
-    public void showComPanies(List<CourseStudyPlan> list, List<VipInfo> vipInfos) {
+    public void showComPanies(List<CourseProject> list, List<VipInfo> vipInfos) {
         if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
             return;
         }

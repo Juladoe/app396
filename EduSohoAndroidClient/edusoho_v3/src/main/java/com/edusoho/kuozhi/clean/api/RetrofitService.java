@@ -58,23 +58,23 @@ public class RetrofitService {
         mApiService = retrofit.create(ApiService.class);
     }
 
-    public static Observable<List<CourseItem>> getTasks(String id) {
+    public static Observable<List<CourseItem>> getTasks(int id) {
         return mApiService.getCourseItems(id);
     }
 
-    public static Observable<CourseProject> getCourseProject(String id) {
+    public static Observable<CourseProject> getCourseProject(int id) {
         return mApiService.getCourseProject(id);
     }
 
-    public static Observable<CourseSet> getCourseSet(String courseSetId) {
+    public static Observable<CourseSet> getCourseSet(int courseSetId) {
         return mApiService.getCourseSet(courseSetId);
     }
 
-    public static Observable<CourseReview> getCourseReview(String courseSetId, int limit, int offset) {
+    public static Observable<CourseReview> getCourseReview(int courseSetId, int limit, int offset) {
         return mApiService.getCourseReview(courseSetId, limit, offset);
     }
 
-    public static Observable<List<CourseProject>> getCourseStudyPlan(String courseSetId){
+    public static Observable<List<CourseProject>> getCourseStudyPlan(int courseSetId){
         return mApiService.getCourseStudyPlan(courseSetId);
     }
 
@@ -82,51 +82,51 @@ public class RetrofitService {
         return mApiService.getVipInfo();
     }
 
-    public static Observable<VipLevel> getVipLevel(String id) {
+    public static Observable<VipLevel> getVipLevel(int id) {
         return mApiService.getVipLevel(id);
     }
 
-    public static Observable<DataPageResult<CourseMember>> getCourseMembers(String courseId, String role, int offset, int limit) {
+    public static Observable<DataPageResult<CourseMember>> getCourseMembers(int courseId, String role, int offset, int limit) {
         return mApiService.getCourseMembers(courseId, role, offset, limit);
     }
 
-    public static Observable<CourseMember> getCourseMember(String courseId, String userId) {
+    public static Observable<CourseMember> getCourseMember(int courseId, int userId) {
         return mApiService.getCourseMember(courseId, userId);
     }
 
-    public static Observable<List<CourseProject>> getCourseProjects(String courseSetId) {
+    public static Observable<List<CourseProject>> getCourseProjects(int courseSetId) {
         return mApiService.getCourseProjects(courseSetId);
     }
 
-    public static Observable<DataPageResult<com.edusoho.kuozhi.v3.model.bal.course.CourseMember>> getCourseSetMember(String courseSetId) {
+    public static Observable<DataPageResult<com.edusoho.kuozhi.v3.model.bal.course.CourseMember>> getCourseSetMember(int courseSetId) {
         return mApiService.getCourseSetMember(courseSetId);
     }
 
-    public static Observable<JsonObject> getFavorite(int userId, String courseId) {
-        return mApiService.getFavorite(userId, courseId);
+    public static Observable<JsonObject> getFavorite(int userId, int courseSetId) {
+        return mApiService.getFavorite(userId, courseSetId);
     }
 
-    public static Observable<DataPageResult<Review>> getCourseProjectReviews(String courseId, int offset, int limit) {
+    public static Observable<DataPageResult<Review>> getCourseProjectReviews(int courseId, int offset, int limit) {
         return mApiService.getCourseProjectReviews(courseId, offset, limit);
     }
 
-    public static Observable<Discount> getDiscountInfo(int discountId){
+    public static Observable<Discount> getDiscountInfo(int discountId) {
         return mApiService.getDiscountInfo(discountId);
     }
 
-    public static Observable<OrderInfo> postOrderInfo(String token, String type, int id){
+    public static Observable<OrderInfo> postOrderInfo(String token, String type, int id) {
         return mApiService.postOrderInfo(token, type, id);
     }
 
-    public static Observable<JsonObject> createOrder(String token, Map<String, String> map){
+    public static Observable<JsonObject> createOrder(String token, Map<String, String> map) {
         return mApiService.createOrder(token, map);
     }
 
-    public static Observable<JsonObject> goPay(String token, int id, String type, String payWay){
+    public static Observable<JsonObject> goPay(String token, int id, String type, String payWay) {
         return mApiService.goPay(token, id, type, payWay);
     }
 
-    public static Observable<String> getMyVirtualCoin(){
+    public static Observable<String> getMyVirtualCoin() {
         return mApiService.getMyVirtualCoin();
     }
 

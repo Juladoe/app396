@@ -49,7 +49,7 @@ public class CourseEvaluateFragment extends BaseLazyFragment implements CourseEv
         mContent.setLayoutManager(new LinearLayoutManager(getContext()));
         mContent.setAdapter(mCeAdapter);
 
-        mPresenter = new CourseEvaluatePresenter(this, mCourseSetId + "");
+        mPresenter = new CourseEvaluatePresenter(this, mCourseSetId);
     }
 
     @Override

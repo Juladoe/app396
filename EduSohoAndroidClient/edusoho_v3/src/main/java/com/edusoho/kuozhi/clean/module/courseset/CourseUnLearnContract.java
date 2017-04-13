@@ -38,7 +38,7 @@ public interface CourseUnLearnContract {
 
         void goToConfirmOrderActivity(CourseProject courseStudyPlan);
 
-        void goToCourseProjectActivity(String courseProjectId);
+        void goToCourseProjectActivity(int courseProjectId);
 
         void goToImChatActivity(CourseSet.CreatorBean creatorBean);
 

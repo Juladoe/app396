@@ -87,7 +87,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
         mLoadView = view.findViewById(R.id.ll_detail_load);
         mDiscount = view.findViewById(R.id.tv_discount);
 
-        mPresenter = new CourseIntroducePresenter(mCourseSetId + "", this);
+        mPresenter = new CourseIntroducePresenter(mCourseSetId, this);
     }
 
     protected void initEvent() {

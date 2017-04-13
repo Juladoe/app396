@@ -9,7 +9,7 @@ import java.util.List;
 
 public class CourseSet implements Serializable {
 
-    public String id;
+    public int id;
     public String type;
     public String title;
     public String subtitle;
@@ -43,7 +43,7 @@ public class CourseSet implements Serializable {
     public String[] audiences;
     public List<CreatorBean> teachers;
 
-    public static class CreatorBean implements Serializable{
+    public static class CreatorBean implements Serializable {
 
         public String id;
         public String nickname;

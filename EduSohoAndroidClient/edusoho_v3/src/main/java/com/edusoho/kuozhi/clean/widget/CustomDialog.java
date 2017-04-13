@@ -249,8 +249,7 @@ public class CustomDialog extends Dialog {
                 findViewById(R.id.tv_vip).setVisibility(View.GONE);
                 for (int i = 0; i < mVipInfos.size(); i++) {
                     VipInfo vipInfo = mVipInfos.get(i);
-                    int vipId = Integer.parseInt(mCourseStudyPlan.vipLevelId);
-                    if (vipInfo.id == vipId) {
+                    if (vipInfo.id == mCourseStudyPlan.vipLevelId) {
                         findViewById(R.id.tv_vip).setVisibility(View.VISIBLE);
                         ((TextView) findViewById(R.id.tv_vip)).setText(String.format(mContext.getString(R.string.vip_free), vipInfo.name));
                         break;
