@@ -1,7 +1,7 @@
 package com.edusoho.kuozhi.clean.api;
 
 import com.edusoho.kuozhi.clean.bean.CourseItem;
-import com.edusoho.kuozhi.clean.bean.CourseMember;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
@@ -86,11 +86,11 @@ public class RetrofitService {
         return mApiService.getVipLevel(id);
     }
 
-    public static Observable<DataPageResult<CourseMember>> getCourseMembers(int courseId, String role, int offset, int limit) {
+    public static Observable<DataPageResult<Member>> getCourseMembers(int courseId, String role, int offset, int limit) {
         return mApiService.getCourseMembers(courseId, role, offset, limit);
     }
 
-    public static Observable<CourseMember> getCourseMember(int courseId, int userId) {
+    public static Observable<Member> getCourseMember(int courseId, int userId) {
         return mApiService.getCourseMember(courseId, userId);
     }
 

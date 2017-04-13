@@ -1,7 +1,7 @@
 package com.edusoho.kuozhi.clean.module.course;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
-import com.edusoho.kuozhi.clean.bean.CourseMember;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
@@ -80,7 +80,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         getCourseMember(mCourseProjectId, 3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CourseMember>() {
+                .subscribe(new Subscriber<Member>() {
                     @Override
                     public void onCompleted() {
 
@@ -92,8 +92,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(CourseMember courseMember) {
-                        boolean isLearned = courseMember.user != null && !isExpired(courseMember.deadline);
+                    public void onNext(Member member) {
+                        boolean isLearned = member.user != null && !isExpired(member.deadline);
                         mView.showBottomLayout(!isLearned);
                         mView.showCacheButton(isLearned);
                         mView.showShareButton(!isLearned);
@@ -118,7 +118,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         return RetrofitService.getCourseProject(id);
     }
 
-    private Observable<CourseMember> getCourseMember(int courseId, int userId) {
+    private Observable<Member> getCourseMember(int courseId, int userId) {
         return RetrofitService.getCourseMember(courseId, userId);
     }
 

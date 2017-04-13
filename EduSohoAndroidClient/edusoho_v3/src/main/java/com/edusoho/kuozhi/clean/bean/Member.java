@@ -8,7 +8,7 @@ import java.io.Serializable;
  * Created by JesseHuang on 2017/4/1.
  */
 
-public class CourseMember implements Serializable {
+public class Member implements Serializable {
     public int id;
     public String courseId;
     public String deadline;

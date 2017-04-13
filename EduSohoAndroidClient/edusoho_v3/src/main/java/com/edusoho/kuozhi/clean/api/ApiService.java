@@ -1,7 +1,7 @@
 package com.edusoho.kuozhi.clean.api;
 
 import com.edusoho.kuozhi.clean.bean.CourseItem;
-import com.edusoho.kuozhi.clean.bean.CourseMember;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
@@ -61,11 +61,11 @@ public interface ApiService {
     Observable<Discount> getDiscountInfo(@Path("discountId") int discountId);
 
     @GET("courses/{id}/members")
-    Observable<DataPageResult<CourseMember>> getCourseMembers(@Path("id") int courseId, @Query("role") String role,
-                                                              @Query("offset") int offset, @Query("limit") int limit);
+    Observable<DataPageResult<Member>> getCourseMembers(@Path("id") int courseId, @Query("role") String role,
+                                                        @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("courses/{courseId}/members/{userId}")
-    Observable<CourseMember> getCourseMember(@Path("courseId") int courseId, @Path("userId") int userId);
+    Observable<Member> getCourseMember(@Path("courseId") int courseId, @Path("userId") int userId);
 
     @GET("course_sets/{id}/courses")
     Observable<List<CourseProject>> getCourseProjects(@Path("id") int courseSetId);

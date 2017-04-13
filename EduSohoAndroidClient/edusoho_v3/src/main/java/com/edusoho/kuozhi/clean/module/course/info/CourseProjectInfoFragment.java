@@ -16,7 +16,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.bean.CourseMember;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
@@ -205,8 +205,8 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showMembers(List<CourseMember> courseMembers) {
-        if (courseMembers != null && courseMembers.size() > 0) {
+    public void showMembers(List<Member> members) {
+        if (members != null && members.size() > 0) {
             mCourseMembers.setVisibility(View.VISIBLE);
             mCourseMemberCountLayout.setVisibility(View.VISIBLE);
             mCourseMembersLine.setVisibility(View.VISIBLE);
@@ -216,7 +216,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
             int viewMargin = CommonUtil.dip2px(getActivity(), 15);
             int showMemberCount;
             showMemberCount = (screenWidth + avatarMargin - 2 * viewMargin) / (memberAvatarWidth + avatarMargin);
-            int size = (showMemberCount < courseMembers.size() ? showMemberCount : courseMembers.size());
+            int size = (showMemberCount < members.size() ? showMemberCount : members.size());
             for (int i = 0; i < size; i++) {
                 CircularImageView memberAvatar = new CircularImageView(getActivity());
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(CommonUtil.dip2px(getActivity(), 50), CommonUtil.dip2px(getActivity(), 50));
@@ -224,7 +224,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
                     lp.rightMargin = CommonUtil.dip2px(getActivity(), 24);
                 }
                 memberAvatar.setLayoutParams(lp);
-                ImageLoader.getInstance().displayImage(courseMembers.get(i).user.getMediumAvatar(), memberAvatar, EdusohoApp.app.mAvatarOptions);
+                ImageLoader.getInstance().displayImage(members.get(i).user.getMediumAvatar(), memberAvatar, EdusohoApp.app.mAvatarOptions);
                 mCourseMembers.addView(memberAvatar);
             }
         }
