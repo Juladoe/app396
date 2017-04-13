@@ -98,6 +98,10 @@ public class RetrofitService {
         return mApiService.getCourseProjects(courseSetId);
     }
 
+    public static Observable<List<CourseProject>> getMyCourseProject(String token, int courseSetId) {
+        return mApiService.getMyCourseProject(token, courseSetId);
+    }
+
     public static Observable<DataPageResult<com.edusoho.kuozhi.v3.model.bal.course.CourseMember>> getCourseSetMember(int courseSetId) {
         return mApiService.getCourseSetMember(courseSetId);
     }

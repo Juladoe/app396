@@ -3,12 +3,15 @@ package com.edusoho.kuozhi.clean.module.course.info;
 import android.util.Log;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseMemberRoleEnum;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.clean.bean.TaskItem;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
 
 import java.util.List;
 
