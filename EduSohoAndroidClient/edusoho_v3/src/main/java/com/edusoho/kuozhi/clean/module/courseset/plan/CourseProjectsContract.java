@@ -11,7 +11,7 @@ import java.util.List;
  * Created by DF on 2017/4/1.
  */
 
-public interface StudyPlanContract {
+public interface CourseProjectsContract {
 
     interface View extends BaseView<Presenter> {
         void setLoadViewVis(boolean isVis);

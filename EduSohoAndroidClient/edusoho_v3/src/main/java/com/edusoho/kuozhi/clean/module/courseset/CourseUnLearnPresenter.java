@@ -10,7 +10,7 @@ import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.info.CourseIntroduceFragment;
-import com.edusoho.kuozhi.clean.module.courseset.plan.StudyPlayFragment;
+import com.edusoho.kuozhi.clean.module.courseset.plan.CourseProjectsFragment;
 import com.edusoho.kuozhi.clean.module.courseset.review.CourseEvaluateFragment;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -213,7 +213,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     private String[] getFragmentArray() {
         return new String[]{
                 CourseIntroduceFragment.class.getName(),
-                StudyPlayFragment.class.getName(),
+                CourseProjectsFragment.class.getName(),
                 CourseEvaluateFragment.class.getName()
         };
     }

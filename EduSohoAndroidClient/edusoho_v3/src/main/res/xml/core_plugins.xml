@@ -523,7 +523,7 @@
 
     <plugin
         name="CourseEvaluateFragment"
-        package="com.edusoho.kuozhi.clean.module.courseset.plan.StudyPlayFragment"
+        package="com.edusoho.kuozhi.clean.module.courseset.plan.CourseProjectsFragment"
         version="1.0"/>
 
     <plugin

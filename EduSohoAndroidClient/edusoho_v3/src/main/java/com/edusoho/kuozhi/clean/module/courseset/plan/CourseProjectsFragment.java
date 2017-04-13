@@ -18,13 +18,13 @@ import java.util.List;
  * Created by DF on 2017/3/21.
  */
 
-public class StudyPlayFragment extends BaseLazyFragment
-                                    implements StudyPlanContract.View{
+public class CourseProjectsFragment extends BaseLazyFragment
+                                    implements CourseProjectsContract.View{
 
     private View mLoad;
     private RecyclerView mRv;
-    private StudyPlanAdapter mStudyPlanAdapter;
-    private StudyPlanContract.Presenter mPresenter;
+    private CourseProjectsAdapter mCourseProjectsAdapter;
+    private CourseProjectsContract.Presenter mPresenter;
     private int mCourseSetId;
 
     @Override
@@ -43,11 +43,11 @@ public class StudyPlayFragment extends BaseLazyFragment
     protected void initView(View view) {
         mRv = (RecyclerView) view.findViewById(R.id.rv_content);
         mLoad = view.findViewById(R.id.ll_frame_load);
-        mStudyPlanAdapter = new StudyPlanAdapter(getContext());
+        mCourseProjectsAdapter = new CourseProjectsAdapter(getContext());
         mRv.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRv.setAdapter(mStudyPlanAdapter);
+        mRv.setAdapter(mCourseProjectsAdapter);
 
-        mPresenter = new StudyPlanPresenter(this, mCourseSetId);
+        mPresenter = new CourseProjectsPresenter(this, mCourseSetId);
     }
 
     @Override
@@ -74,6 +74,6 @@ public class StudyPlayFragment extends BaseLazyFragment
         if (getActivity() == null || getActivity().isFinishing() || !isAdded()) {
             return;
         }
-        mStudyPlanAdapter.reFreshData(list, vipInfos);
+        mCourseProjectsAdapter.reFreshData(list, vipInfos);
     }
 }
