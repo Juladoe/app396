@@ -16,12 +16,11 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.bean.CourseMember;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectFragmentListener;
 import com.edusoho.kuozhi.clean.utils.ItemClickSupport;
-import com.edusoho.kuozhi.clean.widget.ESBottomDialog;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.EduHtmlHttpImageGetter;
@@ -122,7 +121,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showPrice(CourseProjectPriceEnum type, String price, String originPrice) {
+    public void showPrice(CourseProjectPriceEnum type, float price, float originPrice) {
         switch (type) {
             case FREE:
                 mOriginalPrice.setText(R.string.free_course_project);
@@ -137,8 +136,8 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
             case SALE:
                 mSalePrice.setText(String.format(getString(R.string.price_format), price));
                 mOriginalPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-                mOriginalPrice.setText(String.format(getString(R.string.price_format), originPrice));
-                mOriginalPrice.setText(originPrice);
+                mOriginalPrice.setText(String.format(getString(R.string.price_format), originPrice + ""));
+                mOriginalPrice.setText(originPrice + "");
                 mSaleWord.setVisibility(View.VISIBLE);
                 break;
         }
@@ -206,8 +205,8 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void showMembers(List<CourseMember> courseMembers) {
-        if (courseMembers != null && courseMembers.size() > 0) {
+    public void showMembers(List<Member> members) {
+        if (members != null && members.size() > 0) {
             mCourseMembers.setVisibility(View.VISIBLE);
             mCourseMemberCountLayout.setVisibility(View.VISIBLE);
             mCourseMembersLine.setVisibility(View.VISIBLE);
@@ -217,7 +216,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
             int viewMargin = CommonUtil.dip2px(getActivity(), 15);
             int showMemberCount;
             showMemberCount = (screenWidth + avatarMargin - 2 * viewMargin) / (memberAvatarWidth + avatarMargin);
-            int size = (showMemberCount < courseMembers.size() ? showMemberCount : courseMembers.size());
+            int size = (showMemberCount < members.size() ? showMemberCount : members.size());
             for (int i = 0; i < size; i++) {
                 CircularImageView memberAvatar = new CircularImageView(getActivity());
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(CommonUtil.dip2px(getActivity(), 50), CommonUtil.dip2px(getActivity(), 50));
@@ -225,7 +224,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
                     lp.rightMargin = CommonUtil.dip2px(getActivity(), 24);
                 }
                 memberAvatar.setLayoutParams(lp);
-                ImageLoader.getInstance().displayImage(courseMembers.get(i).user.getMediumAvatar(), memberAvatar, EdusohoApp.app.mAvatarOptions);
+                ImageLoader.getInstance().displayImage(members.get(i).user.getMediumAvatar(), memberAvatar, EdusohoApp.app.mAvatarOptions);
                 mCourseMembers.addView(memberAvatar);
             }
         }
@@ -248,7 +247,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
     }
 
     @Override
-    public void launchCourseProject(String courseId) {
+    public void launchCourseProject(int courseId) {
         CourseProjectActivity.launch(getActivity(), courseId);
     }
 

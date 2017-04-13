@@ -332,12 +332,25 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="dialog_custom" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
     <style name="dialog_big_image" parent="DiscussDialog">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">fill_parent</item>
         <item name="android:windowBackground">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">false</item>
+    </style>
+
+    <style name="common_tv_fonts">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/font_s</item>
+        <item name="android:color">@color/disabled2_hint_color</item>
     </style>
 
     <style name="RatingBar" parent="Theme.AppCompat">

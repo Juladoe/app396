@@ -43,7 +43,7 @@ public class ESBottomDialog extends DialogFragment {
         TextView confirm = (TextView) view.findViewById(R.id.tv_confirm);
         if (mContentView != null) {
             content.addView(mContentView.getContentView(content));
-            confirm.setOnClickListener(mContentView.addConfirmClickListener());
+            mContentView.setButtonState(confirm);
             confirm.setVisibility(mContentView.showConfirm() ? View.VISIBLE : View.GONE);
         }
     }
@@ -67,7 +67,7 @@ public class ESBottomDialog extends DialogFragment {
 
         View getContentView(ViewGroup parentView);
 
-        View.OnClickListener addConfirmClickListener();
+        void setButtonState(TextView btn);
 
         boolean showConfirm();
     }

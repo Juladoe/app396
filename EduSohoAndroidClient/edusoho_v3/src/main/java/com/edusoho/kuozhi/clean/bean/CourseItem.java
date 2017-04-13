@@ -9,7 +9,7 @@ import java.util.List;
  */
 
 public class CourseItem implements Serializable {
-    public String id;
+    public int id;
     public String courseId;
     public String type;
     public String parentId;

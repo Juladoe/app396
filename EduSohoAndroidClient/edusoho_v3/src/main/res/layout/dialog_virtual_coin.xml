@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" 
+    android:background="@drawable/dialog_white_background"
+    android:layout_width="match_parent"
+    android:layout_height="230dp">
+
+    <TextView
+        android:text="@string/virtual_coin"
+        android:textSize="@dimen/font_xl"
+        android:textColor="@color/primary_font_color"
+        android:gravity="center_horizontal|bottom"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <RelativeLayout
+        android:gravity="center_vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+
+        <TextView
+            android:text="@string/account_balance"
+            android:textSize="@dimen/font_l"
+            android:textColor="@color/secondary_font_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        
+        <TextView
+            android:id="@+id/tv_account_balance"
+            android:textSize="@dimen/font_l"
+            android:textColor="@color/primary_font_color"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+    
+    <View
+        android:background="@color/disabled_hint_color"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@string/order_amount"
+            android:textColor="@color/secondary_font_color"
+            android:textSize="@dimen/font_l" />
+
+        <TextView
+            android:id="@+id/tv_order_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_l" />
+
+    </RelativeLayout>
+
+    <View
+        android:background="@color/disabled_hint_color"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <TextView
+        android:id="@+id/tv_confirm"
+        android:text="@string/confirm1"
+        android:layout_marginTop="40dp"
+        android:gravity="center"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_xl"
+        android:background="@color/primary_color"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+
+</LinearLayout>

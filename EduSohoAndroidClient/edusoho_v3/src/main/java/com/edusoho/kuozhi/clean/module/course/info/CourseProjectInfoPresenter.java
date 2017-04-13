@@ -3,14 +3,12 @@ package com.edusoho.kuozhi.clean.module.course.info;
 import android.util.Log;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
-import com.edusoho.kuozhi.clean.bean.CourseMember;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseMemberRoleEnum;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
-import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
-import com.edusoho.videoplayer.util.AndroidDevices;
 
 import java.util.List;
 
@@ -21,6 +19,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+
 /**
  * Created by JesseHuang on 2017/3/26.
  */
@@ -28,7 +27,7 @@ import rx.schedulers.Schedulers;
 public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Presenter {
 
     private static final String NO_VIP = "0";
-    private static final String FREE = "0.00";
+    private static final float FREE = 0;
     private CourseProject mCourseProject;
     private CourseProjectInfoContract.View mView;
 
@@ -54,16 +53,16 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showPrice() {
-        if (mCourseProject.originPrice.compareTo(mCourseProject.price) == 0 && FREE.equals(mCourseProject.originPrice)) {
+        if (mCourseProject.originPrice == mCourseProject.price && FREE == mCourseProject.originPrice) {
             mView.showPrice(CourseProjectPriceEnum.FREE, mCourseProject.price, mCourseProject.originPrice);
-        } else if (mCourseProject.originPrice.compareTo(mCourseProject.price) == 0) {
+        } else if (mCourseProject.originPrice == mCourseProject.price) {
             mView.showPrice(CourseProjectPriceEnum.ORIGINAL, mCourseProject.price, mCourseProject.originPrice);
         } else {
             mView.showPrice(CourseProjectPriceEnum.SALE, mCourseProject.price, mCourseProject.originPrice);
         }
     }
 
-    private void showVip(String vipLevelId) {
+    private void showVip(int vipLevelId) {
         if (!NO_VIP.equals(vipLevelId)) {
             RetrofitService.getVipLevel(vipLevelId)
                     .subscribeOn(Schedulers.io())
@@ -129,11 +128,11 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
         mView.showMemberNum(count);
     }
 
-    private void showMembers(String courseId, String role) {
+    private void showMembers(int courseId, String role) {
         RetrofitService.getCourseMembers(courseId, role, 0, 10)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<DataPageResult<CourseMember>>() {
+                .subscribe(new Subscriber<DataPageResult<Member>>() {
                     @Override
                     public void onCompleted() {
 
@@ -145,13 +144,13 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
                     }
 
                     @Override
-                    public void onNext(DataPageResult<CourseMember> memberDataPageResult) {
+                    public void onNext(DataPageResult<Member> memberDataPageResult) {
                         mView.showMembers(memberDataPageResult.data);
                     }
                 });
     }
 
-    private void showRelativeCourseProjects(String courseSetId, final String currentCourseProjectId) {
+    private void showRelativeCourseProjects(int courseSetId, final int currentCourseProjectId) {
         RetrofitService.getCourseProjects(courseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -164,7 +163,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
                 .filter(new Func1<CourseProject, Boolean>() {
                     @Override
                     public Boolean call(CourseProject courseProject) {
-                        return !courseProject.id.equals(currentCourseProjectId);
+                        return courseProject.id == currentCourseProjectId;
                     }
                 })
                 .toList()

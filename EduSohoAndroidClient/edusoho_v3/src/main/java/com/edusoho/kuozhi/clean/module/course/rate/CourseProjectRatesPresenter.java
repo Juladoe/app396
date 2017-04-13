@@ -30,7 +30,7 @@ public class CourseProjectRatesPresenter implements CourseProjectRatesContract.P
         getRates(mCourseProject.id);
     }
 
-    public void getRates(String courseId) {
+    public void getRates(int courseId) {
         RetrofitService.getCourseProjectReviews(courseId, mOffset, CommonConstant.LIMIT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

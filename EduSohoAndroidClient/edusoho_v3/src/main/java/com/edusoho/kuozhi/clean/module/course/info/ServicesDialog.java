@@ -52,13 +52,13 @@ public class ServicesDialog extends ESBottomDialog implements ESBottomDialog.Bot
     }
 
     @Override
-    public View.OnClickListener addConfirmClickListener() {
-        return new View.OnClickListener() {
+    public void setButtonState(TextView btn) {
+        btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ServicesDialog.this.dismiss();
             }
-        };
+        });
     }
 
     @Override

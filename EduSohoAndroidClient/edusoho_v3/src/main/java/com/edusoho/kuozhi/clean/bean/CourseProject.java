@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.clean.bean;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by JesseHuang on 2017/3/26.
@@ -12,8 +11,8 @@ import java.util.List;
 
 public class CourseProject implements Serializable {
 
-    public String id;
-    public String courseSetId;
+    public int id;
+    public int courseSetId;
     public String title;
     public String expiryMode;
     public String expiryDays;
@@ -21,9 +20,13 @@ public class CourseProject implements Serializable {
     public int studentNum;
     public String[] audiences;
     public String rating;
-    public String price;
-    public String originPrice;
-    public String vipLevelId;
+    public float price;
+    public float originPrice;
+    public String learnMode;
+    public String isFree;
+    public int taskNum;
+    public String buyable;
+    public int vipLevelId;
     public int publishedTaskNum;
     public Service[] services;
     public Teacher[] teachers;
@@ -35,10 +38,10 @@ public class CourseProject implements Serializable {
     }
 
     public static class Teacher implements Serializable {
-        public String id;
+        public int id;
         public String nickname;
         public String title;
-        @SerializedName("largeAvatar")
+        @SerializedName("mediumAvatar")
         public String avatar;
     }
 }

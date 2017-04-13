@@ -1,7 +1,7 @@
 package com.edusoho.kuozhi.clean.module.course;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
-import com.edusoho.kuozhi.clean.bean.CourseMember;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
@@ -26,10 +26,10 @@ import rx.schedulers.Schedulers;
 public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     private CourseProjectContract.View mView;
-    private String mCourseProjectId;
+    private int mCourseProjectId;
     private CourseProject.Teacher mTeacher;
 
-    public CourseProjectPresenter(String courseProjectId, CourseProjectContract.View view) {
+    public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
     }
@@ -79,11 +79,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.showCover(courseSet.cover.large);
                     }
                 });
-
-        getCourseMember(mCourseProjectId, "4")
+        
+        getCourseMember(mCourseProjectId, 3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<CourseMember>() {
+                .subscribe(new Subscriber<Member>() {
                     @Override
                     public void onCompleted() {
 
@@ -95,8 +95,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     }
 
                     @Override
-                    public void onNext(CourseMember courseMember) {
-                        boolean isLearned = courseMember.user != null && !isExpired(courseMember.deadline);
+                    public void onNext(Member member) {
+                        boolean isLearned = member.user != null && !isExpired(member.deadline);
                         mView.showBottomLayout(!isLearned);
                         mView.showCacheButton(isLearned);
                         mView.showShareButton(!isLearned);
@@ -121,15 +121,15 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         return list;
     }
 
-    private Observable<CourseProject> getCourseProject(String id) {
+    private Observable<CourseProject> getCourseProject(int id) {
         return RetrofitService.getCourseProject(id);
     }
 
-    private Observable<CourseMember> getCourseMember(String courseId, String userId) {
+    private Observable<Member> getCourseMember(int courseId, int userId) {
         return RetrofitService.getCourseMember(courseId, userId);
     }
 
-    private Observable<CourseSet> getCourseSet(String id) {
+    private Observable<CourseSet> getCourseSet(int id) {
         return RetrofitService.getCourseSet(id);
     }
 }
