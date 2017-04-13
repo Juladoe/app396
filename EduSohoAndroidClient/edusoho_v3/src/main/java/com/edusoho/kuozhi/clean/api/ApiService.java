@@ -35,47 +35,47 @@ import rx.Observable;
 public interface ApiService {
 
     @GET("course_sets/{id}")
-    Observable<CourseSet> getCourseSet(@Path("id") String id);
+    Observable<CourseSet> getCourseSet(@Path("id") int id);
 
     @GET("courses/{id}/items")
-    Observable<List<CourseItem>> getCourseItems(@Path("id") String id);
+    Observable<List<CourseItem>> getCourseItems(@Path("id") int id);
 
     @GET("courses/{id}")
-    Observable<CourseProject> getCourseProject(@Path("id") String id);
+    Observable<CourseProject> getCourseProject(@Path("id") int id);
 
     @GET("course_sets/{id}/reviews")
-    Observable<CourseReview> getCourseReview(@Path("id") String id, @Query("limit") int limit, @Query("offset") int offset);
+    Observable<CourseReview> getCourseReview(@Path("id") int id, @Query("limit") int limit, @Query("offset") int offset);
 
     @GET("course_sets/{course_setId}/courses")
-    Observable<List<CourseStudyPlan>> getCourseStudyPlan(@Path("course_setId") String id);
+    Observable<List<CourseStudyPlan>> getCourseStudyPlan(@Path("course_setId") int id);
 
     @GET("course_sets/{courseSetId}/members")
-    Observable<DataPageResult<com.edusoho.kuozhi.v3.model.bal.course.CourseMember>> getCourseSetMember(@Path("courseSetId") String id);
+    Observable<DataPageResult<com.edusoho.kuozhi.v3.model.bal.course.CourseMember>> getCourseSetMember(@Path("courseSetId") int id);
 
     @GET("plugins/vip/vip_levels")
     Observable<List<VipInfo>> getVipInfo();
 
     @GET("plugins/vip/vip_levels/{id}")
-    Observable<VipLevel> getVipLevel(@Path("id") String id);
+    Observable<VipLevel> getVipLevel(@Path("id") int id);
 
     @GET("plugins/discount/discounts/{discountId}")
     Observable<Discount> getDiscountInfo(@Path("discountId") int discountId);
 
     @GET("courses/{id}/members")
-    Observable<DataPageResult<CourseMember>> getCourseMembers(@Path("id") String courseId, @Query("role") String role,
+    Observable<DataPageResult<CourseMember>> getCourseMembers(@Path("id") int courseId, @Query("role") String role,
                                                               @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("courses/{courseId}/members/{userId}")
-    Observable<CourseMember> getCourseMember(@Path("courseId") String courseId, @Path("userId") String userId);
+    Observable<CourseMember> getCourseMember(@Path("courseId") int courseId, @Path("userId") String userId);
 
     @GET("course_sets/{id}/courses")
-    Observable<List<CourseProject>> getCourseProjects(@Path("id") String courseSetId);
+    Observable<List<CourseProject>> getCourseProjects(@Path("id") int courseSetId);
 
     @GET("users/{userId}/favorite_course_sets/{courseSetId}")
-    Observable<JsonObject> getFavorite(@Path("userId") int userId, @Path("courseSetId") String courseId);
+    Observable<JsonObject> getFavorite(@Path("userId") int userId, @Path("courseSetId") int courseId);
 
     @GET("courses/{courseId}/reviews")
-    Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("courseId") String courseId,
+    Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("courseId") int courseId,
                                                                @Query("offset") int offset, @Query("limit") int limit);
 
     @FormUrlEncoded
