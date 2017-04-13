@@ -103,7 +103,7 @@ public class RetrofitService {
         return mApiService.getCourseSetMember(courseSetId);
     }
 
-    public static Observable<JsonObject> getFavorite(int userId, String courseId) {
+    public static Observable<JsonObject> getFavorite(int userId, int courseId) {
         return mApiService.getFavorite(userId, courseId);
     }
 
