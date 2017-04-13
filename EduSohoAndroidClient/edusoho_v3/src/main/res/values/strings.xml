@@ -493,5 +493,7 @@
     <string name="minute">%s&#160;分&#160;</string>
     <string name="second">%s&#160;秒&#160;</string>
     <string name="yuan">%.1f元</string>
+    <string name="teach_plan">教学计划</string>
+    <string name="summary">概述</string>
 
 </resources>

@@ -19,18 +19,18 @@ import rx.schedulers.Schedulers;
 
 public class StudyPlanPresenter implements StudyPlanContract.Presenter {
 
-    private String mCourseId;
+    private String mCourseSetId;
     private StudyPlanContract.View mView;
     List<CourseStudyPlan> mCourseStudyPlen;
 
     public StudyPlanPresenter(StudyPlanContract.View view, String id) {
         this.mView = view;
-        this.mCourseId = id;
+        this.mCourseSetId = id;
     }
 
     @Override
     public void subscribe() {
-        getCourseStudyPlan(mCourseId)
+        getCourseStudyPlan(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<List<CourseStudyPlan>>() {

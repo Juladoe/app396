@@ -18,17 +18,17 @@ import rx.schedulers.Schedulers;
 
 public class CourseIntroducePresenter implements CourseIntroduceContract.Presenter {
 
-    private String mCourseId;
+    private String mCourseSetId;
     private CourseIntroduceContract.View mView;
 
-    public CourseIntroducePresenter(String mCourseId, CourseIntroduceContract.View mView) {
+    public CourseIntroducePresenter(String mCourseSetId, CourseIntroduceContract.View mView) {
         this.mView = mView;
-        this.mCourseId = mCourseId;
+        this.mCourseSetId = mCourseSetId;
     }
 
     @Override
     public void subscribe() {
-        getCourseSetIntro(mCourseId)
+        getCourseSetIntro(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<CourseSet>() {
@@ -46,7 +46,7 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
                 .flatMap(new Func1<CourseSet, Observable<DataPageResult<CourseMember>>>() {
                     @Override
                     public Observable<DataPageResult<CourseMember>> call(CourseSet courseSet) {
-                        return getCourseSetMember(mCourseId);
+                        return getCourseSetMember(mCourseSetId);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())

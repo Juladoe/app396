@@ -49,7 +49,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     private View mPeopleLayout;
     private View mInfoLayout;
 
-    private int mCourseId;
+    private int mCourseSetId;
     private CourseIntroduceContract.Presenter mPresenter;
     private CourseSet mCourseSet;
     private View mDiscount;
@@ -61,7 +61,8 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCourseId = getArguments().getInt(Const.COURSE_ID);
+        mCourseSetId = getArguments().getInt(Const.COURSE_ID);
+        mCourseSetId = 1;
     }
 
     @Override
@@ -86,7 +87,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
         mLoadView = view.findViewById(R.id.ll_detail_load);
         mDiscount = view.findViewById(R.id.tv_discount);
 
-        mPresenter = new CourseIntroducePresenter(mCourseId + "", this);
+        mPresenter = new CourseIntroducePresenter(mCourseSetId + "", this);
     }
 
     protected void initEvent() {
@@ -129,25 +130,25 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                 mDiscount.setVisibility(View.VISIBLE);
                 mPriceNow.setText(String.format("¥ %s-%s", (mCourseSet.minCoursePrice * discount / 10),
                         (mCourseSet.maxCoursePrice * discount / 10)));
-                mPriceOld.setText(mCourseSet.maxCoursePrice + "");
+                mPriceOld.setText(String.format("¥ %s-%s", mCourseSet.minCoursePrice, mCourseSet.maxCoursePrice));
                 mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
-                mPriceNow.setText(String.format("¥ %s-%s", ((int) mCourseSet.minCoursePrice),
-                        ((int) mCourseSet.maxCoursePrice)));
+                mPriceNow.setText(String.format("¥ %s-%s",  mCourseSet.minCoursePrice,
+                         mCourseSet.maxCoursePrice));
             }
         }
     }
 
-
     @Override
     public void showInfoAndPeople() {
-        mInfoLayout.setVisibility(View.VISIBLE);
-        mTitleDesc.setText(Html.fromHtml(mCourseSet.summary, new EduHtmlHttpImageGetter(mTitleDesc, null, true), null));
+        if (mCourseSet.summary.length() > 0) {
+            mInfoLayout.setVisibility(View.VISIBLE);
+            mTitleDesc.setText(Html.fromHtml(mCourseSet.summary, new EduHtmlHttpImageGetter(mTitleDesc, null, true), null));
+        }
         StringBuilder sb = new StringBuilder();
         int length = mCourseSet.audiences.length;
-        if (length == 0) {
-            mPeopleLayout.setVisibility(View.GONE);
-        } else {
+        if (length > 0) {
+            mPeopleLayout.setVisibility(View.VISIBLE);
             String[] audiences = mCourseSet.audiences;
             for (int i = 0; i < length; i++) {
                 sb.append(audiences[i]);
@@ -215,7 +216,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                 Const.MOBILE_APP_URL,
                 EdusohoApp.app.schoolHost,
                 String.format("main#/studentlist/%s/%s",
-                        "courses", mCourseId)
+                        "courses", mCourseSetId)
         );
         CoreEngine.create(getContext()).runNormalPlugin("WebViewActivity"
                 , getContext(), new PluginRunCallback() {

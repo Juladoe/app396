@@ -32,6 +32,7 @@ import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
@@ -87,7 +88,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
         getWindow().setBackgroundDrawable(null);
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
-//        mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
+        mCourseId = getIntent().getIntExtra(Const.COURSE_ID, 0);
         mCourseId = 1;
         isJoin();
     }

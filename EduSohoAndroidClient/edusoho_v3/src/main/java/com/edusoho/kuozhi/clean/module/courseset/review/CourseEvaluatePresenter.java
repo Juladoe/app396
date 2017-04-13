@@ -17,19 +17,19 @@ import rx.schedulers.Schedulers;
 public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter {
 
     private CourseEvaluateContract.View mView;
-    private String mCourseId;
+    private String mCourseSetId;
     private int mStart = 0;
     private boolean mIsHave = true;
     private boolean mIsFirst = true;
 
-    public CourseEvaluatePresenter(CourseEvaluateContract.View mView, String mCourseId) {
+    public CourseEvaluatePresenter(CourseEvaluateContract.View mView, String mCourseSetId) {
         this.mView = mView;
-        this.mCourseId = mCourseId;
+        this.mCourseSetId = mCourseSetId;
     }
 
     @Override
     public void subscribe() {
-        getCourseReview(mCourseId, 10, mStart)
+        getCourseReview(mCourseSetId, 10, mStart)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -78,7 +78,7 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
             mView.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
             return;
         }
-        getCourseReview(mCourseId, 10, mStart)
+        getCourseReview(mCourseSetId, 10, mStart)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

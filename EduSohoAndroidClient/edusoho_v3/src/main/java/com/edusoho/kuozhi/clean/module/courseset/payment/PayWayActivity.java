@@ -3,7 +3,6 @@ package com.edusoho.kuozhi.clean.module.courseset.payment;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
@@ -37,7 +36,6 @@ public class PayWayActivity extends BaseFinishActivity implements View.OnClickLi
     private View mAlipay;
     private View mVirtualCoin;
     private TextView mDiscount;
-    private TextView mOriginal;
     private View mPay;
     private Dialog mDialog;
     private LoadDialog mProcessDialog;
@@ -67,7 +65,6 @@ public class PayWayActivity extends BaseFinishActivity implements View.OnClickLi
         mAlipay = findViewById(R.id.iv_alipay);
         mVirtualCoin = findViewById(R.id.tv_virtual_coin);
         mDiscount = (TextView) findViewById(R.id.tv_discount);
-        mOriginal = (TextView) findViewById(R.id.tv_original);
         mPay = findViewById(R.id.tv_pay);
 
         mPresenter = new PayWayPresenter(this, mCourseStudyPlan.id);
@@ -83,8 +80,6 @@ public class PayWayActivity extends BaseFinishActivity implements View.OnClickLi
 
     private void initShwo() {
         mDiscount.setText(String.format(getString(R.string.yuan), mCourseStudyPlan.price));
-        mOriginal.setText("¥" + mCourseStudyPlan.originPrice);
-        mOriginal.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
     @Override

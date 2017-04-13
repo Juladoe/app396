@@ -25,12 +25,13 @@ public class StudyPlayFragment extends BaseLazyFragment
     private RecyclerView mRv;
     private StudyPlanAdapter mStudyPlanAdapter;
     private StudyPlanContract.Presenter mPresenter;
-    private int mCourseId;
+    private int mCourseSetId;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCourseId = getArguments().getInt(Const.COURSE_ID);
+        mCourseSetId = getArguments().getInt(Const.COURSE_ID);
+        mCourseSetId = 1;
     }
 
     @Override
@@ -46,7 +47,7 @@ public class StudyPlayFragment extends BaseLazyFragment
         mRv.setLayoutManager(new LinearLayoutManager(getContext()));
         mRv.setAdapter(mStudyPlanAdapter);
 
-        mPresenter = new StudyPlanPresenter(this, mCourseId + "");
+        mPresenter = new StudyPlanPresenter(this, mCourseSetId + "");
     }
 
     @Override
