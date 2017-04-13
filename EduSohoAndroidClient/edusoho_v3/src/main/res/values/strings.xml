@@ -133,7 +133,7 @@
     <string name="txt_more_review">更多评价</string>
     <string name="txt_review_none">没有评价</string>
     <string name="txt_add_class">加入班级</string>
-    <string name="txt_add_course">加入课程</string>
+    <string name="txt_add_course">加入学习</string>
     <string name="txt_study_try">开始试学</string>
     <string name="txt_study_start">开始学习</string>
     <string name="txt_study_continue">继续学习</string>
@@ -436,25 +436,64 @@
     <string name="classroom_teacher_txt">班主任</string>
     <string name="go_to_course">前往课程</string>
     <string name="go_to_classroom">前往班级</string>
+
+    <string name="course_introduce">课程简介</string>
+    <string name="discount">折</string>
     <string name="course_project_favorite">收藏</string>
     <string name="course_project_consult">咨询</string>
     <string name="learn_course_project">加入学习</string>
-    <string name="student_num">名学生</string>
+    <string name="study_progress">学习进度</string>
+    <string name="pay_way">支付方式</string>
+    <string name="zhifubao">支付宝</string>
+    <string name="virtual_coin">虚拟币</string>
+    <string name="coupons">优惠券</string>
+    <string name="confirm">确定</string>
+    <string name="confirm1">确认</string>
+    <string name="cancle">取消</string>
+    <string name="vip_free">%s会员免费加入学习</string>
+    <string name="review_free">来自: %s</string>
+    <string name="account_balance">账号余额:</string>
+    <string name="order_amount">订单金额:</string>
     <string name="free_course_project">免费</string>
     <string name="sale_word">折</string>
     <string name="join_vip">加入%1$s会员，免费学习课程</string>
     <string name="course_info">课程简介</string>
+    <string name="free_mode">学习方式: 自由式学习</string>
+    <string name="locked_mode">学习方式: 解锁式学习</string>
+    <string name="validity_day">有效期: %s天</string>
+    <string name="validity_forever">有效期:  永久</string>
+    <string name="input_pay_password">输入支付密码</string>
+    <string name="setting_password_hint">设置/重置密码: \n网页版—个人设置—安全设置—支付密码</string>
+
+    <string-array name="unlearn_tab">
+        <item>简介</item>
+        <item>计划</item>
+        <item>评价</item>
+    </string-array>
+    <string name="confirm_order">确认订单</string>
     <string name="course_member_count">课程学员（%1$d）</string>
     <string name="course_student_count">%1$d名学生</string>
-    <string name="promise_services">承诺服务：</string>
+    <string name="promise_services">承诺服务: </string>
     <string name="course_project_promise_service">承诺服务</string>
     <string name="relative_course_project">相关学习计划</string>
     <string name="course_task_num">学习任务：%1$d个</string>
     <string name="course_project_chapter">第%1$d章 %2$s</string>
     <string name="course_project_unit">第%1$d节 %2$s</string>
     <string name="course_project_task_item_name">任务%1$s %2$s</string>
+    <string name="cancel_favorite">取消收藏成功</string>
+    <string name="favorite_success">收藏成功</string>
+    <string name="join_success">加入成功</string>
+    <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
     <string name="load_more_text">正在加载...</string>
     <string name="price_format">￥%1$s</string>
-    <string name="confirm">确认</string>
+    <string name="confirm_pay">确定支付</string>
+    <string name="from_course_set">来自课程&#160;&#160;|&#160;&#160;&#160;</string>
+    <string name="remain">剩余&#160;%s&#160;天&#160;</string>
+    <string name="hour">%s&#160;小时&#160;</string>
+    <string name="minute">%s&#160;分&#160;</string>
+    <string name="second">%s&#160;秒&#160;</string>
+    <string name="yuan">%.1f元</string>
+    <string name="teach_plan">教学计划</string>
+    <string name="summary">概述</string>
 
 </resources>

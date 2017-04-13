@@ -480,7 +480,7 @@
 
     <plugin
         name="CourseActivity"
-        package="com.edusoho.kuozhi.v3.ui.course.CourseStudyDetailActivity"
+        package="com.edusoho.kuozhi.clean.module.courseset.CourseUnLearnActivity"
         version="1.0" />
     <plugin
         name="ClassroomActivity"
@@ -515,6 +515,21 @@
         name="VideoPlayerActivity"
         package="com.edusoho.kuozhi.v3.ui.VideoPlayerActivity"
         version="1.0" />
+
+    <plugin
+        name="CourseIntroduceFragment"
+        package="com.edusoho.kuozhi.clean.module.courseset.info.CourseIntroduceFragment"
+        version="1.0"/>
+
+    <plugin
+        name="CourseEvaluateFragment"
+        package="com.edusoho.kuozhi.clean.module.courseset.plan.StudyPlayFragment"
+        version="1.0"/>
+
+    <plugin
+        name="StudyPlayFragment"
+        package="com.edusoho.kuozhi.clean.module.courseset.review.CourseEvaluateFragment"
+        version="1.0"/>
 
     <plugin
         name="CourseProjectInfoFragment"

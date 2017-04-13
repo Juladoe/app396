@@ -4,7 +4,6 @@ import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
-import com.edusoho.kuozhi.v3.model.bal.Member;
 
 import java.util.List;
 

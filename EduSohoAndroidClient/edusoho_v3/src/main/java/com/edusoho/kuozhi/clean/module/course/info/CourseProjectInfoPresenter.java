@@ -8,9 +8,7 @@ import com.edusoho.kuozhi.clean.bean.CourseMemberRoleEnum;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
-import com.edusoho.kuozhi.v3.model.bal.Member;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
-import com.edusoho.videoplayer.util.AndroidDevices;
 
 import java.util.List;
 
@@ -20,6 +18,7 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
 
 /**
  * Created by JesseHuang on 2017/3/26.

@@ -18,4 +18,5 @@ public class VipLevel implements Serializable {
     public int freeLearned;
     public int enabled;
     public String createdTime;
+    public String maxRate;
 }

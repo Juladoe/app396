@@ -8,11 +8,13 @@
     <color name="secondary_font_color">#71777D</color>
     <color name="secondary2_font_color">#BDC2C6</color>
     <color name="disabled_hint_color">#D8D8D8</color>
+    <color name="disabled0_hint_color">#F6F6F6</color>
     <color name="disabled1_hint_color">#F9F9F9</color>
     <color name="disabled2_hint_color">#FFFFFF</color>
 
     <!-- end -->
 
+    <color name="color_gray">#F6F6F6</color>
     <color name="base_card_bg">#ffffff</color>
     <color name="base_light">#fdb933</color>
     <color name="base_light_red">#ff5822</color>
@@ -476,5 +478,5 @@
     <color name="register_view">#d8d8d8</color>
     <color name="trans_color">#00000000</color>
     <color name="question_detail">#97BCF0</color>
-
+    <color name="dialog_gradient">#29CB89</color>
 </resources>

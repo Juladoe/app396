@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:background="@color/disabled0_hint_color"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_content"
+        tools:listitem="@layout/item_study_plan"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <com.edusoho.kuozhi.v3.view.InnerLoadView
+        android:id="@+id/ll_frame_load"
+        android:background="@color/textIcons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</FrameLayout>

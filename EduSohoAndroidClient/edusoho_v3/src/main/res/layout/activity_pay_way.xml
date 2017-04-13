@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:background="@color/disabled1_hint_color"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/head_register_height">
+
+        <com.edusoho.kuozhi.clean.widget.ESIconView
+            android:id="@+id/iv_back"
+            android:text="@string/new_font_back"
+            android:textSize="@dimen/font_xl"
+            android:layout_width="@dimen/head_register_height"
+            android:layout_height="@dimen/head_register_height"
+            android:layout_centerVertical="true" />
+
+        <TextView
+            android:text="选择支付方式"
+            android:textColor="@color/primary_font_color"
+            android:textSize="@dimen/font_xl"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        
+        <View
+            android:background="@color/disabled_hint_color"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:text="支付方式"
+        android:layout_marginTop="31dp"
+        android:layout_marginLeft="@dimen/common_15"
+        android:textSize="@dimen/font_l"
+        android:textColor="@color/primary_font_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:id="@+id/rg_pay_way"
+        android:layout_marginLeft="@dimen/common_15"
+        android:layout_marginTop="@dimen/common_15"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_alipay"
+            android:background="@drawable/pay_way_bg_selector"
+            android:src="@drawable/zhifubao"
+            android:scaleType="center"
+            android:gravity="center"
+            android:layout_width="140dp"
+            android:layout_height="@dimen/common_50" />
+
+        <TextView
+            android:id="@+id/tv_virtual_coin"
+            android:text="虚拟币支付"
+            android:background="@drawable/pay_way_bg_selector"
+            android:paddingLeft="22dp"
+            android:drawableLeft="@drawable/virtual_coin"
+            android:drawablePadding="-20dp"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/common_15"
+            android:layout_width="140dp"
+            android:layout_height="@dimen/common_50" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/common_40"
+        android:layout_marginLeft="@dimen/common_15"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="实付金额:   "
+            android:textSize="@dimen/font_s"
+            android:textColor="@color/primary_font_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_discount"
+            tools:text="200元"
+            android:textSize="@dimen/font_s"
+            android:textColor="@color/secondary_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_pay"
+        android:text="去支付"
+        android:gravity="center"
+        android:textColor="@color/disabled2_hint_color"
+        android:textSize="@dimen/font_xl"
+        android:layout_margin="@dimen/common_15"
+        android:background="@color/primary"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/common_45" />
+
+    <TextView
+        android:id="@+id/tv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_item"
+    android:paddingTop="@dimen/common_15"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_marginLeft="@dimen/common_15"
+        android:layout_marginRight="@dimen/common_15"
+        android:paddingTop="@dimen/common_15"
+        android:paddingBottom="@dimen/common_18"
+        android:paddingLeft="@dimen/common_20"
+        android:paddingRight="@dimen/common_20"
+        android:background="@drawable/item_study_play_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_class_type"
+            android:textSize="@dimen/font_xl"
+            android:textColor="@color/primary_font_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_price"
+            android:textColor="@color/secondary_color"
+            android:textSize="@dimen/font_l"
+            android:gravity="bottom"
+            android:layout_below="@id/tv_class_type"
+            android:layout_marginTop="@dimen/common_6"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/common_18" />
+
+        <TextView
+            android:id="@+id/tv_task"
+            android:textSize="@dimen/font_s"
+            android:textColor="@color/secondary_font_color"
+            android:layout_below="@id/tv_price"
+            android:layout_marginTop="@dimen/common_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_service"
+            android:textSize="@dimen/font_s"
+            android:text="@string/promise_services"
+            android:layout_below="@id/tv_task"
+            android:layout_marginTop="@dimen/common_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.edusoho.kuozhi.v3.view.FlowLayout
+            android:id="@+id/fl_service"
+            android:layout_below="@id/tv_task"
+            android:layout_marginTop="@dimen/common_10"
+            android:layout_toRightOf="@id/tv_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tv_vip"
+            android:textSize="@dimen/font_s"
+            android:textColor="@color/primary_color"
+            android:layout_below="@id/fl_service"
+            android:layout_marginTop="@dimen/common_16"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/iv_hot"
+        android:layout_marginTop="@dimen/common_15"
+        android:layout_marginRight="@dimen/common_9"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:src="@drawable/plan_hot"/>
+
+</RelativeLayout>

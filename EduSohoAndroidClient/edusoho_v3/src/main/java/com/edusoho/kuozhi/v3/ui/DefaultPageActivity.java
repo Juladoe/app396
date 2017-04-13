@@ -11,13 +11,10 @@ import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +24,6 @@ import com.android.volley.Request;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
@@ -54,8 +50,8 @@ import com.umeng.analytics.MobclickAgent;
 
 import java.util.LinkedHashMap;
 import java.util.Queue;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import retrofit2.http.HEAD;
 
 /**
  * Created by JesseHuang on 15/4/24.
@@ -234,13 +230,12 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private void selectDownTab(int id) {
         String tag;
         if (app.loginUser == null && id != R.id.nav_tab_find) {
-//            app.mEngine.runNormalPluginWithAnim("LoginActivity", mContext, null, new NormalCallback() {
-//                @Override
-//                public void success(Object obj) {
-//                    mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
-//                }
-//            });
-            CourseProjectActivity.launch(mContext, "1");
+            app.mEngine.runNormalPluginWithAnim("LoginActivity", mContext, null, new NormalCallback() {
+                @Override
+                public void success(Object obj) {
+                    mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
+                }
+            });
             return;
         }
         mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));
