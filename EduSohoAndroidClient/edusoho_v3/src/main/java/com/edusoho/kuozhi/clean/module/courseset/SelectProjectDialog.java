@@ -47,6 +47,7 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
     private TextView mValidity;
     private TextView mTask;
     private TextView mVip;
+    private TextView mConfirm;
 
     private List<CourseProject> mCourseStudyPlans;
     private CourseProject mCourseStudyPlan;
@@ -71,6 +72,17 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
         initView(view);
         addButton();
         return view;
+    }
+
+    @Override
+    public void setButtonState(TextView btn) {
+        mConfirm = btn;
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ConfirmOrderActivity.newInstance(getContext(), mCourseSet, mCourseStudyPlan);
+            }
+        });
     }
 
     private void initView(View view) {
@@ -170,7 +182,6 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
             mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseStudyPlan.price));
             mOriginalPrice.setText(String.format("%s%.2f", "¥ ", mCourseStudyPlan.originPrice));
             mOriginalPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-            ;
         }
     }
 
@@ -207,19 +218,12 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
                 break;
             }
         }
-        if (EdusohoApp.app.loginUser.vip.levelId >= mCourseStudyPlan.vipLevelId) {
-
+        if (EdusohoApp.app.loginUser.vip != null 
+                && EdusohoApp.app.loginUser.vip.levelId >= mCourseStudyPlan.vipLevelId) {
+            mConfirm.setText("免费加入");
+        }else {
+            mConfirm.setText(R.string.confirm);
         }
-    }
-
-    @Override
-    public View.OnClickListener addConfirmClickListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ConfirmOrderActivity.newInstance(getContext(), mCourseSet, mCourseStudyPlan);
-            }
-        };
     }
 
     @Override

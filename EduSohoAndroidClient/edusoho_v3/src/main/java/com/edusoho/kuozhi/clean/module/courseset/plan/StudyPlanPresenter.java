@@ -21,7 +21,7 @@ public class StudyPlanPresenter implements StudyPlanContract.Presenter {
 
     private int mCourseSetId;
     private StudyPlanContract.View mView;
-    List<CourseProject> mCourseStudyPlen;
+    private List<CourseProject> mCourseStudyPlan;
 
     public StudyPlanPresenter(StudyPlanContract.View view, int id) {
         this.mView = view;
@@ -36,7 +36,7 @@ public class StudyPlanPresenter implements StudyPlanContract.Presenter {
                 .doOnNext(new Action1<List<CourseProject>>() {
                     @Override
                     public void call(List<CourseProject> list) {
-                        mCourseStudyPlen = list;
+                        mCourseStudyPlan = list;
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -61,8 +61,8 @@ public class StudyPlanPresenter implements StudyPlanContract.Presenter {
                     @Override
                     public void onNext(List<VipInfo> vipInfo) {
                         mView.setLoadViewVis(false);
-                        if (mCourseStudyPlen != null && mCourseStudyPlen.size() != 0 && vipInfo != null) {
-                            mView.showComPanies(mCourseStudyPlen, vipInfo);
+                        if (mCourseStudyPlan != null && mCourseStudyPlan.size() != 0 && vipInfo != null) {
+                            mView.showComPanies(mCourseStudyPlan, vipInfo);
                         }
                     }
                 });

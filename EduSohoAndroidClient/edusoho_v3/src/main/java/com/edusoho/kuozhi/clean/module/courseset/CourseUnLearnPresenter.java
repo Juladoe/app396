@@ -311,6 +311,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                             mView.newFinish(true, R.string.join_success);
                         } else {
                             mView.showProcessDialog(false);
+//                            mView.showToast();
                         }
                     }
                 });
