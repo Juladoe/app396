@@ -23,6 +23,7 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
+import com.edusoho.kuozhi.clean.module.courseset.dialog.courses.SelectProjectDialog;
 import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
@@ -33,7 +34,6 @@ import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
-import com.edusoho.kuozhi.v3.util.CourseUtil;
 import com.edusoho.kuozhi.v3.util.SchoolUtil;
 import com.edusoho.kuozhi.v3.view.ScrollableAppBarLayout;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -251,27 +251,25 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     private void collect() {
         MobclickAgent.onEvent(this, "courseDetailsPage_collection");
         if (mIsFavorite) {
-            CourseUtil.uncollectCourse(mCourseSetId, new CourseUtil.OnCollectSuccessListener() {
-                @Override
-                public void onCollectSuccess() {
-                    mIsFavorite = false;
-                    mTvCollect.setText(getResources().getString(R.string.new_font_collect));
-                    mTvCollect.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.secondary_font_color));
-                    mTvCollectTxt.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.secondary_font_color));
-                    CommonUtil.shortToast(CourseUnLearnActivity.this, getString(R.string.cancel_favorite));
-                }
-            });
+            mPresenter.cancelFavoriteCourseSet();
         } else {
-            CourseUtil.collectCourse(mCourseSetId, new CourseUtil.OnCollectSuccessListener() {
-                @Override
-                public void onCollectSuccess() {
-                    mIsFavorite = true;
-                    mTvCollect.setText(getResources().getString(R.string.new_font_collected));
-                    mTvCollect.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.primary_color));
-                    mTvCollectTxt.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.primary_color));
-                    CommonUtil.shortToast(CourseUnLearnActivity.this, getString(R.string.favorite_success));
-                }
-            });
+            mPresenter.favoriteCourseSet();
+        }
+    }
+
+    @Override
+    public void showFavoriteCourseSet(boolean isFavorite) {
+        mIsFavorite = isFavorite;
+        if (isFavorite) {
+            mTvCollect.setText(getResources().getString(R.string.new_font_collected));
+            mTvCollect.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.primary_color));
+            mTvCollectTxt.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.primary_color));
+            CommonUtil.shortToast(CourseUnLearnActivity.this, getString(R.string.favorite_success));
+        } else {
+            mTvCollect.setText(getResources().getString(R.string.new_font_collect));
+            mTvCollect.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.secondary_font_color));
+            mTvCollectTxt.setTextColor(ContextCompat.getColor(CourseUnLearnActivity.this, R.color.secondary_font_color));
+            CommonUtil.shortToast(CourseUnLearnActivity.this, getString(R.string.cancel_favorite));
         }
     }
 

@@ -1,6 +1,6 @@
 package com.edusoho.kuozhi.clean.module.course.info;
 
-import com.edusoho.kuozhi.clean.bean.CourseMember;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
@@ -31,7 +31,7 @@ public interface CourseProjectInfoContract {
 
         void showMemberNum(int count);
 
-        void showMembers(List<CourseMember> members);
+        void showMembers(List<Member> members);
 
         void showRelativeCourseProjects(List<CourseProject> courseList);
 

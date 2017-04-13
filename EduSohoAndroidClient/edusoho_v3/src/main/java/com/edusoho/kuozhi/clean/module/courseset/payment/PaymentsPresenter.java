@@ -18,12 +18,12 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/4/7.
  */
 
-public class PayWayPresenter implements com.edusoho.kuozhi.clean.module.courseset.payment.PayWayContract.Presenter {
+public class PaymentsPresenter implements PaymentsContract.Presenter {
 
-    private com.edusoho.kuozhi.clean.module.courseset.payment.PayWayContract.View mView;
+    private PaymentsContract.View mView;
     private int mPlanId;
 
-    public PayWayPresenter(com.edusoho.kuozhi.clean.module.courseset.payment.PayWayContract.View mView, int mPlanId) {
+    public PaymentsPresenter(PaymentsContract.View mView, int mPlanId) {
         this.mView = mView;
         this.mPlanId = mPlanId;
     }

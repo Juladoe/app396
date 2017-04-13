@@ -26,6 +26,8 @@ public interface CourseUnLearnContract {
 
         void showFavorite(boolean isFavorite);
 
+        void showFavoriteCourseSet(boolean isFavorite);
+
         void newFinish(boolean isShow, int content);
 
         void showProcessDialog(boolean isShow);
@@ -50,5 +52,9 @@ public interface CourseUnLearnContract {
         void joinStudy();
 
         void consultTeacher();
+
+        void favoriteCourseSet();
+
+        void cancelFavoriteCourseSet();
     }
 }

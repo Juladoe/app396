@@ -470,6 +470,7 @@
         <item>计划</item>
         <item>评价</item>
     </string-array>
+    <string name="operate_fail">操作失败</string>
     <string name="confirm_order">确认订单</string>
     <string name="course_member_count">课程学员（%1$d）</string>
     <string name="course_student_count">%1$d名学生</string>
@@ -483,6 +484,7 @@
     <string name="cancel_favorite">取消收藏成功</string>
     <string name="favorite_success">收藏成功</string>
     <string name="join_success">加入成功</string>
+    <string name="join_fail">加入失败</string>
     <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
     <string name="load_more_text">正在加载...</string>
     <string name="price_format">￥%1$s</string>

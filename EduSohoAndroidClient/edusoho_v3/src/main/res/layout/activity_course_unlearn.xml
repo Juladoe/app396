@@ -67,7 +67,7 @@
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/common_44"
+                android:layout_height="?attr/actionBarSize"
                 android:background="@color/transparent"
                 android:minHeight="?attr/actionBarSize"
                 app:layout_collapseMode="pin"

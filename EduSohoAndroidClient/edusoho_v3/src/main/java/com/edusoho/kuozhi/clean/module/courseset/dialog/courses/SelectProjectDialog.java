@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset;
+package com.edusoho.kuozhi.clean.module.courseset.dialog.courses;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -32,7 +32,8 @@ import java.util.List;
  * Created by DF on 2017/4/12.
  */
 
-public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialog.BottomDialogContentView {
+public class SelectProjectDialog extends ESBottomDialog implements
+        ESBottomDialog.BottomDialogContentView,SelectProjectDialogContract.View {
 
     public static final String COURSE_SET = "1";
     public static final String STUDY_PLANS = "2";
@@ -53,11 +54,12 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
     private CourseProject mCourseStudyPlan;
     private List<VipInfo> mVipInfos;
     private CourseSet mCourseSet;
+    private SelectProjectDialogContract.Presenter mPresenter;
 
-    public void setData(CourseSet mCourseSet, List<CourseProject> mCourseStudyPlans, List<VipInfo> mVipInfos) {
-        this.mCourseSet = mCourseSet;
-        this.mCourseStudyPlans = mCourseStudyPlans;
-        this.mVipInfos = mVipInfos;
+    public void setData(CourseSet courseSet, List<CourseProject> courseStudyPlans, List<VipInfo> vipInfos) {
+        this.mCourseSet = courseSet;
+        this.mCourseStudyPlans = courseStudyPlans;
+        this.mVipInfos = vipInfos;
     }
 
     @Override
@@ -70,13 +72,13 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
     public View getContentView(ViewGroup parentView) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_confirm_select, parentView, false);
         initView(view);
-        addButton();
         return view;
     }
 
     @Override
     public void setButtonState(TextView btn) {
         mConfirm = btn;
+        addButton();
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -86,6 +88,7 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
     }
 
     private void initView(View view) {
+        mPresenter = new SelectProjectDialogPresenter(this);
         mRg = (RadioGroup) view.findViewById(R.id.rg_type);
         mRg.setOnCheckedChangeListener(getOnCheckedChangeListener());
         mDiscount = view.findViewById(R.id.discount);
@@ -137,10 +140,8 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
     private int getMostStudentNumPlan() {
         int index = 0;
         for (int i = 0; i < mCourseStudyPlans.size(); i++) {
-            if (i > 0) {
-                if (mCourseStudyPlans.get(i - 1).studentNum < mCourseStudyPlans.get(i).studentNum) {
-                    index = i;
-                }
+            if (i > 0 && mCourseStudyPlans.get(i - 1).studentNum < mCourseStudyPlans.get(i).studentNum) {
+                index = i;
             }
         }
         return index;
@@ -155,12 +156,9 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
                 mCourseStudyPlan = mCourseStudyPlans.get(position);
                 setPriceView(position);
                 setServiceView();
-                mWay.setText("freeMode".equals(mCourseStudyPlan.learnMode) ?
+                mWay.setText("freeState".equals(mCourseStudyPlan.learnMode) ?
                         getContext().getString(R.string.free_mode) : getContext().getString(R.string.locked_mode));
                 setOtherView();
-//                if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip.levelId > mCourseStudyPlan.vipLevelId) {
-//                    ((TextView) findViewById(R.id.tv_confirm)).setText(getContext().getString(R.string.txt_vip_free));
-//                }
             }
         };
     }
@@ -218,10 +216,10 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
                 break;
             }
         }
-        if (EdusohoApp.app.loginUser.vip != null 
+        if (EdusohoApp.app.loginUser.vip != null
                 && EdusohoApp.app.loginUser.vip.levelId >= mCourseStudyPlan.vipLevelId) {
-            mConfirm.setText("免费加入");
-        }else {
+            mConfirm.setText(R.string.txt_vip_free);
+        } else {
             mConfirm.setText(R.string.confirm);
         }
     }

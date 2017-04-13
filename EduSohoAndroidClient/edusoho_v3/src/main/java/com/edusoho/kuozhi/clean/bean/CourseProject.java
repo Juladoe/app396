@@ -41,7 +41,7 @@ public class CourseProject implements Serializable {
         public int id;
         public String nickname;
         public String title;
-        @SerializedName("largeAvatar")
+        @SerializedName("mediumAvatar")
         public String avatar;
     }
 }

@@ -14,7 +14,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
-import com.edusoho.kuozhi.clean.module.courseset.payment.PayWayActivity;
+import com.edusoho.kuozhi.clean.module.courseset.payment.PaymentsActivity;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -111,7 +111,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
         }else if(id == R.id.rl_coupon){
 
         }else if(id == R.id.tv_pay) {
-            PayWayActivity.newInstance(this, mStudyPlan);
+            PaymentsActivity.newInstance(this, mStudyPlan);
         }
     }
 

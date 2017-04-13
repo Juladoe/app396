@@ -28,7 +28,7 @@ import java.util.TreeMap;
  * Created by DF on 2017/4/7.
  */
 
-public class PayWayActivity extends BaseFinishActivity implements View.OnClickListener, PayWayContract.View {
+public class PaymentsActivity extends BaseFinishActivity implements View.OnClickListener, PaymentsContract.View {
 
     public static final String STUDY_PLAN = "study_plan";
 
@@ -39,12 +39,12 @@ public class PayWayActivity extends BaseFinishActivity implements View.OnClickLi
     private View mPay;
     private Dialog mDialog;
     private LoadDialog mProcessDialog;
-    private PayWayContract.Presenter mPresenter;
+    private PaymentsContract.Presenter mPresenter;
     private EditText mInputPw;
     private CourseProject mCourseStudyPlan;
 
     public static void newInstance(Context context, CourseProject courseStudyPlan) {
-        Intent intent = new Intent(context, PayWayActivity.class);
+        Intent intent = new Intent(context, PaymentsActivity.class);
         intent.putExtra(STUDY_PLAN, courseStudyPlan);
         context.startActivity(intent);
     }
@@ -67,7 +67,7 @@ public class PayWayActivity extends BaseFinishActivity implements View.OnClickLi
         mDiscount = (TextView) findViewById(R.id.tv_discount);
         mPay = findViewById(R.id.tv_pay);
 
-        mPresenter = new PayWayPresenter(this, mCourseStudyPlan.id);
+        mPresenter = new PaymentsPresenter(this, mCourseStudyPlan.id);
         mPresenter.subscribe();
     }
 

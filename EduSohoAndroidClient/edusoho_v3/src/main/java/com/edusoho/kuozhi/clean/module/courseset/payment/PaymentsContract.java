@@ -9,7 +9,7 @@ import java.util.Map;
  * Created by DF on 2017/4/7.
  */
 
-public interface PayWayContract {
+public interface PaymentsContract {
 
     interface View extends BaseView<Presenter>{
 

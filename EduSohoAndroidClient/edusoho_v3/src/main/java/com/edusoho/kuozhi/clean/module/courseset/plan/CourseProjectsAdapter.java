@@ -26,7 +26,7 @@ import java.util.List;
  * Created by DF on 2017/3/24.
  */
 
-public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.StudyPlanViewHolder>
+public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAdapter.StudyPlanViewHolder>
         implements View.OnClickListener {
 
     private List<CourseProject> mList;
@@ -34,7 +34,7 @@ public class StudyPlanAdapter extends RecyclerView.Adapter<StudyPlanAdapter.Stud
     private Context mContext;
     private int maxIndex = -1;
 
-    public StudyPlanAdapter(Context context) {
+    public CourseProjectsAdapter(Context context) {
         this.mContext = context;
         this.mList = new ArrayList();
         this.mVipInfos = new ArrayList();

@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.clean.api;
 
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
@@ -74,7 +75,7 @@ public class RetrofitService {
         return mApiService.getCourseReview(courseSetId, limit, offset);
     }
 
-    public static Observable<List<CourseProject>> getCourseStudyPlan(int courseSetId){
+    public static Observable<List<CourseProject>> getCourseStudyPlan(int courseSetId) {
         return mApiService.getCourseStudyPlan(courseSetId);
     }
 
@@ -86,11 +87,11 @@ public class RetrofitService {
         return mApiService.getVipLevel(id);
     }
 
-    public static Observable<DataPageResult<CourseMember>> getCourseMembers(int courseId, String role, int offset, int limit) {
+    public static Observable<DataPageResult<Member>> getCourseMembers(int courseId, String role, int offset, int limit) {
         return mApiService.getCourseMembers(courseId, role, offset, limit);
     }
 
-    public static Observable<CourseMember> getCourseMember(int courseId, int userId) {
+    public static Observable<Member> getCourseMember(int courseId, int userId) {
         return mApiService.getCourseMember(courseId, userId);
     }
 
@@ -98,16 +99,20 @@ public class RetrofitService {
         return mApiService.getCourseProjects(courseSetId);
     }
 
+    public static Observable<List<CourseMember>> getMyJoinCourses(String token, int courseSetId) {
+        return mApiService.getMyJoinCourses(token, courseSetId);
+    }
+
     public static Observable<List<CourseProject>> getMyCourseProject(String token, int courseSetId) {
         return mApiService.getMyCourseProject(token, courseSetId);
     }
 
-    public static Observable<DataPageResult<com.edusoho.kuozhi.v3.model.bal.course.CourseMember>> getCourseSetMember(int courseSetId) {
+    public static Observable<DataPageResult<CourseMember>> getCourseSetMember(int courseSetId) {
         return mApiService.getCourseSetMember(courseSetId);
     }
 
-    public static Observable<JsonObject> getFavorite(int userId, int courseSetId) {
-        return mApiService.getFavorite(userId, courseSetId);
+    public static Observable<JsonObject> getFavorite(String token) {
+        return mApiService.getFavorite(token);
     }
 
     public static Observable<DataPageResult<Review>> getCourseProjectReviews(int courseId, int offset, int limit) {
@@ -134,7 +139,19 @@ public class RetrofitService {
         return mApiService.getMyVirtualCoin();
     }
 
-    public static Observable<JsonObject> joinFreeCourse(String token) {
-        return mApiService.joinFreeCourse(token);
+    public static Observable<List<CourseMember>> getMeLastRecord(String token, int courseSetId){
+        return mApiService.getMeLastRecord(token, courseSetId);
+    }
+
+    public static Observable<JsonObject> joinFreeCourse(String token, int courseId) {
+        return mApiService.joinFreeCourse(token, courseId);
+    }
+
+    public static Observable<JsonObject> favoriteCourseSet(String token, int courseSetId){
+        return mApiService.favoriteCourseSet(token, courseSetId);
+    }
+
+    public static Observable<JsonObject> cancelFavoriteCourseSet(String token, int courseSetId){
+        return mApiService.cancelFavoriteCourseSet(token, courseSetId);
     }
 }
