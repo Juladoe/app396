@@ -9,7 +9,7 @@ import java.util.List;
 
 public class OrderInfo implements Serializable {
 
-    public String targetId;
+    public int targetId;
     public String targetType;
     public String totalPrice;
     public String title;

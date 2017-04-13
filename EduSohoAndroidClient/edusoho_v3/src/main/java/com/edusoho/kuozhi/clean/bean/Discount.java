@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 public class Discount implements Serializable {
 
-    public String id;
+    public int id;
     public String name;
     public String type;
     public String startTime;

@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 
 public class CourseMember implements Serializable {
-    public String id;
+    public int id;
     public String courseId;
     public String deadline;
     public User user;

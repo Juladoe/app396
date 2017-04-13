@@ -190,7 +190,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
                         , SchoolUtil.getDefaultSchool(getBaseContext()).host + "/course/" + mCourseSet.id
                         , mCourseSet.title
                         , mCourseSet.summary.length() > 20 ? mCourseSet.summary.substring(0, 20) : mCourseSet.summary
-                    , mCourseSet.cover.middle);
+                        , mCourseSet.cover.middle);
         new Handler((getApplication().getMainLooper())).post(new Runnable() {
             @Override
             public void run() {
@@ -234,7 +234,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     @Override
     public void showFragments(String[] titleArray, String[] fragmentArray) {
         CourseUnJoinPagerAdapter courseUnJoinPagerAdapter = new CourseUnJoinPagerAdapter(
-                                getSupportFragmentManager(), titleArray, fragmentArray, getIntent().getExtras());
+                getSupportFragmentManager(), titleArray, fragmentArray, getIntent().getExtras());
         mViewPager.setAdapter(courseUnJoinPagerAdapter);
         mTabLayout.setViewPager(mViewPager);
         initEvent();
@@ -312,10 +312,10 @@ public class CourseUnLearnActivity extends BaseFinishActivity
 
     private String getTime(long time) {
         String sTime;
-        long day = time/(60*60*24);
-        long hour = (time - 60*60*24*day)/3600;
-        long minute = (time - 60*60*24*day - 3600*hour)/60;
-        long second = time - 60*60*24*day - 3600*hour - 60*minute;
+        long day = time / (60 * 60 * 24);
+        long hour = (time - 60 * 60 * 24 * day) / 3600;
+        long minute = (time - 60 * 60 * 24 * day - 3600 * hour) / 60;
+        long second = time - 60 * 60 * 24 * day - 3600 * hour - 60 * minute;
         StringBuilder sb = new StringBuilder();
         sTime = day > 0 ? (day > 9 ? day + "" : "0" + day) : "00";
         sb.append(String.format(getString(R.string.remain), sTime));
@@ -372,7 +372,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
             mSelectDialog = new SelectProjectDialog();
             mSelectDialog.setData(courseSet, list, vipInfo);
         }
-        mSelectDialog.show(getSupportFragmentManager(),"SelectProjectDialog");
+        mSelectDialog.show(getSupportFragmentManager(), "SelectProjectDialog");
     }
 
     protected void showProcessDialog() {
@@ -464,6 +464,4 @@ public class CourseUnLearnActivity extends BaseFinishActivity
             return mTitleArray[position];
         }
     }
-
-
 }

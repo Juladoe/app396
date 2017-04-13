@@ -12,7 +12,7 @@ import java.util.List;
 
 public class CourseProject implements Serializable {
 
-    public String id;
+    public int id;
     public String courseSetId;
     public String title;
     public String expiryMode;
@@ -21,8 +21,8 @@ public class CourseProject implements Serializable {
     public int studentNum;
     public String[] audiences;
     public String rating;
-    public String price;
-    public String originPrice;
+    public float price;
+    public float originPrice;
     public String vipLevelId;
     public int publishedTaskNum;
     public Service[] services;
@@ -35,7 +35,7 @@ public class CourseProject implements Serializable {
     }
 
     public static class Teacher implements Serializable {
-        public String id;
+        public int id;
         public String nickname;
         public String title;
         @SerializedName("largeAvatar")
