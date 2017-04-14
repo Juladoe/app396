@@ -164,8 +164,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     @Override
-    public void initLearnedLayout() {
-        mProgressLayout.setVisibility(View.VISIBLE);
+    public void initJoinCourseLayout() {
         mTabLayout.setVisibility(View.GONE);
         mAdapter.removeFragment(CourseProjectEnum.RATE.getPosition());
         mAdapter.removeFragment(CourseProjectEnum.INFO.getPosition());
@@ -175,7 +174,18 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     @Override
+    public void initLearnedLayout() {
+        mTabLayout.setVisibility(View.GONE);
+//        mAdapter.removeFragment(CourseProjectEnum.RATE.getPosition());
+//        mAdapter.removeFragment(CourseProjectEnum.INFO.getPosition());
+        showCacheButton(true);
+        showShareButton(false);
+        showBottomLayout(false);
+    }
+
+    @Override
     public void setProgressBar(int progress) {
+        mProgressLayout.setVisibility(View.VISIBLE);
         mProgressBar.setProgress(progress);
     }
 

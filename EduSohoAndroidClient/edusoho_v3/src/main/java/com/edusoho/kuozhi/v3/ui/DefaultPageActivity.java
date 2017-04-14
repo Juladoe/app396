@@ -238,7 +238,7 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
 //                    mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
 //                }
 //            });
-            CourseProjectActivity.launch(mContext, 1);
+            CourseProjectActivity.launch(mContext, 3);
             return;
         }
         mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));

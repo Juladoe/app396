@@ -54,7 +54,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         if (courseProject.teachers.length > 0) {
                             mTeacher = courseProject.teachers[0];
                         }
-                        mView.showFragments(initCourseModules(), courseProject);
+                        //这么处理不是很好，会有一个跳转
+                        initCourseMemberInfo(courseProject);
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -82,8 +83,23 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                     }
                 });
 
+
+    }
+
+    @Override
+    public void joinCourseProject(int courseId) {
+        mView.initJoinCourseLayout();
+        setCourseLearningProgress(courseId);
+    }
+
+    @Override
+    public void unsubscribe() {
+
+    }
+
+    private void initCourseMemberInfo(final CourseProject courseProject) {
         //需要改为Edusoho.app.user.id
-        getCourseMember(mCourseProjectId, 3)
+        getCourseMember(courseProject.id, 3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Member>() {
@@ -103,23 +119,13 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.showBottomLayout(!isLearning);
                         mView.showCacheButton(isLearning);
                         mView.showShareButton(!isLearning);
+                        mView.showFragments(initCourseModules(isLearning), courseProject);
                         if (isLearning) {
                             mView.initLearnedLayout();
-                            setCourseLearningProgress(mCourseProjectId);
+                            setCourseLearningProgress(courseProject.id);
                         }
                     }
                 });
-    }
-
-    @Override
-    public void joinCourseProject(int courseId) {
-        mView.initLearnedLayout();
-        setCourseLearningProgress(courseId);
-    }
-
-    @Override
-    public void unsubscribe() {
-
     }
 
     private void setCourseLearningProgress(int courseId) {
@@ -149,11 +155,15 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         return !CommonConstant.EXPIRED_MODE_FOREVER.equals(utcTime) && TimeUtils.getUTCtoDate(utcTime).compareTo(new Date()) < 0;
     }
 
-    private List<CourseProjectEnum> initCourseModules() {
+    private List<CourseProjectEnum> initCourseModules(boolean isLearning) {
         List<CourseProjectEnum> list = new ArrayList<>();
-        list.add(CourseProjectEnum.INFO);
-        list.add(CourseProjectEnum.TASKS);
-        list.add(CourseProjectEnum.RATE);
+        if (isLearning) {
+            list.add(CourseProjectEnum.TASKS);
+        } else {
+            list.add(CourseProjectEnum.INFO);
+            list.add(CourseProjectEnum.TASKS);
+            list.add(CourseProjectEnum.RATE);
+        }
         return list;
     }
 

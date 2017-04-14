@@ -28,6 +28,8 @@ public interface CourseProjectContract {
 
         void showShareButton(boolean visible);
 
+        void initJoinCourseLayout();
+
         void initLearnedLayout();
 
         void setProgressBar(int progress);
