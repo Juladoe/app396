@@ -46,6 +46,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private CourseProjectViewPagerAdapter mAdapter;
     private Toolbar mToolbar;
     private ImageView mCourseCover;
+    private View mProgressLayout;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private View mBottomView;
@@ -74,6 +75,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private void init() {
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mCourseCover = (ImageView) findViewById(R.id.iv_course_cover);
+        mProgressLayout = findViewById(R.id.layout_progress);
         mTabLayout = (TabLayout) findViewById(R.id.tl_task);
         mViewPager = (ViewPager) findViewById(R.id.vp_content);
         mBottomView = findViewById(R.id.tl_bottom);
@@ -85,6 +87,13 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
             }
         });
         mLearnTextView = (TextView) findViewById(R.id.tv_learn);
+        mLearnTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.joinCourseProject(mCourseProjectId);
+            }
+        });
+
         mBack = (ESIconView) findViewById(R.id.iv_back);
         mShare = (ESIconView) findViewById(R.id.icon_share);
         mCache = (ESIconView) findViewById(R.id.icon_cache);
@@ -152,9 +161,13 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
 
     @Override
     public void initLearnedLayout() {
+        mProgressLayout.setVisibility(View.VISIBLE);
         mTabLayout.setVisibility(View.GONE);
         mAdapter.removeFragment(CourseProjectEnum.RATE.getPosition());
         mAdapter.removeFragment(CourseProjectEnum.INFO.getPosition());
+        showCacheButton(true);
+        showShareButton(false);
+        showBottomLayout(false);
     }
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {

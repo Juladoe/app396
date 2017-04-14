@@ -37,8 +37,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public void consult() {
         //这里需要修改，应该要和RxJava结合使用
-        //mView.launchImChatWithTeacher(mTeacher);
-        mView.initLearnedLayout();
+        mView.launchImChatWithTeacher(mTeacher);
     }
 
     @Override
@@ -79,7 +78,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.showCover(courseSet.cover.large);
                     }
                 });
-        
+
+        //需要改为Edusoho.app.user.id
         getCourseMember(mCourseProjectId, 3)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -102,6 +102,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.showShareButton(!isLearned);
                     }
                 });
+    }
+
+    @Override
+    public void joinCourseProject(int courseId) {
+        mView.initLearnedLayout();
     }
 
     @Override

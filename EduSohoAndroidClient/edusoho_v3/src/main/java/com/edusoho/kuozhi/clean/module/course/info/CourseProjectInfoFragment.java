@@ -136,7 +136,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
             case SALE:
                 mSalePrice.setText(String.format(getString(R.string.price_format), price));
                 mOriginalPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-                mOriginalPrice.setText(String.format(getString(R.string.price_format), originPrice + ""));
+                mOriginalPrice.setText(String.format(getString(R.string.price_format), originPrice));
                 mOriginalPrice.setText(originPrice + "");
                 mSaleWord.setVisibility(View.VISIBLE);
                 break;

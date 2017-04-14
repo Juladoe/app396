@@ -24,6 +24,8 @@ import com.android.volley.Request;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.FactoryManager;
 import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
@@ -230,12 +232,13 @@ public class DefaultPageActivity extends ActionBarBaseActivity implements Messag
     private void selectDownTab(int id) {
         String tag;
         if (app.loginUser == null && id != R.id.nav_tab_find) {
-            app.mEngine.runNormalPluginWithAnim("LoginActivity", mContext, null, new NormalCallback() {
-                @Override
-                public void success(Object obj) {
-                    mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
-                }
-            });
+//            app.mEngine.runNormalPluginWithAnim("LoginActivity", mContext, null, new NormalCallback() {
+//                @Override
+//                public void success(Object obj) {
+//                    mActivity.overridePendingTransition(R.anim.down_to_up, R.anim.none);
+//                }
+//            });
+            CourseProjectActivity.launch(mContext, 11);
             return;
         }
         mActionBar.setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));
