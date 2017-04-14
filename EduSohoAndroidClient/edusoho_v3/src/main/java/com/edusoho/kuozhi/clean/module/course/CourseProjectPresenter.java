@@ -1,6 +1,9 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import android.util.Log;
+
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
@@ -96,10 +99,14 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                     @Override
                     public void onNext(Member member) {
-                        boolean isLearned = member.user != null && !isExpired(member.deadline);
-                        mView.showBottomLayout(!isLearned);
-                        mView.showCacheButton(isLearned);
-                        mView.showShareButton(!isLearned);
+                        boolean isLearning = member.user != null && !isExpired(member.deadline);
+                        mView.showBottomLayout(!isLearning);
+                        mView.showCacheButton(isLearning);
+                        mView.showShareButton(!isLearning);
+                        if (isLearning) {
+                            mView.initLearnedLayout();
+                            setCourseLearningProgress(mCourseProjectId);
+                        }
                     }
                 });
     }
@@ -107,11 +114,35 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public void joinCourseProject(int courseId) {
         mView.initLearnedLayout();
+        setCourseLearningProgress(courseId);
     }
 
     @Override
     public void unsubscribe() {
 
+    }
+
+    private void setCourseLearningProgress(int courseId) {
+        RetrofitService.getMyCourseLearningProgress("s000bvqfov4goccowccwgkgcs8s88sc", courseId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseLearningProgress>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d("setCourseLearning", "onError: " + e.toString());
+                    }
+
+                    @Override
+                    public void onNext(CourseLearningProgress courseLearningProgress) {
+                        mView.setProgressBar(courseLearningProgress.progress);
+                        mView.initProgressDialog(courseLearningProgress);
+                    }
+                });
     }
 
     private boolean isExpired(String utcTime) {

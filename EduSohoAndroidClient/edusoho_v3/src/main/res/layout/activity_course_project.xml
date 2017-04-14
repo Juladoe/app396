@@ -74,15 +74,16 @@
         android:paddingTop="20dp"
         android:visibility="gone">
 
-        <ProgressBar
+        <com.edusoho.kuozhi.clean.widget.ESProgressBar
             android:id="@+id/pb_learn_progress"
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_toLeftOf="@+id/icon_info"
             android:max="100"
-            android:progress="10"
-            android:progressDrawable="@drawable/bg_course_progress" />
+            android:progress="0"
+            android:progressDrawable="@drawable/bg_course_progress"
+            app:percent_size="@dimen/font_s" />
 
         <com.edusoho.kuozhi.clean.widget.ESIconView
             android:id="@+id/icon_info"

@@ -56,7 +56,7 @@ public class RelativeCourseAdapter extends RecyclerView.Adapter<RelativeCourseAd
                 TextView serviceTextView = new TextView(mContext);
                 serviceTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
                 serviceTextView.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-                serviceTextView.setText(service.short_name);
+                serviceTextView.setText(service.shortName);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
                 lp.rightMargin = CommonUtil.dip2px(mContext, 10);
 

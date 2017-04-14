@@ -32,8 +32,8 @@ public class CourseProject implements Serializable {
     public Teacher[] teachers;
 
     public static class Service implements Serializable {
-        public String short_name;
-        public String full_name;
+        public String shortName;
+        public String fullName;
         public String summary;
     }
 

@@ -18,9 +18,11 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
+import com.edusoho.kuozhi.clean.widget.ESProgressBar;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -52,6 +54,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private View mBottomView;
     private ESIconTextButton mConsult;
     private TextView mLearnTextView;
+    private ESProgressBar mProgressBar;
     private ESIconView mBack;
     private ESIconView mShare;
     private ESIconView mCache;
@@ -76,6 +79,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mCourseCover = (ImageView) findViewById(R.id.iv_course_cover);
         mProgressLayout = findViewById(R.id.layout_progress);
+        mProgressBar = (ESProgressBar) findViewById(R.id.pb_learn_progress);
         mTabLayout = (TabLayout) findViewById(R.id.tl_task);
         mViewPager = (ViewPager) findViewById(R.id.vp_content);
         mBottomView = findViewById(R.id.tl_bottom);
@@ -168,6 +172,16 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
         showCacheButton(true);
         showShareButton(false);
         showBottomLayout(false);
+    }
+
+    @Override
+    public void setProgressBar(int progress) {
+        mProgressBar.setProgress(progress);
+    }
+
+    @Override
+    public void initProgressDialog(CourseLearningProgress courseLearningProgress) {
+
     }
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {

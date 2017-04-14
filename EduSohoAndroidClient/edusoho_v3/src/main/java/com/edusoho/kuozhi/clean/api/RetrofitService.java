@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.clean.api;
 
 import com.edusoho.kuozhi.clean.bean.CourseItem;
+import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
@@ -109,6 +110,10 @@ public class RetrofitService {
 
     public static Observable<DataPageResult<CourseMember>> getCourseSetMember(int courseSetId) {
         return mApiService.getCourseSetMember(courseSetId);
+    }
+
+    public static Observable<CourseLearningProgress> getMyCourseLearningProgress(String token, int courseId) {
+        return mApiService.getMyCourseLearningProgress(token, courseId);
     }
 
     public static Observable<JsonObject> getFavorite(int userId, int courseSetId) {

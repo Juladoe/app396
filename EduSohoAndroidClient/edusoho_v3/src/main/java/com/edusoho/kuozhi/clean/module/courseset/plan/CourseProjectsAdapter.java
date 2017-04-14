@@ -135,7 +135,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
             TextView serviceTextView = new TextView(mContext);
             serviceTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
             serviceTextView.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-            serviceTextView.setText(services[i].short_name);
+            serviceTextView.setText(services[i].shortName);
             lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             lp.rightMargin = CommonUtil.dip2px(mContext, 10);
             serviceTextView.setLayoutParams(lp);

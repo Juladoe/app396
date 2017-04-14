@@ -82,8 +82,8 @@ public class ServicesDialog extends ESBottomDialog implements ESBottomDialog.Bot
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.tvShortName.setText(mServices[position].short_name);
-            holder.tvFullName.setText(mServices[position].full_name);
+            holder.tvShortName.setText(mServices[position].shortName);
+            holder.tvFullName.setText(mServices[position].fullName);
             holder.tvSummary.setText(mServices[position].summary);
         }
 

@@ -71,7 +71,11 @@
     </declare-styleable>
 
     <declare-styleable name="FlowLayout">
-        <attr name="lineSpacing" format="dimension"/>
-        <attr name="maxLine" format="integer"/>
+        <attr name="lineSpacing" format="dimension" />
+        <attr name="maxLine" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="ESProgressBar">
+        <attr name="percent_size" format="dimension" />
     </declare-styleable>
 </resources>

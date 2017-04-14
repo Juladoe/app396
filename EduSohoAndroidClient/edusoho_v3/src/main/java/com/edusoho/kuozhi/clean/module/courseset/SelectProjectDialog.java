@@ -21,7 +21,6 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
-import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESBottomDialog;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 
@@ -181,7 +180,7 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
             StringBuilder sb = new StringBuilder();
             sb.append(getContext().getString(R.string.promise_services));
             for (int i = 0; i < services.length; i++) {
-                sb.append(services[i].full_name);
+                sb.append(services[i].fullName);
                 if (i != services.length - 1) {
                     sb.append(" 、 ");
                 }

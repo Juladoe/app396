@@ -486,7 +486,7 @@
     <string name="join_success">加入成功</string>
     <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
     <string name="load_more_text">正在加载...</string>
-    <string name="price_format">￥%1$f</string>
+    <string name="price_format">￥%1$.2f</string>
     <string name="confirm_pay">确定支付</string>
     <string name="from_course_set">来自课程&#160;&#160;|&#160;&#160;&#160;</string>
     <string name="remain">剩余&#160;%s&#160;天&#160;</string>

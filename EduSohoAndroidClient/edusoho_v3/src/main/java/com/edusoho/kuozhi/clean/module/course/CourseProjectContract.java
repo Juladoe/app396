@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
@@ -28,6 +29,10 @@ public interface CourseProjectContract {
         void showShareButton(boolean visible);
 
         void initLearnedLayout();
+
+        void setProgressBar(int progress);
+
+        void initProgressDialog(CourseLearningProgress courseLearningProgress);
     }
 
     interface Presenter extends BasePresenter {

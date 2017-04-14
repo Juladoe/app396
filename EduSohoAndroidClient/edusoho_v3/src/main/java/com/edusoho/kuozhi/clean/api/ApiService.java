@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.clean.api;
 
 import com.edusoho.kuozhi.clean.bean.CourseItem;
+import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
@@ -54,6 +55,9 @@ public interface ApiService {
 
     @GET("me/join_in_courses")
     Observable<List<CourseMember>> getMyJoinCourses(@Header("X-Auth-Token") String token, @Query("courseSetId") int courseSetId);
+
+    @GET("me/course_learning_progress/{courseId}")
+    Observable<CourseLearningProgress> getMyCourseLearningProgress(@Header("X-Auth-Token") String token, @Path("courseId") int courseId);
 
     @GET("plugins/vip/vip_levels")
     Observable<List<VipInfo>> getVipInfo();
