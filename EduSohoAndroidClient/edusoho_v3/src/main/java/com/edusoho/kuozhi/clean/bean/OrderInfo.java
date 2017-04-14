@@ -38,7 +38,7 @@ public class OrderInfo implements Serializable {
         public String code;
         public String type;
         public String status;
-        public final rate;
+        public float rate;
         public String userId;
         public String deadline;
         public String targetType;

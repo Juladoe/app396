@@ -26,8 +26,6 @@ public class SelectProjectDialogContract {
 
         void confirm(CourseProject courseProject);
 
-        void joinFreeCourse(int courseId);
-
     }
 
 }

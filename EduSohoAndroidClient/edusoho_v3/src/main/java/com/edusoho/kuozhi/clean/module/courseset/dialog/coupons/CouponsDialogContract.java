@@ -7,7 +7,7 @@ import com.edusoho.kuozhi.clean.module.base.BaseView;
  * Created by DF on 2017/4/14.
  */
 
-public interface CouponsContract {
+public interface CouponsDialogContract {
 
     interface View extends BaseView<Presenter>{
 

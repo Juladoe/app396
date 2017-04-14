@@ -18,6 +18,7 @@ import rx.schedulers.Schedulers;
 
 public class CourseIntroducePresenter implements CourseIntroduceContract.Presenter {
 
+    private static final int SHOW_MEMBER_COUNT=5;
     private int mCourseSetId;
     private CourseIntroduceContract.View mView;
 
@@ -46,7 +47,7 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
                 .flatMap(new Func1<CourseSet, Observable<DataPageResult<CourseMember>>>() {
                     @Override
                     public Observable<DataPageResult<CourseMember>> call(CourseSet courseSet) {
-                        return getCourseSetMember(mCourseSetId);
+                        return getCourseSetMember(mCourseSetId,0, SHOW_MEMBER_COUNT);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -74,8 +75,8 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
         return RetrofitService.getCourseSet(id);
     }
 
-    private Observable<DataPageResult<CourseMember>> getCourseSetMember(int id) {
-        return RetrofitService.getCourseSetMember(id);
+    private Observable<DataPageResult<CourseMember>> getCourseSetMember(int id,int offset,int limit) {
+        return RetrofitService.getCourseSetMembers(id,offset,limit);
     }
 
     @Override

@@ -158,7 +158,7 @@ public class CourseProjectInfoFragment extends Fragment implements CourseProject
         mServicesLayout.setVisibility(View.VISIBLE);
         for (CourseProject.Service service : services) {
             View view = LayoutInflater.from(getActivity()).inflate(R.layout.view_course_project_promise, null);
-            ((TextView) view.findViewById(R.id.tv_promise)).setText(service.full_name);
+            ((TextView) view.findViewById(R.id.tv_promise)).setText(service.fullName);
             FlowLayout.LayoutParams lp = new FlowLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             view.setLayoutParams(lp);
             mPromise.addView(view);

@@ -4,11 +4,11 @@ package com.edusoho.kuozhi.clean.module.courseset.dialog.coupons;
  * Created by DF on 2017/4/14.
  */
 
-public class CouponsPresenter implements CouponsContract.Presenter {
+public class CouponsDialogPresenter implements CouponsDialogContract.Presenter {
 
-    private CouponsContract.View mView;
+    private CouponsDialogContract.View mView;
 
-    public CouponsPresenter(CouponsContract.View mView) {
+    public CouponsDialogPresenter(CouponsDialogContract.View mView) {
         this.mView = mView;
     }
 

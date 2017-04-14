@@ -7,7 +7,6 @@ import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.info.CourseIntroduceFragment;
@@ -33,11 +32,12 @@ import rx.schedulers.Schedulers;
 
 public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
-    private final String IS_FAVORITE = "isFavorite";
-
-    private final String BUY_ABLE = "1";
-    private final String IS_FREE = "1";
-    private final String IS_JOIN_SUCCESS = "success";
+    private static final String IS_FAVORITE = "isFavorite";
+    private static final String BUY_ABLE = "1";
+    private static final String IS_FREE = "1";
+    private static final String IS_JOIN_SUCCESS = "success";
+    private static final String FREE = "free";
+    private static final String VIP = "vip";
 
     private CourseUnLearnContract.View mView;
     private int mCourseSetId;
@@ -62,10 +62,10 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
     private void isJoin() {
         if (EdusohoApp.app.loginUser != null) {
-            getCourseSetMember(mCourseSetId)
+            getCourseSetMember(mCourseSetId, EdusohoApp.app.loginUser.id)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<DataPageResult<CourseMember>>() {
+                    .subscribe(new Subscriber<CourseMember>() {
                         @Override
                         public void onCompleted() {
 
@@ -77,20 +77,14 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                         }
 
                         @Override
-                        public void onNext(DataPageResult<CourseMember> courseSetMember) {
-                            boolean isMember = false;
-                            for (CourseMember courseMember : courseSetMember.data) {
-                                if (EdusohoApp.app.loginUser.id == courseMember.id) {
-                                    isMember = true;
-                                    break;
-                                }
-                            }
-                            if (isMember) {
-                                getMeLastRecord();
-                            } else {
+                        public void onNext(CourseMember courseSetMember) {
+                            // TODO: 2017/4/14
+//                            if (courseSetMember != null) {
+//                                    getMeLastRecord();
+//                            } else {
                                 getCourseSet();
                                 getFavoriteInfo();
-                            }
+//                            }
                         }
                     });
             return;
@@ -158,7 +152,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     }
 
     private void getFavoriteInfo() {
-        getFavorite(EdusohoApp.app.token)
+        getFavorite(EdusohoApp.app.token, mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<JsonObject>() {
@@ -249,7 +243,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                             && mCourseProjects.get(0).vipLevelId != 0
                             && EdusohoApp.app.loginUser.vip.levelId >= mCourseProjects.get(0).vipLevelId) {
                         mView.showProcessDialog(true);
-                        joinFreeCourse();
+                        joinFreeOrVipCourse(IS_FREE.equals(courseProject.isFree) ? FREE : VIP);
                         return;
                     }
                     mView.goToConfirmOrderActivity(courseProject);
@@ -257,26 +251,6 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                 mView.showPlanDialog(mCourseProjects, mVipInfos, mCourseSet);
             }
         }
-
-//            if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip != null
-//                    && EdusohoApp.app.loginUser.vip.levelId >= mCourseDetail.getCourse().vipLevelId
-//                    && mCourseDetail.getCourse().vipLevelId != 0) {
-//                CourseUtil.addCourseVip(mCourseSetId, new CourseUtil.OnAddCourseListener() {
-//                    @Override
-//                    public void onAddCourseSuccess(String response) {
-//                        hideProcesDialog();
-//                        CommonUtil.shortToast(CourseStudyDetailActivity.this, getResources()
-//                                .getString(R.string.success_add_course));
-//                        initData();
-//                    }
-//
-//                    @Override
-//                    public void onAddCourseError(String response) {
-//                        hideProcesDialog();
-//                    }
-//                });
-//                return;
-//            }
     }
 
     @Override
@@ -379,7 +353,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
             return courseId;
         }
         for (int i = 0; i < courseMembers.size(); i++) {
-            if (TimeUtils.getMillisecond(courseMembers.get(i-1).lastLearnTime)
+            if (i != 0 && TimeUtils.getMillisecond(courseMembers.get(i-1).lastLearnTime)
                     < TimeUtils.getMillisecond(courseMembers.get(i).lastLearnTime)) {
                 courseId = courseMembers.get(i).courseId;
             }
@@ -387,32 +361,32 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
         return courseId;
     }
 
-    private void joinFreeCourse() {
-//        RetrofitService.joinFreeCourse(EdusohoApp.app.token,)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Subscriber<JsonObject>() {
-//                    @Override
-//                    public void onCompleted() {
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Throwable e) {
-//                        mView.showProcessDialog(false);
-//                    }
-//
-//                    @Override
-//                    public void onNext(JsonObject jsonObject) {
-//                        if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
-//                            mView.goToCourseProjectActivity(mCourseProjects.get(0).id);
-//                            mView.newFinish(true, R.string.join_success);
-//                        } else {
-//                            mView.showProcessDialog(false);
-//                            mView.showToast(R.string.join_fail);
-//                        }
-//                    }
-//                });
+    private void joinFreeOrVipCourse(String joinWay) {
+        RetrofitService.joinFreeOrVipCourse(EdusohoApp.app.token, mCourseProjects.get(0).id, joinWay)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<JsonObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        mView.showProcessDialog(false);
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
+                            mView.goToCourseProjectActivity(mCourseProjects.get(0).id);
+                            mView.newFinish(true, R.string.join_success);
+                        } else {
+                            mView.showProcessDialog(false);
+                            mView.showToast(R.string.join_fail);
+                        }
+                    }
+                });
     }
 
     private void launchLastViewCourseProject(int courseSetId) {
@@ -447,8 +421,8 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
         return RetrofitService.getCourseSet(courseSetId);
     }
 
-    private Observable<DataPageResult<CourseMember>> getCourseSetMember(int courseSetId) {
-        return RetrofitService.getCourseSetMember(courseSetId);
+    private Observable<CourseMember> getCourseSetMember(int courseSetId,int userId) {
+        return RetrofitService.getCourseSetMember(courseSetId,userId);
     }
 
     private Observable<List<CourseProject>> getCourseStudyPlan(int courseSetId) {
@@ -459,8 +433,8 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
         return RetrofitService.getVipInfo();
     }
 
-    private Observable<JsonObject> getFavorite(String token) {
-        return RetrofitService.getFavorite(token);
+    private Observable<JsonObject> getFavorite(String token, int courseSetId) {
+        return RetrofitService.getFavorite(token, courseSetId);
     }
 
 }

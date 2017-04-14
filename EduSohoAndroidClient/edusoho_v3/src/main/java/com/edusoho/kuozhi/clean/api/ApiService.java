@@ -51,7 +51,11 @@ public interface ApiService {
     Observable<List<CourseProject>> getCourseStudyPlan(@Path("course_setId") int courseSetId);
 
     @GET("course_sets/{courseSetId}/members")
-    Observable<DataPageResult<CourseMember>> getCourseSetMember(@Path("courseSetId") int courseSetId);
+    Observable<DataPageResult<CourseMember>> getCourseSetMembers(@Path("courseSetId") int courseSetId
+                                                , @Query("offset") int offset, @Query("limit") int limit);
+
+    @GET("course_sets/{courseSetId}/members")
+    Observable<CourseMember> getCourseSetMember(@Path("courseSetId") int courseSetId, @Query("userId") int userId);
 
     @GET("me/join_in_courses")
     Observable<List<CourseMember>> getMyJoinCourses(@Header("X-Auth-Token") String token, @Query("courseSetId") int courseSetId);
@@ -76,7 +80,7 @@ public interface ApiService {
     Observable<List<CourseProject>> getCourseProjects(@Path("id") int courseSetId);
 
     @GET("me/favorite_course_sets/{courseSetId}")
-    Observable<JsonObject> getFavorite(@Header("X-Auth-Token") String token);
+    Observable<JsonObject> getFavorite(@Header("X-Auth-Token") String token, @Path("courseSetId") int courseSetId);
 
     @GET("courses/{courseId}/reviews")
     Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("courseId") int courseId,
@@ -102,10 +106,11 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("courses/{id}/members")
-    Observable<JsonObject> joinFreeCourse(@Header("X-Auth-Token") String token, @Path("id") int courseId);
+    Observable<JsonObject> joinFreeOrVipCourse(@Header("X-Auth-Token") String token,
+                                          @Path("id") int courseId, @Field("joinWay") String joinWay);
 
-    @GET("me/join_in_courses")
-    Observable<List<CourseMember>> getMeLastRecord(@Header("X-Auth-Token") String token, @Query("courseSetId") int courseSetId);
+    @GET("me/course_sets/{courseSetId}/course_members")
+    Observable<List<CourseMember>> getMeLastRecord(@Header("X-Auth-Token") String token, @Path("courseSetId") int courseSetId);
 
     @FormUrlEncoded
     @POST("me/favorite_course_sets")

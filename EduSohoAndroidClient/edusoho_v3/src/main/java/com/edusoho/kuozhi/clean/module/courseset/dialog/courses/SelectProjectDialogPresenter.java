@@ -16,8 +16,10 @@ import rx.schedulers.Schedulers;
 
 public class SelectProjectDialogPresenter implements SelectProjectDialogContract.Presenter {
 
-    private final String BUY_ABLE = "1";
-    private final String IS_FREE = "1";
+    private static final String BUY_ABLE = "1";
+    private static final String IS_FREE = "1";
+    private static final String FREE = "free";
+    private static final String VIP = "vip";
 
     private SelectProjectDialogContract.View mView;
 
@@ -40,15 +42,14 @@ public class SelectProjectDialogPresenter implements SelectProjectDialogContract
                 && courseProject.vipLevelId != 0
                 && EdusohoApp.app.loginUser.vip.levelId >= courseProject.vipLevelId) {
             mView.showProcessDialog(true);
-            joinFreeCourse(courseProject.id);
+            joinFreeOrVipCourse(courseProject.id , IS_FREE.equals(courseProject.isFree) ? FREE : VIP);
             return;
         }
         mView.goToConfirmOrderActivity();
     }
 
-    @Override
-    public void joinFreeCourse(int courseId) {
-        RetrofitService.joinFreeCourse(EdusohoApp.app.token, courseId)
+    private void joinFreeOrVipCourse(int courseId, String joinWay) {
+        RetrofitService.joinFreeOrVipCourse(EdusohoApp.app.token, courseId, joinWay)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<JsonObject>() {

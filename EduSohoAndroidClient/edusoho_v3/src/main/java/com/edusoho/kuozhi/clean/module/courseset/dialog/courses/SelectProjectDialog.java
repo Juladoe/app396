@@ -239,7 +239,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
             StringBuilder sb = new StringBuilder();
             sb.append(getContext().getString(R.string.promise_services));
             for (int i = 0; i < services.length; i++) {
-                sb.append(services[i].full_name);
+                sb.append(services[i].fullName);
                 if (i != services.length - 1) {
                     sb.append(" 、 ");
                 }
