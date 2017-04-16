@@ -119,6 +119,4 @@ public interface ApiService {
     @DELETE("me/favorite_course_sets/{courseSetId}")
     Observable<JsonObject> cancelFavoriteCourseSet(@Header("X-Auth-Token") String token, @Path("courseSetId") int courseSetId);
 
-    @GET("me/cash_account")
-    Observable<String> getMyVirtualCoin();
 }

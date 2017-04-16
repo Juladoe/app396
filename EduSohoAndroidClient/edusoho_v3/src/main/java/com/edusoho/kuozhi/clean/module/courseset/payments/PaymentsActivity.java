@@ -1,28 +1,23 @@
-package com.edusoho.kuozhi.clean.module.courseset.payment;
+package com.edusoho.kuozhi.clean.module.courseset.payments;
 
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
 import com.edusoho.kuozhi.clean.module.courseset.alipay.AlipayActivity;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by DF on 2017/4/7.
@@ -30,22 +25,30 @@ import java.util.TreeMap;
 
 public class PaymentsActivity extends BaseFinishActivity implements View.OnClickListener, PaymentsContract.View {
 
-    public static final String STUDY_PLAN = "study_plan";
+    private static final String ORDER_INFO = "order_info";
+    private static final String ORDER_PRICE = "order_price";
+    private static final String COUPON_POSITION_IN_COUPONS = "position";
 
     private View mBack;
     private View mAlipay;
-    private View mVirtualCoin;
+    private TextView mVirtualCoin;
     private TextView mDiscount;
     private View mPay;
     private Dialog mDialog;
     private LoadDialog mProcessDialog;
-    private PaymentsContract.Presenter mPresenter;
     private EditText mInputPw;
-    private CourseProject mCourseStudyPlan;
 
-    public static void launch(Context context, CourseProject courseStudyPlan) {
+    private PaymentsContract.Presenter mPresenter;
+
+    private OrderInfo mOrderInfo;
+    private float mOrderPrice;
+    private int mPosition;
+
+    public static void launch(Context context, OrderInfo orderInfo, float price, int position) {
         Intent intent = new Intent(context, PaymentsActivity.class);
-        intent.putExtra(STUDY_PLAN, courseStudyPlan);
+        intent.putExtra(ORDER_INFO, orderInfo);
+        intent.putExtra(ORDER_PRICE, price);
+        intent.putExtra(COUPON_POSITION_IN_COUPONS, position);
         context.startActivity(intent);
     }
 
@@ -53,33 +56,37 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay_way);
-        mCourseStudyPlan = (CourseProject) getIntent().getSerializableExtra(STUDY_PLAN);
+        mOrderInfo = (OrderInfo) getIntent().getSerializableExtra(ORDER_INFO);
+        mOrderPrice = getIntent().getFloatExtra(ORDER_PRICE, 0);
+        mPosition = getIntent().getIntExtra(COUPON_POSITION_IN_COUPONS, -1);
 
         initView();
         initEvent();
-        initShwo();
+        initShow();
     }
 
     private void initView() {
         mBack = findViewById(R.id.iv_back);
         mAlipay = findViewById(R.id.iv_alipay);
-        mVirtualCoin = findViewById(R.id.tv_virtual_coin);
+        mVirtualCoin = (TextView) findViewById(R.id.tv_virtual_coin);
         mDiscount = (TextView) findViewById(R.id.tv_discount);
         mPay = findViewById(R.id.tv_pay);
 
-        mPresenter = new PaymentsPresenter(this, mCourseStudyPlan.id);
+        mPresenter = new PaymentsPresenter(this, mOrderInfo, mPosition);
         mPresenter.subscribe();
     }
 
     private void initEvent() {
         mBack.setOnClickListener(this);
         mAlipay.setOnClickListener(this);
+        mAlipay.setSelected(true);
         mVirtualCoin.setOnClickListener(this);
         mPay.setOnClickListener(this);
     }
 
-    private void initShwo() {
-        mDiscount.setText(String.format(getString(R.string.yuan), mCourseStudyPlan.price));
+    private void initShow() {
+        mVirtualCoin.setText(mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin_pay));
+        mDiscount.setText(String.format(getString(R.string.yuan), mOrderPrice));
     }
 
     @Override
@@ -99,24 +106,11 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     }
 
     private void goPay() {
-        if (!mAlipay.isSelected() && !mVirtualCoin.isSelected()) {
-            Toast.makeText(this, "请选择支付方式", Toast.LENGTH_SHORT).show();
-            return;
-        }
         if (mAlipay.isSelected()) {
-            goAlipay();
+            mPresenter.createOrderAndPay(PaymentsPresenter.ALIPAY, null);
         } else {
             showDialog();
         }
-    }
-
-    private void goAlipay() {
-        Map<String, String> map = new TreeMap<>();
-        map.put("targetType", "course");
-//        map.put("couponCode", "");
-//        map.put("coinPayAmount", "");
-//        map.put("payPassword", "");
-        mPresenter.createOrderAndPay(map, "course", "alipay");
     }
 
     private void showDialog() {
@@ -127,13 +121,16 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
             Window window = mDialog.getWindow();
             WindowManager.LayoutParams lp = window.getAttributes();
             lp.width = getResources().getDisplayMetrics().widthPixels;
-            window.setGravity(Gravity.BOTTOM);
+//            window.setGravity(Gravity.BOTTOM);
             window.setAttributes(lp);
             mInputPw = (EditText) mDialog.findViewById(R.id.et_input_pw);
             mInputPw.setOnEditorActionListener(new TextView.OnEditorActionListener() {
                 @Override
                 public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    String pw = mInputPw.getText().toString().trim();
+//                    pw.length()
                     showProcessDialog();
+                    mPresenter.createOrderAndPay(PaymentsPresenter.COIN, mInputPw.getText().toString().trim());
                     mDialog.dismiss();
                     return true;
                 }

@@ -139,10 +139,6 @@ public class RetrofitService {
         return mApiService.goPay(token, id, type, payWay);
     }
 
-    public static Observable<String> getMyVirtualCoin() {
-        return mApiService.getMyVirtualCoin();
-    }
-
     public static Observable<List<CourseMember>> getMeLastRecord(String token, int courseSetId){
         return mApiService.getMeLastRecord(token, courseSetId);
     }

@@ -439,6 +439,7 @@
 
     <string name="course_introduce">课程简介</string>
     <string name="discount">折</string>
+    <string name="discount_price">%.2f&#160;折</string>
     <string name="course_project_favorite">收藏</string>
     <string name="course_project_consult">咨询</string>
     <string name="learn_course_project">加入学习</string>
@@ -494,8 +495,19 @@
     <string name="hour">%s&#160;小时&#160;</string>
     <string name="minute">%s&#160;分&#160;</string>
     <string name="second">%s&#160;秒&#160;</string>
-    <string name="yuan">%.1f元</string>
+    <string name="yuan">%.2f&#160;元</string>
+    <string name="yuan_symbol">¥%.2f"</string>
     <string name="teach_plan">教学计划</string>
     <string name="summary">概述</string>
+    <string name="valid_date">有效期至%s</string>
+    <string name="all_station_use">全站通用</string>
+    <string name="course_application">本课程适用</string>
+    <string name="order_price_subtract">减&#160;¥&#160;%.2f</string>
+    <string name="order_price_discount">打&#160;%.2f</string>
+    <string name="order_price_total">合计:&#160;%.2f&#160;元</string>
+    <string name="virtual_coin_pay">虚拟币支付</string>
+    <string name="virtual_coin_balance">虚拟币余额:&#160;&#160;&#160;%.2f</string>
+    <string name="pay_the_amount">实付金额:&#160;&#160;&#160;</string>
+    <string name="go_pay">去支付</string>
 
 </resources>

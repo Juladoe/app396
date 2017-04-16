@@ -15,21 +15,22 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
-import com.edusoho.kuozhi.clean.module.courseset.payment.PaymentsActivity;
+import com.edusoho.kuozhi.clean.module.courseset.dialog.coupons.CouponsDialog;
+import com.edusoho.kuozhi.clean.module.courseset.payments.PaymentsActivity;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import java.util.List;
 
 /**
  * Created by DF on 2017/3/25.
  */
 
-public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnClickListener, ConfirmOrderContract.View{
+public class ConfirmOrderActivity extends BaseFinishActivity
+        implements View.OnClickListener, ConfirmOrderContract.View, CouponsDialog.ModifyView{
 
-    public static final String COURSE_SET = "course_set";
-    public static final String STUDY_PLAN = "study_plan";
+    private static final String COURSE_SET = "course_set";
+    private static final String COURSE_PROJECT = "course_project";
+    private static final String MINUS = "minus";
 
     private View mBack;
     private ImageView mCourseImg;
@@ -39,17 +40,24 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
     private ViewGroup mRlCoupon;
     private TextView mCouponSub;
     private View mPay;
-    private TextView mSum;
+    private TextView mTotal;
     private TextView mOriginal;
-    private ConfirmOrderContract.Presenter mPresenter;
-    private CourseSet mCourseSet;
-    private CourseProject mStudyPlan;
     private LoadDialog mProcessDialog;
+
+    private ConfirmOrderContract.Presenter mPresenter;
+
+    private CourseSet mCourseSet;
+    private CourseProject mCourseProject;
+    private float mTotalPrice;
+    private float mPayPrice;
+    private OrderInfo mOrderInfo;
+    private OrderInfo.Coupon mCoupon;
+    private CouponsDialog mCouponsDialog;
 
     public static void launch(Context context, CourseSet courseSet, CourseProject courseStudyPlan) {
         Intent intent = new Intent(context, ConfirmOrderActivity.class);
         intent.putExtra(COURSE_SET, courseSet);
-        intent.putExtra(STUDY_PLAN, courseStudyPlan);
+        intent.putExtra(COURSE_PROJECT, courseStudyPlan);
         context.startActivity(intent);
     }
 
@@ -61,10 +69,9 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
         showProcessDialog();
         Intent intent = getIntent();
         mCourseSet = (CourseSet) intent.getSerializableExtra(COURSE_SET);
-        mStudyPlan = (CourseProject) intent.getSerializableExtra(STUDY_PLAN);
+        mCourseProject = (CourseProject) intent.getSerializableExtra(COURSE_PROJECT);
         initView();
         initEvent();
-        showTopView();
     }
 
     private void initView() {
@@ -76,10 +83,10 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
         mRlCoupon = (ViewGroup) findViewById(R.id.rl_coupon);
         mCouponSub = (TextView) findViewById(R.id.tv_coupon_subtract);
         mPay = findViewById(R.id.tv_pay);
-        mSum = (TextView) findViewById(R.id.tv_sum);
+        mTotal = (TextView) findViewById(R.id.tv_sum);
         mOriginal = (TextView) findViewById(R.id.tv_original);
 
-        mPresenter = new ConfirmOrderPresenter(this, mStudyPlan.id);
+        mPresenter = new ConfirmOrderPresenter(this, mCourseProject.id);
         mPresenter.subscribe();
     }
 
@@ -89,6 +96,34 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
         mPay.setOnClickListener(this);
     }
 
+    @Override
+    public void showView(OrderInfo orderInfo) {
+        mOrderInfo = orderInfo;
+        mTotalPrice = orderInfo.totalPrice;
+        if (orderInfo.availableCoupons != null && orderInfo.availableCoupons.size() != 0) {
+            mCoupon = orderInfo.availableCoupons.get(0);
+            showCouponPrice();
+        } else {
+            mTotal.setText(String.format(getString(R.string.order_price_total), mTotalPrice));
+        }
+        showTopView();
+    }
+
+    private void showCouponPrice() {
+        float rate = mCoupon.rate;
+        mPayPrice = MINUS.equals(mCoupon.type) ? mTotalPrice - rate : mTotalPrice * rate;
+        mCouponSub.setText(MINUS.equals(mCoupon.type) ?
+                String.format(getString(R.string.order_price_subtract), rate)
+                : String.format(getString(R.string.order_price_discount), rate));
+        mRlCoupon.setVisibility(View.VISIBLE);
+        mTotal.setText(mPayPrice > 0 ? String.format(getString(R.string.order_price_total), mPayPrice)
+                            : getString(R.string.txt_free));
+        mTotal.setTextColor(mPayPrice > 0 ? getResources().getColor(R.color.secondary_color)
+                : getResources().getColor(R.color.primary_color));
+        mOriginal.setText(String.format(getString(R.string.yuan_symbol), mTotalPrice));
+        mOriginal.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+    }
+
     private void showTopView() {
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .showImageForEmptyUri(R.drawable.default_course)
@@ -96,17 +131,9 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
                 .showImageOnLoading(R.drawable.default_course)
                 .build();
         ImageLoader.getInstance().displayImage(mCourseSet.cover.middle, mCourseImg, imageOptions);
-        mPlanTitle.setText(mStudyPlan.title);
-        float price = mStudyPlan.price;
-        if (price > 0) {
-            mPlanPrice.setText(String.format("%s%s", "¥", price));
-        } else {
-            mPlanPrice.setTextColor(getResources().getColor(R.color.primary));
-            mPlanPrice.setText(getString(R.string.free_course_project));
-        }
+        mPlanTitle.setText(mOrderInfo.title);
+        mPlanPrice.setText(String.format(getString(R.string.yuan_symbol), mOrderInfo.totalPrice));
         mPlanFrom.setText(mCourseSet.title);
-        mOriginal.setText(String.format("%s%.2f", "¥", price));
-        mOriginal.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
     @Override
@@ -115,22 +142,19 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
         if (id == R.id.iv_back) {
             finish();
         }else if(id == R.id.rl_coupon){
-
+            showCouponDialog();
         }else if(id == R.id.tv_pay) {
-            PaymentsActivity.launch(this, mStudyPlan);
+            PaymentsActivity.launch(this, mOrderInfo, mPayPrice, mCoupon == null ? -1
+                    : mOrderInfo.availableCoupons.indexOf(mCoupon));
         }
     }
 
-    @Override
-    public void showCouponView(List<OrderInfo.AvailableCouponsBean> availableCoupons) {
-        mCouponSub.setText(String.format("%s%.2f", "减¥", availableCoupons.get(0).rate));
-        mRlCoupon.setVisibility(View.VISIBLE);
-        mRlCoupon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+    private void showCouponDialog() {
+        if (mCouponsDialog == null) {
+            mCouponsDialog = new CouponsDialog();
+            mCouponsDialog.setData(mOrderInfo.availableCoupons);
+        }
+        mCouponsDialog.show(getSupportFragmentManager(), "CouponsDialog");
     }
 
     @Override
@@ -156,5 +180,19 @@ public class ConfirmOrderActivity extends BaseFinishActivity implements View.OnC
         if (mProcessDialog.isShowing()) {
             mProcessDialog.dismiss();
         }
+    }
+
+    @Override
+    public void setPriceView(int position) {
+        mCoupon = mOrderInfo.availableCoupons.get(position);
+        float rate = mCoupon.rate;
+        mPayPrice = MINUS.equals(mCoupon.type) ? mTotalPrice - rate : mTotalPrice * rate;
+        mTotal.setText(mPayPrice > 0 ? String.format(getString(R.string.order_price_total), mPayPrice)
+                        : getString(R.string.txt_free));
+        mTotal.setTextColor(mPayPrice > 0 ? getResources().getColor(R.color.secondary_color)
+                    : getResources().getColor(R.color.primary_color));
+        mCouponSub.setText(MINUS.equals(mCoupon.type) ?
+                String.format(getString(R.string.order_price_subtract), rate)
+                : String.format(getString(R.string.order_price_discount), rate));
     }
 }

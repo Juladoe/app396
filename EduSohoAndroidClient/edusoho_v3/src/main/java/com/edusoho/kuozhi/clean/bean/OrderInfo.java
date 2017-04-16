@@ -9,31 +9,28 @@ import java.util.List;
 
 public class OrderInfo implements Serializable {
 
-    public String targetId;
+    public int targetId;
     public String targetType;
-    public int totalPrice;
+    public float totalPrice;
     public AccountBean account;
     public int hasPayPassword;
-    public String verifiedMobile;
     public String coinName;
     public String cashRate;
     public String priceType;
     public int coinPayAmount;
     public int maxCoin;
-    public String unitType;
     public String duration;
-    public String buyType;
     public int fullCoinPayable;
     public String title;
-    public List<AvailableCouponsBean> availableCoupons;
+    public List<Coupon> availableCoupons;
 
-    public static class AccountBean {
+    public static class AccountBean implements Serializable{
         public String id;
         public String userId;
         public String cash;
     }
 
-    public static class AvailableCouponsBean {
+    public static class Coupon implements Serializable{
         public String id;
         public String code;
         public String type;
@@ -43,5 +40,6 @@ public class OrderInfo implements Serializable {
         public String deadline;
         public String targetType;
         public String targetId;
+        public boolean isSelector;
     }
 }
