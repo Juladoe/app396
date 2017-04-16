@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_dialog_progress"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_dialog_progress_title"
+            android:gravity="center"
+            android:text="学习进度"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/tv_finish_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
+            android:drawableLeft="@drawable/icon_dialog_progress_info"
+            android:drawablePadding="10dp"
+            android:paddingLeft="16dp"
+            android:textColor="@color/secondary_font_color"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_plan_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:drawableLeft="@drawable/icon_dialog_progress_info"
+            android:drawablePadding="10dp"
+            android:paddingLeft="16dp"
+            android:textColor="@color/secondary_font_color"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/tv_plan_deadline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="20dp"
+            android:drawableLeft="@drawable/icon_dialog_progress_info"
+            android:drawablePadding="10dp"
+            android:paddingLeft="16dp"
+            android:textColor="@color/secondary_font_color"
+            android:textSize="13sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv_close"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:background="@drawable/bg_dialog_progress_close"
+        android:padding="8dp"
+        android:src="@drawable/close" />
+
+</RelativeLayout>

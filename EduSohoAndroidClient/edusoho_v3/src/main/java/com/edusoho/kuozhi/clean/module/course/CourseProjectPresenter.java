@@ -31,6 +31,8 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     private CourseProjectContract.View mView;
     private int mCourseProjectId;
     private CourseProject.Teacher mTeacher;
+    private CourseLearningProgress mProgress;
+    private Member mMember;
 
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
@@ -93,6 +95,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     @Override
+    public void showCourseProgressInfo() {
+        mView.launchDialogProgress(mProgress, mMember);
+    }
+
+    @Override
     public void unsubscribe() {
 
     }
@@ -121,6 +128,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.showShareButton(!isLearning);
                         mView.showFragments(initCourseModules(isLearning), courseProject);
                         if (isLearning) {
+                            mMember = member;
                             mView.initLearnedLayout();
                             setCourseLearningProgress(courseProject.id);
                         }
@@ -140,13 +148,13 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        Log.d("setCourseLearning", "onError: " + e.toString());
+
                     }
 
                     @Override
                     public void onNext(CourseLearningProgress courseLearningProgress) {
+                        mProgress = courseLearningProgress;
                         mView.setProgressBar(courseLearningProgress.progress);
-                        mView.initProgressDialog(courseLearningProgress);
                     }
                 });
     }

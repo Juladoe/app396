@@ -79,14 +79,14 @@
             style="@android:style/Widget.ProgressBar.Horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/icon_info"
+            android:layout_toLeftOf="@+id/icon_progress_info"
             android:max="100"
             android:progress="0"
             android:progressDrawable="@drawable/bg_course_progress"
             app:percent_size="@dimen/font_s" />
 
         <com.edusoho.kuozhi.clean.widget.ESIconView
-            android:id="@+id/icon_info"
+            android:id="@+id/icon_progress_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"

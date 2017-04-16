@@ -20,6 +20,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.Member;
+import com.edusoho.kuozhi.clean.module.course.progress.DialogProgress;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
@@ -29,8 +31,6 @@ import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.ImChatActivity;
 import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +58,7 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     private ESIconView mBack;
     private ESIconView mShare;
     private ESIconView mCache;
+    private ESIconView mProgressInfo;
 
     public static void launch(Context context, int courseProjectId) {
         Intent intent = new Intent(context, CourseProjectActivity.class);
@@ -91,6 +92,14 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
             }
         });
         mLearnTextView = (TextView) findViewById(R.id.tv_learn);
+        mProgressInfo = (ESIconView) findViewById(R.id.icon_progress_info);
+        mProgressInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.showCourseProgressInfo();
+            }
+        });
+
         mLearnTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,7 +135,6 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     public void showCover(String imageUrl) {
         ImageLoader.getInstance().displayImage(imageUrl, mCourseCover, EdusohoApp.app.mOptions);
     }
-
 
     @Override
     public void showFragments(List<CourseProjectEnum> courseProjectModules, CourseProject courseProject) {
@@ -176,8 +184,6 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     @Override
     public void initLearnedLayout() {
         mTabLayout.setVisibility(View.GONE);
-//        mAdapter.removeFragment(CourseProjectEnum.RATE.getPosition());
-//        mAdapter.removeFragment(CourseProjectEnum.INFO.getPosition());
         showCacheButton(true);
         showShareButton(false);
         showBottomLayout(false);
@@ -190,8 +196,8 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     @Override
-    public void initProgressDialog(CourseLearningProgress courseLearningProgress) {
-
+    public void launchDialogProgress(CourseLearningProgress progress, Member member) {
+        DialogProgress.newInstance(progress, member).show(getSupportFragmentManager(), "DialogProgress");
     }
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {

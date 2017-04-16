@@ -2,6 +2,7 @@ package com.edusoho.kuozhi.clean.module.course;
 
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
 
@@ -34,7 +35,7 @@ public interface CourseProjectContract {
 
         void setProgressBar(int progress);
 
-        void initProgressDialog(CourseLearningProgress courseLearningProgress);
+        void launchDialogProgress(CourseLearningProgress progress, Member member);
     }
 
     interface Presenter extends BasePresenter {
@@ -44,6 +45,8 @@ public interface CourseProjectContract {
         void consult();
 
         void joinCourseProject(int courseId);
+
+        void showCourseProgressInfo();
 
         //CourseProjectEnum[] initCourseModules();
     }

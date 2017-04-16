@@ -1,12 +1,13 @@
 package com.edusoho.kuozhi.clean.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by JesseHuang on 2017/4/14.
  */
 
-public class CourseLearningProgress {
+public class CourseLearningProgress implements Serializable {
 
     public int taskCount;
     public int progress;
