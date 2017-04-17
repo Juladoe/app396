@@ -36,8 +36,8 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
 
     public CourseProjectsAdapter(Context context) {
         this.mContext = context;
-        this.mList = new ArrayList();
-        this.mVipInfos = new ArrayList();
+        this.mList = new ArrayList<>();
+        this.mVipInfos = new ArrayList<>();
     }
 
     public void reFreshData(List<CourseProject> list, List<VipInfo> mVipInfos) {
