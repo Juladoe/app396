@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
@@ -16,16 +17,16 @@ import java.util.LinkedHashMap;
 public class RequestUtil {
 
     public static String handleRequestError(String jsonStr) throws RequestErrorException {
-        LinkedHashMap errorResult = null;
+        LinkedTreeMap errorResult = null;
         try {
-            errorResult = new Gson().fromJson(jsonStr, LinkedHashMap.class);
+            errorResult = new Gson().fromJson(jsonStr, LinkedTreeMap.class);
         } catch (Exception e) {
         }
         if (errorResult == null) {
             return jsonStr;
         }
         if (errorResult.containsKey("error")) {
-            LinkedHashMap<String, String> errorMap = (LinkedHashMap<String, String>) errorResult.get("error");
+            LinkedTreeMap<String, String> errorMap = (LinkedTreeMap<String, String>) errorResult.get("error");
 
             if ("not_login".equals(errorMap.get("name"))) {
                 MessageEngine.getInstance().sendMsg(Const.TOKEN_LOSE, new Bundle());
