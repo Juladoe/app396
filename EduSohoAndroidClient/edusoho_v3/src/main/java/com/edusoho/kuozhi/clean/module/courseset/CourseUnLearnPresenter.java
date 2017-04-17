@@ -198,8 +198,8 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     @Override
                     public void onNext(Discount discount) {
                         if (discount != null && STATUS_RUNNING.equals(discount.status)) {
-                                long currentTime = System.currentTimeMillis();
-                                long time = discount.endTime - currentTime / 1000;
+                                long time = TimeUtils.getMillisecond(discount.endTime) / 1000
+                                                            - System.currentTimeMillis() / 1000;
                                 if (time > 0) {
                                     mView.showDiscountInfo(discount.name, time);
 

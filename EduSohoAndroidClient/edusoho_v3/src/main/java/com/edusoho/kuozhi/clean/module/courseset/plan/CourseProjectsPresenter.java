@@ -21,7 +21,7 @@ public class CourseProjectsPresenter implements CourseProjectsContract.Presenter
 
     private int mCourseSetId;
     private CourseProjectsContract.View mView;
-    private List<CourseProject> mCourseStudyPlan;
+    private List<CourseProject> mCourseProjects;
 
     public CourseProjectsPresenter(CourseProjectsContract.View view, int id) {
         this.mView = view;
@@ -36,7 +36,7 @@ public class CourseProjectsPresenter implements CourseProjectsContract.Presenter
                 .doOnNext(new Action1<List<CourseProject>>() {
                     @Override
                     public void call(List<CourseProject> list) {
-                        mCourseStudyPlan = list;
+                        mCourseProjects = list;
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -61,13 +61,12 @@ public class CourseProjectsPresenter implements CourseProjectsContract.Presenter
                     @Override
                     public void onNext(List<VipInfo> vipInfo) {
                         mView.setLoadViewVis(false);
-                        if (mCourseStudyPlan != null && mCourseStudyPlan.size() != 0 && vipInfo != null) {
-                            mView.showComPanies(mCourseStudyPlan, vipInfo);
+                        if (mCourseProjects != null && mCourseProjects.size() != 0 && vipInfo != null) {
+                            mView.showComPanies(mCourseProjects, vipInfo);
                         }
                     }
                 });
     }
-
 
     @Override
     public void unsubscribe() {

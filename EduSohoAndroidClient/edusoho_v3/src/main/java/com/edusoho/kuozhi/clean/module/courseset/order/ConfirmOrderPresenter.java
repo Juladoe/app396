@@ -3,6 +3,7 @@ package com.edusoho.kuozhi.clean.module.courseset.order;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderContract.View;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -14,7 +15,7 @@ import rx.schedulers.Schedulers;
 
 public class ConfirmOrderPresenter implements com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderContract.Presenter {
 
-    private com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderContract.View mView;
+    private View mView;
     private int mPlanId;
 
     public ConfirmOrderPresenter(ConfirmOrderContract.View mView, int mPlanId) {

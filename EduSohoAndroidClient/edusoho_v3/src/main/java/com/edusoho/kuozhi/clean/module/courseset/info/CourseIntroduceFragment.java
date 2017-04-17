@@ -54,7 +54,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     private CourseIntroduceContract.Presenter mPresenter;
     private CourseSet mCourseSet;
     private View mDiscount;
-    private int studentNum;
+    private int mStudent;
 
     public CourseIntroduceFragment() {
     }
@@ -117,10 +117,10 @@ public class CourseIntroduceFragment extends BaseLazyFragment
         int studentNum = mCourseSet.studentNum;
         mTitleStudentNum.setText(studentNum != 0 ?
                 String.format(getContext().getString(R.string.course_student_count), studentNum) : "");
-        showCoursePrice();
+        showCourseNowPrice();
     }
 
-    private void showCoursePrice() {
+    private void showCourseNowPrice() {
         if (mCourseSet.maxCoursePrice == 0) {
             mPriceNow.setText(getContext().getString(R.string.txt_free));
             mPriceNow.setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
@@ -128,9 +128,9 @@ public class CourseIntroduceFragment extends BaseLazyFragment
             float discount = mCourseSet.discount;
             if (discount != 10) {
                 mDiscount.setVisibility(View.VISIBLE);
-                mPriceNow.setText(String.format("¥ %.2f-%.2f", (mCourseSet.minCoursePrice * discount / 10),
-                        (mCourseSet.maxCoursePrice * discount / 10)));
-                mPriceOld.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice, mCourseSet.maxCoursePrice));
+                mPriceNow.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice, mCourseSet.maxCoursePrice));
+                mPriceOld.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice / discount * 10 ,
+                        mCourseSet.maxCoursePrice / discount * 10));
                 mPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
             } else {
                 mPriceNow.setText(String.format("¥ %.2f-%.2f", mCourseSet.minCoursePrice,
@@ -170,7 +170,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
                         jumpToMember(id);
                     }
                 };
-        studentNum = data.size();
+        mStudent = data.size();
         if (data.size() == 0) {
             mStudentNone.setVisibility(View.VISIBLE);
         } else {
@@ -208,7 +208,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     }
 
     private void moreStudent() {
-        if (studentNum < 1) {
+        if (mStudent < 1) {
             return;
         }
         MobclickAgent.onEvent(getActivity(), "courseDetailsPage_introduction_moreCoursesParticipants");

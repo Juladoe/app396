@@ -60,9 +60,9 @@ public class SelectProjectDialog extends ESBottomDialog implements
     private SelectProjectDialogContract.Presenter mPresenter;
     private LoadDialog mProcessDialog;
 
-    public void setData(CourseSet courseSet, List<CourseProject> courseStudyPlans, List<VipInfo> vipInfos) {
+    public void setData(CourseSet courseSet, List<CourseProject> courseProjects, List<VipInfo> vipInfos) {
         this.mCourseSet = courseSet;
-        this.mCourseProjects = courseStudyPlans;
+        this.mCourseProjects = courseProjects;
         this.mVipInfos = vipInfos;
     }
 
@@ -201,7 +201,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
                 View view = group.findViewById(checkedId);
                 int position = group.indexOfChild(view);
                 mCourseProject = mCourseProjects.get(position);
-                setPriceView(position);
+                setPriceView();
                 setServiceView();
                 mWay.setText(FREE_STATE.equals(mCourseProject.learnMode) ?
                         getContext().getString(R.string.free_mode) : getContext().getString(R.string.locked_mode));
@@ -210,8 +210,8 @@ public class SelectProjectDialog extends ESBottomDialog implements
         };
     }
 
-    private void setPriceView(int position) {
-        if (IS_FREE.equals(mCourseProjects.get(position).isFree)) {
+    private void setPriceView() {
+        if (IS_FREE.equals(mCourseProject.isFree)) {
             mDiscount.setVisibility(View.GONE);
             mOriginalPrice.setVisibility(View.GONE);
             mDiscountPrice.setText(R.string.free_course_project);
@@ -265,7 +265,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
         }
         if (EdusohoApp.app.loginUser.vip != null
                 && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId
-                && mCourseProject.vipLevelId != 0) {
+                && mCourseProject.vipLevelId != 0 || IS_FREE.equals(mCourseProject.isFree)) {
             mConfirm.setText(R.string.txt_vip_free);
         } else {
             mConfirm.setText(R.string.confirm);

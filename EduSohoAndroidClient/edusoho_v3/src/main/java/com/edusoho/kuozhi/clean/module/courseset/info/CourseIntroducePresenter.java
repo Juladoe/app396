@@ -81,7 +81,6 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
 
     @Override
     public void unsubscribe() {
-
     }
 
 }

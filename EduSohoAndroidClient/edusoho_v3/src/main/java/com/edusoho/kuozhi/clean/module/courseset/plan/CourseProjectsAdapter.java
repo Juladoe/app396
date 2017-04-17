@@ -26,7 +26,7 @@ import java.util.List;
  * Created by DF on 2017/3/24.
  */
 
-public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAdapter.StudyPlanViewHolder>
+public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAdapter.CourseProjectViewHolder>
         implements View.OnClickListener {
 
     private List<CourseProject> mList;
@@ -54,47 +54,47 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
     }
 
     @Override
-    public StudyPlanViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new StudyPlanViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_study_plan, parent, false));
+    public CourseProjectViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return new CourseProjectViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_study_plan, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(StudyPlanViewHolder holder, int position) {
-        CourseProject courseStudyPlan = mList.get(position);
+    public void onBindViewHolder(CourseProjectViewHolder holder, int position) {
+        CourseProject courseProject = mList.get(position);
         holder.mRlItem.setOnClickListener(this);
         holder.mFlayout.removeAllViews();
-        holder.mClassType.setText(courseStudyPlan.title);
-        holder.mTask.setText(String.format(mContext.getString(R.string.course_task_num), courseStudyPlan.taskNum));
-        loadPrice(holder, courseStudyPlan);
-        loadService(holder, courseStudyPlan);
+        holder.mClassType.setText(courseProject.title);
+        holder.mTask.setText(String.format(mContext.getString(R.string.course_task_num), courseProject.taskNum));
+        loadPrice(holder, courseProject);
+        loadService(holder, courseProject);
         loadHot(holder, position);
-        loadVip(holder, courseStudyPlan);
+        loadVip(holder, courseProject);
         holder.mRlItem.setTag(position);
         holder.mRlItem.setOnClickListener(getOnClickListener());
     }
 
-    private void loadPrice(StudyPlanViewHolder holder, CourseProject courseStudyPlan) {
-        if ("1".equals(courseStudyPlan.isFree)) {
+    private void loadPrice(CourseProjectViewHolder holder, CourseProject courseProject) {
+        if (courseProject.price <= 0) {
             holder.mPrice.setText(R.string.free_course_project);
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
         } else {
-            holder.mPrice.setText(String.format("¥ %.2f", courseStudyPlan.price));
+            holder.mPrice.setText(String.format("¥ %.2f", courseProject.price));
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.secondary_color));
         }
     }
 
-    private void loadService(StudyPlanViewHolder holder, CourseProject courseStudyPlan) {
-        if (courseStudyPlan.services.length != 0) {
+    private void loadService(CourseProjectViewHolder holder, CourseProject courseProject) {
+        if (courseProject.services.length != 0) {
             holder.mService.setVisibility(View.VISIBLE);
             holder.mFlayout.setVisibility(View.VISIBLE);
-            addFlowItem(holder, courseStudyPlan.services);
+            addFlowItem(holder, courseProject.services);
         } else {
             holder.mService.setVisibility(View.GONE);
             holder.mFlayout.setVisibility(View.GONE);
         }
     }
 
-    private void loadHot(StudyPlanViewHolder holder, int position) {
+    private void loadHot(CourseProjectViewHolder holder, int position) {
         if (mList.size() > 1) {
             if (maxIndex == position) {
                 holder.mHot.setVisibility(View.VISIBLE);
@@ -106,11 +106,11 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
         }
     }
 
-    private void loadVip(StudyPlanViewHolder holder, CourseProject courseStudyPlan) {
+    private void loadVip(CourseProjectViewHolder holder, CourseProject courseProject) {
         holder.mVip.setVisibility(View.GONE);
         for (int i = 0; i < mVipInfos.size(); i++) {
             VipInfo vipInfo = mVipInfos.get(i);
-            if (courseStudyPlan.vipLevelId == vipInfo.id) {
+            if (courseProject.vipLevelId == vipInfo.id) {
                 holder.mVip.setVisibility(View.VISIBLE);
                 holder.mVip.setText(String.format(mContext.getString(R.string.vip_free), vipInfo.name));
             }
@@ -127,7 +127,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
 
     }
 
-    private void addFlowItem(StudyPlanViewHolder holder, CourseProject.Service[] services) {
+    private void addFlowItem(CourseProjectViewHolder holder, CourseProject.Service[] services) {
         int ranHeight = AppUtil.dp2px(mContext, 16);
         ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ranHeight);
         lp.setMargins(0, 0, AppUtil.dp2px(mContext, 10), 0);
@@ -145,7 +145,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
         }
     }
 
-    public View.OnClickListener getOnClickListener() {
+    private View.OnClickListener getOnClickListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,7 +155,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
         };
     }
 
-    public static class StudyPlanViewHolder extends RecyclerView.ViewHolder {
+    public static class CourseProjectViewHolder extends RecyclerView.ViewHolder {
 
         private final View mRlItem;
         private final View mHot;
@@ -166,7 +166,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
         private final TextView mVip;
         private final View mService;
 
-        public StudyPlanViewHolder(View itemView) {
+        public CourseProjectViewHolder(View itemView) {
             super(itemView);
             mRlItem = itemView.findViewById(R.id.rl_item);
             mHot = itemView.findViewById(R.id.iv_hot);
