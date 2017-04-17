@@ -7,17 +7,17 @@
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
 
     <!--微信的appsecret没有-->
-    <Wechat Id="1" SortId="1" AppId="wx9ebbb540452e7852"
-        AppSecret="d4624c36b6795d1d99dcf0547af5443d" BypassApproval="false" Enable="true" />
+    <Wechat Id="1" SortId="1" AppId="wx687252d5947e9861"
+        AppSecret="6ed99e8ea5a24733179dbe8d397a7235" BypassApproval="false" Enable="true" />
 
-    <WechatMoments Id="2" SortId="2" AppId="wx9ebbb540452e7852"
-        AppSecret="d4624c36b6795d1d99dcf0547af5443d" BypassApproval="true" Enable="true" />
+    <WechatMoments Id="2" SortId="2" AppId="wx687252d5947e9861"
+        AppSecret="6ed99e8ea5a24733179dbe8d397a7235" BypassApproval="true" Enable="true" />
 
-    <WechatFavorite Id="3" SortId="3" AppId="wx9ebbb540452e7852"
-        AppSecret="d4624c36b6795d1d99dcf0547af5443d" Enable="true" />
+    <WechatFavorite Id="3" SortId="3" AppId="wx687252d5947e9861"
+        AppSecret="6ed99e8ea5a24733179dbe8d397a7235" Enable="true" />
 
     <!--微博没有认证-->
-    <!--demo站-->   <SinaWeibo Id="4" SortId="4" AppKey="642124384" AppSecret="a9028caca78e15e5fe4f55bb412069ee"
+    <!--demo站-->   <SinaWeibo Id="4" SortId="4" AppKey="2787601314" AppSecret="e67f771b75d298cec44a2193f0c41604"
         RedirectUrl="http://v.laoshiok.com" ShareByAppClient="true" Enable="true" />
 
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
