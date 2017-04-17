@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.clean.module.courseset.order;
 
+import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
@@ -10,14 +11,16 @@ import com.edusoho.kuozhi.clean.module.base.BaseView;
 
 public interface ConfirmOrderContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
-        void showView(OrderInfo orderInfo);
+        void showPriceView(OrderInfo orderInfo);
 
         void showProcessDialog(boolean isShow);
+
+        void showTopView(CourseSet courseSet);
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
     }
 
 }

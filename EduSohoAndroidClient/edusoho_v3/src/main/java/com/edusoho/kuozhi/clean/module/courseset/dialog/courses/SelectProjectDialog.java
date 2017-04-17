@@ -52,17 +52,14 @@ public class SelectProjectDialog extends ESBottomDialog implements
     private TextView mTask;
     private TextView mVip;
     private TextView mConfirm;
-
     private List<CourseProject> mCourseProjects;
     private CourseProject mCourseProject;
     private List<VipInfo> mVipInfos;
-    private CourseSet mCourseSet;
     private SelectProjectDialogContract.Presenter mPresenter;
     private LoadDialog mProcessDialog;
 
-    public void setData(CourseSet courseSet, List<CourseProject> courseProjects, List<VipInfo> vipInfos) {
-        this.mCourseSet = courseSet;
-        this.mCourseProjects = courseProjects;
+    public void setData(List<CourseProject> courseStudyPlans, List<VipInfo> vipInfos) {
+        this.mCourseProjects = courseStudyPlans;
         this.mVipInfos = vipInfos;
     }
 
@@ -101,7 +98,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
 
     @Override
     public void goToConfirmOrderActivity() {
-        ConfirmOrderActivity.launch(getContext(), mCourseSet, mCourseProject);
+        ConfirmOrderActivity.launch(getContext(), mCourseProject.courseSetId, mCourseProject.id);
     }
 
     @Override

@@ -1,15 +1,14 @@
 package com.edusoho.kuozhi.clean.module.course;
 
-import android.util.Log;
-
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
-import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,11 +28,14 @@ import rx.schedulers.Schedulers;
 
 public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
+    private static final String IS_JOIN_SUCCESS = "success";
+    private static final float FREE_PRICE = 0f;
     private CourseProjectContract.View mView;
     private int mCourseProjectId;
     private CourseProject.Teacher mTeacher;
     private CourseLearningProgress mProgress;
     private Member mMember;
+    private CourseProject mCourseProject;
 
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
@@ -54,6 +56,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                 .doOnNext(new Action1<CourseProject>() {
                     @Override
                     public void call(CourseProject courseProject) {
+                        mCourseProject = courseProject;
                         if (courseProject.teachers.length > 0) {
                             mTeacher = courseProject.teachers[0];
                         }
@@ -85,14 +88,17 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.showCover(courseSet.cover.large);
                     }
                 });
-
-
     }
 
     @Override
-    public void joinCourseProject(int courseId) {
-        mView.initJoinCourseLayout();
-        setCourseLearningProgress(courseId);
+    public void joinCourseProject(final int courseId) {
+        if (mCourseProject.originPrice == FREE_PRICE) {
+            joinFreeOrVipCourse(EdusohoApp.app.token, courseId, "free");
+        } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId) {
+            joinFreeOrVipCourse(EdusohoApp.app.token, courseId, "vip");
+        } else {
+            mView.launchConfirmOrderActivity(mCourseProjectId, courseId);
+        }
     }
 
     @Override
@@ -103,6 +109,31 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public void unsubscribe() {
 
+    }
+
+    private void joinFreeOrVipCourse(String token, final int courseId, String joinWay) {
+        RetrofitService.joinFreeOrVipCourse(token, courseId, joinWay)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<JsonObject>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(JsonObject jsonObject) {
+                        if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
+                            mView.initJoinCourseLayout();
+                            setCourseLearningProgress(courseId);
+                        }
+                    }
+                });
     }
 
     private void initCourseMemberInfo(final CourseProject courseProject) {

@@ -1,6 +1,7 @@
 package com.edusoho.kuozhi.clean.module.courseset.order;
 
 import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderContract.View;
@@ -13,19 +14,21 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/4/6.
  */
 
-public class ConfirmOrderPresenter implements com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderContract.Presenter {
+public class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
 
-    private View mView;
-    private int mPlanId;
+    private ConfirmOrderContract.View mView;
+    private int mCourseId;
+    private int mCourseSetId;
 
-    public ConfirmOrderPresenter(ConfirmOrderContract.View mView, int mPlanId) {
+    public ConfirmOrderPresenter(ConfirmOrderContract.View mView, int courseSetId, int courseId) {
         this.mView = mView;
-        this.mPlanId = mPlanId;
+        this.mCourseId = courseId;
+        this.mCourseSetId = courseSetId;
     }
 
     @Override
     public void subscribe() {
-        RetrofitService.postOrderInfo(EdusohoApp.app.token, "course", mPlanId)
+        RetrofitService.postOrderInfo(EdusohoApp.app.token, "course", mCourseId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<OrderInfo>() {
@@ -43,8 +46,27 @@ public class ConfirmOrderPresenter implements com.edusoho.kuozhi.clean.module.co
                     public void onNext(OrderInfo orderInfo) {
                         mView.showProcessDialog(false);
                         if (orderInfo != null) {
-                            mView.showView(orderInfo);
+                            mView.showPriceView(orderInfo);
                         }
+                    }
+                });
+        RetrofitService.getCourseSet(mCourseSetId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<CourseSet>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onNext(CourseSet courseSet) {
+                        mView.showTopView(courseSet);
                     }
                 });
     }

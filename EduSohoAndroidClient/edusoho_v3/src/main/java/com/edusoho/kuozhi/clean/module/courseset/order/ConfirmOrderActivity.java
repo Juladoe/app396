@@ -28,10 +28,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  */
 
 public class ConfirmOrderActivity extends BaseFinishActivity
-        implements View.OnClickListener, ConfirmOrderContract.View, CouponsDialog.ModifyView{
+        implements View.OnClickListener, ConfirmOrderContract.View, CouponsDialog.ModifyView {
 
-    private static final String COURSE_SET = "course_set";
-    private static final String COURSE_PROJECT = "course_project";
+    private static final String COURSE_SET_ID = "course_id";
+    private static final String COURSE_ID = "course_id";
     private static final String MINUS = "minus";
 
     private Toolbar mToolbar;
@@ -48,18 +48,19 @@ public class ConfirmOrderActivity extends BaseFinishActivity
 
     private ConfirmOrderContract.Presenter mPresenter;
 
-    private CourseSet mCourseSet;
     private CourseProject mCourseProject;
     private float mTotalPrice;
     private float mPayPrice;
+    private int mCourseSetId;
+    private int mCourseId;
     private OrderInfo mOrderInfo;
     private OrderInfo.Coupon mCoupon;
     private CouponsDialog mCouponsDialog;
 
-    public static void launch(Context context, CourseSet courseSet, CourseProject courseStudyPlan) {
+    public static void launch(Context context, int courseSetId, int courseId) {
         Intent intent = new Intent(context, ConfirmOrderActivity.class);
-        intent.putExtra(COURSE_SET, courseSet);
-        intent.putExtra(COURSE_PROJECT, courseStudyPlan);
+        intent.putExtra(COURSE_SET_ID, courseSetId);
+        intent.putExtra(COURSE_ID, courseId);
         context.startActivity(intent);
     }
 
@@ -70,8 +71,8 @@ public class ConfirmOrderActivity extends BaseFinishActivity
 
         showProcessDialog();
         Intent intent = getIntent();
-        mCourseSet = (CourseSet) intent.getSerializableExtra(COURSE_SET);
-        mCourseProject = (CourseProject) intent.getSerializableExtra(COURSE_PROJECT);
+        mCourseSetId = intent.getIntExtra(COURSE_ID, 0);
+        mCourseId = intent.getIntExtra(COURSE_ID, 0);
         initView();
         initEvent();
     }
@@ -91,7 +92,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
 
-        mPresenter = new ConfirmOrderPresenter(this, mCourseProject.id);
+        mPresenter = new ConfirmOrderPresenter(this, mCourseSetId, mCourseId);
         mPresenter.subscribe();
     }
 
@@ -107,7 +108,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity
     }
 
     @Override
-    public void showView(OrderInfo orderInfo) {
+    public void showPriceView(OrderInfo orderInfo) {
         mOrderInfo = orderInfo;
         mTotalPrice = orderInfo.totalPrice;
         if (orderInfo.availableCoupons != null && orderInfo.availableCoupons.size() != 0) {
@@ -116,7 +117,6 @@ public class ConfirmOrderActivity extends BaseFinishActivity
         } else {
             mTotal.setText(String.format(getString(R.string.order_price_total), mTotalPrice));
         }
-        showTopView();
     }
 
     private void showCouponPrice() {
@@ -130,24 +130,25 @@ public class ConfirmOrderActivity extends BaseFinishActivity
         mOriginal.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     }
 
-    private void showTopView() {
+    @Override
+    public void showTopView(CourseSet courseSet) {
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
                 .showImageForEmptyUri(R.drawable.default_course)
                 .showImageOnFail(R.drawable.default_course)
                 .showImageOnLoading(R.drawable.default_course)
                 .build();
-        ImageLoader.getInstance().displayImage(mCourseSet.cover.middle, mCourseImg, imageOptions);
+        ImageLoader.getInstance().displayImage(courseSet.cover.middle, mCourseImg, imageOptions);
         mPlanTitle.setText(mOrderInfo.title);
         mPlanPrice.setText(String.format(getString(R.string.yuan_symbol), mOrderInfo.totalPrice));
-        mPlanFrom.setText(mCourseSet.title);
+        mPlanFrom.setText(courseSet.title);
     }
 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if(id == R.id.rl_coupon){
+        if (id == R.id.rl_coupon) {
             showCouponDialog();
-        }else if(id == R.id.tv_pay) {
+        } else if (id == R.id.tv_pay) {
             PaymentsActivity.launch(this, mOrderInfo, mPayPrice < 0 ? 0 : mPayPrice, mCoupon == null ? -1
                     : mOrderInfo.availableCoupons.indexOf(mCoupon));
         }
@@ -193,7 +194,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity
             mCouponSub.setText("");
             mPayPrice = mTotalPrice;
             mTotal.setText(String.format(getString(R.string.order_price_total),
-                                mTotalPrice > 0 ? mTotalPrice : 0));
+                    mTotalPrice > 0 ? mTotalPrice : 0));
             return;
         }
         mCoupon = mOrderInfo.availableCoupons.get(position);

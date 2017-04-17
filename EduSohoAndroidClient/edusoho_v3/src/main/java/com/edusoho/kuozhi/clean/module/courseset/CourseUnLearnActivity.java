@@ -374,7 +374,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     public void showPlanDialog(List<CourseProject> list, List<VipInfo> vipInfo, CourseSet courseSet) {
         if (mSelectDialog == null) {
             mSelectDialog = new SelectProjectDialog();
-            mSelectDialog.setData(courseSet, list, vipInfo);
+            mSelectDialog.setData(list, vipInfo);
         }
         mSelectDialog.show(getSupportFragmentManager(), "SelectProjectDialog");
     }
@@ -398,7 +398,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     @Override
     public void goToConfirmOrderActivity(CourseProject courseProject) {
         if (mCourseSet != null && courseProject != null) {
-            ConfirmOrderActivity.launch(this, mCourseSet, courseProject);
+            ConfirmOrderActivity.launch(this, courseProject.courseSetId, courseProject.id);
         }
     }
 
