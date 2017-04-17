@@ -79,6 +79,7 @@
                 <TextView
                     android:id="@+id/tv_discount"
                     android:text="@string/discount"
+                    android:visibility="gone"
                     android:layout_toRightOf="@id/tv_price_old"
                     android:layout_marginLeft="21dp"
                     android:textColor="@color/disabled2_hint_color"

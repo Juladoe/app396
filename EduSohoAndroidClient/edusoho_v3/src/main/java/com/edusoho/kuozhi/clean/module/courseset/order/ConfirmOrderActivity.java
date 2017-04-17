@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
@@ -30,15 +29,15 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 public class ConfirmOrderActivity extends BaseFinishActivity
         implements View.OnClickListener, ConfirmOrderContract.View, CouponsDialog.ModifyView {
 
-    private static final String COURSE_SET_ID = "course_id";
+    private static final String COURSE_SET_ID = "course_set_id";
     private static final String COURSE_ID = "course_id";
     private static final String MINUS = "minus";
 
     private Toolbar mToolbar;
     private ImageView mCourseImg;
-    private TextView mPlanTitle;
-    private TextView mPlanPrice;
-    private TextView mPlanFrom;
+    private TextView mCourseProjectTitle;
+    private TextView mCourseProjectPrice;
+    private TextView mCourseProjectFrom;
     private ViewGroup mRlCoupon;
     private TextView mCouponSub;
     private View mPay;
@@ -48,7 +47,6 @@ public class ConfirmOrderActivity extends BaseFinishActivity
 
     private ConfirmOrderContract.Presenter mPresenter;
 
-    private CourseProject mCourseProject;
     private float mTotalPrice;
     private float mPayPrice;
     private int mCourseSetId;
@@ -71,7 +69,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity
 
         showProcessDialog();
         Intent intent = getIntent();
-        mCourseSetId = intent.getIntExtra(COURSE_ID, 0);
+        mCourseSetId = intent.getIntExtra(COURSE_SET_ID, 0);
         mCourseId = intent.getIntExtra(COURSE_ID, 0);
         initView();
         initEvent();
@@ -79,9 +77,9 @@ public class ConfirmOrderActivity extends BaseFinishActivity
 
     private void initView() {
         mCourseImg = (ImageView) findViewById(R.id.iv_course_image);
-        mPlanTitle = (TextView) findViewById(R.id.tv_title);
-        mPlanPrice = (TextView) findViewById(R.id.tv_price);
-        mPlanFrom = (TextView) findViewById(R.id.tv_from_course);
+        mCourseProjectTitle = (TextView) findViewById(R.id.tv_title);
+        mCourseProjectPrice = (TextView) findViewById(R.id.tv_price);
+        mCourseProjectFrom = (TextView) findViewById(R.id.tv_from_course);
         mRlCoupon = (ViewGroup) findViewById(R.id.rl_coupon);
         mCouponSub = (TextView) findViewById(R.id.tv_coupon_subtract);
         mPay = findViewById(R.id.tv_pay);
@@ -110,13 +108,14 @@ public class ConfirmOrderActivity extends BaseFinishActivity
     @Override
     public void showPriceView(OrderInfo orderInfo) {
         mOrderInfo = orderInfo;
-        mTotalPrice = orderInfo.totalPrice;
+        mTotalPrice = orderInfo.totalPrice / orderInfo.cashRate;
         if (orderInfo.availableCoupons != null && orderInfo.availableCoupons.size() != 0) {
             mCoupon = orderInfo.availableCoupons.get(0);
             showCouponPrice();
         } else {
             mTotal.setText(String.format(getString(R.string.order_price_total), mTotalPrice));
         }
+        mCourseProjectPrice.setText(String.format(getString(R.string.yuan_symbol), mTotalPrice));
     }
 
     private void showCouponPrice() {
@@ -138,9 +137,8 @@ public class ConfirmOrderActivity extends BaseFinishActivity
                 .showImageOnLoading(R.drawable.default_course)
                 .build();
         ImageLoader.getInstance().displayImage(courseSet.cover.middle, mCourseImg, imageOptions);
-        mPlanTitle.setText(mOrderInfo.title);
-        mPlanPrice.setText(String.format(getString(R.string.yuan_symbol), mOrderInfo.totalPrice));
-        mPlanFrom.setText(courseSet.title);
+        mCourseProjectTitle.setText(mOrderInfo.title);
+        mCourseProjectFrom.setText(courseSet.title);
     }
 
     @Override

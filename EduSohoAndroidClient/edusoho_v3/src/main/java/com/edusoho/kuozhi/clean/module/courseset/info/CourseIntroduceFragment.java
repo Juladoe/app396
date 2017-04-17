@@ -49,11 +49,11 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     private View mLoadView;
     private View mPeopleLayout;
     private View mInfoLayout;
+    private View mDiscount;
 
     private int mCourseSetId;
     private CourseIntroduceContract.Presenter mPresenter;
     private CourseSet mCourseSet;
-    private View mDiscount;
     private int mStudent;
 
     public CourseIntroduceFragment() {

@@ -29,7 +29,6 @@ public class SelectProjectDialogPresenter implements SelectProjectDialogContract
 
     @Override
     public void subscribe() {
-
     }
 
     @Override

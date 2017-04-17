@@ -4,7 +4,6 @@ import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.v3.EdusohoApp;
-import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderContract.View;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;

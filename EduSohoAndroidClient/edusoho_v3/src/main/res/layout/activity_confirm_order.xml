@@ -161,7 +161,7 @@
 
         <TextView
             android:id="@+id/tv_pay"
-            android:text="@string/confirm_pay"
+            android:text="@string/confirm"
             android:textSize="@dimen/font_l"
             android:textColor="@color/disabled2_hint_color"
             android:gravity="center"
