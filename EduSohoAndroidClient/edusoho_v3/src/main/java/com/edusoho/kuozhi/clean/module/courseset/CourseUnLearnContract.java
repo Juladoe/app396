@@ -28,7 +28,7 @@ public interface CourseUnLearnContract {
 
         void showFavoriteCourseSet(boolean isFavorite);
 
-        void newFinish(boolean isShow, int content);
+        void newFinish();
 
         void showProcessDialog(boolean isShow);
 

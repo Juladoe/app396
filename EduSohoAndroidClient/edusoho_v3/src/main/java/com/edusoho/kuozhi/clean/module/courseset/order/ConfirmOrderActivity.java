@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -32,7 +34,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity
     private static final String COURSE_PROJECT = "course_project";
     private static final String MINUS = "minus";
 
-    private View mBack;
+    private Toolbar mToolbar;
     private ImageView mCourseImg;
     private TextView mPlanTitle;
     private TextView mPlanPrice;
@@ -75,7 +77,6 @@ public class ConfirmOrderActivity extends BaseFinishActivity
     }
 
     private void initView() {
-        mBack = findViewById(R.id.iv_back);
         mCourseImg = (ImageView) findViewById(R.id.iv_course_image);
         mPlanTitle = (TextView) findViewById(R.id.tv_title);
         mPlanPrice = (TextView) findViewById(R.id.tv_price);
@@ -85,15 +86,24 @@ public class ConfirmOrderActivity extends BaseFinishActivity
         mPay = findViewById(R.id.tv_pay);
         mTotal = (TextView) findViewById(R.id.tv_sum);
         mOriginal = (TextView) findViewById(R.id.tv_original);
+        mToolbar = (Toolbar) findViewById(R.id.tb_toolbar);
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
 
         mPresenter = new ConfirmOrderPresenter(this, mCourseProject.id);
         mPresenter.subscribe();
     }
 
     private void initEvent() {
-        mBack.setOnClickListener(this);
         mRlCoupon.setOnClickListener(this);
         mPay.setOnClickListener(this);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -112,12 +122,10 @@ public class ConfirmOrderActivity extends BaseFinishActivity
     private void showCouponPrice() {
         float rate = mCoupon.rate;
         mPayPrice = MINUS.equals(mCoupon.type) ? mTotalPrice - rate : mTotalPrice * rate;
-        mCouponSub.setText(MINUS.equals(mCoupon.type) ?
-                String.format(getString(R.string.order_price_subtract), rate)
+        mCouponSub.setText(MINUS.equals(mCoupon.type) ? String.format(getString(R.string.order_price_subtract), rate)
                 : String.format(getString(R.string.order_price_discount), rate));
         mRlCoupon.setVisibility(View.VISIBLE);
-        mTotal.setText(mPayPrice > 0 ? String.format(getString(R.string.order_price_total), mPayPrice)
-                            : "0.00");
+        mTotal.setText(String.format(getString(R.string.order_price_total), mPayPrice > 0 ? mPayPrice : 0));
         mOriginal.setText(String.format(getString(R.string.yuan_symbol), mTotalPrice));
         mOriginal.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     }
@@ -137,9 +145,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.iv_back) {
-            finish();
-        }else if(id == R.id.rl_coupon){
+        if(id == R.id.rl_coupon){
             showCouponDialog();
         }else if(id == R.id.tv_pay) {
             PaymentsActivity.launch(this, mOrderInfo, mPayPrice < 0 ? 0 : mPayPrice, mCoupon == null ? -1
@@ -185,14 +191,15 @@ public class ConfirmOrderActivity extends BaseFinishActivity
         if (position == -1) {
             mCoupon = null;
             mCouponSub.setText("");
-            mTotal.setText(mTotalPrice > 0 ? String.format(getString(R.string.order_price_total), mTotalPrice)
-                    : "0.00");
+            mPayPrice = mTotalPrice;
+            mTotal.setText(String.format(getString(R.string.order_price_total),
+                                mTotalPrice > 0 ? mTotalPrice : 0));
             return;
         }
         mCoupon = mOrderInfo.availableCoupons.get(position);
         float rate = mCoupon.rate;
         mPayPrice = MINUS.equals(mCoupon.type) ? mTotalPrice - rate : mTotalPrice * rate;
-        mTotal.setText(mPayPrice > 0 ? String.format(getString(R.string.order_price_total), mPayPrice) : "0.00");
+        mTotal.setText(String.format(getString(R.string.order_price_total), mPayPrice > 0 ? mPayPrice : 0));
         mCouponSub.setText(MINUS.equals(mCoupon.type) ? String.format(getString(R.string.order_price_subtract), rate)
                 : String.format(getString(R.string.order_price_discount), rate));
     }

@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -33,7 +35,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     private static final String ORDER_PRICE = "order_price";
     private static final String COUPON_POSITION_IN_COUPONS = "position";
 
-    private View mBack;
+    private Toolbar mToolbar;
     private View mAlipay;
     private TextView mVirtualCoin;
     private TextView mDiscount;
@@ -72,24 +74,32 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     }
 
     private void initView() {
-        mBack = findViewById(R.id.iv_back);
+        mToolbar = (Toolbar) findViewById(R.id.tb_toolbar);
         mAlipay = findViewById(R.id.iv_alipay);
         mVirtualCoin = (TextView) findViewById(R.id.tv_virtual_coin);
         mDiscount = (TextView) findViewById(R.id.tv_discount);
         mBalance = (TextView) findViewById(R.id.tv_available_balance);
         mAvailableName = (TextView) findViewById(R.id.tv_available_name);
         mPay = findViewById(R.id.tv_pay);
+        setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
 
         mPresenter = new PaymentsPresenter(this, mOrderInfo, mPosition);
         mPresenter.subscribe();
     }
 
     private void initEvent() {
-        mBack.setOnClickListener(this);
         mAlipay.setOnClickListener(this);
         mAlipay.setSelected(true);
         mVirtualCoin.setOnClickListener(this);
         mPay.setOnClickListener(this);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void initShow() {
@@ -103,9 +113,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.iv_back) {
-            finish();
-        } else if (id == R.id.iv_alipay) {
+        if (id == R.id.iv_alipay) {
             clickAlipay();
         } else if (id == R.id.tv_virtual_coin) {
             clickVirtual();
@@ -178,7 +186,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
 
     @Override
     public void goToAlipay(final String data) {
-        AlipayActivity.launch(this, data);
+        AlipayActivity.launch(this, data, mOrderInfo.targetId);
     }
 
     protected void showProcessDialog() {

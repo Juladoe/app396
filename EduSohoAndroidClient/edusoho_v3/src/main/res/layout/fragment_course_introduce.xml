@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="@dimen/common_5"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <FrameLayout
@@ -61,7 +61,6 @@
 
                 <TextView
                     android:id="@+id/tv_price_now"
-                    tools:text="1000000"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/secondary_color"
@@ -69,7 +68,6 @@
 
                 <TextView
                     android:id="@+id/tv_price_old"
-                    tools:text="1000000"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/common_maring0"
