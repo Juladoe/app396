@@ -125,8 +125,6 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
 
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
-        RetrofitService.init(EdusohoApp.app.host);
-
         mPresenter = new CourseProjectPresenter(mCourseProjectId, this);
         mPresenter.subscribe();
     }

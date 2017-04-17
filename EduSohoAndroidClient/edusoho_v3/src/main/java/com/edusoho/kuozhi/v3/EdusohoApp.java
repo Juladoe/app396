@@ -308,7 +308,6 @@ public class EdusohoApp extends Application {
         setHost(getString(R.string.app_host));
         notifyMap = new HashMap<>();
         initApp();
-
         IMClient.getClient().init(this);
         if (!TextUtils.isEmpty(app.token)) {
             Log.d(TAG, "bindImServerHost");

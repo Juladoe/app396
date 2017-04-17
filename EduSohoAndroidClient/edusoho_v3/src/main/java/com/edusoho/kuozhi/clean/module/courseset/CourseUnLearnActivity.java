@@ -83,7 +83,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     private Timer mTimer;
     private SelectProjectDialog mSelectDialog;
 
-    public static void launch(Context context, int courseSetId){
+    public static void launch(Context context, int courseSetId) {
         Intent intent = new Intent(context, CourseUnLearnActivity.class);
         intent.putExtra(COURSE_SET_ID, courseSetId);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -115,7 +115,8 @@ public class CourseUnLearnActivity extends BaseFinishActivity
 
     private void isJoin() {
         initView();
-        RetrofitService.init(EdusohoApp.app.host);
+        // TODO: 2017/4/17  需要修改，不能直接写在这里
+        RetrofitService.init();
         mPresenter = new CourseUnLearnPresenter(mCourseSetId, this);
         mPresenter.subscribe();
     }

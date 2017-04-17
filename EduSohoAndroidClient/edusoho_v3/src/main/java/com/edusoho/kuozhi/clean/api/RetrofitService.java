@@ -13,6 +13,7 @@ import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.bean.Review;
 import com.edusoho.kuozhi.clean.bean.TrailVideos;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 import com.google.gson.JsonObject;
 
@@ -43,7 +44,7 @@ public class RetrofitService {
 
     }
 
-    public static void init(String host) {
+    public static void init() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder().addInterceptor(new Interceptor() {
             @Override
             public Response intercept(Chain chain) throws IOException {
@@ -57,7 +58,7 @@ public class RetrofitService {
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .baseUrl("http://devtest.edusoho.cn:82/api/")
+                .baseUrl(EdusohoApp.app.host + "/api/")
                 .build();
         mApiService = retrofit.create(ApiService.class);
     }
@@ -110,12 +111,12 @@ public class RetrofitService {
         return mApiService.getMyCourseProject(token, courseSetId);
     }
 
-    public static Observable<DataPageResult<CourseMember>> getCourseSetMembers(int courseSetId,int offset,int limit) {
-        return mApiService.getCourseSetMembers(courseSetId,offset,limit);
+    public static Observable<DataPageResult<CourseMember>> getCourseSetMembers(int courseSetId, int offset, int limit) {
+        return mApiService.getCourseSetMembers(courseSetId, offset, limit);
     }
 
-    public static Observable<DataPageResult<CourseMember>> getCourseSetMember(int courseSetId,int userId) {
-        return mApiService.getCourseSetMember(courseSetId,userId);
+    public static Observable<DataPageResult<CourseMember>> getCourseSetMember(int courseSetId, int userId) {
+        return mApiService.getCourseSetMember(courseSetId, userId);
     }
 
     public static Observable<JsonObject> getFavorite(String token, int courseSetId) {
@@ -150,11 +151,11 @@ public class RetrofitService {
         return mApiService.joinFreeOrVipCourse(token, courseId, joinWay);
     }
 
-    public static Observable<JsonObject> favoriteCourseSet(String token, int courseSetId){
+    public static Observable<JsonObject> favoriteCourseSet(String token, int courseSetId) {
         return mApiService.favoriteCourseSet(token, courseSetId);
     }
 
-    public static Observable<JsonObject> cancelFavoriteCourseSet(String token, int courseSetId){
+    public static Observable<JsonObject> cancelFavoriteCourseSet(String token, int courseSetId) {
         return mApiService.cancelFavoriteCourseSet(token, courseSetId);
     }
 }

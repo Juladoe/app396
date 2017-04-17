@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
 import com.edusoho.kuozhi.v3.factory.NotificationProvider;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -308,7 +309,8 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
      */
     protected void checkSchoolApiVersion() {
         startLoading("检查网校信息");
-        ajaxGet(app.host + Const.VERIFYVERSION, new Response.Listener<String>() {
+        RequestUrl requestUrl = new RequestUrl(app.host + Const.VERIFYVERSION);
+        app.getUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 hideLoading();

@@ -9,6 +9,7 @@ import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -105,8 +106,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     private void initCourseMemberInfo(final CourseProject courseProject) {
-        //需要改为Edusoho.app.user.id
-        getCourseMember(courseProject.id, 3)
+        getCourseMember(courseProject.id, EdusohoApp.app.loginUser.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Member>() {
@@ -137,7 +137,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     private void setCourseLearningProgress(int courseId) {
-        RetrofitService.getMyCourseLearningProgress("s000bvqfov4goccowccwgkgcs8s88sc", courseId)
+        RetrofitService.getMyCourseLearningProgress(EdusohoApp.app.token, courseId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseLearningProgress>() {
