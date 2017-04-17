@@ -44,6 +44,7 @@ public class TimeUtils {
 
     /**
      * convert to date type
+     *
      * @param time UTC TIME, 1970-01-01T08:00:00+08:00
      * @return
      */
@@ -59,10 +60,29 @@ public class TimeUtils {
 
     /**
      * convert to millisecond
+     *
      * @param time UTC TIME, 1970-01-01T08:00:00+08:00
      * @return
      */
-    public static long getMillisecond(String time){
+    public static long getMillisecond(String time) {
         return getUTCtoDate(time).getTime();
+    }
+
+    /**
+     * convert to custom time
+     *
+     * @param dateFormat UTC TIME, 1970-01-01T08:00:00+08:00
+     * @return
+     */
+    public static String getStringTime(String time, String dateFormat) {
+        String customTime = "";
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
+            Date date = UTC_DATE_FORMAT.parse(time);
+            customTime = sdf.format(date);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return customTime;
     }
 }

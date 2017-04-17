@@ -26,7 +26,7 @@ import rx.schedulers.Schedulers;
 
 public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Presenter {
 
-    private static final String NO_VIP = "0";
+    private static final int NO_VIP = 0;
     private static final float FREE = 0;
     private CourseProject mCourseProject;
     private CourseProjectInfoContract.View mView;
@@ -63,7 +63,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showVip(int vipLevelId) {
-        if (!NO_VIP.equals(vipLevelId)) {
+        if (NO_VIP != vipLevelId) {
             RetrofitService.getVipLevel(vipLevelId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())

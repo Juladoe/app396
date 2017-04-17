@@ -1,8 +1,12 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
+import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
+
+import java.util.List;
 
 
 /**
@@ -17,13 +21,21 @@ public interface CourseProjectContract {
 
         void showBottomLayout(boolean visible);
 
-        void showFragments(CourseProjectEnum[] courseProjectModules, CourseProject courseProject);
+        void showFragments(List<CourseProjectEnum> courseProjectModules, CourseProject courseProject);
 
         void launchImChatWithTeacher(CourseProject.Teacher teacher);
 
         void showCacheButton(boolean visible);
 
         void showShareButton(boolean visible);
+
+        void initJoinCourseLayout();
+
+        void initLearnedLayout();
+
+        void setProgressBar(int progress);
+
+        void launchDialogProgress(CourseLearningProgress progress, Member member);
     }
 
     interface Presenter extends BasePresenter {
@@ -31,6 +43,10 @@ public interface CourseProjectContract {
         //Observable<CourseProject> getCourseProject(int id);
 
         void consult();
+
+        void joinCourseProject(int courseId);
+
+        void showCourseProgressInfo();
 
         //CourseProjectEnum[] initCourseModules();
     }
