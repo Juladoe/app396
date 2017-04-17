@@ -11,6 +11,7 @@ import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.bean.Review;
+import com.edusoho.kuozhi.clean.bean.TrailVideos;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 import com.google.gson.JsonObject;
@@ -26,6 +27,7 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Path;
 import rx.Observable;
 
 
@@ -94,6 +96,10 @@ public class RetrofitService {
 
     public static Observable<Member> getCourseMember(int courseId, int userId) {
         return mApiService.getCourseMember(courseId, userId);
+    }
+
+    public static Observable<TrailVideos> getTrailVideos(int id) {
+        return mApiService.getTrailVideos(id);
     }
 
     public static Observable<List<CourseProject>> getCourseProjects(int courseSetId) {

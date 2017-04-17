@@ -11,6 +11,7 @@ import com.edusoho.kuozhi.clean.bean.Discount;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.bean.Review;
+import com.edusoho.kuozhi.clean.bean.TrailVideos;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 import com.google.gson.JsonObject;
@@ -43,6 +44,9 @@ public interface ApiService {
 
     @GET("courses/{id}")
     Observable<CourseProject> getCourseProject(@Path("id") int id);
+
+    @GET("courses/{id}/trial_video")
+    Observable<TrailVideos> getTrailVideos(@Path("id") int id);
 
     @GET("course_sets/{id}/reviews")
     Observable<CourseReview> getCourseReview(@Path("id") int id, @Query("limit") int limit, @Query("offset") int offset);
