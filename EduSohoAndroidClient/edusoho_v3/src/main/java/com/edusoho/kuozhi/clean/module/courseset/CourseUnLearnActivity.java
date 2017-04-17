@@ -250,10 +250,7 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     }
 
     @Override
-    public void newFinish(boolean isShow, int content) {
-        if (isShow) {
-            CommonUtil.shortToast(getBaseContext(), getResources().getString(content));
-        }
+    public void newFinish() {
         finish();
     }
 
@@ -399,9 +396,9 @@ public class CourseUnLearnActivity extends BaseFinishActivity
     }
 
     @Override
-    public void goToConfirmOrderActivity(CourseProject courseStudyPlan) {
-        if (mCourseSet != null && courseStudyPlan != null) {
-            ConfirmOrderActivity.launch(this, mCourseSet, courseStudyPlan);
+    public void goToConfirmOrderActivity(CourseProject courseProject) {
+        if (mCourseSet != null && courseProject != null) {
+            ConfirmOrderActivity.launch(this, mCourseSet, courseProject);
         }
     }
 

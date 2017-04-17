@@ -33,8 +33,9 @@ class PaymentsPresenter implements com.edusoho.kuozhi.clean.module.courseset.pay
     private static final String COUPON_CODE = "couponCode";
     private static final String PAY_PASSWORD = "payPassword";
     private static final String COIN_PAYAMOUNT = "coinPayAmount";
-
-    private static final String STATUS = "paid";
+    private static final String PAYMENT_HTML = "paymentHtml";
+    private static final String STATUS = "status";
+    private static final String STATUS_PAID = "paid";
 
     private View mView;
     private OrderInfo mOrderInfo;
@@ -81,20 +82,24 @@ class PaymentsPresenter implements com.edusoho.kuozhi.clean.module.courseset.pay
 
                     @Override
                     public void onNext(JsonObject jsonObject) {
-                        mView.showLoadDialog(false);
-                        if (STATUS.equals(jsonObject.get("status").getAsString())) {
-                            mView.sendBroad();
-                            return;
-                        }
-                        if (COIN.equals(payment)) {
-                            String data = jsonObject.get("paymentHtml").getAsString();
-                            Pattern p = Pattern.compile("post");
-                            Matcher m = p.matcher(data);
-                            data = m.replaceFirst("get");
-                            mView.goToAlipay(data);
-                        }
+                        responseDeal(jsonObject, payment);
                     }
                 });
+    }
+
+    private void responseDeal(JsonObject jsonObject, String payment) {
+        mView.showLoadDialog(false);
+        if (STATUS_PAID.equals(jsonObject.get(STATUS).getAsString())) {
+            mView.sendBroad();
+            return;
+        }
+        if (ALIPAY.equals(payment)) {
+            String data = jsonObject.get(PAYMENT_HTML).getAsString();
+            Pattern p = Pattern.compile("post");
+            Matcher m = p.matcher(data);
+            data = m.replaceFirst("get");
+            mView.goToAlipay(data);
+        }
     }
 
     @NonNull

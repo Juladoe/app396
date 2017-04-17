@@ -56,7 +56,8 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     @Override
     public void subscribe() {
         if (mCourseSetId == 0) {
-            mView.newFinish(true, R.string.lesson_unexit);
+            mView.showToast(R.string.lesson_unexit);
+            mView.newFinish();
             return;
         }
         isJoin();
@@ -75,7 +76,8 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
                         @Override
                         public void onError(Throwable e) {
-                            mView.newFinish(true, R.string.lesson_unexit);
+                            mView.showToast(R.string.lesson_unexit);
+                            mView.newFinish();
                         }
 
                         @Override
@@ -141,7 +143,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
                     @Override
                     public void onError(Throwable e) {
-                        mView.newFinish(false, 0);
+                        mView.newFinish();
                     }
 
                     @Override
@@ -195,15 +197,13 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
                     @Override
                     public void onNext(Discount discount) {
-                        if (discount != null) {
-                            if (STATUS_RUNNING.equals(discount.status)) {
+                        if (discount != null && STATUS_RUNNING.equals(discount.status)) {
                                 long currentTime = System.currentTimeMillis();
-                                long time = TimeUtils.getMillisecond(discount.endTime) / 1000 - currentTime / 1000;
+                                long time = discount.endTime - currentTime / 1000;
                                 if (time > 0) {
                                     mView.showDiscountInfo(discount.name, time);
 
                                 }
-                            }
                         }
                     }
                 });
@@ -325,9 +325,10 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
         List<CourseMember> list = courseSetMembers.data;
         if (list != null) {
             mView.goToCourseProjectActivity(getLastCourseId(list));
-            mView.newFinish(false, 0);
+            mView.newFinish();
         } else {
-            mView.newFinish(true, R.string.lesson_unexit);
+            mView.showToast(R.string.lesson_unexit);
+            mView.newFinish();
         }
     }
 
@@ -364,7 +365,8 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     public void onNext(JsonObject jsonObject) {
                         if (jsonObject.get(IS_JOIN_SUCCESS).getAsBoolean()) {
                             mView.goToCourseProjectActivity(mCourseProjects.get(0).id);
-                            mView.newFinish(true, R.string.join_success);
+                            mView.showToast(R.string.join_success);
+                            mView.newFinish();
                         } else {
                             mView.showProcessDialog(false);
                             mView.showToast(R.string.join_fail);

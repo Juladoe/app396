@@ -12,6 +12,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 /**
@@ -20,14 +21,19 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 public class AlipayActivity extends AppCompatActivity implements AlipayContract.View{
 
+    private static final String TARGET_ID = "targetId";
+    private static final String URL_DATA = "urlData";
+
     private LoadDialog mProcessDialog;
     private WebView mAlipay;
     private String mData;
+    private int mTargetId;
 
 
-    public static void launch(Context context, String data) {
+    public static void launch(Context context, String data, int targetId) {
         Intent intent = new Intent(context, AlipayActivity.class);
-        intent.putExtra("Data", data);
+        intent.putExtra(URL_DATA, data);
+        intent.putExtra(TARGET_ID, targetId);
         context.startActivity(intent);
     }
 
@@ -35,7 +41,8 @@ public class AlipayActivity extends AppCompatActivity implements AlipayContract.
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alipay);
-        mData = getIntent().getStringExtra("Data");
+        mData = getIntent().getStringExtra(URL_DATA);
+        mTargetId = getIntent().getIntExtra(TARGET_ID, 0);
 
         initView();
         initData();
@@ -100,5 +107,7 @@ public class AlipayActivity extends AppCompatActivity implements AlipayContract.
         Intent intent = new Intent();
         intent.setAction("Finish");
         sendBroadcast(intent);
+        CourseProjectActivity.launch(this, mTargetId);
+        finish();
     }
 }

@@ -11,7 +11,7 @@ public class Discount implements Serializable {
     public int id;
     public String name;
     public String type;
-    public String startTime;
-    public String endTime;
+    public long startTime;
+    public long endTime;
     public String status;
 }
