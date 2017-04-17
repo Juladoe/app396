@@ -1,9 +1,7 @@
-package com.edusoho.kuozhi.clean.module.courseset.payment;
+package com.edusoho.kuozhi.clean.module.courseset.payments;
 
 import com.edusoho.kuozhi.clean.module.base.BasePresenter;
 import com.edusoho.kuozhi.clean.module.base.BaseView;
-
-import java.util.Map;
 
 /**
  * Created by DF on 2017/4/7.
@@ -17,11 +15,13 @@ public interface PaymentsContract {
 
         void goToAlipay(String data);
 
+        void sendBroad();
+
     }
 
     interface Presenter extends BasePresenter{
 
-        void createOrderAndPay(Map<String, String> map, String type, String payment);
+        void createOrderAndPay(final String payment, String password, float orderPrice);
 
     }
 

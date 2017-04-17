@@ -11,21 +11,35 @@ public class OrderInfo implements Serializable {
 
     public int targetId;
     public String targetType;
-    public String totalPrice;
-    public String title;
+    public float totalPrice;
     public AccountBean account;
     public int hasPayPassword;
-    public String verifiedMobile;
+    public String coinName;
     public String cashRate;
     public String priceType;
     public int coinPayAmount;
     public int maxCoin;
+    public String duration;
     public int fullCoinPayable;
-    public List<?> availableCoupons;
+    public String title;
+    public List<Coupon> availableCoupons;
 
-    public static class AccountBean {
-        public int id;
+    public static class AccountBean implements Serializable{
+        public String id;
         public String userId;
-        public String cash;
+        public float cash;
+    }
+
+    public static class Coupon implements Serializable{
+        public String id;
+        public String code;
+        public String type;
+        public String status;
+        public float rate;
+        public String userId;
+        public String deadline;
+        public String targetType;
+        public String targetId;
+        public boolean isSelector;
     }
 }

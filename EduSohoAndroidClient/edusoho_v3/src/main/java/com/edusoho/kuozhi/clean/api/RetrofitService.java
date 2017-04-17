@@ -78,10 +78,6 @@ public class RetrofitService {
         return mApiService.getCourseReview(courseSetId, limit, offset);
     }
 
-    public static Observable<List<CourseProject>> getCourseStudyPlan(int courseSetId) {
-        return mApiService.getCourseStudyPlan(courseSetId);
-    }
-
     public static Observable<List<VipInfo>> getVipInfo() {
         return mApiService.getVipInfo();
     }
@@ -110,20 +106,24 @@ public class RetrofitService {
         return mApiService.getMyJoinCourses(token, courseSetId);
     }
 
-    public static Observable<List<CourseProject>> getMyCourseProject(String token, int courseSetId) {
+    public static Observable<List<CourseProject>> getMyCourseProjects(String token, int courseSetId) {
         return mApiService.getMyCourseProject(token, courseSetId);
     }
 
-    public static Observable<DataPageResult<CourseMember>> getCourseSetMember(int courseSetId) {
-        return mApiService.getCourseSetMember(courseSetId);
+    public static Observable<DataPageResult<CourseMember>> getCourseSetMembers(int courseSetId, int offset, int limit) {
+        return mApiService.getCourseSetMembers(courseSetId, offset, limit);
+    }
+
+    public static Observable<DataPageResult<CourseMember>> getCourseSetMember(int courseSetId, int userId) {
+        return mApiService.getCourseSetMember(courseSetId, userId);
     }
 
     public static Observable<CourseLearningProgress> getMyCourseLearningProgress(String token, int courseId) {
         return mApiService.getMyCourseLearningProgress(token, courseId);
     }
 
-    public static Observable<JsonObject> getFavorite(int userId, int courseSetId) {
-        return mApiService.getFavorite(userId, courseSetId);
+    public static Observable<JsonObject> getFavorite(String token, int courseSetId) {
+        return mApiService.getFavorite(token, courseSetId);
     }
 
     public static Observable<DataPageResult<Review>> getCourseProjectReviews(int courseId, int offset, int limit) {
@@ -146,11 +146,15 @@ public class RetrofitService {
         return mApiService.goPay(token, id, type, payWay);
     }
 
-    public static Observable<String> getMyVirtualCoin() {
-        return mApiService.getMyVirtualCoin();
+    public static Observable<JsonObject> joinFreeOrVipCourse(String token, int courseId, String joinWay) {
+        return mApiService.joinFreeOrVipCourse(token, courseId, joinWay);
     }
 
-    public static Observable<JsonObject> joinFreeCourse(String token) {
-        return mApiService.joinFreeCourse(token);
+    public static Observable<JsonObject> favoriteCourseSet(String token, int courseSetId) {
+        return mApiService.favoriteCourseSet(token, courseSetId);
+    }
+
+    public static Observable<JsonObject> cancelFavoriteCourseSet(String token, int courseSetId) {
+        return mApiService.cancelFavoriteCourseSet(token, courseSetId);
     }
 }

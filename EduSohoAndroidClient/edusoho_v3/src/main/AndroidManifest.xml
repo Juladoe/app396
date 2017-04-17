@@ -349,7 +349,7 @@
             android:theme="@style/AppThemeNoActionBar"/>
 
         <activity
-            android:name=".clean.module.courseset.payment.PaymentsActivity"
+            android:name=".clean.module.courseset.payments.PaymentsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar"/>

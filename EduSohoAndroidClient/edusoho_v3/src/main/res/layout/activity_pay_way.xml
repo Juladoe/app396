@@ -62,7 +62,6 @@
 
         <TextView
             android:id="@+id/tv_virtual_coin"
-            android:text="虚拟币支付"
             android:background="@drawable/pay_way_bg_selector"
             android:paddingLeft="22dp"
             android:drawableLeft="@drawable/virtual_coin"
@@ -75,14 +74,37 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_marginTop="@dimen/common_40"
+        android:layout_marginTop="@dimen/common_25"
         android:layout_marginLeft="@dimen/common_15"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
         <TextView
-            android:text="实付金额:   "
+            android:id="@+id/tv_available_name"
+            android:textSize="@dimen/font_s"
+            android:textColor="@color/primary_font_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/tv_available_balance"
+            android:textSize="@dimen/font_s"
+            android:textColor="@color/secondary_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="@dimen/common_5"
+        android:layout_marginLeft="@dimen/common_15"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:text="@string/pay_the_amount"
             android:textSize="@dimen/font_s"
             android:textColor="@color/primary_font_color"
             android:layout_width="wrap_content"
@@ -100,7 +122,7 @@
 
     <TextView
         android:id="@+id/tv_pay"
-        android:text="去支付"
+        android:text="@string/go_pay"
         android:gravity="center"
         android:textColor="@color/disabled2_hint_color"
         android:textSize="@dimen/font_xl"
@@ -108,10 +130,5 @@
         android:background="@color/primary"
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_45" />
-
-    <TextView
-        android:id="@+id/tv"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
 
 </LinearLayout>

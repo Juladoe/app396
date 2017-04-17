@@ -1,7 +1,6 @@
 package com.edusoho.kuozhi.v3.model.bal.course;
 
 import com.edusoho.kuozhi.v3.model.bal.Teacher;
-import com.edusoho.kuozhi.v3.model.bal.User;
 
 import java.io.Serializable;
 
@@ -18,6 +17,7 @@ public class Course implements Serializable {
     public String coinPrice;
     public String originCoinPrice;
     public int id;
+    public int courseSetId;
     public int parentId;
     public String subtitle;
     public String expiryDay;

@@ -21,7 +21,7 @@ public class CourseProjectsPresenter implements CourseProjectsContract.Presenter
 
     private int mCourseSetId;
     private CourseProjectsContract.View mView;
-    List<CourseProject> mCourseStudyPlen;
+    private List<CourseProject> mCourseStudyPlan;
 
     public CourseProjectsPresenter(CourseProjectsContract.View view, int id) {
         this.mView = view;
@@ -30,13 +30,13 @@ public class CourseProjectsPresenter implements CourseProjectsContract.Presenter
 
     @Override
     public void subscribe() {
-        getCourseStudyPlan(mCourseSetId)
+        getCourseProjects(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<List<CourseProject>>() {
                     @Override
                     public void call(List<CourseProject> list) {
-                        mCourseStudyPlen = list;
+                        mCourseStudyPlan = list;
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -61,8 +61,8 @@ public class CourseProjectsPresenter implements CourseProjectsContract.Presenter
                     @Override
                     public void onNext(List<VipInfo> vipInfo) {
                         mView.setLoadViewVis(false);
-                        if (mCourseStudyPlen != null && mCourseStudyPlen.size() != 0 && vipInfo != null) {
-                            mView.showComPanies(mCourseStudyPlen, vipInfo);
+                        if (mCourseStudyPlan != null && mCourseStudyPlan.size() != 0 && vipInfo != null) {
+                            mView.showComPanies(mCourseStudyPlan, vipInfo);
                         }
                     }
                 });
@@ -74,8 +74,8 @@ public class CourseProjectsPresenter implements CourseProjectsContract.Presenter
 
     }
 
-    private Observable<List<CourseProject>> getCourseStudyPlan(int courseSetId) {
-        return RetrofitService.getCourseStudyPlan(courseSetId);
+    private Observable<List<CourseProject>> getCourseProjects(int courseSetId) {
+        return RetrofitService.getCourseProjects(courseSetId);
     }
 
     private Observable<List<VipInfo>> getVipInfo() {

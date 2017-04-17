@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset;
+package com.edusoho.kuozhi.clean.module.courseset.dialog.courses;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -21,8 +21,13 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
+import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESBottomDialog;
+import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
+import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.util.List;
 
@@ -30,11 +35,12 @@ import java.util.List;
  * Created by DF on 2017/4/12.
  */
 
-public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialog.BottomDialogContentView {
+public class SelectProjectDialog extends ESBottomDialog implements
+        ESBottomDialog.BottomDialogContentView, SelectProjectDialogContract.View {
 
-    public static final String COURSE_SET = "1";
-    public static final String STUDY_PLANS = "2";
-    public static final String VIP_INFOS = "3";
+    private final String IS_FREE = "1";
+    private final String FREE_STATE = "freeState";
+
     private RadioButton mRb;
     private RadioGroup mRg;
     private View mDiscount;
@@ -45,16 +51,19 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
     private TextView mValidity;
     private TextView mTask;
     private TextView mVip;
+    private TextView mConfirm;
 
-    private List<CourseProject> mCourseStudyPlans;
-    private CourseProject mCourseStudyPlan;
+    private List<CourseProject> mCourseProjects;
+    private CourseProject mCourseProject;
     private List<VipInfo> mVipInfos;
     private CourseSet mCourseSet;
+    private SelectProjectDialogContract.Presenter mPresenter;
+    private LoadDialog mProcessDialog;
 
-    public void setData(CourseSet mCourseSet, List<CourseProject> mCourseStudyPlans, List<VipInfo> mVipInfos) {
-        this.mCourseSet = mCourseSet;
-        this.mCourseStudyPlans = mCourseStudyPlans;
-        this.mVipInfos = mVipInfos;
+    public void setData(CourseSet courseSet, List<CourseProject> courseStudyPlans, List<VipInfo> vipInfos) {
+        this.mCourseSet = courseSet;
+        this.mCourseProjects = courseStudyPlans;
+        this.mVipInfos = vipInfos;
     }
 
     @Override
@@ -67,11 +76,41 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
     public View getContentView(ViewGroup parentView) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_confirm_select, parentView, false);
         initView(view);
-        addButton();
         return view;
     }
 
+    @Override
+    public void setButtonState(TextView btn) {
+        mConfirm = btn;
+        addButton();
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.confirm(mCourseProject);
+            }
+        });
+    }
+
+    @Override
+    public void showToastOrFinish(int content, boolean isFinish) {
+        CommonUtil.shortToast(getContext(), getString(content));
+        if (isFinish) {
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void goToConfirmOrderActivity() {
+        ConfirmOrderActivity.launch(getContext(), mCourseSet, mCourseProject);
+    }
+
+    @Override
+    public void goToCourseProjectActivity() {
+        CourseProjectActivity.launch(getContext(), mCourseProject.id);
+    }
+
     private void initView(View view) {
+        mPresenter = new SelectProjectDialogPresenter(this);
         mRg = (RadioGroup) view.findViewById(R.id.rg_type);
         mRg.setOnCheckedChangeListener(getOnCheckedChangeListener());
         mDiscount = view.findViewById(R.id.discount);
@@ -90,12 +129,37 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
         });
     }
 
+    @Override
+    public void showProcessDialog(boolean isShow) {
+        if (isShow) {
+            showProcessDialog();
+        } else {
+            hideProcessDialog();
+        }
+    }
+
+    protected void showProcessDialog() {
+        if (mProcessDialog == null) {
+            mProcessDialog = LoadDialog.create(getContext());
+        }
+        mProcessDialog.show();
+    }
+
+    protected void hideProcessDialog() {
+        if (mProcessDialog == null) {
+            return;
+        }
+        if (mProcessDialog.isShowing()) {
+            mProcessDialog.dismiss();
+        }
+    }
+
     /**
      * 动态添加RadioButton到RadioGroup中
      */
     private void addButton() {
         int mostStudentNumPlan = getMostStudentNumPlan();
-        for (int i = 0; i < mCourseStudyPlans.size(); i++) {
+        for (int i = 0; i < mCourseProjects.size(); i++) {
             mRb = new RadioButton(getContext());
             mRb.setGravity(Gravity.CENTER);
             RadioGroup.LayoutParams mp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -106,7 +170,7 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
             mRb.setPadding(AppUtil.dp2px(getContext(), 7), AppUtil.dp2px(getContext(), 4)
                     , AppUtil.dp2px(getContext(), 7), AppUtil.dp2px(getContext(), 4));
             mRb.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.teach_type_rb_selector));
-            mRb.setText(mCourseStudyPlans.get(i).title);
+            mRb.setText(mCourseProjects.get(i).title);
             if (mostStudentNumPlan == i) {
                 Drawable drawable = getContext().getResources().getDrawable(R.drawable.hot);
                 drawable.setBounds(0, 0, AppUtil.dp2px(getContext(), 10), AppUtil.dp2px(getContext(), 13));
@@ -122,11 +186,9 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
 
     private int getMostStudentNumPlan() {
         int index = 0;
-        for (int i = 0; i < mCourseStudyPlans.size(); i++) {
-            if (i > 0) {
-                if (mCourseStudyPlans.get(i - 1).studentNum < mCourseStudyPlans.get(i).studentNum) {
-                    index = i;
-                }
+        for (int i = 0; i < mCourseProjects.size(); i++) {
+            if (i > 0 && mCourseProjects.get(i - 1).studentNum < mCourseProjects.get(i).studentNum) {
+                index = i;
             }
         }
         return index;
@@ -138,43 +200,39 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
             public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
                 View view = group.findViewById(checkedId);
                 int position = group.indexOfChild(view);
-                mCourseStudyPlan = mCourseStudyPlans.get(position);
+                mCourseProject = mCourseProjects.get(position);
                 setPriceView(position);
                 setServiceView();
-                mWay.setText("freeMode".equals(mCourseStudyPlan.learnMode) ?
+                mWay.setText(FREE_STATE.equals(mCourseProject.learnMode) ?
                         getContext().getString(R.string.free_mode) : getContext().getString(R.string.locked_mode));
                 setOtherView();
-//                if (EdusohoApp.app.loginUser != null && EdusohoApp.app.loginUser.vip.levelId > mCourseStudyPlan.vipLevelId) {
-//                    ((TextView) findViewById(R.id.tv_confirm)).setText(getContext().getString(R.string.txt_vip_free));
-//                }
             }
         };
     }
 
     private void setPriceView(int position) {
-        if ("1".equals(mCourseStudyPlans.get(position).isFree)) {
+        if (IS_FREE.equals(mCourseProjects.get(position).isFree)) {
             mDiscount.setVisibility(View.GONE);
             mOriginalPrice.setVisibility(View.GONE);
             mDiscountPrice.setText(R.string.free_course_project);
             mDiscountPrice.setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
         } else {
             mDiscountPrice.setTextColor(ContextCompat.getColor(getContext(), R.color.secondary_color));
-            if (mCourseStudyPlan.price == mCourseStudyPlan.price) {
+            if (mCourseProject.price == mCourseProject.price) {
                 mDiscount.setVisibility(View.GONE);
-                mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseStudyPlan.price));
+                mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.price));
                 return;
             }
             mDiscount.setVisibility(View.VISIBLE);
-            mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseStudyPlan.price));
-            mOriginalPrice.setText(String.format("%s%.2f", "¥ ", mCourseStudyPlan.originPrice));
+            mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.price));
+            mOriginalPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.originPrice));
             mOriginalPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-            ;
         }
     }
 
     private void setServiceView() {
         mService.setVisibility(View.GONE);
-        CourseProject.Service[] services = mCourseStudyPlan.services;
+        CourseProject.Service[] services = mCourseProject.services;
         if (services != null && services.length != 0) {
             mService.setVisibility(View.VISIBLE);
             StringBuilder sb = new StringBuilder();
@@ -190,26 +248,28 @@ public class SelectProjectDialog extends ESBottomDialog implements ESBottomDialo
     }
 
     private void setOtherView() {
-        if ("days".equals(mCourseStudyPlan.expiryMode)) {
-            mValidity.setText(String.format(getContext().getString(R.string.validity_day), mCourseStudyPlan.expiryDays));
+        if ("days".equals(mCourseProject.expiryMode)) {
+            mValidity.setText(String.format(getContext().getString(R.string.validity_day), mCourseProject.expiryDays));
         } else {
             mValidity.setText(R.string.validity_forever);
         }
-        mTask.setText(String.format(getContext().getString(R.string.course_task_num), mCourseStudyPlan.taskNum));
+        mTask.setText(String.format(getContext().getString(R.string.course_task_num), mCourseProject.taskNum));
         mVip.setVisibility(View.GONE);
         for (int i = 0; i < mVipInfos.size(); i++) {
             VipInfo vipInfo = mVipInfos.get(i);
-            if (vipInfo.id == mCourseStudyPlan.vipLevelId) {
+            if (vipInfo.id == mCourseProject.vipLevelId) {
                 mVip.setVisibility(View.VISIBLE);
                 mVip.setText(String.format(getContext().getString(R.string.vip_free), vipInfo.name));
                 break;
             }
         }
-    }
-
-    @Override
-    public void setButtonState(TextView btn) {
-
+        if (EdusohoApp.app.loginUser.vip != null
+                && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId
+                && mCourseProject.vipLevelId != 0) {
+            mConfirm.setText(R.string.txt_vip_free);
+        } else {
+            mConfirm.setText(R.string.confirm);
+        }
     }
 
     @Override

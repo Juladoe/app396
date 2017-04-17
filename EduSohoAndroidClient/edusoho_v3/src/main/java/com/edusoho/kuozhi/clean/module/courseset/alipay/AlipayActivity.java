@@ -25,7 +25,7 @@ public class AlipayActivity extends AppCompatActivity implements AlipayContract.
     private String mData;
 
 
-    public static void newInstance(Context context, String data) {
+    public static void launch(Context context, String data) {
         Intent intent = new Intent(context, AlipayActivity.class);
         intent.putExtra("Data", data);
         context.startActivity(intent);

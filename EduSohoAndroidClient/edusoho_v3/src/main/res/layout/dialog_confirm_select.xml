@@ -58,7 +58,7 @@
             android:layout_height="@dimen/common_16" />
 
     </LinearLayout>
-    
+
     <View
         android:background="@color/disabled_hint_color"
         android:layout_marginLeft="@dimen/common_15"
@@ -81,7 +81,7 @@
         android:layout_marginLeft="@dimen/common_15"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    
+
     <View
         android:background="@color/disabled_hint_color"
         android:layout_marginTop="@dimen/common_15"

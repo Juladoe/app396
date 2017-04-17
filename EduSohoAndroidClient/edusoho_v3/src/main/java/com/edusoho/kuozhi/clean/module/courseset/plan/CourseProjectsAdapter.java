@@ -78,7 +78,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
             holder.mPrice.setText(R.string.free_course_project);
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
         } else {
-            holder.mPrice.setText("¥ " + courseStudyPlan.price);
+            holder.mPrice.setText(String.format("¥ %.2f", courseStudyPlan.price));
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.secondary_color));
         }
     }

@@ -19,6 +19,7 @@ import com.google.gson.JsonObject;
 import java.util.List;
 import java.util.Map;
 
+import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
@@ -37,25 +38,26 @@ import rx.Observable;
 public interface ApiService {
 
     @GET("course_sets/{id}")
-    Observable<CourseSet> getCourseSet(@Path("id") int id);
+    Observable<CourseSet> getCourseSet(@Path("id") int courseSetId);
 
     @GET("courses/{id}/items")
-    Observable<List<CourseItem>> getCourseItems(@Path("id") int id);
+    Observable<List<CourseItem>> getCourseItems(@Path("id") int courseId);
 
     @GET("courses/{id}")
-    Observable<CourseProject> getCourseProject(@Path("id") int id);
+    Observable<CourseProject> getCourseProject(@Path("id") int courseId);
 
     @GET("courses/{id}/trial_video")
     Observable<TrailVideos> getTrailVideos(@Path("id") int id);
 
     @GET("course_sets/{id}/reviews")
-    Observable<CourseReview> getCourseReview(@Path("id") int id, @Query("limit") int limit, @Query("offset") int offset);
-
-    @GET("course_sets/{course_setId}/courses")
-    Observable<List<CourseProject>> getCourseStudyPlan(@Path("course_setId") int courseSetId);
+    Observable<CourseReview> getCourseReview(@Path("id") int courseSetId, @Query("limit") int limit, @Query("offset") int offset);
 
     @GET("course_sets/{courseSetId}/members")
-    Observable<DataPageResult<CourseMember>> getCourseSetMember(@Path("courseSetId") int id);
+    Observable<DataPageResult<CourseMember>> getCourseSetMembers(@Path("courseSetId") int courseSetId
+                                                , @Query("offset") int offset, @Query("limit") int limit);
+
+    @GET("course_sets/{courseSetId}/members")
+    Observable<DataPageResult<CourseMember>> getCourseSetMember(@Path("courseSetId") int courseSetId, @Query("userId") int userId);
 
     @GET("me/join_in_courses")
     Observable<List<CourseMember>> getMyJoinCourses(@Header("X-Auth-Token") String token, @Query("courseSetId") int courseSetId);
@@ -82,8 +84,8 @@ public interface ApiService {
     @GET("course_sets/{id}/courses")
     Observable<List<CourseProject>> getCourseProjects(@Path("id") int courseSetId);
 
-    @GET("users/{userId}/favorite_course_sets/{courseSetId}")
-    Observable<JsonObject> getFavorite(@Path("userId") int userId, @Path("courseSetId") int courseId);
+    @GET("me/favorite_course_sets/{courseSetId}")
+    Observable<JsonObject> getFavorite(@Header("X-Auth-Token") String token, @Path("courseSetId") int courseSetId);
 
     @GET("courses/{courseId}/reviews")
     Observable<DataPageResult<Review>> getCourseProjectReviews(@Path("courseId") int courseId,
@@ -109,8 +111,14 @@ public interface ApiService {
 
     @FormUrlEncoded
     @POST("courses/{id}/members")
-    Observable<JsonObject> joinFreeCourse(@Header("X-Auth-Token") String token);
+    Observable<JsonObject> joinFreeOrVipCourse(@Header("X-Auth-Token") String token,
+                                          @Path("id") int courseId, @Field("joinWay") String joinWay);
 
-    @GET("me/cash_account")
-    Observable<String> getMyVirtualCoin();
+    @FormUrlEncoded
+    @POST("me/favorite_course_sets")
+    Observable<JsonObject> favoriteCourseSet(@Header("X-Auth-Token") String token, @Field("courseSetId") int courseSetId);
+
+    @DELETE("me/favorite_course_sets/{courseSetId}")
+    Observable<JsonObject> cancelFavoriteCourseSet(@Header("X-Auth-Token") String token, @Path("courseSetId") int courseSetId);
+
 }

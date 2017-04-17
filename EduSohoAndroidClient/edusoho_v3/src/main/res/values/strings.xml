@@ -440,6 +440,7 @@
 
     <string name="course_introduce">课程简介</string>
     <string name="discount">折</string>
+    <string name="discount_price">%1$.2f&#160;折</string>
     <string name="course_project_favorite">收藏</string>
     <string name="course_project_consult">咨询</string>
     <string name="learn_course_project">加入学习</string>
@@ -452,7 +453,7 @@
     <string name="confirm1">确认</string>
     <string name="cancle">取消</string>
     <string name="vip_free">%s会员免费加入学习</string>
-    <string name="review_free">来自: %s</string>
+    <string name="review_free">来自: %1$s</string>
     <string name="account_balance">账号余额:</string>
     <string name="order_amount">订单金额:</string>
     <string name="free_course_project">免费</string>
@@ -461,7 +462,7 @@
     <string name="course_info">课程简介</string>
     <string name="free_mode">学习方式: 自由式学习</string>
     <string name="locked_mode">学习方式: 解锁式学习</string>
-    <string name="validity_day">有效期: %s天</string>
+    <string name="validity_day">有效期: %1$s天</string>
     <string name="validity_forever">有效期:  永久</string>
     <string name="input_pay_password">输入支付密码</string>
     <string name="setting_password_hint">设置/重置密码: \n网页版—个人设置—安全设置—支付密码</string>
@@ -471,6 +472,7 @@
         <item>计划</item>
         <item>评价</item>
     </string-array>
+    <string name="operate_fail">操作失败</string>
     <string name="confirm_order">确认订单</string>
     <string name="course_member_count">课程学员（%1$d）</string>
     <string name="course_student_count">%1$d名学生</string>
@@ -484,20 +486,34 @@
     <string name="cancel_favorite">取消收藏成功</string>
     <string name="favorite_success">收藏成功</string>
     <string name="join_success">加入成功</string>
+    <string name="join_fail">加入失败</string>
     <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
     <string name="load_more_text">正在加载...</string>
     <string name="price_format">￥%1$.2f</string>
     <string name="confirm_pay">确定支付</string>
     <string name="from_course_set">来自课程&#160;&#160;|&#160;&#160;&#160;</string>
-    <string name="remain">剩余&#160;%s&#160;天&#160;</string>
+    <string name="remain">剩余&#160;%1$s&#160;天&#160;</string>
     <string name="hour">%s&#160;小时&#160;</string>
-    <string name="minute">%s&#160;分&#160;</string>
-    <string name="second">%s&#160;秒&#160;</string>
-    <string name="yuan">%.1f元</string>
+    <string name="minute">%1$s&#160;分&#160;</string>
+    <string name="second">%1$s&#160;秒&#160;</string>
+    <string name="yuan">%1$.2f&#160;元</string>
+    <string name="yuan_symbol">¥%1$.2f"</string>
     <string name="teach_plan">教学计划</string>
     <string name="summary">概述</string>
     <string name="course_finish_progress">已经完成计划：%1$d/%2$d</string>
     <string name="course_plan_progress">计划完成任务：%1$d/%2$d</string>
     <string name="course_progress_deadline">课程有效期至：%1$s</string>
+    <string name="valid_date">有效期至%1$s</string>
+    <string name="all_station_use">全站通用</string>
+    <string name="course_application">本课程适用</string>
+    <string name="order_price_subtract">减&#160;¥&#160;%1$.2f</string>
+    <string name="order_price_discount">打&#160;%1$.2f&#160;折</string>
+    <string name="order_price_total">合计:&#160;%.2f&#160;元</string>
+    <string name="virtual_coin_pay">虚拟币支付</string>
+    <string name="virtual_coin_balance">虚拟币余额:&#160;&#160;&#160;%.2f</string>
+    <string name="pay_the_amount">实付金额:&#160;&#160;&#160;</string>
+    <string name="go_pay">去支付</string>
+    <string name="available_balance">%1$s余额:&#160;&#160;&#160;</string>
+    <string name="insufficient_balance">余额不足</string>
 
 </resources>
