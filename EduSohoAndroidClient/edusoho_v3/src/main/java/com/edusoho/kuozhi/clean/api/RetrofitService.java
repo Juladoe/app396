@@ -98,8 +98,8 @@ public class RetrofitService {
         return mApiService.getCourseMember(courseId, userId);
     }
 
-    public static Observable<TrailVideos> getTrailVideos(int id) {
-        return mApiService.getTrailVideos(id);
+    public static Observable<TrailVideos> getTrailVideos(int courseId) {
+        return mApiService.getTrailVideos(courseId);
     }
 
     public static Observable<List<CourseProject>> getCourseProjects(int courseSetId) {

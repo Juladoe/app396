@@ -46,7 +46,7 @@ public interface ApiService {
     Observable<CourseProject> getCourseProject(@Path("id") int id);
 
     @GET("courses/{id}/trial_video")
-    Observable<TrailVideos> getTrailVideos(@Path("id") int id);
+    Observable<TrailVideos> getTrailVideos(@Path("id") int courseId);
 
     @GET("course_sets/{id}/reviews")
     Observable<CourseReview> getCourseReview(@Path("id") int id, @Query("limit") int limit, @Query("offset") int offset);

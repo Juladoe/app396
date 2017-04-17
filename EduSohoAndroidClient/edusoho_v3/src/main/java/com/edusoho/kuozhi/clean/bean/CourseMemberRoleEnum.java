@@ -5,7 +5,7 @@ package com.edusoho.kuozhi.clean.bean;
  */
 
 public enum CourseMemberRoleEnum {
-    STUDENT("student"), TEACHER("teacger");
+    STUDENT("student"), TEACHER("teacher");
 
     private String mName;
 
