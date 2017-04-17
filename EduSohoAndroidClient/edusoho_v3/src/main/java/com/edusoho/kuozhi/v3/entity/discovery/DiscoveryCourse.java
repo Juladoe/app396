@@ -12,7 +12,7 @@ public class DiscoveryCourse extends Course implements DiscoveryCardProperty, Se
 
     @Override
     public int getId() {
-        return id;
+        return courseSetId;
     }
 
     @Override

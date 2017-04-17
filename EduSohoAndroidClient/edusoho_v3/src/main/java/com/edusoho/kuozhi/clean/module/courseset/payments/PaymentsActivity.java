@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -14,8 +16,10 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
+import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
 import com.edusoho.kuozhi.clean.module.courseset.alipay.AlipayActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
@@ -33,6 +37,8 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     private View mAlipay;
     private TextView mVirtualCoin;
     private TextView mDiscount;
+    private TextView mBalance;
+    private TextView mAvailableName;
     private View mPay;
     private Dialog mDialog;
     private LoadDialog mProcessDialog;
@@ -70,6 +76,8 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
         mAlipay = findViewById(R.id.iv_alipay);
         mVirtualCoin = (TextView) findViewById(R.id.tv_virtual_coin);
         mDiscount = (TextView) findViewById(R.id.tv_discount);
+        mBalance = (TextView) findViewById(R.id.tv_available_balance);
+        mAvailableName = (TextView) findViewById(R.id.tv_available_name);
         mPay = findViewById(R.id.tv_pay);
 
         mPresenter = new PaymentsPresenter(this, mOrderInfo, mPosition);
@@ -86,6 +94,9 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
 
     private void initShow() {
         mVirtualCoin.setText(mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin_pay));
+        mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
+        mAvailableName.setText(String.format(getString(R.string.available_balance),
+                mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin)));
         mDiscount.setText(String.format(getString(R.string.yuan), mOrderPrice));
     }
 
@@ -95,20 +106,37 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
         if (id == R.id.iv_back) {
             finish();
         } else if (id == R.id.iv_alipay) {
-            mAlipay.setSelected(true);
-            mVirtualCoin.setSelected(false);
+            clickAlipay();
         } else if (id == R.id.tv_virtual_coin) {
-            mAlipay.setSelected(false);
-            mVirtualCoin.setSelected(true);
+            clickVirtual();
         } else if (id == R.id.tv_pay) {
             goPay();
         }
     }
 
+    private void clickAlipay() {
+        mAlipay.setSelected(true);
+        mVirtualCoin.setSelected(false);
+        mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
+    }
+
+    private void clickVirtual() {
+        mAlipay.setSelected(false);
+        mVirtualCoin.setSelected(true);
+        if (mOrderPrice > mOrderInfo.account.cash) {
+            mBalance.setText(R.string.insufficient_balance);
+        }
+    }
+
     private void goPay() {
         if (mAlipay.isSelected()) {
-            mPresenter.createOrderAndPay(PaymentsPresenter.ALIPAY, null);
+            showProcessDialog();
+            mPresenter.createOrderAndPay(PaymentsPresenter.ALIPAY, null, -1);
         } else {
+            if (mOrderPrice > mOrderInfo.account.cash) {
+                CommonUtil.shortToast(this, getString(R.string.insufficient_balance));
+                return;
+            }
             showDialog();
         }
     }
@@ -121,23 +149,31 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
             Window window = mDialog.getWindow();
             WindowManager.LayoutParams lp = window.getAttributes();
             lp.width = getResources().getDisplayMetrics().widthPixels;
-//            window.setGravity(Gravity.BOTTOM);
+            window.setGravity(Gravity.BOTTOM);
             window.setAttributes(lp);
             mInputPw = (EditText) mDialog.findViewById(R.id.et_input_pw);
-            mInputPw.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-                @Override
-                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                    String pw = mInputPw.getText().toString().trim();
-//                    pw.length()
-                    showProcessDialog();
-                    mPresenter.createOrderAndPay(PaymentsPresenter.COIN, mInputPw.getText().toString().trim());
-                    mDialog.dismiss();
-                    return true;
-                }
-            });
+            mInputPw.setOnEditorActionListener(getOnEditorActionListener());
         }
         InputUtils.showKeyBoard(mInputPw, this);
         mDialog.show();
+    }
+
+    @NonNull
+    private TextView.OnEditorActionListener getOnEditorActionListener() {
+        return new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                String pw = mInputPw.getText().toString().trim();
+                if (pw.length() < 6) {
+                    CommonUtil.shortToast(PaymentsActivity.this, "密码长度有误");
+                    return true;
+                }
+                showProcessDialog();
+                mPresenter.createOrderAndPay(PaymentsPresenter.COIN, mInputPw.getText().toString().trim(), mOrderPrice);
+                mDialog.dismiss();
+                return true;
+            }
+        };
     }
 
     @Override
@@ -168,5 +204,14 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
         } else {
             hideProcesDialog();
         }
+    }
+
+    @Override
+    public void sendBroad(){
+        Intent intent = new Intent();
+        intent.setAction("Finish");
+        sendBroadcast(intent);
+        CourseProjectActivity.launch(this, mOrderInfo.targetId);
+        finish();
     }
 }

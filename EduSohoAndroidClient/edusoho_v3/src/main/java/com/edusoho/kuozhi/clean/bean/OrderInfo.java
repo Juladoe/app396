@@ -27,7 +27,7 @@ public class OrderInfo implements Serializable {
     public static class AccountBean implements Serializable{
         public String id;
         public String userId;
-        public String cash;
+        public float cash;
     }
 
     public static class Coupon implements Serializable{

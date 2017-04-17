@@ -98,7 +98,6 @@ public class CourseUnLearnActivity extends BaseFinishActivity
         ActivityUtil.setStatusBarFitsByColor(this, R.color.transparent);
 
         mCourseSetId = getIntent().getIntExtra(COURSE_SET_ID, 0);
-        mCourseSetId = 1;
         isJoin();
     }
 

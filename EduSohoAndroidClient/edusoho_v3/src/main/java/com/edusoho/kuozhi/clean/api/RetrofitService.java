@@ -75,10 +75,6 @@ public class RetrofitService {
         return mApiService.getCourseReview(courseSetId, limit, offset);
     }
 
-    public static Observable<List<CourseProject>> getCourseStudyPlan(int courseSetId) {
-        return mApiService.getCourseStudyPlan(courseSetId);
-    }
-
     public static Observable<List<VipInfo>> getVipInfo() {
         return mApiService.getVipInfo();
     }
@@ -111,7 +107,7 @@ public class RetrofitService {
         return mApiService.getCourseSetMembers(courseSetId,offset,limit);
     }
 
-    public static Observable<CourseMember> getCourseSetMember(int courseSetId,int userId) {
+    public static Observable<DataPageResult<CourseMember>> getCourseSetMember(int courseSetId,int userId) {
         return mApiService.getCourseSetMember(courseSetId,userId);
     }
 
@@ -137,10 +133,6 @@ public class RetrofitService {
 
     public static Observable<JsonObject> goPay(String token, int id, String type, String payWay) {
         return mApiService.goPay(token, id, type, payWay);
-    }
-
-    public static Observable<List<CourseMember>> getMeLastRecord(String token, int courseSetId){
-        return mApiService.getMeLastRecord(token, courseSetId);
     }
 
     public static Observable<JsonObject> joinFreeOrVipCourse(String token, int courseId, String joinWay) {

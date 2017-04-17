@@ -15,11 +15,13 @@ public interface PaymentsContract {
 
         void goToAlipay(String data);
 
+        void sendBroad();
+
     }
 
     interface Presenter extends BasePresenter{
 
-        void createOrderAndPay(final String payment, String password);
+        void createOrderAndPay(final String payment, String password, float orderPrice);
 
     }
 

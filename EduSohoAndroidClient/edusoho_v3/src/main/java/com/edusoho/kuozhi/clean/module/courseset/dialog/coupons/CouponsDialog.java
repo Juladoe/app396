@@ -25,7 +25,6 @@ public class CouponsDialog extends ESBottomDialog
     private ListView mCoupons;
     private CouponsAdapter mAdapter;
     private List<OrderInfo.Coupon> mList;
-    private boolean mIsSelector = false;
     private int mPosition = -1;
 
     @Override
@@ -78,6 +77,8 @@ public class CouponsDialog extends ESBottomDialog
             public void onClick(View v) {
                 if (mPosition != -1 && mList.get(mPosition).isSelector) {
                     ((ModifyView) getActivity()).setPriceView(mPosition);
+                } else {
+                    ((ModifyView) getActivity()).setPriceView(-1);
                 }
                 dismiss();
             }

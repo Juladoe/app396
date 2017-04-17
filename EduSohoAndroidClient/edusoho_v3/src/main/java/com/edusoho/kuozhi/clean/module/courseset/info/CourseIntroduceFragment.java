@@ -16,6 +16,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
+import com.edusoho.kuozhi.clean.module.courseset.CourseUnLearnActivity;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
@@ -61,8 +62,7 @@ public class CourseIntroduceFragment extends BaseLazyFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCourseSetId = getArguments().getInt(Const.COURSE_ID);
-        mCourseSetId = 1;
+        mCourseSetId = getArguments().getInt(CourseUnLearnActivity.COURSE_SET_ID);
     }
 
     @Override

@@ -117,9 +117,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity
                 : String.format(getString(R.string.order_price_discount), rate));
         mRlCoupon.setVisibility(View.VISIBLE);
         mTotal.setText(mPayPrice > 0 ? String.format(getString(R.string.order_price_total), mPayPrice)
-                            : getString(R.string.txt_free));
-        mTotal.setTextColor(mPayPrice > 0 ? getResources().getColor(R.color.secondary_color)
-                : getResources().getColor(R.color.primary_color));
+                            : "0.00");
         mOriginal.setText(String.format(getString(R.string.yuan_symbol), mTotalPrice));
         mOriginal.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
     }
@@ -144,7 +142,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity
         }else if(id == R.id.rl_coupon){
             showCouponDialog();
         }else if(id == R.id.tv_pay) {
-            PaymentsActivity.launch(this, mOrderInfo, mPayPrice, mCoupon == null ? -1
+            PaymentsActivity.launch(this, mOrderInfo, mPayPrice < 0 ? 0 : mPayPrice, mCoupon == null ? -1
                     : mOrderInfo.availableCoupons.indexOf(mCoupon));
         }
     }
@@ -184,15 +182,18 @@ public class ConfirmOrderActivity extends BaseFinishActivity
 
     @Override
     public void setPriceView(int position) {
+        if (position == -1) {
+            mCoupon = null;
+            mCouponSub.setText("");
+            mTotal.setText(mTotalPrice > 0 ? String.format(getString(R.string.order_price_total), mTotalPrice)
+                    : "0.00");
+            return;
+        }
         mCoupon = mOrderInfo.availableCoupons.get(position);
         float rate = mCoupon.rate;
         mPayPrice = MINUS.equals(mCoupon.type) ? mTotalPrice - rate : mTotalPrice * rate;
-        mTotal.setText(mPayPrice > 0 ? String.format(getString(R.string.order_price_total), mPayPrice)
-                        : getString(R.string.txt_free));
-        mTotal.setTextColor(mPayPrice > 0 ? getResources().getColor(R.color.secondary_color)
-                    : getResources().getColor(R.color.primary_color));
-        mCouponSub.setText(MINUS.equals(mCoupon.type) ?
-                String.format(getString(R.string.order_price_subtract), rate)
+        mTotal.setText(mPayPrice > 0 ? String.format(getString(R.string.order_price_total), mPayPrice) : "0.00");
+        mCouponSub.setText(MINUS.equals(mCoupon.type) ? String.format(getString(R.string.order_price_subtract), rate)
                 : String.format(getString(R.string.order_price_discount), rate));
     }
 }

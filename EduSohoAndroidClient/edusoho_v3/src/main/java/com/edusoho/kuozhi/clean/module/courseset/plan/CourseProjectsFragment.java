@@ -10,7 +10,7 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseLazyFragment;
-import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.clean.module.courseset.CourseUnLearnActivity;
 
 import java.util.List;
 
@@ -30,8 +30,7 @@ public class CourseProjectsFragment extends BaseLazyFragment
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mCourseSetId = getArguments().getInt(Const.COURSE_ID);
-        mCourseSetId = 1;
+        mCourseSetId = getArguments().getInt(CourseUnLearnActivity.COURSE_SET_ID);
     }
 
     @Override

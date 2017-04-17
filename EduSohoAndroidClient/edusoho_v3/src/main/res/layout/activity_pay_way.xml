@@ -81,14 +81,13 @@
         android:layout_height="wrap_content">
 
         <TextView
-            tools:text="实付金额:   "
+            android:id="@+id/tv_available_name"
             android:textSize="@dimen/font_s"
             android:textColor="@color/primary_font_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <TextView
-            tools:text="200元"
             android:id="@+id/tv_available_balance"
             android:textSize="@dimen/font_s"
             android:textColor="@color/secondary_color"

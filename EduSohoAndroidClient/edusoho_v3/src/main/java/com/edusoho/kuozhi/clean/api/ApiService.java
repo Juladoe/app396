@@ -47,15 +47,12 @@ public interface ApiService {
     @GET("course_sets/{id}/reviews")
     Observable<CourseReview> getCourseReview(@Path("id") int courseSetId, @Query("limit") int limit, @Query("offset") int offset);
 
-    @GET("course_sets/{course_setId}/courses")
-    Observable<List<CourseProject>> getCourseStudyPlan(@Path("course_setId") int courseSetId);
-
     @GET("course_sets/{courseSetId}/members")
     Observable<DataPageResult<CourseMember>> getCourseSetMembers(@Path("courseSetId") int courseSetId
                                                 , @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("course_sets/{courseSetId}/members")
-    Observable<CourseMember> getCourseSetMember(@Path("courseSetId") int courseSetId, @Query("userId") int userId);
+    Observable<DataPageResult<CourseMember>> getCourseSetMember(@Path("courseSetId") int courseSetId, @Query("userId") int userId);
 
     @GET("me/join_in_courses")
     Observable<List<CourseMember>> getMyJoinCourses(@Header("X-Auth-Token") String token, @Query("courseSetId") int courseSetId);
@@ -108,9 +105,6 @@ public interface ApiService {
     @POST("courses/{id}/members")
     Observable<JsonObject> joinFreeOrVipCourse(@Header("X-Auth-Token") String token,
                                           @Path("id") int courseId, @Field("joinWay") String joinWay);
-
-    @GET("me/course_sets/{courseSetId}/course_members")
-    Observable<List<CourseMember>> getMeLastRecord(@Header("X-Auth-Token") String token, @Path("courseSetId") int courseSetId);
 
     @FormUrlEncoded
     @POST("me/favorite_course_sets")

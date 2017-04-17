@@ -30,7 +30,7 @@ public class CourseProjectsPresenter implements CourseProjectsContract.Presenter
 
     @Override
     public void subscribe() {
-        getCourseStudyPlan(mCourseSetId)
+        getCourseProjects(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<List<CourseProject>>() {
@@ -74,8 +74,8 @@ public class CourseProjectsPresenter implements CourseProjectsContract.Presenter
 
     }
 
-    private Observable<List<CourseProject>> getCourseStudyPlan(int courseSetId) {
-        return RetrofitService.getCourseStudyPlan(courseSetId);
+    private Observable<List<CourseProject>> getCourseProjects(int courseSetId) {
+        return RetrofitService.getCourseProjects(courseSetId);
     }
 
     private Observable<List<VipInfo>> getVipInfo() {
