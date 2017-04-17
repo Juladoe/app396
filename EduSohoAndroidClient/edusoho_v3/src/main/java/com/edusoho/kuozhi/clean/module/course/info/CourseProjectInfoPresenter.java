@@ -27,7 +27,8 @@ import rx.schedulers.Schedulers;
 public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Presenter {
 
     private static final int NO_VIP = 0;
-    private static final float FREE = 0;
+    private static final String FREE = "1";
+    private static final float PRICE_FREE = 0F;
     private CourseProject mCourseProject;
     private CourseProjectInfoContract.View mView;
 
@@ -53,7 +54,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showPrice() {
-        if (mCourseProject.originPrice == mCourseProject.price && FREE == mCourseProject.originPrice) {
+        if (FREE.equals(mCourseProject.isFree) || PRICE_FREE == mCourseProject.price) {
             mView.showPrice(CourseProjectPriceEnum.FREE, mCourseProject.price, mCourseProject.originPrice);
         } else if (mCourseProject.originPrice == mCourseProject.price) {
             mView.showPrice(CourseProjectPriceEnum.ORIGINAL, mCourseProject.price, mCourseProject.originPrice);
@@ -163,7 +164,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
                 .filter(new Func1<CourseProject, Boolean>() {
                     @Override
                     public Boolean call(CourseProject courseProject) {
-                        return courseProject.id == currentCourseProjectId;
+                        return courseProject.id != currentCourseProjectId;
                     }
                 })
                 .toList()

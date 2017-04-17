@@ -54,7 +54,7 @@ public interface ApiService {
 
     @GET("course_sets/{courseSetId}/members")
     Observable<DataPageResult<CourseMember>> getCourseSetMembers(@Path("courseSetId") int courseSetId
-                                                , @Query("offset") int offset, @Query("limit") int limit);
+            , @Query("offset") int offset, @Query("limit") int limit);
 
     @GET("course_sets/{courseSetId}/members")
     Observable<DataPageResult<CourseMember>> getCourseSetMember(@Path("courseSetId") int courseSetId, @Query("userId") int userId);
@@ -112,7 +112,7 @@ public interface ApiService {
     @FormUrlEncoded
     @POST("courses/{id}/members")
     Observable<JsonObject> joinFreeOrVipCourse(@Header("X-Auth-Token") String token,
-                                          @Path("id") int courseId, @Field("joinWay") String joinWay);
+                                               @Path("id") int courseId, @Field("joinWay") String joinWay);
 
     @FormUrlEncoded
     @POST("me/favorite_course_sets")
