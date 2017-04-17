@@ -71,7 +71,7 @@ public class DialogProgress extends DialogFragment {
             mProgress = (CourseLearningProgress) bundle.getSerializable(PROGRESS_INFO);
             mMember = (Member) bundle.getSerializable(MEMBER_INFO);
         }
-        mFinishProgress.setText(String.format(getString(R.string.course_finish_progress), mProgress.progress, mProgress.taskCount));
+        mFinishProgress.setText(String.format(getString(R.string.course_finish_progress), mProgress.taskResultCount, mProgress.taskCount));
         mPlanProgress.setText(String.format(getString(R.string.course_plan_progress), mProgress.planStudyTaskCount, mProgress.taskCount));
         mPlanDeadline.setText(String.format(getString(R.string.course_progress_deadline), TimeUtils.getStringTime(mMember.deadline, "yyyy.MM.dd")));
     }
