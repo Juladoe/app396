@@ -28,7 +28,6 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
 
     private static final int NO_VIP = 0;
     private static final String FREE = "1";
-    private static final float PRICE_FREE = 0F;
     private CourseProject mCourseProject;
     private CourseProjectInfoContract.View mView;
 
@@ -54,7 +53,7 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showPrice() {
-        if (FREE.equals(mCourseProject.isFree) || PRICE_FREE == mCourseProject.price) {
+        if (FREE.equals(mCourseProject.isFree)) {
             mView.showPrice(CourseProjectPriceEnum.FREE, mCourseProject.price, mCourseProject.originPrice);
         } else if (mCourseProject.originPrice == mCourseProject.price) {
             mView.showPrice(CourseProjectPriceEnum.ORIGINAL, mCourseProject.price, mCourseProject.originPrice);

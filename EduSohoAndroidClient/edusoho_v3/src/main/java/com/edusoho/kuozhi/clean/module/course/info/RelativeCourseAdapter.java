@@ -22,7 +22,6 @@ import java.util.List;
 public class RelativeCourseAdapter extends RecyclerView.Adapter<RelativeCourseAdapter.ViewHolder> {
 
     private static final String FREE = "1";
-    private static final float PREE_PRICE = 0F;
     private Context mContext;
     private List<CourseProject> mCourseProjects;
 
@@ -41,7 +40,7 @@ public class RelativeCourseAdapter extends RecyclerView.Adapter<RelativeCourseAd
     public void onBindViewHolder(RelativeCourseAdapter.ViewHolder holder, int position) {
         final CourseProject courseProject = mCourseProjects.get(position);
         holder.courseTitle.setText(courseProject.title);
-        if (PREE_PRICE == courseProject.price || FREE.equals(courseProject.isFree)) {
+        if (FREE.equals(courseProject.isFree)) {
             holder.coursePrice.setText(R.string.free_course_project);
             holder.coursePrice.setTextColor(mContext.getResources().getColor(R.color.primary_color));
         } else {
