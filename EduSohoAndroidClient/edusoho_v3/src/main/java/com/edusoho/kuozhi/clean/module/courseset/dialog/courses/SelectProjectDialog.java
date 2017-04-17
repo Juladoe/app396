@@ -36,7 +36,7 @@ import java.util.List;
  */
 
 public class SelectProjectDialog extends ESBottomDialog implements
-        ESBottomDialog.BottomDialogContentView,SelectProjectDialogContract.View {
+        ESBottomDialog.BottomDialogContentView, SelectProjectDialogContract.View {
 
     private final String IS_FREE = "1";
     private final String FREE_STATE = "freeState";
