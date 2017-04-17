@@ -36,11 +36,12 @@ public interface CourseProjectContract {
         void setProgressBar(int progress);
 
         void launchDialogProgress(CourseLearningProgress progress, Member member);
+
+        void launchConfirmOrderActivity(int courseSetId, int courseId);
     }
 
     interface Presenter extends BasePresenter {
 
-        //Observable<CourseProject> getCourseProject(int id);
 
         void consult();
 
@@ -48,6 +49,5 @@ public interface CourseProjectContract {
 
         void showCourseProgressInfo();
 
-        //CourseProjectEnum[] initCourseModules();
     }
 }

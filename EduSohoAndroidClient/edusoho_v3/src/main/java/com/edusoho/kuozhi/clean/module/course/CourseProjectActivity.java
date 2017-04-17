@@ -22,6 +22,7 @@ import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.module.course.progress.DialogProgress;
+import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
 import com.edusoho.kuozhi.clean.widget.ESIconTextButton;
 import com.edusoho.kuozhi.clean.widget.ESIconView;
 import com.edusoho.kuozhi.clean.widget.ESProgressBar;
@@ -196,6 +197,11 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     @Override
     public void launchDialogProgress(CourseLearningProgress progress, Member member) {
         DialogProgress.newInstance(progress, member).show(getSupportFragmentManager(), "DialogProgress");
+    }
+
+    @Override
+    public void launchConfirmOrderActivity(int courseSetId, int courseId) {
+        ConfirmOrderActivity.launch(this, courseSetId, courseId);
     }
 
     private class CourseProjectViewPagerAdapter extends FragmentPagerAdapter {
