@@ -281,6 +281,10 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
     @Override
     public void favoriteCourseSet() {
+        if (EdusohoApp.app.loginUser == null) {
+            mView.goToLoginActivity();
+            return;
+        }
         RetrofitService.favoriteCourseSet(EdusohoApp.app.token, mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -306,6 +310,10 @@ class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
     @Override
     public void cancelFavoriteCourseSet() {
+        if (EdusohoApp.app.loginUser == null) {
+            mView.goToLoginActivity();
+            return;
+        }
         RetrofitService.cancelFavoriteCourseSet(EdusohoApp.app.token, mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

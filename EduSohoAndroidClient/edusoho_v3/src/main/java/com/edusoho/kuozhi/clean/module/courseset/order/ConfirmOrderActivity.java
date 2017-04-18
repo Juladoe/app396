@@ -18,6 +18,7 @@ import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
 import com.edusoho.kuozhi.clean.module.courseset.dialog.coupons.CouponsDialog;
 import com.edusoho.kuozhi.clean.module.courseset.payments.PaymentsActivity;
+import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -111,6 +112,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity
     public void showPriceView(OrderInfo orderInfo) {
         mOrderInfo = orderInfo;
         mTotalPrice = orderInfo.totalPrice / orderInfo.cashRate;
+        mPayPrice = mTotalPrice;
         if (orderInfo.availableCoupons != null && orderInfo.availableCoupons.size() != 0) {
             mCoupon = orderInfo.availableCoupons.get(0);
             showCouponPrice();
@@ -141,6 +143,12 @@ public class ConfirmOrderActivity extends BaseFinishActivity
                 .build();
         ImageLoader.getInstance().displayImage(courseSet.cover.middle, mCourseImg, imageOptions);
         mCourseProjectFrom.setText(courseSet.title);
+    }
+
+    @Override
+    public void showToastAndFinish(int content) {
+        CommonUtil.shortToast(this, getString(content));
+        finish();
     }
 
     @Override

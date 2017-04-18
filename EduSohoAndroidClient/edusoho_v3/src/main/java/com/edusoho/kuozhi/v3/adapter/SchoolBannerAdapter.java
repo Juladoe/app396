@@ -96,7 +96,7 @@ public class SchoolBannerAdapter extends PagerAdapter {
                             String classroomId = banner.params.substring(classroomIdSeek + 1);
                             url = String.format(Const.MOBILE_APP_URL, EdusohoApp.app.schoolHost, String.format(Const.CLASSROOM_COURSES, Integer.parseInt(classroomId)));
                         } else {
-                            url = banner.params;
+                            url = completeWithHttp(banner.params);
                         }
                         EdusohoApp.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                             @Override
@@ -123,6 +123,13 @@ public class SchoolBannerAdapter extends PagerAdapter {
             }
         });
         return photoView;
+    }
+
+    private String completeWithHttp(String url) {
+        if (url.startsWith("http://")) {
+            return url;
+        }
+        return "http://" + url;
     }
 
     @Override

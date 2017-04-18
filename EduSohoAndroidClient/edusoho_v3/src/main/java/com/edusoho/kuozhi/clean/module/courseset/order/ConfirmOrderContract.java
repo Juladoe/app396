@@ -18,6 +18,8 @@ public interface ConfirmOrderContract {
         void showProcessDialog(boolean isShow);
 
         void showTopView(CourseSet courseSet);
+
+        void showToastAndFinish(int content);
     }
 
     interface Presenter extends BasePresenter {

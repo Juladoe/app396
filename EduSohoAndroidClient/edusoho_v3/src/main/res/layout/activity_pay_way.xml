@@ -32,7 +32,7 @@
         android:layout_height="1dp"/>
 
     <TextView
-        android:text="支付方式"
+        android:text="@string/pay_way"
         android:layout_marginTop="31dp"
         android:layout_marginLeft="@dimen/common_15"
         android:textSize="@dimen/font_l"
@@ -63,6 +63,7 @@
             android:paddingLeft="22dp"
             android:drawableLeft="@drawable/virtual_coin"
             android:drawablePadding="-20dp"
+            android:visibility="gone"
             android:gravity="center"
             android:layout_marginLeft="@dimen/common_15"
             android:layout_width="140dp"
@@ -71,8 +72,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/available_layout"
         android:layout_marginTop="@dimen/common_25"
         android:layout_marginLeft="@dimen/common_15"
+        android:visibility="invisible"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">

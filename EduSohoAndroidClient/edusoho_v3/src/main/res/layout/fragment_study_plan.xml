@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/disabled0_hint_color"
-    android:paddingBottom="@dimen/common_10"
+    android:paddingBottom="@dimen/common_55"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 

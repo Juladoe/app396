@@ -20,7 +20,7 @@ public class OrderInfo implements Serializable {
     public float coinPayAmount;
     public float maxCoin;
     public String duration;
-    public int fullCoinPayable;
+    public String fullCoinPayable;
     public String title;
     public List<Coupon> availableCoupons;
 

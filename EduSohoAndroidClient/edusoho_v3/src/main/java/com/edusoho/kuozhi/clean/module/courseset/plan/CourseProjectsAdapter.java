@@ -29,6 +29,8 @@ import java.util.List;
 public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAdapter.CourseProjectViewHolder>
         implements View.OnClickListener {
 
+    private static final String IS_FREE = "1";
+
     private List<CourseProject> mList;
     private List<VipInfo> mVipInfos;
     private Context mContext;
@@ -74,7 +76,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
     }
 
     private void loadPrice(CourseProjectViewHolder holder, CourseProject courseProject) {
-        if (courseProject.price <= 0) {
+        if (IS_FREE.equals(courseProject.isFree)) {
             holder.mPrice.setText(R.string.free_course_project);
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
         } else {

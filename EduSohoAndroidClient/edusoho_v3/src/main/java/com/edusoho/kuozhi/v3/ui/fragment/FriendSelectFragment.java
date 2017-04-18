@@ -138,7 +138,7 @@ public class FriendSelectFragment extends AbstractChatSendFragment implements Ad
 
     protected void sendMsg(int fromId, String convNo, String type, String title) {
         MessageBody messageBody = saveMessageToLoacl(fromId, convNo, type, title);
-        sendMessageToServer(convNo, messageBody);
+        sendMessageBody(convNo, messageBody);
     }
 
     @Override
@@ -185,7 +185,7 @@ public class FriendSelectFragment extends AbstractChatSendFragment implements Ad
                                     @Override
                                     public void success(ConvEntity convEntity) {
                                         loadDialog.dismiss();
-                                        //sendMsg(fromId, mConvNo, Destination.USER);
+                                        sendMsg(fromId, mConvNo, Destination.USER, convEntity.getTargetName());
                                     }
                                 });
                     }});

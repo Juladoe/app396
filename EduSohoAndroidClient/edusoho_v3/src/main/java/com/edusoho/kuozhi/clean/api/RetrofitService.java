@@ -28,7 +28,6 @@ import okhttp3.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Path;
 import rx.Observable;
 
 
@@ -111,7 +110,7 @@ public class RetrofitService {
         return mApiService.getMyCourseProject(token, courseSetId);
     }
 
-    public static Observable<DataPageResult<CourseMember>> getCourseSetMembers(int courseSetId, int offset, int limit) {
+    public static Observable<List<CourseMember>> getCourseSetMembers(int courseSetId, int offset, int limit) {
         return mApiService.getCourseSetMembers(courseSetId, offset, limit);
     }
 

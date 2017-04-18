@@ -33,6 +33,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
 
     private static final String ORDER_INFO = "order_info";
     private static final String ORDER_PRICE = "order_price";
+    private static final String FULL_COIN_PAYABLE = "1";
     private static final String COUPON_POSITION_IN_COUPONS = "position";
 
     private Toolbar mToolbar;
@@ -45,6 +46,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     private Dialog mDialog;
     private LoadDialog mProcessDialog;
     private EditText mInputPw;
+    private View mAvailableLayout;
 
     private PaymentsContract.Presenter mPresenter;
 
@@ -74,8 +76,9 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     }
 
     private void initView() {
-        mToolbar = (Toolbar) findViewById(R.id.tb_toolbar);
         mAlipay = findViewById(R.id.iv_alipay);
+        mAvailableLayout = findViewById(R.id.available_layout);
+        mToolbar = (Toolbar) findViewById(R.id.tb_toolbar);
         mVirtualCoin = (TextView) findViewById(R.id.tv_virtual_coin);
         mDiscount = (TextView) findViewById(R.id.tv_discount);
         mBalance = (TextView) findViewById(R.id.tv_available_balance);
@@ -86,7 +89,6 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
         }
-
         mPresenter = new PaymentsPresenter(this, mOrderInfo, mPosition);
         mPresenter.subscribe();
     }
@@ -105,10 +107,14 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     }
 
     private void initShow() {
-        mVirtualCoin.setText(mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin_pay));
-        mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
-        mAvailableName.setText(String.format(getString(R.string.available_balance),
+        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable)) {
+            mVirtualCoin.setVisibility(View.VISIBLE);
+            mAvailableLayout.setVisibility(View.VISIBLE);
+            mVirtualCoin.setText(mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin_pay));
+            mAvailableName.setText(String.format(getString(R.string.available_balance),
                 mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin)));
+            mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
+        }
         mDiscount.setText(String.format(getString(R.string.yuan), mOrderPrice));
     }
 
@@ -127,14 +133,20 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     private void clickAlipay() {
         mAlipay.setSelected(true);
         mVirtualCoin.setSelected(false);
-        mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
+        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable)) {
+            mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
+        }
+        mDiscount.setText(String.format(getString(R.string.yuan), mOrderPrice));
     }
 
     private void clickVirtual() {
         mAlipay.setSelected(false);
         mVirtualCoin.setSelected(true);
-        if (mOrderPrice > mOrderInfo.account.cash) {
+        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice > mOrderInfo.account.cash) {
             mBalance.setText(R.string.insufficient_balance);
+        }
+        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable)) {
+            mDiscount.setText(String.format("%.2f %s", mOrderInfo.totalPrice, mOrderInfo.coinName));
         }
     }
 
@@ -143,7 +155,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
             showProcessDialog();
             mPresenter.createOrderAndPay(PaymentsPresenter.ALIPAY, null, -1);
         } else {
-            if (mOrderPrice > mOrderInfo.account.cash) {
+            if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice > mOrderInfo.account.cash) {
                 CommonUtil.shortToast(this, getString(R.string.insufficient_balance));
                 return;
             }
@@ -176,7 +188,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 String pw = mInputPw.getText().toString().trim();
-                if (pw.length() < 6) {
+                if (pw.length() < 5) {
                     CommonUtil.shortToast(PaymentsActivity.this, "密码长度有误");
                     return true;
                 }

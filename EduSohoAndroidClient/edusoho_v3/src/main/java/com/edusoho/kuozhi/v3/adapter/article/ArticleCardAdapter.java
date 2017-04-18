@@ -74,13 +74,16 @@ public class ArticleCardAdapter extends BaseExpandableListAdapter {
         ArticleModel articleModel = mArcicleChatList.get(groupPosition);
         long createdTime = articleModel.createdTime;
         String time = "";
+        if (articleModel.createdTime > Integer.MAX_VALUE) {
+            articleModel.createdTime = articleModel.createdTime / 1000;
+        }
         if (groupPosition > 0) {
             ArticleModel prevArticleModel = getGroup(groupPosition - 1);
             if (createdTime - prevArticleModel.createdTime > 60 * 5) {
-                time = AppUtil.convertMills2Date(((long) articleModel.createdTime) * 1000);
+                time = AppUtil.convertMills2Date(articleModel.createdTime * 1000);
             }
         } else {
-            time = AppUtil.convertMills2Date(((long) articleModel.createdTime) * 1000);
+            time = AppUtil.convertMills2Date(articleModel.createdTime * 1000);
         }
         textView.setText(time);
         return convertView;

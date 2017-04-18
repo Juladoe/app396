@@ -3,7 +3,8 @@ package com.edusoho.kuozhi.clean.module.courseset.info;
 import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.clean.bean.CourseMember;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
-import com.edusoho.kuozhi.clean.bean.DataPageResult;
+
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -44,14 +45,14 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
                     }
                 })
                 .observeOn(Schedulers.io())
-                .flatMap(new Func1<CourseSet, Observable<DataPageResult<CourseMember>>>() {
+                .flatMap(new Func1<CourseSet, Observable<List<CourseMember>>>() {
                     @Override
-                    public Observable<DataPageResult<CourseMember>> call(CourseSet courseSet) {
+                    public Observable<List<CourseMember>> call(CourseSet courseSet) {
                         return getCourseSetMember(mCourseSetId,0, SHOW_MEMBER_COUNT);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<DataPageResult<CourseMember>>() {
+                .subscribe(new Subscriber<List<CourseMember>>() {
                     @Override
                     public void onCompleted() {
 
@@ -63,9 +64,9 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
                     }
 
                     @Override
-                    public void onNext(DataPageResult<CourseMember> courseMembers) {
-                        if (courseMembers != null) {
-                            mView.showStudent(courseMembers.data);
+                    public void onNext(List<CourseMember> courseMembers) {
+                        if (courseMembers != null && courseMembers.size() > 0) {
+                            mView.showStudent(courseMembers);
                         }
                     }
                 });
@@ -75,7 +76,7 @@ public class CourseIntroducePresenter implements CourseIntroduceContract.Present
         return RetrofitService.getCourseSet(id);
     }
 
-    private Observable<DataPageResult<CourseMember>> getCourseSetMember(int id,int offset,int limit) {
+    private Observable<List<CourseMember>> getCourseSetMember(int id,int offset,int limit) {
         return RetrofitService.getCourseSetMembers(id,offset,limit);
     }
 

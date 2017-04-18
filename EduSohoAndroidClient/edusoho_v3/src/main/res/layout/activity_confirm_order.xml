@@ -108,7 +108,7 @@
         android:id="@+id/rl_coupon"
         android:layout_width="match_parent"
         android:layout_height="@dimen/common_40"
-        android:visibility="gone"
+        android:visibility="invisible"
         android:background="@color/disabled2_hint_color"
         android:paddingLeft="@dimen/common_15"
         android:paddingRight="@dimen/common_15">

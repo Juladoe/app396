@@ -1,10 +1,10 @@
 package com.edusoho.kuozhi.v3.ui.fragment;
 
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.imserver.entity.ConvEntity;
 import com.edusoho.kuozhi.imserver.entity.message.Destination;
@@ -13,8 +13,8 @@ import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.Classroom;
 import com.edusoho.kuozhi.v3.model.bal.DiscussionGroup;
 import com.edusoho.kuozhi.v3.model.bal.Friend;
+import com.edusoho.kuozhi.v3.model.bal.course.Course;
 import com.edusoho.kuozhi.v3.model.bal.push.RedirectBody;
-import com.edusoho.kuozhi.v3.model.provider.ClassRoomProvider;
 import com.edusoho.kuozhi.v3.model.provider.DiscussionGroupProvider;
 import com.edusoho.kuozhi.v3.model.provider.IMProvider;
 import com.edusoho.kuozhi.v3.model.result.DiscussionGroupResult;
@@ -25,6 +25,7 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import cn.trinea.android.common.util.ToastUtils;
@@ -83,40 +84,112 @@ public class GroupSelectFragment extends FriendSelectFragment {
     private NormalCallback<Integer> mSendMessageHandlerCallback = new NormalCallback<Integer>() {
         @Override
         public void success(Integer index) {
-            Friend friend = (Friend) mFriendAdapter.getItem(index);
+            final Friend friend = (Friend) mFriendAdapter.getItem(index);
             ConvEntity convEntity = IMClient.getClient().getConvManager()
                     .getConvByTypeAndId(friend.getType(), friend.id);
             if (convEntity == null) {
-                createChatConvNo(friend.id);
+                if (Destination.CLASSROOM.equals(friend.getType())) {
+                    createClassRoomConvNoEntity(friend);
+                } else if (Destination.COURSE.equals(friend.getType())) {
+                    createCourseConvNoEntity(friend);
+                }
                 return;
             }
             sendMsg(friend.id, convEntity.getConvNo(), convEntity.getType(), friend.getNickname());
         }
     };
 
-    @Override
-    protected void createChatConvNo(final int fromId) {
-        final LoadDialog loadDialog = LoadDialog.create(mActivity);
+    private void validToSendMessage(final ConvEntity convEntity) {
+        final LoadDialog loadDialog = LoadDialog.create(getActivity());
         loadDialog.show();
-        new ClassRoomProvider(mContext).getClassRoom(fromId)
-                .success(new NormalCallback<Classroom>() {
+        new IMProvider(mContext).joinIMConvNo(convEntity.getId(), convEntity.getType())
+                .success(new NormalCallback<LinkedHashMap>() {
                     @Override
-                    public void success(final Classroom classroom) {
-                        if (classroom == null || TextUtils.isEmpty(classroom.convNo)) {
-                            ToastUtils.show(mActivity.getBaseContext(), "发送失败,该讨论组不支持分享!");
+                    public void success(LinkedHashMap data) {
+                        loadDialog.dismiss();
+                        if (data == null || !data.containsKey("convNo")) {
+                            ToastUtils.show(mContext, "发送失败");
                             return;
                         }
+                        sendMsg(convEntity.getId(), data.get("convNo").toString(), convEntity.getType(), convEntity.getTargetName());
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
+            @Override
+            public void success(VolleyError obj) {
+                loadDialog.dismiss();
+                ToastUtils.show(mContext, "发送失败");
+            }
+        });
+    }
 
-                        mConvNo = classroom.convNo;
-                        new IMProvider(mContext).createConvInfoByClassRoom(mConvNo, fromId, classroom)
+    private void createCourseConvNoEntity(Friend friend) {
+        final Course course = new Course();
+        course.middlePicture = friend.getMediumAvatar();
+        course.title = friend.getNickname();
+        course.id = friend.id;
+
+        final LoadDialog loadDialog = LoadDialog.create(getActivity());
+        loadDialog.show();
+        new IMProvider(mContext).joinIMConvNo(course.id, Destination.COURSE)
+                .success(new NormalCallback<LinkedHashMap>() {
+                    @Override
+                    public void success(LinkedHashMap data) {
+                        loadDialog.dismiss();
+                        if (data == null || !data.containsKey("convNo")) {
+                            ToastUtils.show(mContext, "发送失败");
+                            return;
+                        }
+                        mConvNo = data.get("convNo").toString();
+                        new IMProvider(mContext).createConvInfoByCourse(mConvNo, course)
                                 .success(new NormalCallback<ConvEntity>() {
                                     @Override
                                     public void success(ConvEntity convEntity) {
-                                        loadDialog.dismiss();
-                                        sendMsg(fromId, mConvNo, Destination.USER, classroom.title);
+                                        sendMsg(convEntity.getId(), mConvNo, convEntity.getType(), convEntity.getTargetName());
                                     }
                                 });
                     }
-                });
+                }).fail(new NormalCallback<VolleyError>() {
+                    @Override
+                    public void success(VolleyError obj) {
+                        loadDialog.dismiss();
+                        ToastUtils.show(mContext, "发送失败");
+                    }
+        });
     }
+
+    private void createClassRoomConvNoEntity(Friend friend) {
+        final Classroom classroom = new Classroom();
+        classroom.middlePicture = friend.getMediumAvatar();
+        classroom.title = friend.getNickname();
+        classroom.id = friend.id;
+
+        final LoadDialog loadDialog = LoadDialog.create(getActivity());
+        loadDialog.show();
+        new IMProvider(mContext).joinIMConvNo(classroom.id, Destination.CLASSROOM)
+                .success(new NormalCallback<LinkedHashMap>() {
+                    @Override
+                    public void success(LinkedHashMap data) {
+                        loadDialog.dismiss();
+                        if (data == null || !data.containsKey("convNo")) {
+                            ToastUtils.show(mContext, "发送失败");
+                            return;
+                        }
+                        mConvNo = data.get("convNo").toString();
+                        new IMProvider(mContext).createConvInfoByClassRoom(mConvNo, classroom.id, classroom)
+                                .success(new NormalCallback<ConvEntity>() {
+                                    @Override
+                                    public void success(ConvEntity convEntity) {
+                                        sendMsg(convEntity.getId(), mConvNo, convEntity.getType(), convEntity.getTargetName());
+                                    }
+                                });
+                    }
+                }).fail(new NormalCallback<VolleyError>() {
+                    @Override
+                    public void success(VolleyError obj) {
+                        loadDialog.dismiss();
+                        ToastUtils.show(mContext, "发送失败");
+                    }
+        });
+    }
+
 }

@@ -151,26 +151,6 @@ public class CourseUnLearnActivity extends BaseFinishActivity
         mConsult.setOnClickListener(this);
         mCollect.setOnClickListener(this);
         mTvAdd.setOnClickListener(this);
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 0) {
-                    mAddLayout.setVisibility(View.VISIBLE);
-                } else {
-                    mAddLayout.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
     }
 
     @Override

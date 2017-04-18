@@ -120,7 +120,6 @@ public class ChatSelectFragment extends AbstractChatSendFragment {
 
     @Override
     protected void sendFailCallback() {
-
     }
 
     @Override

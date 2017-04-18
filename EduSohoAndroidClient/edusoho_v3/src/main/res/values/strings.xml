@@ -516,5 +516,6 @@
     <string name="course_plan_progress">计划完成任务：%1$d/%2$d</string>
     <string name="course_progress_deadline">课程有效期至：%1$s</string>
     <string name="selector_payments">选择支付方式</string>
+    <string name="course_project_expire_hint">该教学计划已经超过购买截止日期，不允许购买</string>
 
 </resources>

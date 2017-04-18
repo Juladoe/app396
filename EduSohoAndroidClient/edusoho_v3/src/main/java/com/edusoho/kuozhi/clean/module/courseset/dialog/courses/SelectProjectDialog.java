@@ -213,13 +213,14 @@ public class SelectProjectDialog extends ESBottomDialog implements
             mDiscountPrice.setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
         } else {
             mDiscountPrice.setTextColor(ContextCompat.getColor(getContext(), R.color.secondary_color));
-            if (mCourseProject.price == mCourseProject.price) {
+            if (mCourseProject.price == mCourseProject.originPrice) {
                 mDiscount.setVisibility(View.GONE);
                 mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.price));
                 return;
             }
             mDiscount.setVisibility(View.VISIBLE);
             mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.price));
+            mOriginalPrice.setVisibility(View.VISIBLE);
             mOriginalPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.originPrice));
             mOriginalPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }
