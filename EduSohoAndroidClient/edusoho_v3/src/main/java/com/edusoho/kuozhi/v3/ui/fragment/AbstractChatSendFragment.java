@@ -117,7 +117,7 @@ public abstract class AbstractChatSendFragment extends BaseFragment {
         });
     }
 
-    private void sendMessageBody(String convNo, MessageBody messageBody) {
+    protected void sendMessageBody(String convNo, MessageBody messageBody) {
         try {
             String toId = "";
             switch (messageBody.getDestination().getType()) {
