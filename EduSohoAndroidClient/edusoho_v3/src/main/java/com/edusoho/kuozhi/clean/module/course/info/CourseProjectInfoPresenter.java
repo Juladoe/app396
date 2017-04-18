@@ -2,12 +2,15 @@ package com.edusoho.kuozhi.clean.module.course.info;
 
 import android.util.Log;
 
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.CourseApi;
+import com.edusoho.kuozhi.clean.api.CourseSetApi;
+import com.edusoho.kuozhi.clean.api.PluginsApi;
 import com.edusoho.kuozhi.clean.bean.Member;
 import com.edusoho.kuozhi.clean.bean.CourseMemberRoleEnum;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.v3.model.bal.VipLevel;
 
 import java.util.List;
@@ -64,7 +67,9 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
 
     private void showVip(int vipLevelId) {
         if (NO_VIP != vipLevelId) {
-            RetrofitService.getVipLevel(vipLevelId)
+            HttpUtils.getInstance()
+                    .createApi(PluginsApi.class)
+                    .getVipLevel(vipLevelId)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Subscriber<VipLevel>() {
@@ -99,7 +104,9 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showIntroduce() {
-        RetrofitService.getCourseSet(mCourseProject.courseSetId)
+        HttpUtils.getInstance()
+                .createApi(CourseSetApi.class)
+                .getCourseSet(mCourseProject.courseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseSet>() {
@@ -129,7 +136,8 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showMembers(int courseId, String role) {
-        RetrofitService.getCourseMembers(courseId, role, 0, 10)
+        HttpUtils.getInstance().createApi(CourseApi.class)
+                .getCourseMembers(courseId, role, 0, 10)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<DataPageResult<Member>>() {
@@ -151,7 +159,8 @@ public class CourseProjectInfoPresenter implements CourseProjectInfoContract.Pre
     }
 
     private void showRelativeCourseProjects(int courseSetId, final int currentCourseProjectId) {
-        RetrofitService.getCourseProjects(courseSetId)
+        HttpUtils.getInstance().createApi(CourseSetApi.class)
+                .getCourseProjects(courseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<List<CourseProject>, Observable<CourseProject>>() {

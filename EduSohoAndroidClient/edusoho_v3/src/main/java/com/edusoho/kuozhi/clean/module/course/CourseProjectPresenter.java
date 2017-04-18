@@ -1,10 +1,13 @@
 package com.edusoho.kuozhi.clean.module.course;
 
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.CourseApi;
+import com.edusoho.kuozhi.clean.api.CourseSetApi;
+import com.edusoho.kuozhi.clean.api.UserApi;
 import com.edusoho.kuozhi.clean.bean.CourseLearningProgress;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.Member;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.v3.EdusohoApp;
@@ -50,7 +53,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     @Override
     public void subscribe() {
-        getCourseProject(mCourseProjectId)
+        HttpUtils.getInstance()
+                .createApi(CourseApi.class)
+                .getCourseProject(mCourseProjectId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<CourseProject>() {
@@ -112,7 +117,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     private void joinFreeOrVipCourse(String token, final int courseId, String joinWay) {
-        RetrofitService.joinFreeOrVipCourse(token, courseId, joinWay)
+        HttpUtils.getInstance()
+                .createApi(CourseApi.class)
+                .joinFreeOrVipCourse(token, courseId, joinWay)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<JsonObject>() {
@@ -137,7 +144,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     private void initCourseMemberInfo(final CourseProject courseProject) {
-        getCourseMember(courseProject.id, EdusohoApp.app.loginUser.id)
+        HttpUtils.getInstance()
+                .createApi(CourseApi.class)
+                .getCourseMember(courseProject.id, EdusohoApp.app.loginUser.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<Member>() {
@@ -168,7 +177,10 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     private void setCourseLearningProgress(int courseId) {
-        RetrofitService.getMyCourseLearningProgress(EdusohoApp.app.token, courseId)
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(UserApi.class)
+                .getMyCourseLearningProgress(EdusohoApp.app.token, courseId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseLearningProgress>() {
@@ -206,15 +218,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
         return list;
     }
 
-    private Observable<CourseProject> getCourseProject(int id) {
-        return RetrofitService.getCourseProject(id);
-    }
-
-    private Observable<Member> getCourseMember(int courseId, int userId) {
-        return RetrofitService.getCourseMember(courseId, userId);
-    }
-
     private Observable<CourseSet> getCourseSet(int id) {
-        return RetrofitService.getCourseSet(id);
+        return HttpUtils.getInstance().createApi(CourseSetApi.class).getCourseSet(id);
     }
 }

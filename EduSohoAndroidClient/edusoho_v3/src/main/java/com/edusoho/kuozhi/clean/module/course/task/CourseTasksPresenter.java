@@ -2,11 +2,12 @@ package com.edusoho.kuozhi.clean.module.course.task;
 
 import android.util.Log;
 
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.bean.CourseItem;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.CourseTask;
 import com.edusoho.kuozhi.clean.bean.TaskItem;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 
 import java.util.List;
 
@@ -31,13 +32,10 @@ public class CourseTasksPresenter implements CourseTasksContract.Presenter {
         mCourseProject = courseProject;
     }
 
-    public Observable<List<CourseItem>> getCourseItems(int courseId) {
-        return RetrofitService.getTasks(courseId);
-    }
-
     @Override
     public void subscribe() {
-        getCourseItems(mCourseProject.id)
+        HttpUtils.getInstance().createApi(CourseApi.class)
+                .getCourseItems(mCourseProject.id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<List<CourseItem>, Observable<CourseItem>>() {
