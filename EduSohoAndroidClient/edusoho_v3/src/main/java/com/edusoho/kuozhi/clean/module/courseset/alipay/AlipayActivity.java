@@ -29,7 +29,6 @@ public class AlipayActivity extends AppCompatActivity implements AlipayContract.
     private String mData;
     private int mTargetId;
 
-
     public static void launch(Context context, String data, int targetId) {
         Intent intent = new Intent(context, AlipayActivity.class);
         intent.putExtra(URL_DATA, data);
@@ -51,7 +50,6 @@ public class AlipayActivity extends AppCompatActivity implements AlipayContract.
     private void initView() {
         mAlipay = (WebView) findViewById(R.id.wv);
     }
-
 
     private void initData() {
         WebSettings ws = mAlipay.getSettings();

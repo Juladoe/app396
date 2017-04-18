@@ -88,7 +88,9 @@ public class ConfirmOrderActivity extends BaseFinishActivity
         mToolbar = (Toolbar) findViewById(R.id.tb_toolbar);
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
 
         mPresenter = new ConfirmOrderPresenter(this, mCourseSetId, mCourseId);
         mPresenter.subscribe();
@@ -115,6 +117,7 @@ public class ConfirmOrderActivity extends BaseFinishActivity
         } else {
             mTotal.setText(String.format(getString(R.string.order_price_total), mTotalPrice));
         }
+        mCourseProjectTitle.setText(mOrderInfo.title);
         mCourseProjectPrice.setText(String.format(getString(R.string.yuan_symbol), mTotalPrice));
     }
 
@@ -137,7 +140,6 @@ public class ConfirmOrderActivity extends BaseFinishActivity
                 .showImageOnLoading(R.drawable.default_course)
                 .build();
         ImageLoader.getInstance().displayImage(courseSet.cover.middle, mCourseImg, imageOptions);
-        mCourseProjectTitle.setText(mOrderInfo.title);
         mCourseProjectFrom.setText(courseSet.title);
     }
 

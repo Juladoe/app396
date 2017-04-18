@@ -13,13 +13,13 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/4/6.
  */
 
-public class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
+class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
 
     private ConfirmOrderContract.View mView;
     private int mCourseId;
     private int mCourseSetId;
 
-    public ConfirmOrderPresenter(ConfirmOrderContract.View mView, int courseSetId, int courseId) {
+    ConfirmOrderPresenter(ConfirmOrderContract.View mView, int courseSetId, int courseId) {
         this.mView = mView;
         this.mCourseId = courseId;
         this.mCourseSetId = courseSetId;

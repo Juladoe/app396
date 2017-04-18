@@ -7,7 +7,7 @@ import com.edusoho.kuozhi.clean.module.base.BaseView;
  * Created by DF on 2017/4/12.
  */
 
-public interface AlipayContract {
+interface AlipayContract {
 
     interface View extends BaseView<Presenter>{
 

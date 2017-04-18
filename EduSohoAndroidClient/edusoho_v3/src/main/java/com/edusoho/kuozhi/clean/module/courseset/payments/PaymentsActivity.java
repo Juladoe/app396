@@ -83,7 +83,9 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
         mPay = findViewById(R.id.tv_pay);
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
 
         mPresenter = new PaymentsPresenter(this, mOrderInfo, mPosition);
         mPresenter.subscribe();
@@ -155,10 +157,12 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
             mDialog.setContentView(R.layout.dialog_input_pay_pw);
             mDialog.setCanceledOnTouchOutside(true);
             Window window = mDialog.getWindow();
-            WindowManager.LayoutParams lp = window.getAttributes();
-            lp.width = getResources().getDisplayMetrics().widthPixels;
-            window.setGravity(Gravity.BOTTOM);
-            window.setAttributes(lp);
+            if (window != null) {
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.width = getResources().getDisplayMetrics().widthPixels;
+                window.setAttributes(lp);
+                window.setGravity(Gravity.BOTTOM);
+            }
             mInputPw = (EditText) mDialog.findViewById(R.id.et_input_pw);
             mInputPw.setOnEditorActionListener(getOnEditorActionListener());
         }

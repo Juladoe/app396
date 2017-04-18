@@ -17,13 +17,13 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/4/1.
  */
 
-public class CourseProjectsPresenter implements CourseProjectsContract.Presenter {
+class CourseProjectsPresenter implements CourseProjectsContract.Presenter {
 
     private int mCourseSetId;
     private CourseProjectsContract.View mView;
     private List<CourseProject> mCourseProjects;
 
-    public CourseProjectsPresenter(CourseProjectsContract.View view, int id) {
+    CourseProjectsPresenter(CourseProjectsContract.View view, int id) {
         this.mView = view;
         this.mCourseSetId = id;
     }

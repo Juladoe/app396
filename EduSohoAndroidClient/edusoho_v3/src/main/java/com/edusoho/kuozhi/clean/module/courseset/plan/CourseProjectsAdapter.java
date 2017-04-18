@@ -34,13 +34,13 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
     private Context mContext;
     private int maxIndex = -1;
 
-    public CourseProjectsAdapter(Context context) {
+    CourseProjectsAdapter(Context context) {
         this.mContext = context;
-        this.mList = new ArrayList();
-        this.mVipInfos = new ArrayList();
+        this.mList = new ArrayList<>();
+        this.mVipInfos = new ArrayList<>();
     }
 
-    public void reFreshData(List<CourseProject> list, List<VipInfo> mVipInfos) {
+    void reFreshData(List<CourseProject> list, List<VipInfo> mVipInfos) {
         this.mList = list;
         this.mVipInfos = mVipInfos;
         int num = 0;
@@ -78,7 +78,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
             holder.mPrice.setText(R.string.free_course_project);
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.primary));
         } else {
-            holder.mPrice.setText(String.format("¥ %.2f", courseProject.price));
+            holder.mPrice.setText(String.format(mContext.getString(R.string.yuan_symbol), courseProject.price));
             holder.mPrice.setTextColor(ContextCompat.getColor(mContext, R.color.secondary_color));
         }
     }
@@ -131,11 +131,11 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
         int ranHeight = AppUtil.dp2px(mContext, 16);
         ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ranHeight);
         lp.setMargins(0, 0, AppUtil.dp2px(mContext, 10), 0);
-        for (int i = 0; i < services.length; i++) {
+        for (CourseProject.Service service : services) {
             TextView serviceTextView = new TextView(mContext);
             serviceTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
-            serviceTextView.setTextColor(mContext.getResources().getColor(R.color.primary_color));
-            serviceTextView.setText(services[i].shortName);
+            serviceTextView.setTextColor(ContextCompat.getColor(mContext, R.color.primary_color));
+            serviceTextView.setText(service.shortName);
             lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             lp.rightMargin = CommonUtil.dip2px(mContext, 10);
             serviceTextView.setLayoutParams(lp);
@@ -155,7 +155,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
         };
     }
 
-    public static class CourseProjectViewHolder extends RecyclerView.ViewHolder {
+    static class CourseProjectViewHolder extends RecyclerView.ViewHolder {
 
         private final View mRlItem;
         private final View mHot;
@@ -166,7 +166,7 @@ public class CourseProjectsAdapter extends RecyclerView.Adapter<CourseProjectsAd
         private final TextView mVip;
         private final View mService;
 
-        public CourseProjectViewHolder(View itemView) {
+        CourseProjectViewHolder(View itemView) {
             super(itemView);
             mRlItem = itemView.findViewById(R.id.rl_item);
             mHot = itemView.findViewById(R.id.iv_hot);

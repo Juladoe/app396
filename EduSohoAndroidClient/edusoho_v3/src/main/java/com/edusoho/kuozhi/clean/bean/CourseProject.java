@@ -16,6 +16,7 @@ public class CourseProject implements Serializable {
     public String title;
     public String expiryMode;
     public String expiryDays;
+    public long expiryEndDate;
     public String summary;
     public int studentNum;
     public String[] audiences;

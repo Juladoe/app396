@@ -19,7 +19,6 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
@@ -41,7 +40,6 @@ public class SelectProjectDialog extends ESBottomDialog implements
     private final String IS_FREE = "1";
     private final String FREE_STATE = "freeState";
 
-    private RadioButton mRb;
     private RadioGroup mRg;
     private View mDiscount;
     private TextView mOriginalPrice;
@@ -157,7 +155,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
     private void addButton() {
         int mostStudentNumPlan = getMostStudentNumPlan();
         for (int i = 0; i < mCourseProjects.size(); i++) {
-            mRb = new RadioButton(getContext());
+            RadioButton mRb = new RadioButton(getContext());
             mRb.setGravity(Gravity.CENTER);
             RadioGroup.LayoutParams mp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             mp.setMargins(0, 0, AppUtil.dp2px(getContext(), 10), AppUtil.dp2px(getContext(), 5));
@@ -169,7 +167,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
             mRb.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.teach_type_rb_selector));
             mRb.setText(mCourseProjects.get(i).title);
             if (mostStudentNumPlan == i) {
-                Drawable drawable = getContext().getResources().getDrawable(R.drawable.hot);
+                Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.hot);
                 drawable.setBounds(0, 0, AppUtil.dp2px(getContext(), 10), AppUtil.dp2px(getContext(), 13));
                 mRb.setCompoundDrawablePadding(AppUtil.dp2px(getContext(), 5));
                 mRb.setCompoundDrawables(null, null, drawable, null);

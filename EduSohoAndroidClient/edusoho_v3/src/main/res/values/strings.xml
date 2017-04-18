@@ -488,6 +488,7 @@
     <string name="join_success">加入成功</string>
     <string name="join_fail">加入失败</string>
     <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
+    <string name="course_date_limit">课程已过有效截止日期，无法加入学习</string>
     <string name="load_more_text">正在加载...</string>
     <string name="price_format">￥%1$.2f</string>
     <string name="from_course_set">来自课程&#160;&#160;|&#160;&#160;&#160;</string>
@@ -496,7 +497,7 @@
     <string name="minute">%1$s&#160;分&#160;</string>
     <string name="second">%1$s&#160;秒&#160;</string>
     <string name="yuan">%1$.2f&#160;元</string>
-    <string name="yuan_symbol">¥%1$.2f"</string>
+    <string name="yuan_symbol">¥&#160;%1$.2f"</string>
     <string name="teach_plan">教学计划</string>
     <string name="summary">概述</string>
     <string name="valid_date">有效期至%1$s</string>

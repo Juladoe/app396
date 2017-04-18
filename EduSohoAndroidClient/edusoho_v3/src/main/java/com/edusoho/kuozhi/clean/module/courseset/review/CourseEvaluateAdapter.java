@@ -23,40 +23,39 @@ import java.util.List;
  * Created by DF on 2017/3/23.
  */
 
-public class CourseEvaluateAdapter extends RecyclerView.Adapter {
+class CourseEvaluateAdapter extends RecyclerView.Adapter {
 
     private List<DataBean> mList;
-    private View mItem;
     private Context mContext;
 
     private static final int TYPE_ITEM = 0;
     private static final int TYPE_FOOTER = 1;
     //上拉加载更多
-    public static final int PULLUP_LOAD_MORE = 0;
+    private static final int PULLUP_LOAD_MORE = 0;
     //正在加载中
-    public static final int LOADING_MORE = 1;
+    static final int LOADING_MORE = 1;
     //没有加载更多 隐藏
-    public static final int NO_LOAD_MORE = 2;
+    static final int NO_LOAD_MORE = 2;
 
     //上拉加载更多状态-默认为0
     private int mLoadMoreStatus = 0;
 
-    public CourseEvaluateAdapter(Context context) {
+    CourseEvaluateAdapter(Context context) {
         this.mContext = context;
         this.mList = new ArrayList<>();
     }
 
-    public void reFreshData(List<DataBean> list) {
+    void reFreshData(List<DataBean> list) {
         this.mList = list;
         notifyDataSetChanged();
     }
 
-    public void addData(List<DataBean> list) {
+    void addData(List<DataBean> list) {
         this.mList.addAll(list);
         notifyDataSetChanged();
     }
 
-    public void changeMoreStatus(int status) {
+    void changeMoreStatus(int status) {
         mLoadMoreStatus = status;
         notifyDataSetChanged();
     }
@@ -67,6 +66,7 @@ public class CourseEvaluateAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View mItem;
         if (viewType == TYPE_FOOTER) {
             mItem = LayoutInflater.from(parent.getContext()).inflate(R.layout.foot_item, parent, false);
             return new FooterViewHolder(mItem);

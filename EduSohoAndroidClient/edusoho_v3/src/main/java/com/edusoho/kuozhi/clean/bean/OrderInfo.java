@@ -17,8 +17,8 @@ public class OrderInfo implements Serializable {
     public String coinName;
     public float cashRate;
     public String priceType;
-    public int coinPayAmount;
-    public int maxCoin;
+    public float coinPayAmount;
+    public float maxCoin;
     public String duration;
     public int fullCoinPayable;
     public String title;

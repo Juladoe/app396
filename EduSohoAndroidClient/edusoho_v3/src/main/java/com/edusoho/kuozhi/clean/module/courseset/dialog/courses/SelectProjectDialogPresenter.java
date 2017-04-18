@@ -20,6 +20,8 @@ public class SelectProjectDialogPresenter implements SelectProjectDialogContract
     private static final String IS_FREE = "1";
     private static final String FREE = "free";
     private static final String VIP = "vip";
+    private static final String END_DATE_MODE = "end_date";
+    private static final String DATE_MODE = "date";
 
     private SelectProjectDialogContract.View mView;
 
@@ -35,6 +37,12 @@ public class SelectProjectDialogPresenter implements SelectProjectDialogContract
     public void confirm(CourseProject courseProject) {
         if (!BUY_ABLE.equals(courseProject.buyable)) {
             mView.showToastOrFinish(R.string.course_limit_join, false);
+            return;
+        }
+        long currentTime = System.currentTimeMillis();
+        if (END_DATE_MODE.equals(courseProject.expiryMode) && courseProject.expiryEndDate <= currentTime
+              || DATE_MODE.equals(courseProject.expiryMode) && courseProject.expiryEndDate <= currentTime) {
+            mView.showToastOrFinish(R.string.course_date_limit, false);
             return;
         }
         if (IS_FREE.equals(courseProject.isFree) || EdusohoApp.app.loginUser.vip != null

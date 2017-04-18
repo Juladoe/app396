@@ -11,7 +11,7 @@ import java.util.List;
  * Created by DF on 2017/4/1.
  */
 
-public interface CourseIntroduceContract {
+interface CourseIntroduceContract {
 
     interface View extends BaseView<Presenter> {
 

@@ -12,7 +12,7 @@ import java.util.List;
  * Created by DF on 2017/3/31.
  */
 
-public interface CourseUnLearnContract {
+interface CourseUnLearnContract {
 
     interface View extends BaseView<Presenter> {
 

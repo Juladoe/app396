@@ -31,7 +31,7 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/3/31.
  */
 
-public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
+class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
 
     private static final String IS_FAVORITE = "isFavorite";
     private static final String BUY_ABLE = "1";
@@ -41,6 +41,8 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     private static final String VIP = "vip";
     private static final String SUCCESS = "success";
     private static final String STATUS_RUNNING = "running";
+    private static final String END_DATE_MODE = "end_date";
+    private static final String DATE_MODE = "date";
 
     private CourseUnLearnContract.View mView;
     private int mCourseSetId;
@@ -48,7 +50,7 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
     private List<CourseProject> mCourseProjects;
     private List<VipInfo> mVipInfos;
 
-    public CourseUnLearnPresenter(int courseSetId, CourseUnLearnContract.View view) {
+    CourseUnLearnPresenter(int courseSetId, CourseUnLearnContract.View view) {
         this.mCourseSetId = courseSetId;
         this.mView = view;
     }
@@ -238,6 +240,12 @@ public class CourseUnLearnPresenter implements CourseUnLearnContract.Presenter {
                     CourseProject courseProject = mCourseProjects.get(0);
                     if (!BUY_ABLE.equals(courseProject.buyable)) {
                         mView.showToast(R.string.course_limit_join);
+                        return;
+                    }
+                    long currentTime = System.currentTimeMillis();
+                    if (END_DATE_MODE.equals(courseProject.expiryMode) && courseProject.expiryEndDate <= currentTime
+                            || DATE_MODE.equals(courseProject.expiryMode) && courseProject.expiryEndDate <= currentTime) {
+                        mView.showToast(R.string.course_date_limit);
                         return;
                     }
                     if (IS_FREE.equals(courseProject.isFree) || EdusohoApp.app.loginUser.vip != null

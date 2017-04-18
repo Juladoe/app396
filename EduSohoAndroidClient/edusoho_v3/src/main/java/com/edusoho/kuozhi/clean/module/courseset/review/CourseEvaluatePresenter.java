@@ -14,7 +14,7 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/3/31.
  */
 
-public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter {
+class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter {
 
     private CourseEvaluateContract.View mView;
     private int mCourseSetId;
@@ -22,7 +22,7 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
     private boolean mIsHave = true;
     private boolean mIsFirst = true;
 
-    public CourseEvaluatePresenter(CourseEvaluateContract.View mView, int mCourseSetId) {
+    CourseEvaluatePresenter(CourseEvaluateContract.View mView, int mCourseSetId) {
         this.mView = mView;
         this.mCourseSetId = mCourseSetId;
     }

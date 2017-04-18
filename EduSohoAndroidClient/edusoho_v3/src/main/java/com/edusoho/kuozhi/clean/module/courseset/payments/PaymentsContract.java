@@ -7,7 +7,7 @@ import com.edusoho.kuozhi.clean.module.base.BaseView;
  * Created by DF on 2017/4/7.
  */
 
-public interface PaymentsContract {
+interface PaymentsContract {
 
     interface View extends BaseView<Presenter>{
 
