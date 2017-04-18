@@ -98,9 +98,9 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     @Override
     public void joinCourseProject(final int courseId) {
         if (mCourseProject.originPrice == FREE_PRICE) {
-            joinFreeOrVipCourse(EdusohoApp.app.token, courseId, "free");
+            joinFreeOrVipCourse(courseId, "free");
         } else if (EdusohoApp.app.loginUser.vip != null && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId) {
-            joinFreeOrVipCourse(EdusohoApp.app.token, courseId, "vip");
+            joinFreeOrVipCourse(courseId, "vip");
         } else {
             mView.launchConfirmOrderActivity(mCourseProjectId, courseId);
         }
@@ -116,10 +116,11 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
     }
 
-    private void joinFreeOrVipCourse(String token, final int courseId, String joinWay) {
+    private void joinFreeOrVipCourse(final int courseId, String joinWay) {
         HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
                 .createApi(CourseApi.class)
-                .joinFreeOrVipCourse(token, courseId, joinWay)
+                .joinFreeOrVipCourse(courseId, joinWay)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<JsonObject>() {

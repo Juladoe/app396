@@ -50,7 +50,6 @@ public interface CourseApi {
 
     @FormUrlEncoded
     @POST("courses/{id}/members")
-    Observable<JsonObject> joinFreeOrVipCourse(@Header("X-Auth-Token") String token,
-                                               @Path("id") int courseId, @Field("joinWay") String joinWay);
+    Observable<JsonObject> joinFreeOrVipCourse(@Path("id") int courseId, @Field("joinWay") String joinWay);
 
 }
