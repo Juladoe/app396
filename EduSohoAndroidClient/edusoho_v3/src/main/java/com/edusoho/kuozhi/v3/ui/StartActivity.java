@@ -361,6 +361,9 @@ public class StartActivity extends ActionBarBaseActivity implements MessageEngin
      * 处理网校异常dlg
      */
     protected void showSchoolErrorDlg() {
+        if (isFinishing()) {
+            return;
+        }
         PopupDialog popupDialog = PopupDialog.createMuilt(
                 mContext,
                 "提示信息",

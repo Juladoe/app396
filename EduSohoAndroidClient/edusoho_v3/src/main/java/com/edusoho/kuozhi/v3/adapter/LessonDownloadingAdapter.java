@@ -57,6 +57,10 @@ public class LessonDownloadingAdapter extends BaseAdapter {
         }
     }
 
+    public boolean hasLessonItem(int lessonId) {
+        return m3u8ModelList != null && m3u8ModelList.get(lessonId, null) != null;
+    }
+
     public void updateLocalData(List<LessonItem> localLessons) {
         mChildItems.clear();
         if (localLessons == null || localLessons.isEmpty()) {

@@ -429,6 +429,9 @@ public class CourseCatalogFragment extends Fragment implements ICourseStateListe
 
     public ArrayList<Integer> getLessonArray() {
         ArrayList<Integer> lessonArray = new ArrayList<>();
+        if (mCourseCatalogue == null || mCourseCatalogue.getLessons() == null) {
+            return lessonArray;
+        }
         for (CourseCatalogue.LessonsBean lessonsBean : mCourseCatalogue.getLessons()) {
             if ("lesson".equals(lessonsBean.getItemType())) {
                 lessonArray.add(Integer.parseInt(lessonsBean.getId()));

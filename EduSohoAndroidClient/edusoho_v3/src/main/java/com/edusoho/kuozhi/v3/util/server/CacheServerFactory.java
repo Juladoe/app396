@@ -33,10 +33,20 @@ public class CacheServerFactory {
         mCacheServer.start();
     }
 
+    public boolean cacheServerIsRuning(String host, int userId) {
+        String newTag = String.format("%s-%d", host, userId);
+        if (mCacheServer != null && newTag.equalsIgnoreCase(mCacheServer.getTag())) {
+            return true;
+        }
+        return false;
+    }
+
     private CacheServer createServer(Context context, String host, int loginUserId) {
-        return new CacheServer.Builder(context)
+        CacheServer cacheServer = new CacheServer.Builder(context)
                 .addHandler("*", new FileHandler(context, host, loginUserId))
                 .builder();
+        cacheServer.setTag(String.format("%s-%d", host, loginUserId));
+        return cacheServer;
     }
 
     public void stop() {

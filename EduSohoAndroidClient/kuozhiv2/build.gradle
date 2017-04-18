@@ -10,8 +10,8 @@ android {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
-        versionName "3.9.5"
-        versionCode 48
+        versionName "3.9.6"
+        versionCode 49
 
         ndk {
             abiFilters "armeabi-v7a"
@@ -81,7 +81,6 @@ repositories {
 }
 
 dependencies {
-    compile project(':edusoho_v3')
     compile project(':homework')
     compile project(':liveplayer')
 }

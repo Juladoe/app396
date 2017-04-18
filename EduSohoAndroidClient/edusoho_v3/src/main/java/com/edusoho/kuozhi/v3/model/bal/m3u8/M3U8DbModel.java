@@ -24,7 +24,6 @@ public class M3U8DbModel {
                 ", lessonId=" + lessonId +
                 ", totalNum=" + totalNum +
                 ", downloadNum=" + downloadNum +
-                ", playList='" + playList + '\'' +
                 '}';
     }
 }

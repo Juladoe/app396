@@ -22,8 +22,10 @@ import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.M3U8DownService;
 import com.edusoho.kuozhi.v3.ui.base.ActionBarBaseActivity;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
+import com.edusoho.kuozhi.v3.util.M3U8Util;
 import com.edusoho.kuozhi.v3.util.MediaUtil;
 import com.edusoho.kuozhi.v3.util.sql.SqliteUtil;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
@@ -252,7 +254,17 @@ public class SettingActivity extends ActionBarBaseActivity {
             tvCache.setText(String.format("%.1f%s", size, "M"));
         }
 
+        clearVideoLog();
         app.sendMessage(Const.CLEAR_APP_CACHE, null);
+    }
+
+    private void clearVideoLog() {
+        File storage = AppUtil.getSystemStorage();
+        for (File logFile : storage.listFiles()) {
+            if (logFile.getName().startsWith("vlc_")) {
+                logFile.delete();
+            }
+        }
     }
 
     private void deleteFile(File workSpace) {

@@ -148,7 +148,7 @@ public class TextLessonFragment extends BaseFragment implements NestedScrollView
     }
 
     @Override
-    public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+    public void onScrollChange(View v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
         mCurrentScrollPosition = scrollY;
     }
 

@@ -250,15 +250,23 @@ public class DownloadedFragment extends BaseFragment implements IDownloadFragmen
         super.invoke(message);
         String type = message.type.type;
         if (FINISH.equals(type)) {
-            if (mActivityContainer != null) {
-                DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
-                if (model.mLocalCourses.isEmpty()) {
-                } else {
-                    mDownloadedAdapter.updateLocalData(model.mLocalLessons.get(mCourseId));
-                    setEmptyState(mDownloadedAdapter.getCount() == 0);
-                }
-            }
+            loadLocalData();
         }
+    }
+
+    private void loadLocalData() {
+        if (mActivityContainer == null) {
+            return;
+        }
+        DownloadManagerActivity.LocalCourseModel model = mActivityContainer.getLocalCourseList(M3U8Util.FINISH, null, null);
+        mDownloadedAdapter.updateLocalData(model.mLocalLessons.get(mCourseId));
+        setEmptyState(mDownloadedAdapter.getCount() == 0);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadLocalData();
     }
 }
 

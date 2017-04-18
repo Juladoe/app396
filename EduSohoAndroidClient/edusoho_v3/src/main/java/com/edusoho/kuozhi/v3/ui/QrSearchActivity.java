@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.listener.PluginRunCallback;
 import com.edusoho.kuozhi.v3.ui.fragment.AboutFragment;
+import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import com.edusoho.kuozhi.v3.view.qr.CaptureActivity;
@@ -152,7 +153,7 @@ public class QrSearchActivity extends CaptureActivity {
                     CoreEngine.create(mContext).runNormalPlugin("CourseActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(Const.COURSE_ID, Integer.parseInt(targetId));
+                            startIntent.putExtra(Const.COURSE_ID, AppUtil.parseInt(targetId));
                         }
                     });
                     break;
@@ -160,7 +161,7 @@ public class QrSearchActivity extends CaptureActivity {
                     CoreEngine.create(mContext).runNormalPlugin("ClassroomActivity", mContext, new PluginRunCallback() {
                         @Override
                         public void setIntentDate(Intent startIntent) {
-                            startIntent.putExtra(Const.CLASSROOM_ID, Integer.parseInt(targetId));
+                            startIntent.putExtra(Const.CLASSROOM_ID, AppUtil.parseInt(targetId));
                         }
                     });
                     break;

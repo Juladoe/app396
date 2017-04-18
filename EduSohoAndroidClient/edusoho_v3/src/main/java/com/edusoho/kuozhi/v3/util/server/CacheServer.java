@@ -3,8 +3,6 @@ package com.edusoho.kuozhi.v3.util.server;
 
 import android.content.Context;
 import android.util.Log;
-import com.edusoho.kuozhi.v3.service.handler.FileHandler;
-import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import org.apache.http.impl.DefaultConnectionReuseStrategy;
 import org.apache.http.impl.DefaultHttpResponseFactory;
@@ -33,6 +31,7 @@ public class CacheServer extends Thread {
     private boolean isLoop;
     private boolean isPause;
     private Context mContext;
+    private String tag;
     private ServerSocket mServerSocket;
     private HttpRequestHandlerRegistry mHttpRequestHandlerRegistry;
     private ArrayList<Thread> mThreadList;
@@ -48,6 +47,14 @@ public class CacheServer extends Thread {
     public CacheServer(Context context, int port) {
         this(context);
         this.port = port;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     public void addHandler(String filter, HttpRequestHandler handler) {

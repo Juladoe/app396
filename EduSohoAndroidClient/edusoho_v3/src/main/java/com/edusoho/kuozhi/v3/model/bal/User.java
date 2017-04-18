@@ -6,6 +6,7 @@ import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * Created by howzhi on 14-5-25.
@@ -62,5 +63,29 @@ public class User implements Serializable {
         }
 
         return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "nickname='" + nickname + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", id=" + id +
+                ", avatar='" + avatar + '\'' +
+                ", roles=" + Arrays.toString(roles) +
+                ", uri='" + uri + '\'' +
+                ", title='" + title + '\'' +
+                ", type='" + type + '\'' +
+                ", point='" + point + '\'' +
+                ", mediumAvatar='" + mediumAvatar + '\'' +
+                ", createdTime='" + createdTime + '\'' +
+                ", about='" + about + '\'' +
+                ", role='" + role + '\'' +
+                ", following='" + following + '\'' +
+                ", follower='" + follower + '\'' +
+                ", vip=" + vip +
+                ", thirdParty='" + thirdParty + '\'' +
+                '}';
     }
 }

@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.android.volley.VolleyError;
@@ -108,8 +109,13 @@ public class CourseStudyDetailActivity extends BaseStudyDetailActivity implement
 
                     @Override
                     public void onFailure(String code, String message) {
+                        if (TextUtils.isEmpty(message)) {
+                            CommonUtil.shortToast(getBaseContext(), getResources().getString(R.string.lesson_loading_fail));
+                            finish();
+                            return;
+                        }
                         if (message.contains("课程不存在") || message.contains("课程未发布")) {
-                            CommonUtil.shortToast(CourseStudyDetailActivity.this, message);
+                            CommonUtil.shortToast(getBaseContext(), message);
                             finish();
                         }
                     }

@@ -148,6 +148,10 @@ public class TestpaperLessonFragment extends BaseFragment {
     }
 
     private String[] getTestpaperQSeq() {
+        if (mTestpaper.metas == null) {
+            return new String[] {
+            };
+        }
         ArrayList<QuestionType> questionTypeSeqs = mTestpaper.metas.question_type_seq;
         String[] TESTPAPER_QUESTION_TYPE = new String[questionTypeSeqs.size()];
         for (int i = 0; i < TESTPAPER_QUESTION_TYPE.length; i++) {
