@@ -1,9 +1,10 @@
 package com.edusoho.kuozhi.clean.module.course.rate;
 
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.DataPageResult;
 import com.edusoho.kuozhi.clean.bean.Review;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.clean.utils.CommonConstant;
 
 import rx.Subscriber;
@@ -31,7 +32,9 @@ public class CourseProjectRatesPresenter implements CourseProjectRatesContract.P
     }
 
     public void getRates(int courseId) {
-        RetrofitService.getCourseProjectReviews(courseId, mOffset, CommonConstant.LIMIT)
+        HttpUtils.getInstance()
+                .createApi(CourseApi.class)
+                .getCourseProjectReviews(courseId, mOffset, CommonConstant.LIMIT)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<DataPageResult<Review>>() {
