@@ -307,8 +307,8 @@ public class ArticleFragment extends BaseFragment {
     private ArrayList<ArticleModel> getChatList(int start) {
         List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConvNo).getMessageList(start);
         ArrayList<ArticleModel> articleModels = new ArrayList<>();
-        for (MessageEntity messageEntity : messageEntityList) {
-            articleModels.add(new ArticleModel(messageEntity));
+        for (int i=0;i<messageEntityList.size();i++){
+            articleModels.add(new ArticleModel(messageEntityList.get(messageEntityList.size()-1-i)));
         }
         return articleModels;
     }

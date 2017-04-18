@@ -9,12 +9,17 @@ android {
         minSdkVersion 16
         targetSdkVersion 21
         manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+        multiDexEnabled true
     }
 
-    //签名
+//    签名
     signingConfigs {
         debugConfig {
-            storeFile file("key/com.edusoho.kaoshi60.jks")
+            storeFile file("key/com.edusoho.shiyan.jks")
             storePassword "10001000"
             keyAlias "cn"
             keyPassword "10001000"
@@ -22,19 +27,20 @@ android {
     }
 
     productFlavors {
-        kaoshi60 {
+        shiyan {
             signingConfig signingConfigs.debugConfig
-            applicationId "com.edusoho.kaoshi60"
-            manifestPlaceholders = [wxpkg: "com.edusoho.kaoshi60", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
-
+            applicationId "com.edusoho.shiyan"
+            manifestPlaceholders = [wxpkg: "com.edusoho.shiyan", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+            versionCode 45
+            versionName '3.9.2'
         }
     }
 
     sourceSets {
-        kaoshi60 {
-            java.srcDirs = ['src/kaoshi60/java']
-            res.srcDirs = ['src/kaoshi60/res']
-            assets.srcDirs = ['src/kaoshi60/assets']
+        shiyan {
+            java.srcDirs = ['src/shiyan/java']
+            res.srcDirs = ['src/shiyan/res']
+            assets.srcDirs = ['src/shiyan/assets']
         }
     }
 
@@ -45,8 +51,13 @@ android {
             signingConfig signingConfigs.debugConfig
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     compile project(':edusoho_v3')
+    compile project(':homework')
 }
