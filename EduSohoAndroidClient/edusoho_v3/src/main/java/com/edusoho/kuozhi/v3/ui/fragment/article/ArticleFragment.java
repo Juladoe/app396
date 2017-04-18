@@ -58,6 +58,8 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.umeng.analytics.MobclickAgent;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -307,6 +309,12 @@ public class ArticleFragment extends BaseFragment {
     private ArrayList<ArticleModel> getChatList(int start) {
         List<MessageEntity> messageEntityList = IMClient.getClient().getChatRoom(mConvNo).getMessageList(start);
         ArrayList<ArticleModel> articleModels = new ArrayList<>();
+        Collections.sort(messageEntityList, new Comparator<MessageEntity>() {
+            @Override
+            public int compare(MessageEntity lhs, MessageEntity rhs) {
+                return lhs.getTime() - rhs.getTime();
+            }
+        });
         for (MessageEntity messageEntity : messageEntityList) {
             articleModels.add(new ArticleModel(messageEntity));
         }
