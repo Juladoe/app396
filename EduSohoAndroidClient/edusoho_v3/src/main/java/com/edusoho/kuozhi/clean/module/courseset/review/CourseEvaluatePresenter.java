@@ -1,11 +1,11 @@
 package com.edusoho.kuozhi.clean.module.courseset.review;
 
 
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.CourseSetApi;
 import com.edusoho.kuozhi.clean.bean.CourseReview;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 import com.edusoho.kuozhi.v3.adapter.discuss.CourseDiscussAdapter;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -14,7 +14,7 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/3/31.
  */
 
-public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter {
+class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter {
 
     private CourseEvaluateContract.View mView;
     private int mCourseSetId;
@@ -22,14 +22,16 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
     private boolean mIsHave = true;
     private boolean mIsFirst = true;
 
-    public CourseEvaluatePresenter(CourseEvaluateContract.View mView, int mCourseSetId) {
+    CourseEvaluatePresenter(CourseEvaluateContract.View mView, int mCourseSetId) {
         this.mView = mView;
         this.mCourseSetId = mCourseSetId;
     }
 
     @Override
     public void subscribe() {
-        getCourseReview(mCourseSetId, 10, mStart)
+        HttpUtils.getInstance()
+                .createApi(CourseSetApi.class)
+                .getCourseReview(mCourseSetId, 10, mStart)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -78,9 +80,10 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
             mView.changeMoreStatus(CourseDiscussAdapter.NO_LOAD_MORE);
             return;
         }
-        getCourseReview(mCourseSetId, 10, mStart)
+        HttpUtils.getInstance()
+                .createApi(CourseSetApi.class)
+                .getCourseReview(mCourseSetId, 10, mStart)
                 .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseReview>() {
                     @Override
@@ -108,9 +111,5 @@ public class CourseEvaluatePresenter implements CourseEvaluateContract.Presenter
     @Override
     public void unsubscribe() {
 
-    }
-
-    private Observable<CourseReview> getCourseReview(int id, int limit, int offset) {
-        return RetrofitService.getCourseReview(id, limit, offset);
     }
 }

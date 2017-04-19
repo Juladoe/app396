@@ -349,19 +349,19 @@
             android:theme="@style/AppThemeNoActionBar"/>
 
         <activity
-            android:name=".clean.module.courseset.payments.PaymentsActivity"
+            android:name=".clean.module.order.payments.PaymentsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar"/>
 
         <activity
-            android:name=".clean.module.courseset.order.ConfirmOrderActivity"
+            android:name=".clean.module.order.confirm.ConfirmOrderActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar" />
 
         <activity
-            android:name=".clean.module.courseset.alipay.AlipayActivity"
+            android:name=".clean.module.order.alipay.AlipayActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeNoActionBar"/>

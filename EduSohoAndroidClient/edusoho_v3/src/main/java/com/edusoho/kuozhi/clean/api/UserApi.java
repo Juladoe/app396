@@ -29,13 +29,13 @@ public interface UserApi {
     Observable<CourseLearningProgress> getMyCourseLearningProgress(@Header("X-Auth-Token") String token, @Path("courseId") int courseId);
 
     @GET("me/favorite_course_sets/{courseSetId}")
-    Observable<JsonObject> getFavorite(@Header("X-Auth-Token") String token, @Path("courseSetId") int courseSetId);
+    Observable<JsonObject> getFavorite(@Path("courseSetId") int courseSetId);
 
     @FormUrlEncoded
     @POST("me/favorite_course_sets")
-    Observable<JsonObject> favoriteCourseSet(@Header("X-Auth-Token") String token, @Field("courseSetId") int courseSetId);
+    Observable<JsonObject> favoriteCourseSet(@Field("courseSetId") int courseSetId);
 
     @DELETE("me/favorite_course_sets/{courseSetId}")
-    Observable<JsonObject> cancelFavoriteCourseSet(@Header("X-Auth-Token") String token, @Path("courseSetId") int courseSetId);
+    Observable<JsonObject> cancelFavoriteCourseSet( @Path("courseSetId") int courseSetId);
 
 }

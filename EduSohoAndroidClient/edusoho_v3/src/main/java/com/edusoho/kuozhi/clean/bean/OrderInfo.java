@@ -15,12 +15,12 @@ public class OrderInfo implements Serializable {
     public AccountBean account;
     public int hasPayPassword;
     public String coinName;
-    public String cashRate;
+    public float cashRate;
     public String priceType;
-    public int coinPayAmount;
-    public int maxCoin;
+    public float coinPayAmount;
+    public float maxCoin;
     public String duration;
-    public int fullCoinPayable;
+    public String fullCoinPayable;
     public String title;
     public List<Coupon> availableCoupons;
 

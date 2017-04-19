@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.dialog.coupons;
+package com.edusoho.kuozhi.clean.module.order.dialog.coupons;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -18,7 +18,7 @@ import java.util.List;
  * Created by DF on 2017/4/14.
  */
 
-public class CouponsAdapter extends BaseAdapter {
+class CouponsAdapter extends BaseAdapter {
 
     private static final String MINUS = "minus";
     private static final String ALL_STATION_USE = "all";
@@ -26,7 +26,7 @@ public class CouponsAdapter extends BaseAdapter {
     private List<OrderInfo.Coupon> mCoupons;
     private Context mContext;
 
-    public CouponsAdapter(Context mContext, List<Coupon> list) {
+    CouponsAdapter(Context mContext, List<Coupon> list) {
         this.mCoupons = list;
         this.mContext = mContext;
     }

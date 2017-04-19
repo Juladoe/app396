@@ -19,10 +19,10 @@ import android.widget.TextView;
 
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
-import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
-import com.edusoho.kuozhi.clean.module.courseset.order.ConfirmOrderActivity;
+import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderActivity;
+import com.edusoho.kuozhi.clean.utils.TimeUtils;
 import com.edusoho.kuozhi.clean.widget.ESBottomDialog;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.util.AppUtil;
@@ -39,9 +39,11 @@ public class SelectProjectDialog extends ESBottomDialog implements
         ESBottomDialog.BottomDialogContentView, SelectProjectDialogContract.View {
 
     private final String IS_FREE = "1";
-    private final String FREE_STATE = "freeState";
+    private final String FREE_STATE = "freeMode";
+    private static final String END_DATE_MODE = "end_date";
+    private static final String DAYS_MODE = "days";
+    private static final String DATE_MODE = "date";
 
-    private RadioButton mRb;
     private RadioGroup mRg;
     private View mDiscount;
     private TextView mOriginalPrice;
@@ -157,7 +159,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
     private void addButton() {
         int mostStudentNumPlan = getMostStudentNumPlan();
         for (int i = 0; i < mCourseProjects.size(); i++) {
-            mRb = new RadioButton(getContext());
+            RadioButton mRb = new RadioButton(getContext());
             mRb.setGravity(Gravity.CENTER);
             RadioGroup.LayoutParams mp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             mp.setMargins(0, 0, AppUtil.dp2px(getContext(), 10), AppUtil.dp2px(getContext(), 5));
@@ -169,7 +171,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
             mRb.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.teach_type_rb_selector));
             mRb.setText(mCourseProjects.get(i).title);
             if (mostStudentNumPlan == i) {
-                Drawable drawable = getContext().getResources().getDrawable(R.drawable.hot);
+                Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.hot);
                 drawable.setBounds(0, 0, AppUtil.dp2px(getContext(), 10), AppUtil.dp2px(getContext(), 13));
                 mRb.setCompoundDrawablePadding(AppUtil.dp2px(getContext(), 5));
                 mRb.setCompoundDrawables(null, null, drawable, null);
@@ -198,7 +200,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
                 View view = group.findViewById(checkedId);
                 int position = group.indexOfChild(view);
                 mCourseProject = mCourseProjects.get(position);
-                setPriceView(position);
+                setPriceView();
                 setServiceView();
                 mWay.setText(FREE_STATE.equals(mCourseProject.learnMode) ?
                         getContext().getString(R.string.free_mode) : getContext().getString(R.string.locked_mode));
@@ -207,22 +209,23 @@ public class SelectProjectDialog extends ESBottomDialog implements
         };
     }
 
-    private void setPriceView(int position) {
-        if (IS_FREE.equals(mCourseProjects.get(position).isFree)) {
+    private void setPriceView() {
+        if (IS_FREE.equals(mCourseProject.isFree)) {
             mDiscount.setVisibility(View.GONE);
             mOriginalPrice.setVisibility(View.GONE);
             mDiscountPrice.setText(R.string.free_course_project);
             mDiscountPrice.setTextColor(ContextCompat.getColor(getContext(), R.color.primary));
         } else {
             mDiscountPrice.setTextColor(ContextCompat.getColor(getContext(), R.color.secondary_color));
-            if (mCourseProject.price == mCourseProject.price) {
+            if (mCourseProject.price == mCourseProject.originPrice) {
                 mDiscount.setVisibility(View.GONE);
-                mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.price));
+                mDiscountPrice.setText(String.format(getString(R.string.yuan_symbol), mCourseProject.price));
                 return;
             }
             mDiscount.setVisibility(View.VISIBLE);
-            mDiscountPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.price));
-            mOriginalPrice.setText(String.format("%s%.2f", "¥ ", mCourseProject.originPrice));
+            mDiscountPrice.setText(String.format(getString(R.string.yuan_symbol), mCourseProject.price));
+            mOriginalPrice.setVisibility(View.VISIBLE);
+            mOriginalPrice.setText(String.format(getString(R.string.yuan_symbol), mCourseProject.originPrice));
             mOriginalPrice.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
         }
     }
@@ -245,7 +248,14 @@ public class SelectProjectDialog extends ESBottomDialog implements
     }
 
     private void setOtherView() {
-        if ("days".equals(mCourseProject.expiryMode)) {
+        long currentTime = System.currentTimeMillis();
+        if (END_DATE_MODE.equals(mCourseProject.expiryMode) || DATE_MODE.equals(mCourseProject.expiryMode)) {
+            if (TimeUtils.getMillisecond(mCourseProject.expiryEndDate) <= currentTime) {
+                mValidity.setText(R.string.validity_past);
+            } else {
+                mValidity.setText(String.format(getContext().getString(R.string.validity), mCourseProject.expiryEndDate.substring(0, 9)));
+            }
+        } else if (DAYS_MODE.equals(mCourseProject.expiryMode)){
             mValidity.setText(String.format(getContext().getString(R.string.validity_day), mCourseProject.expiryDays));
         } else {
             mValidity.setText(R.string.validity_forever);
@@ -262,7 +272,7 @@ public class SelectProjectDialog extends ESBottomDialog implements
         }
         if (EdusohoApp.app.loginUser.vip != null
                 && EdusohoApp.app.loginUser.vip.levelId >= mCourseProject.vipLevelId
-                && mCourseProject.vipLevelId != 0) {
+                && mCourseProject.vipLevelId != 0 || IS_FREE.equals(mCourseProject.isFree)) {
             mConfirm.setText(R.string.txt_vip_free);
         } else {
             mConfirm.setText(R.string.confirm);

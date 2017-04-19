@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.payments;
+package com.edusoho.kuozhi.clean.module.order.payments;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -20,7 +20,8 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
 import com.edusoho.kuozhi.clean.module.course.CourseProjectActivity;
 import com.edusoho.kuozhi.clean.module.courseset.BaseFinishActivity;
-import com.edusoho.kuozhi.clean.module.courseset.alipay.AlipayActivity;
+import com.edusoho.kuozhi.clean.module.order.alipay.AlipayActivity;
+import com.edusoho.kuozhi.clean.module.order.payments.PaymentsContract.Presenter;
 import com.edusoho.kuozhi.v3.util.CommonUtil;
 import com.edusoho.kuozhi.v3.util.InputUtils;
 import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
@@ -29,10 +30,11 @@ import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
  * Created by DF on 2017/4/7.
  */
 
-public class PaymentsActivity extends BaseFinishActivity implements View.OnClickListener, PaymentsContract.View {
+public class PaymentsActivity extends BaseFinishActivity implements android.view.View.OnClickListener, PaymentsContract.View {
 
     private static final String ORDER_INFO = "order_info";
     private static final String ORDER_PRICE = "order_price";
+    private static final String FULL_COIN_PAYABLE = "1";
     private static final String COUPON_POSITION_IN_COUPONS = "position";
 
     private Toolbar mToolbar;
@@ -45,8 +47,9 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     private Dialog mDialog;
     private LoadDialog mProcessDialog;
     private EditText mInputPw;
+    private View mAvailableLayout;
 
-    private PaymentsContract.Presenter mPresenter;
+    private Presenter mPresenter;
 
     private OrderInfo mOrderInfo;
     private float mOrderPrice;
@@ -74,8 +77,9 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     }
 
     private void initView() {
-        mToolbar = (Toolbar) findViewById(R.id.tb_toolbar);
         mAlipay = findViewById(R.id.iv_alipay);
+        mAvailableLayout = findViewById(R.id.available_layout);
+        mToolbar = (Toolbar) findViewById(R.id.tb_toolbar);
         mVirtualCoin = (TextView) findViewById(R.id.tv_virtual_coin);
         mDiscount = (TextView) findViewById(R.id.tv_discount);
         mBalance = (TextView) findViewById(R.id.tv_available_balance);
@@ -83,8 +87,9 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
         mPay = findViewById(R.id.tv_pay);
         setSupportActionBar(mToolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-
+        if (actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+        }
         mPresenter = new PaymentsPresenter(this, mOrderInfo, mPosition);
         mPresenter.subscribe();
     }
@@ -103,10 +108,14 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     }
 
     private void initShow() {
-        mVirtualCoin.setText(mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin_pay));
-        mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
-        mAvailableName.setText(String.format(getString(R.string.available_balance),
+        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable)) {
+            mVirtualCoin.setVisibility(View.VISIBLE);
+            mAvailableLayout.setVisibility(View.VISIBLE);
+            mVirtualCoin.setText(mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin_pay));
+            mAvailableName.setText(String.format(getString(R.string.available_balance),
                 mOrderInfo.coinName.length() != 0 ? mOrderInfo.coinName : getString(R.string.virtual_coin)));
+            mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
+        }
         mDiscount.setText(String.format(getString(R.string.yuan), mOrderPrice));
     }
 
@@ -125,14 +134,20 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
     private void clickAlipay() {
         mAlipay.setSelected(true);
         mVirtualCoin.setSelected(false);
-        mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
+        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable)) {
+            mBalance.setText(String.format("%.2f", mOrderInfo.account.cash));
+        }
+        mDiscount.setText(String.format(getString(R.string.yuan), mOrderPrice));
     }
 
     private void clickVirtual() {
         mAlipay.setSelected(false);
         mVirtualCoin.setSelected(true);
-        if (mOrderPrice > mOrderInfo.account.cash) {
+        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice > mOrderInfo.account.cash) {
             mBalance.setText(R.string.insufficient_balance);
+        }
+        if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable)) {
+            mDiscount.setText(String.format("%.2f %s", mOrderInfo.totalPrice, mOrderInfo.coinName));
         }
     }
 
@@ -141,7 +156,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
             showProcessDialog();
             mPresenter.createOrderAndPay(PaymentsPresenter.ALIPAY, null, -1);
         } else {
-            if (mOrderPrice > mOrderInfo.account.cash) {
+            if (FULL_COIN_PAYABLE.equals(mOrderInfo.fullCoinPayable) && mOrderPrice > mOrderInfo.account.cash) {
                 CommonUtil.shortToast(this, getString(R.string.insufficient_balance));
                 return;
             }
@@ -155,10 +170,12 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
             mDialog.setContentView(R.layout.dialog_input_pay_pw);
             mDialog.setCanceledOnTouchOutside(true);
             Window window = mDialog.getWindow();
-            WindowManager.LayoutParams lp = window.getAttributes();
-            lp.width = getResources().getDisplayMetrics().widthPixels;
-            window.setGravity(Gravity.BOTTOM);
-            window.setAttributes(lp);
+            if (window != null) {
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.width = getResources().getDisplayMetrics().widthPixels;
+                window.setAttributes(lp);
+                window.setGravity(Gravity.BOTTOM);
+            }
             mInputPw = (EditText) mDialog.findViewById(R.id.et_input_pw);
             mInputPw.setOnEditorActionListener(getOnEditorActionListener());
         }
@@ -172,7 +189,7 @@ public class PaymentsActivity extends BaseFinishActivity implements View.OnClick
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 String pw = mInputPw.getText().toString().trim();
-                if (pw.length() < 6) {
+                if (pw.length() < 5) {
                     CommonUtil.shortToast(PaymentsActivity.this, "密码长度有误");
                     return true;
                 }

@@ -1,8 +1,12 @@
-package com.edusoho.kuozhi.clean.module.courseset.order;
+package com.edusoho.kuozhi.clean.module.order.confirm;
 
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.R;
+import com.edusoho.kuozhi.clean.api.CourseSetApi;
+import com.edusoho.kuozhi.clean.api.OrderApi;
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
+import com.edusoho.kuozhi.clean.module.order.confirm.ConfirmOrderContract;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import rx.Subscriber;
@@ -13,13 +17,13 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/4/6.
  */
 
-public class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
+class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
 
     private ConfirmOrderContract.View mView;
     private int mCourseId;
     private int mCourseSetId;
 
-    public ConfirmOrderPresenter(ConfirmOrderContract.View mView, int courseSetId, int courseId) {
+    ConfirmOrderPresenter(ConfirmOrderContract.View mView, int courseSetId, int courseId) {
         this.mView = mView;
         this.mCourseId = courseId;
         this.mCourseSetId = courseSetId;
@@ -27,7 +31,10 @@ public class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
 
     @Override
     public void subscribe() {
-        RetrofitService.postOrderInfo(EdusohoApp.app.token, "course", mCourseId)
+        HttpUtils.getInstance()
+                .addTokenHeader(EdusohoApp.app.token)
+                .createApi(OrderApi.class)
+                .postOrderInfo("course", mCourseId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<OrderInfo>() {
@@ -39,6 +46,7 @@ public class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
                     @Override
                     public void onError(Throwable e) {
                         mView.showProcessDialog(false);
+                        mView.showToastAndFinish(R.string.course_project_expire_hint);
                     }
 
                     @Override
@@ -49,7 +57,9 @@ public class ConfirmOrderPresenter implements ConfirmOrderContract.Presenter {
                         }
                     }
                 });
-        RetrofitService.getCourseSet(mCourseSetId)
+        HttpUtils.getInstance()
+                .createApi(CourseSetApi.class)
+                .getCourseSet(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Subscriber<CourseSet>() {

@@ -29,7 +29,6 @@ import com.android.volley.Response;
 import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
-import com.edusoho.kuozhi.clean.api.RetrofitService;
 import com.edusoho.kuozhi.imserver.IMClient;
 import com.edusoho.kuozhi.v3.core.CoreEngine;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
@@ -78,8 +77,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import retrofit2.Retrofit;
 
 public class EdusohoApp extends Application {
 

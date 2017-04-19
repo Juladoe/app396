@@ -10,7 +10,7 @@ import java.util.List;
  * Created by DF on 2017/3/31.
  */
 
-public interface CourseEvaluateContract {
+interface CourseEvaluateContract {
 
     interface View extends BaseView<Presenter> {
         void setLoadViewVis(boolean isVis);

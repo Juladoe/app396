@@ -1,8 +1,10 @@
 package com.edusoho.kuozhi.clean.module.courseset.plan;
 
-import com.edusoho.kuozhi.clean.api.RetrofitService;
+import com.edusoho.kuozhi.clean.api.CourseSetApi;
+import com.edusoho.kuozhi.clean.api.PluginsApi;
 import com.edusoho.kuozhi.clean.bean.CourseProject;
 import com.edusoho.kuozhi.clean.bean.VipInfo;
+import com.edusoho.kuozhi.clean.http.HttpUtils;
 
 import java.util.List;
 
@@ -17,33 +19,37 @@ import rx.schedulers.Schedulers;
  * Created by DF on 2017/4/1.
  */
 
-public class CourseProjectsPresenter implements CourseProjectsContract.Presenter {
+class CourseProjectsPresenter implements CourseProjectsContract.Presenter {
 
     private int mCourseSetId;
     private CourseProjectsContract.View mView;
-    private List<CourseProject> mCourseStudyPlan;
+    private List<CourseProject> mCourseProjects;
 
-    public CourseProjectsPresenter(CourseProjectsContract.View view, int id) {
+    CourseProjectsPresenter(CourseProjectsContract.View view, int id) {
         this.mView = view;
         this.mCourseSetId = id;
     }
 
     @Override
     public void subscribe() {
-        getCourseProjects(mCourseSetId)
+        HttpUtils.getInstance()
+                .createApi(CourseSetApi.class)
+                .getCourseProjects(mCourseSetId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Action1<List<CourseProject>>() {
                     @Override
                     public void call(List<CourseProject> list) {
-                        mCourseStudyPlan = list;
+                        mCourseProjects = list;
                     }
                 })
                 .observeOn(Schedulers.io())
                 .flatMap(new Func1<List<CourseProject>, Observable<List<VipInfo>>>() {
                     @Override
                     public Observable<List<VipInfo>> call(List<CourseProject> list) {
-                        return getVipInfo();
+                        return HttpUtils.getInstance()
+                                .createApi(PluginsApi.class)
+                                .getVipInfo();
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -61,24 +67,16 @@ public class CourseProjectsPresenter implements CourseProjectsContract.Presenter
                     @Override
                     public void onNext(List<VipInfo> vipInfo) {
                         mView.setLoadViewVis(false);
-                        if (mCourseStudyPlan != null && mCourseStudyPlan.size() != 0 && vipInfo != null) {
-                            mView.showComPanies(mCourseStudyPlan, vipInfo);
+                        if (mCourseProjects != null && mCourseProjects.size() != 0 && vipInfo != null) {
+                            mView.showComPanies(mCourseProjects, vipInfo);
                         }
                     }
                 });
     }
-
 
     @Override
     public void unsubscribe() {
 
     }
 
-    private Observable<List<CourseProject>> getCourseProjects(int courseSetId) {
-        return RetrofitService.getCourseProjects(courseSetId);
-    }
-
-    private Observable<List<VipInfo>> getVipInfo() {
-        return RetrofitService.getVipInfo();
-    }
 }

@@ -1,4 +1,4 @@
-package com.edusoho.kuozhi.clean.module.courseset.order;
+package com.edusoho.kuozhi.clean.module.order.confirm;
 
 import com.edusoho.kuozhi.clean.bean.CourseSet;
 import com.edusoho.kuozhi.clean.bean.OrderInfo;
@@ -18,6 +18,8 @@ public interface ConfirmOrderContract {
         void showProcessDialog(boolean isShow);
 
         void showTopView(CourseSet courseSet);
+
+        void showToastAndFinish(int content);
     }
 
     interface Presenter extends BasePresenter {

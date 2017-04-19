@@ -462,8 +462,10 @@
     <string name="course_info">课程简介</string>
     <string name="free_mode">学习方式: 自由式学习</string>
     <string name="locked_mode">学习方式: 解锁式学习</string>
+    <string name="validity">有效期:&#160;%s</string>
     <string name="validity_day">有效期: %1$s天</string>
-    <string name="validity_forever">有效期:  永久</string>
+    <string name="validity_forever">有效期:&#160;永久</string>
+    <string name="validity_past">有效期:&#160;已过期</string>
     <string name="input_pay_password">输入支付密码</string>
     <string name="setting_password_hint">设置/重置密码: \n网页版—个人设置—安全设置—支付密码</string>
 
@@ -488,16 +490,16 @@
     <string name="join_success">加入成功</string>
     <string name="join_fail">加入失败</string>
     <string name="course_limit_join">课程已限制学员加入，无法加入学习</string>
+    <string name="course_date_limit">课程已过有效截止日期，无法加入学习</string>
     <string name="load_more_text">正在加载...</string>
     <string name="price_format">￥%1$.2f</string>
-    <string name="confirm_pay">确定支付</string>
     <string name="from_course_set">来自课程&#160;&#160;|&#160;&#160;&#160;</string>
     <string name="remain">剩余&#160;%1$s&#160;天&#160;</string>
     <string name="hour">%s&#160;小时&#160;</string>
     <string name="minute">%1$s&#160;分&#160;</string>
     <string name="second">%1$s&#160;秒&#160;</string>
     <string name="yuan">%1$.2f&#160;元</string>
-    <string name="yuan_symbol">¥%1$.2f"</string>
+    <string name="yuan_symbol">¥&#160;%1$.2f"</string>
     <string name="teach_plan">教学计划</string>
     <string name="summary">概述</string>
     <string name="valid_date">有效期至%1$s</string>
@@ -517,5 +519,6 @@
     <string name="course_progress_deadline">课程有效期至：%1$s</string>
     <string name="selector_payments">选择支付方式</string>
     <string name="course_expired_or_closed">课程还未发布，不允许加入和购买</string>
+    <string name="course_project_expire_hint">该教学计划已经超过购买截止日期，不允许购买</string>
 
 </resources>
