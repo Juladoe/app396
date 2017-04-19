@@ -1,9 +1,7 @@
 package com.edusoho.kuozhi.v3.view.webview.bridgeadapter;
 
-import android.content.Context;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
-
 import com.edusoho.kuozhi.v3.plugin.JsNativeAppPlugin;
 import com.edusoho.kuozhi.v3.plugin.MenuClickPlugin;
 import com.edusoho.kuozhi.v3.view.webview.bridgeadapter.bridge.IBridgePlugin;
@@ -75,7 +73,7 @@ public class JsBridgeAdapter {
 
     @JavascriptInterface
     public void exec(String callbackId, String targetName, String method, String args) {
-        Log.d(TAG, String.format("t:%s m:%s c:%s", targetName, method, callbackId));
+        Log.d(TAG, String.format("type:%s m:%s c:%s", targetName, method, callbackId));
         IBridgePlugin nativeBridge = getBridgePlugin(targetName);
         try {
             nativeBridge.execute(method, new JSONArray(args), new BridgeCallback(callbackId, this));
@@ -85,7 +83,7 @@ public class JsBridgeAdapter {
     }
 
     public Object executeAnsy(String targetName, String method, String args) {
-        Log.d(TAG, String.format("t:%s m%s", targetName, method));
+        Log.d(TAG, String.format("type:%s m%s", targetName, method));
         Object result = null;
         IBridgePlugin nativeBridge = getBridgePlugin(targetName);
         if (nativeBridge == null) {

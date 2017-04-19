@@ -5,10 +5,9 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
-import android.util.Log;
-
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.model.bal.push.Chat;
-
 import java.util.ArrayList;
 
 /**
@@ -52,31 +51,20 @@ public class ChatDataSource {
             Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, sql, null, null, null, "CHATID DESC",
                     String.format("%d, %d", start, limit));
             while (cursor.moveToNext()) {
-                list.add(cursorToComment(cursor));
+                Chat chat = cursorToComment(cursor);
+                chat.direct = Chat.Direct.getDirect(chat.fromId == getAppSettingProvider().getCurrentUser().id);
+                list.add(chat);
             }
             cursor.close();
         } catch (Exception ex) {
-            Log.d("-->", ex.getMessage());
+            ex.printStackTrace();
         }
         this.close();
         return list;
     }
 
-    public Chat getChat(int id) {
-        this.openRead();
-        Chat chat = null;
-        try {
-            Cursor cursor = mDataBase.query(TABLE_NAME, allColumns, "id=?",
-                    new String[] { String.valueOf(id) }, null, null, "CHATID DESC");
-            if (cursor.moveToNext()) {
-                chat = cursorToComment(cursor);
-            }
-            cursor.close();
-        } catch (Exception ex) {
-            Log.d("-->", ex.getMessage());
-        }
-        this.close();
-        return chat;
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
     }
 
     public long create(Chat chat) {
@@ -126,7 +114,7 @@ public class ChatDataSource {
         cv.put(allColumns[7], chat.type);
         cv.put(allColumns[8], chat.delivery);
         cv.put(allColumns[9], chat.createdTime);
-        int effectRow = mDataBase.update(TABLE_NAME, cv, "CHATID = ?", new String[]{chat.chatId + ""});
+        int effectRow = mDataBase.update(TABLE_NAME, cv, "CHATID = ?", new String[]{""});
         this.close();
         return effectRow;
     }

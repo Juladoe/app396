@@ -3,6 +3,10 @@
     package="com.edusoho.kuozhi"
     android:windowSoftInputMode="adjustResize">
 
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="22" />
+
     <supports-screens
         android:anyDensity="true"
         android:largeScreens="true"
@@ -43,6 +47,8 @@
 
     <application
         android:hardwareAccelerated="true"
+        android:largeHeap="true"
+        android:persistent="true"
         android:theme="@style/EdusohoAppTheme">
         <service android:name=".v3.service.M3U8DownService" />
         <service android:name=".v3.service.DownLoadService" />
@@ -63,6 +69,10 @@
         <activity
             android:name=".v3.ui.QrSchoolActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".v3.ui.NotifyActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait" />
         <activity
             android:name=".v3.view.qr.CaptureActivity"
@@ -98,10 +108,23 @@
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".v3.ui.ReviewActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".v3.ui.LoginActivity"
             android:configChanges="keyboardHidden|orientation"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".v3.ui.ForgetPasswordActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+
         <activity
             android:name=".v3.view.photo.SchoolSplashActivity"
             android:configChanges="keyboardHidden|orientation"
@@ -111,17 +134,20 @@
             android:name=".v3.ui.NetSchoolActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar" />
         <activity
             android:name=".v3.ui.ThreadDiscussActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
-            android:name=".v3.ui.ChatActivity"
+            android:name=".v3.ui.ThreadDiscussChatActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".v3.ui.ClassroomDiscussActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
@@ -130,6 +156,10 @@
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".v3.ui.CourseDetailActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".v3.ui.AllReviewActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
@@ -143,19 +173,34 @@
         <activity
             android:name=".v3.ui.RegisterActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".v3.ui.DiscussDetailActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity
+            android:name=".v3.ui.RegisterConfirmActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".v3.ui.LessonDownloadingActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
+            android:theme="@style/DownLoadTheme"
             android:name=".v3.ui.DownloadManagerActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
         <activity
             android:name=".v3.ui.LessonActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar" />
+
         <activity
             android:name=".v3.ui.NewsCourseActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -210,19 +255,16 @@
             android:name=".v3.ui.FragmentPageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".v3.ui.WebViewActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait" />
-
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeNoActionBar" />
         <activity
             android:name=".v3.ui.MyThreadActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
-
         <activity
-
             android:name=".v3.ui.ThreadCreateActivity"
             android:configChanges="keyboardHidden|orientation"
             android:screenOrientation="portrait" />
@@ -233,90 +275,64 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name=".v3.ui.NoteActivity"
-            android:screenOrientation="landscape"
+            android:name=".v3.ui.WebViewDataActivity"
             android:theme="@style/AppThemeNoActionBar"
             android:windowSoftInputMode="adjustPan" />
 
         <activity
-            android:name="com.edusoho.kuozhi.v3.view.photo.ViewPagerActivity"
+            android:name=".v3.ui.CourseActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".v3.ui.ClassroomActivity"
+            android:theme="@style/AppThemeNoActionBar"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="adjustPan" />
+
+        <activity
+            android:name=".v3.ui.NoteActivity"
+            android:screenOrientation="user"
+            android:theme="@style/AppThemeNoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".v3.view.photo.ViewPagerActivity"
             android:configChanges="keyboardHidden|orientation"
             android:launchMode="singleTop"
             android:theme="@style/AppViewPaperTheme" />
-
-        <!-- 【必须】 exported设置为true -->
         <activity
-            android:name="com.tencent.android.tpush.XGPushActivity"
-            android:exported="true"
-            android:theme="@android:style/Theme.Translucent">
-            <intent-filter>
+            android:name=".v3.ui.ImChatActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
-                <!-- 若使用AndroidStudio，请设置android:name="android.intent.action" -->
-                <action android:name="android.intent.action" />
-            </intent-filter>
-        </activity>
+        <activity
+            android:name=".v3.ui.CompletePhoneActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
+        <activity
+            android:name=".v3.ui.CompletePhoneConfActivity"
+            android:configChanges="orientation|keyboard|screenSize"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
 
-        <!-- 【必须】 信鸽receiver广播接收 -->
-        <receiver
-            android:name="com.tencent.android.tpush.XGPushReceiver"
-            android:process=":xg_service_v2">
-            <intent-filter android:priority="0x7fffffff">
+        <activity
+            android:theme="@style/VideoPlayerActionBar"
+            android:name=".v3.ui.VideoPlayerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop" />
 
-                <!-- 【必须】 信鸽SDK的内部广播 -->
-                <action android:name="com.tencent.android.tpush.action.SDK" />
-                <action android:name="com.tencent.android.tpush.action.INTERNAL_PUSH_MESSAGE" />
-                <!-- 【必须】 系统广播：开屏和网络切换 -->
-                <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-
-                <!-- 【可选】 一些常用的系统广播，增强信鸽service的复活机会，请根据需要选择。当然，你也可以添加APP自定义的一些广播让启动service -->
-                <action android:name="android.bluetooth.adapter.action.STATE_CHANGED" />
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
-            </intent-filter>
-            <!-- 【可选】 usb相关的系统广播，增强信鸽service的复活机会，请根据需要添加 -->
-            <intent-filter android:priority="0x7fffffff">
-                <action android:name="android.intent.action.MEDIA_UNMOUNTED" />
-                <action android:name="android.intent.action.MEDIA_REMOVED" />
-                <action android:name="android.intent.action.MEDIA_CHECKING" />
-                <action android:name="android.intent.action.MEDIA_EJECT" />
-
-                <data android:scheme="file" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".v3.service.PushMessageReceiver">
-            <intent-filter>
-
-                <!-- 接收消息透传 -->
-                <action android:name="com.tencent.android.tpush.action.PUSH_MESSAGE" />
-                <!-- 监听注册、反注册、设置/删除标签、通知被点击等处理结果 -->
-                <action android:name="com.tencent.android.tpush.action.FEEDBACK" />
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name="com.tencent.android.tpush.service.XGPushService"
-            android:exported="true"
-            android:persistent="true"
-            android:process=":xg_service_v2" />
-        <service
-            android:name="com.tencent.android.tpush.rpc.XGRemoteService"
-            android:exported="true">
-            <intent-filter>
-
-                <!-- 【必须】 请修改为当前APP名包.PUSH_ACTION，如demo的包名为：com.qq.xgdemo -->
-                <action android:name="com.edusoho.kuozhi.PUSH_ACTION" />
-            </intent-filter>
-        </service>
-
-        <!-- 【必须】 请修改为APP的AccessId，“21”开头的10位数字，中间没空格 -->
-        <meta-data
-            android:name="XG_V2_ACCESS_ID"
-            android:value="2100122237" />
-        <!-- 【必须】 请修改为APP的AccessKey，“A”开头的12位字符串，中间没空格 -->
-        <meta-data
-            android:name="XG_V2_ACCESS_KEY"
-            android:value="A27EK3I9M9PQ" />
+        <activity
+            android:theme="@style/AppThemeNoActionBar"
+            android:name=".v3.ui.course.CourseStudyDetailActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:screenOrientation="portrait" />
 
     </application>
 

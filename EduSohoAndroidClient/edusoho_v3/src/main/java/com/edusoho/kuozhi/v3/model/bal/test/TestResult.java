@@ -1,6 +1,5 @@
 package com.edusoho.kuozhi.v3.model.bal.test;
 
-import java.util.ArrayList;
 
 /**
  * Created by howzhi on 14-10-9.
@@ -20,6 +19,6 @@ public class TestResult {
     public int questionId;
     public String status;
     public String teacherSay;
-    public ArrayList<String> answer;
+    public Object answer;
     public double score;
 }

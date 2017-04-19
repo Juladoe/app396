@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -23,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.edusoho.kuozhi.R;
@@ -30,7 +34,6 @@ import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.broadcast.AudioDownloadReceiver;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
 import com.edusoho.kuozhi.v3.model.bal.push.UpYunUploadResult;
-import com.edusoho.kuozhi.v3.model.bal.push.WrapperXGPushTextMessage;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.util.AppUtil;
 import com.edusoho.kuozhi.v3.util.ChatAudioRecord;
@@ -39,13 +42,19 @@ import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.util.PushUtil;
 import com.edusoho.kuozhi.v3.view.EduSohoIconView;
 import com.google.gson.reflect.TypeToken;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import cn.trinea.android.common.util.DigestUtils;
 import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
 /**
  * Created by JesseHuang on 15/10/16.
@@ -75,11 +84,6 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
     protected VolumeHandler mHandler;
     protected AudioDownloadReceiver mAudioDownloadReceiver;
 
-    protected int[] mSpeakerAnimResId = new int[]{R.drawable.record_animate_1,
-            R.drawable.record_animate_2,
-            R.drawable.record_animate_3,
-            R.drawable.record_animate_4};
-
     protected int mSendTime;
     protected int mStart = 0;
     protected File mCameraFile;
@@ -90,16 +94,16 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         setContentView(R.layout.activity_chat);
         initView();
         initData();
-        initChatRoomSetting();
+//        initChatRoomSetting();
     }
 
-    private void initChatRoomSetting() {
-        if (!app.config.isOpenChatRoom) {
-            etSend.setEnabled(false);
-            ivAddMedia.setEnabled(false);
-            btnVoice.setEnabled(false);
-        }
-    }
+//    private void initChatRoomSetting() {
+//        if (!app.config.isOpenChatRoom) {
+//            etSend.setEnabled(false);
+//            ivAddMedia.setEnabled(false);
+//            btnVoice.setEnabled(false);
+//        }
+//    }
 
     @Override
     protected void onResume() {
@@ -154,15 +158,15 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
      * 初始化Cache文件夹
      */
     protected void initCacheFolder() {
-        File imageFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE);
+        File imageFolder = new File(AppUtil.getAppStorage() + Const.UPLOAD_IMAGE_CACHE_FILE);
         if (!imageFolder.exists()) {
             imageFolder.mkdirs();
         }
-        File imageThumbFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
+        File imageThumbFolder = new File(AppUtil.getAppStorage() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
         if (!imageThumbFolder.exists()) {
             imageThumbFolder.mkdirs();
         }
-        File audioFolder = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_AUDIO_CACHE_FILE);
+        File audioFolder = new File(AppUtil.getAppStorage() + Const.UPLOAD_AUDIO_CACHE_FILE);
         if (!audioFolder.exists()) {
             audioFolder.mkdirs();
         }
@@ -188,7 +192,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
 
     }
 
-    public void getUpYunUploadInfo(File file, int fromId, final NormalCallback<UpYunUploadResult> callback) {
+    public void getUpYunUploadInfo(final File file, int fromId, final NormalCallback<UpYunUploadResult> callback) {
         String path = String.format(Const.GET_UPLOAD_INFO, fromId, file.length(), file.getName());
         RequestUrl url = app.bindPushUrl(path);
         ajaxGet(url, new Response.Listener<String>() {
@@ -208,10 +212,19 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         });
     }
 
+    private void rnameUploadFile(File file, String uploadUrl) {
+        String fileName = file.getName();
+        String newFileName = DigestUtils.md5(uploadUrl);
+        file.renameTo(new File(AppUtil.getAppStorage() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + newFileName));
+
+        File thubFile = new File(AppUtil.getAppStorage() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + fileName);
+        thubFile.renameTo(new File(AppUtil.getAppStorage() + Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + newFileName));
+    }
+
     public void saveUploadResult(String putUrl, String getUrl, int fromId) {
         String path = String.format(Const.SAVE_UPLOAD_INFO, fromId);
         RequestUrl url = app.bindPushUrl(path);
-        HashMap<String, String> hashMap = url.getParams();
+        Map<String, String> hashMap = url.getParams();
         hashMap.put("putUrl", putUrl);
         hashMap.put("getUrl", getUrl);
         ajaxPost(url, new Response.Listener<String>() {
@@ -234,35 +247,20 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         });
     }
 
-    /**
-     * update badge the ListView of NewsFragment
-     *
-     * @param message xg message
-     */
-    public void notifyNewFragmentListView2Update(WrapperXGPushTextMessage message) {
-
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case SEND_IMAGE:
-                if (data != null) {
-                    Uri selectedImage = data.getData();
-                    if (selectedImage != null) {
-                        File file = selectPicture(selectedImage);
-                        uploadMedia(file, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
-                    }
-                }
-                break;
-            case SEND_CAMERA:
-                if (resultCode == RESULT_OK) {
-                    File compressedCameraFile = compressImage(mCameraFile.getAbsolutePath());
-                    if (compressedCameraFile != null && compressedCameraFile.exists()) {
-                        uploadMedia(compressedCameraFile, PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
-                    }
-                }
-                break;
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+        if (requestCode == SEND_IMAGE) {
+            List<String> pathList = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+            if (pathList == null || pathList.isEmpty()) {
+                return;
+            }
+
+            for (String path : pathList) {
+                uploadMedia(compressImage(path), PushUtil.ChatMsgType.IMAGE, Const.MEDIA_IMAGE);
+            }
         }
     }
 
@@ -272,19 +270,22 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         unregisterReceiver(mAudioDownloadReceiver);
     }
 
-    // region 图片处理
-
     /**
      * 从图库获取图片
      */
     protected void openPictureFromLocal() {
-        Intent intent;
-        if (Build.VERSION.SDK_INT < 19) {
-            intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.setType("image/*");
-        } else {
-            intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        }
+        Intent intent = new Intent(getBaseContext(), MultiImageSelectorActivity.class);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 5);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_MULTI);
+        startActivityForResult(intent, SEND_IMAGE);
+    }
+
+    protected void openPictureFromCamera() {
+        Intent intent = new Intent(getBaseContext(), MultiImageSelectorActivity.class);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_TAKE_CAMERA, true);
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
         startActivityForResult(intent, SEND_IMAGE);
     }
 
@@ -321,9 +322,8 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
             Bitmap resultBitmap = AppUtil.scaleImage(tmpBitmap, tmpBitmap.getWidth(), AppUtil.getImageDegree(filePath));
             Bitmap thumbBitmap = AppUtil.scaleImage(tmpBitmap, EdusohoApp.screenW * 0.4f, AppUtil.getImageDegree(filePath));
             compressedFile = AppUtil.convertBitmap2File(resultBitmap,
-                    EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
-            AppUtil.convertBitmap2File(thumbBitmap, EdusohoApp.getChatCacheFile() +
-                    Const.UPLOAD_IMAGE_CACHE_THUMB_FILE + "/" + compressedFile.getName());
+                    AppUtil.getImageStorage() + "/" + System.currentTimeMillis());
+            AppUtil.convertBitmap2File(thumbBitmap, AppUtil.getThumbImageStorage() + "/" + compressedFile.getName());
             if (!tmpBitmap.isRecycled()) {
                 tmpBitmap.recycle();
             }
@@ -340,14 +340,15 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         return compressedFile;
     }
 
-    // endregion
-
-    //region InnerClass
-
     public class MediaRecorderTask extends AsyncTask<Void, Integer, Boolean> {
+
+        private int COUNT_DOWN_NUM = 50;
+        private int TOTAL_NUM = 59;
+
         private ChatAudioRecord mAudioRecord;
         private boolean mCancelSave = false;
         private boolean mStopRecord = false;
+        private boolean mIsCountDown = false;
         private File mUploadAudio;
 
         @Override
@@ -380,17 +381,27 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                     mAudioRecord.clear();
                     break;
                 } else {
-                    //录音中动画
-                    double ratio = 0;
-                    if (mAudioRecord.getMediaRecorder() != null) {
-                        ratio = (double) mAudioRecord.getMediaRecorder().getMaxAmplitude();
-                    }
-                    double db = 0;
-                    if (ratio > 1) {
-                        db = 20 * Math.log10(ratio);
+                    long recordTime = (System.currentTimeMillis() - mAudioRecord.getAudioStartTime()) / 1000;
+                    if (recordTime > TOTAL_NUM) {
+                        mStopRecord = true;
+                        mCancelSave = false;
+                        continue;
                     }
                     if (!mCancelSave) {
-                        if (db < 60) {
+                        //录音中动画
+                        double ratio = 0;
+                        if (mAudioRecord.getMediaRecorder() != null) {
+                            ratio = (double) mAudioRecord.getMediaRecorder().getRealVolume();
+                        }
+
+                        double db = 0;
+                        if (ratio > 1) {
+                            db = 20 * Math.log10(ratio);
+                        }
+                        if (recordTime >= COUNT_DOWN_NUM) {
+                            mIsCountDown = true;
+                            mHandler.obtainMessage(VolumeHandler.COUNT_DOWN, (int)(TOTAL_NUM - recordTime), 0).sendToTarget();
+                        } else if (db < 60) {
                             mHandler.sendEmptyMessage(0);
                         } else if (db < 70) {
                             mHandler.sendEmptyMessage(1);
@@ -447,12 +458,29 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
             mStopRecord = stop;
         }
 
+        public boolean getStopRecord() {
+            return mStopRecord;
+        }
+
+        public boolean isCountDown() {
+            return mIsCountDown;
+        }
+
         public ChatAudioRecord getAudioRecord() {
             return mAudioRecord;
         }
     }
 
     protected static class VolumeHandler extends Handler {
+
+        public static final int COUNT_DOWN = 4;
+
+        protected int[] mSpeakerAnimResId = new int[]{
+                R.drawable.record_animate_1,
+                R.drawable.record_animate_2,
+                R.drawable.record_animate_3,
+                R.drawable.record_animate_4};
+
         private WeakReference<BaseChatActivity> mWeakReference;
 
         private VolumeHandler(BaseChatActivity activity) {
@@ -463,14 +491,30 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         public void handleMessage(Message msg) {
             BaseChatActivity activity = mWeakReference.get();
             if (activity != null) {
-                activity.ivRecordImage.setImageResource(activity.mSpeakerAnimResId[msg.what]);
+                if (msg.what == COUNT_DOWN) {
+                    int w = activity.ivRecordImage.getWidth();
+                    int h = activity.ivRecordImage.getWidth();
+                    activity.ivRecordImage.setImageBitmap(getCountDownBitmap(w, h, msg.arg1));
+                    return;
+                }
+                activity.ivRecordImage.setImageResource(mSpeakerAnimResId[msg.what]);
             }
         }
+
+        private Bitmap getCountDownBitmap(int w, int h, int number) {
+            Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_4444);
+            Canvas canvas = new Canvas(bitmap);
+            Paint paint = new Paint();
+            paint.setTextSize(w * 0.9f);
+            paint.setAntiAlias(true);
+            paint.setColor(Color.WHITE);
+
+            Rect rect = new Rect();
+            paint.getTextBounds(String.valueOf(number), 0, 1, rect);
+            canvas.drawText(String.valueOf(number), (w - (rect.right - rect.left)) / 2, (h - rect.bottom - rect.top) / 2, paint);
+            return bitmap;
+        }
     }
-
-    //endregion
-
-    // region widget events
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -500,6 +544,9 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                     }
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    if (mMediaRecorderTask.getStopRecord()) {
+                        return true;
+                    }
                     float mPressMoveY = event.getY();
                     if (Math.abs(mPressDownY - mPressMoveY) > EdusohoApp.screenH * 0.1) {
                         tvSpeak.setText(getString(R.string.hand_up_and_exit));
@@ -508,10 +555,13 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
                         ivRecordImage.setImageResource(R.drawable.record_cancel);
                         mHandUpAndCancel = true;
                     } else {
+                        if (!mMediaRecorderTask.isCountDown()) {
+                            ivRecordImage.setImageResource(R.drawable.record_animate_1);
+                        }
                         tvSpeakHint.setText(getString(R.string.hand_move_up_and_send_cancel));
                         tvSpeakHint.setBackgroundResource(R.drawable.speak_hint_transparent_bg);
                         tvSpeak.setText(getString(R.string.hand_up_and_end));
-                        ivRecordImage.setImageResource(R.drawable.record_animate_1);
+
                         mHandUpAndCancel = false;
                     }
                     mMediaRecorderTask.setCancel(mHandUpAndCancel);
@@ -577,18 +627,7 @@ public class BaseChatActivity extends ActionBarBaseActivity implements View.OnCl
         } else if (v.getId() == R.id.iv_image) {
             openPictureFromLocal();
         } else if (v.getId() == R.id.iv_camera) {
-            try {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                mCameraFile = new File(EdusohoApp.getChatCacheFile() + Const.UPLOAD_IMAGE_CACHE_FILE + "/" + System.currentTimeMillis());
-                if (mCameraFile.createNewFile()) {
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mCameraFile));
-                    startActivityForResult(intent, SEND_CAMERA);
-                } else {
-                    CommonUtil.shortToast(mContext, "照片生成失败");
-                }
-            } catch (Exception ex) {
-                Log.e(TAG, ex.getMessage());
-            }
+            openPictureFromCamera();
         }
     }
 

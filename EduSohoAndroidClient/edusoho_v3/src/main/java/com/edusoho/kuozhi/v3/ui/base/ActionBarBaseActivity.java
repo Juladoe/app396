@@ -1,9 +1,10 @@
 package com.edusoho.kuozhi.v3.ui.base;
 
+
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,14 +13,14 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.core.MessageEngine;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.sys.MessageType;
 import com.edusoho.kuozhi.v3.model.sys.WidgetMessage;
 import com.edusoho.kuozhi.v3.ui.DefaultPageActivity;
+import com.edusoho.kuozhi.v3.util.ActivityUtil;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.EduSohoCompoundButton;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
-import com.tencent.android.tpush.XGPushClickedResult;
-import com.tencent.android.tpush.XGPushManager;
 import com.umeng.analytics.MobclickAgent;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -35,16 +36,16 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     public static final String BACK = "返回";
     public ActionBar mActionBar;
     protected TextView mTitleTextView;
-    private View mTitleLayoutView;
+    private View titleLayoutView;
     private View mTitleLoading;
-    protected int mRunStatus;
     private EduSohoCompoundButton switchButton;
     private RadioButton rbStudyRadioButton;
     private RadioButton rbDiscussRadioButton;
     private CircleImageView civBadgeView;
     private Queue<WidgetMessage> mUIMessageQueue;
 
-    protected XGPushClickedResult mXGClick;
+    protected int mRunStatus;
+    protected PopupDialog mNoticeDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,23 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         if (mActionBar != null) {
             mActionBar.setWindowTitle("title");
         }
-        //getWindow().findViewById(R.id.decor_content_parent).setVisibility(View.GONE);
+        ActivityUtil.setStatusBarTranslucent(this);
+    }
+
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        super.setContentView(layoutResID);
+        ActivityUtil.setRootViewFitsWindow(this, getStatusBarColor());
+    }
+
+    protected int getStatusBarColor() {
+        return getResources().getColor(R.color.primary);
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        ActivityUtil.setRootViewFitsWindow(this, getResources().getColor(R.color.primary));
     }
 
     @Override
@@ -63,8 +80,6 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         super.onResume();
         mRunStatus = MSG_RESUME;
         MobclickAgent.onResume(mContext);
-        mXGClick = XGPushManager.onActivityStarted(this);
-        Log.d("TPush", "onResumeXGPushClickedResult:" + mXGClick);
     }
 
     @Override
@@ -72,9 +87,6 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         super.onPause();
         mRunStatus = MSG_PAUSE;
         MobclickAgent.onPause(mContext);
-        Log.d("MainActivity-->", "onPause");
-        XGPushManager.onActivityStoped(this);
-        mXGClick = null;
     }
 
     @Override
@@ -89,13 +101,13 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     }
 
     public void setBackMode(String backTitle, String title) {
-        mTitleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
-        mTitleTextView = (TextView) mTitleLayoutView.findViewById(R.id.tv_action_bar_title);
+        titleLayoutView = getLayoutInflater().inflate(R.layout.actionbar_custom_title, null);
+        mTitleTextView = (TextView) titleLayoutView.findViewById(R.id.tv_action_bar_title);
         mTitleTextView.setText(title);
         ActionBar.LayoutParams layoutParams = new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                 ActionBar.LayoutParams.MATCH_PARENT);
         layoutParams.gravity = Gravity.CENTER;
-        mActionBar.setCustomView(mTitleLayoutView, layoutParams);
+        mActionBar.setCustomView(titleLayoutView, layoutParams);
 
         if (backTitle != null) {
             mActionBar.setDisplayHomeAsUpEnabled(true);
@@ -149,6 +161,10 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
         super.onDestroy();
         app.unRegistMsgSource(this);
         mUIMessageQueue.clear();
+        if (mNoticeDialog != null) {
+            mNoticeDialog.dismiss();
+            mNoticeDialog = null;
+        }
     }
 
     protected void invokeUIMessage() {
@@ -173,22 +189,28 @@ public class ActionBarBaseActivity extends BaseActivity implements MessageEngine
     protected void processMessage(WidgetMessage message) {
         MessageType messageType = message.type;
         if (Const.TOKEN_LOSE.equals(messageType.type)) {
-            PopupDialog dialog = PopupDialog.createNormal(mActivity, "提示", getString(R.string.token_lose_notice));
-            dialog.setOkListener(new PopupDialog.PopupClickListener() {
+            if (mNoticeDialog != null) {
+                mNoticeDialog.dismiss();
+            }
+            mNoticeDialog = PopupDialog.createNormal(mActivity, "提示", getString(R.string.token_lose_notice));
+            mNoticeDialog.setOkListener(new PopupDialog.PopupClickListener() {
                 @Override
                 public void onClick(int button) {
                     handleTokenLostMsg();
                     finish();
                 }
             });
-            dialog.show();
+
+            mNoticeDialog.show();
         }
     }
 
     protected void handleTokenLostMsg() {
         Bundle bundle = new Bundle();
         bundle.putString(Const.BIND_USER_ID, "");
-        app.pushUnregister(bundle);
+
+        getAppSettingProvider().setUser(null);
+        new IMServiceProvider(getBaseContext()).unBindServer();
         app.removeToken();
         MessageEngine.getInstance().sendMsg(Const.LOGOUT_SUCCESS, null);
         MessageEngine.getInstance().sendMsgToTaget(Const.SWITCH_TAB, null, DefaultPageActivity.class);

@@ -80,10 +80,6 @@ public class SwipeMenuView extends LinearLayout implements OnClickListener {
 		}
 	}
 
-	public OnSwipeItemClickListener getOnSwipeItemClickListener() {
-		return onItemClickListener;
-	}
-
 	public void setOnSwipeItemClickListener(OnSwipeItemClickListener onItemClickListener) {
 		this.onItemClickListener = onItemClickListener;
 	}
@@ -92,7 +88,7 @@ public class SwipeMenuView extends LinearLayout implements OnClickListener {
 		this.mLayout = mLayout;
 	}
 
-	public static interface OnSwipeItemClickListener {
+	public interface OnSwipeItemClickListener {
 		void onItemClick(SwipeMenuView view, SwipeMenu menu, int index);
 	}
 }

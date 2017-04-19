@@ -13,16 +13,15 @@ public class BaseMsgEntity implements Serializable {
     public String headImgUrl;
     public int delivery = 2;
     public String type;
-    public int createdTime;
+    public long createdTime;
     public String upyunMediaPutUrl;
     public String upyunMediaGetUrl;
     public HashMap<String, String> headers;
 
     public BaseMsgEntity() {
-
     }
 
-    public BaseMsgEntity(int id, String content, String headImgUrl, int delivery, String type, int createdTime) {
+    public BaseMsgEntity(int id, String content, String headImgUrl, int delivery, String type, long createdTime) {
         this.id = id;
         this.content = content;
         this.headImgUrl = headImgUrl;

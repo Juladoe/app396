@@ -28,6 +28,7 @@ import com.edusoho.kuozhi.v3.entity.lesson.LessonItem;
 import com.edusoho.kuozhi.v3.ui.FragmentPageActivity;
 import com.edusoho.kuozhi.v3.ui.LessonActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
+import com.edusoho.kuozhi.v3.ui.fragment.video.LessonVideoPlayerFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.edusoho.kuozhi.v3.view.dialog.PopupDialog;
 import java.util.List;
@@ -44,7 +45,7 @@ public class WebVideoLessonFragment extends BaseFragment {
     private NormalCallback mNormalCallback;
     private WebVideoWebChromClient mWebVideoWebChromClient;
     protected WebView mWebView;
-    private static final String ADD_FULLSCREEN_CLICK = "javascript:var divs = document.getElementsByTagName('b');" +
+    private static final String ADD_FULLSCREEN_CLICK = "javascript:var divs = document.getElementsByTagName('body');" +
             "for(var i=0; i < divs.length; i++){" +
             "if (divs[i].className == 'x-zoomin'){" +
             "window.obj.addFullScreenEvent();" +
@@ -58,6 +59,7 @@ public class WebVideoLessonFragment extends BaseFragment {
     private boolean isAddFullScreenEvent;
     private LessonItem.MediaSourceType mMediaSourceType;
     protected String mUri;
+    private boolean mIsPlayVideo;
     private static String USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) " +
             "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.153 Safari/537.36";
 
@@ -162,6 +164,7 @@ public class WebVideoLessonFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         mWebView.onResume();
+        mIsPlayVideo = false;
     }
 
     @Override
@@ -170,7 +173,7 @@ public class WebVideoLessonFragment extends BaseFragment {
         mWebView = (WebView) view.findViewById(R.id.webvideo_webview);
 
         Bundle bundle = getArguments();
-        mUri = bundle.getString(Const.MEDIA_URL);
+        mUri = bundle.getString(LessonVideoPlayerFragment.PLAY_URI);
         isAutoScreen = bundle.getBoolean("AutoScreen", false);
         mMediaSourceType = LessonItem.MediaSourceType.cover(
                 bundle.getString(Const.MEDIA_SOURCE));
@@ -298,32 +301,33 @@ public class WebVideoLessonFragment extends BaseFragment {
             }
 
             if (url.matches(".+\\.mp4\\?.+")) {
-                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.MEDIA_URL, url);
-                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "VideoLessonFragment");
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, mWebView.getTitle());
-                    }
-                });
+                playVideo(url);
                 webViewStop();
                 return;
             }
             if (Build.VERSION.SDK_INT >= 16 && url.matches(".+\\.flv\\??.*")) {
-                app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
-                    @Override
-                    public void setIntentDate(Intent startIntent) {
-                        startIntent.putExtra(Const.MEDIA_URL, url);
-                        startIntent.putExtra(FragmentPageActivity.FRAGMENT, "VideoLessonFragment");
-                        startIntent.putExtra(Const.ACTIONBAR_TITLE, mWebView.getTitle());
-                    }
-                });
-                mWebView.loadUrl(mUri);
+                playVideo(url);
+                webViewStop();
                 return;
             }
             Log.d(TAG, "onPageFinished->" + url);
             super.onPageFinished(view, url);
         }
+    }
+
+    private synchronized void playVideo(final String url) {
+        if (mIsPlayVideo) {
+            return;
+        }
+        mIsPlayVideo = true;
+        app.mEngine.runNormalPlugin("FragmentPageActivity", mActivity, new PluginRunCallback() {
+            @Override
+            public void setIntentDate(Intent startIntent) {
+                startIntent.putExtra(Const.MEDIA_URL, url);
+                startIntent.putExtra(FragmentPageActivity.FRAGMENT, "VideoFragment");
+                startIntent.putExtra(Const.ACTIONBAR_TITLE, mWebView.getTitle());
+            }
+        });
     }
 
     private class WebVideoWebChromClient extends WebChromeClient {
@@ -371,7 +375,6 @@ public class WebVideoLessonFragment extends BaseFragment {
                 new AudioManager.OnAudioFocusChangeListener() {
                     @Override
                     public void onAudioFocusChange(int i) {
-                        //nothing
                     }
                 },
                 AudioManager.STREAM_MUSIC,

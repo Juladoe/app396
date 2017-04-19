@@ -27,6 +27,7 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,7 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -66,8 +68,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 import cn.trinea.android.common.util.DigestUtils;
+import cn.trinea.android.common.util.ResourceUtils;
 
-;
 
 public class CommonUtil {
 
@@ -179,7 +181,9 @@ public class CommonUtil {
     public static String coverUrlToCacheKey(RequestUrl requestUrl) {
         StringBuilder builder = new StringBuilder(requestUrl.url);
 
-        HashMap<String, String> map = requestUrl.params;
+
+        HashMap<String, String> map = (HashMap<String, String>) requestUrl.params;
+
         for (String key : map.keySet()) {
             builder.append("&").append(key);
             builder.append("&").append(map.get(key));
@@ -479,8 +483,6 @@ public class CommonUtil {
             Log.d("AppUtil.getPostDays", ex.toString());
         }
         return result;
-
-
     }
 
     /**
@@ -517,6 +519,68 @@ public class CommonUtil {
         }
 
         return String.valueOf(l) + "秒前";
+    }
+
+    /**
+     * 将毫秒转换为年月日时分秒
+     */
+    public static String conver2Date(long millis) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        return sdf.format(millis);
+    }
+    /**
+     * 将服务器返回的秒转化
+     * 当天则显示时分
+     * 近期的则显示星期 + 时分
+     * 远的则显示年月日时分
+     */
+    public static final long ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
+    public static String convertMills2Date(long millis) {
+        String result = "";
+        String showTime = "";
+        if (millis <= 0) {
+            return "";
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm");
+            String nowTime = sdf.format(System.currentTimeMillis());
+            showTime = sdf.format(millis);
+            if (nowTime.substring(0, 8).equals(showTime.substring(0, 8))) {
+                // 如果是当天
+                return showTime.substring(9);
+            } else if (System.currentTimeMillis() - millis < ONE_WEEK) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(millis);
+                switch (calendar.get(Calendar.DAY_OF_WEEK) - 1) {
+                    case 1:
+                        result = "星期一";
+                        break;
+                    case 2:
+                        result = "星期二";
+                        break;
+                    case 3:
+                        result = "星期三";
+                        break;
+                    case 4:
+                        result = "星期四";
+                        break;
+                    case 5:
+                        result = "星期五";
+                        break;
+                    case 6:
+                        result = "星期六";
+                        break;
+                    default:
+                        result = "星期日";
+                        break;
+                }
+            } else {
+                return showTime;
+            }
+        } catch (Exception ex) {
+            Log.e("convertMills2Date", ex.getMessage());
+        }
+        return result + " " + showTime.substring(9);
     }
 
     /**
@@ -720,7 +784,7 @@ public class CommonUtil {
     }
 
     /**
-     * 去掉字符串中的\n\t
+     * 去掉字符串中的\n\type
      *
      * @param content
      * @return
@@ -978,7 +1042,7 @@ public class CommonUtil {
     }
 
     /**
-     * 去掉'\n','\t'
+     * 去掉'\n','\type'
      *
      * @return
      */
@@ -1123,6 +1187,12 @@ public class CommonUtil {
     public static void shortToast(Context context, String title) {
         Toast.makeText(context, title, Toast.LENGTH_SHORT).show();
     }
+    //居中弹出toast
+    public static void shortCenterToast(Context context,String title){
+        Toast toast = Toast.makeText(context,title,Toast.LENGTH_SHORT);
+        toast.setGravity(Gravity.CENTER,0,0);
+        toast.show();
+    }
 
     public static class MoveTimerTask extends TimerTask {
         public static int LEFT = 0001;
@@ -1163,7 +1233,7 @@ public class CommonUtil {
     }
 
     public static boolean isExitsSdcard() {
-        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ? true : false;
+        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
     }
 
     public static boolean bundleHasKey(Bundle bundle, String key) {

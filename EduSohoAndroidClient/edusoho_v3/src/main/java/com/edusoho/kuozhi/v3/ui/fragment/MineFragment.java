@@ -3,8 +3,6 @@ package com.edusoho.kuozhi.v3.ui.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -15,6 +13,7 @@ import com.edusoho.kuozhi.v3.ui.base.BaseFragment;
 import com.edusoho.kuozhi.v3.util.Const;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by JesseHuang on 15/12/8.
@@ -51,11 +50,9 @@ public class MineFragment extends BaseFragment {
     }
 
     @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (!hidden) {
-            initData();
-        }
+    public void onResume() {
+        super.onResume();
+        initData();
     }
 
     @Override
@@ -85,6 +82,7 @@ public class MineFragment extends BaseFragment {
         @Override
         public void onClick(View v) {
             if (v.getId() == R.id.rl_my_1) {
+                MobclickAgent.onEvent(mContext, "i_myStudy");
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -93,6 +91,7 @@ public class MineFragment extends BaseFragment {
                     }
                 });
             } else if (v.getId() == R.id.rl_my_2) {
+                MobclickAgent.onEvent(mContext, "i_myCache");
                 mActivity.app.mEngine.runNormalPlugin("DownloadManagerActivity", mContext, null);
             } else if (v.getId() == R.id.rl_my_3) {
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
@@ -103,6 +102,7 @@ public class MineFragment extends BaseFragment {
                     }
                 });
             } else if (v.getId() == R.id.rl_my_4) {
+                MobclickAgent.onEvent(mContext, "i_myCollection");
                 mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                     @Override
                     public void setIntentDate(Intent startIntent) {
@@ -111,8 +111,10 @@ public class MineFragment extends BaseFragment {
                     }
                 });
             } else if (v.getId() == R.id.rl_my_5) {
+                MobclickAgent.onEvent(mContext, "i_mySettings");
                 mActivity.app.mEngine.runNormalPlugin("SettingActivity", mContext, null);
             } else if (v.getId() == R.id.rl_my_6) {
+                MobclickAgent.onEvent(mContext, "i_myQuestion_answer");
                 mActivity.app.mEngine.runNormalPlugin("MyThreadActivity", mContext, null);
             }
         }
@@ -124,7 +126,7 @@ public class MineFragment extends BaseFragment {
             if (app.loginUser == null) {
                 return;
             }
-
+            MobclickAgent.onEvent(mContext, "i_userInfo");
             mActivity.app.mEngine.runNormalPlugin("WebViewActivity", mContext, new PluginRunCallback() {
                 @Override
                 public void setIntentDate(Intent startIntent) {
@@ -134,8 +136,4 @@ public class MineFragment extends BaseFragment {
             });
         }
     };
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    }
 }

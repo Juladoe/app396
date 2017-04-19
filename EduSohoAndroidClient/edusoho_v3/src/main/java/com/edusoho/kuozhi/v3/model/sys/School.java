@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.v3.model.sys;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.HashMap;
 
 /**
@@ -12,4 +14,14 @@ public class School {
     public String logo;
     public HashMap<String, String> apiVersionRange;
     public String[] splashs;
+
+    public String getDomain() {
+        try {
+            URL url = new URL(host);
+            return url.getHost();
+        } catch (MalformedURLException e) {
+        }
+
+        return "";
+    }
 }

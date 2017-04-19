@@ -1,8 +1,6 @@
 package com.edusoho.kuozhi.v3.model.provider;
 
 import android.content.Context;
-
-import java.util.HashMap;
 import java.util.WeakHashMap;
 
 /**

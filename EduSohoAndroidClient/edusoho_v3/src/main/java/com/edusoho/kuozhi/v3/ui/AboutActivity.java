@@ -90,6 +90,7 @@ public class AboutActivity extends ActionBarBaseActivity {
                 app.getApkVersion(),
                 R.color.system_normal_text
         ));
+        tvCheckUpdate.append(" - " + app.getApkVersionCode());
 
         registNotify();
         checkNotify();

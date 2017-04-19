@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/find_fragment_background"
-    android:orientation="vertical">
+    android:background="@color/find_fragment_background">
 
     <com.edusoho.kuozhi.v3.view.FixPtrClassicFrameLayout
         android:id="@+id/find_content"
@@ -30,4 +29,11 @@
 
     </com.edusoho.kuozhi.v3.view.FixPtrClassicFrameLayout>
 
-</LinearLayout>
+    <include
+        android:id="@+id/find_load_layout"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        layout="@layout/load_dig_layout" />
+</FrameLayout>

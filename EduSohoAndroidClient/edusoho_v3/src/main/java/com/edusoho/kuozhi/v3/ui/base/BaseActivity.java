@@ -17,6 +17,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.v3.EdusohoApp;
+import com.edusoho.kuozhi.v3.factory.FactoryManager;
+import com.edusoho.kuozhi.v3.factory.UtilFactory;
+import com.edusoho.kuozhi.v3.factory.provider.AppSettingProvider;
 import com.edusoho.kuozhi.v3.model.sys.ErrorResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
 import com.edusoho.kuozhi.v3.service.EdusohoMainService;
@@ -41,7 +44,6 @@ public class BaseActivity extends ActionBarActivity {
     public EdusohoApp app;
     public ActionBar mActionBar;
     protected FragmentManager mFragmentManager;
-    protected EdusohoMainService mService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,6 @@ public class BaseActivity extends ActionBarActivity {
         app.setDisplay(this);
 
         gson = app.gson;
-        mService = app.getService();
         app.mActivity = mActivity;
         app.mContext = mContext;
     }
@@ -94,10 +95,6 @@ public class BaseActivity extends ActionBarActivity {
         }
 
         super.startActivityForResult(intent, requestCode, options);
-    }
-
-    public EdusohoMainService getService() {
-        return mService;
     }
 
     public void hideActionBar() {
@@ -221,23 +218,6 @@ public class BaseActivity extends ActionBarActivity {
         });
     }
 
-    public void ajaxGetWithCache(final RequestUrl requestUrl, final Response.Listener<String> responseListener, final Response.ErrorListener errorListener) {
-        app.getUrlWithCache(requestUrl, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                responseListener.onResponse(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (errorListener != null) {
-                    errorListener.onErrorResponse(error);
-                } else {
-                    CommonUtil.longToast(mContext, getResources().getString(R.string.request_fail_text));
-                }
-            }
-        });
-    }
 
     public void runService(String serviceName) {
         app.mEngine.runService(serviceName, mActivity, null);
@@ -249,6 +229,7 @@ public class BaseActivity extends ActionBarActivity {
             value = mActivity.gson.fromJson(
                     json, typeToken.getType());
         } catch (Exception e) {
+            e.printStackTrace();
             return value;
         }
 
@@ -264,5 +245,13 @@ public class BaseActivity extends ActionBarActivity {
         } else {
             return parseJsonValue(response, typeToken);
         }
+    }
+
+    protected AppSettingProvider getAppSettingProvider() {
+        return FactoryManager.getInstance().create(AppSettingProvider.class);
+    }
+
+    protected UtilFactory getUtilFactory() {
+        return FactoryManager.getInstance().create(UtilFactory.class);
     }
 }

@@ -1,5 +1,6 @@
 package com.edusoho.kuozhi.v3.util.volley;
 
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.Cache;
 import com.android.volley.DefaultRetryPolicy;
@@ -19,7 +20,7 @@ import java.util.Map;
 public abstract class BaseVolleyRequest<T> extends Request<T> {
 
     private static final String TAG = "BaseVolleyRequest";
-    private static final int DEFUALT_TIME_OUT = 100 * 1000;
+    private static final int DEFUALT_TIME_OUT = 10 * 1000;
 
     protected static final int CACHE_MAX_AGE = 604800;
 
@@ -33,6 +34,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     public static final String PARSE_RESPONSE = "parseResponse";
 
     protected Response.Listener<T> mListener;
+    protected Response.ErrorListener mErrorListener;
     protected RequestUrl mRequestUrl;
     protected int mIsCache = CACHE_NONE;
     protected int mCacheUseMode = AUTO_USE_CACHE;
@@ -43,6 +45,7 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
         super(method, requestUrl.url, errorListener);
         this.mRequestUrl = requestUrl;
         mListener = listener;
+        mErrorListener = errorListener;
         initRequest(method);
         mRequestLocalManager = RequestLocalManager.getManager();
         this.setRetryPolicy(new DefaultRetryPolicy(DEFUALT_TIME_OUT, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
@@ -94,7 +97,9 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         String cookie = response.headers.get("Set-Cookie");
-        mRequestLocalManager.setCookie(cookie);
+        if (cookie != null) {
+            mRequestLocalManager.setCookie(cookie);
+        }
         Cache.Entry cache = handleResponseCache(response);
 
         setTag(PARSE_RESPONSE);
@@ -134,7 +139,6 @@ public abstract class BaseVolleyRequest<T> extends Request<T> {
                     instance = new RequestLocalManager();
                 }
             }
-
             return instance;
         }
 

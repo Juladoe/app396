@@ -8,11 +8,11 @@ android {
         applicationId "com.edusoho"
         minSdkVersion 16
         targetSdkVersion 21
-
-        versionName "3.5.1"
-        versionCode 37
-
-        manifestPlaceholders = [wxpkg: "com.edusoho.cuour", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+        manifestPlaceholders = [wxpkg: "com.edusoho.kuozhi", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+        multiDexEnabled true
     }
 
     //签名
@@ -23,29 +23,24 @@ android {
             keyAlias "cn"
             keyPassword "10001000"
         }
-
-
     }
 
     productFlavors {
 
         cuour {
             signingConfig signingConfigs.debugConfig
-
             applicationId "com.edusoho.cuour"
             manifestPlaceholders = [wxpkg: "com.edusoho.cuour", startActivity:"com.edusoho.kuozhi.CustomStartActivity"]
-
+            versionCode 45
+            versionName '3.9.2'
         }
     }
 
     sourceSets {
-
-
-        kaoshi60 {
+        cuour{
             java.srcDirs = ['src/cuour/java']
             res.srcDirs = ['src/cuour/res']
             assets.srcDirs = ['src/cuour/assets']
-
         }
     }
 
@@ -56,8 +51,13 @@ android {
             signingConfig signingConfigs.debugConfig
         }
     }
+
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
     compile project(':edusoho_v3')
+    compile project(':homework')
 }

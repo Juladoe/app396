@@ -1,6 +1,8 @@
 package com.edusoho.kuozhi.v3.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
@@ -11,10 +13,12 @@ import com.edusoho.kuozhi.R;
 import com.edusoho.kuozhi.shard.ThirdPartyLogin;
 import com.edusoho.kuozhi.v3.EdusohoApp;
 import com.edusoho.kuozhi.v3.listener.NormalCallback;
+import com.edusoho.kuozhi.v3.model.bal.User;
+import com.edusoho.kuozhi.v3.model.provider.IMServiceProvider;
 import com.edusoho.kuozhi.v3.model.result.UserResult;
 import com.edusoho.kuozhi.v3.model.sys.RequestUrl;
+import com.edusoho.kuozhi.v3.ui.CompletePhoneActivity;
 import com.edusoho.kuozhi.v3.ui.base.BaseActivity;
-import com.edusoho.kuozhi.v3.view.dialog.LoadDialog;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
@@ -32,6 +36,8 @@ import java.util.Map;
 import cn.sharesdk.framework.Platform;
 import cn.sharesdk.framework.PlatformActionListener;
 
+import static com.edusoho.kuozhi.v3.EdusohoApp.app;
+
 /**
  * Created by howzhi on 15/7/7.
  */
@@ -48,6 +54,7 @@ public class OpenLoginUtil {
     private Context mContext;
     private String mAuthCancel;
     private Promise mPromise;
+    private String thirdPartyType;
 
     private OpenLoginUtil(Context context) {
         this.mContext = context;
@@ -62,12 +69,12 @@ public class OpenLoginUtil {
         this.mLoginhandler = callback;
     }
 
-    public void bindOpenUser(final BaseActivity activity, String[] params) {
+    public void bindOpenUser(final Activity activity, String[] params) {
         if (params == null) {
             CommonUtil.longToast(mContext, "授权失败!");
             return;
         }
-        EdusohoApp app = activity.app;
+        final EdusohoApp app = (EdusohoApp) activity.getApplication();
         RequestUrl requestUrl = app.bindNewUrl(Const.BIND_LOGIN, false);
         requestUrl.setParams(new String[]{
                 "type", params[3],
@@ -75,33 +82,56 @@ public class OpenLoginUtil {
                 "name", params[1],
                 "avatar", params[2],
         });
-        final String thirdPartyType = params.length > 4 ? params[4] : "";
+        thirdPartyType = params.length > 4 ? params[4] : "";
         Looper.prepare();
-        final LoadDialog loadDialog = LoadDialog.create(activity);
-        loadDialog.setMessage("登录中...");
-        loadDialog.show();
-        activity.ajaxPost(requestUrl, new Response.Listener<String>() {
+
+        app.postUrl(requestUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                loadDialog.dismiss();
-                UserResult userResult = activity.parseJsonValue(
+                UserResult userResult = app.parseJsonValue(
                         response, new TypeToken<UserResult>() {
                         });
-                activity.app.saveToken(userResult);
-                activity.app.loginUser.thirdParty = thirdPartyType;
-                activity.app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
-                Bundle bundle = new Bundle();
-                bundle.putString(Const.BIND_USER_ID, String.valueOf(activity.app.loginUser.id));
-                activity.app.pushRegister(bundle);
-                mLoginhandler.success(userResult);
-                SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
-                Date date = new Date();
-                String entertime = nowfmt.format(date);
-                saveEnterSchool(activity.app.defaultSchool.name, entertime, "登录账号：" + activity.app.loginUser.nickname, activity.app.domain);
+                if (!response.contains("verifiedMobile")) {
+                    app.token = userResult.token;
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("user", userResult);
+                    Intent intent = new Intent(mContext, CompletePhoneActivity.class);
+                    mContext.startActivity(intent.putExtras(bundle));
+                }else {
+                    app.saveToken(userResult);
+                    app.loginUser.thirdParty = thirdPartyType;
+                    app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUser.id));
+                    User user = app.loginUser;
+                    new IMServiceProvider(activity.getBaseContext()).bindServer(user.id, user.nickname);
+                    mLoginhandler.success(userResult);
+                    SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
+                    Date date = new Date();
+                    String entertime = nowfmt.format(date);
+                    saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
+                }
             }
         }, null);
+
         Looper.loop();
     }
+
+    public void completeInfo(BaseActivity baseActivity, UserResult userResult){
+        app.saveToken(userResult);
+        app.loginUser.thirdParty = thirdPartyType;
+        app.sendMessage(Const.THIRD_PARTY_LOGIN_SUCCESS, null);
+        Bundle bundle = new Bundle();
+        bundle.putString(Const.BIND_USER_ID, String.valueOf(app.loginUser.id));
+        User user = app.loginUser;
+        new IMServiceProvider(baseActivity.getBaseContext()).bindServer(user.id, user.nickname);
+        SimpleDateFormat nowfmt = new SimpleDateFormat("登录时间：yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String entertime = nowfmt.format(date);
+        saveEnterSchool(app.defaultSchool.name, entertime, "登录账号：" + app.loginUser.nickname, app.domain);
+    }
+
+
 
     private String[] getWeixinLoginResult(HashMap<String, Object> res) {
         String id = res.get("unionid").toString();

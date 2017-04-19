@@ -3,10 +3,12 @@ package com.edusoho.kuozhi.v3.util;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,7 +25,9 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -47,11 +51,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -473,7 +479,7 @@ public class AppUtil {
     }
 
     /**
-     * 去掉字符串中的\n\t
+     * 去掉字符串中的\n\type
      *
      * @param content
      * @return
@@ -530,14 +536,14 @@ public class AppUtil {
 
     public static boolean isNetConnect(Context context) {
         ConnectivityManager connManager = (ConnectivityManager)
-                context.getSystemService(context.CONNECTIVITY_SERVICE);
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.isAvailable();
     }
 
     public static boolean isWiFiConnect(Context context) {
         ConnectivityManager connManager = (ConnectivityManager)
-                context.getSystemService(context.CONNECTIVITY_SERVICE);
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connManager.getActiveNetworkInfo();
         return networkInfo != null && networkInfo.getType() == ConnectivityManager.TYPE_WIFI;
     }
@@ -578,6 +584,34 @@ public class AppUtil {
         }
 
         return appStorage;
+    }
+
+    public static File getAppInstallStorage() {
+        File store = getAppStorage();
+        File installStore = new File(store, "install");
+        if (!installStore.exists()) {
+            installStore.mkdirs();
+        }
+
+        return installStore;
+    }
+
+    public static File getImageStorage() {
+        File imageStore = new File(AppUtil.getAppStorage(), Const.UPLOAD_IMAGE_CACHE_FILE);
+        if (!imageStore.exists()) {
+            imageStore.mkdirs();
+        }
+
+        return imageStore;
+    }
+
+    public static File getThumbImageStorage() {
+        File imageStore = new File(AppUtil.getAppStorage(), Const.UPLOAD_IMAGE_CACHE_THUMB_FILE);
+        if (!imageStore.exists()) {
+            imageStore.mkdirs();
+        }
+
+        return imageStore;
     }
 
     public static File getHtmlPluginStorage(Context context, String domain) {
@@ -781,6 +815,9 @@ public class AppUtil {
 
     public static String convertMills2Date(long millis) {
         String result = "";
+        if (millis <= 0) {
+            return "";
+        }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yy/MM/dd HH:mm");
             String nowTime = sdf.format(System.currentTimeMillis());
@@ -842,6 +879,20 @@ public class AppUtil {
         time = time.replace(' ', 'T').substring(0, time.length() - 2)
                 + ":00";
         return time;
+    }
+
+    public static long convertUTCTimeToMilliSecond(String timeZone) {
+        long time = 0;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            String tDate = timeZone.split("[+]")[0].replace('T', ' ');
+            time = sdf.parse(tDate).getTime() / 1000;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            return time;
+        }
     }
 
     public static long convertTimeZone2Millisecond(String timeZone) {
@@ -1224,4 +1275,75 @@ public class AppUtil {
             inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
         }
     }
+
+    public static int getWidthPx(Context context) {
+        int result;
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        ((WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(outMetrics);
+        result = outMetrics.widthPixels;
+        return result;
+    }
+
+    public static int getHeightPx(Context context) {
+        int result;
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        ((WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(outMetrics);
+        result = outMetrics.heightPixels;
+        return result;
+    }
+
+    public static int getUnrealScreenHeightPx(Context context) {
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        ((WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(outMetrics);
+        return outMetrics.heightPixels - getStatusBarHeight(context);
+    }
+
+    // 获取手机状态栏高度
+    public static int getStatusBarHeight(Context context) {
+        Class<?> c = null;
+        Object obj = null;
+        Field field = null;
+        int x = 0, statusBarHeight = 0;
+        try {
+            c = Class.forName("com.android.internal.R$dimen");
+            obj = c.newInstance();
+            field = c.getField("status_bar_height");
+            x = Integer.parseInt(field.get(obj).toString());
+            statusBarHeight = context.getResources().getDimensionPixelSize(x);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return statusBarHeight;
+    }
+
+    public static Uri getUriById(Context context, int res){
+        try {
+            Context packageContext = context.createPackageContext(context.getPackageName(),
+                    Context.CONTEXT_RESTRICTED);
+            Resources resources = packageContext.getResources();
+            String appPkg = packageContext.getPackageName();
+            String resPkg = resources.getResourcePackageName(res);
+            String type = resources.getResourceTypeName(res);
+            String name = resources.getResourceEntryName(res);
+
+
+            Uri.Builder uriBuilder = new Uri.Builder();
+            uriBuilder.scheme(ContentResolver.SCHEME_ANDROID_RESOURCE);
+            uriBuilder.encodedAuthority(appPkg);
+            uriBuilder.appendEncodedPath(type);
+            if (!appPkg.equals(resPkg)) {
+                uriBuilder.appendEncodedPath(resPkg + ":" + name);
+            } else {
+                uriBuilder.appendEncodedPath(name);
+            }
+            return uriBuilder.build();
+
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }

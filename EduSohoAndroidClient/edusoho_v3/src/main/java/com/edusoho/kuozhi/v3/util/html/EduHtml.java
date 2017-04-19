@@ -1,19 +1,15 @@
 package com.edusoho.kuozhi.v3.util.html;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.CharacterStyle;
-import android.text.style.ClickableSpan;
 import android.text.style.ImageSpan;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
-
-import com.edusoho.kuozhi.v3.EdusohoApp;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;

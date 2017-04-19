@@ -5,6 +5,8 @@ package com.edusoho.kuozhi.v3.model.sys;
  */
 public class AppConfig {
 
+    public static final String IM_OPEN = "1";
+
     public boolean startWithSchool;
     public boolean showSplash;
     public boolean isPublicRegistDevice;
@@ -21,5 +23,7 @@ public class AppConfig {
 
     public boolean newVerifiedNotify;
 
-    public boolean isOpenChatRoom;
+
+    public boolean isEnableIMChat;
+
 }

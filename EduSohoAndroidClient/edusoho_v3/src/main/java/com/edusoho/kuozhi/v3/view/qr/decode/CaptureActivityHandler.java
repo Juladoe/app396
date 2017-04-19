@@ -134,7 +134,7 @@ public final class CaptureActivityHandler extends Handler {
             try {
                 activity.startActivity(intent);
             } catch (ActivityNotFoundException ignored) {
-                Log.w(TAG, "Can't find anything to handle VIEW of URI " + url);
+                Log.w(TAG, "Can'type find anything to handle VIEW of URI " + url);
             }
         }
 
@@ -152,7 +152,7 @@ public final class CaptureActivityHandler extends Handler {
             // continue
         }
 
-        // Be absolutely sure we don't send any queued up messages
+        // Be absolutely sure we don'type send any queued up messages
         removeMessages(R.id.decode_succeeded);
         removeMessages(R.id.decode_failed);
     }

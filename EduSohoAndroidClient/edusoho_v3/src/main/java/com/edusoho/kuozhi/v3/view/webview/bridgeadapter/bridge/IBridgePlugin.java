@@ -8,12 +8,12 @@ import org.json.JSONException;
  */
 public interface IBridgePlugin {
 
-    public String getName();
+    String getName();
 
-    public void initialize(BridgePluginContext pluginContext);
+    void initialize(BridgePluginContext pluginContext);
 
-    public Object executeAnsy(String action, JSONArray args);
+    Object executeAnsy(String action, JSONArray args);
 
-    public boolean execute(
+    boolean execute(
             String action, JSONArray args, BridgeCallback callbackContext) throws JSONException;
 }
