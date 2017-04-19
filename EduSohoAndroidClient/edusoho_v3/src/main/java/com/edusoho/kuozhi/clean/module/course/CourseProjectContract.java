@@ -33,6 +33,8 @@ public interface CourseProjectContract {
 
         void initLearnedLayout();
 
+        void setJoinButton(boolean isCourseStarted);
+
         void setProgressBar(int progress);
 
         void launchDialogProgress(CourseLearningProgress progress, Member member);
@@ -41,7 +43,6 @@ public interface CourseProjectContract {
     }
 
     interface Presenter extends BasePresenter {
-
 
         void consult();
 

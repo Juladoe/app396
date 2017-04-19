@@ -1,5 +1,7 @@
 package com.edusoho.kuozhi.clean.module.course;
 
+import android.app.AlertDialog;
+
 import com.edusoho.kuozhi.clean.api.CourseApi;
 import com.edusoho.kuozhi.clean.api.CourseSetApi;
 import com.edusoho.kuozhi.clean.api.UserApi;
@@ -43,6 +45,7 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     public CourseProjectPresenter(int courseProjectId, CourseProjectContract.View view) {
         mCourseProjectId = courseProjectId;
         mView = view;
+        mCourseProjectId = 42;
     }
 
     @Override
@@ -66,7 +69,13 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                             mTeacher = courseProject.teachers[0];
                         }
                         //这么处理不是很好，会有一个跳转
-                        initCourseMemberInfo(courseProject);
+                        //如果过期底部加入按钮变色
+                        if (isCourseDoNotStarted(courseProject.expiryStartDate)) {
+                            mView.setJoinButton(false);
+                            mView.showFragments(initCourseModules(false), courseProject);
+                        } else {
+                            initCourseMemberInfo(courseProject);
+                        }
                     }
                 })
                 .observeOn(Schedulers.io())
@@ -164,21 +173,56 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
 
                         @Override
                         public void onNext(Member member) {
-                            boolean isLearning = member.user != null && !isExpired(member.deadline);
-                            mView.showBottomLayout(!isLearning);
-                            mView.showCacheButton(isLearning);
-                            mView.showShareButton(!isLearning);
-                            mView.showFragments(initCourseModules(isLearning), courseProject);
-                            if (isLearning) {
-                                mMember = member;
-                                mView.initLearnedLayout();
-                                setCourseLearningProgress(courseProject.id);
+                            if (member.user != null) {
+                                if (isCourseDoNotStarted(courseProject.expiryStartDate) || isDraft(courseProject)) {
+                                    mView.setJoinButton(false);
+                                    return;
+                                }
+                                //mView.setJoinButton(!isCourseStarted(courseProject.expiryStartDate));
+                                if (isExpired(member.deadline)) {
+                                    // TODO: 2017/4/19 弹出框提示已经过期，是否退出
+                                } else {
+                                    mView.showBottomLayout(false);
+                                    mView.showCacheButton(getCourseLearnMode(courseProject) == CourseProject.CourseLearnMode.FREE);
+                                    mView.showShareButton(false);
+                                    mView.showFragments(initCourseModules(true), courseProject);
+                                }
+                            } else {
+                                mView.showFragments(initCourseModules(false), courseProject);
                             }
+
+                            //是否已经加入
+//                            boolean isLearning = member.user != null && !isExpired(member.deadline);
+//                            mView.showBottomLayout(!isLearning);
+//                            mView.showCacheButton(isLearning);
+//                            mView.showShareButton(!isLearning);
+//                            mView.showFragments(initCourseModules(isLearning), courseProject);
+//                            if (isLearning) {
+//                                mMember = member;
+//                                mView.initLearnedLayout();
+//                                setCourseLearningProgress(courseProject.id);
+//                            }
                         }
                     });
         } else {
             mView.showFragments(initCourseModules(false), courseProject);
         }
+    }
+
+    private CourseProject.CourseLearnMode getCourseLearnMode(CourseProject courseProject) {
+        return CourseProject.CourseLearnMode.valueOf(courseProject.learnMode);
+    }
+
+    private boolean isDraft(CourseProject courseProject) {
+        return CourseProject.CourseStatus.valueOf(courseProject.status) == CourseProject.CourseStatus.DRAFT;
+    }
+
+    private boolean isCourseDoNotStarted(String expiryStartDate) {
+        return TimeUtils.getUTCtoDate(expiryStartDate).compareTo(new Date()) > 1;
+    }
+
+    private boolean isExpired(String utcTime) {
+        return !CommonConstant.EXPIRED_MODE_FOREVER.equals(utcTime) && TimeUtils.getUTCtoDate(utcTime).compareTo(new Date()) < 0;
     }
 
     private void setCourseLearningProgress(int courseId) {
@@ -205,10 +249,6 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
                         mView.setProgressBar(courseLearningProgress.progress);
                     }
                 });
-    }
-
-    private boolean isExpired(String utcTime) {
-        return !CommonConstant.EXPIRED_MODE_FOREVER.equals(utcTime) && TimeUtils.getUTCtoDate(utcTime).compareTo(new Date()) < 0;
     }
 
     private List<CourseProjectEnum> initCourseModules(boolean isLearning) {

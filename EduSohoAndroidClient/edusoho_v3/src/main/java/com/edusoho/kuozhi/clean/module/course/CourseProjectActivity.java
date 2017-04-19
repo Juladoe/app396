@@ -189,6 +189,19 @@ public class CourseProjectActivity extends AppCompatActivity implements CoursePr
     }
 
     @Override
+    public void setJoinButton(boolean state) {
+        if (state) {
+            mLearnTextView.setText(R.string.learn_course_project);
+            mLearnTextView.setBackgroundResource(R.color.primary_color);
+            mLearnTextView.setTextColor(getResources().getColor(R.color.white));
+        } else {
+            mLearnTextView.setText(R.string.course_expired_or_closed);
+            mLearnTextView.setBackgroundResource(R.color.white);
+            mLearnTextView.setTextColor(getResources().getColor(R.color.secondary_font_color));
+        }
+    }
+
+    @Override
     public void setProgressBar(int progress) {
         mProgressLayout.setVisibility(View.VISIBLE);
         mProgressBar.setProgress(progress);
