@@ -126,8 +126,7 @@
         android:id="@+id/tl_bottom"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone">
+        android:layout_alignParentBottom="true">
 
         <com.edusoho.kuozhi.clean.widget.ESIconTextButton
             android:id="@+id/tb_consult"

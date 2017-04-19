@@ -145,36 +145,40 @@ public class CourseProjectPresenter implements CourseProjectContract.Presenter {
     }
 
     private void initCourseMemberInfo(final CourseProject courseProject) {
-        HttpUtils.getInstance()
-                .createApi(CourseApi.class)
-                .getCourseMember(courseProject.id, EdusohoApp.app.loginUser.id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Member>() {
-                    @Override
-                    public void onCompleted() {
+        if (EdusohoApp.app.loginUser != null) {
+            HttpUtils.getInstance()
+                    .createApi(CourseApi.class)
+                    .getCourseMember(courseProject.id, EdusohoApp.app.loginUser.id)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<Member>() {
+                        @Override
+                        public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onNext(Member member) {
-                        boolean isLearning = member.user != null && !isExpired(member.deadline);
-                        mView.showBottomLayout(!isLearning);
-                        mView.showCacheButton(isLearning);
-                        mView.showShareButton(!isLearning);
-                        mView.showFragments(initCourseModules(isLearning), courseProject);
-                        if (isLearning) {
-                            mMember = member;
-                            mView.initLearnedLayout();
-                            setCourseLearningProgress(courseProject.id);
                         }
-                    }
-                });
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(Member member) {
+                            boolean isLearning = member.user != null && !isExpired(member.deadline);
+                            mView.showBottomLayout(!isLearning);
+                            mView.showCacheButton(isLearning);
+                            mView.showShareButton(!isLearning);
+                            mView.showFragments(initCourseModules(isLearning), courseProject);
+                            if (isLearning) {
+                                mMember = member;
+                                mView.initLearnedLayout();
+                                setCourseLearningProgress(courseProject.id);
+                            }
+                        }
+                    });
+        } else {
+            mView.showFragments(initCourseModules(false), courseProject);
+        }
     }
 
     private void setCourseLearningProgress(int courseId) {
